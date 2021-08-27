@@ -42,12 +42,7 @@ namespace adrilight.ViewModel
             this.kernel = kernel ?? throw new System.ArgumentNullException(nameof(kernel));
         }
 
-        public SettingsViewModel SettingsViewModel {
-            get
-            {
-                return kernel.Get<SettingsViewModel>();
-            }
-        }
+      
         public MainViewViewModel MainViewViewModel {
             get
             {

@@ -75,40 +75,9 @@ namespace adrilight.ViewModel
                 LoadMenuByType(value);
             }
         }
-        private SettingInfoDTO _settingInfo;
-        public SettingInfoDTO SettingInfo {
-            get { return _settingInfo; }
-            set
-            {
-                if (_settingInfo == value) return;
-                if (_settingInfo != null)
-                    _settingInfo.PropertyChanged -= _settingInfo_PropertyChanged;
-                _settingInfo = value;
-                if (_settingInfo != null)
-                    _settingInfo.PropertyChanged += _settingInfo_PropertyChanged;
-                RaisePropertyChanged();
-            }
-        }
+     
 
-        private void _settingInfo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(SettingInfo.AutoStartWithWindows):
-                    if (SettingInfo.AutoStartWithWindows)
-                    {
-                        StartUpManager.AddApplicationToCurrentUserStartup();
-                    }
-                    else
-                    {
-                        StartUpManager.RemoveApplicationFromCurrentUserStartup();
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-        }
+       
         private string _buildVersion = "";
         public string BuildVersion {
             get { return _buildVersion; }
@@ -303,10 +272,8 @@ namespace adrilight.ViewModel
         public ICommand SelectCardCommand { get; set; }
         public ICommand ShowAddNewCommand { get; set; }
         public ICommand RefreshDeviceCommand { get; set; }
-        public ICommand DFUCommand { get; set; }
-        // private IViewModelFactory<AllDeviceViewModel> _allDeviceView;
-        private bool isPreview = false;
-        private bool _isAddnew = false;
+
+       
         private string JsonDeviceNameAndPath => Path.Combine(JsonPath, "adrilight-deviceInfos.json");
         public IList<String> _AvailableComPorts;
         public IList<String> AvailableComPorts {
@@ -340,13 +307,13 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-        private ObservableCollection<string> _screenEffects;
-        public ObservableCollection<string> ScreenEffects {
-            get { return _screenEffects; }
+        private ObservableCollection<string> _availableEffects;
+        public ObservableCollection<string> AvailableEffects {
+            get { return _availableEffects; }
             set
             {
-                if (_screenEffects == value) return;
-                _screenEffects = value;
+                if (_availableEffects == value) return;
+                _availableEffects = value;
                 RaisePropertyChanged();
             }
         }
@@ -490,15 +457,7 @@ namespace adrilight.ViewModel
                 return _AvailableDisplays;
             }
         }
-        public ISpot[] _previewGif;
-        public ISpot[] PreviewGif {
-            get => _previewGif;
-            set
-            {
-                _previewGif = value;
-                RaisePropertyChanged();
-            }
-        }
+      
         public ObservableCollection<string> AvailableFrequency { get; private set; }
 
         public ObservableCollection<string> AvailableMusicPalette { get; private set; }
@@ -698,6 +657,21 @@ namespace adrilight.ViewModel
 
                         GeneralSettings.OffsetLed3 = GeneralSettings.SpotsX3 - 1;
                         break;
+
+                       
+                        case nameof(GeneralSettings.Autostart):
+                                if (GeneralSettings.Autostart)
+                                {
+                                    StartUpManager.AddApplicationToCurrentUserStartup();
+                                }
+                                else
+                                {
+                                    StartUpManager.RemoveApplicationFromCurrentUserStartup();
+                                }
+                                break;
+                         default:
+                                break;
+                        
 
 
                 }
@@ -1060,56 +1034,7 @@ namespace adrilight.ViewModel
         //}
         public void ReadDataDevice()
         {
-            SelectGif = new RelayCommand<string>((p) => {
-                return true;
-            }, (p) =>
-            {
-                OpenFileDialog gifile = new OpenFileDialog();
-                gifile.Title = "Chọn file gif";
-                gifile.CheckFileExists = true;
-                gifile.CheckPathExists = true;
-                gifile.DefaultExt = "gif";
-                gifile.Filter = "Image Files(*.gif)| *.gif";
-                gifile.FilterIndex = 2;
-                gifile.ShowDialog();
-
-                if (!string.IsNullOrEmpty(gifile.FileName) && File.Exists(gifile.FileName))
-                {
-                    var image = new BitmapImage();
-                    image.BeginInit();
-                    image.UriSource = new Uri(gifile.FileName);
-                    image.EndInit();
-                    gifimage = image;
-                    var gifilepath = gifile.FileName;
-                    gifStreamSource = new FileStream(gifilepath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    decoder = new GifBitmapDecoder(gifStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-                    // ImageBehavior.SetAnimatedSource(gifxel, image);
-
-
-
-                    // _controller = ImageBehavior.GetAnimationController(gifxel);
-
-                    // _controller.
-                    // image.CopyPixels
-
-                    // GifPlayPause = false;
-                    ImageProcesser.DisposeGif();
-                    ImageProcesser.DisposeStill();
-                    if (ImageProcesser.LoadGifFromDisk(gifile.FileName))
-                    {
-                        CurrentDevice.GifFilePath = gifile.FileName;
-                        //FrameToPreview();
-                        // SerialManager.PushFrame();
-                        ImageProcesser.ImageLoadState = ImageProcesser.LoadState.Gif;
-                        //ResetSliders();
-                    }
-                    else
-                    {
-                        System.Windows.MessageBox.Show("Cannot load image.");
-                    }
-
-                }
-            });
+          
             AvailablePalette = new ObservableCollection<string>
        {
            "Rainbow",
@@ -1126,21 +1051,8 @@ namespace adrilight.ViewModel
            "Custom"
 
         };
-            CaseEffects = new ObservableCollection<string>
-      {
-           "Sáng theo hiệu ứng",
-           "Sáng theo màn hình",
-           "Sáng màu tĩnh",
-           "Sáng theo nhạc",
-           "Đồng bộ Mainboard",
-           "Tắt",
-           "Gifxelation",
-           "Pixelation",
-           "Ambilation"
-
-
-        };
-            ScreenEffects = new ObservableCollection<string>
+    
+            AvailableEffects = new ObservableCollection<string>
       {
             "Sáng theo màn hình",
            "Sáng theo dải màu",
@@ -1201,24 +1113,22 @@ namespace adrilight.ViewModel
                 {
                     if (vm.Device.DeviceType != "ABHV2")
                     {
-                        vm.Device.PropertyChanged += DeviceInfo_PropertyChanged;
-                        _isAddnew = true;
+                     
                         vm.Device.DeviceID = Cards.Count() + 1;
 
                         Cards.Add(vm.Device);
                         WriteJson();
-                        _isAddnew = false;
+                        
                     }
                     else
                     {
 
-                        vm.Device.PropertyChanged += DeviceInfo_PropertyChanged;
-                        _isAddnew = true;
+                        
                         vm.Device.DeviceID = Cards.Count() + 1;
                         vm.Device.IsHUB = true;
                         Cards.Add(vm.Device);
                         // WriteJson();
-                        _isAddnew = false;
+                       
                         if (vm.ARGB1Selected) // ARGB1 output port is in the list
                         {
                             var argb1 = new DeviceSettings();
@@ -1321,7 +1231,7 @@ namespace adrilight.ViewModel
 
         }
 
-        private Visibility _aRGB1Visibility;
+        
         public Visibility ARGB1Visibility {
             get
             {
@@ -1336,13 +1246,10 @@ namespace adrilight.ViewModel
                 return Visibility.Collapsed; ;
             }
 
-            set
-            {
-                _aRGB1Visibility = value;
-            }
+           
 
         }
-        private Visibility _aRGB2Visibility;
+       
         public Visibility ARGB2Visibility {
             get
             {
@@ -1357,13 +1264,10 @@ namespace adrilight.ViewModel
                 return Visibility.Collapsed; ;
             }
 
-            set
-            {
-                _aRGB2Visibility = value;
-            }
+           
 
         }
-        private Visibility _pCI1;
+      
         public Visibility PCI1 {
             get
             {
@@ -1378,13 +1282,8 @@ namespace adrilight.ViewModel
                 return Visibility.Collapsed; ;
             }
 
-            set
-            {
-                _pCI1 = value;
-            }
-
         }
-        private Visibility _pCI2;
+      
         public Visibility PCI2 {
             get
             {
@@ -1399,13 +1298,10 @@ namespace adrilight.ViewModel
                 return Visibility.Collapsed; ;
             }
 
-            set
-            {
-                _pCI2 = value;
-            }
+           
 
         }
-        private Visibility _pCI3;
+       
         public Visibility PCI3 {
             get
             {
@@ -1420,13 +1316,10 @@ namespace adrilight.ViewModel
                 return Visibility.Collapsed; ;
             }
 
-            set
-            {
-                _pCI3 = value;
-            }
+           
 
         }
-        private Visibility _pCI4;
+     
         public Visibility PCI4 {
             get
             {
@@ -1441,13 +1334,10 @@ namespace adrilight.ViewModel
                 return Visibility.Collapsed; ;
             }
 
-            set
-            {
-                _pCI4 = value;
-            }
+           
 
         }
-        private Visibility _spotSetEnable;
+       
         public Visibility SpotSetEnable {
             get
             {
@@ -1457,10 +1347,7 @@ namespace adrilight.ViewModel
                     return Visibility.Collapsed;
             }
 
-            set
-            {
-                _spotSetEnable = value;
-            }
+           
 
         }
 
@@ -1690,22 +1577,7 @@ namespace adrilight.ViewModel
             Directory.CreateDirectory(JsonPath);
             File.WriteAllText(JsonDeviceNameAndPath, json);
         }
-        //public void WriteSettingJson()
-        //{
-        //    var json = JsonConvert.SerializeObject(SettingInfo.GetSettingInfo(), Formatting.Indented);
-        //    Directory.CreateDirectory(JsonPath);
-        //    File.WriteAllText(JsonDeviceFileNameAndPath, json);
-        //}
-        //public SettingInfo LoadSettingIfExists()
-        //{
-        //    if (!File.Exists(JsonFileNameAndPath)) return null;
-
-        //    var json = File.ReadAllText(JsonFileNameAndPath);
-
-        //    var setting = JsonConvert.DeserializeObject<SettingInfo>(json);
-
-        //    return setting;
-        //}
+       
         /// <summary>
         /// Change View
         /// </summary>
@@ -1713,54 +1585,11 @@ namespace adrilight.ViewModel
         public void ChangeView(VerticalMenuItem menuItem)
         {
             SelectedVerticalMenuItem = menuItem;
-            //switch (menuItem.Text)
-            //{
-            //    case dashboard:
-
-            //        CurrentView = _allDeviceView.CreateViewModel();
-            //        IsDashboardType = true;
-            //        break;
-            //    case deviceSetting:
-            //        _deviceSettingView = new DeviceSettingViewModel(this,SettingInfo);
-            //        CurrentView = _deviceSettingView;
-            //        IsDashboardType = true;
-            //        break;
-            //    case appSetting:
-            //        _appSettingView = new AppSettingViewModel(this, SettingInfo);
-            //        CurrentView = _appSettingView;
-            //        IsDashboardType = true; 
-            //        break;
-            //    case faq:
-            //        _faqSettingView = new FAQViewModel();
-            //        CurrentView = _faqSettingView;
-            //        IsDashboardType = true; 
-            //        break;
-            //    case general:
-            //        _detailView = new DeviceDetailViewModel(CurrentDevice,this,SettingInfo);
-            //        CurrentView = _detailView;
-            //        IsDashboardType = false;
-
-            //        break;
-            //    case lighting:
-            //        if (_detailView==null)
-            //            _detailView = new DeviceDetailViewModel(CurrentDevice,this, SettingInfo);
-            //        ((DeviceDetailViewModel)_detailView).TabType = DeviceTab.Lighting;
-            //        CurrentView = _detailView;
-            //        IsDashboardType = false;
-            //        break;
-            //    default:
-            //        break;
-            //}
-            //if (menuItem.Text is lighting or general)
-            //{
-            //    ReadDataDevice();
-            //}
-            //SetMenuItemActiveStatus(menuItem.Text);
             SetMenuItemActiveStatus(menuItem.Text);
         }
         public void WriteDeviceInfoJson()
         {
-            // if (_allDeviceView == null) return;
+           
             var devices = new List<IDeviceSettings>();
             foreach (var item in Cards)
             {
@@ -1772,8 +1601,7 @@ namespace adrilight.ViewModel
         }
         public void GotoChild(IDeviceSettings card)
         {
-            //  _detailView = new DeviceDetailViewModel(card, this,SettingInfo);
-            //CurrentView = _detailView;
+           
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == general);
             IsDashboardType = false;
             CurrentDevice = card;
@@ -1802,7 +1630,7 @@ namespace adrilight.ViewModel
         public void BackToDashboard()
         {
 
-            //CurrentView = _allDeviceView.CreateViewModel();
+          
             IsDashboardType = true;
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault();
             SetMenuItemActiveStatus(dashboard);
@@ -1810,7 +1638,6 @@ namespace adrilight.ViewModel
         public void BackToDashboardAndDelete(IDeviceSettings device)
         {
             Cards.Remove(device);
-            //CurrentView = _allDeviceView.CreateViewModel();
             IsDashboardType = true;
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault();
             SetMenuItemActiveStatus(dashboard);
@@ -1825,7 +1652,6 @@ namespace adrilight.ViewModel
             MenuItems.Add(new VerticalMenuItem() { Text = deviceSetting, IsActive = false, Type = MenuButtonType.Dashboard });
             MenuItems.Add(new VerticalMenuItem() { Text = appSetting, IsActive = false, Type = MenuButtonType.Dashboard });
             MenuItems.Add(new VerticalMenuItem() { Text = canvasLighting, IsActive = false, Type = MenuButtonType.Dashboard });
-
             MenuItems.Add(new VerticalMenuItem() { Text = general, IsActive = true, Type = MenuButtonType.General });
             MenuItems.Add(new VerticalMenuItem() { Text = lighting, IsActive = false, Type = MenuButtonType.General });
 
