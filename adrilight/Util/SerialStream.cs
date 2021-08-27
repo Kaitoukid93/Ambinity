@@ -2,18 +2,11 @@
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Threading;
-using System.Threading.Tasks;
 using NLog;
 using System.Buffers;
-using System.Windows.Media;
 using adrilight.Util;
 using System.Linq;
 using Newtonsoft.Json;
-using adrilight.View.SettingsWindowComponents;
-using System.Windows.Forms;
-using OpenRGB;
-using adrilight.ViewModel;
-using System.Collections.Generic;
 using System.Windows;
 using adrilight.Spots;
 

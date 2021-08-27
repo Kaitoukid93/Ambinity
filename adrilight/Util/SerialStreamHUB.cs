@@ -2,18 +2,11 @@
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Threading;
-using System.Threading.Tasks;
 using NLog;
 using System.Buffers;
-using System.Windows.Media;
 using adrilight.Util;
 using System.Linq;
 using Newtonsoft.Json;
-using adrilight.View.SettingsWindowComponents;
-using System.Windows.Forms;
-using OpenRGB;
-using adrilight.ViewModel;
-using System.Collections.Generic;
 using System.Windows;
 using adrilight.Spots;
 using System.Collections.ObjectModel;
@@ -526,8 +519,7 @@ namespace adrilight
                         {
                             serialPort?.Close();
                             serialPort = DeviceSettings.DevicePort != "Không có" ? (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.DevicePort, baudRate)) : new FakeSerialPort();
-                            // serialPort.DisableDtr();
-                            // serialPort.DisableRts();
+                    
                             serialPort.Open();
                             openedComPort = DeviceSettings.DevicePort;
 
@@ -537,25 +529,8 @@ namespace adrilight
 
 
 
-
-
-
-                        if (LedOutsideCase.DFUVal == 1)
-                        {
-                            serialPort?.Close();
-                         //   serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(UserSettings.ComPort, 1200));
-                            serialPort.Open();
-                            serialPort.Close();
-
-                        }
-                        else
-                        {
                             serialPort.Write(outputBuffer, 0, streamLength);
-                        }
-
-
-
-
+                        
 
 
                         if (++frameCounter == 1024 && blackFrameCounter > 1000)

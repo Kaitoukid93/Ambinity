@@ -39,15 +39,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>zoe.ico</ApplicationIcon>
-  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <StartupObject>adrilight.App</StartupObject>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Local Test|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Local Test\</OutputPath>
@@ -67,6 +63,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
+    <ApplicationIcon>zoe.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <MinimumPlatformVersion>7.0</MinimumPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <OutputPath>bin\x86\Debug\</OutputPath>
@@ -93,168 +92,30 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Fakes\**" />
+    <EmbeddedResource Remove="Fakes\**" />
+    <None Remove="Fakes\**" />
+    <Page Remove="Fakes\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System.IO.Compression, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\123.json" />
-    <Content Include="Resources\test.json" />
-    <Resource Include="View\Images\icon\dashboard.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="View\Images\icon\setting.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="View\Images\icon\usb.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="View\Images\icon\close-box.png" />
-    <Resource Include="Resources\giphy.gif" />
-    <Resource Include="View\SettingsWindowComponents\giphy.gif" />
-    <Resource Include="View\SettingsWindowComponents\headerimagefafafa.png" />
-    <Resource Include="View\SettingsWindowComponents\usb%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\no device%404x.png" />
-    <Resource Include="View\SettingsWindowComponents\node%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\pci%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\rainpow%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\equalizer%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\picker%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\new usb%402x.png" />
-    <Resource Include="View\add device%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\off grayscale%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\aura%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\off%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\warning%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\Asset 1%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\chameleon%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\speaker settings%402x.png" />
-    <Resource Include="View\SettingsWindowComponents\advance%402x.png" />
-    <Resource Include="View\Images\new theme\Asset 4%402x.png" />
-    <Resource Include="View\Images\new theme\General setup%402x.png" />
-    <Resource Include="View\Images\new theme\lighting setup%402x.png" />
-    <Resource Include="View\Images\new theme\usb%402x.png" />
-    <Resource Include="View\Images\purple theme\outofcase.png" />
-    <Resource Include="View\Images\purple theme\source%402x.png" />
-    <Resource Include="View\Images\purple theme\led%402x.png" />
-    <Resource Include="View\Images\imgplus.jpg" />
-    <Resource Include="View\Images\speedzonefinal%402x.png" />
-    <Resource Include="View\Images\speedzonegrey%402x.png" />
-    <Resource Include="View\Images\speedzone grey%402x.png" />
-    <Resource Include="View\Images\hub frame%402x.png" />
-    <Resource Include="View\Images\ambino pro%402x.png" />
-    <Resource Include="View\Images\music frame%402x.png" />
-    <Resource Include="View\Images\purple theme\Asset 18%402x.png" />
-    <Resource Include="View\Images\purple theme\Asset 16%402x.png" />
-    <Resource Include="View\Images\purple theme\Asset 17%402x.png" />
-    <Resource Include="View\Images\purple theme\Asset 15%402x.png" />
-    <Resource Include="View\Images\purple theme\app logo%402x.png" />
-    <Resource Include="View\Images\purple theme\chameleon%402x.png" />
-    <Resource Include="View\Images\purple theme\linear fix%402x.png" />
-    <Resource Include="View\Images\purple theme\non linear big%402x.png" />
-    <Resource Include="View\Images\purple theme\linear big%402x.png" />
-    <Resource Include="View\Images\purple theme\equalizer 3%402x.png" />
-    <Resource Include="View\Images\purple theme\equalizer 2%402x.png" />
-    <Resource Include="View\Images\purple theme\equalizer%402x.png" />
-    <Resource Include="View\Images\purple theme\bigsmall%402x.png" />
-    <Resource Include="View\Images\purple theme\candles%402x.png" />
-    <Resource Include="View\Images\purple theme\caseicon%402x.png" />
-    <Resource Include="View\Images\purple theme\desk%402x.png" />
-    <Resource Include="View\Images\purple theme\flip%402x.png" />
-    <Resource Include="View\Images\purple theme\github%402x.png" />
-    <Resource Include="View\Images\purple theme\height_1%402x.png" />
-    <Resource Include="View\Images\purple theme\LED1%402x.png" />
-    <Resource Include="View\Images\purple theme\LEDhorizon%402x.png" />
-    <Resource Include="View\Images\purple theme\LEDhorizon.png" />
-    <Resource Include="View\Images\purple theme\LEDvertical%402x.png" />
-    <Resource Include="View\Images\purple theme\lefrightdistance%402x.png" />
-    <Resource Include="View\Images\purple theme\minimize%402x.png" />
-    <Resource Include="View\Images\purple theme\perfomance%402x.png" />
-    <Resource Include="View\Images\purple theme\power button%402x.png" />
-    <Resource Include="View\Images\purple theme\screen%402x.png" />
-    <Resource Include="View\Images\purple theme\size%402x.png" />
-    <Resource Include="View\Images\purple theme\updowndistance%402x.png" />
-    <Resource Include="View\Images\purple theme\usbicon%402x.png" />
-    <Resource Include="View\Images\purple theme\version%402x.png" />
-    <Resource Include="View\Images\purple theme\white balance%402x.png" />
-    <Resource Include="View\Images\purple theme\width_1%402x.png" />
-    <Resource Include="View\Images\purple theme\windows icon%402x.png" />
-    <Resource Include="View\Images\Ambino Lighting no shadow logo.png" />
-    <Resource Include="View\Images\Ambino Lighting logo shadow.png" />
-    <Resource Include="View\Images\Ambino small Lighting logo.png" />
-    <Resource Include="View\Images\Ambino Lighting logo.png" />
-    <Resource Include="View\Images\palette%402x.png" />
-    <Resource Include="View\Images\desk%402x.png" />
-    <Resource Include="View\Images\flip%404x.png" />
-    <Resource Include="View\Images\led height%404x.png" />
-    <Resource Include="View\Images\LED setup%404x.png" />
-    <Resource Include="View\Images\led1%404x.png" />
-    <Resource Include="View\Images\rollback%404x.png" />
-    <Resource Include="View\Images\size%404x.png" />
-    <Resource Include="View\Images\Asset 5%404x.png" />
-    <Resource Include="View\Images\height%404x.png" />
-    <Resource Include="View\Images\horrizon%404x.png" />
-    <Resource Include="View\Images\vertical%404x.png" />
-    <Resource Include="View\Images\width%404x.png" />
-    <Resource Include="View\Images\Asset 2%404x.png" />
-    <Resource Include="View\Images\Asset 3%404x.png" />
-    <Resource Include="View\Images\Asset 4%404x.png" />
-    <Resource Include="View\Images\Windows%404x.png" />
-    <Resource Include="View\Images\Asset 1%404x.png" />
-    <Resource Include="View\Images\Asset 8%402x.png" />
-    <Resource Include="View\Images\Asset 7%402x.png" />
-    <Resource Include="View\Images\Asset 6%402x.png" />
-    <Resource Include="View\Images\Asset 4%402x.png" />
-    <Resource Include="View\Images\Asset 3%402x.png" />
-    <Resource Include="View\Images\Asset 1%402x.png" />
-    <Resource Include="View\Images\screen ambilight2.png" />
-    <Resource Include="View\Images\border left right distance.png" />
-    <Resource Include="View\Images\border upper lower distance.png" />
-    <Resource Include="View\Images\fan colorr.png" />
-    <Resource Include="View\Images\desk light.png" />
-    <Resource Include="View\Images\blur fan.png" />
-    <Resource Include="View\Images\fan color.png" />
-    <Resource Include="View\Images\desk ambilight.png" />
-    <Resource Include="View\Images\flip.png" />
-    <Resource Include="View\Images\minimize.png" />
-    <Resource Include="View\Images\number 1.png" />
-    <Resource Include="View\Images\rgb usb.png" />
-    <Resource Include="View\Images\screen ambilight non linear.png" />
-    <Resource Include="View\Images\screen ambilight.png" />
-    <Resource Include="View\Images\screen size.png" />
-    <Resource Include="View\Images\windows auto start.png" />
-    <Resource Include="View\Images\zone width number setup.png" />
-    <Resource Include="View\Images\zoneheight number setup.png" />
-    <Resource Include="View\Images\width.png" />
-    <Resource Include="View\Images\height.png" />
-    <Resource Include="View\Images\headerimagefafafa.png" />
-    <Resource Include="View\Images\zoe.ico" />
-    <Resource Include="View\Images\headerimage300_Xlu_icon.ico" />
     <None Include="adrilight_TemporaryKey.pfx" />
-    <Resource Include="Image1.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Update="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
-    <Resource Include="View\Images\headerimage.png" />
-    <Resource Include="View\Images\headerimage300.png" />
-    <Resource Include="View\Images\headerlogo.png" />
-    <Resource Include="View\Images\rainbow.png" />
-    <Resource Include="View\Images\ambinoblack.ico" />
-    <Resource Include="View\Images\ambinoblackheader.ico" />
-    <Resource Include="View\Images\ambinoblacknotext.ico" />
-    <Resource Include="View\Images\ambinowhite.ico" />
     <None Update="adrilightApp.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Update="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Resource Include="ambinoblack.ico" />
-    <Resource Include="ambinoblacknotext.ico" />
-    <Resource Include="logo_stroke_uPl_icon.ico" />
     <EmbeddedResource Include="zoe.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -321,42 +182,16 @@
     <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Controls\DeviceCard.xaml.cs" />
     <Compile Remove="Factories\IDeviceSettingsFactories.cs" />
     <Compile Remove="Ninject\UseFirstArgumentAsNameInstanceProvider.cs" />
     <Compile Remove="Util\AdrilightUpdater.cs" />
     <Compile Remove="ViewModel\DashBoardViewModel.cs" />
-    <Compile Remove="ViewModel\Factories\DashboardViewModelFactory.cs" />
     <Compile Remove="ViewModel\ILightingViewModel.cs" />
     <Compile Remove="ViewModel\old\ISelectableViewPart.cs" />
     <Compile Remove="ViewModel\old\MainViewModel.cs" />
     <Compile Remove="ViewModel\old\SettingsViewModel.cs" />
     <Compile Remove="ViewModel\old\ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Remove="ViewModel\old\ViewModelLocator.cs" />
-    <Compile Remove="View\SettingsWindowComponents\ComPortSetup.xaml.cs" />
-    <Compile Remove="View\SettingsWindowComponents\GeneralSetup.xaml.cs" />
-    <Compile Remove="View\SettingsWindowComponents\InsideCase.xaml.cs" />
-    <Compile Remove="View\SettingsWindowComponents\LedOutsideCase - Copy.xaml.cs" />
-    <Compile Remove="View\SettingsWindowComponents\LedSetup.xaml.cs" />
-    <Compile Remove="View\SettingsWindowComponents\LedTable.xaml.cs" />
-    <Compile Remove="View\SettingsWindowComponents\LightingModeSetup.xaml.cs" />
-    <Compile Remove="View\SettingsWindowComponents\Preview.xaml.cs" />
-    <Compile Remove="View\SettingsWindowComponents\SpotSetup.xaml.cs" />
-    <Compile Remove="View\SettingsWindowComponents\Whitebalance.xaml.cs" />
-    <Compile Remove="View\SettingsWindowComponents\WifiPower.xaml.cs" />
-    <None Remove="View\add device%402x.png" />
-    <Page Remove="Controls\DeviceCard.xaml" />
-    <Page Remove="View\SettingsWindowComponents\ComPortSetup.xaml" />
-    <Page Remove="View\SettingsWindowComponents\GeneralSetup.xaml" />
-    <Page Remove="View\SettingsWindowComponents\InsideCase.xaml" />
-    <Page Remove="View\SettingsWindowComponents\LedOutsideCase - Copy.xaml" />
-    <Page Remove="View\SettingsWindowComponents\LedSetup.xaml" />
-    <Page Remove="View\SettingsWindowComponents\LedTable.xaml" />
-    <Page Remove="View\SettingsWindowComponents\LightingModeSetup.xaml" />
-    <Page Remove="View\SettingsWindowComponents\Preview.xaml" />
-    <Page Remove="View\SettingsWindowComponents\SpotSetup.xaml" />
-    <Page Remove="View\SettingsWindowComponents\Whitebalance.xaml" />
-    <Page Remove="View\SettingsWindowComponents\WifiPower.xaml" />
   </ItemGroup>
   <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
