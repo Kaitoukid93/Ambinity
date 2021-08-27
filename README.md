@@ -1,8 +1,8 @@
-# Ambino LED Controller 
+# Ambinity
 
 ![Ambino Application logo](adrilight/zoe.ico)
 
-> An Application to control All Ambino's LED products with Ambilight and effect feature
+> An Application to control All Ambino's LED products and OpenRGB Support Product with Ambilight and effect feature
 
 ## What does it do?
 
@@ -27,11 +27,21 @@ Please look at the schematic below
 *Adrilight which created by https://github.com/fabsenet/adrilight
 * This is a fork from the originally ambilight clone project [bambilight by MrBoe](https://github.com/MrBoe/Bambilight) and therefore (and to met the MIT licence) a big thank you goes to [MrBoe](https://github.com/MrBoe)
 * More thanks goes to [jasonpong](https://github.com/jasonpang) for his [sample code for the Desktop Duplication API](https://github.com/jasonpang/desktop-duplication-net)
+* Thanks to Serigo to his Awesome shader Library https://github.com/Sergio0694/ComputeSharp
+* Thanks to https://github.com/diogotr7/OpenRGB.NET for making awesome OpenRGB support on C#
 
 ## Changelog
 
 -Change only commit when Ambino launch a new product
 -Minor change is not commited a change until a new product release ( bugs)
+
+### Upcomming Realease [October 2021]
+-New Canvas Lighting Mode
+-Sync All Device include OpenRGB device
+-Auto Detect Ambino Basic Rev2 and Ambino Desk
+-Minor bugs fix
+
+
 
 ### Release October 28-2020
 -Add support for old devices Ambino Black
