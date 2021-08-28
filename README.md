@@ -22,6 +22,14 @@ Please look at the schematic below
                 
 
 
+## Cách sử dụng OpenRGB
+ 1- Tải bản release mới nhất của OpenRGB ở link sau. sau đó giải nén ra 1 folder https://gitlab.com/CalcProgrammer1/OpenRGB/-/jobs/artifacts/master/download?job=Windows%2064
+ 2- Chạy OpenRGB, sau đó start server với địa chỉ mặc định (SDK server)
+ 3- Rescan device để OpenRGB tìm thấy toàn bộ device hỗ trợ
+ 4- Mở app Adrilight hoặc nếu đã mở rồi thì ở dashboard nhấn refresh
+ 
+
+
 
 ## Thanks
 *Adrilight which created by https://github.com/fabsenet/adrilight
