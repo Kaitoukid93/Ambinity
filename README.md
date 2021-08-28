@@ -32,7 +32,7 @@ Please look at the schematic below
 
 
 ## Thanks
-*Adrilight which created by https://github.com/fabsenet/adrilight
+* Adrilight which created by https://github.com/fabsenet/adrilight
 * This is a fork from the originally ambilight clone project [bambilight by MrBoe](https://github.com/MrBoe/Bambilight) and therefore (and to met the MIT licence) a big thank you goes to [MrBoe](https://github.com/MrBoe)
 * More thanks goes to [jasonpong](https://github.com/jasonpang) for his [sample code for the Desktop Duplication API](https://github.com/jasonpang/desktop-duplication-net)
 * Thanks to Serigo to his Awesome shader Library https://github.com/Sergio0694/ComputeSharp
