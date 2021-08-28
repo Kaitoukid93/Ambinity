@@ -270,7 +270,7 @@
                 <TextBlock Grid.Row="0" Margin="10,0,0,-0.2" Grid.Column="0" Text="Chế Độ" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
                 <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Chọn chế độ sáng chủ đạo cho thiết bị" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left"/>
                 <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Height="1" Fill="#19000000" VerticalAlignment="Bottom" Margin="10,0,10,5"/>
-                <ComboBox Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.SelectedEffect}" x:Name="EffectBox" ItemsSource="{Binding ScreenEffects}" Grid.Column="2" Grid.Row="0" Margin="0,0,10,0" VerticalAlignment="Center">
+                <ComboBox Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.SelectedEffect}" x:Name="EffectBox" ItemsSource="{Binding AvailableEffects}" Grid.Column="2" Grid.Row="0" Margin="0,0,10,0" VerticalAlignment="Center">
 
                 </ComboBox>
 

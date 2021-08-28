@@ -398,22 +398,22 @@ namespace adrilight.ViewModel
         public IList<String> AvailableAudioDevice {
             get
             {
-                _AvailableAudioDevice.Clear();
-                int devicecount = BassWasapi.BASS_WASAPI_GetDeviceCount();
-                string[] devicelist = new string[devicecount];
-                for (int i = 0; i < devicecount; i++)
-                {
+                //_AvailableAudioDevice.Clear();
+                //int devicecount = BassWasapi.BASS_WASAPI_GetDeviceCount();
+                //string[] devicelist = new string[devicecount];
+                //for (int i = 0; i < devicecount; i++)
+                //{
 
-                    var devices = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
+                //    var devices = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
 
-                    if (devices.IsEnabled && devices.IsLoopback)
-                    {
-                        var device = string.Format("{0} - {1}", i, devices.name);
+                //    if (devices.IsEnabled && devices.IsLoopback)
+                //    {
+                //        var device = string.Format("{0} - {1}", i, devices.name);
 
-                        _AvailableAudioDevice.Add(device);
-                    }
+                //        _AvailableAudioDevice.Add(device);
+                //    }
 
-                }
+                //}
 
                 return _AvailableAudioDevice;
             }
