@@ -229,13 +229,13 @@
                     </DataTrigger>
                     <!--<DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="FAQ">
                         <Setter Property="ContentTemplate" Value="{StaticResource faqTemplate}" />
-                    </DataTrigger>
+                    </DataTrigger>-->
                     <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="General">
                         <Setter Property="ContentTemplate" Value="{StaticResource lightingTemplate}" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="Lighting">
                         <Setter Property="ContentTemplate" Value="{StaticResource lightingTemplate}" />
-                    </DataTrigger>-->
+                    </DataTrigger>
                     <!--  your other Status' here -->
                 </Style.Triggers>
             </Style>
