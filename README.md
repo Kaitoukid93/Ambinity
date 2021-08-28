@@ -1,5 +1,7 @@
 # Ambinity
 
+[![Join the chat at https://gitter.im/Ambinity/community](https://badges.gitter.im/Ambinity/community.svg)](https://gitter.im/Ambinity/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ![Ambino Application logo](adrilight/zoe.ico)
 
 > An Application to control All Ambino's LED products and OpenRGB Support Product with Ambilight and effect feature
