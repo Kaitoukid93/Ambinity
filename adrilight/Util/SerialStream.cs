@@ -245,58 +245,69 @@ namespace adrilight
                 //else
                 //{
                 outputStream[counter++] = 0;
+                var lEDOn = DeviceSettings.LEDOn;
                 var allBlack = true;
                 //}
 
-
-                foreach (DeviceSpot spot in DeviceSpotSet.Spots)
+                if (lEDOn)
                 {
-                    var RGBOrder = DeviceSettings.RGBOrder;
-                    switch(RGBOrder)
+                    foreach (DeviceSpot spot in DeviceSpotSet.Spots)
                     {
-                        case 0: //RGB
-                            outputStream[counter++] = spot.Red; // blue
-                            outputStream[counter++] = spot.Green; // green
-                            outputStream[counter++] = spot.Blue; // red
-                            break;
-                        case 1: //GRB
-                            outputStream[counter++] = spot.Green; // blue
-                            outputStream[counter++] = spot.Red; // green
-                            outputStream[counter++] = spot.Blue; // red
-                            break;
-                        case 2: //BRG
-                            outputStream[counter++] = spot.Blue; // blue
-                            outputStream[counter++] = spot.Red; // green
-                            outputStream[counter++] = spot.Green; // red
-                            break;
-                        case 3: //BGR
-                            outputStream[counter++] = spot.Blue; // blue
-                            outputStream[counter++] = spot.Green; // green
-                            outputStream[counter++] = spot.Red; // red
-                            break;
-                        case 4://GBR
-                            outputStream[counter++] = spot.Green; // blue
-                            outputStream[counter++] = spot.Blue; // green
-                            outputStream[counter++] = spot.Red; // red
-                            break;
-                        case 5: //GRB
-                            outputStream[counter++] = spot.Green; // blue
-                            outputStream[counter++] = spot.Red; // green
-                            outputStream[counter++] = spot.Blue; // red
-                            break;
+                        var RGBOrder = DeviceSettings.RGBOrder;
+                        switch (RGBOrder)
+                        {
+                            case 0: //RGB
+                                outputStream[counter++] = spot.Red; // blue
+                                outputStream[counter++] = spot.Green; // green
+                                outputStream[counter++] = spot.Blue; // red
+                                break;
+                            case 1: //GRB
+                                outputStream[counter++] = spot.Green; // blue
+                                outputStream[counter++] = spot.Red; // green
+                                outputStream[counter++] = spot.Blue; // red
+                                break;
+                            case 2: //BRG
+                                outputStream[counter++] = spot.Blue; // blue
+                                outputStream[counter++] = spot.Red; // green
+                                outputStream[counter++] = spot.Green; // red
+                                break;
+                            case 3: //BGR
+                                outputStream[counter++] = spot.Blue; // blue
+                                outputStream[counter++] = spot.Green; // green
+                                outputStream[counter++] = spot.Red; // red
+                                break;
+                            case 4://GBR
+                                outputStream[counter++] = spot.Green; // blue
+                                outputStream[counter++] = spot.Blue; // green
+                                outputStream[counter++] = spot.Red; // red
+                                break;
+                            case 5: //GRB
+                                outputStream[counter++] = spot.Green; // blue
+                                outputStream[counter++] = spot.Red; // green
+                                outputStream[counter++] = spot.Blue; // red
+                                break;
+
+
+
+                        }
+
+
+                        allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
+
+
 
 
 
                     }
-             
-
-                    allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
-
-
-
-
-
+                   
                 }
+                else
+                {
+                    outputStream[counter++] = 0; // blue
+                    outputStream[counter++] = 0; // green
+                    outputStream[counter++] = 0; // red
+                }
+
 
                 if (allBlack)
                 {

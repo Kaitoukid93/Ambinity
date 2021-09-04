@@ -24,6 +24,7 @@ namespace adrilight
         private int _rGBOrder = 0;
         private int _outputLocation = 151293;
         private bool _isHUB = false;
+        private bool _lEDOn = true;
 
 
         private int _mSens = 0;
@@ -176,6 +177,7 @@ namespace adrilight
         public int LedsPerSpot { get => _ledsPerSpot; set { Set(() => LedsPerSpot, ref _ledsPerSpot, value); } }
         public bool MirrorX { get => _mirrorX; set { Set(() => MirrorX, ref _mirrorX, value); } }
         public bool MirrorY { get => _mirrorY; set { Set(() => MirrorY, ref _mirrorY, value); } }
+        public bool LEDOn { get => _lEDOn; set { Set(() => LEDOn, ref _lEDOn, value); } }
         public int OffsetLed { get => _offsetLed; set { Set(() => OffsetLed, ref _offsetLed, value); } }
 
         [Obsolete]

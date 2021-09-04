@@ -344,9 +344,34 @@ namespace adrilight
         {
 
             var icon = new System.Drawing.Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("adrilight.zoe.ico"));
-            var contextMenu = new System.Windows.Forms.ContextMenuStrip();
-            contextMenu.Items.Add("Dashboard", null, (s, e) => OpenNewUI());
-            contextMenu.Items.Add("Thoát", null, (s, e) => Shutdown(0));
+
+            var contextMenu = new ContextMenuStrip();
+            
+
+            var allDevices = kernel.GetAll<IDeviceSettings>();
+            foreach (var device in allDevices)
+            {
+                if (!device.IsHUB && device.ParrentLocation == 151293)
+                {
+                    var deviceMenu = new ToolStripMenuItem(device.DeviceName);
+
+                    deviceMenu.DropDownItems.Add(new ToolStripMenuItem("Bật/Tắt LED",null, (s, e) =>
+                    {
+                        if (device.LEDOn)
+                            device.LEDOn = false;
+                        else
+                            device.LEDOn = true;
+
+                    }));
+                    contextMenu.Items.Add(deviceMenu);
+                }
+
+
+            }
+            var dashboard = new ToolStripMenuItem("Dashboard", null, (s, e) => OpenNewUI());
+            var exit = new ToolStripMenuItem("Thoát", null, (s, e) => Shutdown(0));
+            contextMenu.Items.Add(dashboard);
+            contextMenu.Items.Add(exit);
             // contextMenu.Items.Add(new MenuItem("Dashboard", (s, e) => OpenNewUI()));
             //  contextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Cài đặt...", (s, e) => OpenSettingsWindow()));
             //contextMenu.Items.Add(new MenuItem("Thoát", (s, e) => Shutdown(0)));

@@ -17,6 +17,7 @@ namespace adrilight.Spots
         int ID { get; set; }
         int ParrentLocation { get; set; }
         int OutputLocation { get; set; }
-        
+        int RGBOrder { get; set; }
+
     }
 }

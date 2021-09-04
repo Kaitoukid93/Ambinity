@@ -234,6 +234,7 @@ namespace adrilight.ViewModel
         public ICommand BackCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
         public ICommand SnapshotCommand { get; set; }
+        public ICommand DeleteDeviceCommand { get; set; }
         #endregion
         private ObservableCollection<IDeviceSettings> _cards;
         public ObservableCollection<IDeviceSettings> Cards {
@@ -820,6 +821,13 @@ namespace adrilight.ViewModel
                 ShowDeleteDialog();
             });
 
+            DeleteDeviceCommand = new RelayCommand<IDeviceSettings>((p) => {
+                return true;
+            }, (p) =>
+            {
+                ShowDeleteFromDashboard(p);
+            });
+
             SnapshotCommand = new RelayCommand<string>((p) => {
                 return true;
             }, (p) =>
@@ -883,8 +891,17 @@ namespace adrilight.ViewModel
         {
             foreach (var serialStream in SerialStreams)
             {
-                if (serialStream.ID == CurrentDevice.DeviceID)
-                    serialStream.DFU();
+
+                if (CurrentDevice.ParrentLocation != 151293) // device is in hub object
+                {
+                    if (serialStream.ID == CurrentDevice.ParrentLocation)
+                        serialStream.DFU();
+                }
+                else
+                {
+                    if (serialStream.ID == CurrentDevice.DeviceID)
+                        serialStream.DFU();
+                }
             }
 
         }
@@ -977,6 +994,7 @@ namespace adrilight.ViewModel
                             newDevice.DevicePort = device;
                             newDevice.DeviceID = Cards.Count + 1;
                             newDevice.DeviceSerial = "151293";
+                            newDevice.RGBOrder = 5;
                             Cards.Add(newDevice);
 
 
@@ -999,6 +1017,7 @@ namespace adrilight.ViewModel
                             newDevice.DevicePort = device;
                             newDevice.DeviceID = Cards.Count + 1;
                             newDevice.DeviceSerial = "151293";
+                            newDevice.RGBOrder = 5;
                             Cards.Add(newDevice);
 
 
@@ -1540,6 +1559,30 @@ namespace adrilight.ViewModel
 
 
         }
+        public async void ShowDeleteFromDashboard(IDeviceSettings device)
+        {
+            var view = new View.DeleteMessageDialog();
+            DeleteMessageDialogViewModel dialogViewModel = new DeleteMessageDialogViewModel(device);
+            view.DataContext = dialogViewModel;
+            bool dialogResult = (bool)await DialogHost.Show(view, "mainDialog");
+            if (dialogResult)
+            {
+                DeleteCard(device);
+                int counter = 1;
+                foreach (var card in Cards)
+                {
+                    card.DeviceID = counter;
+                    counter++;
+
+                }
+                WriteJson();
+                Application.Restart();
+                Process.GetCurrentProcess().Kill();
+            }
+
+
+        }
+
 
 
         public void DeleteCard(IDeviceSettings deviceInfo)

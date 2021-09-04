@@ -104,7 +104,14 @@ namespace adrilight
             }
         }
 
-
+        private int _rGBOrder;
+        public int RGBOrder {
+            get { return DeviceSettings.RGBOrder; }
+            set
+            {
+                _rGBOrder = value;
+            }
+        }
 
 
         private IDeviceSettings DeviceSettings { get; }
