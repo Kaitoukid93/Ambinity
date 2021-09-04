@@ -161,11 +161,11 @@
 
                     <DataTemplate>
                   
-                        <Grid x:Name="dev" Visibility="{Binding IsVissible,Converter={StaticResource boolToVisibilityConvert}}"  Margin="20" Width="230" Height="245">
-                         
+                        <Grid x:Name="dev" Visibility="{Binding IsVissible,Converter={StaticResource boolToVisibilityConvert}}"  Margin="20" Width="230" Height="245" >
 
 
-                            <Border Margin="-6"   CornerRadius="30">
+
+                            <Border Margin="-6"   CornerRadius="30" Background="Transparent">
                                 <Border.Style>
                                     <Style TargetType="Border"  >
                                         <Setter Property="BorderBrush" Value="#FF898989"></Setter>
@@ -178,12 +178,17 @@
                                         </Style.Triggers>-->
                                     </Style>
                                 </Border.Style>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.SelectCardCommand, ElementName=itm}" CommandParameter="{Binding}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                                 <Grid>
-                                    <i:Interaction.Triggers>
+                                    <!--<i:Interaction.Triggers>
                                         <i:EventTrigger EventName="MouseDown">
                                             <i:InvokeCommandAction Command="{Binding Path=DataContext.SelectCardCommand, ElementName=itm}" CommandParameter="{Binding}"/>
                                         </i:EventTrigger>
-                                    </i:Interaction.Triggers>
+                                    </i:Interaction.Triggers>-->
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="58*"/>
                                         <ColumnDefinition Width="15*"/>

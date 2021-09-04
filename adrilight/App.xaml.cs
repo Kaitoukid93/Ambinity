@@ -344,6 +344,7 @@ namespace adrilight
         {
 
             var icon = new System.Drawing.Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("adrilight.zoe.ico"));
+
             var contextMenu = new ContextMenuStrip();
             
 
@@ -369,7 +370,6 @@ namespace adrilight
             }
             var dashboard = new ToolStripMenuItem("Dashboard", null, (s, e) => OpenNewUI());
             var exit = new ToolStripMenuItem("Thoát", null, (s, e) => Shutdown(0));
-
             contextMenu.Items.Add(dashboard);
             contextMenu.Items.Add(exit);
             // contextMenu.Items.Add(new MenuItem("Dashboard", (s, e) => OpenNewUI()));
