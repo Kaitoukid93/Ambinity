@@ -841,7 +841,12 @@ namespace adrilight.ViewModel
                 return p != null;
             }, (p) =>
             {
-                this.GotoChild(p);
+                if (!Keyboard.IsKeyDown(Key.LeftCtrl) &&! Keyboard.IsKeyDown(Key.RightCtrl))
+                {
+                    this.GotoChild(p);
+                }
+               
+               
             });
 
 
