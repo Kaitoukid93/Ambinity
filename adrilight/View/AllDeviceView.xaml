@@ -165,7 +165,7 @@
 
 
 
-                            <Border Margin="-6"   CornerRadius="30" Background="Transparent">
+                            <Border Margin="-6"   CornerRadius="30" >
                                 <Border.Style>
                                     <Style TargetType="Border"  >
                                         <Setter Property="BorderBrush" Value="#FF898989"></Setter>
