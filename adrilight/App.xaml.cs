@@ -345,8 +345,10 @@ namespace adrilight
 
             var icon = new System.Drawing.Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("adrilight.zoe.ico"));
             var contextMenu = new System.Windows.Forms.ContextMenuStrip();
-            //contextMenu.Items.Add(new MenuItem("Dashboard", (s, e) => OpenNewUI()));
-          //  contextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Cài đặt...", (s, e) => OpenSettingsWindow()));
+            contextMenu.Items.Add("Dashboard", null, (s, e) => OpenNewUI());
+            contextMenu.Items.Add("Thoát", null, (s, e) => Shutdown(0));
+            // contextMenu.Items.Add(new MenuItem("Dashboard", (s, e) => OpenNewUI()));
+            //  contextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Cài đặt...", (s, e) => OpenSettingsWindow()));
             //contextMenu.Items.Add(new MenuItem("Thoát", (s, e) => Shutdown(0)));
 
             //This Commented due to Net5 incompatible
