@@ -294,11 +294,11 @@ namespace adrilight
                    // outputStream[counter++] = 0;
                     var allBlack = true;
                     //}
-
-
+                    
+                    var RGBOrder = childSpotSet.RGBOrder;
                     foreach (DeviceSpot spot in childSpotSet.Spots)
                     {
-                        var RGBOrder = DeviceSettings.RGBOrder;
+                        
                         switch (RGBOrder)
                         {
                             case 0: //RGB
@@ -306,10 +306,10 @@ namespace adrilight
                                 outputStream[counter++] = spot.Green; // green
                                 outputStream[counter++] = spot.Blue; // red
                                 break;
-                            case 1: //GRB
-                                outputStream[counter++] = spot.Green; // blue
-                                outputStream[counter++] = spot.Red; // green
-                                outputStream[counter++] = spot.Blue; // red
+                            case 1: //RBG
+                                outputStream[counter++] = spot.Red; // blue
+                                outputStream[counter++] = spot.Blue; // green
+                                outputStream[counter++] = spot.Green;
                                 break;
                             case 2: //BRG
                                 outputStream[counter++] = spot.Blue; // blue

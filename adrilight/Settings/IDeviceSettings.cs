@@ -53,6 +53,7 @@ namespace adrilight
 
         Guid InstallationId { get; set; }
         bool IsHUB { get; set; }
+        bool LEDOn { get; set; }
 
        
 

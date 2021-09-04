@@ -89,7 +89,7 @@ namespace adrilight.ViewModel
                 if(value)
                 {
                     Device.DeviceType = "ABRev1";
-                    Device.RGBOrder = 0;
+                    Device.RGBOrder = 5;
                     IsNextable = true;
                     RaisePropertyChanged(() => Device.DeviceType);
                     RaisePropertyChanged(() => Device.RGBOrder);

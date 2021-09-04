@@ -186,22 +186,37 @@
                                     </i:Interaction.Triggers>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="58*"/>
-                                        <ColumnDefinition Width="22*"/>
+                                        <ColumnDefinition Width="15*"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="22*"/>
                                         <RowDefinition Height="64*"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <ToggleButton IsChecked="{Binding TransferActive}" Grid.Column="1" BorderBrush="#FF326CF3" BorderThickness="1"
+                                    <ToggleButton IsChecked="{Binding LEDOn}" Grid.Column="1" BorderBrush="#FF326CF3" BorderThickness="1"
                                      Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
                                      ToolTip="Bật/Tắt"
-                                      Width="32" Height="32" Foreground="#FF326CF3" Background="#3F326CF3">
+                                        Width="32" Height="32" Foreground="#FF326CF3" Background="#3F326CF3" HorizontalAlignment="Right" Margin="0,0,15,0">
                                         <materialDesign:PackIcon
                                       Kind="Power"
                                       Height="26"
                                       Width="26" />
                                     </ToggleButton>
+
+                                    <Button BorderBrush="{x:Null}" BorderThickness="1"
+  Style="{StaticResource MaterialDesignFlatButton}"
+  ToolTip="Xóa Thiết bị" Command="{Binding Path=DataContext.DeleteDeviceCommand, ElementName=itm}" CommandParameter="{Binding}"
+                    Grid.Column="0"
+  Width="32" Height="32" Margin="0,0,5,0" Padding="0" Background="#33FD7E35" materialDesign:ButtonAssist.CornerRadius="7" Foreground="#FFFD7E35" VerticalAlignment="Center" HorizontalAlignment="Right">
+
+
+                                        <materialDesign:PackIcon
+    Kind="Close"
+    Height="26"
+    Width="26" />
+
+
+                                    </Button>
                                     <Rectangle Margin="0,0,20,20" Grid.Column="1" Grid.Row="1" Fill="{Binding StaticColor,Converter={StaticResource ColorToBrushConverter}}" Width="19" Height="19" RadiusX="10" RadiusY="10" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
 
                                     <Grid Grid.Row="1" Grid.Column="0">
