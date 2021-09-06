@@ -347,6 +347,17 @@ namespace adrilight
             var contextMenu = new System.Windows.Forms.ContextMenuStrip();
             contextMenu.Items.Add("Dashboard", null, (s, e) => OpenNewUI());
             contextMenu.Items.Add("Thoát", null, (s, e) => Shutdown(0));
+            var alldevices = kernel.GetAll<IDeviceSettings>().ToList();
+            foreach (var item in alldevices)
+            {
+                var upperMenu = new ToolStripMenuItem(item.DeviceName);
+                upperMenu.DropDown.Items.Add(new ToolStripMenuItem("Tắt LED",null,(s,e)=> SelectDeviceEffect(item,-1)));
+                upperMenu.DropDown.Items.Add(new ToolStripMenuItem("Sáng màu tĩnh", null, (s, e) => SelectDeviceEffect(item,2)));
+                upperMenu.DropDown.Items.Add(new ToolStripMenuItem("Sáng theo màn hình", null, (s, e) => SelectDeviceEffect(item,0)));
+                upperMenu.DropDown.Items.Add(new ToolStripMenuItem("Sáng theo hiệu ứng", null, (s, e) => SelectDeviceEffect(item,1)));
+                upperMenu.DropDown.Items.Add(new ToolStripMenuItem("Sáng theo nhạc", null, (s, e) => SelectDeviceEffect(item,3)));
+                contextMenu.Items.Add(upperMenu);
+            }
             // contextMenu.Items.Add(new MenuItem("Dashboard", (s, e) => OpenNewUI()));
             //  contextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Cài đặt...", (s, e) => OpenSettingsWindow()));
             //contextMenu.Items.Add(new MenuItem("Thoát", (s, e) => Shutdown(0)));
@@ -367,7 +378,32 @@ namespace adrilight
             Exit += (s, e) => notifyIcon.Dispose();
         }
         
-
+        public void SelectDeviceEffect(IDeviceSettings device,int index)
+        {
+            Current.MainWindow.Show();
+            var main =(MainViewViewModel) Current.MainWindow.DataContext ;
+            if (main.CurrentDevice != null && main.CurrentDevice.DeviceID != device.DeviceID)
+            {
+                main.BackToDashboard();
+            }
+                main.CurrentDevice = main.Cards.FirstOrDefault(t => t.DeviceID == device.DeviceID);
+                if (main.CurrentDevice != null)
+                {
+                    if (index == -1) 
+                    {
+                        main.CurrentDevice.TransferActive = false;
+                    }
+                    else
+                    {
+                        main.CurrentDevice.SelectedEffect = (byte)index;
+                    }
+                    
+                    main.GotoChild(main.CurrentDevice);
+                }
+               
+            
+            
+        }
         public static string VersionNumber { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 
         private IGeneralSettings GeneralSettings { get; set; }

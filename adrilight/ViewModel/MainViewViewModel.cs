@@ -205,7 +205,7 @@ namespace adrilight.ViewModel
                 _currentDevice = value;
                 if (_currentDevice != null) _currentDevice.PropertyChanged += _currentDevice_PropertyChanged;
                 RaisePropertyChanged("CurrentDevice");
-
+                
             }
         }
 
