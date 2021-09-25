@@ -1,4 +1,5 @@
-﻿using System;
+﻿using adrilight.Spots;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -54,7 +55,7 @@ namespace adrilight
         Guid InstallationId { get; set; }
         bool IsHUB { get; set; }
         bool LEDOn { get; set; }
-
+        IDeviceSpot[] Spots { get; set; }
        
 
         byte Brightness { get; set; }

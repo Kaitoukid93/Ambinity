@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using adrilight.Spots;
+using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -123,7 +124,10 @@ namespace adrilight
         private Color _mcolor13 = Color.FromArgb(0, 0, 255, 255);
         private Color _mcolor14 = Color.FromArgb(0, 0, 255, 255);
         private Color _mcolor15 = Color.FromArgb(0, 0, 255, 255);
-
+        private IDeviceSpot[] _spots = new DeviceSpot[] { new DeviceSpot(0, 0,25,25,0,0),
+                                                          new DeviceSpot(0,0,25,25,0,0),
+                                                          new DeviceSpot(0, 0,25,25,0,0),
+                                                          new DeviceSpot(0,0,25,25,0,0),};
 
 
 
@@ -156,7 +160,7 @@ namespace adrilight
 
 
         public int OutputLocation { get => _outputLocation; set { Set(() => OutputLocation, ref _outputLocation, value); } }
-
+        public IDeviceSpot[] Spots { get => _spots; set { Set(() => Spots, ref _spots, value); } }
         public int MSens { get => _mSens; set { Set(() => MSens, ref _mSens, value); } }
        // public bool Autostart { get => _autostart; set { Set(() => Autostart, ref _autostart, value); } }
         public int BorderDistanceX { get => _borderDistanceX; set { Set(() => BorderDistanceX, ref _borderDistanceX, value); } }
