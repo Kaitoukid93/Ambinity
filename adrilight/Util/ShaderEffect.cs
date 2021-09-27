@@ -101,12 +101,12 @@ namespace adrilight
 
             try
             {
-                using ReadWriteTexture2D<Rgba32, Float4> texture = Gpu.Default.AllocateReadWriteTexture2D<Rgba32, Float4>(70, 70);
-                using ReadBackTexture2D<Rgba32> buffer = Gpu.Default.AllocateReadBackTexture2D<Rgba32>(70, 70);
+                using ReadWriteTexture2D<Rgba32, Float4> texture = Gpu.Default.AllocateReadWriteTexture2D<Rgba32, Float4>(240, 240);
+                using ReadBackTexture2D<Rgba32> buffer = Gpu.Default.AllocateReadBackTexture2D<Rgba32>(240, 240);
                 int frame = 0;
                 var ColorArray = buffer.View.ToArray();
                 Frame = null;
-                Frame = new Pixel[70 * 70];
+                Frame = new Pixel[240 * 240];
 
                 while (!token.IsCancellationRequested)
                 {

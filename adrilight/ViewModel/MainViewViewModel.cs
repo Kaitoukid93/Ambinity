@@ -517,20 +517,8 @@ namespace adrilight.ViewModel
 
 
 
-            WriteJson();
-            //binding settings to settings
-            //if(CurrentDevice!=null)
-            //{
-            //    CurrentDevice.PropertyChanged += (s, e) =>
-            //    {
-            //        switch (e.PropertyName)
-            //        {
-            //            case nameof(CurrentDevice.SelectedDisplay):
-            //                RaisePropertyChanged(() => PreviewSpots);
-            //                break;
-            //        };
-            //    };
-            //}
+           // WriteJson();
+           
 
 
 
@@ -751,14 +739,14 @@ namespace adrilight.ViewModel
            
             Context.Invoke(() =>
             {
-                var MatrixBitmap = new WriteableBitmap(70, 70, 96, 96, PixelFormats.Bgr32, null);
+                var MatrixBitmap = new WriteableBitmap(240, 240, 96, 96, PixelFormats.Bgr32, null);
                 MatrixBitmap.Lock();
                 IntPtr pixelAddress = MatrixBitmap.BackBuffer;
                 var CurrentFrame = ShaderEffect.Frame;
 
-                Marshal.Copy(FrameToInt32(CurrentFrame), 0, pixelAddress, 70 * 70);
+                Marshal.Copy(FrameToInt32(CurrentFrame), 0, pixelAddress, 240 * 240);
 
-                MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 70, 70));
+                MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 240));
 
                 MatrixBitmap.Unlock();
                 ShaderBitmap = MatrixBitmap;
@@ -768,9 +756,9 @@ namespace adrilight.ViewModel
 
         private  Int32[] FrameToInt32(Pixel[] frame)
         {
-            Int32[] data = new Int32[70 * 70];
+            Int32[] data = new Int32[240 * 240];
 
-            for (int i = 0; i < 70 * 70; i++)
+            for (int i = 0; i < 240 * 240; i++)
                 data[i] = frame[i].GetBPP24RGB_Int32();
 
 

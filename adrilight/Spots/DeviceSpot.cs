@@ -19,9 +19,10 @@ namespace adrilight.Spots
             Rectangle = new Rectangle(top, left, width, height);
             RadiusX = width / 4;
             RadiusY = height / 4;
+            ID = (x * y + x).ToString();
         }
 
-        public Rectangle Rectangle { get; private set; }
+        public Rectangle Rectangle { get;  set; }
 
         private bool _isFirst;
         public bool IsFirst {
@@ -31,8 +32,9 @@ namespace adrilight.Spots
 
         public Color OnDemandColor => Color.FromRgb(Red, Green, Blue);
         public Color OnDemandColorTransparent => Color.FromArgb(255, Red, Green, Blue);
-        public int RadiusX { get; private set; }
-        public int RadiusY { get; private set; }
+        public int RadiusX { get; set; }
+        public int RadiusY { get;  set; }
+        public string ID { get; set; }
 
 
         public byte Red { get; private set; }

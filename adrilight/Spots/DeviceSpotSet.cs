@@ -120,9 +120,11 @@ namespace adrilight
         {
             lock (Lock)
             {
-                Spots = BuildSpots( DeviceSettings, GeneralSettings);
-                DeviceSettings.Spots = Spots;
+                Spots = BuildSpots(DeviceSettings, GeneralSettings);
+
+
             }
+           // DeviceSettings.Spots = Spots;
         }
 
       

@@ -124,10 +124,7 @@ namespace adrilight
         private Color _mcolor13 = Color.FromArgb(0, 0, 255, 255);
         private Color _mcolor14 = Color.FromArgb(0, 0, 255, 255);
         private Color _mcolor15 = Color.FromArgb(0, 0, 255, 255);
-        private IDeviceSpot[] _spots = new DeviceSpot[] { new DeviceSpot(0, 0,25,25,0,0),
-                                                          new DeviceSpot(0,0,25,25,0,0),
-                                                          new DeviceSpot(0, 0,25,25,0,0),
-                                                          new DeviceSpot(0,0,25,25,0,0),};
+        private IDeviceSpot[] _spots = new DeviceSpot[255];
 
 
 
