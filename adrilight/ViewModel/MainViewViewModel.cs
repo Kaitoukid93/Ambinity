@@ -232,6 +232,7 @@ namespace adrilight.ViewModel
 
         public ICommand SelectMenuItem { get; set; }
         public ICommand BackCommand { get; set; }
+        public ICommand DeviceRectDropCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
         public ICommand SnapshotCommand { get; set; }
         public ICommand DeleteDeviceCommand { get; set; }
@@ -442,6 +443,7 @@ namespace adrilight.ViewModel
 
 
         }
+
         public ObservableCollection<string> AvailablePalette { get; private set; }
         public IContext Context { get; }
         public IList<String> _AvailableDisplays;
@@ -661,76 +663,12 @@ namespace adrilight.ViewModel
                          default:
                                 break;
                         
+                        
 
 
                 }
 
             };
-        }
-
-
-        public void LoadCard()
-        {
-            //Cards = new ObservableCollection<IDeviceSettings>();
-            // Cards.Add(Card1);
-
-
-            //var settingsmanager = new UserSettingsManager();
-            //var devices = settingsmanager.LoadDeviceIfExists();
-            //if (devices != null)
-            //{
-            //    foreach (var item in devices)
-            //    {
-            //        var deviceInfo = new DeviceSettings() {
-            //            Brightness = item.Brightness,
-            //            SelectedDisplay = item.SelectedDisplay,
-            //            WhitebalanceRed = item.WhitebalanceRed,
-            //            DeviceId = item.DeviceID,
-            //            DeviceName = item.DeviceName,
-            //            DevicePort = item.DevicePort,
-            //            DeviceSize = item.DeviceSize,
-            //            DeviceType = item.DeviceType,
-            //            //  FadeEnd = item.fadeend,
-            //            //  FadeStart = item.fadestart,
-            //            // GifMode = item.gifmode,
-            //            // GifSource = item.gifsource,
-            //            IsBreathing = item.IsBreathing,
-            //            IsConnected = item.IsConnected,
-            //            SelectedEffect = item.SelectedEffect,
-            //            SelectedMusicMode = item.SelectedMusicMode,
-            //            MSens = item.MSens,
-            //            SelectedAudioDevice = item.SelectedAudioDevice,
-            //            SelectedPalette = item.SelectedPalette,
-            //            EffectSpeed = item.EffectSpeed,
-            //            StaticColor = item.StaticColor,
-            //            AtmosphereStart = item.AtmosphereStart,
-            //            AtmosphereStop = item.AtmosphereStop,
-            //            BreathingSpeed = item.BreathingSpeed,
-            //            ColorFrequency = item.ColorFrequency,
-
-            //            SelectedMusicPalette = item.SelectedMusicPalette,
-            //            SpotHeight = item.SpotHeight,
-            //            SpotsX = item.SpotsX,
-            //            SpotsY = item.SpotsY,
-            //            SpotWidth = item.SpotWidth,
-            //            UseLinearLighting = item.UseLinearLighting,
-            //            WhitebalanceBlue = item.WhitebalanceBlue,
-
-            //            WhitebalanceGreen = item.WhitebalanceGreen
-            //        };
-
-            //        deviceInfo.PropertyChanged += DeviceInfo_PropertyChanged;
-            //        Cards.Add(deviceInfo);
-            //    }
-            //}
-
-        }
-        private void DeviceInfo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            //if (_isAddnew) return;
-            //_isAddnew = true;
-            //WriteJson();
-            //_isAddnew = false;
         }
 
         private  void ShaderImageUpdate(object sender, PropertyChangedEventArgs e)
@@ -739,14 +677,14 @@ namespace adrilight.ViewModel
            
             Context.Invoke(() =>
             {
-                var MatrixBitmap = new WriteableBitmap(240, 240, 96, 96, PixelFormats.Bgr32, null);
+                var MatrixBitmap = new WriteableBitmap(400, 400, 96, 96, PixelFormats.Bgr32, null);
                 MatrixBitmap.Lock();
                 IntPtr pixelAddress = MatrixBitmap.BackBuffer;
                 var CurrentFrame = ShaderEffect.Frame;
 
-                Marshal.Copy(FrameToInt32(CurrentFrame), 0, pixelAddress, 240 * 240);
+                Marshal.Copy(FrameToInt32(CurrentFrame), 0, pixelAddress, 400 * 400);
 
-                MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 240));
+                MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 400, 400));
 
                 MatrixBitmap.Unlock();
                 ShaderBitmap = MatrixBitmap;
@@ -756,15 +694,57 @@ namespace adrilight.ViewModel
 
         private  Int32[] FrameToInt32(Pixel[] frame)
         {
-            Int32[] data = new Int32[240 * 240];
+            Int32[] data = new Int32[400 * 400];
 
-            for (int i = 0; i < 240 * 240; i++)
+            for (int i = 0; i < 400 * 400; i++)
                 data[i] = frame[i].GetBPP24RGB_Int32();
 
 
             return data;
         }
+        private int _deviceRectX;
+        public int DeviceRectX {
+            get => _deviceRectX;
+            set {  _deviceRectX = value;
+                RaisePropertyChanged();
+            }
+        }
+        private int _deviceRectY;
+        public int DeviceRectY {
+            get => _deviceRectY;
+            set { _deviceRectY = value;
+                RaisePropertyChanged();
+            }
+        }
 
+        private int _deviceRectHeight;
+        public int DeviceRectHeight {
+            get => _deviceRectHeight;
+            set
+            {
+                _deviceRectHeight = value;
+                RaisePropertyChanged();
+            }
+        }
+        private int _deviceRectWidth;
+        public int DeviceRectWidth {
+            get => _deviceRectWidth;
+            set
+            {
+                _deviceRectWidth = value;
+                RaisePropertyChanged();
+            }
+        }
+        private int _deviceScale;
+        public int DeviceScale {
+            get => _deviceScale;
+            set
+            {
+                _deviceScale = value;
+                RaisePropertyChanged();
+               
+            }
+        }
         public override void ReadData()
         {
             LoadMenu();
@@ -780,28 +760,7 @@ namespace adrilight.ViewModel
                 ChangeView(p);
             });
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault();
-            //  SettingInfo = new SettingInfoDTO();
-            //var setting=  LoadSettingIfExists();
-            //  if (setting != null)
-            //  {
-            //      SettingInfo.AutoAddNewDevice = setting.autoaddnewdevice;
-            //      SettingInfo.AutoConnectNewDevice = setting.autoconnectnewdevice;
-            //      SettingInfo.AutoDeleteConfigWhenDisconnected = setting.autodeleteconfigwhendisconected;
-            //      SettingInfo.AutoStartWithWindows = setting.autostartwithwindows;
-            //      SettingInfo.DefaultName = setting.defaultname;
-            //      SettingInfo.DisplayConnectionStatus = setting.displayconnectionstatus;
-            //      SettingInfo.DisplayLightingStatus = setting.displaylightingstatus;
-            //      SettingInfo.IsDarkMode = setting.isdarkmode;
-            //      SettingInfo.PushNotificationWhenNewDeviceConnected = setting.pushnotificationwhennewdeviceconnected;
-            //      SettingInfo.PushNotificationWhenNewDeviceDisconnected = setting.pushnotificationwhennewdevicedisconnected;
-            //      SettingInfo.StartMinimum = setting.startminimum;
-            //      SettingInfo.PrimaryColor=(Color )ColorConverter.ConvertFromString(setting.primarycolor);
-
-            //  }
-            //  else
-            //  {
-            //      SettingInfo.PrimaryColor = Colors.White;
-            //  }
+         
             DeleteCommand = new RelayCommand<string>((p) => {
                 return true;
             }, (p) =>
@@ -824,7 +783,13 @@ namespace adrilight.ViewModel
                 SnapShot();
             });
 
+            DeviceRectDropCommand = new RelayCommand<string>((p) => {
+                return true;
+            }, (p) =>
+            {
 
+                DeviceRectSavePosition();
+            });
 
             RefreshDeviceCommand = new RelayCommand<string>((p) => {
                 return true;
@@ -840,9 +805,7 @@ namespace adrilight.ViewModel
                 if (!Keyboard.IsKeyDown(Key.LeftCtrl) &&! Keyboard.IsKeyDown(Key.RightCtrl))
                 {
                     this.GotoChild(p);
-                }
-               
-               
+                }     
             });
 
 
@@ -874,6 +837,23 @@ namespace adrilight.ViewModel
             }
             CurrentDevice.SnapShot = snapshot;
             RaisePropertyChanged(() => CurrentDevice.SnapShot);
+        }
+
+        public void DeviceRectSavePosition()
+        {
+            //save current device rect position to json database
+            CurrentDevice.DeviceRectLeft = DeviceRectX;
+            CurrentDevice.DeviceRectTop = DeviceRectY;
+            CurrentDevice.DeviceRectWidth = DeviceRectWidth;
+            CurrentDevice.DeviceRectHeight = DeviceRectHeight;
+            CurrentDevice.DeviceScale = DeviceScale;
+            RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
+            RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
+            RaisePropertyChanged(() => CurrentDevice.DeviceRectWidth);
+            RaisePropertyChanged(() => CurrentDevice.DeviceRectHeight);
+            RaisePropertyChanged(() => CurrentDevice.DeviceScale);
+
+
         }
         public void DFU()
         {
@@ -1035,15 +1015,6 @@ namespace adrilight.ViewModel
 
         }
 
-        //public void ReadFAQ()
-        //{
-        //    AppName = $"adrilight {App.VersionNumber}";
-        //    BuildVersion = "xxxxxxxxxxxxxxxxxxxxxxxxxxx";
-        //    LastUpdate = new DateTime(2020, 06, 01);
-        //    Author = "zOe";
-        //    Git = "xxxxxxx";
-        //    FAQ = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
-        //}
         public void ReadDataDevice()
         {
           
@@ -1071,7 +1042,7 @@ namespace adrilight.ViewModel
            "Sáng màu tĩnh",
            "Sáng theo nhạc",
            "Atmosphere",
-           "Pixelation(Alpha)"
+           "Đồng bộ"
         };
             AvailableMusicPalette = new ObservableCollection<string>
 {
@@ -1108,9 +1079,6 @@ namespace adrilight.ViewModel
 
 
         }
-
-
-
 
         public async void ShowAddNewDialog()
         {
@@ -1331,6 +1299,7 @@ namespace adrilight.ViewModel
            
 
         }
+
      
         public Visibility PCI4 {
             get
@@ -1602,13 +1571,6 @@ namespace adrilight.ViewModel
                 devices.Add(item);
             }
 
-
-
-
-            // if devices disconnected,change connect status
-
-
-
             var json = JsonConvert.SerializeObject(devices, Formatting.Indented);
             Directory.CreateDirectory(JsonPath);
             File.WriteAllText(JsonDeviceNameAndPath, json);
@@ -1659,7 +1621,11 @@ namespace adrilight.ViewModel
 
             }
 
-
+            DeviceRectX = CurrentDevice.DeviceRectLeft;
+            DeviceRectY = CurrentDevice.DeviceRectTop;
+            DeviceRectWidth = CurrentDevice.DeviceRectWidth;
+            DeviceRectHeight = CurrentDevice.DeviceRectHeight;
+            DeviceScale = CurrentDevice.DeviceScale;
 
             SetMenuItemActiveStatus(lighting);
         }
@@ -1716,9 +1682,6 @@ namespace adrilight.ViewModel
             }
             RaisePropertyChanged(nameof(MenuItems));
         }
-
-
-
 
     }
 }

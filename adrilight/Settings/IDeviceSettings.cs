@@ -55,8 +55,11 @@ namespace adrilight
         Guid InstallationId { get; set; }
         bool IsHUB { get; set; }
         bool LEDOn { get; set; }
-        IDeviceSpot[] Spots { get; set; }
-       
+        int DeviceRectWidth { get; set; }
+        int DeviceRectHeight { get; set; }
+        int DeviceRectTop { get; set; }
+        int DeviceRectLeft { get; set; }
+        int DeviceScale { get; set; }
 
         byte Brightness { get; set; }
         string filemau { get; set; }

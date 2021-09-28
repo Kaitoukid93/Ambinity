@@ -38,7 +38,8 @@ namespace adrilight.View
             };
             _timer.Tick += Timer_Tick;
         }
-      
+
+        
         private void zone0_Click(object sender, RoutedEventArgs e)
         {
             var color = Color.FromRgb( CustomZonePicker.Color.R, CustomZonePicker.Color.G, CustomZonePicker.Color.B);
@@ -555,6 +556,39 @@ namespace adrilight.View
                 DFU.Foreground = new SolidColorBrush(Color.FromArgb(255, 50, 108, 243));
                 DFU.Progress = 0;
             }
+        }
+
+        private void DeviceRect_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(e.LeftButton==MouseButtonState.Pressed)
+            {
+                DragDrop.DoDragDrop(deviceRect,deviceRect,DragDropEffects.Move);
+            }
+        }
+
+        private void DeviceCanvas_Drop(object sender, DragEventArgs e)
+        {
+            MainViewViewModel vm = this.DataContext as MainViewViewModel;
+
+            //Call command from viewmodel     
+            if ((vm != null) && (vm.DeviceRectDropCommand.CanExecute(null)))
+                vm.DeviceRectDropCommand.Execute(null);
+        }
+
+        private void DeviceCanvas_DragOver(object sender, DragEventArgs e)
+        {
+            Point dropPosition = e.GetPosition(deviceCanvas);
+            Canvas.SetLeft(deviceRect, dropPosition.X);
+            Canvas.SetTop(deviceRect, dropPosition.Y);
+        }
+
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            MainViewViewModel vm = this.DataContext as MainViewViewModel;
+
+            //Call command from viewmodel     
+            if ((vm != null) && (vm.DeviceRectDropCommand.CanExecute(null)))
+                vm.DeviceRectDropCommand.Execute(null);
         }
     }
 }

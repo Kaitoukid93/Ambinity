@@ -52,6 +52,11 @@ namespace adrilight
         private int _effectSpeed = 5;
         private int _colorFrequency = 1;
         private int _selectedMusicPalette = 0;
+        private int _deviceRectTop = 0;
+        private int _deviceRectLeft = 0;
+        private int _deviceRectWidth = 100;
+        private int _deviceRectHeight = 100;
+        private int _deviceScale = 1;
 
         private int _spotWidth = 150;
        // private bool _startMinimized = true;
@@ -124,7 +129,7 @@ namespace adrilight
         private Color _mcolor13 = Color.FromArgb(0, 0, 255, 255);
         private Color _mcolor14 = Color.FromArgb(0, 0, 255, 255);
         private Color _mcolor15 = Color.FromArgb(0, 0, 255, 255);
-        private IDeviceSpot[] _spots = new DeviceSpot[255];
+       
 
 
 
@@ -157,7 +162,7 @@ namespace adrilight
 
 
         public int OutputLocation { get => _outputLocation; set { Set(() => OutputLocation, ref _outputLocation, value); } }
-        public IDeviceSpot[] Spots { get => _spots; set { Set(() => Spots, ref _spots, value); } }
+        
         public int MSens { get => _mSens; set { Set(() => MSens, ref _mSens, value); } }
        // public bool Autostart { get => _autostart; set { Set(() => Autostart, ref _autostart, value); } }
         public int BorderDistanceX { get => _borderDistanceX; set { Set(() => BorderDistanceX, ref _borderDistanceX, value); } }
@@ -180,6 +185,12 @@ namespace adrilight
         public bool MirrorY { get => _mirrorY; set { Set(() => MirrorY, ref _mirrorY, value); } }
         public bool LEDOn { get => _lEDOn; set { Set(() => LEDOn, ref _lEDOn, value); } }
         public int OffsetLed { get => _offsetLed; set { Set(() => OffsetLed, ref _offsetLed, value); } }
+
+        public int DeviceRectTop { get => _deviceRectTop; set { Set(() => DeviceRectTop, ref _deviceRectTop, value); } }
+        public int DeviceRectLeft{ get => _deviceRectLeft; set { Set(() => DeviceRectLeft, ref _deviceRectLeft, value); } }
+        public int DeviceRectWidth { get => _deviceRectWidth; set { Set(() => DeviceRectWidth, ref _deviceRectWidth, value); } }
+        public int DeviceRectHeight { get => _deviceRectHeight; set { Set(() => DeviceRectHeight, ref _deviceRectHeight, value); } }
+        public int DeviceScale { get => _deviceScale; set { Set(() => DeviceScale, ref _deviceScale, value); } }
 
         [Obsolete]
         public int OffsetX { get => _offsetX; set { Set(() => OffsetX, ref _offsetX, value); } }

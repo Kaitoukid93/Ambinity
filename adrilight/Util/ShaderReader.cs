@@ -86,6 +86,8 @@ namespace adrilight.Util
 
                 case nameof(DeviceSettings.TransferActive):
                 case nameof(DeviceSettings.SelectedEffect):
+                case nameof(DeviceSettings.DeviceRectLeft):
+                case nameof(DeviceSettings.DeviceRectTop):
                     //case nameof(DeviceSettings.DeviceCanvasX):
                     //case nameof(DeviceSettings.DeviceCanvasY):
                     //case nameof(DeviceSettings.DeviceSizeX):
@@ -271,7 +273,11 @@ namespace adrilight.Util
 
         private Bitmap GetShaderFrame(Bitmap reusableBitmap)
         {
-            var ShaderBitmap = new WriteableBitmap(240, 240, 96, 96, PixelFormats.Bgr32, null);
+            var width = DeviceSettings.DeviceRectWidth;
+            var height = DeviceSettings.DeviceRectHeight;
+            var x = DeviceSettings.DeviceRectLeft;
+            var y = DeviceSettings.DeviceRectTop;
+            var ShaderBitmap = new WriteableBitmap(400, 400, 96, 96, PixelFormats.Bgr32, null);
             ShaderBitmap.Lock();
             IntPtr pixelAddress = ShaderBitmap.BackBuffer;
             try
@@ -283,8 +289,8 @@ namespace adrilight.Util
                 }
                 else
                 {
-                    Marshal.Copy(FrameToInt32(CurrentFrame), 0, pixelAddress, 240 * 240);
-                    ShaderBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 240));
+                    Marshal.Copy(FrameToInt32(CurrentFrame), 0, pixelAddress, 400 * 400);
+                    ShaderBitmap.AddDirtyRect(new Int32Rect(0, 0, 400, 400));
 
                     ShaderBitmap.Unlock();
                 }
@@ -296,7 +302,7 @@ namespace adrilight.Util
                 return null;
             }
             //crop bitmap
-            Rect r = new Rect(0, 0, 240, 135);
+            Rect r = new Rect(x, y, width, height);
 
 
             var CroppedBitmap = BitmapExtension.Crop(ShaderBitmap, r);
@@ -318,9 +324,9 @@ namespace adrilight.Util
 
         private Int32[] FrameToInt32(Pixel[] frame)
         {
-            Int32[] data = new Int32[240 * 240];
+            Int32[] data = new Int32[400 * 400];
 
-            for (int i = 0; i < 240 * 240; i++)
+            for (int i = 0; i < 400 * 400; i++)
                 data[i] = frame[i].GetBPP24RGB_Int32();
 
 
