@@ -289,7 +289,7 @@ namespace adrilight.Util
                 }
                 else
                 {
-                    Marshal.Copy(FrameToInt32(CurrentFrame), 0, pixelAddress, 400 * 400);
+                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
                     ShaderBitmap.AddDirtyRect(new Int32Rect(0, 0, 400, 400));
 
                     ShaderBitmap.Unlock();

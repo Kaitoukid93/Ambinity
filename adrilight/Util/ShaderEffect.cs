@@ -40,7 +40,7 @@ namespace adrilight
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
         public  WriteableBitmap MatrixBitmap { get; set; }
-        public Pixel[] Frame { get; set; }
+        public byte[] Frame { get; set; }
 
         
 
@@ -106,7 +106,7 @@ namespace adrilight
                 int frame = 0;
                 var ColorArray = buffer.View.ToArray();
                 Frame = null;
-                Frame = new Pixel[400 * 400];
+                Frame = new byte[400 * 400 *4];
 
                 while (!token.IsCancellationRequested)
                 {
@@ -134,15 +134,16 @@ namespace adrilight
                         {
                             for(var y=0;y<texture.Height;y++)
                             {
-                                Frame[index].R = ColorArray[x, y].R;
-                                Frame[index].G = ColorArray[x, y].G;
-                                Frame[index].B = ColorArray[x, y].B; 
-                                index++;
+                                Frame[index] = ColorArray[x, y].B;
+                                Frame[index + 1] = ColorArray[x, y].G;
+                                Frame[index + 2] = ColorArray[x, y].R;
+                                Frame[index + 3] = ColorArray[x, y].A;
+                            index += 4;
                             }
                         }
                        
                         RaisePropertyChanged(nameof(Frame));
-                    Thread.Sleep(1000/60);
+                    Thread.Sleep(1000/100);
                     frame++;
 
                 }

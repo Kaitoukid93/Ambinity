@@ -677,12 +677,12 @@ namespace adrilight.ViewModel
            
             Context.Invoke(() =>
             {
-                var MatrixBitmap = new WriteableBitmap(400, 400, 96, 96, PixelFormats.Bgr32, null);
+                var MatrixBitmap = new WriteableBitmap(400, 400, 96, 96, PixelFormats.Bgra32, null);
                 MatrixBitmap.Lock();
                 IntPtr pixelAddress = MatrixBitmap.BackBuffer;
                 var CurrentFrame = ShaderEffect.Frame;
 
-                Marshal.Copy(FrameToInt32(CurrentFrame), 0, pixelAddress, 400 * 400);
+                Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
                 MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 400, 400));
 
@@ -692,16 +692,7 @@ namespace adrilight.ViewModel
             
         }
 
-        private  Int32[] FrameToInt32(Pixel[] frame)
-        {
-            Int32[] data = new Int32[400 * 400];
-
-            for (int i = 0; i < 400 * 400; i++)
-                data[i] = frame[i].GetBPP24RGB_Int32();
-
-
-            return data;
-        }
+       
         private int _deviceRectX;
         public int DeviceRectX {
             get => _deviceRectX;
