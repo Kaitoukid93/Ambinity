@@ -675,20 +675,20 @@ namespace adrilight.ViewModel
         {
 
            
-            Context.Invoke(() =>
-            {
-                var MatrixBitmap = new WriteableBitmap(400, 400, 96, 96, PixelFormats.Bgra32, null);
-                MatrixBitmap.Lock();
-                IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                var CurrentFrame = ShaderEffect.Frame;
+            //Context.Invoke(() =>
+            //{
+            //    var MatrixBitmap = new WriteableBitmap(120, 120, 96, 96, PixelFormats.Bgra32, null);
+            //    MatrixBitmap.Lock();
+            //    IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+            //    var CurrentFrame = ShaderEffect.Frame;
 
-                Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+            //    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 400, 400));
+            //    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 120, 120));
 
-                MatrixBitmap.Unlock();
-                ShaderBitmap = MatrixBitmap;
-            });
+            //    MatrixBitmap.Unlock();
+            //    ShaderBitmap = MatrixBitmap;
+            //});
             
         }
 

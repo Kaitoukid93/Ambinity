@@ -277,9 +277,10 @@ namespace adrilight.Util
             var height = DeviceSettings.DeviceRectHeight;
             var x = DeviceSettings.DeviceRectLeft;
             var y = DeviceSettings.DeviceRectTop;
-            var ShaderBitmap = new WriteableBitmap(400, 400, 96, 96, PixelFormats.Bgr32, null);
-            ShaderBitmap.Lock();
-            IntPtr pixelAddress = ShaderBitmap.BackBuffer;
+            Bitmap ShaderBitmap;
+            ShaderBitmap = new Bitmap(120, 120, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            var ShaderBitmapData = ShaderBitmap.LockBits(new Rectangle(0,0,120,120), ImageLockMode.WriteOnly, ShaderBitmap.PixelFormat);
+            IntPtr pixelAddress = ShaderBitmapData.Scan0;
             try
             {
                 var CurrentFrame = ShaderEffect.Frame;
@@ -290,9 +291,9 @@ namespace adrilight.Util
                 else
                 {
                     Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
-                    ShaderBitmap.AddDirtyRect(new Int32Rect(0, 0, 400, 400));
+                    
 
-                    ShaderBitmap.Unlock();
+                   
                 }
                
                 
@@ -302,17 +303,41 @@ namespace adrilight.Util
                 return null;
             }
             //crop bitmap
-            Rect r = new Rect(x, y, width, height);
+            ShaderBitmap.UnlockBits(ShaderBitmapData);
+            Bitmap CroppedBitmap;
+            var CroppedData = CropBitmap(ShaderBitmap,x,y,width,height);
+            CroppedBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            var CroppedBitmapData = CroppedBitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, ShaderBitmap.PixelFormat);
+            IntPtr newPixelAddress = CroppedBitmapData.Scan0;
 
+            Marshal.Copy(CroppedData, 0, newPixelAddress, CroppedData.Length);
 
-            var CroppedBitmap = BitmapExtension.Crop(ShaderBitmap, r);
-
-
-            return BitmapFromWriteableBitmap(CroppedBitmap);
+            CroppedBitmap.UnlockBits(CroppedBitmapData);
+            return CroppedBitmap;
 
         }
+        public static byte[] CropBitmap(Bitmap source, int x, int y, int width, int height)
+        {
+            if (x + width > 120)
+                x = 120 - width;
+            if (y + height > 120)
+                y = 120 - height;
+            Rectangle rect = new Rectangle(x, y, width, height);
+            System.Drawing.Imaging.BitmapData bmpData =
+                source.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-       
+            IntPtr ptr = bmpData.Scan0;
+
+            int bytes = 4 * width * height;
+            byte[] rgbValues = new byte[bytes];
+
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
+
+            source.UnlockBits(bmpData);
+            return rgbValues;
+        }
+
         private byte FadeNonLinear(float color)
         {
             var cacheIndex = (int)(color * 10);
@@ -322,16 +347,7 @@ namespace adrilight.Util
            .Select(n => FadeNonLinearUncached(n / 10f))
            .ToArray();
 
-        private Int32[] FrameToInt32(Pixel[] frame)
-        {
-            Int32[] data = new Int32[400 * 400];
-
-            for (int i = 0; i < 400 * 400; i++)
-                data[i] = frame[i].GetBPP24RGB_Int32();
-
-
-            return data;
-        }
+     
         private static byte FadeNonLinearUncached(float color)
         {
             const float factor = 80f;

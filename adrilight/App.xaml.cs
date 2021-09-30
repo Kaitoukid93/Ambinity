@@ -200,7 +200,7 @@ namespace adrilight
                             var rainbow = kernel.Get<IRainbow>(DeviceName);
                             var music = kernel.Get<IMusic>(DeviceName);
                             var atmosphere = kernel.Get<IAtmosphere>(DeviceName);
-                           // var pixelation = kernel.Get<IShaderReader>(DeviceName);
+                            var pixelation = kernel.Get<IShaderReader>(DeviceName);
                         }
 
                   

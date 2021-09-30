@@ -267,17 +267,17 @@ namespace adrilight
             // next, everytime a frame update, spotsetreader (which attached to every single device) will set the color of each device spots in devicespotset acording to index
             // SpotSet reader only service gifxelation and screen capture mode
             // the treeview is Desktopduplicator(x)-> desktopduplicatorReader(x)-> SpotSetReader(device)->Viewmodel(device)->SerialStream(device)
-            var screenWidth = 240;
-            var screenHeight = 135;
+            var screenWidth = DeviceSettings.DeviceRectWidth;
+            var screenHeight = DeviceSettings.DeviceRectHeight;
             if (userSettings.DeviceSize==0|| userSettings.DeviceSize == 1|| userSettings.DeviceSize == 3)
             {
-                 screenWidth = 240;
-                 screenHeight = 135;
+                 screenWidth = DeviceSettings.DeviceRectWidth;
+                 screenHeight = DeviceSettings.DeviceRectHeight;
             }
             else
             {
-                screenWidth = 320;
-                screenHeight = 135;
+                screenWidth = DeviceSettings.DeviceRectWidth;
+                screenHeight = DeviceSettings.DeviceRectHeight;
             }
             
             var scalingFactor = DesktopDuplicator.ScalingFactor;
