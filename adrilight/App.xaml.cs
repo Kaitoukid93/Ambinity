@@ -195,7 +195,7 @@ namespace adrilight
                             kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
                             kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
                             kernel.Bind<IShaderReader>().To<ShaderReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            var spotSetReader = kernel.Get<ISpotSetReader>(DeviceName);
+                          //  var spotSetReader = kernel.Get<ISpotSetReader>(DeviceName);
                             var staticColor = kernel.Get<IStaticColor>(DeviceName);
                             var rainbow = kernel.Get<IRainbow>(DeviceName);
                             var music = kernel.Get<IMusic>(DeviceName);

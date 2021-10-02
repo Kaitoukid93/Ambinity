@@ -408,7 +408,7 @@ namespace adrilight
                     break;
                 case "Matrix":
 
-                    BuildMatrix(numLED);
+                    deviceSpots = BuildMatrix(numLED, rectWidth, rectHeight, DisplayRectWidth, DisplayRectHeight, deviceSettings);
 
                     break;
                
@@ -543,9 +543,54 @@ namespace adrilight
 
 
         }
-        private IDeviceSpot[] BuildMatrix(int numSpot)
+        private IDeviceSpot[] BuildMatrix(int numSpot, int rectwidth, int rectheight, int displayRectWidth, int displayRectHeight, IDeviceSettings deviceSettings)
         {
-            var spotSet = new DeviceSpot[numSpot];
+            if (numSpot > 120)
+            {
+                numSpot = 120; //strip type only support 120 leds since the resolution of the shader is 120
+            }
+            IDeviceSpot[] spotSet = new DeviceSpot[numSpot];
+            var spotsX = deviceSettings.SpotsX; // number of spot on one side
+            var spotsY = deviceSettings.SpotsY; // number of spot on one side
+            var spotwidth = rectwidth / spotsX;
+            var spotheight = rectheight / spotsY;
+            var displaySpotWidth = displayRectWidth / spotsX;
+            var displaySpotHeight = displayRectHeight / spotsY;
+            var counter = 0;
+            var relationIndex = spotsX - spotsY + 1;
+            for (var j = 0; j < spotsY; j++)
+            {
+                for (var i = 0; i < spotsX; i++)
+                {
+                
+
+                   
+                        var x = i * spotwidth;
+                        var x1 = i * displaySpotWidth;
+
+                        var y = j * spotheight;
+                        var y1 = j * displaySpotHeight;
+
+
+                        var index = counter;
+
+                        spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                        counter++;
+                    
+                }
+            }
+
+            // if (deviceSettings.OffsetLed != 0) Offset(ref spotSet, deviceSettings.OffsetLed); // offsetLED is obsolete
+            if (spotsY > 1 && deviceSettings.MirrorX) MirrorX(spotSet, spotsX, spotsY);
+             if (spotsX > 1 && deviceSettings.MirrorY) MirrorY(spotSet, spotsX, spotsY); //mirror Y is obsolete
+
+            spotSet[0].IsFirst = true;
+            int id = 0;
+            foreach (var spot in spotSet)
+            {
+                spot.ID = (id++).ToString();
+            }
+
             return spotSet;
 
         }

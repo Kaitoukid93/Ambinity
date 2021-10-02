@@ -1105,13 +1105,14 @@ namespace adrilight.ViewModel
                             var argb1 = new DeviceSettings();
                             argb1.DeviceType = "Strip";                           //add to device settings
                             argb1.DeviceID = Cards.Count() + 1;
-                            argb1.SpotsX = 16;
-                            argb1.SpotsY = 1;
+                            argb1.SpotsX = 5;
+                            argb1.SpotsY = 5;
                             argb1.NumLED = 16;
                             argb1.DeviceName = "ARGB1(HUBV2)";
                             argb1.ParrentLocation = vm.Device.DeviceID;
                             argb1.OutputLocation = 0;
                             argb1.IsVissible = false;
+                            argb1.DeviceLayout = "Square";
                             Cards.Add(argb1);
                         }
                         if (vm.ARGB2Selected)
@@ -1119,13 +1120,14 @@ namespace adrilight.ViewModel
                             var argb2 = new DeviceSettings();
                             argb2.DeviceType = "Strip";                           //add to device settings
                             argb2.DeviceID = Cards.Count() + 1;
-                            argb2.SpotsX = 160;
-                            argb2.SpotsY = 1;
-                            argb2.NumLED = 160;
+                            argb2.SpotsX = 20;
+                            argb2.SpotsY = 6;
+                            argb2.NumLED = 120;
                             argb2.DeviceName = "ARGB2(HUBV2)";
                             argb2.ParrentLocation = vm.Device.DeviceID;
                             argb2.OutputLocation = 1;
                             argb2.IsVissible = false;
+                            argb2.DeviceLayout = "Matrix";
                             Cards.Add(argb2);
                         }
                         if (vm.PCI1Selected)
