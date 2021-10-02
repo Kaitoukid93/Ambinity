@@ -14,15 +14,18 @@ namespace adrilight.Spots
     sealed class DeviceSpot : ViewModelBase, IDisposable, IDeviceSpot
     {
 
-        public DeviceSpot(int top, int left, int width, int height, int x, int y)
+        public DeviceSpot(int top, int left, int width, int height,int displayTop, int displayLeft, int displayWidth, int displayHeight,int index)
         {
             Rectangle = new Rectangle(top, left, width, height);
-            RadiusX = width / 4;
-            RadiusY = height / 4;
-            ID = (x * y + x).ToString();
+            DisplayRectangle = new Rectangle(displayTop, displayLeft, displayWidth, displayHeight);
+
+            RadiusX = 0;
+            RadiusY = 0;
+            ID = index.ToString();
         }
 
         public Rectangle Rectangle { get;  set; }
+        public Rectangle DisplayRectangle { get; set; }
 
         private bool _isFirst;
         public bool IsFirst {

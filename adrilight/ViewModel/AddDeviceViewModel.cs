@@ -141,6 +141,7 @@ namespace adrilight.ViewModel
                 if (value)
                 {
                     Device.DeviceType = "ABEDGE";
+                    Device.DeviceLayout = "Strip";
                     IsNextable = true;
                     RaisePropertyChanged(() => Device.DeviceType);
                     RaisePropertyChanged(() => IsNextable);

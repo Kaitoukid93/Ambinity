@@ -26,6 +26,7 @@ namespace adrilight
         private int _outputLocation = 151293;
         private bool _isHUB = false;
         private bool _lEDOn = true;
+        private string _deviceLayout = "Square";
 
 
         private int _mSens = 0;
@@ -174,6 +175,7 @@ namespace adrilight
         public int ParrentLocation { get => _parrentLocation; set { Set(() => ParrentLocation, ref _parrentLocation, value); } }
         public string DeviceSerial { get => _deviceSerial; set { Set(() => DeviceSerial, ref _deviceSerial, value); } }
         public string DeviceType { get => _deviceType; set { Set(() => DeviceType, ref _deviceType, value); } }
+        public string DeviceLayout { get => _deviceLayout; set { Set(() => DeviceLayout, ref _deviceLayout, value); } }
         //public string ComPort4 { get => _comPort4; set { Set(() => ComPort4, ref _comPort4, value); } }
         public int RGBOrder { get => _rGBOrder; set { Set(() => RGBOrder, ref _rGBOrder, value); } }
 

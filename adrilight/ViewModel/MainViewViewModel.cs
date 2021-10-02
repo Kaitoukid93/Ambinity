@@ -835,13 +835,13 @@ namespace adrilight.ViewModel
             //save current device rect position to json database
             CurrentDevice.DeviceRectLeft = DeviceRectX;
             CurrentDevice.DeviceRectTop = DeviceRectY;
-            CurrentDevice.DeviceRectWidth = DeviceRectWidth;
-            CurrentDevice.DeviceRectHeight = DeviceRectHeight;
-            CurrentDevice.DeviceScale = DeviceScale;
+           // CurrentDevice.DeviceRectWidth = DeviceRectWidth;
+            //CurrentDevice.DeviceRectHeight = DeviceRectHeight;
+           // CurrentDevice.DeviceScale = DeviceScale;
             RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
             RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
-            RaisePropertyChanged(() => CurrentDevice.DeviceRectWidth);
-            RaisePropertyChanged(() => CurrentDevice.DeviceRectHeight);
+           // RaisePropertyChanged(() => CurrentDevice.DeviceRectWidth);
+           // RaisePropertyChanged(() => CurrentDevice.DeviceRectHeight);
             RaisePropertyChanged(() => CurrentDevice.DeviceScale);
 
 

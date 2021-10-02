@@ -11,6 +11,8 @@ namespace adrilight.Spots
         
 
         IDeviceSpot[] Spots { get; set; }
+        
+          
         object Lock { get; }
        
         int CountLeds(int spotsX, int spotsY);

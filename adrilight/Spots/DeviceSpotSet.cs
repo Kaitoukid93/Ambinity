@@ -25,16 +25,7 @@ namespace adrilight
 
             _log.Info($"SpotSet created.");
         }
-        //public SpotSet(DeviceSettings userSettings)
-        //{
-        //    DeviceInfo = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
-
-
-        //    DeviceInfo.PropertyChanged += (_, e) => DecideRefresh(e.PropertyName);
-        //    RefreshDevice();
-
-        //    _log.Info($"SpotSet created.");
-        //}
+      
         private void DecideRefresh(string propertyName)
         {
             switch (propertyName)
@@ -46,6 +37,14 @@ namespace adrilight
                 case nameof(DeviceSettings.SelectedEffect):
                 case nameof(GeneralSettings.ScreenSizeSecondary):
                 case nameof(GeneralSettings.ScreenSizeThird):
+                case nameof(DeviceSettings.OffsetLed):
+                case nameof(DeviceSettings.MirrorX):
+                case nameof(DeviceSettings.MirrorY):
+                case nameof(DeviceSettings.DeviceRectWidth):
+                case nameof(DeviceSettings.DeviceRectHeight):
+                case nameof(DeviceSettings.NumLED):
+
+
 
 
                     Refresh();
@@ -55,6 +54,7 @@ namespace adrilight
 
 
         public IDeviceSpot[] Spots { get; set; }
+       
 
 
         public object Lock { get; } = new object();
@@ -120,7 +120,8 @@ namespace adrilight
         {
             lock (Lock)
             {
-                Spots = BuildSpots(DeviceSettings, GeneralSettings);
+                Spots = BuildDeviceSpots(DeviceSettings, GeneralSettings);
+                
 
 
             }
@@ -130,7 +131,7 @@ namespace adrilight
       
 
 
-
+        [Obsolete]
         internal IDeviceSpot[] BuildSpots( IDeviceSettings userSettings, IGeneralSettings generalSettings) // general settings is for compare each device setting
         {
             //this section build spot according to user selection
@@ -337,7 +338,7 @@ namespace adrilight
                             }
                         }
 
-                        devicespots[index] = new DeviceSpot(x, y, spotWidth, spotHeight,i,j);
+                        devicespots[index] = new DeviceSpot(x, y, spotWidth, spotHeight,0,0,0,0,index);
                     }
                 }
             }
@@ -358,13 +359,195 @@ namespace adrilight
                     if (GeneralSettings.OffsetLed3 != 0) Offset(ref devicespots, GeneralSettings.OffsetLed3);
                 }
             }
-                
+            if (userSettings.OffsetLed != 0) Offset(ref devicespots, userSettings.OffsetLed);
             if (spotsY > 1 && GeneralSettings.MirrorX) MirrorX(devicespots, spotsX, spotsY);
             if (spotsX > 1 && GeneralSettings.MirrorY) MirrorY(devicespots, spotsX, spotsY);
 
             devicespots[0].IsFirst = true;
 
             return devicespots;
+        }
+
+        internal IDeviceSpot[] BuildDeviceSpots(IDeviceSettings deviceSettings, IGeneralSettings generalSettings) // general settings is for compare each device setting
+        {
+            //import all User Defined Setting
+            var rectWidth = deviceSettings.DeviceRectWidth;
+            var rectHeight = deviceSettings.DeviceRectHeight;
+            var DeviceLayout = deviceSettings.DeviceLayout;
+            var DisplayRectWidth = 200;
+            var DisplayRectHeight = 200;
+            if(rectWidth>=rectHeight)
+            {
+                DisplayRectWidth = 360;
+                DisplayRectHeight = 360 * rectHeight / rectWidth;
+            }
+            else
+            {
+                DisplayRectHeight = 360;
+                DisplayRectWidth = 360 * rectWidth / rectHeight;
+            }
+            var numLED = deviceSettings.NumLED;
+           IDeviceSpot[] deviceSpots = new DeviceSpot[numLED];
+
+            switch(DeviceLayout)
+            {
+                case "Square":
+
+                    deviceSpots=BuildSquare(numLED,rectWidth,rectHeight, DisplayRectWidth, DisplayRectHeight, deviceSettings);
+
+                    break;
+                case "Strip":
+
+                    deviceSpots = BuildStrip(numLED, rectWidth, rectHeight, DisplayRectWidth, DisplayRectHeight, deviceSettings);
+
+                    break;
+                case "Rectangle":
+
+                    BuildRectangle(numLED);
+
+                    break;
+                case "Matrix":
+
+                    BuildMatrix(numLED);
+
+                    break;
+               
+
+
+
+            }
+
+            return deviceSpots;
+        }
+
+       
+        private IDeviceSpot[] BuildSquare(int numSpot, int rectwidth, int rectheight, int displayRectWidth, int displayRectHeight, IDeviceSettings deviceSettings)
+        {
+            if(numSpot%4 !=0)
+            {
+                numSpot = numSpot + (4 - numSpot / 4); //square type always have multiple of 4 spot number
+            }
+            IDeviceSpot[] spotSet= new DeviceSpot[numSpot];
+            var spotsX = (numSpot / 4) +1; // number of spot on one side
+            var spotsY = (numSpot / 4)+1; // number of spot on one side
+            var spotwidth = rectwidth / spotsX;
+            var spotheight = rectheight/spotsY ;
+            var displaySpotWidth = displayRectWidth / spotsX;
+            var displaySpotHeight = displayRectHeight/spotsY;
+            var counter = 0;
+            var relationIndex = spotsX - spotsY + 1;
+            for (var j = 0; j < spotsY; j++)
+            {
+                for (var i = 0; i < spotsX; i++)
+                {
+                    var isFirstColumn = i == 0;
+                    var isLastColumn = i == spotsX - 1;
+                    var isFirstRow = j == 0;
+                    var isLastRow = j == spotsY - 1;
+
+                    if (isFirstColumn || isLastColumn || isFirstRow || isLastRow) // needing only outer spots
+                    {
+                        var x = i * spotwidth;
+                        var x1 = i * displaySpotWidth;
+
+                        var y = j * spotheight;
+                        var y1 = j * displaySpotHeight;
+
+
+                        var index = counter++; // in first row index is always counter
+
+                        if (spotsX > 1 && spotsY > 1)
+                        {
+                            if (!isFirstRow && !isLastRow)
+                            {
+                                if (isFirstColumn)
+                                {
+                                    index += relationIndex + ((spotsY - 1 - j) * 3);
+                                }
+                                else if (isLastColumn)
+                                {
+                                    index -= j;
+                                }
+                            }
+
+                            if (!isFirstRow && isLastRow)
+                            {
+                                index += relationIndex - i * 2;
+                            }
+                        }
+
+                        spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight,x1,y1,displaySpotWidth, displaySpotHeight, index);
+                    }
+                }
+            }
+            if (deviceSettings.OffsetLed != 0) Offset(ref spotSet, deviceSettings.OffsetLed);
+            if (spotsY > 1 && deviceSettings.MirrorX) MirrorX(spotSet, spotsX, spotsY);
+            if (spotsX > 1 && deviceSettings.MirrorY) MirrorY(spotSet, spotsX, spotsY);
+
+            spotSet[0].IsFirst = true;
+            int id= 0;
+            foreach(var spot in spotSet)
+            {
+                spot.ID = (id++).ToString();
+            }
+
+            return spotSet;
+
+           
+
+        }
+        private IDeviceSpot[] BuildRectangle(int numSpot)
+        {
+            var spotSet = new DeviceSpot[numSpot];
+            return spotSet;
+
+        }
+        private IDeviceSpot[] BuildStrip(int numSpot, int rectwidth, int rectheight, int displayRectWidth, int displayRectHeight, IDeviceSettings deviceSettings)
+        {
+            if (numSpot >120)
+            {
+                numSpot = 120; //strip type only support 120 leds since the resolution of the shader is 120
+            }
+            IDeviceSpot[] spotSet = new DeviceSpot[numSpot];
+            var spotsX = numSpot; // number of spot on one side
+            var spotsY = 1; // number of spot on one side
+            var spotwidth = rectwidth / spotsX;
+            var spotheight = rectheight / spotsY;
+            var displaySpotWidth = displayRectWidth / spotsX;
+            var displaySpotHeight = displayRectHeight / spotsY;
+            var counter = 0;
+            var relationIndex = spotsX - spotsY + 1;
+            
+            for(var i=0;i<spotsX;i++)
+            {
+                var x = i * spotwidth;
+                var x1 = i * displaySpotWidth;
+                var y = 0;// strip layout only has 1 row
+                var y1 = 0;
+                var index = counter++;
+                spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+            }
+        
+           // if (deviceSettings.OffsetLed != 0) Offset(ref spotSet, deviceSettings.OffsetLed); // offsetLED is obsolete
+            if (spotsY > 1 && deviceSettings.MirrorX) MirrorX(spotSet, spotsX, spotsY);
+           // if (spotsX > 1 && deviceSettings.MirrorY) MirrorY(spotSet, spotsX, spotsY); //mirror Y is obsolete
+
+            spotSet[0].IsFirst = true;
+            int id = 0;
+            foreach (var spot in spotSet)
+            {
+                spot.ID = (id++).ToString();
+            }
+
+            return spotSet;
+
+
+        }
+        private IDeviceSpot[] BuildMatrix(int numSpot)
+        {
+            var spotSet = new DeviceSpot[numSpot];
+            return spotSet;
+
         }
 
 

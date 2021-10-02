@@ -584,11 +584,11 @@ namespace adrilight.View
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            MainViewViewModel vm = this.DataContext as MainViewViewModel;
+            //MainViewViewModel vm = this.DataContext as MainViewViewModel;
 
-            //Call command from viewmodel     
-            if ((vm != null) && (vm.DeviceRectDropCommand.CanExecute(null)))
-                vm.DeviceRectDropCommand.Execute(null);
+            ////Call command from viewmodel     
+            //if ((vm != null) && (vm.DeviceRectDropCommand.CanExecute(null)))
+            //    vm.DeviceRectDropCommand.Execute(null);
         }
     }
 }

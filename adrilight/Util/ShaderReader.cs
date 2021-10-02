@@ -129,7 +129,7 @@ namespace adrilight.Util
                     //if (isPreviewRunning)
                     //{
                     //   MainViewViewModel.SetPreviewImage(image);
-
+                    
                     image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppRgb, bitmapData);
 
                     lock (DeviceSpotSet.Lock)
@@ -147,34 +147,35 @@ namespace adrilight.Util
                         //}
                         //else
                         //{
-                            Parallel.ForEach(DeviceSpotSet.Spots
-                                , spot =>
-                                {
-                                    const int numberOfSteps = 15;
-                                    int stepx = Math.Max(1, spot.Rectangle.Width / numberOfSteps);
-                                    int stepy = Math.Max(1, spot.Rectangle.Height / numberOfSteps);
+                        Parallel.ForEach(DeviceSpotSet.Spots
+                            , spot =>
+                            {
+                            const int numberOfSteps = 15;
+                            int stepx = Math.Max(1, spot.Rectangle.Width / numberOfSteps);
+                            int stepy = Math.Max(1, spot.Rectangle.Height / numberOfSteps);
 
-                                    GetAverageColorOfRectangularRegion(spot.Rectangle, stepy, stepx, bitmapData,
-                                        out int sumR, out int sumG, out int sumB, out int count);
+                            GetAverageColorOfRectangularRegion(spot.Rectangle, stepy, stepx, bitmapData,
+                                    out int sumR, out int sumG, out int sumB, out int count);
 
-                                    var countInverse = 1f / count;
+                            var countInverse = 1f / count;
 
-                                    ApplyColorCorrections(sumR * countInverse, sumG * countInverse, sumB * countInverse
-                                        , out byte finalR, out byte finalG, out byte finalB, useLinearLighting
-                                        , GeneralSettings.SaturationTreshold, spot.Red, spot.Green, spot.Blue);
+                            ApplyColorCorrections(sumR * countInverse, sumG * countInverse, sumB * countInverse
+                                    , out byte finalR, out byte finalG, out byte finalB, useLinearLighting
+                                    , GeneralSettings.SaturationTreshold, spot.Red, spot.Green, spot.Blue);
 
-                                    var spotColor = new OpenRGB.NET.Models.Color(finalR, finalG, finalB);
+                            var spotColor = new OpenRGB.NET.Models.Color(finalR, finalG, finalB);
 
-                                    var semifinalSpotColor = Brightness.applyBrightness(spotColor, 100);
-                                    ApplySmoothing(semifinalSpotColor.R, semifinalSpotColor.G, semifinalSpotColor.B
-                                        , out byte RealfinalR, out byte RealfinalG, out byte RealfinalB,
-                                     spot.Red, spot.Green, spot.Blue);
-                                    spot.SetColor(RealfinalR, RealfinalG, RealfinalB, true);
+                            var semifinalSpotColor = Brightness.applyBrightness(spotColor, 100);
+                            ApplySmoothing(semifinalSpotColor.R, semifinalSpotColor.G, semifinalSpotColor.B
+                                    , out byte RealfinalR, out byte RealfinalG, out byte RealfinalB,
+                                 spot.Red, spot.Green, spot.Blue);
+                            spot.SetColor(RealfinalR, RealfinalG, RealfinalB, true);
+                         
 
                                 });
+                       
 
-                        
-                        
+
 
                     }
 
@@ -258,6 +259,8 @@ namespace adrilight.Util
             semifinalG = (byte)((g + smoothingFactor * lastColorG) / (smoothingFactor + 1));
             semifinalB = (byte)((b + smoothingFactor * lastColorB) / (smoothingFactor + 1));
         }
+
+        [Obsolete]
         private System.Drawing.Bitmap BitmapFromWriteableBitmap(WriteableBitmap writeBmp)
         {
             System.Drawing.Bitmap bmp;
@@ -277,6 +280,8 @@ namespace adrilight.Util
             var height = DeviceSettings.DeviceRectHeight;
             var x = DeviceSettings.DeviceRectLeft;
             var y = DeviceSettings.DeviceRectTop;
+
+            //get canvas bitmap
             Bitmap ShaderBitmap;
             ShaderBitmap = new Bitmap(120, 120, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
             var ShaderBitmapData = ShaderBitmap.LockBits(new Rectangle(0,0,120,120), ImageLockMode.WriteOnly, ShaderBitmap.PixelFormat);
@@ -302,8 +307,12 @@ namespace adrilight.Util
             {
                 return null;
             }
-            //crop bitmap
+            
             ShaderBitmap.UnlockBits(ShaderBitmapData);
+
+
+            //crop canvas bitmap
+
             Bitmap CroppedBitmap;
             var CroppedData = CropBitmap(ShaderBitmap,x,y,width,height);
             CroppedBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
