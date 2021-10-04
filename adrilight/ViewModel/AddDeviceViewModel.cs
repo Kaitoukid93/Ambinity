@@ -89,7 +89,9 @@ namespace adrilight.ViewModel
                 if(value)
                 {
                     Device.DeviceType = "ABRev1";
-                    Device.RGBOrder = 5;
+                    Device.RGBOrder = 0;
+                    Device.DeviceLayout = 0;
+                    Device.LayoutEnabled = false;
                     IsNextable = true;
                     RaisePropertyChanged(() => Device.DeviceType);
                     RaisePropertyChanged(() => Device.RGBOrder);
@@ -108,7 +110,9 @@ namespace adrilight.ViewModel
                 if (value)
                 {
                     Device.DeviceType = "ABRev2";
-                    Device.RGBOrder = 1;
+                    Device.RGBOrder = 5;
+                    Device.DeviceLayout = 0;
+                    Device.LayoutEnabled = false;
                     IsNextable = true;
                     RaisePropertyChanged(() => Device.DeviceType);
                     RaisePropertyChanged(() => Device.RGBOrder);
@@ -141,7 +145,8 @@ namespace adrilight.ViewModel
                 if (value)
                 {
                     Device.DeviceType = "ABEDGE";
-                    Device.DeviceLayout = "Strip";
+                    Device.DeviceLayout = 1;
+                    Device.LayoutEnabled = false;
                     IsNextable = true;
                     RaisePropertyChanged(() => Device.DeviceType);
                     RaisePropertyChanged(() => IsNextable);
@@ -245,6 +250,7 @@ namespace adrilight.ViewModel
                 {
                     Device.SpotsX = 11;
                     Device.SpotsY = 7;
+                    Device.OffsetLed=10;
                     Device.NumLED = 32;
                     IsNextable = true;
                     RaisePropertyChanged(() => Device.SpotsX);
@@ -266,6 +272,7 @@ namespace adrilight.ViewModel
                 {
                     Device.SpotsX = 13;
                     Device.SpotsY = 7;
+                    Device.OffsetLed = 12;
                     Device.NumLED = 36;
                     IsNextable = true;
                     RaisePropertyChanged(() => Device.SpotsX);
@@ -287,6 +294,7 @@ namespace adrilight.ViewModel
                 {
                     Device.SpotsX = 14;
                     Device.SpotsY = 7;
+                    Device.OffsetLed = 13;
                     Device.NumLED = 38;
                     IsNextable = true;
                     RaisePropertyChanged(() => Device.SpotsX);
@@ -308,6 +316,7 @@ namespace adrilight.ViewModel
                 {
                     Device.SpotsX = 14;
                     Device.SpotsY = 9;
+                    Device.OffsetLed = 13;
                     Device.NumLED = 42;
                     IsNextable = true;
                     RaisePropertyChanged(() => Device.SpotsX);
@@ -329,6 +338,7 @@ namespace adrilight.ViewModel
                 {
                     Device.SpotsX = 16;
                     Device.SpotsY = 7;
+                    Device.OffsetLed = 15;
                     Device.NumLED = 42;
                     IsNextable = true;
                     RaisePropertyChanged(() => Device.SpotsX);

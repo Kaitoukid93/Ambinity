@@ -20,7 +20,11 @@ namespace adrilight
         int ParrentLocation { get; set; }
         string DeviceSerial { get; set; }
         string DeviceType { get; set; }
-        string DeviceLayout { get; set; }
+        int DeviceLayout { get; set; }
+        int DeviceRotation { get; set; }
+        int MatrixStartPoint { get; set; }
+        int MatrixStyle { get; set; }
+        bool LayoutEnabled { get; set; }
         int RGBOrder { get; set; }
         bool IsVissible { get; set; }
         int OutputLocation { get; set; }

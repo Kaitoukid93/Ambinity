@@ -110,7 +110,7 @@
 
             <!--Preview zone-->
             <ItemsControl Grid.Row="1" ItemsSource="{Binding PreviewSpots}"
-                            Width="418" Height="239" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20" >
+                            Width="360" Height="360" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20" >
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas Width="360" Height="360" VerticalAlignment="Center" HorizontalAlignment="Center" />
@@ -126,7 +126,7 @@
                     <DataTemplate>
                         <Grid>
 
-                            <Rectangle Stroke="White" RadiusX="{Binding RadiusX}" RadiusY="{Binding RadiusY}" StrokeThickness="0.5" Width="{Binding DisplayRectangle.Width}" Height="{Binding DisplayRectangle.Height}">
+                            <Rectangle ToolTip="{Binding ID}" Stroke="White" RadiusX="{Binding RadiusX}" RadiusY="{Binding RadiusY}" StrokeThickness="0.5" Width="{Binding DisplayRectangle.Width}" Height="{Binding DisplayRectangle.Height}">
                                 <Rectangle.Fill>
                                     <RadialGradientBrush>
                                         <GradientStop Color="{Binding OnDemandColor}"  Offset="0"/>
@@ -136,7 +136,7 @@
 
 
                             </Rectangle>
-                            <TextBlock Visibility="Collapsed" Text="{Binding ID }" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFFF0069"/>
+                            <TextBlock Visibility="Collapsed" Text="{Binding ID }" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
                             <Rectangle Visibility="{Binding IsFirst, Converter={StaticResource BooleanToVisibilityConverter}}" RadiusX="4" RadiusY="4" Fill="#FF673AB7"
                                                Width="5" 
                                                Height="5" />
@@ -149,8 +149,6 @@
 
 
             </Button>
-            <hc:NumericUpDown  ToolTip="Số LED" Minimum="1" Maximum="160" Width="70" Value="{Binding CurrentDevice.SpotsX}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="114,0,0,0" HorizontalContentAlignment="Center" Grid.Row="3"/>
-            <TextBlock Margin="20,0,0,0" Grid.Row="3" Grid.Column="0" Text=" Số LED" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" Height="18" HorizontalAlignment="Left"/>
             <Border  Width="400" Height="400" Grid.Row="5" BorderThickness="1" BorderBrush="Red" VerticalAlignment="Top" Margin="0,25,0,0">
                 <Canvas 
                     Background="Transparent" 
@@ -843,7 +841,7 @@
                     <StackPanel  Visibility="Visible" Margin="0,15,0,0" Orientation="Vertical">
 
                         <TextBlock Grid.ColumnSpan="2" Margin="10,0,-117,0" Padding="0,0,0,10" Text="CÀI ĐẶT NÂNG CAO CHO CHẾ ĐỘ ĐỒNG BỘ" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left" Width="370"/>
-                        <Grid Height="80" Margin="0,0,0,0" HorizontalAlignment="Left">
+                        <Grid Height="80" Margin="0,0,0,0" HorizontalAlignment="Left" Width="516">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="146*"/>
                                 <ColumnDefinition Width="2*"/>
@@ -856,20 +854,7 @@
                             <TextBlock Margin="10,0,0,0" Grid.Column="0" Text="Chọn kiểu sắp xếp" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Grid.ColumnSpan="3"/>
                             <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="Kiểu sắp xếp gần nhất với thực tế " FontSize="14" VerticalAlignment="Top" Foreground="#FF898989"/>
                             <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Height="1" Fill="#14000000" VerticalAlignment="Bottom" Margin="10,0,10,5"/>
-
-                        </Grid>
-                        <Grid Height="80" Margin="0,0,0,0" HorizontalAlignment="Left" Width="250">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Góc quay" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
-                            <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Text="Thay đổi góc quay" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Width="146"/>
-                            <Rectangle Grid.Row="1" Margin="10,0,10,5" Grid.ColumnSpan="2" Height="1" Fill="#14000000" VerticalAlignment="Bottom"/>
+                            <ComboBox IsEnabled="{Binding CurrentDevice.LayoutEnabled}" Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.DeviceLayout}" x:Name="deviceLayout" ItemsSource="{Binding AvailableLayout}" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Width="180"/>
 
                         </Grid>
                         <Grid Height="80" Margin="0,0,0,0" HorizontalAlignment="Left" Width="522">
@@ -889,6 +874,66 @@
                             <Slider Grid.Column="1" Value="{Binding CurrentDevice.DeviceRectHeight, Mode=TwoWay}" TickFrequency="1" hc:TipElement.Visibility="Visible" hc:TipElement.Placement="Right" hc:TipElement.StringFormat="#0.00" Minimum="{Binding CurrentDevice.SpotsY}" Maximum="120" Style="{StaticResource SliderBaseStyle}" VerticalAlignment="Center" Height="18" ValueChanged="Slider_ValueChanged" HorizontalAlignment="Right" Width="121" Margin="0,0,5,0"/>
 
                         </Grid>
+                        <Grid Height="80" Width="516">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="146*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="109*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=deviceLayout,Path=SelectedItem}" Value="Strip, Bar">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <TextBlock Margin="10,0,0,0" Grid.Column="0" Text="Góc quay" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Grid.ColumnSpan="3"/>
+                            <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="Góc quay so với hướng nhìn " FontSize="14" VerticalAlignment="Top" Foreground="#FF898989"/>
+                            <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Height="1" Fill="#14000000" VerticalAlignment="Bottom" Margin="10,0,10,5"/>
+                            <ComboBox  Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.DeviceRotation}" x:Name="deviceLayout1" ItemsSource="{Binding AvailableRotation}" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Width="180"/>
+
+                        </Grid>
+                        <Grid Height="80" Margin="0,0,0,0" HorizontalAlignment="Left" Width="516">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=deviceLayout,Path=SelectedItem}" Value="Square, Ring, Rectangle">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=deviceLayout,Path=SelectedItem}" Value="Matrix">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Số LED ngang" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
+                            <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Text="Số LED chiều ngang thực tế" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Width="175"/>
+                            <Rectangle Grid.Row="1" Margin="10,0,10,5" Grid.ColumnSpan="2" Height="1" Fill="#14000000" VerticalAlignment="Bottom"/>
+                            <TextBlock Margin="10,0,0,0" Grid.Column="1" Text="Số LED dọc" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Grid.ColumnSpan="2"/>
+                            <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="1" Text="Số LED chiều dọc thực tế" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Width="176"/>
+                            <hc:NumericUpDown Grid.Column="0" Grid.Row="0"  ToolTip="Số LED" Minimum="1" Maximum="17" Width="70" Value="{Binding CurrentDevice.SpotsX}" HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Center" Margin="0,0,5,0"/>
+                            <hc:NumericUpDown Grid.Column="1"  ToolTip="Số LED" Minimum="1" Maximum="17" Width="70" Value="{Binding CurrentDevice.SpotsY}" HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+
+                        </Grid>
+
                         <Grid Height="80" Width="523" HorizontalAlignment="Left">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -898,9 +943,43 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=deviceLayout,Path=SelectedItem}" Value="Square, Ring, Rectangle">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
                             <TextBlock Grid.Row="0" Margin="10,10,0,10" Grid.Column="0" Text="Offset" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="47"/>
                             <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Vị trí LED số 1" Width="208" Grid.ColumnSpan="2" Height="17"/>
-                            <hc:NumericUpDown  ToolTip="Số LED" Minimum="1" Maximum="160" Width="70" Value="{Binding CurrentDevice.OffsetLed}" HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+                            <hc:NumericUpDown  ToolTip="Offset" Minimum="1" Maximum="160" Width="70" Value="{Binding CurrentDevice.OffsetLed}" HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+
+                        </Grid>
+                        <Grid Height="80" Width="523">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.Style>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedItem, ElementName=deviceLayout}" Value="Strip, Bar">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <TextBlock Grid.Row="0" Margin="10,10,0,10" Grid.Column="0" Text="Số LED" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="47"/>
+                            <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Vị trí LED số 1" Width="208" Grid.ColumnSpan="2" Height="17"/>
+                            <hc:NumericUpDown  ToolTip="Số LED" Minimum="1" Maximum="120" Width="70" Value="{Binding CurrentDevice.NumLED}" HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
 
                         </Grid>
                         <Grid Height="80" Width="525" HorizontalAlignment="Left">
@@ -912,6 +991,16 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
+                            <Grid.Style>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedItem, ElementName=deviceLayout}" Value="Strip">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
                             <TextBlock Margin="10,0,0,0" Grid.Column="0" Text="Lật trái phải" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="95"/>
                             <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Lật các LED theo trục Y" Width="208" Grid.ColumnSpan="2" Height="17"/>
                             <TextBlock Margin="10,0,0,0" Grid.Column="1" Text="Lật trên dưới" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="95"/>
@@ -923,6 +1012,25 @@
                      Style="{StaticResource ToggleButtonSwitch}"
                      HorizontalAlignment="Right" />
                         </Grid>
+                        <Grid Height="80" Width="522">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Margin="10,0,0,0" Grid.Column="0" Text="Điểm bắt đầu" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="104"/>
+                            <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Điểm đầu tiên của ma trận" Width="231" Grid.ColumnSpan="2" Height="17"/>
+                            <TextBlock Margin="10,0,0,0" Grid.Column="1" Text="Kiểu nối dây" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="93"/>
+                            <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Kiểu nối tiếp hoặc ZigZag" Width="231" Height="17"/>
+                            <ComboBox IsEnabled="{Binding CurrentDevice.MatrixStartPoint}" Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.DeviceLayout}" x:Name="deviceLayout_Copy" ItemsSource="{Binding AvailableMatrixStartPoint}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="85" Margin="0,0,-0.1,0"/>
+                            <ComboBox IsEnabled="{Binding CurrentDevice.MatrixStyle}" Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.DeviceLayout}" x:Name="deviceLayout_Copy1" ItemsSource="{Binding AvailableMatrixStyle}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="85" Grid.Column="1" Margin="0,0,10,0"/>
+
+                        </Grid>
+
+
                     </StackPanel>
                 </hc:TransitioningContentControl>
 

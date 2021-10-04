@@ -26,7 +26,11 @@ namespace adrilight
         private int _outputLocation = 151293;
         private bool _isHUB = false;
         private bool _lEDOn = true;
-        private string _deviceLayout = "Square";
+        private int _deviceLayout = 0;
+        private bool _layoutEnabled = true;
+        private int _deviceRotation = 0;
+        private int _matrixStartPoint = 0;
+        private int _matrixStyle = 0;
 
 
         private int _mSens = 0;
@@ -175,19 +179,23 @@ namespace adrilight
         public int ParrentLocation { get => _parrentLocation; set { Set(() => ParrentLocation, ref _parrentLocation, value); } }
         public string DeviceSerial { get => _deviceSerial; set { Set(() => DeviceSerial, ref _deviceSerial, value); } }
         public string DeviceType { get => _deviceType; set { Set(() => DeviceType, ref _deviceType, value); } }
-        public string DeviceLayout { get => _deviceLayout; set { Set(() => DeviceLayout, ref _deviceLayout, value); } }
+        public int DeviceLayout { get => _deviceLayout; set { Set(() => DeviceLayout, ref _deviceLayout, value); } }
+        public bool LayoutEnabled { get => _layoutEnabled; set { Set(() => LayoutEnabled, ref _layoutEnabled, value); } }
         //public string ComPort4 { get => _comPort4; set { Set(() => ComPort4, ref _comPort4, value); } }
         public int RGBOrder { get => _rGBOrder; set { Set(() => RGBOrder, ref _rGBOrder, value); } }
 
         //public DateTime? LastUpdateCheck { get => _lastUpdateCheck; set { Set(() => LastUpdateCheck, ref _lastUpdateCheck, value); } }
         public int NumLED { get => _numLED; set { Set(() => NumLED, ref _numLED, value); } }
+        public int DeviceRotation { get => _deviceRotation; set { Set(() => DeviceRotation, ref _deviceRotation, value); } }
         [Obsolete]
         public int LedsPerSpot { get => _ledsPerSpot; set { Set(() => LedsPerSpot, ref _ledsPerSpot, value); } }
         public bool MirrorX { get => _mirrorX; set { Set(() => MirrorX, ref _mirrorX, value); } }
         public bool MirrorY { get => _mirrorY; set { Set(() => MirrorY, ref _mirrorY, value); } }
         public bool LEDOn { get => _lEDOn; set { Set(() => LEDOn, ref _lEDOn, value); } }
         public int OffsetLed { get => _offsetLed; set { Set(() => OffsetLed, ref _offsetLed, value); } }
+        public int MatrixStartPoint { get => _matrixStartPoint; set { Set(() => MatrixStartPoint, ref _matrixStartPoint, value); } }
 
+        public int MatrixStyle { get => _matrixStyle; set { Set(() => MatrixStyle, ref _matrixStyle, value); } }
         public int DeviceRectTop { get => _deviceRectTop; set { Set(() => DeviceRectTop, ref _deviceRectTop, value); } }
         public int DeviceRectLeft{ get => _deviceRectLeft; set { Set(() => DeviceRectLeft, ref _deviceRectLeft, value); } }
         public int DeviceRectWidth { get => _deviceRectWidth; set { Set(() => DeviceRectWidth, ref _deviceRectWidth, value); } }

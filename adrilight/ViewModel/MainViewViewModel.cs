@@ -319,6 +319,46 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+        private ObservableCollection<string> _availableLayout;
+        public ObservableCollection<string> AvailableLayout {
+            get { return _availableLayout; }
+            set
+            {
+                if (_availableLayout == value) return;
+                _availableLayout = value;
+                RaisePropertyChanged();
+            }
+        }
+        private ObservableCollection<string> _availableRotation;
+        public ObservableCollection<string> AvailableRotation {
+            get { return _availableRotation; }
+            set
+            {
+                if (_availableRotation == value) return;
+                _availableRotation = value;
+                RaisePropertyChanged();
+            }
+        }
+        private ObservableCollection<string> _availableMatrixStyle;
+        public ObservableCollection<string> AvailableMatrixStyle {
+            get { return _availableMatrixStyle; }
+            set
+            {
+                if (_availableMatrixStyle == value) return;
+                _availableMatrixStyle = value;
+                RaisePropertyChanged();
+            }
+        }
+        private ObservableCollection<string> _availableMatrixStartPoint;
+        public ObservableCollection<string> AvailableMatrixStartPoint {
+            get { return _availableMatrixStartPoint; }
+            set
+            {
+                if (_availableMatrixStartPoint == value) return;
+                _availableMatrixStartPoint = value;
+                RaisePropertyChanged();
+            }
+        }
         public IDeviceSpot[] _previewSpots;
         public IDeviceSpot[] PreviewSpots {
             get => _previewSpots;
@@ -400,22 +440,22 @@ namespace adrilight.ViewModel
         public IList<String> AvailableAudioDevice {
             get
             {
-                //_AvailableAudioDevice.Clear();
-                //int devicecount = BassWasapi.BASS_WASAPI_GetDeviceCount();
-                //string[] devicelist = new string[devicecount];
-                //for (int i = 0; i < devicecount; i++)
-                //{
+                _AvailableAudioDevice.Clear();
+                int devicecount = BassWasapi.BASS_WASAPI_GetDeviceCount();
+                string[] devicelist = new string[devicecount];
+                for (int i = 0; i < devicecount; i++)
+                {
 
-                //    var devices = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
+                    var devices = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
 
-                //    if (devices.IsEnabled && devices.IsLoopback)
-                //    {
-                //        var device = string.Format("{0} - {1}", i, devices.name);
+                    if (devices.IsEnabled && devices.IsLoopback)
+                    {
+                        var device = string.Format("{0} - {1}", i, devices.name);
 
-                //        _AvailableAudioDevice.Add(device);
-                //    }
+                        _AvailableAudioDevice.Add(device);
+                    }
 
-                //}
+                }
 
                 return _AvailableAudioDevice;
             }
@@ -1025,7 +1065,39 @@ namespace adrilight.ViewModel
            "Custom"
 
         };
-    
+            AvailableLayout= new ObservableCollection<string>
+        {
+           "Square, Ring, Rectangle",
+           "Strip, Bar",
+           "Matrix"
+          
+
+        };
+            AvailableMatrixStyle = new ObservableCollection<string>
+   {
+           "Nối tiếp",
+           "ZigZag",
+
+
+        };
+            AvailableMatrixStartPoint = new ObservableCollection<string>
+{
+           "Top Left",
+           "Top Right",
+           "Bottom Right",
+           "Bottom Left"
+
+
+        };
+            AvailableRotation = new ObservableCollection<string>
+    {
+           "0",
+           "90",
+           "180",
+           "360"
+
+
+        };
             AvailableEffects = new ObservableCollection<string>
       {
             "Sáng theo màn hình",
@@ -1112,13 +1184,13 @@ namespace adrilight.ViewModel
                             argb1.ParrentLocation = vm.Device.DeviceID;
                             argb1.OutputLocation = 0;
                             argb1.IsVissible = false;
-                            argb1.DeviceLayout = "Square";
+                            argb1.DeviceLayout = 1;
                             Cards.Add(argb1);
                         }
                         if (vm.ARGB2Selected)
                         {
                             var argb2 = new DeviceSettings();
-                            argb2.DeviceType = "Strip";                           //add to device settings
+                            argb2.DeviceType = "Matrix";                           //add to device settings
                             argb2.DeviceID = Cards.Count() + 1;
                             argb2.SpotsX = 20;
                             argb2.SpotsY = 6;
@@ -1127,7 +1199,7 @@ namespace adrilight.ViewModel
                             argb2.ParrentLocation = vm.Device.DeviceID;
                             argb2.OutputLocation = 1;
                             argb2.IsVissible = false;
-                            argb2.DeviceLayout = "Matrix";
+                            argb2.DeviceLayout = 2;
                             Cards.Add(argb2);
                         }
                         if (vm.PCI1Selected)
@@ -1135,12 +1207,13 @@ namespace adrilight.ViewModel
                             var PCI = new DeviceSettings();
                             PCI.DeviceType = "Square";                           //add to device settings
                             PCI.DeviceID = Cards.Count() + 1;
-                            PCI.SpotsX = 50;
-                            PCI.SpotsY = 1;
-                            PCI.NumLED = 50;
+                            PCI.SpotsX = 12;
+                            PCI.SpotsY = 7;
+                            PCI.NumLED = 34;
                             PCI.DeviceName = "PCI1(HUBV2)";
                             PCI.ParrentLocation = vm.Device.DeviceID;
                             PCI.OutputLocation = 2;
+                            PCI.DeviceLayout = 0;
                             PCI.IsVissible = false;
                             Cards.Add(PCI);
                         }
@@ -1149,12 +1222,13 @@ namespace adrilight.ViewModel
                             var PCI = new DeviceSettings();
                             PCI.DeviceType = "Square";                           //add to device settings
                             PCI.DeviceID = Cards.Count() + 1;
-                            PCI.SpotsX = 50;
-                            PCI.SpotsY = 1;
-                            PCI.NumLED = 50;
+                            PCI.SpotsX = 12;
+                            PCI.SpotsY = 7;
+                            PCI.NumLED = 34;
                             PCI.DeviceName = "PCI2(HUBV2)";
                             PCI.ParrentLocation = vm.Device.DeviceID;
                             PCI.OutputLocation = 3;
+                            PCI.DeviceLayout = 0;
                             PCI.IsVissible = false;
                             Cards.Add(PCI);
                         }
@@ -1163,12 +1237,13 @@ namespace adrilight.ViewModel
                             var PCI = new DeviceSettings();
                             PCI.DeviceType = "Square";                           //add to device settings
                             PCI.DeviceID = Cards.Count() + 1;
-                            PCI.SpotsX = 50;
-                            PCI.SpotsY = 1;
-                            PCI.NumLED = 50;
+                            PCI.SpotsX = 12;
+                            PCI.SpotsY = 7;
+                            PCI.NumLED = 34;
                             PCI.DeviceName = "PCI3(HUBV2)";
                             PCI.ParrentLocation = vm.Device.DeviceID;
                             PCI.OutputLocation = 4;
+                            PCI.DeviceLayout = 0;
                             PCI.IsVissible = false;
                             Cards.Add(PCI);
                         }
@@ -1177,12 +1252,13 @@ namespace adrilight.ViewModel
                             var PCI = new DeviceSettings();
                             PCI.DeviceType = "Strip";                           //add to device settings
                             PCI.DeviceID = Cards.Count() + 1;
-                            PCI.SpotsX = 22;
-                            PCI.SpotsY = 1;
-                            PCI.NumLED = 22;
+                            PCI.SpotsX = 12;
+                            PCI.SpotsY = 7;
+                            PCI.NumLED = 34;
                             PCI.DeviceName = "PCI4(HUBV2)";
                             PCI.ParrentLocation = vm.Device.DeviceID;
                             PCI.OutputLocation = 5;
+                            PCI.DeviceLayout = 0;
                             PCI.IsVissible = false;
                             Cards.Add(PCI);
                         }
