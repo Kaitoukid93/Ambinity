@@ -31,6 +31,7 @@ namespace adrilight
         private int _deviceRotation = 0;
         private int _matrixStartPoint = 0;
         private int _matrixStyle = 0;
+        private int _matrixOrientation = 0;
 
 
         private int _mSens = 0;
@@ -196,6 +197,7 @@ namespace adrilight
         public int MatrixStartPoint { get => _matrixStartPoint; set { Set(() => MatrixStartPoint, ref _matrixStartPoint, value); } }
 
         public int MatrixStyle { get => _matrixStyle; set { Set(() => MatrixStyle, ref _matrixStyle, value); } }
+        public int MatrixOrientation { get => _matrixOrientation; set { Set(() => MatrixOrientation, ref _matrixOrientation, value); } }
         public int DeviceRectTop { get => _deviceRectTop; set { Set(() => DeviceRectTop, ref _deviceRectTop, value); } }
         public int DeviceRectLeft{ get => _deviceRectLeft; set { Set(() => DeviceRectLeft, ref _deviceRectLeft, value); } }
         public int DeviceRectWidth { get => _deviceRectWidth; set { Set(() => DeviceRectWidth, ref _deviceRectWidth, value); } }

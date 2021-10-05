@@ -24,6 +24,7 @@ namespace adrilight
         int DeviceRotation { get; set; }
         int MatrixStartPoint { get; set; }
         int MatrixStyle { get; set; }
+        int MatrixOrientation { get; set; }
         bool LayoutEnabled { get; set; }
         int RGBOrder { get; set; }
         bool IsVissible { get; set; }

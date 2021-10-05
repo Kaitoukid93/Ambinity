@@ -45,6 +45,14 @@ namespace adrilight
                 case nameof(DeviceSettings.NumLED):
                 case nameof(DeviceSettings.DeviceLayout):
                 case nameof(DeviceSettings.DeviceRotation):
+                case nameof(DeviceSettings.DeviceRectLeft):
+                case nameof(DeviceSettings.DeviceRectTop):
+                case nameof(DeviceSettings.MatrixOrientation):
+                case nameof(DeviceSettings.MatrixStartPoint):
+
+
+
+
 
 
 
@@ -659,31 +667,241 @@ namespace adrilight
             var displaySpotHeight = displayRectHeight / spotsY;
             var counter = 0;
             var relationIndex = spotsX - spotsY + 1;
-            for (var j = 0; j < spotsY; j++)
+            switch (deviceSettings.MatrixStartPoint)
             {
-                for (var i = 0; i < spotsX; i++)
-                {
-                
-
-                   
-                        var x = i * spotwidth;
-                        var x1 = i * displaySpotWidth;
-
-                        var y = j * spotheight;
-                        var y1 = j * displaySpotHeight;
+                case 0: //start matrix at top left corner
+                 switch(deviceSettings.MatrixOrientation)
+                    {
+                        case 0:
+                            for (var j = 0; j < spotsY; j++)
+                            {
+                                for (var i = 0; i < spotsX; i++)
+                                {
 
 
-                        var index = counter;
 
-                        spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
-                        counter++;
-                    
-                }
+                                    var x = i * spotwidth;
+                                    var x1 = i * displaySpotWidth;
+
+                                    var y = j * spotheight;
+                                    var y1 = j * displaySpotHeight;
+
+
+                                    var index = counter;
+
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    counter++;
+
+                                }
+                            }
+
+                            break;
+                        case 1:
+                            for (var j = 0; j < spotsX; j++)
+                            {
+                                for (var i = 0; i < spotsY; i++)
+                                {
+
+
+
+                                    var x = j * spotwidth;
+                                    var x1 = j * displaySpotWidth;
+
+                                    var y = i * spotheight;
+                                    var y1 = i * displaySpotHeight;
+
+
+                                    var index = counter;
+
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    counter++;
+
+                                }
+                            }
+
+                            break;
+
+                    }
+
+                    break;
+                case 1: // start matrix at the top right corner
+
+                    switch (deviceSettings.MatrixOrientation)
+                    {
+                        case 0:
+                            for (var j = 0; j < spotsY; j++)
+                            {
+                                for (var i = spotsX-1; i >=0; i--)
+                                {
+
+
+
+                                    var x = i * spotwidth;
+                                    var x1 = i * displaySpotWidth;
+
+                                    var y = j * spotheight;
+                                    var y1 = j * displaySpotHeight;
+
+
+                                    var index = counter;
+
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    counter++;
+
+                                }
+                            }
+
+                            break; 
+                        case 1:
+                            for (var i = spotsX-1; i >= 0; i--)
+                            {
+                                for (var j = 0; j < spotsY; j++)
+                                {
+
+
+
+                                    var x = i * spotwidth;
+                                    var x1 = i * displaySpotWidth;
+
+                                    var y = j * spotheight;
+                                    var y1 = j * displaySpotHeight;
+
+
+                                    var index = counter;
+
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    counter++;
+
+                                }
+                            }
+
+                            break;
+
+                    }
+
+                    break;
+
+                case 2: // start matrix at the bottom right corner
+
+                    switch (deviceSettings.MatrixOrientation)
+                    {
+                        case 0:
+                            for (var j = spotsY-1; j >= 0; j--)
+                            {
+                                for (var i = spotsX-1; i >= 0; i--)
+                                {
+
+
+
+                                    var x = i * spotwidth;
+                                    var x1 = i * displaySpotWidth;
+
+                                    var y = j * spotheight;
+                                    var y1 = j * displaySpotHeight;
+
+
+                                    var index = counter;
+
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    counter++;
+
+                                }
+                            }
+
+                            break;
+                        case 1:
+                            for (var i = spotsX-1; i >= 0; i--)
+                            {
+                                for (var j = spotsY-1; j >= 0; j--)
+                                {
+
+
+
+                                    var x = i * spotwidth;
+                                    var x1 = i * displaySpotWidth;
+
+                                    var y = j * spotheight;
+                                    var y1 = j * displaySpotHeight;
+
+
+                                    var index = counter;
+
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    counter++;
+
+                                }
+                            }
+
+                            break;
+
+                    }
+
+                    break;
+
+                case 3: // start matrix at the bottom left corner
+
+                    switch (deviceSettings.MatrixOrientation)
+                    {
+                        case 0:
+                            for (var j = spotsY - 1; j >= 0; j--)
+                            {
+                                for (var i = 0; i < spotsX; i++)
+                                {
+
+
+
+                                    var x = i * spotwidth;
+                                    var x1 = i * displaySpotWidth;
+
+                                    var y = j * spotheight;
+                                    var y1 = j * displaySpotHeight;
+
+
+                                    var index = counter;
+
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    counter++;
+
+                                }
+                            }
+
+                            break;
+                        case 1:
+                            for (var i = 0; i < spotsX; i++)
+                            {
+                                for (var j = spotsY - 1; j >= 0; j--)
+                                {
+
+
+
+                                    var x = i * spotwidth;
+                                    var x1 = i * displaySpotWidth;
+
+                                    var y = j * spotheight;
+                                    var y1 = j * displaySpotHeight;
+
+
+                                    var index = counter;
+
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    counter++;
+
+                                }
+                            }
+
+                            break;
+
+                    }
+
+                    break;
+
+
             }
+           
 
             // if (deviceSettings.OffsetLed != 0) Offset(ref spotSet, deviceSettings.OffsetLed); // offsetLED is obsolete
-            if (spotsY > 1 && deviceSettings.MirrorX) MirrorX(spotSet, spotsX, spotsY);
-             if (spotsX > 1 && deviceSettings.MirrorY) MirrorY(spotSet, spotsX, spotsY); //mirror Y is obsolete
+            //if (spotsY > 1 && deviceSettings.MirrorX) MirrorX(spotSet, spotsX, spotsY);
+            // if (spotsX > 1 && deviceSettings.MirrorY) MirrorY(spotSet, spotsX, spotsY); //mirror Y is obsolete
 
             spotSet[0].IsFirst = true;
             int id = 0;

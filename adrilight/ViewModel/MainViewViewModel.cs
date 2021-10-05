@@ -309,6 +309,7 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+     
         private ObservableCollection<string> _availableEffects;
         public ObservableCollection<string> AvailableEffects {
             get { return _availableEffects; }
@@ -339,13 +340,13 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-        private ObservableCollection<string> _availableMatrixStyle;
-        public ObservableCollection<string> AvailableMatrixStyle {
-            get { return _availableMatrixStyle; }
+        private ObservableCollection<string> _availableMatrixOrientation;
+        public ObservableCollection<string> AvailableMatrixOrientation {
+            get { return _availableMatrixOrientation; }
             set
             {
-                if (_availableMatrixStyle == value) return;
-                _availableMatrixStyle = value;
+                if (_availableMatrixOrientation == value) return;
+                _availableMatrixOrientation = value;
                 RaisePropertyChanged();
             }
         }
@@ -714,22 +715,22 @@ namespace adrilight.ViewModel
         private  void ShaderImageUpdate(object sender, PropertyChangedEventArgs e)
         {
 
-           
-            //Context.Invoke(() =>
-            //{
-            //    var MatrixBitmap = new WriteableBitmap(120, 120, 96, 96, PixelFormats.Bgra32, null);
-            //    MatrixBitmap.Lock();
-            //    IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-            //    var CurrentFrame = ShaderEffect.Frame;
 
-            //    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+            Context.Invoke(() =>
+            {
+                var MatrixBitmap = new WriteableBitmap(120, 120, 96, 96, PixelFormats.Bgra32, null);
+                MatrixBitmap.Lock();
+                IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                var CurrentFrame = ShaderEffect.Frame;
 
-            //    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 120, 120));
+                Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-            //    MatrixBitmap.Unlock();
-            //    ShaderBitmap = MatrixBitmap;
-            //});
-            
+                MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 120, 120));
+
+                MatrixBitmap.Unlock();
+                ShaderBitmap = MatrixBitmap;
+            });
+
         }
 
        
@@ -1073,10 +1074,10 @@ namespace adrilight.ViewModel
           
 
         };
-            AvailableMatrixStyle = new ObservableCollection<string>
+            AvailableMatrixOrientation = new ObservableCollection<string>
    {
-           "Nối tiếp",
-           "ZigZag",
+           "Dọc",
+           "Ngang",
 
 
         };

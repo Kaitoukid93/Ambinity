@@ -156,10 +156,10 @@
                     x:Name="deviceCanvas" 
                     Drop="DeviceCanvas_Drop"
                     DragOver="DeviceCanvas_DragOver">
-                    <Image Width="400" Height="400" Source="{Binding ShaderBitmap}"/>
+                    <Image Width="120" Height="120" Source="{Binding ShaderBitmap}"/>
                     <Rectangle x:Name="deviceRect"
-                               Canvas.Top="{Binding DeviceRectX, Mode=TwoWay}"
-                               Canvas.Left="{Binding DeviceRectY, Mode=TwoWay}"
+                               Canvas.Top="{Binding DeviceRectY, Mode=TwoWay}"
+                               Canvas.Left="{Binding DeviceRectX, Mode=TwoWay}"
                                Width="{Binding CurrentDevice.DeviceRectWidth, Mode=TwoWay}" 
                                Height="{Binding CurrentDevice.DeviceRectHeight, Mode=TwoWay}" Stroke="#FF7F7F7F"
                                MouseMove="DeviceRect_MouseMove" Fill="#66969696">
@@ -995,7 +995,7 @@
                                 <Style TargetType="{x:Type Grid}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedItem, ElementName=deviceLayout}" Value="Strip">
+                                        <DataTrigger Binding="{Binding SelectedItem, ElementName=deviceLayout}" Value="Square, Ring, Rectangle">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -1021,12 +1021,23 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
+                            <Grid.Style>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedItem, ElementName=deviceLayout}" Value="Matrix">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+
                             <TextBlock Margin="10,0,0,0" Grid.Column="0" Text="Điểm bắt đầu" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="104"/>
                             <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Điểm đầu tiên của ma trận" Width="231" Grid.ColumnSpan="2" Height="17"/>
-                            <TextBlock Margin="10,0,0,0" Grid.Column="1" Text="Kiểu nối dây" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="93"/>
-                            <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Kiểu nối tiếp hoặc ZigZag" Width="231" Height="17"/>
-                            <ComboBox IsEnabled="{Binding CurrentDevice.MatrixStartPoint}" Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.DeviceLayout}" x:Name="deviceLayout_Copy" ItemsSource="{Binding AvailableMatrixStartPoint}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="85" Margin="0,0,-0.1,0"/>
-                            <ComboBox IsEnabled="{Binding CurrentDevice.MatrixStyle}" Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.DeviceLayout}" x:Name="deviceLayout_Copy1" ItemsSource="{Binding AvailableMatrixStyle}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="85" Grid.Column="1" Margin="0,0,10,0"/>
+                            <TextBlock Margin="10,0,0,0" Grid.Column="1" Text="Hướng chạy" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="93"/>
+                            <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Hướng chạy của LED" Width="231" Height="17"/>
+                            <ComboBox  Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.MatrixStartPoint}" x:Name="deviceLayout_Copy" ItemsSource="{Binding AvailableMatrixStartPoint}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="85" Margin="0,0,-0.1,0"/>
+                            <ComboBox  Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.MatrixOrientation}" x:Name="deviceLayout_Copy1" ItemsSource="{Binding AvailableOrientation}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="85" Grid.Column="1" Margin="0,0,10,0"/>
 
                         </Grid>
 
