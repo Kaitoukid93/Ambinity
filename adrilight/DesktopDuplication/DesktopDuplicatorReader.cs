@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using adrilight.Resources;
 using adrilight.Util;
+using adrilight.Spots;
 
 namespace adrilight
 {
@@ -21,19 +22,22 @@ namespace adrilight
     {
         private readonly ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public DesktopDuplicatorReader(IGeneralSettings userSettings, IGeneralSpotSet spotSet, int graphicAdapter, int output , MainViewViewModel mainViewViewModel)
+        public DesktopDuplicatorReader(IGeneralSettings userSettings, IDeviceSettings deviceSettings, IDeviceSpotSet deviceSpotSet , MainViewViewModel mainViewViewModel, IDesktopDuplicator desktopDuplicator )
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
-            SpotSet = spotSet ?? throw new ArgumentNullException(nameof(spotSet));
-            GraphicAdapter = graphicAdapter;
-            Output = output;
+            DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
+            DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
+            DesktopDuplicator = desktopDuplicator ?? throw new ArgumentNullException(nameof(desktopDuplicator));
+            // GraphicAdapter = graphicAdapter;
+            // Output = output;
             MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
             // SettingsViewModel = settingsViewModel ?? throw new ArgumentNullException(nameof(settingsViewModel));
             _retryPolicy = Policy.Handle<Exception>()
                 .WaitAndRetryForever(ProvideDelayDuration);
 
             UserSettings.PropertyChanged += PropertyChanged;
-           // SettingsViewModel.PropertyChanged += PropertyChanged;
+            DeviceSettings.PropertyChanged += PropertyChanged;
+            // SettingsViewModel.PropertyChanged += PropertyChanged;
             RefreshCapturingState();
 
             _log.Info($"DesktopDuplicatorReader created.");
@@ -45,6 +49,7 @@ namespace adrilight
             {
                 
                 case nameof(UserSettings.ShouldbeRunning):
+                case nameof(DeviceSettings.SelectedEffect):
 
                     RefreshCapturingState();
                     break;
@@ -62,8 +67,8 @@ namespace adrilight
         private CancellationTokenSource _cancellationTokenSource;
 
         private Thread _workerThread;
-        public int GraphicAdapter;
-        public int Output;
+       // public int GraphicAdapter;
+       // public int Output;
 
        public void RefreshCaptureSource()
         {
@@ -91,7 +96,7 @@ namespace adrilight
         public void RefreshCapturingState()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = UserSettings.ShouldbeRunning;
+            var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 0;
             //  var shouldBeRefreshing = NeededRefreshing;
 
 
@@ -102,6 +107,7 @@ namespace adrilight
                 _log.Debug("stopping the capturing");
                 _cancellationTokenSource.Cancel();
                 _cancellationTokenSource = null;
+               
 
             }
 
@@ -127,7 +133,9 @@ namespace adrilight
   
 
         private IGeneralSettings UserSettings { get; }
-        private IGeneralSpotSet SpotSet { get; }
+        private IDeviceSettings DeviceSettings { get; }
+        private IDeviceSpotSet DeviceSpotSet { get; }
+        private IDesktopDuplicator DesktopDuplicator { get; }
        
   
 
@@ -144,14 +152,12 @@ namespace adrilight
             if (index < 10 + 256)
             {
                 //steps where there is also led dimming
-                SpotSet.IndicateMissingValues();
+                DeviceSpotSet.IndicateMissingValues();
                 return TimeSpan.FromMilliseconds(5000d / 256);
             }
             return TimeSpan.FromMilliseconds(1000);
         }
 
-        private DesktopDuplicator _desktopDuplicator;
-        private DesktopDuplicator _desktopDuplicator2;
 
 
 
@@ -162,8 +168,12 @@ namespace adrilight
             IsRunning = true;
             NeededRefreshing = false;
             _log.Debug("Started Desktop Duplication Reader.");
-            Bitmap image = null;
+            Bitmap image = new Bitmap(240, 135, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
             BitmapData bitmapData = new BitmapData();
+            var width = DeviceSettings.DeviceRectWidth;
+            var height = DeviceSettings.DeviceRectHeight;
+            var x = DeviceSettings.DeviceRectLeft;
+            var y = DeviceSettings.DeviceRectTop;
 
             try
             {
@@ -173,7 +183,7 @@ namespace adrilight
                 while (!token.IsCancellationRequested)
                 {
                     var frameTime = Stopwatch.StartNew();
-                    var newImage = _retryPolicy.Execute(() => GetNextFrame(image));
+                    var newImage = _retryPolicy.Execute(() => GetNextFrame());
                     TraceFrameDetails(newImage);
                  
                     if (newImage == null)
@@ -186,26 +196,28 @@ namespace adrilight
                     //bool isPreviewRunning = SettingsViewModel.IsSettingsWindowOpen && SettingsViewModel.IsPreviewTabOpen;
                     //if (isPreviewRunning)
                     //{
-                     //   MainViewViewModel.SetPreviewImage(image);
-                    
-                    image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb, bitmapData);
+                    //   MainViewViewModel.SetPreviewImage(image);
+                  
 
-                    lock (SpotSet.Lock)
+                    image.LockBits(new Rectangle(x, y, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb, bitmapData);
+
+
+                    lock (DeviceSpotSet.Lock)
                     {
                         var useLinearLighting = UserSettings.UseLinearLighting==0;
 
                         var imageRectangle = new Rectangle(0, 0, image.Width, image.Height);
 
-                        if (imageRectangle.Width != SpotSet.ExpectedScreenWidth || imageRectangle.Height != SpotSet.ExpectedScreenHeight)
-                        {
-                            //the screen was resized or this is some kind of powersaving state
-                            SpotSet.IndicateMissingValues();
+                        //if (imageRectangle.Width != DeviceSpotSet.ExpectedScreenWidth || imageRectangle.Height != DeviceSpotSet.ExpectedScreenHeight)
+                        //{
+                        //    //the screen was resized or this is some kind of powersaving state
+                        //    DeviceSpotSet.IndicateMissingValues();
 
-                            continue;
-                        }
-                        else
-                        {
-                            Parallel.ForEach(SpotSet.Spots
+                        //    continue;
+                        //}
+                        //else
+                        //{
+                            Parallel.ForEach(DeviceSpotSet.Spots
                                 , spot =>
                                 {
                                     const int numberOfSteps = 15;
@@ -230,33 +242,7 @@ namespace adrilight
                                     spot.SetColor(RealfinalR, RealfinalG, RealfinalB, true);
 
                                 });
-
-                            Parallel.ForEach(SpotSet.SpotsDesk
-                             , spot =>
-                             {
-                                 const int numberOfSteps = 15;
-                                 int stepx = Math.Max(1, spot.Rectangle.Width / numberOfSteps);
-                                 int stepy = Math.Max(1, spot.Rectangle.Height / numberOfSteps);
-
-                                 GetAverageColorOfRectangularRegion(spot.Rectangle, stepy, stepx, bitmapData,
-                                     out int sumR, out int sumG, out int sumB, out int count);
-
-                                 var countInverse = 1f / count;
-
-                                 ApplyColorCorrections(sumR * countInverse, sumG * countInverse, sumB * countInverse
-                                     , out byte finalR, out byte finalG, out byte finalB, useLinearLighting
-                                     , UserSettings.SaturationTreshold, spot.Red, spot.Green, spot.Blue);
-
-                                 var spotColor = new OpenRGB.NET.Models.Color(finalR, finalG, finalB);
-
-                                 var semifinalSpotColor = Brightness.applyBrightness(spotColor, 100);
-                                 ApplySmoothing(semifinalSpotColor.R, semifinalSpotColor.G, semifinalSpotColor.B
-                                     , out byte RealfinalR, out byte RealfinalG, out byte RealfinalB,
-                                  spot.Red, spot.Green, spot.Blue);
-                                 spot.SetColor(RealfinalR, RealfinalG, RealfinalB, true);
-
-                             });
-                        }
+                        //}
 
                     }
 
@@ -277,8 +263,7 @@ namespace adrilight
             finally
             {
                 image?.Dispose();
-                _desktopDuplicator?.Dispose();
-                _desktopDuplicator = null;
+                
                 _log.Debug("Stopped Desktop Duplication Reader.");
                 IsRunning = false;
                 GC.Collect();
@@ -388,35 +373,37 @@ namespace adrilight
             return (byte)(256f * ((float)Math.Pow(factor, color / 256f) - 1f) / (factor - 1));
         }
 
-        private Bitmap GetNextFrame(Bitmap reusableBitmap)
+        private Bitmap GetNextFrame()
         {
-            
-            
 
-            if (_desktopDuplicator == null)
-            {
-                try
-                {
-                    _desktopDuplicator = new DesktopDuplicator(GraphicAdapter, Output);
-                }
-                catch (Exception ex)
-                {
-                    if (ex.Message == "Unknown, just retry")
-                    {
-                        _log.Error(ex, "could be secure desktop");
-                    }
-                    // _desktopDuplicator.Dispose();
-                    // _desktopDuplicator = null;
-                    GC.Collect();
-                    return null;
-
-                }
-
-            }
+           
+         
 
             try
             {
-                return _desktopDuplicator.GetLatestFrame(reusableBitmap);
+                Bitmap DesktopImage;
+                DesktopImage = new Bitmap(240, 135, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                var DesktopImageBitmapData = DesktopImage.LockBits(new Rectangle(0, 0, 240, 135), ImageLockMode.WriteOnly, DesktopImage.PixelFormat);
+                IntPtr pixelAddress = DesktopImageBitmapData.Scan0;
+                
+                    var CurrentFrame = DesktopDuplicator.DesktopFrame;
+                    if (CurrentFrame == null)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+
+                    }
+
+
+
+
+
+                DesktopImage.UnlockBits(DesktopImageBitmapData);
+
+                return DesktopImage;
             }
             catch (Exception ex)
             {
@@ -439,9 +426,14 @@ namespace adrilight
                 {
                     _log.Error(ex, "Failed to release frame.");
                 }
+                else
+                {
+                    throw new DesktopDuplicationException("Unknown Device Error", ex);
+                }
 
-                _desktopDuplicator.Dispose();
-                _desktopDuplicator = null;
+
+                //_desktopDuplicator.Dispose();
+                //_desktopDuplicator = null;
                 GC.Collect();
                 return null;
             }
@@ -457,7 +449,7 @@ namespace adrilight
             _workerThread?.Join();
             _workerThread = null;
         }
-
+   
 
         private unsafe void GetAverageColorOfRectangularRegion(Rectangle spotRectangle, int stepy, int stepx, BitmapData bitmapData, out int sumR, out int sumG,
             out int sumB, out int count)

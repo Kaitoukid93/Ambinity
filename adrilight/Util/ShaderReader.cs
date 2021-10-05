@@ -105,6 +105,10 @@ namespace adrilight.Util
             _log.Debug("Started Shader Reader.");
             Bitmap image = null;
             BitmapData bitmapData = new BitmapData();
+            var width = DeviceSettings.DeviceRectWidth;
+            var height = DeviceSettings.DeviceRectHeight;
+            var x = DeviceSettings.DeviceRectLeft;
+            var y = DeviceSettings.DeviceRectTop;
 
             try
             {
@@ -115,7 +119,7 @@ namespace adrilight.Util
                 {
                     //get bitmap image of each frame
                     var frameTime = Stopwatch.StartNew();
-                    var newImage = _retryPolicy.Execute(() => GetShaderFrame(image)); 
+                    var newImage = _retryPolicy.Execute(() => GetShaderFrame()); 
                    // TraceFrameDetails(newImage);
 
                     if (newImage == null)
@@ -130,13 +134,13 @@ namespace adrilight.Util
                     //{
                     //   MainViewViewModel.SetPreviewImage(image);
                     
-                    image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppRgb, bitmapData);
+                    image.LockBits(new Rectangle(x, y, width, height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppRgb, bitmapData);
 
                     lock (DeviceSpotSet.Lock)
                     {
                        var useLinearLighting = GeneralSettings.UseLinearLighting == 0;
 
-                        var imageRectangle = new Rectangle(0, 0, image.Width, image.Height);
+                        
 
                         //if (imageRectangle.Width != DeviceSpotSet.ExpectedScreenWidth || imageRectangle.Height != SpotSet.ExpectedScreenHeight)
                         //{
@@ -273,79 +277,37 @@ namespace adrilight.Util
             }
             return bmp;
         }
-
-        private Bitmap GetShaderFrame(Bitmap reusableBitmap)
+        
+        private Bitmap GetShaderFrame()
         {
-            var width = DeviceSettings.DeviceRectWidth;
-            var height = DeviceSettings.DeviceRectHeight;
-            var x = DeviceSettings.DeviceRectLeft;
-            var y = DeviceSettings.DeviceRectTop;
+            
 
-            //get canvas bitmap
-            Bitmap ShaderBitmap;
-            ShaderBitmap = new Bitmap(120, 120, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            //get shader  bitmap
+            
+            var ShaderBitmap = new Bitmap(120, 120, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
             var ShaderBitmapData = ShaderBitmap.LockBits(new Rectangle(0,0,120,120), ImageLockMode.WriteOnly, ShaderBitmap.PixelFormat);
             IntPtr pixelAddress = ShaderBitmapData.Scan0;
-            try
-            {
+            
                 var CurrentFrame = ShaderEffect.Frame;
-                if(CurrentFrame== null)
+                if(CurrentFrame == null)
                 {
                     return null;
                 }
                 else
                 {
-                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
-                    
+                Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+                ShaderBitmap.UnlockBits(ShaderBitmapData);
+                return ShaderBitmap;
 
-                   
-                }
+            }
                
-                
-            }
-            catch(Exception ex)
-            {
-                return null;
-            }
+        
             
-            ShaderBitmap.UnlockBits(ShaderBitmapData);
 
-
-            //crop canvas bitmap
-
-            Bitmap CroppedBitmap;
-            var CroppedData = CropBitmap(ShaderBitmap,x,y,width,height);
-            CroppedBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
-            var CroppedBitmapData = CroppedBitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, ShaderBitmap.PixelFormat);
-            IntPtr newPixelAddress = CroppedBitmapData.Scan0;
-
-            Marshal.Copy(CroppedData, 0, newPixelAddress, CroppedData.Length);
-
-            CroppedBitmap.UnlockBits(CroppedBitmapData);
-            return CroppedBitmap;
+          
 
         }
-        public static byte[] CropBitmap(Bitmap source, int x, int y, int width, int height)
-        {
-            if (x + width > 120)
-                x = 120 - width;
-            if (y + height > 120)
-                y = 120 - height;
-            Rectangle rect = new Rectangle(x, y, width, height);
-            System.Drawing.Imaging.BitmapData bmpData =
-                source.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            IntPtr ptr = bmpData.Scan0;
-
-            int bytes = 4 * width * height;
-            byte[] rgbValues = new byte[bytes];
-
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
-
-            source.UnlockBits(bmpData);
-            return rgbValues;
-        }
+       
 
         private byte FadeNonLinear(float color)
         {

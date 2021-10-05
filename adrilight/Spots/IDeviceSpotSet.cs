@@ -20,6 +20,7 @@ namespace adrilight.Spots
         int ParrentLocation { get; set; }
         int OutputLocation { get; set; }
         int RGBOrder { get; set; }
+        void IndicateMissingValues();
 
     }
 }

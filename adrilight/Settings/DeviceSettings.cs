@@ -63,6 +63,7 @@ namespace adrilight
         private int _deviceRectWidth = 100;
         private int _deviceRectHeight = 100;
         private int _deviceScale = 1;
+        
 
         private int _spotWidth = 150;
        // private bool _startMinimized = true;

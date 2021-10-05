@@ -120,7 +120,7 @@ namespace adrilight
                             float timestamp = 1 / 60f * frame;
 
                             // Run the shader
-                           Gpu.Default.ForEach(texture, new PixelRainbow(timestamp));
+                           Gpu.Default.ForEach(texture, new Fluid(timestamp));
 
                             // Copy the rendered frame to a readback texture that can be accessed by the CPU.
                             // The rendered texture can only be accessed by the GPU, so we can't read from it.

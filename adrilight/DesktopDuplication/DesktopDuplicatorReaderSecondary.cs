@@ -364,7 +364,7 @@ namespace adrilight
             {
                 try
                 {
-                    _desktopDuplicator = new DesktopDuplicator(GraphicAdapter, Output);
+                   // _desktopDuplicator = new DesktopDuplicator();
                 }
                 catch (Exception ex)
                 {
