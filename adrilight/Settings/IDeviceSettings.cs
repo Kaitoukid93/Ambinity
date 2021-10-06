@@ -30,6 +30,8 @@ namespace adrilight
         bool IsVissible { get; set; }
         int OutputLocation { get; set; }
         int ParentDeviceId { get; set; }
+        int MaxBrightness { get; set; }
+        
         // DateTime? LastUpdateCheck { get; set; }
         [Obsolete]
         int LedsPerSpot { get; set; }

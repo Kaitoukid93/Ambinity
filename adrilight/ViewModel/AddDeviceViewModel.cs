@@ -113,6 +113,8 @@ namespace adrilight.ViewModel
                     Device.RGBOrder = 5;
                     Device.DeviceLayout = 0;
                     Device.LayoutEnabled = false;
+                    Device.MaxBrightness = 55;
+                    Device.Brightness = 40;
                     IsNextable = true;
                     RaisePropertyChanged(() => Device.DeviceType);
                     RaisePropertyChanged(() => Device.RGBOrder);

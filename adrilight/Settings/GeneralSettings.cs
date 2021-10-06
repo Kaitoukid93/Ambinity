@@ -29,6 +29,7 @@ namespace adrilight
         private int _deskSize = 0;
         private int _screenSizeSecondary = 0;
         private int _screenSizeThird = 0;
+        private string _selectedShader = "Gooey";
 
         private bool _startMinimized = false;
 
@@ -78,6 +79,7 @@ namespace adrilight
 
 
         public int DeskSize { get => _deskSize; set { Set(() => DeskSize, ref _deskSize, value); } }
+        public string SelectedShader { get => _selectedShader; set { Set(() => SelectedShader, ref _selectedShader, value); } }
         public int ScreenSize { get => _screenSize; set { Set(() => ScreenSize, ref _screenSize, value); } }
         public int ScreenSizeSecondary { get => _screenSizeSecondary; set { Set(() => ScreenSizeSecondary, ref _screenSizeSecondary, value); } }
         public int ScreenSizeThird { get => _screenSizeThird; set { Set(() => ScreenSizeThird, ref _screenSizeThird, value); } }

@@ -289,7 +289,7 @@
                 <TextBlock Grid.Row="0" Margin="10,10,0,9" Grid.Column="0" Text="Độ Sáng" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Grid.ColumnSpan="2"/>
                 <TextBlock Margin="10,12,0,12" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="Độ sáng của toàn bộ dây LED, áp dụng cho tất cả các chế độ" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left" Width="378"/>
                 <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Height="1" Fill="#14000000" VerticalAlignment="Bottom" Margin="10,0,10,5"/>
-                <Slider Minimum="0" Maximum="100" Style="{StaticResource SliderBaseStyle}" Value="{Binding CurrentDevice.Brightness}" Width="150" Margin="0,0,10,0" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                <Slider Minimum="0" Maximum="{Binding CurrentDevice.MaxBrightness}" Style="{StaticResource SliderBaseStyle}" Value="{Binding CurrentDevice.Brightness}" Width="150" Margin="0,0,10,0" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                 <Button Grid.Column="1"  Style="{StaticResource MaterialDesignFlatButton}" Content="{Binding CurrentDevice.Brightness}" materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0"  Background="#26000000" BorderBrush="{x:Null}" Foreground="#FF898989" Margin="0,4,20,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
             </Grid>

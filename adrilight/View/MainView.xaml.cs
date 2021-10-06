@@ -26,8 +26,13 @@ namespace adrilight.View
             InitializeComponent();
             // ViewModel = new MainViewViewModel();
             // this.DataContext = ViewModel;
-            
 
+            var view = DataContext as MainViewViewModel;
+            if (view != null)
+            {
+                view.IsCanvasLightingWindowOpen = true;
+                view.IsSplitLightingWindowOpen = true;
+            }
         }
 
         
@@ -47,7 +52,8 @@ namespace adrilight.View
             var vm = DataContext as MainViewViewModel;
             if (vm != null)
             {
-                vm.IsSettingsWindowOpen = false;
+                vm.IsSplitLightingWindowOpen = false;
+                vm.IsCanvasLightingWindowOpen = false;
             }
         }
 

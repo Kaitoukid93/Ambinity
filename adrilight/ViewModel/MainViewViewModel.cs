@@ -25,6 +25,7 @@ using System.ComponentModel;
 using System.Windows.Media;
 using System.Drawing;
 using System.Drawing.Imaging;
+using adrilight.Shaders;
 
 namespace adrilight.ViewModel
 {
@@ -275,6 +276,7 @@ namespace adrilight.ViewModel
         // public IDeviceSettings Card1 { get; set; }
 
         public ICommand SelectCardCommand { get; set; }
+        public ICommand SelectShaderCommand { get; set; }
         public ICommand ShowAddNewCommand { get; set; }
         public ICommand RefreshDeviceCommand { get; set; }
 
@@ -320,6 +322,16 @@ namespace adrilight.ViewModel
             {
                 if (_availableEffects == value) return;
                 _availableEffects = value;
+                RaisePropertyChanged();
+            }
+        }
+        private ObservableCollection<ShaderCard> _availableShader;
+        public ObservableCollection<ShaderCard> AvailableShader {
+            get { return _availableShader; }
+            set
+            {
+                if (_availableShader == value) return;
+                _availableShader = value;
                 RaisePropertyChanged();
             }
         }
@@ -741,42 +753,65 @@ namespace adrilight.ViewModel
 
         private void ShaderImageUpdate(object sender, PropertyChangedEventArgs e)
         {
-            if(CurrentDevice!=null)
+            if(IsSplitLightingWindowOpen)
             {
-                switch(CurrentDevice.SelectedEffect){
-                    case 5:
-                        Context.Invoke(() =>
-                        {
-                            var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
-                            MatrixBitmap.Lock();
-                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                            var CurrentFrame = ShaderEffect.Frame;
+                if (CurrentDevice != null)
+                {
+                    switch (CurrentDevice.SelectedEffect)
+                    {
+                        case 5:
+                            Context.Invoke(() =>
+                            {
+                                var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                                MatrixBitmap.Lock();
+                                IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                                var CurrentFrame = ShaderEffect.Frame;
 
-                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+                                Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+                                MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-                            MatrixBitmap.Unlock();
-                            ShaderBitmap = MatrixBitmap;
-                        });
-                        break;
-                    case 0:
-                        Context.Invoke(() =>
-                        {
-                            var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
-                            MatrixBitmap.Lock();
-                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                            var CurrentFrame = DesktopDuplicator.DesktopFrame;
+                                MatrixBitmap.Unlock();
+                                ShaderBitmap = MatrixBitmap;
+                            });
+                            break;
+                        case 0:
+                            Context.Invoke(() =>
+                            {
+                                var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                                MatrixBitmap.Lock();
+                                IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                                var CurrentFrame = DesktopDuplicator.DesktopFrame;
 
-                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+                                Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+                                MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-                            MatrixBitmap.Unlock();
-                            ShaderBitmap = MatrixBitmap;
-                        });
-                        break;
+                                MatrixBitmap.Unlock();
+                                ShaderBitmap = MatrixBitmap;
+                            });
+                            break;
+                    }
                 }
+            }
+           
+
+            if(IsCanvasLightingWindowOpen)
+            {
+                Context.Invoke(() =>
+                {
+                    var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                    MatrixBitmap.Lock();
+                    IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                    var CurrentFrame = ShaderEffect.Frame;
+
+                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+
+                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+
+                    MatrixBitmap.Unlock();
+                    ShaderBitmap = MatrixBitmap;
+                });
             }
           
 
@@ -814,16 +849,25 @@ namespace adrilight.ViewModel
               
             }
         }
-        private bool _isSettingsWindowOpen;
-        public bool IsSettingsWindowOpen {
-            get => _isSettingsWindowOpen;
+        private bool _isCanvasLightingWindowOpen;
+        public bool IsCanvasLightingWindowOpen {
+            get => _isCanvasLightingWindowOpen;
             set
             {
-                Set(ref _isSettingsWindowOpen, value);
+                Set(ref _isCanvasLightingWindowOpen, value);
                // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
             }
         }
-      
+        private bool _isSplitLightingWindowOpen;
+        public bool IsSplitLightingWindowOpen {
+            get => _isSplitLightingWindowOpen;
+            set
+            {
+                Set(ref _isSplitLightingWindowOpen, value);
+                // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
+            }
+        }
+
         private int _deviceRectX;
         public int DeviceRectX {
             get => _deviceRectX;
@@ -954,7 +998,19 @@ namespace adrilight.ViewModel
                     this.GotoChild(p);
                 }     
             });
+            SelectShaderCommand = new RelayCommand<ShaderCard>((p) => {
+                return p != null;
+            }, (p) =>
+            {
+                //if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+                //{
 
+                //}
+                //change shader to selected
+                GeneralSettings.SelectedShader = p.Header.ToString();
+                RaisePropertyChanged(nameof(GeneralSettings.SelectedShader));
+
+            });
 
             ShowAddNewCommand = new RelayCommand<IDeviceSettings>((p) => {
                 return true;
@@ -1110,6 +1166,8 @@ namespace adrilight.ViewModel
                             newDevice.DeviceID = Cards.Count + 1;
                             newDevice.DeviceSerial = "151293";
                             newDevice.RGBOrder = 5;
+                            newDevice.MaxBrightness = 55;
+                            newDevice.Brightness = 40;
                             Cards.Add(newDevice);
 
 
@@ -1133,6 +1191,8 @@ namespace adrilight.ViewModel
                             newDevice.DeviceID = Cards.Count + 1;
                             newDevice.DeviceSerial = "151293";
                             newDevice.RGBOrder = 5;
+                            newDevice.MaxBrightness = 55;
+                            newDevice.Brightness = 40;
                             Cards.Add(newDevice);
 
 
@@ -1255,7 +1315,48 @@ namespace adrilight.ViewModel
 
         };
 
+            AvailableShader = new ObservableCollection<ShaderCard>
 
+            {
+
+                new ShaderCard
+                {
+                    Header = "Gooey",
+                    Content = "Gooey.jpg",
+                    Footer = "Super Smooth Gooey color"
+                    
+                },
+                 new ShaderCard
+                {
+                    Header = "Plasma",
+                    Content = "Plasma.jpg",
+                    Footer = "Simple Plasma"
+
+                },
+                  new ShaderCard
+                {
+                    Header = "Fluid",
+                    Content = "Fluid.jpg",
+                    Footer = "Simple Fluid"
+
+                },
+                   new ShaderCard
+                {
+                    Header = "MetaBalls",
+                    Content = "MetaBalls.jpg",
+                    Footer = "Bouncing Fireflies"
+
+                },
+                    new ShaderCard
+                {
+                    Header = "Pixel Rainbow",
+                    Content = "PixelRainbow.jpg",
+                    Footer = "Diagonal Rainbow Effect"
+
+                }
+
+
+            };
 
         }
 
@@ -1822,6 +1923,13 @@ namespace adrilight.ViewModel
             if (CurrentDevice.IsHUB)
             {
                 ParrentLocation = CurrentDevice.DeviceID;
+                var childList = new List<IDeviceSettings>();
+                foreach (var device in Cards)
+                {
+                    if (device.ParrentLocation == CurrentDevice.DeviceID)
+                        childList.Add(device);
+                }
+                CurrentDevice = childList[0];
             }
             if (CurrentDevice.DeviceID == 151293)
             {

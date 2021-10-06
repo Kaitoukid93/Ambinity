@@ -32,6 +32,7 @@ namespace adrilight
         private int _matrixStartPoint = 0;
         private int _matrixStyle = 0;
         private int _matrixOrientation = 0;
+        private int _maxBrightness = 100;
 
 
         private int _mSens = 0;
@@ -100,6 +101,7 @@ namespace adrilight
 
         private string _filemau = "Blackout.txt";
         private string _filemauchip = "Blackout.txt";
+        private bool _blackOut = true;
 
         private byte _selectedEffect = 0;
         private Color _color0 = Color.FromArgb(255, 0, 255, 255);
@@ -167,7 +169,7 @@ namespace adrilight
         public int ConfigFileVersion { get; set; } = 1;
 
 
-
+        public int MaxBrightness { get => _maxBrightness; set { Set(() => MaxBrightness, ref _maxBrightness, value); } }
         public int OutputLocation { get => _outputLocation; set { Set(() => OutputLocation, ref _outputLocation, value); } }
         
         public int MSens { get => _mSens; set { Set(() => MSens, ref _mSens, value); } }
@@ -196,7 +198,7 @@ namespace adrilight
         public bool LEDOn { get => _lEDOn; set { Set(() => LEDOn, ref _lEDOn, value); } }
         public int OffsetLed { get => _offsetLed; set { Set(() => OffsetLed, ref _offsetLed, value); } }
         public int MatrixStartPoint { get => _matrixStartPoint; set { Set(() => MatrixStartPoint, ref _matrixStartPoint, value); } }
-
+        
         public int MatrixStyle { get => _matrixStyle; set { Set(() => MatrixStyle, ref _matrixStyle, value); } }
         public int MatrixOrientation { get => _matrixOrientation; set { Set(() => MatrixOrientation, ref _matrixOrientation, value); } }
         public int DeviceRectTop { get => _deviceRectTop; set { Set(() => DeviceRectTop, ref _deviceRectTop, value); } }

@@ -226,7 +226,11 @@ namespace adrilight
             var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.DevicePort, 2000000));
             serialPort.Open();
             serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
-            Thread.Sleep(1000);
+            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
+            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
+            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
+            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
+                                                            // Thread.Sleep(1000);
             serialPort.Close();
 
             //Close Serial port in under 5 sec (5sec is HUBv2 restart signal delay)

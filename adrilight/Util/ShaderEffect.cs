@@ -54,6 +54,7 @@ namespace adrilight
                 case nameof(GeneralSettings.ShaderCanvasHeight):
                 case nameof(GeneralSettings.ShaderX):
                 case nameof(GeneralSettings.ShaderY):
+                case nameof(GeneralSettings.SelectedShader):
 
                     RefreshColorState();
                     break;
@@ -121,7 +122,33 @@ namespace adrilight
                             float timestamp = 1 / 60f * frame;
 
                             // Run the shader
-                           Gpu.Default.ForEach(texture, new Gooey(timestamp));
+                           switch(GeneralSettings.SelectedShader)
+                    {
+                        case "Gooey":
+                            Gpu.Default.ForEach(texture, new Gooey(timestamp));
+                            break;
+                        case "Fluid":
+                            Gpu.Default.ForEach(texture, new Fluid(timestamp));
+                            break;
+                        case "Plasma":
+                            Gpu.Default.ForEach(texture, new Plasma(timestamp));
+                            break;
+                        case "Falling":
+                            Gpu.Default.ForEach(texture, new Falling(timestamp));
+                            break;
+                        case "MetaBalls":
+                            Gpu.Default.ForEach(texture, new MetaBalls(timestamp));
+
+                            break;
+                        case "Pixel Rainbow":
+                            Gpu.Default.ForEach(texture, new PixelRainbow(timestamp));
+
+                            break;
+                       
+
+
+                    }
+                           
 
                             // Copy the rendered frame to a readback texture that can be accessed by the CPU.
                             // The rendered texture can only be accessed by the GPU, so we can't read from it.

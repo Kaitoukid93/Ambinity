@@ -21,6 +21,7 @@ namespace adrilight
         int OffsetLed { get; set; }
         int OffsetLed2 { get; set; }
         int OffsetLed3 { get; set; }
+        string SelectedShader { get; set; }
 
         int SpotHeight { get; set; }
 
