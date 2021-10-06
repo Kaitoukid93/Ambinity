@@ -31,6 +31,7 @@ namespace adrilight
         int OutputLocation { get; set; }
         int ParentDeviceId { get; set; }
         int MaxBrightness { get; set; }
+        int HUBID { get; set; }
         
         // DateTime? LastUpdateCheck { get; set; }
         [Obsolete]

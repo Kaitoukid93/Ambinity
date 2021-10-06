@@ -41,6 +41,7 @@ namespace adrilight
         private bool _mirrorX = true;
         private bool _mirrorY = false;
         private int _offsetLed = 0;
+        private int _hUBID = 0;
 
         //ambilight smooth choice///
 
@@ -180,6 +181,7 @@ namespace adrilight
         public string GifFilePath { get => _gifFilePath; set { Set(() => GifFilePath, ref _gifFilePath, value); } }
         public string DeviceName { get => _deviceName; set { Set(() => DeviceName, ref _deviceName, value); } }
         public int DeviceID { get => _deviceID; set { Set(() => DeviceID, ref _deviceID, value); } }
+        public int HUBID { get => _hUBID; set { Set(() => HUBID, ref _hUBID, value); } }
         public int ParrentLocation { get => _parrentLocation; set { Set(() => ParrentLocation, ref _parrentLocation, value); } }
         public string DeviceSerial { get => _deviceSerial; set { Set(() => DeviceSerial, ref _deviceSerial, value); } }
         public string DeviceType { get => _deviceType; set { Set(() => DeviceType, ref _deviceType, value); } }

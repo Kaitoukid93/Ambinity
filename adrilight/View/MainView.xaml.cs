@@ -31,7 +31,7 @@ namespace adrilight.View
             if (view != null)
             {
                 view.IsCanvasLightingWindowOpen = true;
-                view.IsSplitLightingWindowOpen = true;
+                //view.IsSplitLightingWindowOpen = true;
             }
         }
 
@@ -43,12 +43,12 @@ namespace adrilight.View
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = true;
-            this.Visibility = Visibility.Hidden;
+            
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            
             var vm = DataContext as MainViewViewModel;
             if (vm != null)
             {

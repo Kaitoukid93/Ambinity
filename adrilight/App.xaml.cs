@@ -23,6 +23,8 @@ using adrilight.Spots;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Windows.Controls;
+using GalaSoft.MvvmLight;
+using System.Threading;
 
 namespace adrilight
 {
@@ -68,7 +70,7 @@ namespace adrilight
     {
         private static readonly ILogger _log = LogManager.GetCurrentClassLogger();
         private static System.Threading.Mutex _mutex = null;
-
+        private static Mutex _adrilightMutex;
         protected override void OnStartup(StartupEventArgs startupEvent)
         {
             
@@ -79,7 +81,18 @@ namespace adrilight
             //if (!createdNew) Current.Shutdown();
             //else Exit += CloseMutexHandler;
             //  IServiceProvider serviceProvider = CreateServiceProvider();
-            base.OnStartup(startupEvent);
+            if (!ViewModelBase.IsInDesignModeStatic)
+            {
+                _adrilightMutex = new Mutex(true, "adrilight2");
+                if (!_adrilightMutex.WaitOne(TimeSpan.Zero, true))
+                {
+                    //another instance is already running!
+                    HandyControl.Controls.MessageBox.Show("There is already an instance of adrilight running. Please start only a single instance at any given time."
+                        , "Adrilight is already running!");
+                    Shutdown();
+                    return;
+                }
+            }
 
             SetupDebugLogging();
             SetupLoggingForProcessWideEvents();
@@ -103,10 +116,10 @@ namespace adrilight
 
            
 
-            Current.MainWindow = kernel.Get<MainView>();
+           // Current.MainWindow = kernel.Get<MainView>();
             if (!GeneralSettings.StartMinimized)
             {
-                Current.MainWindow.Show();
+                OpenSettingsWindow();
             }
 
             SetupTrackingForProcessWideEvents(_telemetryClient);
@@ -341,14 +354,29 @@ namespace adrilight
 
         
         private IKernel kernel;
-        MainView _newUIForm;
-        private void OpenNewUI()
+        MainView _mainForm;
+        private void OpenSettingsWindow()
         {
-            Current.MainWindow.WindowState = WindowState.Normal;
-            Current.MainWindow.Show();
-     
+            if (_mainForm == null)
+            {
+                _mainForm = new MainView();
+                _mainForm.Closed += MainForm_FormClosed;
+                _mainForm.Show();
+            }
+            else
+            {
+                //bring to front?
+                _mainForm.Focus();
+            }
         }
-      
+        private void MainForm_FormClosed(object sender, EventArgs e)
+        {
+            if (_mainForm == null) return;
+
+            //deregister to avoid memory leak
+            _mainForm.Closed -= MainForm_FormClosed;
+            _mainForm = null;
+        }
         private void SetupNotifyIcon()
 
         {
@@ -378,7 +406,7 @@ namespace adrilight
 
 
             }
-            var dashboard = new ToolStripMenuItem("Dashboard", null, (s, e) => OpenNewUI());
+            var dashboard = new ToolStripMenuItem("Dashboard", null, (s, e) => OpenSettingsWindow());
             var exit = new ToolStripMenuItem("Thoát", null, (s, e) => Shutdown(0));
             contextMenu.Items.Add(dashboard);
             contextMenu.Items.Add(exit);
@@ -396,7 +424,7 @@ namespace adrilight
                 ContextMenuStrip = contextMenu
             };
             //  notifyIcon.DoubleClick += (s, e) => { OpenSettingsWindow(); };
-            notifyIcon.DoubleClick += (s, e) => { OpenNewUI(); };
+            notifyIcon.DoubleClick += (s, e) => { OpenSettingsWindow(); };
             notifyIcon.BalloonTipText = "Ứng dụng đã ẩn, double click để hiển thị cửa sổ";
 
             Exit += (s, e) => notifyIcon.Dispose();

@@ -767,12 +767,15 @@ namespace adrilight.ViewModel
                                 IntPtr pixelAddress = MatrixBitmap.BackBuffer;
                                 var CurrentFrame = ShaderEffect.Frame;
 
-                                Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+                                if (CurrentFrame != null)
+                                {
+                                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                                MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+                                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-                                MatrixBitmap.Unlock();
-                                ShaderBitmap = MatrixBitmap;
+                                    MatrixBitmap.Unlock();
+                                    ShaderBitmap = MatrixBitmap;
+                                }
                             });
                             break;
                         case 0:
@@ -782,13 +785,17 @@ namespace adrilight.ViewModel
                                 MatrixBitmap.Lock();
                                 IntPtr pixelAddress = MatrixBitmap.BackBuffer;
                                 var CurrentFrame = DesktopDuplicator.DesktopFrame;
+                                if(CurrentFrame!=null)
+                                {
+                                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                                Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+                                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-                                MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+                                    MatrixBitmap.Unlock();
+                                    ShaderBitmap = MatrixBitmap;
 
-                                MatrixBitmap.Unlock();
-                                ShaderBitmap = MatrixBitmap;
+                                }
+                               
                             });
                             break;
                     }
@@ -804,13 +811,16 @@ namespace adrilight.ViewModel
                     MatrixBitmap.Lock();
                     IntPtr pixelAddress = MatrixBitmap.BackBuffer;
                     var CurrentFrame = ShaderEffect.Frame;
+                    if(CurrentFrame!=null)
+                    {
+                        Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+                        MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
-
-                    MatrixBitmap.Unlock();
-                    ShaderBitmap = MatrixBitmap;
+                        MatrixBitmap.Unlock();
+                        ShaderBitmap = MatrixBitmap;
+                    }
+                   
                 });
             }
           
@@ -1386,6 +1396,7 @@ namespace adrilight.ViewModel
                         
                         vm.Device.DeviceID = Cards.Count() + 1;
                         vm.Device.IsHUB = true;
+                        vm.Device.HUBID = Cards.Count() + 1;
                         Cards.Add(vm.Device);
                         // WriteJson();
                        
@@ -1398,7 +1409,7 @@ namespace adrilight.ViewModel
                             argb1.SpotsY = 5;
                             argb1.NumLED = 16;
                             argb1.DeviceName = "ARGB1(HUBV2)";
-                            argb1.ParrentLocation = vm.Device.DeviceID;
+                            argb1.ParrentLocation = vm.Device.HUBID;
                             argb1.OutputLocation = 0;
                             argb1.IsVissible = false;
                             argb1.DeviceLayout = 1;
@@ -1413,7 +1424,7 @@ namespace adrilight.ViewModel
                             argb2.SpotsY = 6;
                             argb2.NumLED = 120;
                             argb2.DeviceName = "ARGB2(HUBV2)";
-                            argb2.ParrentLocation = vm.Device.DeviceID;
+                            argb2.ParrentLocation = vm.Device.HUBID;
                             argb2.OutputLocation = 1;
                             argb2.IsVissible = false;
                             argb2.DeviceLayout = 2;
@@ -1428,7 +1439,7 @@ namespace adrilight.ViewModel
                             PCI.SpotsY = 7;
                             PCI.NumLED = 34;
                             PCI.DeviceName = "PCI1(HUBV2)";
-                            PCI.ParrentLocation = vm.Device.DeviceID;
+                            PCI.ParrentLocation = vm.Device.HUBID;
                             PCI.OutputLocation = 2;
                             PCI.DeviceLayout = 0;
                             PCI.IsVissible = false;
@@ -1443,7 +1454,7 @@ namespace adrilight.ViewModel
                             PCI.SpotsY = 7;
                             PCI.NumLED = 34;
                             PCI.DeviceName = "PCI2(HUBV2)";
-                            PCI.ParrentLocation = vm.Device.DeviceID;
+                            PCI.ParrentLocation = vm.Device.HUBID;
                             PCI.OutputLocation = 3;
                             PCI.DeviceLayout = 0;
                             PCI.IsVissible = false;
@@ -1458,7 +1469,7 @@ namespace adrilight.ViewModel
                             PCI.SpotsY = 7;
                             PCI.NumLED = 34;
                             PCI.DeviceName = "PCI3(HUBV2)";
-                            PCI.ParrentLocation = vm.Device.DeviceID;
+                            PCI.ParrentLocation = vm.Device.HUBID;
                             PCI.OutputLocation = 4;
                             PCI.DeviceLayout = 0;
                             PCI.IsVissible = false;
@@ -1473,7 +1484,7 @@ namespace adrilight.ViewModel
                             PCI.SpotsY = 7;
                             PCI.NumLED = 34;
                             PCI.DeviceName = "PCI4(HUBV2)";
-                            PCI.ParrentLocation = vm.Device.DeviceID;
+                            PCI.ParrentLocation = vm.Device.HUBID;
                             PCI.OutputLocation = 5;
                             PCI.DeviceLayout = 0;
                             PCI.IsVissible = false;
@@ -1791,6 +1802,7 @@ namespace adrilight.ViewModel
                 int counter = 1;
                 foreach (var card in Cards)
                 {
+                  
                     card.DeviceID = counter;
                     counter++;
 
@@ -1920,13 +1932,15 @@ namespace adrilight.ViewModel
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == general);
             IsDashboardType = false;
             CurrentDevice = card;
+            IsSplitLightingWindowOpen = true;
+            IsCanvasLightingWindowOpen = false;
             if (CurrentDevice.IsHUB)
             {
-                ParrentLocation = CurrentDevice.DeviceID;
+                ParrentLocation = CurrentDevice.HUBID;
                 var childList = new List<IDeviceSettings>();
                 foreach (var device in Cards)
                 {
-                    if (device.ParrentLocation == CurrentDevice.DeviceID)
+                    if (device.ParrentLocation == CurrentDevice.HUBID)
                         childList.Add(device);
                 }
                 CurrentDevice = childList[0];

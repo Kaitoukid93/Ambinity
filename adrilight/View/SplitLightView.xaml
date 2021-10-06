@@ -836,7 +836,7 @@
 
                 <Grid.Style>
                     <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Visible"></Setter>
+                        <Setter Property="Visibility" Value="Collapsed"></Setter>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding ElementName=EffectBox,Path=SelectedItem}" Value="Đồng bộ">
                                 <Setter Property="Visibility" Value="Visible"/>

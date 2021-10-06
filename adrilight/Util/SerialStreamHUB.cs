@@ -27,7 +27,7 @@ namespace adrilight
             DeviceSettings.PropertyChanged += UserSettings_PropertyChanged;
             foreach (IDeviceSpotSet spotSet in deviceSpotSets)
             {
-                if (spotSet.ParrentLocation == DeviceSettings.DeviceID)// child element actually inside the HUB element so HUB ID is Parrent location of child device
+                if (spotSet.ParrentLocation == DeviceSettings.HUBID)// child element actually inside the HUB element so HUB ID is Parrent location of child device
                     ChildSpotSets.Add(spotSet);
             }
             //SpotSets = new ObservableCollection<IDeviceSpotSet>();
