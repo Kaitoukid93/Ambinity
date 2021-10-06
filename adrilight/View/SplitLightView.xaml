@@ -105,6 +105,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
 
             </Grid.RowDefinitions>
 
@@ -149,26 +150,18 @@
 
 
             </Button>
-            <Border  Width="400" Height="400" Grid.Row="5" BorderThickness="1" BorderBrush="Red" VerticalAlignment="Top" Margin="0,25,0,0">
-                <Canvas 
+            <Border Height="135" Grid.Row="5" Width="240" BorderThickness="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,30,0,0">
+                <Canvas Width="240" Height="135"
                     Background="Transparent" 
-                    AllowDrop="true" 
-                    x:Name="deviceCanvas" 
-                    Drop="DeviceCanvas_Drop"
-                    DragOver="DeviceCanvas_DragOver">
-                    <Image Width="120" Height="120" Source="{Binding ShaderBitmap}"/>
+                    x:Name="deviceCanvas">
+                    <Image  Source="{Binding ShaderBitmap}"/>
                     <Rectangle x:Name="deviceRect"
                                Canvas.Top="{Binding DeviceRectY, Mode=TwoWay}"
                                Canvas.Left="{Binding DeviceRectX, Mode=TwoWay}"
                                Width="{Binding CurrentDevice.DeviceRectWidth, Mode=TwoWay}" 
                                Height="{Binding CurrentDevice.DeviceRectHeight, Mode=TwoWay}" Stroke="#FF7F7F7F"
-                               MouseMove="DeviceRect_MouseMove" Fill="#66969696">
-                        <Rectangle.RenderTransform>
-                            <ScaleTransform CenterX="0" 
-                                            CenterY="0" 
-                                            ScaleX="{Binding DeviceScale}" 
-                                            ScaleY="{Binding DeviceScale}" />
-                        </Rectangle.RenderTransform>
+                                Fill="#66969696">
+                       
                     </Rectangle>
 
                 </Canvas>
@@ -209,6 +202,22 @@
                          Kind="Camera"
     Height="20"
     Width="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Grid>
+
+
+            </Button>
+            <Button Foreground="#FF326CF3" Background="#3F326CF3" Padding="7" Command="{Binding AdjustPositionCommand}" Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="6
+                    "  materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0"  BorderBrush="{x:Null}"  HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,30,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="1" Text="Edit" Margin="5,0,0,0" Height="18" VerticalAlignment="Top"/>
+                    <materialDesign:PackIcon  Grid.Column="0"
+                        Kind="Edit"
+                        Height="20"
+                        Width="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Grid>
 
 
@@ -868,10 +877,10 @@
                             </Grid.RowDefinitions>
                             <TextBlock Margin="10,0,0,0" Grid.Column="0" Text="Chiều dài" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="82"/>
                             <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Chiều rộng tương đối so với Hiệu ứng" Width="231" Grid.ColumnSpan="2" Height="17"/>
-                            <Slider Grid.Column="0" Value="{Binding CurrentDevice.DeviceRectWidth,Mode=TwoWay}" TickFrequency="1" hc:TipElement.Visibility="Visible" hc:TipElement.Placement="Right" hc:TipElement.StringFormat="#0.00" Minimum="{Binding CurrentDevice.SpotsX}" Maximum="120" Style="{StaticResource SliderBaseStyle}" VerticalAlignment="Center" Height="18" ValueChanged="Slider_ValueChanged" HorizontalAlignment="Right" Width="121"/>
+                            <Slider x:Name="deviceWidth" Grid.Column="0" Value="{Binding CurrentDevice.DeviceRectWidth,Mode=TwoWay}" TickFrequency="1" hc:TipElement.Visibility="Visible" hc:TipElement.Placement="Right" hc:TipElement.StringFormat="#0.00" Minimum="{Binding CurrentDevice.SpotsX}" Maximum="{Binding DeviceRectWidthMax}" Style="{StaticResource SliderBaseStyle}" VerticalAlignment="Center" Height="18" ValueChanged="Slider_ValueChanged" HorizontalAlignment="Right" Width="121"/>
                             <TextBlock Margin="10,0,0,0" Grid.Column="1" Text="Chiều cao" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="82"/>
                             <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Chiều rộng tương đối so với Hiệu ứng" Width="231" Height="17"/>
-                            <Slider Grid.Column="1" Value="{Binding CurrentDevice.DeviceRectHeight, Mode=TwoWay}" TickFrequency="1" hc:TipElement.Visibility="Visible" hc:TipElement.Placement="Right" hc:TipElement.StringFormat="#0.00" Minimum="{Binding CurrentDevice.SpotsY}" Maximum="120" Style="{StaticResource SliderBaseStyle}" VerticalAlignment="Center" Height="18" ValueChanged="Slider_ValueChanged" HorizontalAlignment="Right" Width="121" Margin="0,0,5,0"/>
+                            <Slider x:Name="deviceHeight" Grid.Column="1" Value="{Binding CurrentDevice.DeviceRectHeight, Mode=TwoWay}" TickFrequency="1" hc:TipElement.Visibility="Visible" hc:TipElement.Placement="Right" hc:TipElement.StringFormat="#0.00" Minimum="{Binding CurrentDevice.SpotsY}" Maximum="{Binding DeviceRectHeightMax}" Style="{StaticResource SliderBaseStyle}" VerticalAlignment="Center" Height="18" ValueChanged="Slider_ValueChanged" HorizontalAlignment="Right" Width="121" Margin="0,0,5,0"/>
 
                         </Grid>
                         <Grid Height="80" Width="516">
@@ -1037,7 +1046,7 @@
                             <TextBlock Margin="10,0,0,0" Grid.Column="1" Text="Hướng chạy" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="93"/>
                             <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Hướng chạy của LED" Width="231" Height="17"/>
                             <ComboBox  Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.MatrixStartPoint}" x:Name="deviceLayout_Copy" ItemsSource="{Binding AvailableMatrixStartPoint}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="85" Margin="0,0,-0.1,0"/>
-                            <ComboBox  Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.MatrixOrientation}" x:Name="deviceLayout_Copy1" ItemsSource="{Binding AvailableOrientation}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="85" Grid.Column="1" Margin="0,0,10,0"/>
+                            <ComboBox  Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.MatrixOrientation}" x:Name="deviceLayout_Copy1" ItemsSource="{Binding AvailableMatrixOrientation}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="85" Grid.Column="1" Margin="0,0,10,0"/>
 
                         </Grid>
 

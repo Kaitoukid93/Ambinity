@@ -170,10 +170,7 @@ namespace adrilight
             _log.Debug("Started Desktop Duplication Reader.");
             Bitmap image = new Bitmap(240, 135, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
             BitmapData bitmapData = new BitmapData();
-            var width = DeviceSettings.DeviceRectWidth;
-            var height = DeviceSettings.DeviceRectHeight;
-            var x = DeviceSettings.DeviceRectLeft;
-            var y = DeviceSettings.DeviceRectTop;
+           
 
             try
             {
@@ -185,7 +182,11 @@ namespace adrilight
                     var frameTime = Stopwatch.StartNew();
                     var newImage = _retryPolicy.Execute(() => GetNextFrame());
                     TraceFrameDetails(newImage);
-                 
+                    var width = DeviceSettings.DeviceRectWidth;
+                    var height = DeviceSettings.DeviceRectHeight;
+                    var x = DeviceSettings.DeviceRectLeft;
+                    var y = DeviceSettings.DeviceRectTop;
+
                     if (newImage == null)
                     {
                         //there was a timeout before there was the next frame, simply retry!
@@ -199,14 +200,14 @@ namespace adrilight
                     //   MainViewViewModel.SetPreviewImage(image);
                   
 
-                    image.LockBits(new Rectangle(x, y, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb, bitmapData);
+                    image.LockBits(new Rectangle(x, y, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb, bitmapData);
 
 
                     lock (DeviceSpotSet.Lock)
                     {
                         var useLinearLighting = UserSettings.UseLinearLighting==0;
 
-                        var imageRectangle = new Rectangle(0, 0, image.Width, image.Height);
+                        //var imageRectangle = new Rectangle(0, 0, image.Width, image.Height);
 
                         //if (imageRectangle.Width != DeviceSpotSet.ExpectedScreenWidth || imageRectangle.Height != DeviceSpotSet.ExpectedScreenHeight)
                         //{
@@ -396,10 +397,6 @@ namespace adrilight
                         Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
                     }
-
-
-
-
 
                 DesktopImage.UnlockBits(DesktopImageBitmapData);
 

@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="adrilight.View.DeviceRectPositon"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:adrilight.View"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf" xmlns:converters="clr-namespace:adrilight.Converter" xmlns:viewmodel="clr-namespace:adrilight.ViewModel" xmlns:lottieSharp="clr-namespace:LottieSharp;assembly=LottieSharp" d:DataContext="{d:DesignInstance Type=viewmodel:AdjustPostionViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height ="10*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Grid.Row="1" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:ButtonAssist.CornerRadius="7"  Width="75" Height="32" Content="Apply" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" IsDefault="True" Foreground="#FF326CF3" Background="#3F326CF3" Grid.ColumnSpan="2" Margin="0,0,20,10" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <Button.CommandParameter>
+                <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">True</system:Boolean>
+            </Button.CommandParameter>
+        </Button>
+        <Canvas AllowDrop="true" 
+                x:Name="deviceCanvas" 
+                Drop="DeviceCanvas_Drop"
+                DragOver="DeviceCanvas_DragOver" 
+                Width="{Binding CanvasWidth}" 
+                Height="{Binding CanvasHeight}" Margin="20,20,20,20">
+
+
+
+            <Image Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}" Source="{Binding ShaderBitmap}"
+                        Canvas.Left="0" Canvas.Top="0">
+
+            </Image>
+            <ItemsControl ItemsSource="{Binding BlockedRectangle}"
+                           Canvas.Left="0" Canvas.Top="0" >
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                        <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Rectangle Stroke="Red" Width="{Binding Width}" Height="{Binding Height}">
+
+                            </Rectangle>
+
+
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Rectangle x:Name="deviceRect"
+                               Canvas.Top="{Binding DeviceRectY, Mode=TwoWay}"
+                               Canvas.Left="{Binding DeviceRectX, Mode=TwoWay}"
+                               Width="{Binding DeviceRectWidth, Mode=TwoWay}" 
+                               Height="{Binding DeviceRectHeight, Mode=TwoWay}" Stroke="#FF326CF3" StrokeThickness="5"
+                               MouseMove="DeviceRect_MouseMove" Fill="#7FFFFFFF">
+
+
+            </Rectangle>
+
+        </Canvas>
+        <Button Grid.Row="1" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:ButtonAssist.CornerRadius="7"  Width="75" Height="32" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" IsDefault="True" Background="#3FFD7E35" BorderBrush="{x:Null}" Foreground="#FFFD7E35" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,150,10">
+            <Button.CommandParameter>
+                <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">False</system:Boolean>
+            </Button.CommandParameter>
+        </Button>
+
+    </Grid>
+</UserControl>

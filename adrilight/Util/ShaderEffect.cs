@@ -20,11 +20,11 @@ namespace adrilight
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public ShaderEffect(IGeneralSettings generalSettings, IGeneralSpotSet generalSpotSet )
+        public ShaderEffect(IGeneralSettings generalSettings, IGeneralSpotSet generalSpotSet)
         {
             GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
             GeneralSpotSet = generalSpotSet ?? throw new ArgumentNullException(nameof(generalSpotSet));
-            
+           // MainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
             //SettingsViewModel = settingsViewModel ?? throw new ArgumentNullException(nameof(settingsViewModel));
             //Remove SettingsViewmodel from construction because now we pass SpotSet Dirrectly to MainViewViewModel
             GeneralSettings.PropertyChanged += PropertyChanged;
@@ -36,7 +36,8 @@ namespace adrilight
         //Dependency Injection//
         private IGeneralSettings GeneralSettings { get; }
         private IGeneralSpotSet GeneralSpotSet { get; }
-       
+       // private MainViewViewModel MainView { get; }
+
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
         public  WriteableBitmap MatrixBitmap { get; set; }
@@ -101,12 +102,12 @@ namespace adrilight
 
             try
             {
-                using ReadWriteTexture2D<Rgba32, Float4> texture = Gpu.Default.AllocateReadWriteTexture2D<Rgba32, Float4>(120, 120);
-                using ReadBackTexture2D<Rgba32> buffer = Gpu.Default.AllocateReadBackTexture2D<Rgba32>(120, 120);
+                using ReadWriteTexture2D<Rgba32, Float4> texture = Gpu.Default.AllocateReadWriteTexture2D<Rgba32, Float4>(240, 135);
+                using ReadBackTexture2D<Rgba32> buffer = Gpu.Default.AllocateReadBackTexture2D<Rgba32>(240, 135);
                 int frame = 0;
                 var ColorArray = buffer.View.ToArray();
                 Frame = null;
-                Frame = new byte[120 * 120 *4];
+                Frame = new byte[ColorArray.Length * 4];
 
                 while (!token.IsCancellationRequested)
                 {
@@ -120,29 +121,30 @@ namespace adrilight
                             float timestamp = 1 / 60f * frame;
 
                             // Run the shader
-                           Gpu.Default.ForEach(texture, new Fluid(timestamp));
+                           Gpu.Default.ForEach(texture, new Gooey(timestamp));
 
                             // Copy the rendered frame to a readback texture that can be accessed by the CPU.
                             // The rendered texture can only be accessed by the GPU, so we can't read from it.
                             texture.CopyTo(buffer);
 
-                        // Access buffer.View here and do all your work with the frame data
-                        ColorArray = buffer.View.ToArray();
+                    // Access buffer.View here and do all your work with the frame data
+                    ColorArray = buffer.View.ToArray();
 
-                        int index = 0;
-                        for (var x=0;x<texture.Width;x++)
+                    int index = 0;
+                        for (var x=0;x <= ColorArray.GetUpperBound(0);x++)
                         {
-                            for(var y=0;y<texture.Height;y++)
+                            for(var y=0;y <=ColorArray.GetUpperBound(1); y++)
                             {
-                                Frame[index] = ColorArray[x, y].B;
-                                Frame[index + 1] = ColorArray[x, y].G;
-                                Frame[index + 2] = ColorArray[x, y].R;
-                                Frame[index + 3] = ColorArray[x, y].A;
-                            index += 4;
+                                Frame[index++] = ColorArray[x, y].B;
+                                Frame[index++] = ColorArray[x, y].G;
+                                Frame[index++] = ColorArray[x, y].R;
+                                Frame[index++] = ColorArray[x, y].A;
+                            
                             }
                         }
-                       
-                        RaisePropertyChanged(nameof(Frame));
+                    RaisePropertyChanged(nameof(Frame));
+                    // if(MainView.IsSettingsWindowOpen)
+                  //  MainView.SetPreviewImage(Frame);
                     Thread.Sleep(1000/60);
                     frame++;
 

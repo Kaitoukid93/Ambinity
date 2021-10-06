@@ -21,6 +21,7 @@ namespace adrilight.Ninject
             Bind<IShaderEffect>().To<ShaderEffect>().InSingletonScope();
             Bind<IContext>().To<WpfContext>().InSingletonScope();
             Bind<IDesktopDuplicator>().To<DesktopDuplicator>().InSingletonScope();
+
             if (alldevicesettings!=null)
             {
                 if (alldevicesettings.Count > 0)

@@ -25,7 +25,8 @@ namespace adrilight.View
     /// </summary>
     public partial class SplitLightView : UserControl
     {
-        string filePath = "I:\\123.png";
+       
+        
         public SplitLightView()
         {
 
@@ -37,6 +38,8 @@ namespace adrilight.View
                 Interval = TimeSpan.FromMilliseconds(10)
             };
             _timer.Tick += Timer_Tick;
+            
+
         }
 
         
@@ -568,27 +571,24 @@ namespace adrilight.View
 
         private void DeviceCanvas_Drop(object sender, DragEventArgs e)
         {
-            MainViewViewModel vm = this.DataContext as MainViewViewModel;
-
-            //Call command from viewmodel     
-            if ((vm != null) && (vm.DeviceRectDropCommand.CanExecute(null)))
-                vm.DeviceRectDropCommand.Execute(null);
-        }
-
-        private void DeviceCanvas_DragOver(object sender, DragEventArgs e)
-        {
-            Point dropPosition = e.GetPosition(deviceCanvas);
-            Canvas.SetLeft(deviceRect, dropPosition.X);
-            Canvas.SetTop(deviceRect, dropPosition.Y);
-        }
-
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            //MainViewViewModel vm = this.DataContext as MainViewViewModel;
+            //var vm = this.DataContext as MainViewViewModel;
 
             ////Call command from viewmodel     
             //if ((vm != null) && (vm.DeviceRectDropCommand.CanExecute(null)))
             //    vm.DeviceRectDropCommand.Execute(null);
+        }
+
+        private void DeviceCanvas_DragOver(object sender, DragEventArgs e)
+        {
+            //Point dropPosition = e.GetPosition(deviceCanvas);
+            //Canvas.SetLeft(deviceRect, dropPosition.X);
+            //Canvas.SetTop(deviceRect, dropPosition.Y);
+        }
+
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+           
+                
         }
     }
 }

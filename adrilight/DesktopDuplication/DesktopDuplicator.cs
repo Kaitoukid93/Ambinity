@@ -19,13 +19,15 @@ using NLog.Fluent;
 using Castle.Core.Logging;
 using Polly;
 using NLog;
+using adrilight.ViewModel;
+using GalaSoft.MvvmLight;
 
 namespace adrilight
 {
     /// <summary>
     /// Provides access to frame-by-frame updates of a particular desktop (i.e. one monitor), with image and cursor information.
     /// </summary>
-    internal class DesktopDuplicator : IDisposable , IDesktopDuplicator
+    internal class DesktopDuplicator : ViewModelBase, IDisposable , IDesktopDuplicator
     {
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
         private readonly Device _device;
@@ -44,6 +46,9 @@ namespace adrilight
         public DesktopDuplicator(IGeneralSettings userSettings)
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
+            //MainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
+           // mainView.PropertyChanged += PropertyChanged;
+            userSettings.PropertyChanged += PropertyChanged;
             var whichGraphicsCardAdapter = 0;
             var whichOutputDevice = 0;
             Adapter1 adapter;
@@ -113,7 +118,7 @@ namespace adrilight
 
 
             }
-            UserSettings.PropertyChanged += PropertyChanged;
+           
             _retryPolicy = Policy.Handle<Exception>()
                .WaitAndRetryForever(ProvideDelayDuration);
             _log.Info($"Desktop Duplicator created for Display 1.");
@@ -122,6 +127,7 @@ namespace adrilight
         }
         private readonly Policy _retryPolicy;
         private IGeneralSettings UserSettings { get; }
+       // private MainViewViewModel MainView { get; }
         public bool IsRunning { get; private set; } = false;
         public byte[] DesktopFrame { get; set; }
         private TimeSpan ProvideDelayDuration(int index)
@@ -146,7 +152,7 @@ namespace adrilight
             {
 
                 case nameof(UserSettings.ShouldbeRunning):
-               // case nameof(DeviceSettings.SelectedEffect):
+             //  case nameof(MainView.IsSettingsWindowOpen):
 
                     RefreshCapturingState();
                     break;
@@ -245,6 +251,7 @@ namespace adrilight
                         continue;
                     }
                     image = newImage;
+                  
                     // Lock the bitmap's bits.  
                     var rect = new System.Drawing.Rectangle(0, 0, image.Width, image.Height);
                     System.Drawing.Imaging.BitmapData bmpData =
@@ -261,7 +268,10 @@ namespace adrilight
                     // Copy the RGB values into the array.
                     System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
                     DesktopFrame = rgbValues;
-                    
+                    RaisePropertyChanged(nameof(DesktopFrame));
+                    // if(MainView.IsSettingsWindowOpen)
+                    // MainView.SetPreviewImage(DesktopFrame);
+
                     //bool isPreviewRunning = SettingsViewModel.IsSettingsWindowOpen && SettingsViewModel.IsPreviewTabOpen;
                     //if (isPreviewRunning)
                     //{

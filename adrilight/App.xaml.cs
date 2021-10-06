@@ -159,6 +159,7 @@ namespace adrilight
             var shaderEffect = kernel.Get<IShaderEffect>();
             var context = kernel.Get<IContext>();
             var desktop = kernel.Get<IDesktopDuplicator>();
+           
             //// tách riêng từng setting của từng device///
             if (alldevicesettings!=null)
             {
@@ -223,6 +224,7 @@ namespace adrilight
 
             }
             var alldevices = kernel.GetAll<IDeviceSettings>().ToList(); ;
+
           
             return kernel;
             // lighting viewmodel bây giờ chỉ có nhiệm vụ load data từ spotset và settings tương ứng với card sau đó display, không phải khởi tạo class như trước

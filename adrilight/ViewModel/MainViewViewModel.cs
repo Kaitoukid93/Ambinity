@@ -23,6 +23,8 @@ using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Windows.Media;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace adrilight.ViewModel
 {
@@ -234,6 +236,7 @@ namespace adrilight.ViewModel
         public ICommand BackCommand { get; set; }
         public ICommand DeviceRectDropCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
+        public ICommand AdjustPositionCommand { get; set; }
         public ICommand SnapshotCommand { get; set; }
         public ICommand DeleteDeviceCommand { get; set; }
         #endregion
@@ -384,7 +387,12 @@ namespace adrilight.ViewModel
             get => _shaderBitmap;
             set
             {
-                Set(ref _shaderBitmap, value);
+                 _shaderBitmap = value;
+                RaisePropertyChanged(nameof(ShaderBitmap));
+                //RaisePropertyChanged(() => SourceWidth);
+                //RaisePropertyChanged(() => sourceHeight);
+                //RaisePropertyChanged(() => CanvasWidth);
+                //RaisePropertyChanged(() => CanvasHeight);
             }
         }
 
@@ -416,6 +424,7 @@ namespace adrilight.ViewModel
                 {
                     case 0://strip type
                         CurrentDevice.DeviceType = "Strip";
+                        CurrentDevice.SpotsX = CurrentDevice.NumLED;
                         CurrentDevice.SpotsX = CurrentDevice.NumLED;
                         CurrentDevice.SpotsY = 1;
                         RaisePropertyChanged(() => CurrentDevice.SpotsX);
@@ -485,6 +494,10 @@ namespace adrilight.ViewModel
 
         }
 
+     
+
+     
+
         public ObservableCollection<string> AvailablePalette { get; private set; }
         public IContext Context { get; }
         public IList<String> _AvailableDisplays;
@@ -525,17 +538,30 @@ namespace adrilight.ViewModel
         }
         GifBitmapDecoder decoder;
         public IGeneralSettings GeneralSettings { get; }
+       
         public ISerialStream[] SerialStreams { get; }
         public IOpenRGBClientDevice OpenRGBClientDevice { get; set; }
         public ISerialDeviceDetection SerialDeviceDetection { get; set; }
-        public static IShaderEffect ShaderEffect {get;set;}
+         public static IShaderEffect ShaderEffect {get;set;}
+        public IDesktopDuplicator DesktopDuplicator { get; set; }
         public int AddedDevice { get; }
 
-        public MainViewViewModel(IContext context, IDeviceSettings[] cards, IDeviceSpotSet[] deviceSpotSets,IGeneralSpotSet generalSpotSet, IGeneralSettings generalSettings, IOpenRGBClientDevice openRGBDevices, ISerialDeviceDetection serialDeviceDetection, ISerialStream[] serialStreams, IShaderEffect shaderEffect)
+        public MainViewViewModel(IContext context,
+            IDeviceSettings[] cards,
+            IDeviceSpotSet[] deviceSpotSets,
+            IGeneralSpotSet generalSpotSet,
+            IGeneralSettings generalSettings,
+            IOpenRGBClientDevice openRGBDevices,
+            ISerialDeviceDetection serialDeviceDetection,
+            ISerialStream[] serialStreams,
+            IShaderEffect shaderEffect,
+            IDesktopDuplicator desktopDuplicator
+           )
         {
 
             GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
             SerialStreams = serialStreams ?? throw new ArgumentNullException(nameof(serialStreams));
+            DesktopDuplicator = desktopDuplicator ?? throw new ArgumentNullException(nameof(desktopDuplicator));
             Cards = new ObservableCollection<IDeviceSettings>();
             DisplayCards = new ObservableCollection<IDeviceSettings>();
             AddedDevice = cards.Length;
@@ -545,6 +571,7 @@ namespace adrilight.ViewModel
             SerialDeviceDetection = serialDeviceDetection ?? throw new ArgumentNullException(nameof(serialDeviceDetection));
             ShaderEffect = shaderEffect ?? throw new ArgumentNullException();
             ShaderEffect.PropertyChanged+= ShaderImageUpdate;
+            DesktopDuplicator.PropertyChanged += ShaderImageUpdate;
             //ShaderSpots = generalSpotSet.ShaderSpot;
             //ShaderBitmap = shaderEffect.MatrixBitmap;
             foreach (IDeviceSettings card in cards)
@@ -712,28 +739,91 @@ namespace adrilight.ViewModel
             };
         }
 
-        private  void ShaderImageUpdate(object sender, PropertyChangedEventArgs e)
+        private void ShaderImageUpdate(object sender, PropertyChangedEventArgs e)
         {
-
-
-            Context.Invoke(() =>
+            if(CurrentDevice!=null)
             {
-                //var MatrixBitmap = new WriteableBitmap(120, 120, 96, 96, PixelFormats.Bgra32, null);
-                //MatrixBitmap.Lock();
-                //IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                //var CurrentFrame = ShaderEffect.Frame;
+                switch(CurrentDevice.SelectedEffect){
+                    case 5:
+                        Context.Invoke(() =>
+                        {
+                            var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                            MatrixBitmap.Lock();
+                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                            var CurrentFrame = ShaderEffect.Frame;
 
-                //Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                //MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 120, 120));
+                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-                //MatrixBitmap.Unlock();
-                //ShaderBitmap = MatrixBitmap;
-            });
+                            MatrixBitmap.Unlock();
+                            ShaderBitmap = MatrixBitmap;
+                        });
+                        break;
+                    case 0:
+                        Context.Invoke(() =>
+                        {
+                            var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                            MatrixBitmap.Lock();
+                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                            var CurrentFrame = DesktopDuplicator.DesktopFrame;
+
+                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+
+                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+
+                            MatrixBitmap.Unlock();
+                            ShaderBitmap = MatrixBitmap;
+                        });
+                        break;
+                }
+            }
+          
 
         }
 
-       
+        [DllImport("gdi32.dll")]
+        public static extern bool DeleteObject(IntPtr hObject);
+
+        public void SetPreviewImage(byte[] frame)
+        {
+            Context.Invoke(() =>
+            {
+                 PreviewImageSource = new WriteableBitmap(120, 120, 96, 96, PixelFormats.Bgra32, null);
+                PreviewImageSource.Lock();
+                IntPtr pixelAddress = PreviewImageSource.BackBuffer;
+                var CurrentFrame = frame;
+
+                Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+
+                PreviewImageSource.AddDirtyRect(new Int32Rect(0, 0, 120, 120));
+                RaisePropertyChanged(nameof(PreviewImageSource));
+                
+                PreviewImageSource.Unlock();
+               // ShaderBitmap = MatrixBitmap;
+            });
+        }
+        private WriteableBitmap _previewImageSource;
+        public WriteableBitmap PreviewImageSource {
+            get => _previewImageSource;
+            set
+            {
+               // _log.Info("PreviewImageSource created.");
+                Set(ref _previewImageSource, value);
+                RaisePropertyChanged();
+              
+            }
+        }
+        private bool _isSettingsWindowOpen;
+        public bool IsSettingsWindowOpen {
+            get => _isSettingsWindowOpen;
+            set
+            {
+                Set(ref _isSettingsWindowOpen, value);
+               // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
+            }
+        }
+      
         private int _deviceRectX;
         public int DeviceRectX {
             get => _deviceRectX;
@@ -755,6 +845,24 @@ namespace adrilight.ViewModel
             set
             {
                 _deviceRectHeight = value;
+                RaisePropertyChanged();
+            }
+        }
+        private int _deviceRectHeightMax = 135;
+        public int DeviceRectHeightMax {
+            get => _deviceRectHeightMax;
+            set
+            {
+                _deviceRectHeightMax = value;
+                RaisePropertyChanged();
+            }
+        }
+        private int _deviceRectWidthtMax=240;
+        public int DeviceRectWidthMax {
+            get => _deviceRectWidthtMax;
+            set
+            {
+                _deviceRectWidthtMax = value;
                 RaisePropertyChanged();
             }
         }
@@ -799,6 +907,13 @@ namespace adrilight.ViewModel
             {
                 ShowDeleteDialog();
             });
+            AdjustPositionCommand = new RelayCommand<string>((p) => {
+                return true;
+            }, (p) =>
+            {
+                ShowAdjustPositon();
+            });
+
 
             DeleteDeviceCommand = new RelayCommand<IDeviceSettings>((p) => {
                 return true;
@@ -1586,6 +1701,37 @@ namespace adrilight.ViewModel
 
 
         }
+        public async  void ShowAdjustPositon()
+        {
+            var view = new View.DeviceRectPositon();
+            var allDevices = Cards.ToArray();
+           AdjustPostionViewModel dialogViewModel = new AdjustPostionViewModel(CurrentDevice, allDevices,ShaderBitmap);
+            view.DataContext = dialogViewModel;
+            bool dialogResult = (bool)await DialogHost.Show(view, "mainDialog");
+            if (dialogResult)
+            {   //save current device rect position to json database
+                CurrentDevice.DeviceRectLeft = dialogViewModel.DeviceRectX / 4;
+                CurrentDevice.DeviceRectTop = dialogViewModel.DeviceRectY / 4;
+                DeviceRectX = CurrentDevice.DeviceRectLeft;
+                DeviceRectY = CurrentDevice.DeviceRectTop;
+                DeviceRectHeightMax = (int)ShaderBitmap.Height - DeviceRectY;
+                DeviceRectWidthMax = (int)ShaderBitmap.Width - DeviceRectX;
+
+
+
+
+                RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
+                RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
+                RaisePropertyChanged(() => DeviceRectX);
+                RaisePropertyChanged(() => DeviceRectY);
+                RaisePropertyChanged(() => DeviceRectWidthMax);
+                RaisePropertyChanged(() => DeviceRectHeightMax);
+
+            }
+
+
+
+        }
         public async void ShowDeleteFromDashboard(IDeviceSettings device)
         {
             var view = new View.DeleteMessageDialog();
@@ -1695,8 +1841,8 @@ namespace adrilight.ViewModel
             DeviceRectY = CurrentDevice.DeviceRectTop;
             DeviceRectWidth = CurrentDevice.DeviceRectWidth;
             DeviceRectHeight = CurrentDevice.DeviceRectHeight;
-            DeviceScale = CurrentDevice.DeviceScale;
-
+            DeviceRectHeightMax = 135 - DeviceRectY;
+            DeviceRectWidthMax = 240 - DeviceRectX;
             SetMenuItemActiveStatus(lighting);
         }
         public void BackToDashboard()

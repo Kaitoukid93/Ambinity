@@ -105,10 +105,7 @@ namespace adrilight.Util
             _log.Debug("Started Shader Reader.");
             Bitmap image = null;
             BitmapData bitmapData = new BitmapData();
-            var width = DeviceSettings.DeviceRectWidth;
-            var height = DeviceSettings.DeviceRectHeight;
-            var x = DeviceSettings.DeviceRectLeft;
-            var y = DeviceSettings.DeviceRectTop;
+          
 
             try
             {
@@ -119,8 +116,12 @@ namespace adrilight.Util
                 {
                     //get bitmap image of each frame
                     var frameTime = Stopwatch.StartNew();
-                    var newImage = _retryPolicy.Execute(() => GetShaderFrame()); 
-                   // TraceFrameDetails(newImage);
+                    var newImage = _retryPolicy.Execute(() => GetShaderFrame());
+                    var width = DeviceSettings.DeviceRectWidth;
+                    var height = DeviceSettings.DeviceRectHeight;
+                    var x = DeviceSettings.DeviceRectLeft;
+                    var y = DeviceSettings.DeviceRectTop;
+                    // TraceFrameDetails(newImage);
 
                     if (newImage == null)
                     {
@@ -129,10 +130,7 @@ namespace adrilight.Util
                     }
                     image = newImage;
 
-                    //bool isPreviewRunning = SettingsViewModel.IsSettingsWindowOpen && SettingsViewModel.IsPreviewTabOpen;
-                    //if (isPreviewRunning)
-                    //{
-                    //   MainViewViewModel.SetPreviewImage(image);
+                 
                     
                     image.LockBits(new Rectangle(x, y, width, height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppRgb, bitmapData);
 
@@ -140,17 +138,9 @@ namespace adrilight.Util
                     {
                        var useLinearLighting = GeneralSettings.UseLinearLighting == 0;
 
-                        
+          
 
-                        //if (imageRectangle.Width != DeviceSpotSet.ExpectedScreenWidth || imageRectangle.Height != SpotSet.ExpectedScreenHeight)
-                        //{
-                        //    //the screen was resized or this is some kind of powersaving state
-                        //    SpotSet.IndicateMissingValues();
-
-                        //    continue;
-                        //}
-                        //else
-                        //{
+                     
                         Parallel.ForEach(DeviceSpotSet.Spots
                             , spot =>
                             {
@@ -280,12 +270,12 @@ namespace adrilight.Util
         
         private Bitmap GetShaderFrame()
         {
-            
+
 
             //get shader  bitmap
-            
-            var ShaderBitmap = new Bitmap(120, 120, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
-            var ShaderBitmapData = ShaderBitmap.LockBits(new Rectangle(0,0,120,120), ImageLockMode.WriteOnly, ShaderBitmap.PixelFormat);
+            Bitmap ShaderBitmap;
+            ShaderBitmap = new Bitmap(240, 135, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            var ShaderBitmapData = ShaderBitmap.LockBits(new Rectangle(0, 0, 240, 135), ImageLockMode.WriteOnly, ShaderBitmap.PixelFormat);
             IntPtr pixelAddress = ShaderBitmapData.Scan0;
             
                 var CurrentFrame = ShaderEffect.Frame;
@@ -302,9 +292,6 @@ namespace adrilight.Util
             }
                
         
-            
-
-          
 
         }
        
@@ -364,6 +351,7 @@ namespace adrilight.Util
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
             var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 5;
+
             //  var shouldBeRefreshing = NeededRefreshing;
 
 

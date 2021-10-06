@@ -26,7 +26,8 @@ namespace adrilight.View
             InitializeComponent();
             // ViewModel = new MainViewViewModel();
             // this.DataContext = ViewModel;
-           
+            
+
         }
 
         
@@ -41,7 +42,15 @@ namespace adrilight.View
             this.Visibility = Visibility.Hidden;
         }
 
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            var vm = DataContext as MainViewViewModel;
+            if (vm != null)
+            {
+                vm.IsSettingsWindowOpen = false;
+            }
+        }
 
-       
+
     }
 }
