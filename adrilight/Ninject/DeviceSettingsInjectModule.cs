@@ -16,9 +16,9 @@ namespace adrilight.Ninject
             Bind<ISerialDeviceDetection>().To<SerialDeviceDetection>().InSingletonScope();
             Bind<IShaderEffect>().To<ShaderEffect>().InSingletonScope();
             Bind<IContext>().To<WpfContext>().InSingletonScope();
-            Bind<IDesktopDuplicator>().To<DesktopDuplicator>().InSingletonScope();
-            Bind<IDesktopDuplicatorSecondary>().To<DesktopDuplicatorSecondary>().InSingletonScope();
-            Bind<IDesktopDuplicatorThird>().To<DesktopDuplicatorThird>().InSingletonScope();
+           
+            Bind<IDesktopFrame>().To<DesktopFrame>().InSingletonScope();
+
             if (alldevicesettings!=null)
             {
                 if (alldevicesettings.Count > 0)

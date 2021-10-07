@@ -26,16 +26,14 @@ namespace adrilight
             IDeviceSettings deviceSettings,
             IDeviceSpotSet deviceSpotSet ,
             MainViewViewModel mainViewViewModel,
-            IDesktopDuplicator desktopDuplicator,
-            IDesktopDuplicatorSecondary desktopDuplicatorSecondary,
-            IDesktopDuplicatorThird desktopDuplicatorThird)
+            IDesktopFrame desktopFrame
+            )
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
             DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
             DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
-            DesktopDuplicator = desktopDuplicator ?? throw new ArgumentNullException(nameof(desktopDuplicator));
-            DesktopDuplicatorSecondary = desktopDuplicatorSecondary ?? throw new ArgumentNullException(nameof(desktopDuplicatorSecondary));
-            DesktopDuplicatorThird = desktopDuplicatorThird ?? throw new ArgumentNullException(nameof(desktopDuplicatorThird));
+            DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
+         
             // GraphicAdapter = graphicAdapter;
             // Output = output;
             MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
@@ -143,9 +141,8 @@ namespace adrilight
         private IGeneralSettings UserSettings { get; }
         private IDeviceSettings DeviceSettings { get; }
         private IDeviceSpotSet DeviceSpotSet { get; }
-        private IDesktopDuplicator DesktopDuplicator { get; }
-        private IDesktopDuplicatorSecondary DesktopDuplicatorSecondary { get; }
-        private IDesktopDuplicatorThird DesktopDuplicatorThird { get; }
+        private IDesktopFrame DesktopFrame { get; }
+   
 
 
 
@@ -397,13 +394,13 @@ namespace adrilight
                 switch(DeviceSettings.SelectedDisplay)
                 {
                     case 0:
-                         CurrentFrame = DesktopDuplicator.DesktopFrame;
+                         CurrentFrame = DesktopFrame.Frame;
                         break;
                     case 1:
-                         CurrentFrame = DesktopDuplicatorSecondary.DesktopFrame;
+                         CurrentFrame = DesktopFrame.Frame;
                         break;
                     case 2:
-                         CurrentFrame = DesktopDuplicatorThird.DesktopFrame;
+                         CurrentFrame = DesktopFrame.Frame;
                         break;
                 }    
                 

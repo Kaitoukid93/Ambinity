@@ -170,10 +170,8 @@ namespace adrilight
             var openRGBClient = kernel.Get<IOpenRGBClientDevice>();
             var serialDeviceDetection = kernel.Get<ISerialDeviceDetection>();
             var shaderEffect = kernel.Get<IShaderEffect>();
-            var context = kernel.Get<IContext>();
-            var desktop = kernel.Get<IDesktopDuplicator>();
-            var desktop2 = kernel.Get<IDesktopDuplicatorSecondary>();
-            var desktop3 = kernel.Get<IDesktopDuplicatorThird>();
+            var context = kernel.Get<IContext>();    
+            var desktopFrame = kernel.Get<IDesktopFrame>();
 
             //// tách riêng từng setting của từng device///
             if (alldevicesettings!=null)

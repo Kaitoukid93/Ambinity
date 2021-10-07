@@ -12,24 +12,14 @@ using Device = SharpDX.Direct3D11.Device;
 using MapFlags = SharpDX.Direct3D11.MapFlags;
 using Rectangle = SharpDX.Mathematics.Interop.RawRectangle;
 using adrilight.Util;
-using System.Windows;
-using adrilight.DesktopDuplication;
-using System.Threading;
-using NLog.Fluent;
-using Castle.Core.Logging;
-using Polly;
-using NLog;
-using adrilight.ViewModel;
-using GalaSoft.MvvmLight;
 
-namespace adrilight
+namespace adrilight.DesktopDuplication
 {
     /// <summary>
     /// Provides access to frame-by-frame updates of a particular desktop (i.e. one monitor), with image and cursor information.
     /// </summary>
-    internal class DesktopDuplicator : ViewModelBase, IDisposable , IDesktopDuplicator
+    public class DesktopDuplicator : IDisposable
     {
-        private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
         private readonly Device _device;
         private OutputDescription _outputDescription;
         private readonly OutputDuplication _outputDuplication;
@@ -43,14 +33,8 @@ namespace adrilight
         /// </summary>
         /// <param name="whichGraphicsCardAdapter">The adapter which contains the desired outputs.</param>
         /// <param name="whichOutputDevice">The output device to duplicate (i.e. monitor). Begins with zero, which seems to correspond to the primary monitor.</param>
-        public DesktopDuplicator(IGeneralSettings userSettings)
+        public DesktopDuplicator(int whichGraphicsCardAdapter, int whichOutputDevice)
         {
-            UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
-            //MainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
-           // mainView.PropertyChanged += PropertyChanged;
-            userSettings.PropertyChanged += PropertyChanged;
-            var whichGraphicsCardAdapter = 0;
-            var whichOutputDevice = 0;
             Adapter1 adapter;
             try
             {
@@ -68,23 +52,7 @@ namespace adrilight
             }
             catch (SharpDXException ex)
             {
-                if (ex.ResultCode == SharpDX.DXGI.ResultCode.NotFound)
-                {
-
-                    HandyControl.Controls.MessageBox.Show(" Không thể capture màn hình " + (whichOutputDevice+1).ToString(), "Screen Capture", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    output = adapter.GetOutput(0);
-
-                }
-                else
-                {
-                    throw new DesktopDuplicationException("Unknown Device Error", ex);
-                }
-
-
-
-
-
-
+                throw new DesktopDuplicationException("Could not find the specified output device.", ex);
             }
             var output1 = output.QueryInterface<Output1>();
             _outputDescription = output.Description;
@@ -100,203 +68,6 @@ namespace adrilight
                     throw new DesktopDuplicationException(
                         "There is already the maximum number of applications using the Desktop Duplication API running, please close one of the applications and try again.");
                 }
-                else if (ex.ResultCode.Code == SharpDX.DXGI.ResultCode.AccessDenied.Result.Code)
-                {
-                    //Dispose();
-                    throw new DesktopDuplicationException("Access Denied");
-                }
-                else
-                {
-                    Dispose();
-                    GC.Collect();
-                    //retry right here??
-                    throw new Exception("Unknown, just retry");
-
-
-
-                }
-
-
-            }
-           
-            _retryPolicy = Policy.Handle<Exception>()
-               .WaitAndRetryForever(ProvideDelayDuration);
-            _log.Info($"Desktop Duplicator created for Display 1.");
-
-            RefreshCapturingState();
-        }
-        private readonly Policy _retryPolicy;
-        private IGeneralSettings UserSettings { get; }
-       // private MainViewViewModel MainView { get; }
-        public bool IsRunning { get; private set; } = false;
-        public byte[] DesktopFrame { get; set; }
-        private TimeSpan ProvideDelayDuration(int index)
-        {
-            if (index < 10)
-            {
-
-                return TimeSpan.FromMilliseconds(100);
-            }
-
-            if (index < 10 + 256)
-            {
-                //steps where there is also led dimming
-                
-                return TimeSpan.FromMilliseconds(5000d / 256);
-            }
-            return TimeSpan.FromMilliseconds(1000);
-        }
-        private void PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-
-                case nameof(UserSettings.ShouldbeRunning):
-             //  case nameof(MainView.IsSettingsWindowOpen):
-
-                    RefreshCapturingState();
-                    break;
-
-                case nameof(UserSettings.SelectedDisplay):
-                case nameof(UserSettings.SelectedAdapter):
-                    RefreshCaptureSource();
-                    break;
-            }
-        }
-        public void RefreshCaptureSource()
-        {
-            var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = UserSettings.ShouldbeRunning;
-            //  var shouldBeRefreshing = NeededRefreshing;
-            if (isRunning && shouldBeRunning)
-            {
-                //start it
-
-                IsRunning = false;
-                _cancellationTokenSource.Cancel();
-                _cancellationTokenSource = null;
-                _log.Debug("starting DesktopDuplicator on display 1");
-                _cancellationTokenSource = new CancellationTokenSource();
-                _workerThread = new Thread(() => Run(_cancellationTokenSource.Token)) {
-                    IsBackground = true,
-                    Priority = ThreadPriority.BelowNormal,
-                    Name = "DesktopDuplicator"
-                };
-                _workerThread.Start();
-
-            }
-        }
-        public void RefreshCapturingState()
-        {
-            var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = UserSettings.ShouldbeRunning;
-            //  var shouldBeRefreshing = NeededRefreshing;
-
-
-
-            if (isRunning && !shouldBeRunning)
-            {
-                //stop it!
-                _log.Debug("stopping the capturing");
-                _cancellationTokenSource.Cancel();
-                _cancellationTokenSource = null;
-
-
-            }
-
-
-            else if (!isRunning && shouldBeRunning)
-            {
-                //start it
-                _log.Debug("starting the capturing");
-                _cancellationTokenSource = new CancellationTokenSource();
-                _workerThread = new Thread(() => Run(_cancellationTokenSource.Token)) {
-                    IsBackground = true,
-                    Priority = ThreadPriority.BelowNormal,
-                    Name = "DesktopDuplicatorReader"
-                };
-                _workerThread.Start();
-
-
-            }
-
-        }
-        private CancellationTokenSource _cancellationTokenSource;
-        private Thread _workerThread;
-        public void Run(CancellationToken token)
-        {
-            if (IsRunning) throw new Exception(nameof(DesktopDuplicatorReader) + " is already running!");
-
-            IsRunning = true;
-           // NeededRefreshing = false;
-            _log.Debug("Started Desktop Duplication Reader.");
-            Bitmap image = null;
-            BitmapData bitmapData = new BitmapData();
-       
-
-            try
-            {
-
-
-
-                while (!token.IsCancellationRequested)
-                {
-                    var frameTime = Stopwatch.StartNew();
-                    var newImage = _retryPolicy.Execute(() => GetLatestFrame(image));
-                   // TraceFrameDetails(newImage);
-
-                    if (newImage == null)
-                    {
-                        //there was a timeout before there was the next frame, simply retry!
-                        continue;
-                    }
-                    image = newImage;
-                  
-                    // Lock the bitmap's bits.  
-                    var rect = new System.Drawing.Rectangle(0, 0, image.Width, image.Height);
-                    System.Drawing.Imaging.BitmapData bmpData =
-                        image.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite,
-                        image.PixelFormat);
-
-                    // Get the address of the first line.
-                    IntPtr ptr = bmpData.Scan0;
-
-                    // Declare an array to hold the bytes of the bitmap.
-                    int bytes = Math.Abs(bmpData.Stride) * image.Height;
-                    byte[] rgbValues = new byte[bytes];
-
-                    // Copy the RGB values into the array.
-                    System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
-                    DesktopFrame = rgbValues;
-                    RaisePropertyChanged(nameof(DesktopFrame));
-                    // if(MainView.IsSettingsWindowOpen)
-                    // MainView.SetPreviewImage(DesktopFrame);
-
-                    //bool isPreviewRunning = SettingsViewModel.IsSettingsWindowOpen && SettingsViewModel.IsPreviewTabOpen;
-                    //if (isPreviewRunning)
-                    //{
-                    //   MainViewViewModel.SetPreviewImage(image);
-
-
-
-                    image.UnlockBits(bitmapData);
-                    int minFrameTimeInMs = 1000 / UserSettings.LimitFps;
-                    var elapsedMs = (int)frameTime.ElapsedMilliseconds;
-                    if (elapsedMs < minFrameTimeInMs)
-                    {
-                        Thread.Sleep(minFrameTimeInMs - elapsedMs);
-                    }
-                }
-            }
-
-
-            finally
-            {
-                image?.Dispose();
-               
-                _log.Debug("Stopped Desktop Duplicator on display 1.");
-                IsRunning = false;
-                GC.Collect();
             }
         }
 
@@ -318,7 +89,6 @@ namespace adrilight
             return ProcessFrame(reusableImage);
 
         }
-      
 
         private const int mipMapLevel = 3;
         private const int scalingFactor = 1 << mipMapLevel;
@@ -348,28 +118,13 @@ namespace adrilight
             try
             {
                 if (_outputDuplication == null) throw new Exception("_outputDuplication is null");
-                _outputDuplication.TryAcquireNextFrame(1000, out var frameInformation, out desktopResource);
+                _outputDuplication.TryAcquireNextFrame(500, out var frameInformation, out desktopResource);
             }
             catch (SharpDXException ex)
             {
                 if (ex.ResultCode.Code == SharpDX.DXGI.ResultCode.WaitTimeout.Result.Code)
                 {
                     return false;
-                }
-                if (ex.ResultCode.Code == SharpDX.DXGI.ResultCode.AccessLost.Result.Code)
-                {
-                    // ReleaseFrame();
-                    throw new Exception("Access Lost, resolution might be changed");
-                    //do something to restart desktop duplicator here
-
-
-                }
-                if (ex.ResultCode.Code == SharpDX.DXGI.ResultCode.InvalidCall.Result.Code)
-                {
-                    // ReleaseFrame();
-                    throw new Exception("Invalid call, might be retrying");
-
-
                 }
 
                 throw new DesktopDuplicationException("Failed to acquire next frame.", ex);
@@ -397,13 +152,11 @@ namespace adrilight
             using (var tempTexture = desktopResource.QueryInterface<Texture2D>())
             {
                 if (_device == null) throw new Exception("_device is null");
-                //if (_device.ImmediateContext == null) throw new Exception("_device.ImmediateContext is null");                
+                if (_device.ImmediateContext == null) throw new Exception("_device.ImmediateContext is null");
 
                 _device.ImmediateContext.CopySubresourceRegion(tempTexture, 0, null, _smallerTexture, 0);
             }
-            //_outputDuplication.ReleaseFrame();
-            if (_outputDuplication != null)
-                _outputDuplication.ReleaseFrame();
+            _outputDuplication.ReleaseFrame();
 
             // Generates the mipmap of the screen
             _device.ImmediateContext.GenerateMips(_smallerTextureView);
@@ -424,7 +177,6 @@ namespace adrilight
             var width = _outputDescription.DesktopBounds.GetWidth() / scalingFactor;
             var height = _outputDescription.DesktopBounds.GetHeight() / scalingFactor;
 
-
             if (reusableImage != null && reusableImage.Width == width && reusableImage.Height == height)
             {
                 image = reusableImage;
@@ -437,7 +189,6 @@ namespace adrilight
             var boundsRect = new System.Drawing.Rectangle(0, 0, width, height);
 
             // Copy pixels from screen capture Texture to GDI bitmap
-
             var mapDest = image.LockBits(boundsRect, ImageLockMode.WriteOnly, image.PixelFormat);
             var sourcePtr = mapSource.DataPointer;
             var destPtr = mapDest.Scan0;
@@ -464,7 +215,6 @@ namespace adrilight
             // Release source and dest locks
             image.UnlockBits(mapDest);
             _device.ImmediateContext.UnmapSubresource(_stagingTexture, 0);
-
             return image;
         }
 
@@ -481,22 +231,8 @@ namespace adrilight
             _stagingTexture?.Dispose();
             _outputDuplication?.Dispose();
             _device?.Dispose();
-            // _desktopFrameLogger?.Dispose();
+
             GC.Collect();
-        }
-        private void ReleaseFrame()
-        {
-            try
-            {
-                _outputDuplication.ReleaseFrame();
-            }
-            catch (SharpDXException ex)
-            {
-                if (ex.ResultCode.Failure)
-                {
-                    throw new DesktopDuplicationException("Failed to release frame.");
-                }
-            }
         }
     }
 }

@@ -547,7 +547,7 @@ namespace adrilight.ViewModel
         public IOpenRGBClientDevice OpenRGBClientDevice { get; set; }
         public ISerialDeviceDetection SerialDeviceDetection { get; set; }
          public static IShaderEffect ShaderEffect {get;set;}
-        public IDesktopDuplicator DesktopDuplicator { get; set; }
+        public IDesktopFrame DesktopFrame { get; set; }
         public int AddedDevice { get; }
 
         public MainViewViewModel(IContext context,
@@ -558,13 +558,13 @@ namespace adrilight.ViewModel
             ISerialDeviceDetection serialDeviceDetection,
             ISerialStream[] serialStreams,
             IShaderEffect shaderEffect,
-            IDesktopDuplicator desktopDuplicator
+            IDesktopFrame desktopFrame
            )
         {
 
             GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
             SerialStreams = serialStreams ?? throw new ArgumentNullException(nameof(serialStreams));
-            DesktopDuplicator = desktopDuplicator ?? throw new ArgumentNullException(nameof(desktopDuplicator));
+            DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
             Cards = new ObservableCollection<IDeviceSettings>();
             DisplayCards = new ObservableCollection<IDeviceSettings>();
             AddedDevice = cards.Length;
@@ -574,7 +574,7 @@ namespace adrilight.ViewModel
             SerialDeviceDetection = serialDeviceDetection ?? throw new ArgumentNullException(nameof(serialDeviceDetection));
             ShaderEffect = shaderEffect ?? throw new ArgumentNullException();
             ShaderEffect.PropertyChanged+= ShaderImageUpdate;
-            DesktopDuplicator.PropertyChanged += ShaderImageUpdate;
+            DesktopFrame.PropertyChanged += ShaderImageUpdate;
             //ShaderSpots = generalSpotSet.ShaderSpot;
             //ShaderBitmap = shaderEffect.MatrixBitmap;
             foreach (IDeviceSettings card in cards)
@@ -775,7 +775,7 @@ namespace adrilight.ViewModel
                                 var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
                                 MatrixBitmap.Lock();
                                 IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                                var CurrentFrame = DesktopDuplicator.DesktopFrame;
+                                var CurrentFrame = DesktopFrame.Frame;
                                 if(CurrentFrame!=null)
                                 {
                                     Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
