@@ -384,15 +384,7 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-        public IGeneralSpot[] _shaderSpots;
-        public IGeneralSpot[] ShaderSpots {
-            get => _shaderSpots;
-            set
-            {
-                _shaderSpots = value;
-                RaisePropertyChanged();
-            }
-        }
+       
 
         public  WriteableBitmap _shaderBitmap;
         public  WriteableBitmap ShaderBitmap {
@@ -561,7 +553,6 @@ namespace adrilight.ViewModel
         public MainViewViewModel(IContext context,
             IDeviceSettings[] cards,
             IDeviceSpotSet[] deviceSpotSets,
-            IGeneralSpotSet generalSpotSet,
             IGeneralSettings generalSettings,
             IOpenRGBClientDevice openRGBDevices,
             ISerialDeviceDetection serialDeviceDetection,

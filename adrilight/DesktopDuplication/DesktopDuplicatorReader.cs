@@ -22,12 +22,20 @@ namespace adrilight
     {
         private readonly ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public DesktopDuplicatorReader(IGeneralSettings userSettings, IDeviceSettings deviceSettings, IDeviceSpotSet deviceSpotSet , MainViewViewModel mainViewViewModel, IDesktopDuplicator desktopDuplicator )
+        public DesktopDuplicatorReader(IGeneralSettings userSettings,
+            IDeviceSettings deviceSettings,
+            IDeviceSpotSet deviceSpotSet ,
+            MainViewViewModel mainViewViewModel,
+            IDesktopDuplicator desktopDuplicator,
+            IDesktopDuplicatorSecondary desktopDuplicatorSecondary,
+            IDesktopDuplicatorThird desktopDuplicatorThird)
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
             DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
             DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
             DesktopDuplicator = desktopDuplicator ?? throw new ArgumentNullException(nameof(desktopDuplicator));
+            DesktopDuplicatorSecondary = desktopDuplicatorSecondary ?? throw new ArgumentNullException(nameof(desktopDuplicatorSecondary));
+            DesktopDuplicatorThird = desktopDuplicatorThird ?? throw new ArgumentNullException(nameof(desktopDuplicatorThird));
             // GraphicAdapter = graphicAdapter;
             // Output = output;
             MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
@@ -136,8 +144,10 @@ namespace adrilight
         private IDeviceSettings DeviceSettings { get; }
         private IDeviceSpotSet DeviceSpotSet { get; }
         private IDesktopDuplicator DesktopDuplicator { get; }
-       
-  
+        private IDesktopDuplicatorSecondary DesktopDuplicatorSecondary { get; }
+        private IDesktopDuplicatorThird DesktopDuplicatorThird { get; }
+
+
 
         private readonly Policy _retryPolicy;
 
@@ -180,7 +190,7 @@ namespace adrilight
                 while (!token.IsCancellationRequested)
                 {
                     var frameTime = Stopwatch.StartNew();
-                    var newImage = _retryPolicy.Execute(() => GetNextFrame());
+                    var newImage = _retryPolicy.Execute(() => GetNextFrame(image));
                     TraceFrameDetails(newImage);
                     var width = DeviceSettings.DeviceRectWidth;
                     var height = DeviceSettings.DeviceRectHeight;
@@ -374,7 +384,7 @@ namespace adrilight
             return (byte)(256f * ((float)Math.Pow(factor, color / 256f) - 1f) / (factor - 1));
         }
 
-        private Bitmap GetNextFrame()
+        private Bitmap GetNextFrame(Bitmap ReusableBitmap)
         {
 
            
@@ -382,25 +392,50 @@ namespace adrilight
 
             try
             {
+                byte[] CurrentFrame = null;
                 Bitmap DesktopImage;
-                DesktopImage = new Bitmap(240, 135, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                switch(DeviceSettings.SelectedDisplay)
+                {
+                    case 0:
+                         CurrentFrame = DesktopDuplicator.DesktopFrame;
+                        break;
+                    case 1:
+                         CurrentFrame = DesktopDuplicatorSecondary.DesktopFrame;
+                        break;
+                    case 2:
+                         CurrentFrame = DesktopDuplicatorThird.DesktopFrame;
+                        break;
+                }    
+                
+                if (CurrentFrame == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (ReusableBitmap != null&&CurrentFrame.Length!=ReusableBitmap.Width*ReusableBitmap.Height*4)
+                {
+                    DesktopImage = new Bitmap(240, 135, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                }
+                else
+                {
+                    DesktopImage = ReusableBitmap;
+                }
+                
                 var DesktopImageBitmapData = DesktopImage.LockBits(new Rectangle(0, 0, 240, 135), ImageLockMode.WriteOnly, DesktopImage.PixelFormat);
                 IntPtr pixelAddress = DesktopImageBitmapData.Scan0;
                 
-                    var CurrentFrame = DesktopDuplicator.DesktopFrame;
-                    if (CurrentFrame == null)
-                    {
-                        return null;
-                    }
-                    else
-                    {
+                    
+                    
+                    
                         Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                    }
+                    
 
                 DesktopImage.UnlockBits(DesktopImageBitmapData);
 
                 return DesktopImage;
+                }
             }
             catch (Exception ex)
             {

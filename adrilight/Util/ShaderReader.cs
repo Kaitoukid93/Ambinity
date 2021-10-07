@@ -116,7 +116,7 @@ namespace adrilight.Util
                 {
                     //get bitmap image of each frame
                     var frameTime = Stopwatch.StartNew();
-                    var newImage = _retryPolicy.Execute(() => GetShaderFrame());
+                    var newImage = _retryPolicy.Execute(() => GetShaderFrame(image));
                     var width = DeviceSettings.DeviceRectWidth;
                     var height = DeviceSettings.DeviceRectHeight;
                     var x = DeviceSettings.DeviceRectLeft;
@@ -268,12 +268,12 @@ namespace adrilight.Util
             return bmp;
         }
         
-        private Bitmap GetShaderFrame()
+        private Bitmap GetShaderFrame(Bitmap reusableImage)
         {
-
-
-            //get shader  bitmap
             Bitmap ShaderBitmap;
+            if(reusableImage!=null)
+            ShaderBitmap = reusableImage;
+            else
             ShaderBitmap = new Bitmap(240, 135, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
             var ShaderBitmapData = ShaderBitmap.LockBits(new Rectangle(0, 0, 240, 135), ImageLockMode.WriteOnly, ShaderBitmap.PixelFormat);
             IntPtr pixelAddress = ShaderBitmapData.Scan0;

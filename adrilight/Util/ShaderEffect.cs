@@ -11,6 +11,7 @@ using System.Windows;
 using adrilight.ViewModel;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
+using System.Diagnostics;
 
 namespace adrilight
 {
@@ -20,23 +21,17 @@ namespace adrilight
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public ShaderEffect(IGeneralSettings generalSettings, IGeneralSpotSet generalSpotSet)
+        public ShaderEffect(IGeneralSettings generalSettings)
         {
-            GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
-            GeneralSpotSet = generalSpotSet ?? throw new ArgumentNullException(nameof(generalSpotSet));
-           // MainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
-            //SettingsViewModel = settingsViewModel ?? throw new ArgumentNullException(nameof(settingsViewModel));
-            //Remove SettingsViewmodel from construction because now we pass SpotSet Dirrectly to MainViewViewModel
+            GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));      
             GeneralSettings.PropertyChanged += PropertyChanged;
-            // SettingsViewModel.PropertyChanged += PropertyChanged;
             RefreshColorState();
             _log.Info($"RainbowColor Created");
 
         }
         //Dependency Injection//
         private IGeneralSettings GeneralSettings { get; }
-        private IGeneralSpotSet GeneralSpotSet { get; }
-       // private MainViewViewModel MainView { get; }
+       
 
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
@@ -103,23 +98,23 @@ namespace adrilight
 
             try
             {
-                using ReadWriteTexture2D<Rgba32, Float4> texture = Gpu.Default.AllocateReadWriteTexture2D<Rgba32, Float4>(240, 135);
-                using ReadBackTexture2D<Rgba32> buffer = Gpu.Default.AllocateReadBackTexture2D<Rgba32>(240, 135);
+                using ReadWriteTexture2D<Bgra32, Float4> texture = Gpu.Default.AllocateReadWriteTexture2D<Bgra32, Float4>(240, 135);
+               
                 int frame = 0;
-                var ColorArray = buffer.View.ToArray();
+               
                 Frame = null;
-                Frame = new byte[ColorArray.Length * 4];
+                
 
                 while (!token.IsCancellationRequested)
                 {
-                 
-                    
 
-                       
 
-                        // For each frame
-                        
-                            float timestamp = 1 / 60f * frame;
+
+                    var frameTime = Stopwatch.StartNew();
+
+                    // For each frame
+
+                    float timestamp = 1 / 60f * frame;
 
                             // Run the shader
                            switch(GeneralSettings.SelectedShader)
@@ -148,31 +143,25 @@ namespace adrilight
 
 
                     }
-                           
 
-                            // Copy the rendered frame to a readback texture that can be accessed by the CPU.
-                            // The rendered texture can only be accessed by the GPU, so we can't read from it.
-                            texture.CopyTo(buffer);
 
+                    // Copy the rendered frame to a readback texture that can be accessed by the CPU.
+                    // The rendered texture can only be accessed by the GPU, so we can't read from it.
+                    var colorArray = new Bgra32[texture.Width * texture.Height];
+                    var bitmapSpan = new Span<Bgra32>(colorArray);
                     // Access buffer.View here and do all your work with the frame data
-                    ColorArray = buffer.View.ToArray();
-
-                    int index = 0;
-                        for (var x=0;x <= ColorArray.GetUpperBound(0);x++)
-                        {
-                            for(var y=0;y <=ColorArray.GetUpperBound(1); y++)
-                            {
-                                Frame[index++] = ColorArray[x, y].B;
-                                Frame[index++] = ColorArray[x, y].G;
-                                Frame[index++] = ColorArray[x, y].R;
-                                Frame[index++] = ColorArray[x, y].A;
-                            
-                            }
-                        }
+                   
+                    texture.CopyTo(bitmapSpan);
+                   
+                    var bytes = MemoryMarshal.Cast<Bgra32, byte>(bitmapSpan);
+                    Frame = bytes.ToArray();    
                     RaisePropertyChanged(nameof(Frame));
-                    // if(MainView.IsSettingsWindowOpen)
-                  //  MainView.SetPreviewImage(Frame);
-                    Thread.Sleep(1000/60);
+                    int minFrameTimeInMs = 1000 / GeneralSettings.LimitFps;
+                    var elapsedMs = (int)frameTime.ElapsedMilliseconds;
+                    if (elapsedMs < minFrameTimeInMs)
+                    {
+                        Thread.Sleep(minFrameTimeInMs - elapsedMs);
+                    }
                     frame++;
 
                 }

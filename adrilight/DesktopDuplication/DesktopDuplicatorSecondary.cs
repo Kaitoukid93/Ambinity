@@ -27,7 +27,7 @@ namespace adrilight
     /// <summary>
     /// Provides access to frame-by-frame updates of a particular desktop (i.e. one monitor), with image and cursor information.
     /// </summary>
-    internal class DesktopDuplicator : ViewModelBase, IDisposable , IDesktopDuplicator
+    internal class DesktopDuplicatorSecondary : ViewModelBase, IDisposable , IDesktopDuplicatorSecondary
     {
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
         private readonly Device _device;
@@ -43,81 +43,85 @@ namespace adrilight
         /// </summary>
         /// <param name="whichGraphicsCardAdapter">The adapter which contains the desired outputs.</param>
         /// <param name="whichOutputDevice">The output device to duplicate (i.e. monitor). Begins with zero, which seems to correspond to the primary monitor.</param>
-        public DesktopDuplicator(IGeneralSettings userSettings)
+        public DesktopDuplicatorSecondary(IGeneralSettings userSettings)
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
             //MainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
            // mainView.PropertyChanged += PropertyChanged;
             userSettings.PropertyChanged += PropertyChanged;
             var whichGraphicsCardAdapter = 0;
-            var whichOutputDevice = 0;
+            var whichOutputDevice = 1;
             Adapter1 adapter;
-            try
+            if(UserSettings.ShouldbeRunningSecondary)
             {
-                adapter = new Factory1().GetAdapter1(whichGraphicsCardAdapter);
-            }
-            catch (SharpDXException ex)
-            {
-                throw new DesktopDuplicationException("Could not find the specified graphics card adapter.", ex);
-            }
-            _device = new Device(adapter);
-            Output output;
-            try
-            {
-                output = adapter.GetOutput(whichOutputDevice);
-            }
-            catch (SharpDXException ex)
-            {
-                if (ex.ResultCode == SharpDX.DXGI.ResultCode.NotFound)
+                try
                 {
-
-                    HandyControl.Controls.MessageBox.Show(" Không thể capture màn hình " + (whichOutputDevice+1).ToString(), "Screen Capture", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    output = adapter.GetOutput(0);
-
+                    adapter = new Factory1().GetAdapter1(whichGraphicsCardAdapter);
                 }
-                else
+                catch (SharpDXException ex)
                 {
-                    throw new DesktopDuplicationException("Unknown Device Error", ex);
+                    throw new DesktopDuplicationException("Could not find the specified graphics card adapter.", ex);
                 }
-
-
-
-
-
-
-            }
-            var output1 = output.QueryInterface<Output1>();
-            _outputDescription = output.Description;
-
-            try
-            {
-                _outputDuplication = output1.DuplicateOutput(_device);
-            }
-            catch (SharpDXException ex)
-            {
-                if (ex.ResultCode.Code == SharpDX.DXGI.ResultCode.NotCurrentlyAvailable.Result.Code)
+                _device = new Device(adapter);
+                Output output;
+                try
                 {
-                    throw new DesktopDuplicationException(
-                        "There is already the maximum number of applications using the Desktop Duplication API running, please close one of the applications and try again.");
+                    output = adapter.GetOutput(whichOutputDevice);
                 }
-                else if (ex.ResultCode.Code == SharpDX.DXGI.ResultCode.AccessDenied.Result.Code)
+                catch (SharpDXException ex)
                 {
-                    //Dispose();
-                    throw new DesktopDuplicationException("Access Denied");
-                }
-                else
-                {
-                    Dispose();
-                    GC.Collect();
-                    //retry right here??
-                    throw new Exception("Unknown, just retry");
+                    if (ex.ResultCode == SharpDX.DXGI.ResultCode.NotFound)
+                    {
+
+                        HandyControl.Controls.MessageBox.Show(" Không thể capture màn hình " + (whichOutputDevice + 1).ToString(), "Screen Capture", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        output = adapter.GetOutput(0);
+
+                    }
+                    else
+                    {
+                        throw new DesktopDuplicationException("Unknown Device Error", ex);
+                    }
+
+
+
 
 
 
                 }
+                var output1 = output.QueryInterface<Output1>();
+                _outputDescription = output.Description;
+
+                try
+                {
+                    _outputDuplication = output1.DuplicateOutput(_device);
+                }
+                catch (SharpDXException ex)
+                {
+                    if (ex.ResultCode.Code == SharpDX.DXGI.ResultCode.NotCurrentlyAvailable.Result.Code)
+                    {
+                        throw new DesktopDuplicationException(
+                            "There is already the maximum number of applications using the Desktop Duplication API running, please close one of the applications and try again.");
+                    }
+                    else if (ex.ResultCode.Code == SharpDX.DXGI.ResultCode.AccessDenied.Result.Code)
+                    {
+                        //Dispose();
+                        throw new DesktopDuplicationException("Access Denied");
+                    }
+                    else
+                    {
+                        Dispose();
+                        GC.Collect();
+                        //retry right here??
+                        throw new Exception("Unknown, just retry");
 
 
-            }
+
+                    }
+
+
+                }
+            }    
+           
            
             _retryPolicy = Policy.Handle<Exception>()
                .WaitAndRetryForever(ProvideDelayDuration);
@@ -151,7 +155,7 @@ namespace adrilight
             switch (e.PropertyName)
             {
 
-                case nameof(UserSettings.ShouldbeRunning):
+                case nameof(UserSettings.ShouldbeRunningSecondary):
              //  case nameof(MainView.IsSettingsWindowOpen):
 
                     RefreshCapturingState();
@@ -166,7 +170,7 @@ namespace adrilight
         public void RefreshCaptureSource()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = UserSettings.ShouldbeRunning;
+            var shouldBeRunning = UserSettings.ShouldbeRunningSecondary;
             //  var shouldBeRefreshing = NeededRefreshing;
             if (isRunning && shouldBeRunning)
             {
@@ -189,7 +193,7 @@ namespace adrilight
         public void RefreshCapturingState()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = UserSettings.ShouldbeRunning;
+            var shouldBeRunning = UserSettings.ShouldbeRunningSecondary;
             //  var shouldBeRefreshing = NeededRefreshing;
 
 
