@@ -150,11 +150,11 @@
 
 
             </Button>
-            <Border Height="135" Grid.Row="5" Width="240" BorderThickness="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,30,0,0">
-                <Canvas Width="240" Height="135"
+            <Border Height="{Binding CanvasHeight}" Grid.Row="5" Width="{Binding CanvasWidth}" BorderThickness="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,30,0,0">
+                <Canvas Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}"
                     Background="Transparent" 
                     x:Name="deviceCanvas">
-                    <Image  Source="{Binding ShaderBitmap}"/>
+                    <Image Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}" Source="{Binding ShaderBitmap}"/>
                     <Rectangle x:Name="deviceRect"
                                Canvas.Top="{Binding DeviceRectY, Mode=TwoWay}"
                                Canvas.Left="{Binding DeviceRectX, Mode=TwoWay}"

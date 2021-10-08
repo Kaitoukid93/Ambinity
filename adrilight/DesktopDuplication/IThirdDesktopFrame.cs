@@ -5,11 +5,9 @@ using System.Threading;
 
 namespace adrilight
 {
-    public interface IDesktopFrame : INotifyPropertyChanged
+    public interface IThirdDesktopFrame : INotifyPropertyChanged
     {
         byte[] Frame { get; set; }
-        int FrameWidth { get; set; }
-        int FrameHeight { get; set; }
         void Stop();
         void RefreshCapturingState();
     }

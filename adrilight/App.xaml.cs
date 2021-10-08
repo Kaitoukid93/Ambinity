@@ -172,6 +172,8 @@ namespace adrilight
             var shaderEffect = kernel.Get<IShaderEffect>();
             var context = kernel.Get<IContext>();    
             var desktopFrame = kernel.Get<IDesktopFrame>();
+            var secondDesktopFrame = kernel.Get<ISecondDesktopFrame>();
+            var thirdDesktopFrame = kernel.Get<IThirdDesktopFrame>();
 
             //// tách riêng từng setting của từng device///
             if (alldevicesettings!=null)
@@ -181,31 +183,17 @@ namespace adrilight
 
                     var DeviceName = devicesetting.DeviceID.ToString();
 
-                    if (DeviceName == "151293")//OpenRGBDevice
-                    {
-                        var DeviceSerial = devicesetting.DeviceSerial;
-                        kernel.Bind<IDeviceSpotSet>().To<DeviceSpotSet>().InSingletonScope().Named(DeviceSerial).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceSerial));
-                       // kernel.Bind<ISpotSetReader>().To<SpotSetReader>().InSingletonScope().Named(DeviceSerial).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceSerial)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceSerial));                     
-                        kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceSerial).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceSerial)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceSerial));
-                        kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(DeviceSerial).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceSerial)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceSerial));
-                        kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceSerial).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceSerial)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceSerial));
-                        kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceSerial).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceSerial)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceSerial));
-                        kernel.Bind<IShaderReader>().To<ShaderReader>().InSingletonScope().Named(DeviceSerial).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceSerial)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceSerial));
-                        kernel.Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().Named(DeviceSerial).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceSerial)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceSerial));
-                    }
-                    else
-                    {
+                    
 
                         if(!devicesetting.IsHUB)
                         {
                             kernel.Bind<IDeviceSpotSet>().To<DeviceSpotSet>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName));
                            // kernel.Bind<ISpotSetReader>().To<SpotSetReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            if(devicesetting.ParrentLocation==151293) // only attach serial stream to device with their own serial support
-                            {
-                                kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                                var serialStream = kernel.Get<ISerialStream>(DeviceName);
-                            }
-                                  
+                            
+                        if (devicesetting.DeviceSerial != "151293") // Openrgb device
+                        {
+                            kernel.Bind<ISerialStream>().To<OpenRGBStream>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                            var serialStream = kernel.Get<ISerialStream>(DeviceName);
                             kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
                             kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
                             kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
@@ -220,9 +208,34 @@ namespace adrilight
                             var pixelation = kernel.Get<IShaderReader>(DeviceName);
                             var screencapturing = kernel.Get<IDesktopDuplicatorReader>(DeviceName);
                         }
+                        else
+                        {
+                            if (devicesetting.ParrentLocation == 151293) // Ambino Device
+                            {
+                                kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                                var serialStream = kernel.Get<ISerialStream>(DeviceName);
+                            }
+                                kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                                kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                                kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                                kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                                kernel.Bind<IShaderReader>().To<ShaderReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                                kernel.Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                                //  var spotSetReader = kernel.Get<ISpotSetReader>(DeviceName);
+                                var staticColor = kernel.Get<IStaticColor>(DeviceName);
+                                var rainbow = kernel.Get<IRainbow>(DeviceName);
+                                var music = kernel.Get<IMusic>(DeviceName);
+                                var atmosphere = kernel.Get<IAtmosphere>(DeviceName);
+                                var pixelation = kernel.Get<IShaderReader>(DeviceName);
+                                var screencapturing = kernel.Get<IDesktopDuplicatorReader>(DeviceName);
+                            }
+                        }
+
+                       
+                        
 
                   
-                    }
+                    
 
                 }
 
@@ -263,6 +276,7 @@ namespace adrilight
                 {
                     serialStream.Stop();
                 }
+
                 _log.Debug("Application exit!");
             };
 
@@ -279,15 +293,16 @@ namespace adrilight
                     {
                         serialStream.Start();
                     }
-                    var DuplicatorReaders = kernel.GetAll<IDesktopDuplicatorReader>();
-                    foreach (var duplicatorreader in DuplicatorReaders)
-                    {
-                        duplicatorreader.RefreshCapturingState();
-                    }
-                     
-                  
-                   
-                  
+
+
+                    //var desktopFrame = kernel.Get<IDesktopFrame>();
+                    //var secondDesktopFrame = kernel.Get<ISecondDesktopFrame>();
+                    //var thirdDesktopFrame = kernel.Get<IThirdDesktopFrame>();
+                    //desktopFrame.RefreshCapturingState();
+                    //secondDesktopFrame.RefreshCapturingState();
+                    //thirdDesktopFrame.RefreshCapturingState();
+
+
 
                     _log.Debug("Restart the serial stream after sleep!");
                 }
@@ -298,13 +313,14 @@ namespace adrilight
                     {
                         serialStream.Stop();
                     }
-                    var DuplicatorReaders = kernel.GetAll<IDesktopDuplicatorReader>();
-                    foreach (var duplicatorreader in DuplicatorReaders)
-                    {
-                        duplicatorreader.Stop();
-                    }
 
 
+                    //var desktopFrame = kernel.Get<IDesktopFrame>();
+                    //var secondDesktopFrame = kernel.Get<ISecondDesktopFrame>();
+                    //var thirdDesktopFrame = kernel.Get<IThirdDesktopFrame>();
+                    //desktopFrame.Stop();
+                    //secondDesktopFrame.Stop();
+                    //thirdDesktopFrame.Stop();
                     _log.Debug("Stop the serial stream due to sleep condition!");
                 }
 

@@ -393,12 +393,13 @@ namespace adrilight.ViewModel
             {
                  _shaderBitmap = value;
                 RaisePropertyChanged(nameof(ShaderBitmap));
-                //RaisePropertyChanged(() => SourceWidth);
-                //RaisePropertyChanged(() => sourceHeight);
-                //RaisePropertyChanged(() => CanvasWidth);
-                //RaisePropertyChanged(() => CanvasHeight);
+             
+                RaisePropertyChanged(() => CanvasWidth);
+                RaisePropertyChanged(() => CanvasHeight);
             }
         }
+        public int CanvasWidth => ShaderBitmap.PixelWidth;
+        public int CanvasHeight => ShaderBitmap.PixelHeight;
 
         private int _parrentLocation;
         public int ParrentLocation {
@@ -548,6 +549,8 @@ namespace adrilight.ViewModel
         public ISerialDeviceDetection SerialDeviceDetection { get; set; }
          public static IShaderEffect ShaderEffect {get;set;}
         public IDesktopFrame DesktopFrame { get; set; }
+        public ISecondDesktopFrame SecondDesktopFrame { get; set; }
+        public IThirdDesktopFrame ThirdDesktopFrame { get; set; }
         public int AddedDevice { get; }
 
         public MainViewViewModel(IContext context,
@@ -558,13 +561,17 @@ namespace adrilight.ViewModel
             ISerialDeviceDetection serialDeviceDetection,
             ISerialStream[] serialStreams,
             IShaderEffect shaderEffect,
-            IDesktopFrame desktopFrame
+            IDesktopFrame desktopFrame,
+            ISecondDesktopFrame secondDesktopFrame,
+            IThirdDesktopFrame thirdDesktopFrame
            )
         {
 
             GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
             SerialStreams = serialStreams ?? throw new ArgumentNullException(nameof(serialStreams));
             DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
+            SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
+            ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
             Cards = new ObservableCollection<IDeviceSettings>();
             DisplayCards = new ObservableCollection<IDeviceSettings>();
             AddedDevice = cards.Length;
@@ -770,24 +777,90 @@ namespace adrilight.ViewModel
                             });
                             break;
                         case 0:
-                            Context.Invoke(() =>
+                            switch(CurrentDevice.SelectedDisplay)
                             {
-                                var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
-                                MatrixBitmap.Lock();
-                                IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                                var CurrentFrame = DesktopFrame.Frame;
-                                if(CurrentFrame!=null)
-                                {
-                                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+                                case 0:
+                                    Context.Invoke(() =>
+                                    {
+                                        
+                                        var CurrentFrame = DesktopFrame.Frame;
+                                        if (CurrentFrame != null)
+                                        {
+                                            var MatrixBitmap = new WriteableBitmap(DesktopFrame.FrameWidth, DesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
+                                            MatrixBitmap.Lock();
+                                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+                                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, DesktopFrame.FrameWidth, DesktopFrame.FrameHeight));
 
-                                    MatrixBitmap.Unlock();
-                                    ShaderBitmap = MatrixBitmap;
+                                            MatrixBitmap.Unlock();
+                                            ShaderBitmap = MatrixBitmap;
 
-                                }
-                               
-                            });
+                                        }
+                                        else
+                                        {
+                                            //notify the UI show error message
+                                           
+                                        }
+
+                                    });
+                                    break;
+                                case 1:
+                                    Context.Invoke(() =>
+                                    {
+                                       
+                                        var CurrentFrame = SecondDesktopFrame.Frame;
+                                        if (CurrentFrame != null)
+                                        {
+                                            var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                                            MatrixBitmap.Lock();
+                                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+
+                                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+
+                                            MatrixBitmap.Unlock();
+                                            ShaderBitmap = MatrixBitmap;
+
+                                        }
+                                        else
+                                        {
+                                            //notify the UI show error message
+                                            IsSecondDesktopValid = false;
+                                            RaisePropertyChanged(() => IsSecondDesktopValid);
+                                        }
+
+                                    });
+                                    break;
+                                case 2:
+                                    Context.Invoke(() =>
+                                    {
+                                       
+                                        var CurrentFrame = ThirdDesktopFrame.Frame;
+                                        if (CurrentFrame != null)
+                                        {
+                                            var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                                            MatrixBitmap.Lock();
+                                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+
+                                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+
+                                            MatrixBitmap.Unlock();
+                                            ShaderBitmap = MatrixBitmap;
+
+                                        }
+                                        else
+                                        {
+                                            //notify the UI show error message
+                                            IsThirdDesktopValid = false;
+                                            RaisePropertyChanged(() => IsThirdDesktopValid);
+                                        }
+
+                                    });
+                                    break;
+                            }
+                         
                             break;
                     }
                 }
@@ -857,6 +930,24 @@ namespace adrilight.ViewModel
             {
                 Set(ref _isCanvasLightingWindowOpen, value);
                // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
+            }
+        }
+        private bool _isSecondDesktopValid;
+        public bool IsSecondDesktopValid {
+            get => _isSecondDesktopValid;
+            set
+            {
+                Set(ref _isSecondDesktopValid, value);
+                // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
+            }
+        }
+        private bool _isThirdDesktopValid;
+        public bool IsThirdDesktopValid {
+            get => _isThirdDesktopValid;
+            set
+            {
+                Set(ref _isThirdDesktopValid, value);
+                // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
             }
         }
         private bool _isSplitLightingWindowOpen;
@@ -1129,8 +1220,13 @@ namespace adrilight.ViewModel
                         newDevice.DeviceName = device.Name.ToString();
                         newDevice.DeviceType = device.Type.ToString();
                         newDevice.DevicePort = device.Location.ToString();
-                        newDevice.DeviceID = 151293;
+                        newDevice.DeviceID = Cards.Count + 1;
                         newDevice.DeviceSerial = device.Serial;
+                        newDevice.NumLED = device.Leds.Length;
+                        if(device.Type==OpenRGB.NET.Enums.DeviceType.Mouse)
+                        {
+                            newDevice.DeviceLayout = 1; //strip type
+                        }
                         Cards.Add(newDevice);
                     }
                 }
@@ -1936,19 +2032,15 @@ namespace adrilight.ViewModel
                 }
                 CurrentDevice = childList[0];
             }
-            if (CurrentDevice.DeviceID == 151293)
-            {
-
-            }
-            else
-            {
+          
+            
                 foreach (var spotset in SpotSets)
                     if (spotset.ID == CurrentDevice.DeviceID)
                     {
                         PreviewSpots = spotset.Spots;
                     }
 
-            }
+            
 
             DeviceRectX = CurrentDevice.DeviceRectLeft;
             DeviceRectY = CurrentDevice.DeviceRectTop;

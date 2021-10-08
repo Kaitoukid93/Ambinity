@@ -18,6 +18,8 @@ namespace adrilight.Ninject
             Bind<IContext>().To<WpfContext>().InSingletonScope();
            
             Bind<IDesktopFrame>().To<DesktopFrame>().InSingletonScope();
+            Bind<ISecondDesktopFrame>().To<SecondDesktopFrame>().InSingletonScope();
+            Bind<IThirdDesktopFrame>().To<ThirdDesktopFrame>().InSingletonScope();
 
             if (alldevicesettings!=null)
             {

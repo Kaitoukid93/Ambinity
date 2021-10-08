@@ -18,11 +18,11 @@ using GalaSoft.MvvmLight;
 
 namespace adrilight
 {
-    internal class DesktopFrame : ViewModelBase, IDesktopFrame
+    internal class ThirdDesktopFrame : ViewModelBase, IThirdDesktopFrame
     {
         private readonly ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public DesktopFrame(IGeneralSettings userSettings)
+        public ThirdDesktopFrame(IGeneralSettings userSettings)
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
 
@@ -44,7 +44,7 @@ namespace adrilight
             switch (e.PropertyName)
             {
 
-                case nameof(UserSettings.ShouldbeRunning):
+                case nameof(UserSettings.ShouldbeRunningThird):
 
                     RefreshCapturingState();
                     break;
@@ -63,13 +63,11 @@ namespace adrilight
 
         private Thread _workerThread;
         public byte[] Frame { get; set; }
-        public int FrameHeight { get; set; }
-        public int FrameWidth { get; set; }
 
         public void RefreshCaptureSource()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = UserSettings.ShouldbeRunning;
+            var shouldBeRunning = UserSettings.ShouldbeRunningThird;
             //  var shouldBeRefreshing = NeededRefreshing;
             if (isRunning && shouldBeRunning)
             {
@@ -92,7 +90,7 @@ namespace adrilight
         public void RefreshCapturingState()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = UserSettings.ShouldbeRunning;
+            var shouldBeRunning = UserSettings.ShouldbeRunningThird;
             //  var shouldBeRefreshing = NeededRefreshing;
 
 
@@ -110,7 +108,7 @@ namespace adrilight
             else if (!isRunning && shouldBeRunning)
             {
                 //start it
-                _log.Debug("starting the capturing for First Desktop Frame");
+                _log.Debug("starting the capturing for Third Desktop Frame");
                 _cancellationTokenSource = new CancellationTokenSource();
                 _workerThread = new Thread(() => Run(_cancellationTokenSource.Token)) {
                     IsBackground = true,
@@ -127,7 +125,7 @@ namespace adrilight
 
 
 
-        private IGeneralSettings UserSettings { get; set; }
+        private IGeneralSettings UserSettings { get; }
 
 
 
@@ -162,7 +160,7 @@ namespace adrilight
 
             IsRunning = true;
             NeededRefreshing = false;
-            _log.Debug("Started Reading of First Desktop Frame.");
+            _log.Debug("Started Reading of Third Desktop Frame.");
             Bitmap image = null;
             BitmapData bitmapData = new BitmapData();
 
@@ -202,11 +200,7 @@ namespace adrilight
                     // Copy the RGB values into the array.
                     System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
                     Frame = rgbValues;
-                    FrameWidth = image.Width;
-                    FrameHeight = image.Height;
                     RaisePropertyChanged(nameof(Frame));
-                    RaisePropertyChanged(nameof(FrameWidth));
-                    RaisePropertyChanged(nameof(FrameHeight));
                     // if(MainView.IsSettingsWindowOpen)
                     // MainView.SetPreviewImage(DesktopFrame);
 
@@ -242,12 +236,9 @@ namespace adrilight
 
 
 
-
-
-
         public void Stop()
         {
-            _log.Debug("Stop called for First Desktop Frame");
+            _log.Debug("Stop called for Third Desktop Frame");
             if (_workerThread == null) return;
 
             _cancellationTokenSource?.Cancel();
@@ -255,6 +246,8 @@ namespace adrilight
             _workerThread?.Join();
             _workerThread = null;
         }
+
+
 
 
 
@@ -301,7 +294,7 @@ namespace adrilight
             {
                 try
                 {
-                    _desktopDuplicator = new DesktopDuplicator(0, 0);
+                    _desktopDuplicator = new DesktopDuplicator(0, 2);
                 }
                 catch (Exception ex)
                 {
@@ -309,8 +302,8 @@ namespace adrilight
                     {
                         _log.Error(ex, "could be secure desktop");
                     }
-                  //  UserSettings.ShouldbeRunning = false;
-                  //  RaisePropertyChanged(() => UserSettings.ShouldbeRunning);
+                 //   UserSettings.ShouldbeRunningThird = false;
+                  //  RaisePropertyChanged(() => UserSettings.ShouldbeRunningThird);
 
                     // _desktopDuplicator.Dispose();
                     // _desktopDuplicator = null;
@@ -346,11 +339,6 @@ namespace adrilight
                 {
                     _log.Error(ex, "Failed to release frame.");
                 }
-                else
-                {
-                    throw new DesktopDuplicationException("Unknown Device Error", ex);
-                }
-
 
                 _desktopDuplicator.Dispose();
                 _desktopDuplicator = null;

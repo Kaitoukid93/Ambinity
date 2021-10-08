@@ -26,14 +26,18 @@ namespace adrilight
             IDeviceSettings deviceSettings,
             IDeviceSpotSet deviceSpotSet ,
             MainViewViewModel mainViewViewModel,
-            IDesktopFrame desktopFrame
+            IDesktopFrame desktopFrame,
+             ISecondDesktopFrame secondDesktopFrame,
+             IThirdDesktopFrame thirdDesktopFrame
             )
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
             DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
             DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
             DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
-         
+            SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
+            ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
+
             // GraphicAdapter = graphicAdapter;
             // Output = output;
             MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
@@ -142,7 +146,9 @@ namespace adrilight
         private IDeviceSettings DeviceSettings { get; }
         private IDeviceSpotSet DeviceSpotSet { get; }
         private IDesktopFrame DesktopFrame { get; }
-   
+        private ISecondDesktopFrame SecondDesktopFrame { get; }
+        private IThirdDesktopFrame ThirdDesktopFrame { get; }
+
 
 
 
@@ -175,7 +181,7 @@ namespace adrilight
             IsRunning = true;
             NeededRefreshing = false;
             _log.Debug("Started Desktop Duplication Reader.");
-            Bitmap image = new Bitmap(240, 135, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            Bitmap image = null;
             BitmapData bitmapData = new BitmapData();
            
 
@@ -397,10 +403,10 @@ namespace adrilight
                          CurrentFrame = DesktopFrame.Frame;
                         break;
                     case 1:
-                         CurrentFrame = DesktopFrame.Frame;
+                         CurrentFrame = SecondDesktopFrame.Frame;
                         break;
                     case 2:
-                         CurrentFrame = DesktopFrame.Frame;
+                         CurrentFrame = ThirdDesktopFrame.Frame;
                         break;
                 }    
                 
@@ -410,16 +416,18 @@ namespace adrilight
                 }
                 else
                 {
-                    if (ReusableBitmap != null&&CurrentFrame.Length!=ReusableBitmap.Width*ReusableBitmap.Height*4)
+                    if (ReusableBitmap != null&&ReusableBitmap.Width==DesktopFrame.FrameWidth&&ReusableBitmap.Height==DesktopFrame.FrameHeight)
                 {
-                    DesktopImage = new Bitmap(240, 135, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                        DesktopImage = ReusableBitmap;
+                        
                 }
                 else
                 {
-                    DesktopImage = ReusableBitmap;
-                }
+                        DesktopImage = new Bitmap(DesktopFrame.FrameWidth, DesktopFrame.FrameHeight, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+
+                 }
                 
-                var DesktopImageBitmapData = DesktopImage.LockBits(new Rectangle(0, 0, 240, 135), ImageLockMode.WriteOnly, DesktopImage.PixelFormat);
+                var DesktopImageBitmapData = DesktopImage.LockBits(new Rectangle(0, 0, DesktopFrame.FrameWidth, DesktopFrame.FrameHeight), ImageLockMode.WriteOnly, DesktopImage.PixelFormat);
                 IntPtr pixelAddress = DesktopImageBitmapData.Scan0;
                 
                     
@@ -472,7 +480,7 @@ namespace adrilight
         {
             _log.Debug("Stop called.");
             if (_workerThread == null) return;
-
+           
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = null;
             _workerThread?.Join();

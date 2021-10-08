@@ -12,6 +12,7 @@ using Device = SharpDX.Direct3D11.Device;
 using MapFlags = SharpDX.Direct3D11.MapFlags;
 using Rectangle = SharpDX.Mathematics.Interop.RawRectangle;
 using adrilight.Util;
+using System.Windows;
 
 namespace adrilight.DesktopDuplication
 {
@@ -52,7 +53,22 @@ namespace adrilight.DesktopDuplication
             }
             catch (SharpDXException ex)
             {
-                throw new DesktopDuplicationException("Could not find the specified output device.", ex);
+                if (ex.ResultCode == SharpDX.DXGI.ResultCode.NotFound)
+                {
+
+                   // HandyControl.Controls.MessageBox.Show(" Không thể capture màn hình " + (whichOutputDevice + 1).ToString(), "Screen Capture", MessageBoxButton.OK, MessageBoxImage.Warning,);
+                    
+                    output = adapter.GetOutput(0);
+
+                }
+                else
+                {
+                    throw new DesktopDuplicationException("Unknown Device Error", ex);
+                }
+
+
+
+
             }
             var output1 = output.QueryInterface<Output1>();
             _outputDescription = output.Description;
@@ -68,7 +84,26 @@ namespace adrilight.DesktopDuplication
                     throw new DesktopDuplicationException(
                         "There is already the maximum number of applications using the Desktop Duplication API running, please close one of the applications and try again.");
                 }
+                else if (ex.ResultCode.Code == SharpDX.DXGI.ResultCode.AccessDenied.Result.Code)
+                {
+                    //Dispose();
+                    throw new DesktopDuplicationException("Access Denied");
+                }
+                else
+                {
+                    Dispose();
+                    GC.Collect();
+                    //retry right here??
+                    throw new Exception("Unknown, just retry");
+
+
+
+                }
+
+
             }
+
+
         }
 
         private static readonly FpsLogger _desktopFrameLogger = new FpsLogger("DesktopDuplication");
@@ -105,8 +140,8 @@ namespace adrilight.DesktopDuplication
                     CpuAccessFlags = CpuAccessFlags.Read,
                     BindFlags = BindFlags.None,
                     Format = Format.B8G8R8A8_UNorm,
-                    Width = desktopWidth / scalingFactor,
-                    Height = desktopHeight / scalingFactor,
+                    Width = desktopWidth/scalingFactor,
+                    Height = desktopHeight/scalingFactor,
                     OptionFlags = ResourceOptionFlags.None,
                     MipLevels = 1,
                     ArraySize = 1,
@@ -125,6 +160,21 @@ namespace adrilight.DesktopDuplication
                 if (ex.ResultCode.Code == SharpDX.DXGI.ResultCode.WaitTimeout.Result.Code)
                 {
                     return false;
+                }
+                if (ex.ResultCode.Code == SharpDX.DXGI.ResultCode.AccessLost.Result.Code)
+                {
+                    // ReleaseFrame();
+                    throw new Exception("Access Lost, resolution might be changed");
+                    //do something to restart desktop duplicator here
+
+
+                }
+                if (ex.ResultCode.Code == SharpDX.DXGI.ResultCode.InvalidCall.Result.Code)
+                {
+                    // ReleaseFrame();
+                    throw new Exception("Invalid call, might be retrying");
+
+
                 }
 
                 throw new DesktopDuplicationException("Failed to acquire next frame.", ex);
