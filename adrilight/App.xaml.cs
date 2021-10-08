@@ -125,7 +125,15 @@ namespace adrilight
             SetupTrackingForProcessWideEvents(_telemetryClient);
         }
 
+        protected override void OnExit(ExitEventArgs e)
+        {
+            
 
+            base.OnExit(e);
+            _adrilightMutex?.Dispose();
+
+            LogManager.Shutdown();
+        }
         protected void CloseMutexHandler(object sender, EventArgs startupEvent)
         {
             _mutex?.Close();

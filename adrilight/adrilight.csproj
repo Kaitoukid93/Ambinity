@@ -110,8 +110,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="adrilight_TemporaryKey.pfx" />
-    <Content Include="NLog.config">
+    <Content Include="App.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Update="NLog.xsd">
       <SubType>Designer</SubType>
@@ -178,7 +181,6 @@
     <PackageReference Include="Ninject" Version="3.3.4" />
     <PackageReference Include="Ninject.Extensions.Conventions" Version="3.3.0" />
     <PackageReference Include="Ninject.Extensions.NamedScope" Version="3.3.0" />
-    <PackageReference Include="NLog.Config" Version="4.5.7" />
     <PackageReference Include="OpenRGB.NET" Version="1.6.0" />
     <PackageReference Include="PixiEditor.ColorPicker" Version="3.1.0" />
     <PackageReference Include="Polly" Version="6.1.0" />
@@ -212,6 +214,9 @@
   <Import Project="..\packages\boost_regex-vc141.1.69.0.0\build\boost_regex-vc141.targets" Condition="Exists('..\packages\boost_regex-vc141.1.69.0.0\build\boost_regex-vc141.targets')" />
   <Import Project="..\packages\squirrel.windows.1.9.1\build\squirrel.windows.targets" Condition="Exists('..\packages\squirrel.windows.1.9.1\build\squirrel.windows.targets')" />
   <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
+  <ItemGroup>
+    <None Remove="App.config" />
+  </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>

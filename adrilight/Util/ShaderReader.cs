@@ -121,6 +121,7 @@ namespace adrilight.Util
                     var height = DeviceSettings.DeviceRectHeight;
                     var x = DeviceSettings.DeviceRectLeft;
                     var y = DeviceSettings.DeviceRectTop;
+                    var brightness = DeviceSettings.Brightness/100d;
                     // TraceFrameDetails(newImage);
 
                     if (newImage == null)
@@ -159,7 +160,7 @@ namespace adrilight.Util
 
                             var spotColor = new OpenRGB.NET.Models.Color(finalR, finalG, finalB);
 
-                            var semifinalSpotColor = Brightness.applyBrightness(spotColor, 100);
+                            var semifinalSpotColor = Brightness.applyBrightness(spotColor, brightness);
                             ApplySmoothing(semifinalSpotColor.R, semifinalSpotColor.G, semifinalSpotColor.B
                                     , out byte RealfinalR, out byte RealfinalG, out byte RealfinalB,
                                  spot.Red, spot.Green, spot.Blue);
