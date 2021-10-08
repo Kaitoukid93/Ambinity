@@ -35,7 +35,9 @@ namespace adrilight
         private IDeviceSettings DeviceSettings { get; set; }
         private IGeneralSettings GeneralSettings { get; set; }
         private IDeviceSpotSet DeviceSpotSet { get; set; }
+        
         private int deviceID = 0;
+        
          
         private bool CheckOpenRGBClientStatus(string ip, int port)
         {
@@ -45,7 +47,7 @@ namespace adrilight
             {
 
 
-                var client = new OpenRGBClient(ip, port, name: "Ambinity", autoconnect: true, timeout: 1000);
+                var client = OpenRGBClientDevice.AmbinityClient;
 
                 var deviceCount = client.GetControllerCount();
                 var devices = client.GetAllControllerData();
@@ -54,9 +56,14 @@ namespace adrilight
 
                 for(int i= 0; i < deviceCount; i++)
                 {
-                    if (devices[i].Serial == DeviceSettings.DeviceSerial);//found out desire device at pos i
-                    deviceID = i;
-                    isvalid = true;
+                    var Serial = devices[i].Serial;
+                    var serial2 = DeviceSettings.DeviceSerial;
+                    if (devices[i].Serial == DeviceSettings.DeviceSerial)
+                    {
+                        deviceID = i;
+                        isvalid = true;
+                    }//found out desire device at pos i
+                    
 
                 }
             }
@@ -203,11 +210,11 @@ namespace adrilight
 
 
 
-                        var client = new OpenRGBClient(name: "My OpenRGB Client", autoconnect: true, timeout: 1000);
+                    var client = OpenRGBClientDevice.AmbinityClient;
 
                         var deviceCount = client.GetControllerCount();
                         var devices = client.GetAllControllerData();
-                    
+                        
 
                         while (!cancellationToken.IsCancellationRequested)
                         {

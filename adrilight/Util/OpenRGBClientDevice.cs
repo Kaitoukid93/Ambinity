@@ -25,7 +25,7 @@ namespace adrilight.Util
 
 
         }
-
+        public OpenRGBClient AmbinityClient { get; set; }
         private void RefreshOpenRGBDeviceState()
         {
             try
@@ -33,19 +33,19 @@ namespace adrilight.Util
 
             
              var client = new OpenRGBClient( "127.0.0.1",6742,name: "Ambinity", autoconnect: true, timeout: 1000);
-
+             AmbinityClient = client;
             var deviceCount = client.GetControllerCount();
             var devices = client.GetAllControllerData();
             DeviceList = devices;
             
 
-            for (int i = 0; i < devices.Length; i++)
-            {
-                var leds = Enumerable.Range(0, devices[i].Colors.Length)
-                    .Select(_ => new Color(255, 0, 255))
-                    .ToArray();
-                client.UpdateLeds(i, leds);
-            }
+            //for (int i = 0; i < devices.Length; i++)
+            //{
+            //    var leds = Enumerable.Range(0, devices[i].Colors.Length)
+            //        .Select(_ => new Color(255, 0, 255))
+            //        .ToArray();
+            //    client.UpdateLeds(i, leds);
+            //}
             foreach (var device in devices)
             {
                 _log.Info($"Device found : " + device.Name.ToString());
