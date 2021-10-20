@@ -182,6 +182,7 @@ namespace adrilight
             var desktopFrame = kernel.Get<IDesktopFrame>();
             var secondDesktopFrame = kernel.Get<ISecondDesktopFrame>();
             var thirdDesktopFrame = kernel.Get<IThirdDesktopFrame>();
+            
 
             //// tách riêng từng setting của từng device///
             if (alldevicesettings!=null)
@@ -200,8 +201,7 @@ namespace adrilight
                             
                         if (devicesetting.DeviceSerial != "151293") // Openrgb device
                         {
-                            kernel.Bind<ISerialStream>().To<OpenRGBStream>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            var serialStream = kernel.Get<ISerialStream>(DeviceName);
+                          
                             kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
                             kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
                             kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
@@ -257,6 +257,7 @@ namespace adrilight
                 }
 
             }
+            var openRGBStream = kernel.Get<IOpenRGBStream>();
             var alldevices = kernel.GetAll<IDeviceSettings>().ToList(); ;
 
           
@@ -430,8 +431,63 @@ namespace adrilight
 
 
             }
+            var SyncAll = new ToolStripMenuItem("Đồng bộ tất cả", null, (s, e) =>
+            {
+                
+
+            });
+            SyncAll.DropDownItems.Add(new ToolStripMenuItem("Theo màn hình", null, (s, e) =>
+            {
+                foreach (var device in allDevices)
+                {
+                    device.SelectedEffect = 0;
+                }
+
+            }));
+
+            SyncAll.DropDownItems.Add(new ToolStripMenuItem("Màu tĩnh",null, (s, e) =>
+                    {
+                        foreach (var device in allDevices)
+                        {
+                            device.SelectedEffect = 2;
+                        }
+
+                    }));
+            SyncAll.DropDownItems.Add(new ToolStripMenuItem("Dải màu", null, (s, e) =>
+            {
+                foreach (var device in allDevices)
+                {
+                    device.SelectedEffect = 1;
+                }
+
+            }));
+            SyncAll.DropDownItems.Add(new ToolStripMenuItem("Theo Nhạc", null, (s, e) =>
+            {
+                foreach (var device in allDevices)
+                {
+                    device.SelectedEffect = 3;
+                }
+
+            }));
+            SyncAll.DropDownItems.Add(new ToolStripMenuItem("Atmosphere", null, (s, e) =>
+            {
+                foreach (var device in allDevices)
+                {
+                    device.SelectedEffect = 4;
+                }
+
+            }));
+            SyncAll.DropDownItems.Add(new ToolStripMenuItem("Canvas Lighting", null, (s, e) =>
+            {
+                foreach (var device in allDevices)
+                {
+                    device.SelectedEffect = 5;
+                }
+
+            }));
             var dashboard = new ToolStripMenuItem("Dashboard", null, (s, e) => OpenSettingsWindow());
             var exit = new ToolStripMenuItem("Thoát", null, (s, e) => Shutdown(0));
+            contextMenu.Items.Add(SyncAll);
             contextMenu.Items.Add(dashboard);
             contextMenu.Items.Add(exit);
             // contextMenu.Items.Add(new MenuItem("Dashboard", (s, e) => OpenNewUI()));

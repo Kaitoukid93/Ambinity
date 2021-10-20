@@ -16,7 +16,7 @@ namespace adrilight.Ninject
             Bind<ISerialDeviceDetection>().To<SerialDeviceDetection>().InSingletonScope();
             Bind<IShaderEffect>().To<ShaderEffect>().InSingletonScope();
             Bind<IContext>().To<WpfContext>().InSingletonScope();
-           
+            Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
             Bind<IDesktopFrame>().To<DesktopFrame>().InSingletonScope();
             Bind<ISecondDesktopFrame>().To<SecondDesktopFrame>().InSingletonScope();
             Bind<IThirdDesktopFrame>().To<ThirdDesktopFrame>().InSingletonScope();

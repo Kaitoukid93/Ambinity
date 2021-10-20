@@ -15,6 +15,7 @@ namespace adrilight
         int BorderDistanceY { get; set; }
         bool Autostart { get; set; }
         bool MirrorX { get; set; }
+        bool IsOpenRGBEnabled { get; set; }
 
         bool MirrorY { get; set; }
 

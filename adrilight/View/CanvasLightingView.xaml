@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:adrilight.View"
               xmlns:hc="https://handyorg.github.io/handycontrol"
               mc:Ignorable="d" 
-          
+              xmlns:converters="clr-namespace:adrilight.Converter"
 
                xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf" xmlns:viewmodel="clr-namespace:adrilight.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainViewViewModel}"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -16,6 +16,7 @@
               TextOptions.TextRenderingMode="Auto"   
               FontFamily="{StaticResource MaterialDesignFont}" d:DesignWidth="1030" Height="1000">
 
+   
     <Grid Background="White" Margin="20,0,0,0">
 
         <Grid.RowDefinitions>
@@ -51,7 +52,14 @@
                         <hc:Card MaxWidth="240" BorderThickness="0" Effect="{DynamicResource EffectShadow2}" Margin="8" Footer="{Binding Footer}">
                             <!--Card Content section template-->
                             <Border CornerRadius="4,4,0,0" Width="160" Height="160">
-                                <Image Source="{Binding Thumbnail}"/>
+                                <Image >
+                                    <Image.Source>
+                                        <PriorityBinding>
+                                            <Binding Path="Thumbnail"/>
+                                        </PriorityBinding>
+                                    </Image.Source>
+
+                                </Image>
                             </Border>
                             <!--Card Footer section template-->
                             <hc:Card.FooterTemplate>

@@ -94,6 +94,15 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+        private string _deviceName;
+        public string DeviceName {
+            get => _deviceName;
+            set
+            {
+                _deviceName = value;
+                RaisePropertyChanged();
+            }
+        }
         public WriteableBitmap _shaderBitmap;
         public WriteableBitmap ShaderBitmap {
             get => _shaderBitmap;
@@ -122,6 +131,7 @@ namespace adrilight.ViewModel
             DeviceRectHeight = CurrentDevice.DeviceRectHeight*4;
             DeviceRectX = CurrentDevice.DeviceRectLeft*4;
             DeviceRectY = CurrentDevice.DeviceRectTop*4;
+            DeviceName = CurrentDevice.DeviceName;
             AllDevices = allDevices;
 
             

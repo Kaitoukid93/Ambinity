@@ -12,5 +12,7 @@ namespace adrilight.Util
     {
         Device[] DeviceList { get; set; }
         OpenRGBClient AmbinityClient { get; set; }
+        void RefreshOpenRGBDeviceState();
+        bool IsAvailable { get;set; }
     }
 }

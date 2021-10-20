@@ -10,21 +10,23 @@ using Newtonsoft.Json;
 using System.Windows;
 using adrilight.Spots;
 using OpenRGB.NET;
+using System.Collections.Generic;
 
 namespace adrilight
 {
     internal sealed class
-        OpenRGBStream : IDisposable, ISerialStream
+        OpenRGBStream : IDisposable, IOpenRGBStream
     {
         private ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public OpenRGBStream(IDeviceSettings deviceSettings,IOpenRGBClientDevice openRGBDevice, IDeviceSpotSet deviceSpotSet, IGeneralSettings generalSettings)
+        public OpenRGBStream(IDeviceSettings[] deviceSettings,IOpenRGBClientDevice openRGBDevice, IDeviceSpotSet[] deviceSpotSet, IGeneralSettings generalSettings)
         {
             GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
             DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
             DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
+
             OpenRGBClientDevice = openRGBDevice ?? throw new ArgumentNullException(nameof(openRGBDevice));
-            DeviceSettings.PropertyChanged += UserSettings_PropertyChanged;
+            //DeviceSettings.PropertyChanged += UserSettings_PropertyChanged;
             RefreshTransferState();
 
             _log.Info($"SerialStream created.");
@@ -32,106 +34,72 @@ namespace adrilight
             
         }
         //Dependency Injection//
-        private IDeviceSettings DeviceSettings { get; set; }
+        private IDeviceSettings[] DeviceSettings { get; set; }
         private IGeneralSettings GeneralSettings { get; set; }
-        private IDeviceSpotSet DeviceSpotSet { get; set; }
+        private IDeviceSpotSet[] DeviceSpotSet { get; set; }
         
-        private int deviceID = 0;
+        //private int deviceID = 0;
         
          
-        private bool CheckOpenRGBClientStatus(string ip, int port)
-        {
-            
-            bool isvalid = false;
-            try
-            {
-
-
-                var client = OpenRGBClientDevice.AmbinityClient;
-
-                var deviceCount = client.GetControllerCount();
-                var devices = client.GetAllControllerData();
-              
-
-
-                for(int i= 0; i < deviceCount; i++)
-                {
-                    var Serial = devices[i].Serial;
-                    var serial2 = DeviceSettings.DeviceSerial;
-                    if (devices[i].Serial == DeviceSettings.DeviceSerial)
-                    {
-                        deviceID = i;
-                        isvalid = true;
-                    }//found out desire device at pos i
-                    
-
-                }
-            }
-            catch (TimeoutException)
-            {
-                HandyControl.Controls.MessageBox.Show("OpenRGB server Không khả dụng, hãy start server trong app OpenRGB (SDK Server)");
-            }
-            return isvalid;
-        }
+       
         private void UserSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case nameof(DeviceSettings.TransferActive):
-               // case nameof(DeviceSettings.DevicePort):
+                case nameof(GeneralSettings.IsOpenRGBEnabled):
+                    
                     RefreshTransferState();
                     break;
             }
         }
 
-        public bool IsValid() => CheckOpenRGBClientStatus("127.0.0.1",6742);
-        //public bool IsAcess() => !BlockedComport.Contains(UserSettings.ComPort);
-        //public IList<string> BlockedComport = new List<string>();
+        public bool IsRunning => _workerThread != null && _workerThread.IsAlive;
 
         private void RefreshTransferState()
         {
-
-            if (DeviceSettings.TransferActive)
+           
+            if(GeneralSettings.IsOpenRGBEnabled)
             {
-                if (IsValid() /*&& CheckSerialPort(DeviceSettings.DevicePort)*/)
+                OpenRGBClientDevice.RefreshOpenRGBDeviceState();
+                if (OpenRGBClientDevice.IsAvailable)
                 {
 
                     //start it
-                    _log.Debug("starting the OpenRGBstream for device Name : " + DeviceSettings.DeviceName);
+                    _log.Debug("starting the OpenRGBstream");
+                    foreach (var device in DeviceSettings)
+                    {
+                        if (device.DeviceSerial != "151293")
+                            device.IsConnected = true;
+                    }
                     Start();
                 }
-               
+                else
+                {
+                    foreach (var device in DeviceSettings)
+                    {
+                        if (device.DeviceSerial != "151293")
+                            device.IsConnected = false;
+                    }
+                }
             }
 
-            else if (!DeviceSettings.TransferActive && IsRunning)
+            else if (!GeneralSettings.IsOpenRGBEnabled && IsRunning)
             {
                 //stop it
                 _log.Debug("stopping the serial stream");
                 Stop();
             }
+
+
         }
 
-        private readonly byte[] _messagePreamble = { (byte)'a', (byte)'b', (byte)'n' };
-        private readonly byte[] _messagePostamble = { 15, 12, 93 };
-        private readonly byte[] _messageZoeamble = { 15, 12, 93 };
-        private readonly byte[] _commandmessage = { 15, 12, 93 };
+  
 
 
 
         private Thread _workerThread;
         private CancellationTokenSource _cancellationTokenSource;
 
-
-        private int frameCounter;
-        private int blackFrameCounter;
-        private int _iD;
-        public int ID {
-            get { return DeviceSettings.DeviceID; }
-            set
-            {
-                _iD = value;
-            }
-        }
         public void DFU()
         {
 
@@ -166,7 +134,7 @@ namespace adrilight
             _workerThread = null;
         }
 
-        public bool IsRunning => _workerThread != null && _workerThread.IsAlive;
+     
 
 
 
@@ -174,28 +142,44 @@ namespace adrilight
 
 
 
-        private OpenRGB.NET.Models.Color[] GetOutputStream()
+        private List<OpenRGB.NET.Models.Color[]>  GetOutputStream()
         {
-            OpenRGB.NET.Models.Color[] outputColor = new OpenRGB.NET.Models.Color[DeviceSettings.NumLED];
-
-
-
-            lock (DeviceSpotSet.Lock)
+            OpenRGB.NET.Models.Color[] blankColor = null;
+            List<OpenRGB.NET.Models.Color[]> outputColor = new List<OpenRGB.NET.Models.Color[]>();
+            var client = OpenRGBClientDevice.AmbinityClient;
+            if (client != null)
             {
-                int counter = 0;
-                foreach (DeviceSpot spot in DeviceSpotSet.Spots)
+                var devices = client.GetAllControllerData();
+                outputColor.AddRange(Enumerable.Repeat(blankColor, devices.Length));
+                for (var i=0; i < devices.Length; i++)
                 {
-                    var color = new OpenRGB.NET.Models.Color(spot.Red, spot.Green, spot.Blue);
-                    outputColor[counter] = color;
-                   
+                    foreach (var spotSet in DeviceSpotSet)
+                    {
+                        if(spotSet.DeviceLocation==devices[i].Location)
+                        {
+                            var colors = new OpenRGB.NET.Models.Color[spotSet.Spots.Length];
+                            lock (spotSet.Lock)
+                            {
+                                int counter = 0;
+                                foreach (DeviceSpot spot in spotSet.Spots)
+                                {
+                                    var color = new OpenRGB.NET.Models.Color(spot.Red, spot.Green, spot.Blue);
+                                    colors[counter++] = color;
 
-                    counter++;
+                                }
+                                outputColor.Insert(i, colors);
 
+
+                            }
+                        }
+                     
+                    }
                 }
-
-                return outputColor;
-
+              
             }
+         
+            return outputColor;
+
         }
       
 
@@ -207,31 +191,45 @@ namespace adrilight
             {
                     try
                     {
-
-
-
                     var client = OpenRGBClientDevice.AmbinityClient;
-
-                        var deviceCount = client.GetControllerCount();
-                        var devices = client.GetAllControllerData();
-                        
-
+                    var devices = client.GetAllControllerData();
+                    if(client.Connected)
+                    {
                         while (!cancellationToken.IsCancellationRequested)
                         {
                             var outputColor = GetOutputStream();
-                           
-                                
-                                    client.UpdateLeds(deviceID, outputColor);
+                            for(int i=0;i< outputColor.Count; i++)
+                            {
+                                if(outputColor[i]!=null)
+                                client.UpdateLeds(i, outputColor[i]);
+                            }
 
-                                
-
-                            Thread.Sleep(18);
+                            Thread.Sleep(15);
                         }
+                    }
+                      
                     }
                     catch (TimeoutException)
                     {
                         HandyControl.Controls.MessageBox.Show("OpenRGB server Không khả dụng, hãy start server trong app OpenRGB (SDK Server)");
+                    foreach(var device in DeviceSettings)
+                    {
+                        if(device.DeviceSerial!="151293")
+                        device.IsConnected=false; 
                     }
+                    Stop();
+                    }
+                catch ( Exception ex)
+                {
+                    HandyControl.Controls.MessageBox.Show(ex.ToString());
+                    foreach (var device in DeviceSettings)
+                    {
+                        if (device.DeviceSerial != "151293")
+                            device.IsConnected = false;
+                    }
+                    Stop();
+                }
+                     
 
 
 

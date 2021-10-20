@@ -17,9 +17,11 @@ namespace adrilight.Spots
        
         int CountLeds(int spotsX, int spotsY);
         int ID { get; set; }
-        int ParrentLocation { get; set; }
-        int OutputLocation { get; set; }
+        int ParrentLocation { get; set; } // for Child in hub Object
+        int OutputLocation { get; set; } // for Child in hub Object
         int RGBOrder { get; set; }
+        string DeviceSerial { get;}
+        string DeviceLocation { get; } //for OpenRGB Device
         void IndicateMissingValues();
 
     }

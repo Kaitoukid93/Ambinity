@@ -31,7 +31,36 @@ namespace adrilight
             switch (propertyName)
             {
                 case nameof(DeviceSettings.SpotsX):
+
+                    //if ((DeviceSettings.SpotsX + DeviceSettings.SpotsY) * 2 - 4 != DeviceSettings.NumLED)//missmatch
+                    //{
+                    //    DeviceSettings.SpotsY = ((DeviceSettings.NumLED + 4) / 2) - DeviceSettings.SpotsX;
+                    //    if(DeviceSettings.SpotsY<=1||DeviceSettings.SpotsX<=1)
+                    //    {
+                    //        HandyControl.Controls.MessageBox.Show("Số LED mỗi cạnh không thể nhỏ hơn 1");
+                    //        DeviceSettings.SpotsY = 1;
+                    //        DeviceSettings.SpotsX = DeviceSettings.NumLED;
+                    //    }
+
+
+                    //}
+                    //Refresh();
+                    //break;
                 case nameof(DeviceSettings.SpotsY):
+                    
+                    //if ((DeviceSettings.SpotsX + DeviceSettings.SpotsY) * 2 - 4 != DeviceSettings.NumLED)//missmatch
+                    //{
+                    //    DeviceSettings.SpotsX = ((DeviceSettings.NumLED + 4) / 2) - DeviceSettings.SpotsY;
+                    //    if (DeviceSettings.SpotsY <= 1 || DeviceSettings.SpotsX <= 1)
+                    //    {
+                    //        HandyControl.Controls.MessageBox.Show("Số LED mỗi cạnh không thể nhỏ hơn 1");
+                    //        DeviceSettings.SpotsY = 1;
+                    //        DeviceSettings.SpotsX = DeviceSettings.NumLED;
+                    //    }
+
+                    //}
+                    //Refresh();
+                    //break;
                 case nameof(GeneralSettings.ScreenSize):
                 case nameof(DeviceSettings.SelectedDisplay):
                 case nameof(DeviceSettings.SelectedEffect):
@@ -91,13 +120,21 @@ namespace adrilight
 
         private int _parrentLocation;
 
-        public int ParrentLocation 
-            { 
+        public int ParrentLocation {
             get { return DeviceSettings.ParrentLocation; }
             set
             {
-            _parrentLocation= value;
+                _parrentLocation = value;
+            }
         }
+
+              public string DeviceSerial {
+            get { return DeviceSettings.DeviceSerial; }
+           
+        }
+        public string DeviceLocation {
+            get { return DeviceSettings.DevicePort; }
+
         }
         private int _outputLocation;
         public int OutputLocation {
@@ -184,8 +221,8 @@ namespace adrilight
            
             
             var spotsX = deviceSettings.SpotsX; // number of spot on one side
-            var spotsY = deviceSettings.SpotsY; // number of spot on one side
-            IDeviceSpot[] spotSet = new DeviceSpot[CountLeds(spotsX, spotsY)];
+            var spotsY = deviceSettings.SpotsY; // number of spot on one side   
+            IDeviceSpot[] spotSet = new DeviceSpot[CountLeds(spotsX,spotsY)];
             var spotwidth = rectwidth / spotsX;
             var spotheight = rectheight / spotsY;
             var displaySpotWidth = displayRectWidth / spotsX;

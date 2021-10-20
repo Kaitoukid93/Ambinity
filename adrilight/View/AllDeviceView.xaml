@@ -42,6 +42,7 @@
                 <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
                 <Setter Property="Width" Value="auto"/>
                 <Setter Property="Height" Value="auto"/>
+                <Setter Property="Focusable" Value="False"/>
                 
 
                 <Setter Property="Template">
@@ -131,7 +132,7 @@
 
 
 
-            <ListView    Margin="0,15,0,15" Name="itm" ItemsSource="{Binding DisplayCards,UpdateSourceTrigger=PropertyChanged}"
+            <ListView  Margin="0,15,0,15" Name="itm" ItemsSource="{Binding DisplayCards,UpdateSourceTrigger=PropertyChanged}"
                                                 IsTabStop="False"
                          ItemContainerStyle="{StaticResource ListViewContainerStyle}"
                                                 BorderThickness="0" Tag="{Binding}" Background="White">
@@ -161,7 +162,7 @@
 
                     <DataTemplate>
                   
-                        <Grid x:Name="dev" Visibility="{Binding IsVissible,Converter={StaticResource boolToVisibilityConvert}}"  Margin="20" Width="230" Height="245" >
+                        <Grid IsEnabled="{Binding IsConnected,Mode=TwoWay}" x:Name="dev" Visibility="{Binding IsVissible,Converter={StaticResource boolToVisibilityConvert}}"  Margin="20" Width="230" Height="245" >
 
 
 

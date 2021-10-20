@@ -13,7 +13,7 @@ namespace adrilight.Shaders
 
     public string Header { get; set; }
     public string Content { get; set; }
-    public Image Thumbnail { get; set; }
+    public string Thumbnail { get; set; }
     public string Footer { get; set; }
     }
 }

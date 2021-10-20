@@ -68,6 +68,10 @@
                                 <DataTrigger Binding="{Binding Text}" Value="Dashboard">
                                     <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDashboard}"></Setter>
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding Text}" Value="Dashboard">
+                                    <Setter Property="ToolTip" TargetName="verticalMenuImage" Value="Dashboard"></Setter>
+                                </DataTrigger>
+                                
                                 <!--general-->
                                 <!--<MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
@@ -87,8 +91,14 @@
                                 <DataTrigger Binding="{Binding Text}" Value="Device Settings">
                                     <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDevice}"></Setter>
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding Text}" Value="Device Settings">
+                                    <Setter Property="ToolTip" TargetName="verticalMenuImage" Value="Cài đặt thiết bị"></Setter>
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding Text}" Value="Canvas Lighting">
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{ Binding Path }"></Setter>
+                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{ StaticResource canvasLighting }"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Text}" Value="Canvas Lighting">
+                                    <Setter Property="ToolTip" TargetName="verticalMenuImage" Value="Canvas Lighting"></Setter>
                                 </DataTrigger>
                                 <!--<MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
@@ -123,6 +133,9 @@
                                 <!--App settings-->
                                 <DataTrigger Binding="{Binding Text}" Value="App Settings">
                                     <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgSetting}"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Text}" Value="App Settings">
+                                    <Setter Property="ToolTip" TargetName="verticalMenuImage" Value="Cài đặt App"></Setter>
                                 </DataTrigger>
                                 <!--<MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>

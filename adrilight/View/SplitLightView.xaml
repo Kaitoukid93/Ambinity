@@ -151,7 +151,22 @@
 
             </Button>
             <Border Height="{Binding CanvasHeight}" Grid.Row="5" Width="{Binding CanvasWidth}" BorderThickness="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,30,0,0">
-                <Canvas Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}"
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=EffectBox,Path=SelectedItem}" Value="Canvas Lighting">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=EffectBox,Path=SelectedItem}" Value="Sáng theo màn hình">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Canvas Width="{Binding CanvasWidth}" Height="{Binding 
+                    
+                    Height}"
                     Background="Transparent" 
                     x:Name="deviceCanvas">
                     <Image Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}" Source="{Binding ShaderBitmap}"/>
@@ -206,8 +221,21 @@
 
 
             </Button>
-            <Button Foreground="#FF326CF3" Background="#3F326CF3" Padding="7" Command="{Binding AdjustPositionCommand}" Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="6
+            <Button Foreground="#FF326CF3" Background="#3F326CF3" Padding="7" Command="{Binding AdjustPositionCommand}"  Grid.Row="6
                     "  materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0"  BorderBrush="{x:Null}"  HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,30,0,0">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=EffectBox,Path=SelectedItem}" Value="Canvas Lighting">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=EffectBox,Path=SelectedItem}" Value="Sáng theo màn hình">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -738,6 +766,7 @@
                                     </Grid>
                                 </hc:TransitioningContentControl>
                             </Grid>
+                            
                         </StackPanel>
                     </hc:TransitioningContentControl>
                 </hc:ScrollViewer>
@@ -838,7 +867,7 @@
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Collapsed"></Setter>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=EffectBox,Path=SelectedItem}" Value="Đồng bộ">
+                            <DataTrigger Binding="{Binding ElementName=EffectBox,Path=SelectedItem}" Value="Canvas Lighting">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -849,7 +878,7 @@
 
                     <StackPanel  Visibility="Visible" Margin="0,15,0,0" Orientation="Vertical">
 
-                        <TextBlock Grid.ColumnSpan="2" Margin="10,0,-117,0" Padding="0,0,0,10" Text="CÀI ĐẶT NÂNG CAO CHO CHẾ ĐỘ ĐỒNG BỘ" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left" Width="370"/>
+                        <TextBlock Grid.ColumnSpan="2" Margin="10,0,-117,0" Padding="0,0,0,10" Text="CÀI ĐẶT NÂNG CAO CHO CHẾ ĐỘ CANVAS LIGHTING" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left" Width="370"/>
                         <Grid Height="80" Margin="0,0,0,0" HorizontalAlignment="Left" Width="516">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="146*"/>
@@ -883,7 +912,7 @@
                             <Slider x:Name="deviceHeight" Grid.Column="1" Value="{Binding CurrentDevice.DeviceRectHeight, Mode=TwoWay}" TickFrequency="1" hc:TipElement.Visibility="Visible" hc:TipElement.Placement="Right" hc:TipElement.StringFormat="#0.00" Minimum="{Binding CurrentDevice.SpotsY}" Maximum="{Binding DeviceRectHeightMax}" Style="{StaticResource SliderBaseStyle}" VerticalAlignment="Center" Height="18" ValueChanged="Slider_ValueChanged" HorizontalAlignment="Right" Width="121" Margin="0,0,5,0"/>
 
                         </Grid>
-                        <Grid Height="80" Width="516">
+                        <Grid Height="80" Width="516" HorizontalAlignment="Left">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="146*"/>
                                 <ColumnDefinition Width="2*"/>
@@ -986,8 +1015,8 @@
                                     </Style.Triggers>
                                 </Style>
                             </Grid.Style>
-                            <TextBlock Grid.Row="0" Margin="10,10,0,10" Grid.Column="0" Text="Số LED" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="47"/>
-                            <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Vị trí LED số 1" Width="208" Grid.ColumnSpan="2" Height="17"/>
+                            <TextBlock Grid.Row="0" Margin="10,10,0,10" Grid.Column="0" Text="Số LED" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="60"/>
+                            <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Số LED thực tế của dây LED" Width="208" Grid.ColumnSpan="2" Height="17"/>
                             <hc:NumericUpDown  ToolTip="Số LED" Minimum="1" Maximum="120" Width="70" Value="{Binding CurrentDevice.NumLED}" HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
 
                         </Grid>

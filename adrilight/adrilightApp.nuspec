@@ -3,16 +3,16 @@
   <metadata>
     <id>adrilightApp</id>
     <!-- version will be replaced by MSBuild -->
-    <version>0.0.0.0</version>
+    <version>3.0.1</version>
     <title>adrilight</title>
-    <authors>fabsenet</authors>
-    <description>An Ambilight clone for Windows based sources - HTPC or just a normal PC</description>
+    <authors>Ambinity</authors>
+    <description>Simple App to control Ambino LED Devices</description>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <copyright>Copyright 2018</copyright>
-    <iconUrl>https://fabse.net/adrilight/adrilight_icon.ico</iconUrl>
+    <copyright>Copyright 2021</copyright>
+    <iconUrl>https://github.com/Kaitoukid93/Ambinity/raw/master/adrilight/zoe.ico</iconUrl>
     <dependencies />
   </metadata>
   <files>
-    <file src="*.*" target="lib\net45\" exclude="*.pdb;*.nupkg;*.vshost.*"/>
+    <file src="bin\x64\Release\net5.0-windows\*.*" target="lib\net45\" exclude="*.pdb;*.nupkg;*.vshost.*"/>
   </files>
 </package>
