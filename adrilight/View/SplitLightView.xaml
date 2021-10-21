@@ -164,9 +164,7 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-                <Canvas Width="{Binding CanvasWidth}" Height="{Binding 
-                    
-                    Height}"
+                <Canvas Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}"
                     Background="Transparent" 
                     x:Name="deviceCanvas">
                     <Image Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}" Source="{Binding ShaderBitmap}"/>

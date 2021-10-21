@@ -131,8 +131,8 @@ namespace adrilight.DesktopDuplication
         private bool RetrieveFrame()
         {
 
-            var desktopWidth = _outputDescription.DesktopBounds.GetWidth();
-            var desktopHeight = _outputDescription.DesktopBounds.GetHeight();
+            var desktopWidth = 1920;
+            var desktopHeight = 1080;
             
 
             if (_stagingTexture == null)
@@ -233,8 +233,8 @@ namespace adrilight.DesktopDuplication
             var mapSource = _device.ImmediateContext.MapSubresource(_stagingTexture, 0, MapMode.Read, MapFlags.None);
 
             Bitmap image;
-            var width = _outputDescription.DesktopBounds.GetWidth() / scalingFactor;
-            var height = _outputDescription.DesktopBounds.GetHeight() / scalingFactor;
+            var width = 1920 / scalingFactor;
+            var height = 1080/ scalingFactor;
 
             if (reusableImage != null && reusableImage.Width == width && reusableImage.Height == height)
             {
