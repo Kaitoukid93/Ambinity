@@ -164,20 +164,20 @@ namespace adrilight
             NeededRefreshing = false;
             _log.Debug("Started Reading of First Desktop Frame.");
             Bitmap image = null;
-            BitmapData bitmapData = new BitmapData();
+           
 
             try
             {
 
 
-
+                BitmapData bitmapData = new BitmapData();
 
                 while (!token.IsCancellationRequested)
                 {
                     var frameTime = Stopwatch.StartNew();
-                    var context = new Context();
-                    context.Add("image", image);
-                    var newImage = _retryPolicy.Execute(c => GetNextFrame(c["image"] as Bitmap), context);
+                    // var context = new Context();
+                    // context.Add("image", image);
+                    var newImage = _retryPolicy.Execute(() => GetNextFrame(image));
                     TraceFrameDetails(newImage);
                     if (newImage == null)
                     {
@@ -204,9 +204,9 @@ namespace adrilight
                     Frame = rgbValues;
                     FrameWidth = image.Width;
                     FrameHeight = image.Height;
-                    RaisePropertyChanged(nameof(Frame));
-                    RaisePropertyChanged(nameof(FrameWidth));
-                    RaisePropertyChanged(nameof(FrameHeight));
+                    //RaisePropertyChanged(nameof(Frame));
+                    //RaisePropertyChanged(nameof(FrameWidth));
+                    //RaisePropertyChanged(nameof(FrameHeight));
                     // if(MainView.IsSettingsWindowOpen)
                     // MainView.SetPreviewImage(DesktopFrame);
 

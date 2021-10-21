@@ -133,6 +133,7 @@ namespace adrilight.DesktopDuplication
 
             var desktopWidth = _outputDescription.DesktopBounds.GetWidth();
             var desktopHeight = _outputDescription.DesktopBounds.GetHeight();
+            
 
             if (_stagingTexture == null)
             {
@@ -153,7 +154,7 @@ namespace adrilight.DesktopDuplication
             try
             {
                 if (_outputDuplication == null) throw new Exception("_outputDuplication is null");
-                _outputDuplication.TryAcquireNextFrame(500, out var frameInformation, out desktopResource);
+                _outputDuplication.TryAcquireNextFrame(10000, out var frameInformation, out desktopResource);
             }
             catch (SharpDXException ex)
             {
@@ -179,7 +180,7 @@ namespace adrilight.DesktopDuplication
 
                 throw new DesktopDuplicationException("Failed to acquire next frame.", ex);
             }
-            if (desktopResource == null) throw new Exception("desktopResource is null");
+           // if (desktopResource == null) throw new Exception("desktopResource is null");
 
             if (_smallerTexture == null)
             {
@@ -199,14 +200,22 @@ namespace adrilight.DesktopDuplication
             }
 
 
-            using (var tempTexture = desktopResource.QueryInterface<Texture2D>())
+            using (var tempTexture = desktopResource?.QueryInterface<Texture2D>())
             {
                 if (_device == null) throw new Exception("_device is null");
                 if (_device.ImmediateContext == null) throw new Exception("_device.ImmediateContext is null");
 
                 _device.ImmediateContext.CopySubresourceRegion(tempTexture, 0, null, _smallerTexture, 0);
             }
-            _outputDuplication.ReleaseFrame();
+            try
+            {
+                _outputDuplication.ReleaseFrame();
+            }
+            catch
+            {
+
+            }
+            
 
             // Generates the mipmap of the screen
             _device.ImmediateContext.GenerateMips(_smallerTextureView);
@@ -214,7 +223,7 @@ namespace adrilight.DesktopDuplication
             // Copy the mipmap 1 of smallerTexture (size/2) to the staging texture
             _device.ImmediateContext.CopySubresourceRegion(_smallerTexture, mipMapLevel, null, _stagingTexture, 0);
 
-            desktopResource.Dispose(); //perf?
+            desktopResource?.Dispose(); //perf?
             return true;
         }
 
