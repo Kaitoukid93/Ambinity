@@ -171,8 +171,8 @@
                     <Rectangle x:Name="deviceRect"
                                Canvas.Top="{Binding DeviceRectY, Mode=TwoWay}"
                                Canvas.Left="{Binding DeviceRectX, Mode=TwoWay}"
-                               Width="{Binding CurrentDevice.DeviceRectWidth, Mode=TwoWay}" 
-                               Height="{Binding CurrentDevice.DeviceRectHeight, Mode=TwoWay}" Stroke="#FF7F7F7F"
+                               Width="{Binding DeviceRectWidth, Mode=TwoWay}" 
+                               Height="{Binding DeviceRectHeight, Mode=TwoWay}" Stroke="#FF7F7F7F"
                                 Fill="#66969696">
                        
                     </Rectangle>
@@ -268,7 +268,11 @@
         </Grid>
 
         <StackPanel Grid.Row="1" Grid.Column="0">
-            <Grid Height="80" Grid.Row="2" Grid.Column="0">
+            <hc:ScrollViewer  Height="650" Margin="1,1,1,1" Orientation="Vertical" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" IsInertiaEnabled="True">
+                <StackPanel Width="568">
+                    
+                
+                <Grid Height="80" Grid.Row="2" Grid.Column="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="*"/>
@@ -332,7 +336,7 @@
                 <TextBlock Grid.Row="0" Margin="10,0,0,-0.2" Grid.Column="0" Text="Chế Độ" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
                 <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Chọn chế độ sáng chủ đạo cho thiết bị" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left"/>
                 <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Height="1" Fill="#19000000" VerticalAlignment="Bottom" Margin="10,0,10,5"/>
-                <ComboBox Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDevice.SelectedEffect}" x:Name="EffectBox" ItemsSource="{Binding AvailableEffects}" Grid.Column="2" Grid.Row="0" Margin="0,0,10,0" VerticalAlignment="Center">
+                        <ComboBox Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDeviceSelectedEffect, Mode=TwoWay}" x:Name="EffectBox" ItemsSource="{Binding AvailableEffects}" Grid.Column="2" Grid.Row="0" Margin="0,0,10,0" VerticalAlignment="Center">
 
                 </ComboBox>
 
@@ -348,7 +352,7 @@
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
-                <hc:ScrollViewer  Height="400" Margin="1,1,1,1" Orientation="Vertical" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" IsInertiaEnabled="True">
+               
                     <hc:TransitioningContentControl Width="568" TransitionMode="Right2LeftWithFade">
 
 
@@ -478,7 +482,7 @@
 
                         </StackPanel>
                     </hc:TransitioningContentControl>
-                </hc:ScrollViewer>
+      
             </Grid>
             <!-- Music-->
             <Grid>
@@ -493,7 +497,7 @@
                     </Style>
                 </Grid.Style>
 
-                <hc:ScrollViewer  Height="400" Margin="1,1,1,1" Orientation="Vertical" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" IsInertiaEnabled="True">
+                
 
                     <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade" Margin="1,0" Width="568">
 
@@ -625,7 +629,7 @@
 
                         </StackPanel>
                     </hc:TransitioningContentControl>
-                </hc:ScrollViewer>
+                
             </Grid>
             <!-- Rainbow-->
             <Grid x:Name="Ambilight">
@@ -640,7 +644,7 @@
                     </Style>
                 </Grid.Style>
 
-                <hc:ScrollViewer Orientation="Vertical" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" IsInertiaEnabled="True"  Margin="1" Height="400" materialDesign:ScrollBarAssist.ButtonsVisibility="Collapsed">
+                
 
                     <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade">
 
@@ -767,7 +771,7 @@
                             
                         </StackPanel>
                     </hc:TransitioningContentControl>
-                </hc:ScrollViewer>
+
             </Grid>
 
             <!-- SpotReader(Screen Capture)-->
@@ -868,6 +872,9 @@
                             <DataTrigger Binding="{Binding ElementName=EffectBox,Path=SelectedItem}" Value="Canvas Lighting">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=EffectBox,Path=SelectedItem}" Value="Sáng theo màn hình">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
@@ -876,7 +883,7 @@
 
                     <StackPanel  Visibility="Visible" Margin="0,15,0,0" Orientation="Vertical">
 
-                        <TextBlock Grid.ColumnSpan="2" Margin="10,0,-117,0" Padding="0,0,0,10" Text="CÀI ĐẶT NÂNG CAO CHO CHẾ ĐỘ CANVAS LIGHTING" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left" Width="370"/>
+                        <TextBlock Grid.ColumnSpan="2" Margin="10,0,-117,0" Padding="0,0,0,10" Text="CÀI ĐẶT LAYOUT" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left" Width="370"/>
                         <Grid Height="80" Margin="0,0,0,0" HorizontalAlignment="Left" Width="516">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="146*"/>
@@ -904,10 +911,10 @@
                             </Grid.RowDefinitions>
                             <TextBlock Margin="10,0,0,0" Grid.Column="0" Text="Chiều dài" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="82"/>
                             <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Chiều rộng tương đối so với Hiệu ứng" Width="231" Grid.ColumnSpan="2" Height="17"/>
-                            <Slider x:Name="deviceWidth" Grid.Column="0" Value="{Binding CurrentDevice.DeviceRectWidth,Mode=TwoWay}" TickFrequency="1" hc:TipElement.Visibility="Visible" hc:TipElement.Placement="Right" hc:TipElement.StringFormat="#0.00" Minimum="{Binding CurrentDevice.SpotsX}" Maximum="{Binding DeviceRectWidthMax}" Style="{StaticResource SliderBaseStyle}" VerticalAlignment="Center" Height="18" ValueChanged="Slider_ValueChanged" HorizontalAlignment="Right" Width="121"/>
+                            <Slider x:Name="deviceWidth" Grid.Column="0" Value="{Binding DeviceRectWidth,Mode=TwoWay}" TickFrequency="1" hc:TipElement.Visibility="Visible" hc:TipElement.Placement="Right" hc:TipElement.StringFormat="#0.00" Minimum="{Binding CurrentDevice.SpotsX}" Maximum="{Binding DeviceRectWidthMax}" Style="{StaticResource SliderBaseStyle}" VerticalAlignment="Center" Height="18" ValueChanged="Slider_ValueChanged" HorizontalAlignment="Right" Width="121"/>
                             <TextBlock Margin="10,0,0,0" Grid.Column="1" Text="Chiều cao" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Height="20" Width="82"/>
                             <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="1" FontSize="14" VerticalAlignment="Top" Foreground="#FF898989" HorizontalAlignment="Left" Text="Chiều rộng tương đối so với Hiệu ứng" Width="231" Height="17"/>
-                            <Slider x:Name="deviceHeight" Grid.Column="1" Value="{Binding CurrentDevice.DeviceRectHeight, Mode=TwoWay}" TickFrequency="1" hc:TipElement.Visibility="Visible" hc:TipElement.Placement="Right" hc:TipElement.StringFormat="#0.00" Minimum="{Binding CurrentDevice.SpotsY}" Maximum="{Binding DeviceRectHeightMax}" Style="{StaticResource SliderBaseStyle}" VerticalAlignment="Center" Height="18" ValueChanged="Slider_ValueChanged" HorizontalAlignment="Right" Width="121" Margin="0,0,5,0"/>
+                            <Slider x:Name="deviceHeight" Grid.Column="1" Value="{Binding DeviceRectHeight, Mode=TwoWay}" TickFrequency="1" hc:TipElement.Visibility="Visible" hc:TipElement.Placement="Right" hc:TipElement.StringFormat="#0.00" Minimum="{Binding CurrentDevice.SpotsY}" Maximum="{Binding DeviceRectHeightMax}" Style="{StaticResource SliderBaseStyle}" VerticalAlignment="Center" Height="18" ValueChanged="Slider_ValueChanged" HorizontalAlignment="Right" Width="121" Margin="0,0,5,0"/>
 
                         </Grid>
                         <Grid Height="80" Width="516" HorizontalAlignment="Left">
@@ -1161,6 +1168,8 @@
                 </hc:TransitioningContentControl>
             </Grid>
             <!-- Atmosphere-->
+                </StackPanel>
+                </hc:ScrollViewer>
         </StackPanel>
 
 

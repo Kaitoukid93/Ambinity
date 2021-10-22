@@ -38,16 +38,37 @@ namespace adrilight.ViewModel
             get
             {
                 var blockedRectangle = new List<Rectangle>() ;//_blockedRectangle = new Rectangle[AllDevices.Length - 1];
+                int top;
+                int left;
+                int width;
+                int height;
+                Rectangle rect;
                 foreach (var device in AllDevices)
                 {
+                   
                     if (!device.IsHUB && device != CurrentDevice)
                     {
-                        var top = device.DeviceRectTop * 4;
-                        var left = device.DeviceRectLeft * 4;
-                        var width = device.DeviceRectWidth * 4;
-                        var height = device.DeviceRectHeight * 4;
-                        var rect = new Rectangle(left, top, width, height);
-                        blockedRectangle.Add(rect);
+                        switch (CurrentMode)
+                        {
+                            case 0:
+                                top = device.DeviceRectTop1 * 4;
+                                left = device.DeviceRectLeft1 * 4;
+                                width = device.DeviceRectWidth1 * 4;
+                                height = device.DeviceRectHeight1 * 4;
+                                rect = new Rectangle(left, top, width, height);
+                                blockedRectangle.Add(rect);
+                                break;
+                            case 5:
+                                top = device.DeviceRectTop * 4;
+                                left = device.DeviceRectLeft * 4;
+                                width = device.DeviceRectWidth * 4;
+                                height = device.DeviceRectHeight * 4;
+                                rect = new Rectangle(left, top, width, height);
+                                blockedRectangle.Add(rect);
+                                break;
+
+                        }
+                        
                     }
                 }
                 return blockedRectangle;
@@ -94,15 +115,22 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-        private string _deviceName;
-        public string DeviceName {
-            get => _deviceName;
-            set
-            {
-                _deviceName = value;
-                RaisePropertyChanged();
-            }
+        private int _currentMode;
+        public int CurrentMode {
+            get => _currentMode;
+            set => _currentMode = value;
         }
+
+
+        //private string _deviceName;
+        //public string DeviceName {
+        //    get => _deviceName;
+        //    set
+        //    {
+        //        _deviceName = value;
+        //        RaisePropertyChanged();
+        //    }
+        //}
         public WriteableBitmap _shaderBitmap;
         public WriteableBitmap ShaderBitmap {
             get => _shaderBitmap;
@@ -123,15 +151,16 @@ namespace adrilight.ViewModel
         public int CanvasHeight => SourceHeight * 4;
         public ICommand DeleteCommand { get; set; }
         public ViewModelBase _parentVm;
-        public AdjustPostionViewModel(IDeviceSettings device, IDeviceSettings[] allDevices, WriteableBitmap bitmap)
+        public AdjustPostionViewModel(int deviceRectX, int deviceRectY,int deviceRectWidth, int deviceRectHeight, IDeviceSettings[] allDevices, WriteableBitmap bitmap, int currentMode)
         {
             ShaderBitmap= bitmap;
-            CurrentDevice = device;
-            DeviceRectWidth = CurrentDevice.DeviceRectWidth*4;
-            DeviceRectHeight = CurrentDevice.DeviceRectHeight*4;
-            DeviceRectX = CurrentDevice.DeviceRectLeft*4;
-            DeviceRectY = CurrentDevice.DeviceRectTop*4;
-            DeviceName = CurrentDevice.DeviceName;
+            
+            DeviceRectWidth = deviceRectWidth * 4;
+            DeviceRectHeight = deviceRectHeight * 4;
+            DeviceRectX = deviceRectX * 4;
+            DeviceRectY = deviceRectY * 4;
+            CurrentMode = currentMode;
+            //DeviceName = CurrentDevice.DeviceName;
             AllDevices = allDevices;
 
             

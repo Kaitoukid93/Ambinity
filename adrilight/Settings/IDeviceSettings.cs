@@ -68,6 +68,11 @@ namespace adrilight
         int DeviceRectHeight { get; set; }
         int DeviceRectTop { get; set; }
         int DeviceRectLeft { get; set; }
+
+        int DeviceRectWidth1 { get; set; }
+        int DeviceRectHeight1 { get; set; }
+        int DeviceRectTop1 { get; set; }
+        int DeviceRectLeft1 { get; set; }
         int DeviceScale { get; set; }
 
         byte Brightness { get; set; }

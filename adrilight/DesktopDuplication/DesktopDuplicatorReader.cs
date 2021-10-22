@@ -195,10 +195,10 @@ namespace adrilight
                     var frameTime = Stopwatch.StartNew();
                     var newImage = _retryPolicy.Execute(() => GetNextFrame(image));
                     TraceFrameDetails(newImage);
-                    var width = DeviceSettings.DeviceRectWidth;
-                    var height = DeviceSettings.DeviceRectHeight;
-                    var x = DeviceSettings.DeviceRectLeft;
-                    var y = DeviceSettings.DeviceRectTop;
+                    var width = DeviceSettings.DeviceRectWidth1;
+                    var height = DeviceSettings.DeviceRectHeight1;
+                    var x = DeviceSettings.DeviceRectLeft1;
+                    var y = DeviceSettings.DeviceRectTop1;
                     var brightness = DeviceSettings.Brightness/100d;
 
                     if (newImage == null)
@@ -425,10 +425,22 @@ namespace adrilight
                 else
                 {
                         DesktopImage = new Bitmap(DesktopFrame.FrameWidth, DesktopFrame.FrameHeight, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                        if (DeviceSettings.DeviceRectWidth1 > DesktopFrame.FrameWidth)
+                            DeviceSettings.DeviceRectWidth1 = DesktopFrame.FrameWidth;
+                        if (DeviceSettings.DeviceRectHeight1 > DesktopFrame.FrameHeight)
+                            DeviceSettings.DeviceRectHeight1 = DesktopFrame.FrameHeight;
+
                         //change deviceRectWidth and deviceRectHeight here, so we dont need notifypropertychanged on Display change resolution event,
                         // The SharpDXGI handle resolution change for us
+                        //double widthRatio = DesktopFrame.FrameWidth / ReusableBitmap.Width;
+                        //double heightRatio = DesktopFrame.FrameHeight / ReusableBitmap.Height;
 
-                 }
+                        //DeviceSettings.DeviceRectWidth = (int)(DeviceSettings.DeviceRectWidth * widthRatio);
+                        //DeviceSettings.DeviceRectHeight = (int)(DeviceSettings.DeviceRectHeight * heightRatio);
+                        //DeviceSettings.DeviceRectLeft = (int)(DeviceSettings.DeviceRectLeft * widthRatio);
+                        //DeviceSettings.DeviceRectTop = (int)(DeviceSettings.DeviceRectTop * heightRatio);
+
+                    }
                 
                 var DesktopImageBitmapData = DesktopImage.LockBits(new Rectangle(0, 0, DesktopFrame.FrameWidth, DesktopFrame.FrameHeight), ImageLockMode.WriteOnly, DesktopImage.PixelFormat);
                 IntPtr pixelAddress = DesktopImageBitmapData.Scan0;

@@ -71,11 +71,15 @@ namespace adrilight
                 case nameof(DeviceSettings.MirrorY):
                 case nameof(DeviceSettings.DeviceRectWidth):
                 case nameof(DeviceSettings.DeviceRectHeight):
+                case nameof(DeviceSettings.DeviceRectWidth1):
+                case nameof(DeviceSettings.DeviceRectHeight1):
                 case nameof(DeviceSettings.NumLED):
                 case nameof(DeviceSettings.DeviceLayout):
                 case nameof(DeviceSettings.DeviceRotation):
                 case nameof(DeviceSettings.DeviceRectLeft):
                 case nameof(DeviceSettings.DeviceRectTop):
+                case nameof(DeviceSettings.DeviceRectLeft1):
+                case nameof(DeviceSettings.DeviceRectTop1):
                 case nameof(DeviceSettings.MatrixOrientation):
                 case nameof(DeviceSettings.MatrixStartPoint):
 
@@ -170,8 +174,24 @@ namespace adrilight
         internal IDeviceSpot[] BuildDeviceSpots(IDeviceSettings deviceSettings, IGeneralSettings generalSettings) // general settings is for compare each device setting
         {
             //import all User Defined Setting
-            var rectWidth = deviceSettings.DeviceRectWidth;
-            var rectHeight = deviceSettings.DeviceRectHeight;
+            int rectWidth;
+            int rectHeight;
+            switch(deviceSettings.SelectedEffect)
+            {
+                case 0:
+                    rectWidth = deviceSettings.DeviceRectWidth1;
+                    rectHeight = deviceSettings.DeviceRectHeight1;
+                break;
+                case 5:
+                    rectWidth = deviceSettings.DeviceRectWidth;
+                    rectHeight = deviceSettings.DeviceRectHeight;
+                    break;
+                default:
+                    rectWidth = deviceSettings.DeviceRectWidth;
+                    rectHeight = deviceSettings.DeviceRectHeight;
+                    break;
+
+            }
             var DeviceLayout = deviceSettings.DeviceLayout;
             var DisplayRectWidth = 200;
             var DisplayRectHeight = 200;

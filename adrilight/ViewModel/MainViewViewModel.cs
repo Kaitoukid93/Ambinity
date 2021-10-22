@@ -608,6 +608,20 @@ namespace adrilight.ViewModel
                 }
 
             };
+       
+        }
+      
+        public byte CurrentDeviceSelectedEffect {
+            get => CurrentDevice.SelectedEffect;
+            set
+            {
+                CurrentDevice.SelectedEffect = value;
+                RaisePropertyChanged(() => DeviceRectX);
+                RaisePropertyChanged(() => DeviceRectY);
+                RaisePropertyChanged(() => DeviceRectWidth);
+                RaisePropertyChanged(() => DeviceRectHeight);
+            }
+
         }
 
         private void ShaderImageUpdate(object sender, PropertyChangedEventArgs e)
@@ -616,7 +630,7 @@ namespace adrilight.ViewModel
             {
                 if (CurrentDevice != null)
                 {
-                    switch (CurrentDevice.SelectedEffect)
+                    switch (CurrentDeviceSelectedEffect)
                     {
                         case 5:
                             Context.Invoke(() =>
@@ -821,30 +835,77 @@ namespace adrilight.ViewModel
             }
         }
 
-        private int _deviceRectX;
+        
         public int DeviceRectX {
-            get => _deviceRectX;
-            set {  _deviceRectX = value;
-                RaisePropertyChanged();
+            get
+            {
+                switch (CurrentDeviceSelectedEffect)
+                {
+                    case 0://ambilight mode
+                        return CurrentDevice.DeviceRectLeft1;
+                    case 5:
+                        return CurrentDevice.DeviceRectLeft;
+                    default:
+                        return CurrentDevice.DeviceRectLeft;
+                }
             }
-        }
-        private int _deviceRectY;
-        public int DeviceRectY {
-            get => _deviceRectY;
-            set { _deviceRectY = value;
+
+            set
+            {
+                switch (CurrentDeviceSelectedEffect)
+                {
+                    case 0://ambilight mode
+                        CurrentDevice.DeviceRectLeft1 = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft1);
+                        break;
+                    case 5:
+                        CurrentDevice.DeviceRectLeft = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
+                        break;
+
+
+                }
                 RaisePropertyChanged();
             }
         }
 
-        private int _deviceRectHeight;
-        public int DeviceRectHeight {
-            get => _deviceRectHeight;
+
+       
+        public int DeviceRectY {
+            get
+            {
+                switch (CurrentDeviceSelectedEffect)
+                {
+                    case 0://ambilight mode
+                        return CurrentDevice.DeviceRectTop1;
+                    case 5:
+                        return CurrentDevice.DeviceRectTop;
+                    default:
+                        return CurrentDevice.DeviceRectTop;
+                }
+            }
+
             set
             {
-                _deviceRectHeight = value;
+                switch (CurrentDeviceSelectedEffect)
+                {
+                    case 0://ambilight mode
+                        CurrentDevice.DeviceRectTop1 = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectTop1);
+                        break;
+                    case 5:
+                        CurrentDevice.DeviceRectTop = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
+                        break;
+
+
+                }
                 RaisePropertyChanged();
             }
         }
+
+        
+      
         private int _deviceRectHeightMax = 135;
         public int DeviceRectHeightMax {
             get => _deviceRectHeightMax;
@@ -863,12 +924,67 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-        private int _deviceRectWidth;
-        public int DeviceRectWidth {
-            get => _deviceRectWidth;
+        public int DeviceRectHeight {
+            get
+            {
+                switch(CurrentDeviceSelectedEffect)
+                {
+                    case 0://ambilight mode
+                        return CurrentDevice.DeviceRectHeight1;
+                    case 5:
+                        return CurrentDevice.DeviceRectHeight;
+                    default:
+                        return CurrentDevice.DeviceRectHeight;
+                }
+            }
+
             set
             {
-                _deviceRectWidth = value;
+                switch (CurrentDeviceSelectedEffect)
+                {
+                    case 0://ambilight mode
+                        CurrentDevice.DeviceRectHeight1 = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectHeight1);
+                        break;
+                    case 5:
+                        CurrentDevice.DeviceRectHeight = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectHeight);
+                        break;
+                  
+                        
+                }
+                RaisePropertyChanged();
+            }
+        }
+        public int DeviceRectWidth {
+            get
+            {
+                switch (CurrentDevice.SelectedEffect)
+                {
+                    case 0://ambilight mode
+                        return CurrentDevice.DeviceRectWidth1;
+                    case 5:
+                        return CurrentDevice.DeviceRectWidth;
+                    default:
+                        return CurrentDevice.DeviceRectWidth;
+                }
+            }
+
+            set
+            {
+                switch (CurrentDevice.SelectedEffect)
+                {
+                    case 0://ambilight mode
+                        CurrentDevice.DeviceRectWidth1 = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectWidth1);
+                        break;
+                    case 5:
+                        CurrentDevice.DeviceRectWidth = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectWidth);
+                        break;
+
+
+                }
                 RaisePropertyChanged();
             }
         }
@@ -1007,7 +1123,7 @@ namespace adrilight.ViewModel
             RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
            // RaisePropertyChanged(() => CurrentDevice.DeviceRectWidth);
            // RaisePropertyChanged(() => CurrentDevice.DeviceRectHeight);
-            RaisePropertyChanged(() => CurrentDevice.DeviceScale);
+           // RaisePropertyChanged(() => CurrentDevice.DeviceScale);
 
 
         }
@@ -1791,23 +1907,23 @@ namespace adrilight.ViewModel
         {
             var view = new View.DeviceRectPositon();
             var allDevices = Cards.ToArray();
-           AdjustPostionViewModel dialogViewModel = new AdjustPostionViewModel(CurrentDevice, allDevices,ShaderBitmap);
+           AdjustPostionViewModel dialogViewModel = new AdjustPostionViewModel(DeviceRectX,DeviceRectY,DeviceRectWidth,DeviceRectHeight, allDevices,ShaderBitmap, CurrentDevice.SelectedEffect);
             view.DataContext = dialogViewModel;
             bool dialogResult = (bool)await DialogHost.Show(view, "mainDialog");
             if (dialogResult)
             {   //save current device rect position to json database
-                CurrentDevice.DeviceRectLeft = dialogViewModel.DeviceRectX / 4;
-                CurrentDevice.DeviceRectTop = dialogViewModel.DeviceRectY / 4;
-                DeviceRectX = CurrentDevice.DeviceRectLeft;
-                DeviceRectY = CurrentDevice.DeviceRectTop;
+                DeviceRectX = dialogViewModel.DeviceRectX / 4;
+                DeviceRectX = dialogViewModel.DeviceRectY / 4;
+                //DeviceRectX = CurrentDevice.DeviceRectLeft;
+                //DeviceRectY = CurrentDevice.DeviceRectTop;
                 DeviceRectHeightMax = (int)ShaderBitmap.Height - DeviceRectY;
                 DeviceRectWidthMax = (int)ShaderBitmap.Width - DeviceRectX;
 
 
 
 
-                RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
-                RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
+                //RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
+                //RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
                 RaisePropertyChanged(() => DeviceRectX);
                 RaisePropertyChanged(() => DeviceRectY);
                 RaisePropertyChanged(() => DeviceRectWidthMax);
@@ -1907,6 +2023,11 @@ namespace adrilight.ViewModel
             CurrentDevice = card;
             IsSplitLightingWindowOpen = true;
             IsCanvasLightingWindowOpen = false;
+            RaisePropertyChanged(() => CurrentDeviceSelectedEffect);
+            RaisePropertyChanged(() => DeviceRectX);
+            RaisePropertyChanged(() => DeviceRectY);
+            RaisePropertyChanged(() => DeviceRectWidth);
+            RaisePropertyChanged(() => DeviceRectHeight);
             if (CurrentDevice.IsHUB)
             {
                 ParrentLocation = CurrentDevice.HUBID;
@@ -1928,12 +2049,13 @@ namespace adrilight.ViewModel
 
             
 
-            DeviceRectX = CurrentDevice.DeviceRectLeft;
-            DeviceRectY = CurrentDevice.DeviceRectTop;
-            DeviceRectWidth = CurrentDevice.DeviceRectWidth;
-            DeviceRectHeight = CurrentDevice.DeviceRectHeight;
+           // DeviceRectX = CurrentDevice.DeviceRectLeft;
+           // DeviceRectY = CurrentDevice.DeviceRectTop;
+          //  DeviceRectWidth = CurrentDevice.DeviceRectWidth;
+          //  DeviceRectHeight = CurrentDevice.DeviceRectHeight;
             DeviceRectHeightMax = 135 - DeviceRectY;
             DeviceRectWidthMax = 240 - DeviceRectX;
+
             SetMenuItemActiveStatus(lighting);
         }
         public void BackToDashboard()

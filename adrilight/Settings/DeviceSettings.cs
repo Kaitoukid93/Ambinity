@@ -64,6 +64,11 @@ namespace adrilight
         private int _deviceRectLeft = 0;
         private int _deviceRectWidth = 100;
         private int _deviceRectHeight = 100;
+
+        private int _deviceRectTop1 = 0;
+        private int _deviceRectLeft1 = 0;
+        private int _deviceRectWidth1 = 240;
+        private int _deviceRectHeight1 = 135;
         private int _deviceScale = 1;
         
 
@@ -208,6 +213,13 @@ namespace adrilight
         public int DeviceRectLeft{ get => _deviceRectLeft; set { Set(() => DeviceRectLeft, ref _deviceRectLeft, value); } }
         public int DeviceRectWidth { get => _deviceRectWidth; set { Set(() => DeviceRectWidth, ref _deviceRectWidth, value); } }
         public int DeviceRectHeight { get => _deviceRectHeight; set { Set(() => DeviceRectHeight, ref _deviceRectHeight, value); } }
+
+
+        public int DeviceRectTop1 { get => _deviceRectTop1; set { Set(() => DeviceRectTop1, ref _deviceRectTop1, value); } }
+        public int DeviceRectLeft1 { get => _deviceRectLeft1; set { Set(() => DeviceRectLeft1, ref _deviceRectLeft1, value); } }
+        public int DeviceRectWidth1 { get => _deviceRectWidth1; set { Set(() => DeviceRectWidth1, ref _deviceRectWidth1, value); } }
+        public int DeviceRectHeight1 { get => _deviceRectHeight1; set { Set(() => DeviceRectHeight1, ref _deviceRectHeight1, value); } }
+
         public int DeviceScale { get => _deviceScale; set { Set(() => DeviceScale, ref _deviceScale, value); } }
 
         [Obsolete]
