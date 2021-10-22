@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using adrilight.Resources;
 using adrilight.Util;
 using GalaSoft.MvvmLight;
+using Microsoft.Win32;
 
 namespace adrilight
 {
@@ -32,6 +33,9 @@ namespace adrilight
             _retryPolicy = Policy.Handle<Exception>()
                 .WaitAndRetryForever(ProvideDelayDuration);
 
+          //  SystemEvents.DisplaySettingsChanged += new EventHandler(SystemEvents_DisplaySettingsChanged);
+
+            
             UserSettings.PropertyChanged += PropertyChanged;
             // SettingsViewModel.PropertyChanged += PropertyChanged;
             RefreshCapturingState();
@@ -56,6 +60,11 @@ namespace adrilight
             }
         }
 
+        //private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        //{
+        //    RefreshCaptureSource();
+        //}
+
         public bool IsRunning { get; private set; } = false;
         public bool NeededRefreshing { get; private set; } = false;
 
@@ -68,16 +77,19 @@ namespace adrilight
 
         public void RefreshCaptureSource()
         {
-            var isRunning = _cancellationTokenSource != null && IsRunning;
+            var isRunning =  IsRunning;
             var shouldBeRunning = UserSettings.ShouldbeRunning;
             //  var shouldBeRefreshing = NeededRefreshing;
             if (isRunning && shouldBeRunning)
             {
                 //start it
-
-                IsRunning = false;
                 _cancellationTokenSource.Cancel();
                 _cancellationTokenSource = null;
+                _desktopDuplicator?.Dispose();
+                _desktopDuplicator = null;
+                _log.Debug("Stopped Desktop Duplication Reader.");
+                IsRunning = false;
+              
                 _log.Debug("starting the capturing");
                 _cancellationTokenSource = new CancellationTokenSource();
                 _workerThread = new Thread(() => Run(_cancellationTokenSource.Token)) {
@@ -284,6 +296,7 @@ namespace adrilight
                 }
                 _lastObservedWidth = image.Width;
                 _lastObservedHeight = image.Height;
+            
             }
         }
 
@@ -346,6 +359,7 @@ namespace adrilight
                 {
                     _log.Error(ex, "Failed to release frame.");
                 }
+              
                 else
                 {
                     throw new DesktopDuplicationException("Unknown Device Error", ex);

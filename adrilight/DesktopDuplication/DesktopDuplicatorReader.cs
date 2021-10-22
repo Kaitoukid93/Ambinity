@@ -425,6 +425,8 @@ namespace adrilight
                 else
                 {
                         DesktopImage = new Bitmap(DesktopFrame.FrameWidth, DesktopFrame.FrameHeight, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                        //change deviceRectWidth and deviceRectHeight here, so we dont need notifypropertychanged on Display change resolution event,
+                        // The SharpDXGI handle resolution change for us
 
                  }
                 

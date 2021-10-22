@@ -131,9 +131,21 @@ namespace adrilight.DesktopDuplication
         private bool RetrieveFrame()
         {
 
-            var desktopWidth = 1920;
-            var desktopHeight = 1080;
-            
+            int desktopWidth;
+            int desktopHeight;
+            if(_outputDescription.DesktopBounds.GetWidth()>=_outputDescription.DesktopBounds.GetHeight()) //landscape mode
+            {
+
+                desktopWidth = _outputDescription.DesktopBounds.GetWidth();
+                desktopHeight = _outputDescription.DesktopBounds.GetHeight();
+            }
+            else
+            {
+
+                desktopWidth = _outputDescription.DesktopBounds.GetHeight();
+                desktopHeight = _outputDescription.DesktopBounds.GetWidth();
+            }
+
 
             if (_stagingTexture == null)
             {
@@ -207,15 +219,8 @@ namespace adrilight.DesktopDuplication
 
                 _device.ImmediateContext.CopySubresourceRegion(tempTexture, 0, null, _smallerTexture, 0);
             }
-            try
-            {
+           
                 _outputDuplication.ReleaseFrame();
-            }
-            catch
-            {
-
-            }
-            
 
             // Generates the mipmap of the screen
             _device.ImmediateContext.GenerateMips(_smallerTextureView);
@@ -233,8 +238,20 @@ namespace adrilight.DesktopDuplication
             var mapSource = _device.ImmediateContext.MapSubresource(_stagingTexture, 0, MapMode.Read, MapFlags.None);
 
             Bitmap image;
-            var width = 1920 / scalingFactor;
-            var height = 1080/ scalingFactor;
+            int height;
+            int width;
+            if (_outputDescription.DesktopBounds.GetWidth() >= _outputDescription.DesktopBounds.GetHeight()) //landscape mode
+            {
+
+                width = _outputDescription.DesktopBounds.GetWidth() / scalingFactor;
+                height = _outputDescription.DesktopBounds.GetHeight() / scalingFactor;
+            }
+            else
+            {
+
+                width = _outputDescription.DesktopBounds.GetHeight() / scalingFactor;
+                height = _outputDescription.DesktopBounds.GetWidth() / scalingFactor;
+            }
 
             if (reusableImage != null && reusableImage.Width == width && reusableImage.Height == height)
             {
@@ -243,6 +260,7 @@ namespace adrilight.DesktopDuplication
             else
             {
                 image = new Bitmap(width, height, PixelFormat.Format32bppRgb);
+
             }
 
             var boundsRect = new System.Drawing.Rectangle(0, 0, width, height);
