@@ -107,7 +107,7 @@ namespace adrilight.Util
 
                 while (!token.IsCancellationRequested)
                 {
-                    var numLED = DeviceSpotSet.CountLeds(DeviceSettings.SpotsX, DeviceSettings.SpotsY);
+                    var numLED = DeviceSpotSet.Spots.Length;
                     Color currentStaticColor = DeviceSettings.StaticColor;
                     var colorOutput = new OpenRGB.NET.Models.Color[numLED];
                     double peekBrightness = 0.0;
@@ -156,11 +156,11 @@ namespace adrilight.Util
 
                         }
 
-                        Thread.Sleep(10);
+                        
                     }
 
 
-
+                    Thread.Sleep(10);
 
 
 

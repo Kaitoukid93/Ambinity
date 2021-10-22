@@ -17,7 +17,7 @@ namespace adrilight.Util
 
         void Run(CancellationToken token);
         //WriteableBitmap MatrixBitmap { get; set; }
-        Pixel[] Frame { get; set; }
+        byte[] Frame { get; set; }
 
     }
 }

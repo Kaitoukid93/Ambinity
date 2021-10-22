@@ -23,6 +23,9 @@ using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Windows.Media;
+using System.Drawing;
+using System.Drawing.Imaging;
+using adrilight.Shaders;
 
 namespace adrilight.ViewModel
 {
@@ -232,7 +235,9 @@ namespace adrilight.ViewModel
 
         public ICommand SelectMenuItem { get; set; }
         public ICommand BackCommand { get; set; }
+        public ICommand DeviceRectDropCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
+        public ICommand AdjustPositionCommand { get; set; }
         public ICommand SnapshotCommand { get; set; }
         public ICommand DeleteDeviceCommand { get; set; }
         #endregion
@@ -271,6 +276,7 @@ namespace adrilight.ViewModel
         // public IDeviceSettings Card1 { get; set; }
 
         public ICommand SelectCardCommand { get; set; }
+        public ICommand SelectShaderCommand { get; set; }
         public ICommand ShowAddNewCommand { get; set; }
         public ICommand RefreshDeviceCommand { get; set; }
 
@@ -308,6 +314,7 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+     
         private ObservableCollection<string> _availableEffects;
         public ObservableCollection<string> AvailableEffects {
             get { return _availableEffects; }
@@ -315,6 +322,56 @@ namespace adrilight.ViewModel
             {
                 if (_availableEffects == value) return;
                 _availableEffects = value;
+                RaisePropertyChanged();
+            }
+        }
+        private ObservableCollection<ShaderCard> _availableShader;
+        public ObservableCollection<ShaderCard> AvailableShader {
+            get { return _availableShader; }
+            set
+            {
+                if (_availableShader == value) return;
+                _availableShader = value;
+                RaisePropertyChanged();
+            }
+        }
+        private ObservableCollection<string> _availableLayout;
+        public ObservableCollection<string> AvailableLayout {
+            get { return _availableLayout; }
+            set
+            {
+                if (_availableLayout == value) return;
+                _availableLayout = value;
+                RaisePropertyChanged();
+            }
+        }
+        private ObservableCollection<string> _availableRotation;
+        public ObservableCollection<string> AvailableRotation {
+            get { return _availableRotation; }
+            set
+            {
+                if (_availableRotation == value) return;
+                _availableRotation = value;
+                RaisePropertyChanged();
+            }
+        }
+        private ObservableCollection<string> _availableMatrixOrientation;
+        public ObservableCollection<string> AvailableMatrixOrientation {
+            get { return _availableMatrixOrientation; }
+            set
+            {
+                if (_availableMatrixOrientation == value) return;
+                _availableMatrixOrientation = value;
+                RaisePropertyChanged();
+            }
+        }
+        private ObservableCollection<string> _availableMatrixStartPoint;
+        public ObservableCollection<string> AvailableMatrixStartPoint {
+            get { return _availableMatrixStartPoint; }
+            set
+            {
+                if (_availableMatrixStartPoint == value) return;
+                _availableMatrixStartPoint = value;
                 RaisePropertyChanged();
             }
         }
@@ -327,24 +384,22 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-        public IGeneralSpot[] _shaderSpots;
-        public IGeneralSpot[] ShaderSpots {
-            get => _shaderSpots;
-            set
-            {
-                _shaderSpots = value;
-                RaisePropertyChanged();
-            }
-        }
+       
 
         public  WriteableBitmap _shaderBitmap;
         public  WriteableBitmap ShaderBitmap {
             get => _shaderBitmap;
             set
             {
-                Set(ref _shaderBitmap, value);
+                 _shaderBitmap = value;
+                RaisePropertyChanged(nameof(ShaderBitmap));
+             
+                RaisePropertyChanged(() => CanvasWidth);
+                RaisePropertyChanged(() => CanvasHeight);
             }
         }
+        public int CanvasWidth => ShaderBitmap.PixelWidth;
+        public int CanvasHeight => ShaderBitmap.PixelHeight;
 
         private int _parrentLocation;
         public int ParrentLocation {
@@ -355,66 +410,46 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+        
+        //public int DeviceSpotX {
+        //    get 
+        //    {
+        //          CurrentDevice.SpotsX
+        //    }
+        //    set
+        //    {
+        //        if(CurrentDevice.SpotsY)
+        //        CurrentDevice.SpotsX = value;
+        //    }
+            
+        //}
+        
+        //public int DeviceSpotY {
+        //    get => _deviceSpotY;
+        //    set => _deviceSpotY = value;
 
-        public int _deviceType;
-        public int DeviceType {
-            get
-            {
-                if (CurrentDevice.DeviceType == "Strip")
-                    return 0;
-                else if (CurrentDevice.DeviceType == "Square")
-                    return 1;
-                else
-                    return 0;
-            }
-            set
-            {
-                _deviceType = value;
-                switch (value)
-                {
-                    case 0://strip type
-                        CurrentDevice.DeviceType = "Strip";
-                        CurrentDevice.SpotsX = CurrentDevice.NumLED;
-                        CurrentDevice.SpotsY = 1;
-                        RaisePropertyChanged(() => CurrentDevice.SpotsX);
-                        RaisePropertyChanged(() => CurrentDevice.SpotsY);
-                        RaisePropertyChanged(() => CurrentDevice.DeviceType);
-                        break;
-                    case 1://square type
-                        CurrentDevice.DeviceType = "Square";
-                        CurrentDevice.SpotsX = CurrentDevice.NumLED / 4 + 1;
-                        CurrentDevice.SpotsY = (CurrentDevice.NumLED - (CurrentDevice.NumLED / 4) * 2) / 2 + 1;
-                        RaisePropertyChanged(() => CurrentDevice.SpotsX);
-                        RaisePropertyChanged(() => CurrentDevice.SpotsY);
-                        RaisePropertyChanged(() => CurrentDevice.DeviceType);
-                        break;
-                    case 2://matrix type
-                        CurrentDevice.DeviceType = "Matrix";
-                        break;
-                }
+        //}
 
-            }
-        }
         public IList<string> _AvailableAudioDevice = new List<string>();
         public IList<String> AvailableAudioDevice {
             get
             {
-                //_AvailableAudioDevice.Clear();
-                //int devicecount = BassWasapi.BASS_WASAPI_GetDeviceCount();
-                //string[] devicelist = new string[devicecount];
-                //for (int i = 0; i < devicecount; i++)
-                //{
+                _AvailableAudioDevice.Clear();
+                int devicecount = BassWasapi.BASS_WASAPI_GetDeviceCount();
+                string[] devicelist = new string[devicecount];
+                for (int i = 0; i < devicecount; i++)
+                {
 
-                //    var devices = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
+                    var devices = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
 
-                //    if (devices.IsEnabled && devices.IsLoopback)
-                //    {
-                //        var device = string.Format("{0} - {1}", i, devices.name);
+                    if (devices.IsEnabled && devices.IsLoopback)
+                    {
+                        var device = string.Format("{0} - {1}", i, devices.name);
 
-                //        _AvailableAudioDevice.Add(device);
-                //    }
+                        _AvailableAudioDevice.Add(device);
+                    }
 
-                //}
+                }
 
                 return _AvailableAudioDevice;
             }
@@ -442,6 +477,11 @@ namespace adrilight.ViewModel
 
 
         }
+
+     
+
+     
+
         public ObservableCollection<string> AvailablePalette { get; private set; }
         public IContext Context { get; }
         public IList<String> _AvailableDisplays;
@@ -482,17 +522,35 @@ namespace adrilight.ViewModel
         }
         GifBitmapDecoder decoder;
         public IGeneralSettings GeneralSettings { get; }
+       
         public ISerialStream[] SerialStreams { get; }
         public IOpenRGBClientDevice OpenRGBClientDevice { get; set; }
         public ISerialDeviceDetection SerialDeviceDetection { get; set; }
-        public static IShaderEffect ShaderEffect {get;set;}
+         public static IShaderEffect ShaderEffect {get;set;}
+        public IDesktopFrame DesktopFrame { get; set; }
+        public ISecondDesktopFrame SecondDesktopFrame { get; set; }
+        public IThirdDesktopFrame ThirdDesktopFrame { get; set; }
         public int AddedDevice { get; }
 
-        public MainViewViewModel(IContext context, IDeviceSettings[] cards, IDeviceSpotSet[] deviceSpotSets,IGeneralSpotSet generalSpotSet, IGeneralSettings generalSettings, IOpenRGBClientDevice openRGBDevices, ISerialDeviceDetection serialDeviceDetection, ISerialStream[] serialStreams, IShaderEffect shaderEffect)
+        public MainViewViewModel(IContext context,
+            IDeviceSettings[] cards,
+            IDeviceSpotSet[] deviceSpotSets,
+            IGeneralSettings generalSettings,
+            IOpenRGBClientDevice openRGBDevices,
+            ISerialDeviceDetection serialDeviceDetection,
+            ISerialStream[] serialStreams,
+            IShaderEffect shaderEffect,
+            IDesktopFrame desktopFrame,
+            ISecondDesktopFrame secondDesktopFrame,
+            IThirdDesktopFrame thirdDesktopFrame
+           )
         {
 
             GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
             SerialStreams = serialStreams ?? throw new ArgumentNullException(nameof(serialStreams));
+            DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
+            SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
+            ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
             Cards = new ObservableCollection<IDeviceSettings>();
             DisplayCards = new ObservableCollection<IDeviceSettings>();
             AddedDevice = cards.Length;
@@ -502,6 +560,7 @@ namespace adrilight.ViewModel
             SerialDeviceDetection = serialDeviceDetection ?? throw new ArgumentNullException(nameof(serialDeviceDetection));
             ShaderEffect = shaderEffect ?? throw new ArgumentNullException();
             ShaderEffect.PropertyChanged+= ShaderImageUpdate;
+            DesktopFrame.PropertyChanged += ShaderImageUpdate;
             //ShaderSpots = generalSpotSet.ShaderSpot;
             //ShaderBitmap = shaderEffect.MatrixBitmap;
             foreach (IDeviceSettings card in cards)
@@ -517,20 +576,8 @@ namespace adrilight.ViewModel
 
 
 
-            WriteJson();
-            //binding settings to settings
-            //if(CurrentDevice!=null)
-            //{
-            //    CurrentDevice.PropertyChanged += (s, e) =>
-            //    {
-            //        switch (e.PropertyName)
-            //        {
-            //            case nameof(CurrentDevice.SelectedDisplay):
-            //                RaisePropertyChanged(() => PreviewSpots);
-            //                break;
-            //        };
-            //    };
-            //}
+           // WriteJson();
+           
 
 
 
@@ -541,125 +588,7 @@ namespace adrilight.ViewModel
             {
                 switch (e.PropertyName)
                 {
-                    case nameof(GeneralSettings.ScreenSize):
-                        if (GeneralSettings.ScreenSize == 0)
-                        {
-                            GeneralSettings.SpotsX = 11;
-                            GeneralSettings.SpotsY = 7;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY);
-                        }
-                        else if (GeneralSettings.ScreenSize == 1)
-                        {
-                            GeneralSettings.SpotsX = 13;
-                            GeneralSettings.SpotsY = 7;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY);
-                        }
-                        else if (GeneralSettings.ScreenSize == 2)
-                        {
-                            GeneralSettings.SpotsX = 14;
-                            GeneralSettings.SpotsY = 7;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY);
-                        }
-                        else if (GeneralSettings.ScreenSize == 3)
-                        {
-                            GeneralSettings.SpotsX = 14;
-                            GeneralSettings.SpotsY = 9;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY);
-                        }
-                        else if (GeneralSettings.ScreenSize == 4)
-                        {
-                            GeneralSettings.SpotsX = 16;
-                            GeneralSettings.SpotsY = 7;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY);
-                        }
-
-                        GeneralSettings.OffsetLed = GeneralSettings.SpotsX - 1;
-                        break;
-                    case nameof(GeneralSettings.ScreenSizeSecondary):
-                        if (GeneralSettings.ScreenSizeSecondary == 0)
-                        {
-                            GeneralSettings.SpotsX2 = 11;
-                            GeneralSettings.SpotsY2 = 7;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX2);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY2);
-                        }
-                        else if (GeneralSettings.ScreenSizeSecondary == 1)
-                        {
-                            GeneralSettings.SpotsX2 = 13;
-                            GeneralSettings.SpotsY2 = 7;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX2);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY2);
-                        }
-                        else if (GeneralSettings.ScreenSizeSecondary == 2)
-                        {
-                            GeneralSettings.SpotsX2 = 14;
-                            GeneralSettings.SpotsY2 = 7;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX2);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY2);
-                        }
-                        else if (GeneralSettings.ScreenSizeSecondary == 3)
-                        {
-                            GeneralSettings.SpotsX2 = 14;
-                            GeneralSettings.SpotsY2 = 9;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX2);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY2);
-                        }
-                        else if (GeneralSettings.ScreenSizeSecondary == 4)
-                        {
-                            GeneralSettings.SpotsX2 = 16;
-                            GeneralSettings.SpotsY2 = 7;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX2);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY2);
-                        }
-
-                        GeneralSettings.OffsetLed2 = GeneralSettings.SpotsX2 - 1;
-                        break;
-                    case nameof(GeneralSettings.ScreenSizeThird):
-                        if (GeneralSettings.ScreenSizeThird == 0)
-                        {
-                            GeneralSettings.SpotsX3 = 11;
-                            GeneralSettings.SpotsY3 = 7;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX3);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY3);
-                        }
-                        else if (GeneralSettings.ScreenSizeThird == 1)
-                        {
-                            GeneralSettings.SpotsX3 = 13;
-                            GeneralSettings.SpotsY3 = 7;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX3);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY3);
-                        }
-                        else if (GeneralSettings.ScreenSizeThird == 2)
-                        {
-                            GeneralSettings.SpotsX3 = 14;
-                            GeneralSettings.SpotsY3 = 7;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX3);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY3);
-                        }
-                        else if (GeneralSettings.ScreenSizeThird == 3)
-                        {
-                            GeneralSettings.SpotsX3 = 14;
-                            GeneralSettings.SpotsY3 = 9;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX3);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY3);
-                        }
-                        else if (GeneralSettings.ScreenSizeThird == 4)
-                        {
-                            GeneralSettings.SpotsX3 = 16;
-                            GeneralSettings.SpotsY3 = 7;
-                            RaisePropertyChanged(() => GeneralSettings.SpotsX3);
-                            RaisePropertyChanged(() => GeneralSettings.SpotsY3);
-                        }
-
-                        GeneralSettings.OffsetLed3 = GeneralSettings.SpotsX3 - 1;
-                        break;
-
-                       
+                    
                         case nameof(GeneralSettings.Autostart):
                                 if (GeneralSettings.Autostart)
                                 {
@@ -673,110 +602,402 @@ namespace adrilight.ViewModel
                          default:
                                 break;
                         
+                        
 
 
                 }
 
             };
+       
+        }
+      
+        public byte CurrentDeviceSelectedEffect {
+            get => CurrentDevice.SelectedEffect;
+            set
+            {
+                CurrentDevice.SelectedEffect = value;
+                RaisePropertyChanged(() => DeviceRectX);
+                RaisePropertyChanged(() => DeviceRectY);
+                RaisePropertyChanged(() => DeviceRectWidth);
+                RaisePropertyChanged(() => DeviceRectHeight);
+            }
+
         }
 
-
-        public void LoadCard()
+        private void ShaderImageUpdate(object sender, PropertyChangedEventArgs e)
         {
-            //Cards = new ObservableCollection<IDeviceSettings>();
-            // Cards.Add(Card1);
+            if(IsSplitLightingWindowOpen)
+            {
+                if (CurrentDevice != null)
+                {
+                    switch (CurrentDeviceSelectedEffect)
+                    {
+                        case 5:
+                            Context.Invoke(() =>
+                            {
+                                var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                                MatrixBitmap.Lock();
+                                IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                                var CurrentFrame = ShaderEffect.Frame;
 
+                                if (CurrentFrame != null)
+                                {
+                                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-            //var settingsmanager = new UserSettingsManager();
-            //var devices = settingsmanager.LoadDeviceIfExists();
-            //if (devices != null)
-            //{
-            //    foreach (var item in devices)
-            //    {
-            //        var deviceInfo = new DeviceSettings() {
-            //            Brightness = item.Brightness,
-            //            SelectedDisplay = item.SelectedDisplay,
-            //            WhitebalanceRed = item.WhitebalanceRed,
-            //            DeviceId = item.DeviceID,
-            //            DeviceName = item.DeviceName,
-            //            DevicePort = item.DevicePort,
-            //            DeviceSize = item.DeviceSize,
-            //            DeviceType = item.DeviceType,
-            //            //  FadeEnd = item.fadeend,
-            //            //  FadeStart = item.fadestart,
-            //            // GifMode = item.gifmode,
-            //            // GifSource = item.gifsource,
-            //            IsBreathing = item.IsBreathing,
-            //            IsConnected = item.IsConnected,
-            //            SelectedEffect = item.SelectedEffect,
-            //            SelectedMusicMode = item.SelectedMusicMode,
-            //            MSens = item.MSens,
-            //            SelectedAudioDevice = item.SelectedAudioDevice,
-            //            SelectedPalette = item.SelectedPalette,
-            //            EffectSpeed = item.EffectSpeed,
-            //            StaticColor = item.StaticColor,
-            //            AtmosphereStart = item.AtmosphereStart,
-            //            AtmosphereStop = item.AtmosphereStop,
-            //            BreathingSpeed = item.BreathingSpeed,
-            //            ColorFrequency = item.ColorFrequency,
+                                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-            //            SelectedMusicPalette = item.SelectedMusicPalette,
-            //            SpotHeight = item.SpotHeight,
-            //            SpotsX = item.SpotsX,
-            //            SpotsY = item.SpotsY,
-            //            SpotWidth = item.SpotWidth,
-            //            UseLinearLighting = item.UseLinearLighting,
-            //            WhitebalanceBlue = item.WhitebalanceBlue,
+                                    MatrixBitmap.Unlock();
+                                    ShaderBitmap = MatrixBitmap;
+                                }
+                            });
+                            break;
+                        case 0:
+                            switch(CurrentDevice.SelectedDisplay)
+                            {
+                                case 0:
+                                    Context.Invoke(() =>
+                                    {
+                                        
+                                        var CurrentFrame = DesktopFrame.Frame;
+                                        if (CurrentFrame != null)
+                                        {
+                                            var MatrixBitmap = new WriteableBitmap(DesktopFrame.FrameWidth, DesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
+                                            MatrixBitmap.Lock();
+                                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-            //            WhitebalanceGreen = item.WhitebalanceGreen
-            //        };
+                                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, DesktopFrame.FrameWidth, DesktopFrame.FrameHeight));
 
-            //        deviceInfo.PropertyChanged += DeviceInfo_PropertyChanged;
-            //        Cards.Add(deviceInfo);
-            //    }
-            //}
+                                            MatrixBitmap.Unlock();
+                                            ShaderBitmap = MatrixBitmap;
 
-        }
-        private void DeviceInfo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            //if (_isAddnew) return;
-            //_isAddnew = true;
-            //WriteJson();
-            //_isAddnew = false;
-        }
+                                        }
+                                        else
+                                        {
+                                            //notify the UI show error message
+                                           
+                                        }
 
-        private  void ShaderImageUpdate(object sender, PropertyChangedEventArgs e)
-        {
+                                    });
+                                    break;
+                                case 1:
+                                    Context.Invoke(() =>
+                                    {
+                                       
+                                        var CurrentFrame = SecondDesktopFrame.Frame;
+                                        if (CurrentFrame != null)
+                                        {
+                                            var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                                            MatrixBitmap.Lock();
+                                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
+                                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+
+                                            MatrixBitmap.Unlock();
+                                            ShaderBitmap = MatrixBitmap;
+
+                                        }
+                                        else
+                                        {
+                                            //notify the UI show error message
+                                            IsSecondDesktopValid = false;
+                                            RaisePropertyChanged(() => IsSecondDesktopValid);
+                                        }
+
+                                    });
+                                    break;
+                                case 2:
+                                    Context.Invoke(() =>
+                                    {
+                                       
+                                        var CurrentFrame = ThirdDesktopFrame.Frame;
+                                        if (CurrentFrame != null)
+                                        {
+                                            var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                                            MatrixBitmap.Lock();
+                                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+
+                                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+
+                                            MatrixBitmap.Unlock();
+                                            ShaderBitmap = MatrixBitmap;
+
+                                        }
+                                        else
+                                        {
+                                            //notify the UI show error message
+                                            IsThirdDesktopValid = false;
+                                            RaisePropertyChanged(() => IsThirdDesktopValid);
+                                        }
+
+                                    });
+                                    break;
+                            }
+                         
+                            break;
+                    }
+                }
+            }
            
+
+            if(IsCanvasLightingWindowOpen)
+            {
+                Context.Invoke(() =>
+                {
+                    var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                    MatrixBitmap.Lock();
+                    IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                    var CurrentFrame = ShaderEffect.Frame;
+                    if(CurrentFrame!=null)
+                    {
+                        Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+
+                        MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+
+                        MatrixBitmap.Unlock();
+                        ShaderBitmap = MatrixBitmap;
+                    }
+                   
+                });
+            }
+          
+
+        }
+
+        [DllImport("gdi32.dll")]
+        public static extern bool DeleteObject(IntPtr hObject);
+
+        public void SetPreviewImage(byte[] frame)
+        {
             Context.Invoke(() =>
             {
-                var MatrixBitmap = new WriteableBitmap(70, 70, 96, 96, PixelFormats.Bgr32, null);
-                MatrixBitmap.Lock();
-                IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                var CurrentFrame = ShaderEffect.Frame;
+                 PreviewImageSource = new WriteableBitmap(120, 120, 96, 96, PixelFormats.Bgra32, null);
+                PreviewImageSource.Lock();
+                IntPtr pixelAddress = PreviewImageSource.BackBuffer;
+                var CurrentFrame = frame;
 
-                Marshal.Copy(FrameToInt32(CurrentFrame), 0, pixelAddress, 70 * 70);
+                Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 70, 70));
-
-                MatrixBitmap.Unlock();
-                ShaderBitmap = MatrixBitmap;
+                PreviewImageSource.AddDirtyRect(new Int32Rect(0, 0, 120, 120));
+                RaisePropertyChanged(nameof(PreviewImageSource));
+                
+                PreviewImageSource.Unlock();
+               // ShaderBitmap = MatrixBitmap;
             });
-            
+        }
+        private WriteableBitmap _previewImageSource;
+        public WriteableBitmap PreviewImageSource {
+            get => _previewImageSource;
+            set
+            {
+               // _log.Info("PreviewImageSource created.");
+                Set(ref _previewImageSource, value);
+                RaisePropertyChanged();
+              
+            }
+        }
+        private bool _isCanvasLightingWindowOpen;
+        public bool IsCanvasLightingWindowOpen {
+            get => _isCanvasLightingWindowOpen;
+            set
+            {
+                Set(ref _isCanvasLightingWindowOpen, value);
+               // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
+            }
+        }
+        private bool _isSecondDesktopValid;
+        public bool IsSecondDesktopValid {
+            get => _isSecondDesktopValid;
+            set
+            {
+                Set(ref _isSecondDesktopValid, value);
+                // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
+            }
+        }
+        private bool _isThirdDesktopValid;
+        public bool IsThirdDesktopValid {
+            get => _isThirdDesktopValid;
+            set
+            {
+                Set(ref _isThirdDesktopValid, value);
+                // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
+            }
+        }
+        private bool _isSplitLightingWindowOpen;
+        public bool IsSplitLightingWindowOpen {
+            get => _isSplitLightingWindowOpen;
+            set
+            {
+                Set(ref _isSplitLightingWindowOpen, value);
+                // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
+            }
         }
 
-        private  Int32[] FrameToInt32(Pixel[] frame)
-        {
-            Int32[] data = new Int32[70 * 70];
+        
+        public int DeviceRectX {
+            get
+            {
+                switch (CurrentDeviceSelectedEffect)
+                {
+                    case 0://ambilight mode
+                        return CurrentDevice.DeviceRectLeft1;
+                    case 5:
+                        return CurrentDevice.DeviceRectLeft;
+                    default:
+                        return CurrentDevice.DeviceRectLeft;
+                }
+            }
 
-            for (int i = 0; i < 70 * 70; i++)
-                data[i] = frame[i].GetBPP24RGB_Int32();
+            set
+            {
+                switch (CurrentDeviceSelectedEffect)
+                {
+                    case 0://ambilight mode
+                        CurrentDevice.DeviceRectLeft1 = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft1);
+                        break;
+                    case 5:
+                        CurrentDevice.DeviceRectLeft = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
+                        break;
 
 
-            return data;
+                }
+                RaisePropertyChanged();
+            }
         }
 
+
+       
+        public int DeviceRectY {
+            get
+            {
+                switch (CurrentDeviceSelectedEffect)
+                {
+                    case 0://ambilight mode
+                        return CurrentDevice.DeviceRectTop1;
+                    case 5:
+                        return CurrentDevice.DeviceRectTop;
+                    default:
+                        return CurrentDevice.DeviceRectTop;
+                }
+            }
+
+            set
+            {
+                switch (CurrentDeviceSelectedEffect)
+                {
+                    case 0://ambilight mode
+                        CurrentDevice.DeviceRectTop1 = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectTop1);
+                        break;
+                    case 5:
+                        CurrentDevice.DeviceRectTop = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
+                        break;
+
+
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+        
+      
+        private int _deviceRectHeightMax = 135;
+        public int DeviceRectHeightMax {
+            get => _deviceRectHeightMax;
+            set
+            {
+                _deviceRectHeightMax = value;
+                RaisePropertyChanged();
+            }
+        }
+        private int _deviceRectWidthtMax=240;
+        public int DeviceRectWidthMax {
+            get => _deviceRectWidthtMax;
+            set
+            {
+                _deviceRectWidthtMax = value;
+                RaisePropertyChanged();
+            }
+        }
+        public int DeviceRectHeight {
+            get
+            {
+                switch(CurrentDeviceSelectedEffect)
+                {
+                    case 0://ambilight mode
+                        return CurrentDevice.DeviceRectHeight1;
+                    case 5:
+                        return CurrentDevice.DeviceRectHeight;
+                    default:
+                        return CurrentDevice.DeviceRectHeight;
+                }
+            }
+
+            set
+            {
+                switch (CurrentDeviceSelectedEffect)
+                {
+                    case 0://ambilight mode
+                        CurrentDevice.DeviceRectHeight1 = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectHeight1);
+                        break;
+                    case 5:
+                        CurrentDevice.DeviceRectHeight = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectHeight);
+                        break;
+                  
+                        
+                }
+                RaisePropertyChanged();
+            }
+        }
+        public int DeviceRectWidth {
+            get
+            {
+                switch (CurrentDevice.SelectedEffect)
+                {
+                    case 0://ambilight mode
+                        return CurrentDevice.DeviceRectWidth1;
+                    case 5:
+                        return CurrentDevice.DeviceRectWidth;
+                    default:
+                        return CurrentDevice.DeviceRectWidth;
+                }
+            }
+
+            set
+            {
+                switch (CurrentDevice.SelectedEffect)
+                {
+                    case 0://ambilight mode
+                        CurrentDevice.DeviceRectWidth1 = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectWidth1);
+                        break;
+                    case 5:
+                        CurrentDevice.DeviceRectWidth = value;
+                        RaisePropertyChanged(() => CurrentDevice.DeviceRectWidth);
+                        break;
+
+
+                }
+                RaisePropertyChanged();
+            }
+        }
+        private int _deviceScale;
+        public int DeviceScale {
+            get => _deviceScale;
+            set
+            {
+                _deviceScale = value;
+                RaisePropertyChanged();
+               
+            }
+        }
         public override void ReadData()
         {
             LoadMenu();
@@ -792,34 +1013,20 @@ namespace adrilight.ViewModel
                 ChangeView(p);
             });
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault();
-            //  SettingInfo = new SettingInfoDTO();
-            //var setting=  LoadSettingIfExists();
-            //  if (setting != null)
-            //  {
-            //      SettingInfo.AutoAddNewDevice = setting.autoaddnewdevice;
-            //      SettingInfo.AutoConnectNewDevice = setting.autoconnectnewdevice;
-            //      SettingInfo.AutoDeleteConfigWhenDisconnected = setting.autodeleteconfigwhendisconected;
-            //      SettingInfo.AutoStartWithWindows = setting.autostartwithwindows;
-            //      SettingInfo.DefaultName = setting.defaultname;
-            //      SettingInfo.DisplayConnectionStatus = setting.displayconnectionstatus;
-            //      SettingInfo.DisplayLightingStatus = setting.displaylightingstatus;
-            //      SettingInfo.IsDarkMode = setting.isdarkmode;
-            //      SettingInfo.PushNotificationWhenNewDeviceConnected = setting.pushnotificationwhennewdeviceconnected;
-            //      SettingInfo.PushNotificationWhenNewDeviceDisconnected = setting.pushnotificationwhennewdevicedisconnected;
-            //      SettingInfo.StartMinimum = setting.startminimum;
-            //      SettingInfo.PrimaryColor=(Color )ColorConverter.ConvertFromString(setting.primarycolor);
-
-            //  }
-            //  else
-            //  {
-            //      SettingInfo.PrimaryColor = Colors.White;
-            //  }
+         
             DeleteCommand = new RelayCommand<string>((p) => {
                 return true;
             }, (p) =>
             {
                 ShowDeleteDialog();
             });
+            AdjustPositionCommand = new RelayCommand<string>((p) => {
+                return true;
+            }, (p) =>
+            {
+                ShowAdjustPositon();
+            });
+
 
             DeleteDeviceCommand = new RelayCommand<IDeviceSettings>((p) => {
                 return true;
@@ -836,7 +1043,13 @@ namespace adrilight.ViewModel
                 SnapShot();
             });
 
+            DeviceRectDropCommand = new RelayCommand<string>((p) => {
+                return true;
+            }, (p) =>
+            {
 
+                DeviceRectSavePosition();
+            });
 
             RefreshDeviceCommand = new RelayCommand<string>((p) => {
                 return true;
@@ -852,11 +1065,21 @@ namespace adrilight.ViewModel
                 if (!Keyboard.IsKeyDown(Key.LeftCtrl) &&! Keyboard.IsKeyDown(Key.RightCtrl))
                 {
                     this.GotoChild(p);
-                }
-               
-               
+                }     
             });
+            SelectShaderCommand = new RelayCommand<ShaderCard>((p) => {
+                return p != null;
+            }, (p) =>
+            {
+                //if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+                //{
 
+                //}
+                //change shader to selected
+                GeneralSettings.SelectedShader = p.Header.ToString();
+                RaisePropertyChanged(nameof(GeneralSettings.SelectedShader));
+
+            });
 
             ShowAddNewCommand = new RelayCommand<IDeviceSettings>((p) => {
                 return true;
@@ -886,6 +1109,23 @@ namespace adrilight.ViewModel
             }
             CurrentDevice.SnapShot = snapshot;
             RaisePropertyChanged(() => CurrentDevice.SnapShot);
+        }
+
+        public void DeviceRectSavePosition()
+        {
+            //save current device rect position to json database
+            CurrentDevice.DeviceRectLeft = DeviceRectX;
+            CurrentDevice.DeviceRectTop = DeviceRectY;
+           // CurrentDevice.DeviceRectWidth = DeviceRectWidth;
+            //CurrentDevice.DeviceRectHeight = DeviceRectHeight;
+           // CurrentDevice.DeviceScale = DeviceScale;
+            RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
+            RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
+           // RaisePropertyChanged(() => CurrentDevice.DeviceRectWidth);
+           // RaisePropertyChanged(() => CurrentDevice.DeviceRectHeight);
+           // RaisePropertyChanged(() => CurrentDevice.DeviceScale);
+
+
         }
         public void DFU()
         {
@@ -939,7 +1179,7 @@ namespace adrilight.ViewModel
                 {
                     foreach (var item in Cards)
                     {
-                        if (device.Serial == item.DeviceSerial)
+                        if (device.Location == item.DevicePort)
                             openRGBdevices.Remove(device);
                     }
                 }
@@ -957,87 +1197,125 @@ namespace adrilight.ViewModel
                         newDevice.DeviceName = device.Name.ToString();
                         newDevice.DeviceType = device.Type.ToString();
                         newDevice.DevicePort = device.Location.ToString();
-                        newDevice.DeviceID = 151293;
+                        newDevice.DeviceID = Cards.Count + 1;
                         newDevice.DeviceSerial = device.Serial;
+                        newDevice.NumLED = device.Colors.Length;
+                        newDevice.SpotsX = newDevice.NumLED;
+                        newDevice.SpotsY = 1;
+                        switch(device.Type)
+                        {
+                            case OpenRGB.NET.Enums.DeviceType.Mouse:
+                                newDevice.DeviceLayout = 1; //strip type
+                                break;
+                            case OpenRGB.NET.Enums.DeviceType.Keyboard:
+                                newDevice.DeviceLayout = 1; //strip type
+                                break;
+                            case OpenRGB.NET.Enums.DeviceType.Headset:
+                                newDevice.DeviceLayout = 1; //strip type
+                                break;
+                            case OpenRGB.NET.Enums.DeviceType.HeadsetStand:
+                                newDevice.DeviceLayout = 1; //strip type
+                                break;
+                            case OpenRGB.NET.Enums.DeviceType.Motherboard:
+                                newDevice.DeviceLayout = 1; //strip type
+                                break;
+                            case OpenRGB.NET.Enums.DeviceType.Dram:
+                                newDevice.DeviceLayout = 1; //strip type
+                                break;
+                            case OpenRGB.NET.Enums.DeviceType.Ledstrip:
+                                newDevice.DeviceLayout = 1; //strip type
+                                break;
+                            case OpenRGB.NET.Enums.DeviceType.Gpu:
+                                newDevice.DeviceLayout = 1; //strip type
+                                break;
+                            case OpenRGB.NET.Enums.DeviceType.Mousemat:
+                                newDevice.DeviceLayout = 1; //strip type
+                                break;
+                        }
+                       
                         Cards.Add(newDevice);
                     }
                 }
             }
 
-            foreach (var device in detectedDevices)
-            {
-                newdevices.Add(device);
-            }
+            //foreach (var device in detectedDevices)
+            //{
+            //    newdevices.Add(device);
+            //}
 
-            if (detectedDevices.Count > 0)
-            {
-                foreach (var device in detectedDevices)
-                {
-                    foreach (var existedDevice in Cards)
-                    {
-                        if (existedDevice.DevicePort == device)
-                            newdevices.Remove(device);
-                    }
+            //if (detectedDevices.Count > 0)
+            //{
+            //    foreach (var device in detectedDevices)
+            //    {
+            //        foreach (var existedDevice in Cards)
+            //        {
+            //            if (existedDevice.DevicePort == device)
+            //                newdevices.Remove(device);
+            //        }
 
-                }
+            //    }
 
-                if (newdevices.Count == 1)
-                {
-                    var result = HandyControl.Controls.MessageBox.Show("Phát hiện Ambino Basic Rev 2 đã kết nối ở " + newdevices[0] + " Nhấn [Confirm] để add vào Dashboard", "Ambino Device", MessageBoxButton.OK, MessageBoxImage.Information);
-                    if (result == MessageBoxResult.OK)//restart app
-                    {
-                        foreach (var device in newdevices)
-                        {
-                            IDeviceSettings newDevice = new DeviceSettings();
-                            newDevice.DeviceName = "Auto Detected Device(Ambino Basic)";
-                            newDevice.DeviceType = "ABRev2";
-                            newDevice.DevicePort = device;
-                            newDevice.DeviceID = Cards.Count + 1;
-                            newDevice.DeviceSerial = "151293";
-                            newDevice.RGBOrder = 5;
-                            Cards.Add(newDevice);
-
-
-                        }
-
-                    }
-                }
-                else if (newdevices.Count > 1)
-                {
-                    string delimiter = ",";
-                    var alldevices = string.Join(delimiter, newdevices);
-                    var result = HandyControl.Controls.MessageBox.Show("Phát hiện Ambino Basic Rev 2 đã kết nối ở " + alldevices + " Nhấn [Confirm] để add vào Dashboard", "Ambino Device", MessageBoxButton.OK, MessageBoxImage.Information);
-                    if (result == MessageBoxResult.OK)//restart app
-                    {
-                        foreach (var device in newdevices)
-                        {
-                            IDeviceSettings newDevice = new DeviceSettings();
-                            newDevice.DeviceName = "Auto Detected Device";
-                            newDevice.DeviceType = "ABRev2";
-                            newDevice.DevicePort = device;
-                            newDevice.DeviceID = Cards.Count + 1;
-                            newDevice.DeviceSerial = "151293";
-                            newDevice.RGBOrder = 5;
-                            Cards.Add(newDevice);
+            //    if (newdevices.Count == 1)
+            //    {
+            //        var result = HandyControl.Controls.MessageBox.Show("Phát hiện Ambino Basic Rev 2 đã kết nối ở " + newdevices[0] + " Nhấn [Confirm] để add vào Dashboard", "Ambino Device", MessageBoxButton.OK, MessageBoxImage.Information);
+            //        if (result == MessageBoxResult.OK)//restart app
+            //        {
+            //            foreach (var device in newdevices)
+            //            {
+            //                IDeviceSettings newDevice = new DeviceSettings();
+            //                newDevice.DeviceName = "Auto Detected Device(Ambino Basic)";
+            //                newDevice.DeviceType = "ABRev2";
+            //                newDevice.DevicePort = device;
+            //                newDevice.DeviceID = Cards.Count + 1;
+            //                newDevice.DeviceSerial = "151293";
+            //                newDevice.RGBOrder = 5;
+            //                newDevice.MaxBrightness = 55;
+            //                newDevice.Brightness = 40;
+            //                Cards.Add(newDevice);
 
 
-                        }
+            //            }
 
-                    }
-                }
+            //        }
+            //    }
+            //    else if (newdevices.Count > 1)
+            //    {
+            //        string delimiter = ",";
+            //        var alldevices = string.Join(delimiter, newdevices);
+            //        var result = HandyControl.Controls.MessageBox.Show("Phát hiện Ambino Basic Rev 2 đã kết nối ở " + alldevices + " Nhấn [Confirm] để add vào Dashboard", "Ambino Device", MessageBoxButton.OK, MessageBoxImage.Information);
+            //        if (result == MessageBoxResult.OK)//restart app
+            //        {
+            //            foreach (var device in newdevices)
+            //            {
+            //                IDeviceSettings newDevice = new DeviceSettings();
+            //                newDevice.DeviceName = "Auto Detected Device";
+            //                newDevice.DeviceType = "ABRev2";
+            //                newDevice.DevicePort = device;
+            //                newDevice.DeviceID = Cards.Count + 1;
+            //                newDevice.DeviceSerial = "151293";
+            //                newDevice.RGBOrder = 5;
+            //                newDevice.MaxBrightness = 55;
+            //                newDevice.Brightness = 40;
+            //                Cards.Add(newDevice);
 
-                else if (newdevices.Count == 0)//no device detected in the list
-                {
 
-                    HandyControl.Controls.MessageBox.Show("Không tìm thấy thiết bị mới nào của Ambino, kiểm tra lại kết nối hoặc thêm thiết bị theo cách thủ công", "Ambino Device", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    // return null;
-                }
+            //            }
+
+            //        }
+            //    }
+
+            //    else if (newdevices.Count == 0)//no device detected in the list
+            //    {
+
+            //        HandyControl.Controls.MessageBox.Show("Không tìm thấy thiết bị mới nào của Ambino, kiểm tra lại kết nối hoặc thêm thiết bị theo cách thủ công", "Ambino Device", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //        // return null;
+            //    }
 
 
 
 
 
-            }
+            //}
             if (oldDeviceNum != Cards.Count) //there are changes in device list, we simply restart the application to add process
             {
                 WriteJson();
@@ -1047,15 +1325,6 @@ namespace adrilight.ViewModel
 
         }
 
-        //public void ReadFAQ()
-        //{
-        //    AppName = $"adrilight {App.VersionNumber}";
-        //    BuildVersion = "xxxxxxxxxxxxxxxxxxxxxxxxxxx";
-        //    LastUpdate = new DateTime(2020, 06, 01);
-        //    Author = "zOe";
-        //    Git = "xxxxxxx";
-        //    FAQ = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
-        //}
         public void ReadDataDevice()
         {
           
@@ -1075,7 +1344,39 @@ namespace adrilight.ViewModel
            "Custom"
 
         };
-    
+            AvailableLayout= new ObservableCollection<string>
+        {
+           "Square, Ring, Rectangle",
+           "Strip, Bar",
+           "Matrix"
+          
+
+        };
+            AvailableMatrixOrientation = new ObservableCollection<string>
+   {
+           "Dọc",
+           "Ngang",
+
+
+        };
+            AvailableMatrixStartPoint = new ObservableCollection<string>
+{
+           "Top Left",
+           "Top Right",
+           "Bottom Right",
+           "Bottom Left"
+
+
+        };
+            AvailableRotation = new ObservableCollection<string>
+    {
+           "0",
+           "90",
+           "180",
+           "360"
+
+
+        };
             AvailableEffects = new ObservableCollection<string>
       {
             "Sáng theo màn hình",
@@ -1083,7 +1384,7 @@ namespace adrilight.ViewModel
            "Sáng màu tĩnh",
            "Sáng theo nhạc",
            "Atmosphere",
-           "Pixelation(Alpha)"
+           "Canvas Lighting"
         };
             AvailableMusicPalette = new ObservableCollection<string>
 {
@@ -1117,12 +1418,46 @@ namespace adrilight.ViewModel
 
         };
 
+            AvailableShader = new ObservableCollection<ShaderCard>
 
+            {
+
+                new ShaderCard
+                {
+                    Header = "Gooey",
+                    Content = "Gooey.jpg",
+                    Footer = "Super Smooth Gooey color",
+                    Thumbnail= "/Shaders/Thumbnail/Gooey.png"
+
+                },
+                 new ShaderCard
+                {
+                    Header = "Plasma",
+                    Content = "Plasma.jpg",
+                    Footer = "Simple Plasma",
+                     Thumbnail= "/Shaders/Thumbnail/Plasma.png"
+                },
+                
+                
+                   new ShaderCard
+                {
+                    Header = "MetaBalls",
+                    Content = "MetaBalls.jpg",
+                    Footer = "Bouncing Fireflies",
+                     Thumbnail= "/Shaders/Thumbnail/Metaballs.png"
+                },
+                    new ShaderCard
+                {
+                    Header = "Pixel Rainbow",
+                    Content = "PixelRainbow.jpg",
+                    Footer = "Diagonal Rainbow Effect",
+                     Thumbnail= "/Shaders/Thumbnail/PixelRainbow.png"
+                }
+
+
+            };
 
         }
-
-
-
 
         public async void ShowAddNewDialog()
         {
@@ -1150,6 +1485,7 @@ namespace adrilight.ViewModel
                         
                         vm.Device.DeviceID = Cards.Count() + 1;
                         vm.Device.IsHUB = true;
+                        vm.Device.HUBID = Cards.Count() + 1;
                         Cards.Add(vm.Device);
                         // WriteJson();
                        
@@ -1158,27 +1494,29 @@ namespace adrilight.ViewModel
                             var argb1 = new DeviceSettings();
                             argb1.DeviceType = "Strip";                           //add to device settings
                             argb1.DeviceID = Cards.Count() + 1;
-                            argb1.SpotsX = 16;
-                            argb1.SpotsY = 1;
+                            argb1.SpotsX = 5;
+                            argb1.SpotsY = 5;
                             argb1.NumLED = 16;
                             argb1.DeviceName = "ARGB1(HUBV2)";
-                            argb1.ParrentLocation = vm.Device.DeviceID;
+                            argb1.ParrentLocation = vm.Device.HUBID;
                             argb1.OutputLocation = 0;
                             argb1.IsVissible = false;
+                            argb1.DeviceLayout = 1;
                             Cards.Add(argb1);
                         }
                         if (vm.ARGB2Selected)
                         {
                             var argb2 = new DeviceSettings();
-                            argb2.DeviceType = "Strip";                           //add to device settings
+                            argb2.DeviceType = "Matrix";                           //add to device settings
                             argb2.DeviceID = Cards.Count() + 1;
-                            argb2.SpotsX = 160;
-                            argb2.SpotsY = 1;
-                            argb2.NumLED = 160;
+                            argb2.SpotsX = 20;
+                            argb2.SpotsY = 6;
+                            argb2.NumLED = 120;
                             argb2.DeviceName = "ARGB2(HUBV2)";
-                            argb2.ParrentLocation = vm.Device.DeviceID;
+                            argb2.ParrentLocation = vm.Device.HUBID;
                             argb2.OutputLocation = 1;
                             argb2.IsVissible = false;
+                            argb2.DeviceLayout = 2;
                             Cards.Add(argb2);
                         }
                         if (vm.PCI1Selected)
@@ -1186,12 +1524,13 @@ namespace adrilight.ViewModel
                             var PCI = new DeviceSettings();
                             PCI.DeviceType = "Square";                           //add to device settings
                             PCI.DeviceID = Cards.Count() + 1;
-                            PCI.SpotsX = 50;
-                            PCI.SpotsY = 1;
-                            PCI.NumLED = 50;
+                            PCI.SpotsX = 12;
+                            PCI.SpotsY = 7;
+                            PCI.NumLED = 34;
                             PCI.DeviceName = "PCI1(HUBV2)";
-                            PCI.ParrentLocation = vm.Device.DeviceID;
+                            PCI.ParrentLocation = vm.Device.HUBID;
                             PCI.OutputLocation = 2;
+                            PCI.DeviceLayout = 0;
                             PCI.IsVissible = false;
                             Cards.Add(PCI);
                         }
@@ -1200,12 +1539,13 @@ namespace adrilight.ViewModel
                             var PCI = new DeviceSettings();
                             PCI.DeviceType = "Square";                           //add to device settings
                             PCI.DeviceID = Cards.Count() + 1;
-                            PCI.SpotsX = 50;
-                            PCI.SpotsY = 1;
-                            PCI.NumLED = 50;
+                            PCI.SpotsX = 12;
+                            PCI.SpotsY = 7;
+                            PCI.NumLED = 34;
                             PCI.DeviceName = "PCI2(HUBV2)";
-                            PCI.ParrentLocation = vm.Device.DeviceID;
+                            PCI.ParrentLocation = vm.Device.HUBID;
                             PCI.OutputLocation = 3;
+                            PCI.DeviceLayout = 0;
                             PCI.IsVissible = false;
                             Cards.Add(PCI);
                         }
@@ -1214,12 +1554,13 @@ namespace adrilight.ViewModel
                             var PCI = new DeviceSettings();
                             PCI.DeviceType = "Square";                           //add to device settings
                             PCI.DeviceID = Cards.Count() + 1;
-                            PCI.SpotsX = 50;
-                            PCI.SpotsY = 1;
-                            PCI.NumLED = 50;
+                            PCI.SpotsX = 12;
+                            PCI.SpotsY = 7;
+                            PCI.NumLED = 34;
                             PCI.DeviceName = "PCI3(HUBV2)";
-                            PCI.ParrentLocation = vm.Device.DeviceID;
+                            PCI.ParrentLocation = vm.Device.HUBID;
                             PCI.OutputLocation = 4;
+                            PCI.DeviceLayout = 0;
                             PCI.IsVissible = false;
                             Cards.Add(PCI);
                         }
@@ -1228,12 +1569,13 @@ namespace adrilight.ViewModel
                             var PCI = new DeviceSettings();
                             PCI.DeviceType = "Strip";                           //add to device settings
                             PCI.DeviceID = Cards.Count() + 1;
-                            PCI.SpotsX = 22;
-                            PCI.SpotsY = 1;
-                            PCI.NumLED = 22;
+                            PCI.SpotsX = 12;
+                            PCI.SpotsY = 7;
+                            PCI.NumLED = 34;
                             PCI.DeviceName = "PCI4(HUBV2)";
-                            PCI.ParrentLocation = vm.Device.DeviceID;
+                            PCI.ParrentLocation = vm.Device.HUBID;
                             PCI.OutputLocation = 5;
+                            PCI.DeviceLayout = 0;
                             PCI.IsVissible = false;
                             Cards.Add(PCI);
                         }
@@ -1343,6 +1685,7 @@ namespace adrilight.ViewModel
            
 
         }
+
      
         public Visibility PCI4 {
             get
@@ -1548,6 +1891,7 @@ namespace adrilight.ViewModel
                 int counter = 1;
                 foreach (var card in Cards)
                 {
+                  
                     card.DeviceID = counter;
                     counter++;
 
@@ -1556,6 +1900,37 @@ namespace adrilight.ViewModel
                 Application.Restart();
                 Process.GetCurrentProcess().Kill();
             }
+
+
+        }
+        public async  void ShowAdjustPositon()
+        {
+            var view = new View.DeviceRectPositon();
+            var allDevices = Cards.ToArray();
+           AdjustPostionViewModel dialogViewModel = new AdjustPostionViewModel(DeviceRectX,DeviceRectY,DeviceRectWidth,DeviceRectHeight, allDevices,ShaderBitmap, CurrentDevice.SelectedEffect);
+            view.DataContext = dialogViewModel;
+            bool dialogResult = (bool)await DialogHost.Show(view, "mainDialog");
+            if (dialogResult)
+            {   //save current device rect position to json database
+                DeviceRectX = dialogViewModel.DeviceRectX / 4;
+                DeviceRectX = dialogViewModel.DeviceRectY / 4;
+                //DeviceRectX = CurrentDevice.DeviceRectLeft;
+                //DeviceRectY = CurrentDevice.DeviceRectTop;
+                DeviceRectHeightMax = (int)ShaderBitmap.Height - DeviceRectY;
+                DeviceRectWidthMax = (int)ShaderBitmap.Width - DeviceRectX;
+
+
+
+
+                //RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
+                //RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
+                RaisePropertyChanged(() => DeviceRectX);
+                RaisePropertyChanged(() => DeviceRectY);
+                RaisePropertyChanged(() => DeviceRectWidthMax);
+                RaisePropertyChanged(() => DeviceRectHeightMax);
+
+            }
+
 
 
         }
@@ -1614,13 +1989,6 @@ namespace adrilight.ViewModel
                 devices.Add(item);
             }
 
-
-
-
-            // if devices disconnected,change connect status
-
-
-
             var json = JsonConvert.SerializeObject(devices, Formatting.Indented);
             Directory.CreateDirectory(JsonPath);
             File.WriteAllText(JsonDeviceNameAndPath, json);
@@ -1653,25 +2021,40 @@ namespace adrilight.ViewModel
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == general);
             IsDashboardType = false;
             CurrentDevice = card;
+            IsSplitLightingWindowOpen = true;
+            IsCanvasLightingWindowOpen = false;
+            RaisePropertyChanged(() => CurrentDeviceSelectedEffect);
+            RaisePropertyChanged(() => DeviceRectX);
+            RaisePropertyChanged(() => DeviceRectY);
+            RaisePropertyChanged(() => DeviceRectWidth);
+            RaisePropertyChanged(() => DeviceRectHeight);
             if (CurrentDevice.IsHUB)
             {
-                ParrentLocation = CurrentDevice.DeviceID;
+                ParrentLocation = CurrentDevice.HUBID;
+                var childList = new List<IDeviceSettings>();
+                foreach (var device in Cards)
+                {
+                    if (device.ParrentLocation == CurrentDevice.HUBID)
+                        childList.Add(device);
+                }
+                CurrentDevice = childList[0];
             }
-            if (CurrentDevice.DeviceID == 151293)
-            {
-
-            }
-            else
-            {
+          
+            
                 foreach (var spotset in SpotSets)
                     if (spotset.ID == CurrentDevice.DeviceID)
                     {
                         PreviewSpots = spotset.Spots;
                     }
 
-            }
+            
 
-
+           // DeviceRectX = CurrentDevice.DeviceRectLeft;
+           // DeviceRectY = CurrentDevice.DeviceRectTop;
+          //  DeviceRectWidth = CurrentDevice.DeviceRectWidth;
+          //  DeviceRectHeight = CurrentDevice.DeviceRectHeight;
+            DeviceRectHeightMax = 135 - DeviceRectY;
+            DeviceRectWidthMax = 240 - DeviceRectX;
 
             SetMenuItemActiveStatus(lighting);
         }
@@ -1728,9 +2111,6 @@ namespace adrilight.ViewModel
             }
             RaisePropertyChanged(nameof(MenuItems));
         }
-
-
-
 
     }
 }

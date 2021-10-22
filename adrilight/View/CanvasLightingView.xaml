@@ -4,15 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:adrilight.View"
-             mc:Ignorable="d" 
+              xmlns:hc="https://handyorg.github.io/handycontrol"
+              mc:Ignorable="d" 
+              xmlns:converters="clr-namespace:adrilight.Converter"
+
                xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf" xmlns:viewmodel="clr-namespace:adrilight.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainViewViewModel}"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
               TextElement.FontWeight="Regular"
               TextElement.FontSize="13"
               TextOptions.TextFormattingMode="Ideal" 
               TextOptions.TextRenderingMode="Auto"   
-              FontFamily="{StaticResource MaterialDesignFont}" d:DesignWidth="1030" Height="1082">
+              FontFamily="{StaticResource MaterialDesignFont}" d:DesignWidth="1030" Height="1000">
 
+   
     <Grid Background="White" Margin="20,0,0,0">
 
         <Grid.RowDefinitions>
@@ -27,52 +31,67 @@
             </Grid.RowDefinitions>
 
             <TextBlock Margin="10,0,0,0" Grid.Row="0" Grid.Column="0" Text="ĐỒNG BỘ HIỆU ỨNG" FontSize="17" VerticalAlignment="Center" Foreground="Black"/>
-            <TextBlock Margin="10,39,0,15" Grid.Row="1" Grid.Column="0" Text="WINDOWS" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FF898989"/>
+            
         </Grid>
-        <Grid Grid.Row="0" Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-        </Grid>
+        
 
         <Grid Grid.Row="1">
-            <!--<ItemsControl Grid.Row="1" ItemsSource="{Binding ShaderSpots}"
-                            Width="418" Height="239" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20" >
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas Width="{Binding GeneralSettings.ShaderCanvasWidth }" Height="{Binding GeneralSettings.ShaderCanvasHeight}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="{x:Type ContentPresenter}">
-                        <Setter Property="Canvas.Left" Value="{Binding Rectangle.X}"/>
-                        <Setter Property="Canvas.Top" Value="{Binding Rectangle.Y}"/>
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
-                <ItemsControl.ItemTemplate>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Image Grid.Row="0" x:Name="MatrixImage" Source="{Binding ShaderBitmap}" RenderOptions.BitmapScalingMode="NearestNeighbor" Cursor="Cross" HorizontalAlignment="Left" VerticalAlignment="Top" Width="360" Height="240" Margin="32,0,0,0"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding GeneralSettings.SelectedShader}" FontSize="30" FontWeight="Bold" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="432,0,0,0"/>
+
+
+
+            <ListBox SelectionMode="Single" Height="600" x:Name="ShaderContainer" Grid.Row="1" Margin="32,32,32,32" BorderThickness="0" Style="{DynamicResource WrapPanelHorizontalListBox}"  ItemsPanel="{StaticResource WrapPanelHorizontalItemsPanelTemplate}" ItemsSource="{Binding AvailableShader}" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
-                            <Rectangle Stroke="White" RadiusX="{Binding RadiusX}" RadiusY="{Binding RadiusY}" StrokeThickness="0.5" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
-                                <Rectangle.Fill>
-                                    <RadialGradientBrush>
-                                        <GradientStop Color="{Binding OnDemandColor}"  Offset="0"/>
-                                        <GradientStop Color="{Binding OnDemandColorTransparent}" Offset="1"/>
-                                    </RadialGradientBrush>
-                                </Rectangle.Fill>
-                            </Rectangle>
-                            -->
-            <!--<Rectangle Visibility="{Binding IsFirst, Converter={StaticResource BooleanToVisibilityConverter}}" RadiusX="4" RadiusY="4" Fill="#FF673AB7"
-                                               Width="5" 
-                                               Height="5" />-->
-            <!--
+                        <hc:Card MaxWidth="240" BorderThickness="0" Effect="{DynamicResource EffectShadow2}" Margin="8" Footer="{Binding Footer}">
+                            <!--Card Content section template-->
+                            <Border CornerRadius="4,4,0,0" Width="160" Height="160">
+                                <Image >
+                                    <Image.Source>
+                                        <PriorityBinding>
+                                            <Binding Path="Thumbnail"/>
+                                        </PriorityBinding>
+                                    </Image.Source>
 
-                        </Grid>
+                                </Image>
+                            </Border>
+                            <!--Card Footer section template-->
+                            <hc:Card.FooterTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="10" Width="160">
+                                        <!--Card First-level content-->
+                                        <TextBlock TextWrapping="NoWrap"  Style="{DynamicResource TextBlockLargeBold}" TextTrimming="CharacterEllipsis" 
+                                           Text="{Binding DataContext.Header,RelativeSource={RelativeSource AncestorType=hc:Card}}" 
+                                           HorizontalAlignment="Left"/>
+                                        <!--Card Secondary content-->
+                                        <TextBlock TextWrapping="NoWrap" Style="{DynamicResource TextBlockDefault}" TextTrimming="CharacterEllipsis" 
+                                           Text="{Binding}" Margin="0,6,0,0"
+                                           HorizontalAlignment="Left"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </hc:Card.FooterTemplate>
+                            <hc:Interaction.Triggers>
+                                <hc:EventTrigger EventName="MouseLeftButtonDown">
+                                    <hc:InvokeCommandAction Command="{Binding Path=DataContext.SelectShaderCommand, ElementName=ShaderContainer}" CommandParameter="{Binding}"/>
+                                </hc:EventTrigger>
+                            </hc:Interaction.Triggers>
+                        </hc:Card>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>-->
+                </ListBox.ItemTemplate>
 
-            <Image x:Name="MatrixImage" Source="{Binding ShaderBitmap}" RenderOptions.BitmapScalingMode="NearestNeighbor" Cursor="Cross" HorizontalAlignment="Left" VerticalAlignment="Top" Width="700" Height="700" Margin="0,0,0,0"/>
+
+            </ListBox>
+
+
+
+
+
         </Grid>
 
     </Grid>

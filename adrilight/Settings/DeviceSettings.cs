@@ -26,6 +26,13 @@ namespace adrilight
         private int _outputLocation = 151293;
         private bool _isHUB = false;
         private bool _lEDOn = true;
+        private int _deviceLayout = 0;
+        private bool _layoutEnabled = true;
+        private int _deviceRotation = 0;
+        private int _matrixStartPoint = 0;
+        private int _matrixStyle = 0;
+        private int _matrixOrientation = 0;
+        private int _maxBrightness = 100;
 
 
         private int _mSens = 0;
@@ -34,6 +41,7 @@ namespace adrilight
         private bool _mirrorX = true;
         private bool _mirrorY = false;
         private int _offsetLed = 0;
+        private int _hUBID = 0;
 
         //ambilight smooth choice///
 
@@ -52,6 +60,17 @@ namespace adrilight
         private int _effectSpeed = 5;
         private int _colorFrequency = 1;
         private int _selectedMusicPalette = 0;
+        private int _deviceRectTop = 0;
+        private int _deviceRectLeft = 0;
+        private int _deviceRectWidth = 100;
+        private int _deviceRectHeight = 100;
+
+        private int _deviceRectTop1 = 0;
+        private int _deviceRectLeft1 = 0;
+        private int _deviceRectWidth1 = 240;
+        private int _deviceRectHeight1 = 135;
+        private int _deviceScale = 1;
+        
 
         private int _spotWidth = 150;
        // private bool _startMinimized = true;
@@ -88,6 +107,8 @@ namespace adrilight
 
         private string _filemau = "Blackout.txt";
         private string _filemauchip = "Blackout.txt";
+       
+        
 
         private byte _selectedEffect = 0;
         private Color _color0 = Color.FromArgb(255, 0, 255, 255);
@@ -124,10 +145,7 @@ namespace adrilight
         private Color _mcolor13 = Color.FromArgb(0, 0, 255, 255);
         private Color _mcolor14 = Color.FromArgb(0, 0, 255, 255);
         private Color _mcolor15 = Color.FromArgb(0, 0, 255, 255);
-        private IDeviceSpot[] _spots = new DeviceSpot[] { new DeviceSpot(0, 0,25,25,0,0),
-                                                          new DeviceSpot(0,0,25,25,0,0),
-                                                          new DeviceSpot(0, 0,25,25,0,0),
-                                                          new DeviceSpot(0,0,25,25,0,0),};
+       
 
 
 
@@ -158,9 +176,9 @@ namespace adrilight
         public int ConfigFileVersion { get; set; } = 1;
 
 
-
+        public int MaxBrightness { get => _maxBrightness; set { Set(() => MaxBrightness, ref _maxBrightness, value); } }
         public int OutputLocation { get => _outputLocation; set { Set(() => OutputLocation, ref _outputLocation, value); } }
-        public IDeviceSpot[] Spots { get => _spots; set { Set(() => Spots, ref _spots, value); } }
+        
         public int MSens { get => _mSens; set { Set(() => MSens, ref _mSens, value); } }
        // public bool Autostart { get => _autostart; set { Set(() => Autostart, ref _autostart, value); } }
         public int BorderDistanceX { get => _borderDistanceX; set { Set(() => BorderDistanceX, ref _borderDistanceX, value); } }
@@ -169,20 +187,40 @@ namespace adrilight
         public string GifFilePath { get => _gifFilePath; set { Set(() => GifFilePath, ref _gifFilePath, value); } }
         public string DeviceName { get => _deviceName; set { Set(() => DeviceName, ref _deviceName, value); } }
         public int DeviceID { get => _deviceID; set { Set(() => DeviceID, ref _deviceID, value); } }
+        public int HUBID { get => _hUBID; set { Set(() => HUBID, ref _hUBID, value); } }
         public int ParrentLocation { get => _parrentLocation; set { Set(() => ParrentLocation, ref _parrentLocation, value); } }
         public string DeviceSerial { get => _deviceSerial; set { Set(() => DeviceSerial, ref _deviceSerial, value); } }
         public string DeviceType { get => _deviceType; set { Set(() => DeviceType, ref _deviceType, value); } }
+        public int DeviceLayout { get => _deviceLayout; set { Set(() => DeviceLayout, ref _deviceLayout, value); } }
+        public bool LayoutEnabled { get => _layoutEnabled; set { Set(() => LayoutEnabled, ref _layoutEnabled, value); } }
         //public string ComPort4 { get => _comPort4; set { Set(() => ComPort4, ref _comPort4, value); } }
         public int RGBOrder { get => _rGBOrder; set { Set(() => RGBOrder, ref _rGBOrder, value); } }
 
         //public DateTime? LastUpdateCheck { get => _lastUpdateCheck; set { Set(() => LastUpdateCheck, ref _lastUpdateCheck, value); } }
         public int NumLED { get => _numLED; set { Set(() => NumLED, ref _numLED, value); } }
+        public int DeviceRotation { get => _deviceRotation; set { Set(() => DeviceRotation, ref _deviceRotation, value); } }
         [Obsolete]
         public int LedsPerSpot { get => _ledsPerSpot; set { Set(() => LedsPerSpot, ref _ledsPerSpot, value); } }
         public bool MirrorX { get => _mirrorX; set { Set(() => MirrorX, ref _mirrorX, value); } }
         public bool MirrorY { get => _mirrorY; set { Set(() => MirrorY, ref _mirrorY, value); } }
         public bool LEDOn { get => _lEDOn; set { Set(() => LEDOn, ref _lEDOn, value); } }
         public int OffsetLed { get => _offsetLed; set { Set(() => OffsetLed, ref _offsetLed, value); } }
+        public int MatrixStartPoint { get => _matrixStartPoint; set { Set(() => MatrixStartPoint, ref _matrixStartPoint, value); } }
+        
+        public int MatrixStyle { get => _matrixStyle; set { Set(() => MatrixStyle, ref _matrixStyle, value); } }
+        public int MatrixOrientation { get => _matrixOrientation; set { Set(() => MatrixOrientation, ref _matrixOrientation, value); } }
+        public int DeviceRectTop { get => _deviceRectTop; set { Set(() => DeviceRectTop, ref _deviceRectTop, value); } }
+        public int DeviceRectLeft{ get => _deviceRectLeft; set { Set(() => DeviceRectLeft, ref _deviceRectLeft, value); } }
+        public int DeviceRectWidth { get => _deviceRectWidth; set { Set(() => DeviceRectWidth, ref _deviceRectWidth, value); } }
+        public int DeviceRectHeight { get => _deviceRectHeight; set { Set(() => DeviceRectHeight, ref _deviceRectHeight, value); } }
+
+
+        public int DeviceRectTop1 { get => _deviceRectTop1; set { Set(() => DeviceRectTop1, ref _deviceRectTop1, value); } }
+        public int DeviceRectLeft1 { get => _deviceRectLeft1; set { Set(() => DeviceRectLeft1, ref _deviceRectLeft1, value); } }
+        public int DeviceRectWidth1 { get => _deviceRectWidth1; set { Set(() => DeviceRectWidth1, ref _deviceRectWidth1, value); } }
+        public int DeviceRectHeight1 { get => _deviceRectHeight1; set { Set(() => DeviceRectHeight1, ref _deviceRectHeight1, value); } }
+
+        public int DeviceScale { get => _deviceScale; set { Set(() => DeviceScale, ref _deviceScale, value); } }
 
         [Obsolete]
         public int OffsetX { get => _offsetX; set { Set(() => OffsetX, ref _offsetX, value); } }

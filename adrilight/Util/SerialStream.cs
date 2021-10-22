@@ -234,8 +234,10 @@ namespace adrilight
                 //////2 byte ngay tiếp sau Preamable là để ghép lại thành 1 số 16bit (vì số led có thể lớn hơn 255 nhiều) vi điều khiển sẽ dựa vào số led này để biết cần đọc bao nhiêu byte nữa///
                 byte lo = (byte)(((DeviceSettings.SpotsX - 1) * 2 + (DeviceSettings.SpotsY - 1) * 2) & 0xff);
                 byte hi = (byte)((((DeviceSettings.SpotsX - 1) * 2 + (DeviceSettings.SpotsY - 1) * 2) >> 8) & 0xff);
+                byte chk = (byte)(hi ^ lo ^ 0x55);
                 outputStream[counter++] = hi;
                 outputStream[counter++] = lo;
+
 
                 ///byte tiếp theo ngay bên dưới sẽ là byte quy định trạng thái thiết bị/// 1 là sáng bình thường, 2 là chế độ đèn ngủ (sáng theo màu lưu sẵn) 3 là chế độ DFU (nạp code)///
                 //if(devcheck==false)
@@ -244,7 +246,7 @@ namespace adrilight
                 //}
                 //else
                 //{
-                outputStream[counter++] = 0;
+                outputStream[counter++] = chk;
                 var lEDOn = DeviceSettings.LEDOn;
                 var allBlack = true;
                 //}

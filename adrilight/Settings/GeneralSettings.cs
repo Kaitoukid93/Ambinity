@@ -23,12 +23,14 @@ namespace adrilight
         private bool _shouldbeRunning = true;
         private bool _shouldbeRunningSecondary = false;
         private bool _shouldbeRunningThird = false;
+        private bool _isOpenRGBEnabled = false;
         int _smoothFactor = 3;
         //ambilight smooth choice///
         private int _screenSize = 0;
         private int _deskSize = 0;
         private int _screenSizeSecondary = 0;
         private int _screenSizeThird = 0;
+        private string _selectedShader = "Gooey";
 
         private bool _startMinimized = false;
 
@@ -78,6 +80,7 @@ namespace adrilight
 
 
         public int DeskSize { get => _deskSize; set { Set(() => DeskSize, ref _deskSize, value); } }
+        public string SelectedShader { get => _selectedShader; set { Set(() => SelectedShader, ref _selectedShader, value); } }
         public int ScreenSize { get => _screenSize; set { Set(() => ScreenSize, ref _screenSize, value); } }
         public int ScreenSizeSecondary { get => _screenSizeSecondary; set { Set(() => ScreenSizeSecondary, ref _screenSizeSecondary, value); } }
         public int ScreenSizeThird { get => _screenSizeThird; set { Set(() => ScreenSizeThird, ref _screenSizeThird, value); } }
@@ -97,6 +100,7 @@ namespace adrilight
         public int SmoothFactor { get => _smoothFactor; set { Set(() => SmoothFactor, ref _smoothFactor, value); } }
         public bool MirrorX { get => _mirrorX; set { Set(() => MirrorX, ref _mirrorX, value); } }
         public bool MirrorY { get => _mirrorY; set { Set(() => MirrorY, ref _mirrorY, value); } }
+        public bool IsOpenRGBEnabled { get => _isOpenRGBEnabled; set { Set(() => IsOpenRGBEnabled, ref _isOpenRGBEnabled, value); } }
         public int OffsetLed { get => _offsetLed; set { Set(() => OffsetLed, ref _offsetLed, value); } }
         public int OffsetLed2 { get => _offsetLed2; set { Set(() => OffsetLed2, ref _offsetLed2, value); } }
         public int OffsetLed3 { get => _offsetLed3; set { Set(() => OffsetLed3, ref _offsetLed3, value); } }

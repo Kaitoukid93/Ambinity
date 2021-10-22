@@ -19,33 +19,33 @@ namespace adrilight.Util
             //DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
            
            // DeviceSettings.PropertyChanged += UserSettings_PropertyChanged;
-            RefreshOpenRGBDeviceState();
+            //RefreshOpenRGBDeviceState();
 
-            _log.Info($"SerialStream created.");
+            //_log.Info($"SerialStream created.");
 
 
         }
-
-        private void RefreshOpenRGBDeviceState()
+        public OpenRGBClient AmbinityClient { get; set; }
+        public void RefreshOpenRGBDeviceState()
         {
             try
             {
 
             
-             var client = new OpenRGBClient(name: "My OpenRGB Client", autoconnect: true, timeout: 1000);
-
+            var client = new OpenRGBClient( "127.0.0.1",6742,name: "Ambinity", autoconnect: true, timeout: 1000);
+            AmbinityClient = client;
             var deviceCount = client.GetControllerCount();
             var devices = client.GetAllControllerData();
             DeviceList = devices;
-            
+            IsAvailable=true;
 
-            for (int i = 0; i < devices.Length; i++)
-            {
-                var leds = Enumerable.Range(0, devices[i].Colors.Length)
-                    .Select(_ => new Color(255, 255, 255))
-                    .ToArray();
-                client.UpdateLeds(i, leds);
-            }
+            //for (int i = 0; i < devices.Length; i++)
+            //{
+            //    var leds = Enumerable.Range(0, devices[i].Colors.Length)
+            //        .Select(_ => new Color(255, 0, 255))
+            //        .ToArray();
+            //    client.UpdateLeds(i, leds);
+            //}
             foreach (var device in devices)
             {
                 _log.Info($"Device found : " + device.Name.ToString());
@@ -54,6 +54,7 @@ namespace adrilight.Util
             catch(TimeoutException)
             {
                 HandyControl.Controls.MessageBox.Show("OpenRGB server Không khả dụng, hãy start server trong app OpenRGB (SDK Server)");
+                IsAvailable= false;
             }
         }
 
@@ -64,6 +65,16 @@ namespace adrilight.Util
             set
             {
                 _deviceList = value;
+            }
+
+        }
+         private bool _isAvailable;
+        public bool IsAvailable 
+        {
+            get { return _isAvailable; }
+            set
+            {
+                _isAvailable = value;
             }
 
         }

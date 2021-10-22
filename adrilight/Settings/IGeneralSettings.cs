@@ -15,12 +15,14 @@ namespace adrilight
         int BorderDistanceY { get; set; }
         bool Autostart { get; set; }
         bool MirrorX { get; set; }
+        bool IsOpenRGBEnabled { get; set; }
 
         bool MirrorY { get; set; }
 
         int OffsetLed { get; set; }
         int OffsetLed2 { get; set; }
         int OffsetLed3 { get; set; }
+        string SelectedShader { get; set; }
 
         int SpotHeight { get; set; }
 

@@ -27,7 +27,7 @@ namespace adrilight
             DeviceSettings.PropertyChanged += UserSettings_PropertyChanged;
             foreach (IDeviceSpotSet spotSet in deviceSpotSets)
             {
-                if (spotSet.ParrentLocation == DeviceSettings.DeviceID)// child element actually inside the HUB element so HUB ID is Parrent location of child device
+                if (spotSet.ParrentLocation == DeviceSettings.HUBID)// child element actually inside the HUB element so HUB ID is Parrent location of child device
                     ChildSpotSets.Add(spotSet);
             }
             //SpotSets = new ObservableCollection<IDeviceSpotSet>();
@@ -226,7 +226,11 @@ namespace adrilight
             var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.DevicePort, 2000000));
             serialPort.Open();
             serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
-            Thread.Sleep(1000);
+            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
+            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
+            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
+            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
+                                                            // Thread.Sleep(1000);
             serialPort.Close();
 
             //Close Serial port in under 5 sec (5sec is HUBv2 restart signal delay)

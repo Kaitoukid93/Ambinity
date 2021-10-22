@@ -29,7 +29,7 @@
     <WarningLevel>3</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -38,7 +38,7 @@
     <ErrorReport>none</ErrorReport>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugSymbols>true</DebugSymbols>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -71,6 +71,7 @@
     <ApplicationIcon>zoe.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <MinimumPlatformVersion>7.0</MinimumPlatformVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <OutputPath>bin\x86\Debug\</OutputPath>
@@ -109,8 +110,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="adrilight_TemporaryKey.pfx" />
-    <Content Include="NLog.config">
+    <Content Include="App.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Update="NLog.xsd">
       <SubType>Designer</SubType>
@@ -141,10 +145,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ComputeSharp" Version="2.0.0-alpha.5" />
+    <PackageReference Include="CSCore" Version="1.2.1.2" />
     <PackageReference Include="Expression.Blend.Sdk" Version="1.0.2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
+    <PackageReference Include="SharpDX" Version="4.2.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.8.1" />
     <PackageReference Include="System.ServiceModel.NetTcp" Version="4.8.1" />
     <PackageReference Include="System.ServiceModel.Federation" Version="4.8.1" />
@@ -175,7 +182,6 @@
     <PackageReference Include="Ninject" Version="3.3.4" />
     <PackageReference Include="Ninject.Extensions.Conventions" Version="3.3.0" />
     <PackageReference Include="Ninject.Extensions.NamedScope" Version="3.3.0" />
-    <PackageReference Include="NLog.Config" Version="4.5.7" />
     <PackageReference Include="OpenRGB.NET" Version="1.6.0" />
     <PackageReference Include="PixiEditor.ColorPicker" Version="3.1.0" />
     <PackageReference Include="Polly" Version="6.1.0" />
@@ -210,6 +216,19 @@
   <Import Project="..\packages\squirrel.windows.1.9.1\build\squirrel.windows.targets" Condition="Exists('..\packages\squirrel.windows.1.9.1\build\squirrel.windows.targets')" />
   <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
   <ItemGroup>
+    <None Remove="App.config" />
+    <None Remove="Shaders\Thumbnail\Gooey.png" />
+    <None Remove="Shaders\Thumbnail\MetaBalls.png" />
+    <None Remove="Shaders\Thumbnail\PixelRainbow.png" />
+    <None Remove="Shaders\Thumbnail\Plasma.png" />
+  </ItemGroup>
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Shaders\Thumbnail\Gooey.png" />
+    <Resource Include="Shaders\Thumbnail\MetaBalls.png" />
+    <Resource Include="Shaders\Thumbnail\PixelRainbow.png" />
+    <Resource Include="Shaders\Thumbnail\Plasma.png" />
   </ItemGroup>
 </Project>

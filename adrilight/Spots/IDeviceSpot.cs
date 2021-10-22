@@ -10,10 +10,11 @@ namespace adrilight.Spots
         byte Blue { get; }
 
         Color OnDemandColor { get; }
-        Rectangle Rectangle { get; }
+        Rectangle Rectangle { get; set; }
         bool IsFirst { get; set; }
-        int RadiusX { get; }
-        int RadiusY { get; }
+        int RadiusX { get; set; }
+        int RadiusY { get; set; }
+        string ID { get; set; }
 
 
 

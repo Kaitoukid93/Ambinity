@@ -26,7 +26,13 @@ namespace adrilight.View
             InitializeComponent();
             // ViewModel = new MainViewViewModel();
             // this.DataContext = ViewModel;
-           
+
+            var view = DataContext as MainViewViewModel;
+            if (view != null)
+            {
+                view.IsCanvasLightingWindowOpen = true;
+                //view.IsSplitLightingWindowOpen = true;
+            }
         }
 
         
@@ -37,11 +43,20 @@ namespace adrilight.View
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = true;
-            this.Visibility = Visibility.Hidden;
+            
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            
+            var vm = DataContext as MainViewViewModel;
+            if (vm != null)
+            {
+                vm.IsSplitLightingWindowOpen = false;
+                vm.IsCanvasLightingWindowOpen = false;
+            }
         }
 
 
-       
     }
 }

@@ -11,6 +11,7 @@ using System.Windows;
 using adrilight.ViewModel;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
+using System.Diagnostics;
 
 namespace adrilight
 {
@@ -20,27 +21,22 @@ namespace adrilight
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public ShaderEffect(IGeneralSettings generalSettings, IGeneralSpotSet generalSpotSet )
+        public ShaderEffect(IGeneralSettings generalSettings)
         {
-            GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
-            GeneralSpotSet = generalSpotSet ?? throw new ArgumentNullException(nameof(generalSpotSet));
-            
-            //SettingsViewModel = settingsViewModel ?? throw new ArgumentNullException(nameof(settingsViewModel));
-            //Remove SettingsViewmodel from construction because now we pass SpotSet Dirrectly to MainViewViewModel
+            GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));      
             GeneralSettings.PropertyChanged += PropertyChanged;
-            // SettingsViewModel.PropertyChanged += PropertyChanged;
             RefreshColorState();
             _log.Info($"RainbowColor Created");
 
         }
         //Dependency Injection//
         private IGeneralSettings GeneralSettings { get; }
-        private IGeneralSpotSet GeneralSpotSet { get; }
        
+
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
         public  WriteableBitmap MatrixBitmap { get; set; }
-        public Pixel[] Frame { get; set; }
+        public byte[] Frame { get; set; }
 
         
 
@@ -53,6 +49,7 @@ namespace adrilight
                 case nameof(GeneralSettings.ShaderCanvasHeight):
                 case nameof(GeneralSettings.ShaderX):
                 case nameof(GeneralSettings.ShaderY):
+                case nameof(GeneralSettings.SelectedShader):
 
                     RefreshColorState();
                     break;
@@ -101,48 +98,70 @@ namespace adrilight
 
             try
             {
-                using ReadWriteTexture2D<Rgba32, Float4> texture = Gpu.Default.AllocateReadWriteTexture2D<Rgba32, Float4>(70, 70);
-                using ReadBackTexture2D<Rgba32> buffer = Gpu.Default.AllocateReadBackTexture2D<Rgba32>(70, 70);
+                using ReadWriteTexture2D<Bgra32, Float4> texture = Gpu.Default.AllocateReadWriteTexture2D<Bgra32, Float4>(240, 135);
+               
                 int frame = 0;
-                var ColorArray = buffer.View.ToArray();
+               
                 Frame = null;
-                Frame = new Pixel[70 * 70];
+                
 
                 while (!token.IsCancellationRequested)
                 {
-                 
-                    
 
-                       
 
-                        // For each frame
-                        
-                            float timestamp = 1 / 60f * frame;
+
+                    var frameTime = Stopwatch.StartNew();
+
+                    // For each frame
+
+                    float timestamp = 1 / 60f * frame;
 
                             // Run the shader
-                           Gpu.Default.ForEach(texture, new Plasma(timestamp));
+                           switch(GeneralSettings.SelectedShader)
+                    {
+                        case "Gooey":
+                            Gpu.Default.ForEach(texture, new Gooey(timestamp));
+                            break;
+                        case "Fluid":
+                            Gpu.Default.ForEach(texture, new Fluid(timestamp));
+                            break;
+                        case "Plasma":
+                            Gpu.Default.ForEach(texture, new Plasma(timestamp));
+                            break;
+                        case "Falling":
+                            Gpu.Default.ForEach(texture, new Falling(timestamp));
+                            break;
+                        case "MetaBalls":
+                            Gpu.Default.ForEach(texture, new MetaBalls(timestamp));
 
-                            // Copy the rendered frame to a readback texture that can be accessed by the CPU.
-                            // The rendered texture can only be accessed by the GPU, so we can't read from it.
-                            texture.CopyTo(buffer);
+                            break;
+                        case "Pixel Rainbow":
+                            Gpu.Default.ForEach(texture, new PixelRainbow(timestamp));
 
-                        // Access buffer.View here and do all your work with the frame data
-                        ColorArray = buffer.View.ToArray();
-
-                        int index = 0;
-                        for (var x=0;x<texture.Width;x++)
-                        {
-                            for(var y=0;y<texture.Height;y++)
-                            {
-                                Frame[index].R = ColorArray[x, y].R;
-                                Frame[index].G = ColorArray[x, y].G;
-                                Frame[index].B = ColorArray[x, y].B; 
-                                index++;
-                            }
-                        }
+                            break;
                        
-                        RaisePropertyChanged(nameof(Frame));
-                    Thread.Sleep(1000/60);
+
+
+                    }
+
+
+                    // Copy the rendered frame to a readback texture that can be accessed by the CPU.
+                    // The rendered texture can only be accessed by the GPU, so we can't read from it.
+                    var colorArray = new Bgra32[texture.Width * texture.Height];
+                    var bitmapSpan = new Span<Bgra32>(colorArray);
+                    // Access buffer.View here and do all your work with the frame data
+                   
+                    texture.CopyTo(bitmapSpan);
+                   
+                    var bytes = MemoryMarshal.Cast<Bgra32, byte>(bitmapSpan);
+                    Frame = bytes.ToArray();    
+                    RaisePropertyChanged(nameof(Frame));
+                    int minFrameTimeInMs = 1000 / GeneralSettings.LimitFps;
+                    var elapsedMs = (int)frameTime.ElapsedMilliseconds;
+                    if (elapsedMs < minFrameTimeInMs)
+                    {
+                        Thread.Sleep(minFrameTimeInMs - elapsedMs);
+                    }
                     frame++;
 
                 }

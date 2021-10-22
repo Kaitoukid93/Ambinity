@@ -11,15 +11,16 @@ namespace adrilight.Ninject
             var settingsManager = new UserSettingsManager();
             var generalSettings = settingsManager.LoadIfExists() ?? settingsManager.MigrateOrDefault();
             var alldevicesettings = settingsManager.LoadDeviceIfExists();
-            Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().WithConstructorArgument("graphicAdapter",0).WithConstructorArgument("output",0);
-            Bind<IDesktopDuplicatorReaderSecondary>().To<DesktopDuplicatorReaderSecondary>().InSingletonScope().WithConstructorArgument("graphicAdapter", 0).WithConstructorArgument("output", 1);
-            Bind<IDesktopDuplicatorReaderThird>().To<DesktopDuplicatorReaderThird>().InSingletonScope().WithConstructorArgument("graphicAdapter", 0).WithConstructorArgument("output", 2);
-            Bind<IGeneralSpotSet>().To<GeneralSpotSet>().InSingletonScope();
             Bind<IGeneralSettings>().ToConstant(generalSettings);
             Bind<IOpenRGBClientDevice>().To<OpenRGBClientDevice>().InSingletonScope();
             Bind<ISerialDeviceDetection>().To<SerialDeviceDetection>().InSingletonScope();
             Bind<IShaderEffect>().To<ShaderEffect>().InSingletonScope();
             Bind<IContext>().To<WpfContext>().InSingletonScope();
+            Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
+            Bind<IDesktopFrame>().To<DesktopFrame>().InSingletonScope();
+            Bind<ISecondDesktopFrame>().To<SecondDesktopFrame>().InSingletonScope();
+            Bind<IThirdDesktopFrame>().To<ThirdDesktopFrame>().InSingletonScope();
+
             if (alldevicesettings!=null)
             {
                 if (alldevicesettings.Count > 0)

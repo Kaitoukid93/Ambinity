@@ -20,10 +20,19 @@ namespace adrilight
         int ParrentLocation { get; set; }
         string DeviceSerial { get; set; }
         string DeviceType { get; set; }
+        int DeviceLayout { get; set; }
+        int DeviceRotation { get; set; }
+        int MatrixStartPoint { get; set; }
+        int MatrixStyle { get; set; }
+        int MatrixOrientation { get; set; }
+        bool LayoutEnabled { get; set; }
         int RGBOrder { get; set; }
         bool IsVissible { get; set; }
         int OutputLocation { get; set; }
         int ParentDeviceId { get; set; }
+        int MaxBrightness { get; set; }
+        int HUBID { get; set; }
+        
         // DateTime? LastUpdateCheck { get; set; }
         [Obsolete]
         int LedsPerSpot { get; set; }
@@ -55,8 +64,16 @@ namespace adrilight
         Guid InstallationId { get; set; }
         bool IsHUB { get; set; }
         bool LEDOn { get; set; }
-        IDeviceSpot[] Spots { get; set; }
-       
+        int DeviceRectWidth { get; set; }
+        int DeviceRectHeight { get; set; }
+        int DeviceRectTop { get; set; }
+        int DeviceRectLeft { get; set; }
+
+        int DeviceRectWidth1 { get; set; }
+        int DeviceRectHeight1 { get; set; }
+        int DeviceRectTop1 { get; set; }
+        int DeviceRectLeft1 { get; set; }
+        int DeviceScale { get; set; }
 
         byte Brightness { get; set; }
         string filemau { get; set; }

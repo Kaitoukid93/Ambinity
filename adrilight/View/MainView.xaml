@@ -8,6 +8,7 @@
          xmlns:hc="https://handyorg.github.io/handycontrol"
          d:DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}"
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}" 
+
         xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
         mc:Ignorable="d" Top="20"
         WindowStartupLocation="CenterScreen"
@@ -17,8 +18,9 @@
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"         
         FontFamily="{StaticResource MaterialDesignFont}" 
+        
        AllowDrop="True" AllowsTransparency="False" Background="Transparent"
-       Title="Adrilight" Height="850" Width="1050"  MinHeight="480"  MinWidth="640" MouseLeftButtonDown="Window_MouseLeftButtonDown" Closing="Window_Closing">
+       Title="Adrilight" Height="850" Width="1050"  MinHeight="480"  MinWidth="640" MouseLeftButtonDown="Window_MouseLeftButtonDown"  Closed="Window_Closed">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -66,6 +68,10 @@
                                 <DataTrigger Binding="{Binding Text}" Value="Dashboard">
                                     <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDashboard}"></Setter>
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding Text}" Value="Dashboard">
+                                    <Setter Property="ToolTip" TargetName="verticalMenuImage" Value="Dashboard"></Setter>
+                                </DataTrigger>
+                                
                                 <!--general-->
                                 <!--<MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
@@ -84,6 +90,15 @@
                                 <!--Device settings-->
                                 <DataTrigger Binding="{Binding Text}" Value="Device Settings">
                                     <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDevice}"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Text}" Value="Device Settings">
+                                    <Setter Property="ToolTip" TargetName="verticalMenuImage" Value="Cài đặt thiết bị"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Text}" Value="Canvas Lighting">
+                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{ StaticResource canvasLighting }"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Text}" Value="Canvas Lighting">
+                                    <Setter Property="ToolTip" TargetName="verticalMenuImage" Value="Canvas Lighting"></Setter>
                                 </DataTrigger>
                                 <!--<MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
@@ -118,6 +133,9 @@
                                 <!--App settings-->
                                 <DataTrigger Binding="{Binding Text}" Value="App Settings">
                                     <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgSetting}"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Text}" Value="App Settings">
+                                    <Setter Property="ToolTip" TargetName="verticalMenuImage" Value="Cài đặt App"></Setter>
                                 </DataTrigger>
                                 <!--<MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
