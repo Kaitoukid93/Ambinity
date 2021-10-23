@@ -251,9 +251,10 @@ namespace adrilight
                 var allBlack = true;
                 //}
 
-                if (lEDOn)
-                {
+               
                     foreach (DeviceSpot spot in DeviceSpotSet.Spots)
+                    {
+                    if (lEDOn)
                     {
                         var RGBOrder = DeviceSettings.RGBOrder;
                         switch (RGBOrder)
@@ -296,19 +297,19 @@ namespace adrilight
 
                         allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
 
-
-
+                    }
+                    else
+                    {
+                        outputStream[counter++] = 0; // blue
+                        outputStream[counter++] = 0; // green
+                        outputStream[counter++] = 0; // red
+                    }
 
 
                     }
                    
-                }
-                else
-                {
-                    outputStream[counter++] = 0; // blue
-                    outputStream[counter++] = 0; // green
-                    outputStream[counter++] = 0; // red
-                }
+                
+              
 
 
                 if (allBlack)
@@ -350,17 +351,10 @@ namespace adrilight
                 byte hi = (byte)((((DeviceSettings.SpotsX - 1) * 2 + (DeviceSettings.SpotsY - 1) * 2) >> 8) & 0xff);
                 outputStream[counter++] = hi;
                 outputStream[counter++] = lo;
-
-                ///byte tiếp theo ngay bên dưới sẽ là byte quy định trạng thái thiết bị/// 1 là sáng bình thường, 2 là chế độ đèn ngủ (sáng theo màu lưu sẵn) 3 là chế độ DFU (nạp code)///
-                //if(devcheck==false)
-                //{
-                //    outputStream[counter++] = 0;
-                //}
-                //else
-                //{
-                outputStream[counter++] = 0;
+                byte chk = (byte)(hi ^ lo ^ 0x55);
+                outputStream[counter++] = chk;
                 var allBlack = true;
-                //}
+       
 
                 int snapshotCounter = 0;
                 if(GeneralSettings.SentryMode==1)

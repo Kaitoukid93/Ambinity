@@ -1913,7 +1913,7 @@ namespace adrilight.ViewModel
             if (dialogResult)
             {   //save current device rect position to json database
                 DeviceRectX = dialogViewModel.DeviceRectX / 4;
-                DeviceRectX = dialogViewModel.DeviceRectY / 4;
+                DeviceRectY = dialogViewModel.DeviceRectY / 4;
                 //DeviceRectX = CurrentDevice.DeviceRectLeft;
                 //DeviceRectY = CurrentDevice.DeviceRectTop;
                 DeviceRectHeightMax = (int)ShaderBitmap.Height - DeviceRectY;
