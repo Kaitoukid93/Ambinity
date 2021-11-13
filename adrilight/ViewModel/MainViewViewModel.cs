@@ -1967,8 +1967,9 @@ namespace adrilight.ViewModel
             {
                 foreach (var device in Cards)
                 {
-                    if (device.ParrentLocation == deviceInfo.DeviceID)
-                        childcards.Add(device);
+                    //if (device.ParrentLocation == deviceInfo.DeviceID)
+                        if (device.ParrentLocation == deviceInfo.HUBID)
+                            childcards.Add(device);
                 }
             }
             foreach (var device in childcards)
