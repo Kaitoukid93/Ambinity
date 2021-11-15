@@ -75,13 +75,20 @@
                     </Grid>
                 </hc:ProgressButton>
 
-                <hc:ButtonGroup Visibility="{Binding VisibleTabControl}"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0">
-                    <RadioButton Visibility="{Binding ARGB1Visibility}"  Content="ARGB1" IsChecked="{Binding ARGB1Checked}"/>
+                <hc:ButtonGroup x:Name="outputNavigation"  Style="{StaticResource ButtonGroupSolid}" ItemsSource="{Binding HUBOutputCollection}"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0">
+                    <!--<RadioButton Visibility="{Binding ARGB1Visibility}"  Content="ARGB1" IsChecked="{Binding ARGB1Checked}" />
                     <RadioButton Visibility="{Binding ARGB2Visibility}" Content="ARGB2" IsChecked="{Binding ARGB2Checked}"/>
                     <RadioButton Visibility="{Binding PCI1}" Content="PCI1" IsChecked="{Binding PCI1Checked}"/>
                     <RadioButton Visibility="{Binding PCI2}" Content="PCI2" IsChecked="{Binding PCI2Checked}"/>
                     <RadioButton Visibility="{Binding PCI3}"  Content="PCI3" IsChecked="{Binding PCI3Checked}"/>
-                    <RadioButton Visibility="{Binding PCI4}"  Content="PCI4" IsChecked="{Binding PCI4Checked}"/>
+                    <RadioButton Visibility="{Binding PCI4}"  Content="PCI4" IsChecked="{Binding PCI4Checked}"/>-->
+                    <hc:ButtonGroup.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton Command="{Binding Path=DataContext.SelectCardCommand, ElementName=outputNavigation}" CommandParameter="{Binding}" GroupName="HUB" Style="{StaticResource RadioGroupItemDefault}" Content="{Binding DeviceName}">
+                                
+                            </RadioButton>
+                        </DataTemplate>
+                    </hc:ButtonGroup.ItemTemplate>
                 </hc:ButtonGroup>
             </Grid>
         </Grid>
