@@ -276,6 +276,7 @@ namespace adrilight.ViewModel
         // public IDeviceSettings Card1 { get; set; }
 
         public ICommand SelectCardCommand { get; set; }
+        public ICommand LightingModeSelection { get; set; }
         public ICommand SelectShaderCommand { get; set; }
         public ICommand ShowAddNewCommand { get; set; }
         public ICommand RefreshDeviceCommand { get; set; }
@@ -477,10 +478,16 @@ namespace adrilight.ViewModel
 
 
         }
+        private ObservableCollection<string> _deviceLightingModeCollection;
+        public ObservableCollection<string> DeviceLightingModeCollection {
+            get {  return _deviceLightingModeCollection;}
+            set { _deviceLightingModeCollection = value;}
+        }
 
-     
 
-     
+
+
+
 
         public ObservableCollection<string> AvailablePalette { get; private set; }
         public IContext Context { get; }
@@ -911,7 +918,11 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-
+        private bool _hubOutputsNavigationEnable;
+        public bool HubOutputNavigationEnable {
+            get { return _hubOutputsNavigationEnable;}
+            set { _hubOutputsNavigationEnable = value; }
+        }
         
       
         private int _deviceRectHeightMax = 135;
@@ -1074,6 +1085,29 @@ namespace adrilight.ViewModel
                 {
                     this.GotoChild(p);
                 }     
+            });
+
+            LightingModeSelection = new RelayCommand<string>((p) => {
+                return p != null;
+            }, (p) =>
+            {
+                switch(p)
+                {
+                    case "Riêng Lẻ":
+                        //Enbale HUB output Navigation bar
+                        //Notify child devices to restart their own background service
+                        HubOutputNavigationEnable = true;
+                        RaisePropertyChanged(() => HubOutputNavigationEnable);
+                        break;
+                    case "Đồng Bộ":
+                        //disable navigation  
+                        HubOutputNavigationEnable = false;
+                        //Notify child devices to end their own background services and expose their spotset for parrent HUB to take over the Lighting control
+                        RaisePropertyChanged(() => HubOutputNavigationEnable);
+                        break;
+                }
+                  
+                
             });
             SelectShaderCommand = new RelayCommand<ShaderCard>((p) => {
                 return p != null;
@@ -1696,6 +1730,14 @@ namespace adrilight.ViewModel
                 ParrentLocation = CurrentDevice.HUBID;
                 var childList = new List<IDeviceSettings>();
                 HUBOutputCollection = new ObservableCollection<IDeviceSettings>();
+                HUBOutputCollection.Add(CurrentDevice);
+                DeviceLightingModeCollection = new ObservableCollection<string>();
+                //only HUB object has ability to sync it's child device
+                DeviceLightingModeCollection.Add("Riêng Lẻ");
+                DeviceLightingModeCollection.Add("Đồng Bộ");
+                RaisePropertyChanged(() => DeviceLightingModeCollection);
+
+
                 foreach (var device in Cards)
                 {
                     if (device.ParrentLocation == CurrentDevice.HUBID)
@@ -1705,19 +1747,25 @@ namespace adrilight.ViewModel
                     }
                  
                 }
-                CurrentDevice = childList[0];
+                
+                //CurrentDevice = childList[0];
                 
             }
             else
             {
                 if (CurrentDevice.ParrentLocation != 151293)
                 {
-                 //keep current HUBOutputCollection
+                    if (DeviceLightingModeCollection != null)
+                        DeviceLightingModeCollection.Clear();
+                    RaisePropertyChanged(() => DeviceLightingModeCollection);
+                    //keep current HUBOutputCollection
                 }
                 else
                 {
                     if(HUBOutputCollection!=null)
-                    HUBOutputCollection.Clear();
+                       HUBOutputCollection.Clear();
+                    if (DeviceLightingModeCollection != null)
+                        DeviceLightingModeCollection.Clear();
                     //Clear current HUBOutputCollection cuz this is a single output device
                 }
 
