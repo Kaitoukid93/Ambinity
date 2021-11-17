@@ -33,6 +33,7 @@ namespace adrilight
         private int _matrixStyle = 0;
         private int _matrixOrientation = 0;
         private int _maxBrightness = 100;
+        private bool _syncOn = false;
 
 
         private int _mSens = 0;
@@ -193,6 +194,7 @@ namespace adrilight
         public string DeviceType { get => _deviceType; set { Set(() => DeviceType, ref _deviceType, value); } }
         public int DeviceLayout { get => _deviceLayout; set { Set(() => DeviceLayout, ref _deviceLayout, value); } }
         public bool LayoutEnabled { get => _layoutEnabled; set { Set(() => LayoutEnabled, ref _layoutEnabled, value); } }
+        public bool SyncOn { get => _syncOn; set { Set(() => SyncOn, ref _syncOn, value); } }
         //public string ComPort4 { get => _comPort4; set { Set(() => ComPort4, ref _comPort4, value); } }
         public int RGBOrder { get => _rGBOrder; set { Set(() => RGBOrder, ref _rGBOrder, value); } }
 

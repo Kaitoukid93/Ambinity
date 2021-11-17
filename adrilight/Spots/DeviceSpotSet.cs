@@ -112,24 +112,19 @@ namespace adrilight
             return 2 * spotsX + 2 * spotsY - 4;
             //return spotsX * spotsY;
         }
-        private int _iD;
+       
 
         public int ID {
             get { return DeviceSettings.DeviceID; }
-            set
-            {
-                _iD = value;
-            }
+           
         }
+     
 
-        private int _parrentLocation;
+      
 
         public int ParrentLocation {
             get { return DeviceSettings.ParrentLocation; }
-            set
-            {
-                _parrentLocation = value;
-            }
+           
         }
 
               public string DeviceSerial {

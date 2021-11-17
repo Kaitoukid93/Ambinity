@@ -28,6 +28,7 @@ namespace adrilight
         bool LayoutEnabled { get; set; }
         int RGBOrder { get; set; }
         bool IsVissible { get; set; }
+        bool SyncOn { get; set; }
         int OutputLocation { get; set; }
         int ParentDeviceId { get; set; }
         int MaxBrightness { get; set; }

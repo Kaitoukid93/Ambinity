@@ -478,8 +478,8 @@ namespace adrilight.ViewModel
 
 
         }
-        private ObservableCollection<string> _deviceLightingModeCollection;
-        public ObservableCollection<string> DeviceLightingModeCollection {
+        private bool _deviceLightingModeCollection;
+        public bool DeviceLightingModeCollection {
             get {  return _deviceLightingModeCollection;}
             set { _deviceLightingModeCollection = value;}
         }
@@ -1471,7 +1471,7 @@ namespace adrilight.ViewModel
                             argb1.SpotsX = 5;
                             argb1.SpotsY = 5;
                             argb1.NumLED = 16;
-                            argb1.DeviceName = "ARGB1(HUBV2)";
+                            argb1.DeviceName = "ARGB1";
                             argb1.ParrentLocation = vm.Device.HUBID;
                             argb1.OutputLocation = 0;
                             argb1.IsVissible = false;
@@ -1486,7 +1486,7 @@ namespace adrilight.ViewModel
                             argb2.SpotsX = 20;
                             argb2.SpotsY = 6;
                             argb2.NumLED = 120;
-                            argb2.DeviceName = "ARGB2(HUBV2)";
+                            argb2.DeviceName = "ARGB2";
                             argb2.ParrentLocation = vm.Device.HUBID;
                             argb2.OutputLocation = 1;
                             argb2.IsVissible = false;
@@ -1501,7 +1501,7 @@ namespace adrilight.ViewModel
                             PCI.SpotsX = 12;
                             PCI.SpotsY = 7;
                             PCI.NumLED = 34;
-                            PCI.DeviceName = "PCI1(HUBV2)";
+                            PCI.DeviceName = "PCI1";
                             PCI.ParrentLocation = vm.Device.HUBID;
                             PCI.OutputLocation = 2;
                             PCI.DeviceLayout = 0;
@@ -1516,7 +1516,7 @@ namespace adrilight.ViewModel
                             PCI.SpotsX = 12;
                             PCI.SpotsY = 7;
                             PCI.NumLED = 34;
-                            PCI.DeviceName = "PCI2(HUBV2)";
+                            PCI.DeviceName = "PCI2";
                             PCI.ParrentLocation = vm.Device.HUBID;
                             PCI.OutputLocation = 3;
                             PCI.DeviceLayout = 0;
@@ -1531,7 +1531,7 @@ namespace adrilight.ViewModel
                             PCI.SpotsX = 12;
                             PCI.SpotsY = 7;
                             PCI.NumLED = 34;
-                            PCI.DeviceName = "PCI3(HUBV2)";
+                            PCI.DeviceName = "PCI3";
                             PCI.ParrentLocation = vm.Device.HUBID;
                             PCI.OutputLocation = 4;
                             PCI.DeviceLayout = 0;
@@ -1546,7 +1546,7 @@ namespace adrilight.ViewModel
                             PCI.SpotsX = 12;
                             PCI.SpotsY = 7;
                             PCI.NumLED = 34;
-                            PCI.DeviceName = "PCI4(HUBV2)";
+                            PCI.DeviceName = "PCI4";
                             PCI.ParrentLocation = vm.Device.HUBID;
                             PCI.OutputLocation = 5;
                             PCI.DeviceLayout = 0;
@@ -1731,10 +1731,8 @@ namespace adrilight.ViewModel
                 var childList = new List<IDeviceSettings>();
                 HUBOutputCollection = new ObservableCollection<IDeviceSettings>();
                 HUBOutputCollection.Add(CurrentDevice);
-                DeviceLightingModeCollection = new ObservableCollection<string>();
+                DeviceLightingModeCollection = true;
                 //only HUB object has ability to sync it's child device
-                DeviceLightingModeCollection.Add("Riêng Lẻ");
-                DeviceLightingModeCollection.Add("Đồng Bộ");
                 RaisePropertyChanged(() => DeviceLightingModeCollection);
 
 
@@ -1754,9 +1752,8 @@ namespace adrilight.ViewModel
             else
             {
                 if (CurrentDevice.ParrentLocation != 151293)
-                {
-                    if (DeviceLightingModeCollection != null)
-                        DeviceLightingModeCollection.Clear();
+                { 
+                        DeviceLightingModeCollection = false;
                     RaisePropertyChanged(() => DeviceLightingModeCollection);
                     //keep current HUBOutputCollection
                 }
@@ -1764,8 +1761,9 @@ namespace adrilight.ViewModel
                 {
                     if(HUBOutputCollection!=null)
                        HUBOutputCollection.Clear();
-                    if (DeviceLightingModeCollection != null)
-                        DeviceLightingModeCollection.Clear();
+
+                    DeviceLightingModeCollection = false;
+                    RaisePropertyChanged(() => DeviceLightingModeCollection);
                     //Clear current HUBOutputCollection cuz this is a single output device
                 }
 

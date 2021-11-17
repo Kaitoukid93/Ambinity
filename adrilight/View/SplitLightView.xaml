@@ -47,14 +47,15 @@
                 
             
             <TextBlock Margin="10,0,0,0"   Text="LIGHTING" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="#FF898989"/>
-            <hc:ButtonGroup Grid.Row="1" Grid.Column="1" x:Name="LightingModeSelection"  Style="{StaticResource ButtonGroupSolid}" ItemsSource="{Binding DeviceLightingModeCollection}"  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0">
-                <hc:ButtonGroup.ItemTemplate>
-                    <DataTemplate>
-                        <RadioButton Width="auto" Content="{Binding}" Command="{Binding Path=DataContext.LightingModeSelection, ElementName=LightingModeSelection}" CommandParameter="{Binding}" GroupName="lightingMode" Style="{StaticResource RadioGroupItemDefault}" >
+            <hc:ButtonGroup Visibility="{Binding DeviceLightingModeCollection, Converter={StaticResource boolToVisibilityConvert}}" Grid.Row="1" Grid.Column="1" x:Name="LightingModeSelection"  Style="{StaticResource ButtonGroupSolid}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0">
+
+
+                    <RadioButton Width="auto" Content="Đồng Bộ" IsChecked="{Binding CurrentDevice.SyncOn,Mode=TwoWay}" Command="{Binding Path=DataContext.LightingModeSelection, ElementName=LightingModeSelection}" CommandParameter="Đồng Bộ" GroupName="lightingMode" Style="{StaticResource RadioGroupItemDefault}" >
                         </RadioButton>
-                    </DataTemplate>
-                </hc:ButtonGroup.ItemTemplate>
-            </hc:ButtonGroup>
+                    <RadioButton Width="auto" Content="Riêng Lẻ" Command="{Binding Path=DataContext.LightingModeSelection, ElementName=LightingModeSelection}" CommandParameter="Riêng Lẻ" GroupName="lightingMode" Style="{StaticResource RadioGroupItemDefault}" >
+                        </RadioButton>
+
+                </hc:ButtonGroup>
             </Grid>
             <Grid Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>

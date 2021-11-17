@@ -16,8 +16,9 @@ namespace adrilight.Spots
         object Lock { get; }
        
         int CountLeds(int spotsX, int spotsY);
-        int ID { get; set; }
-        int ParrentLocation { get; set; } // for Child in hub Object
+        int ID { get;  }
+       
+        int ParrentLocation { get;  } // for Child in hub Object
         int OutputLocation { get; set; } // for Child in hub Object
         int RGBOrder { get; set; }
         string DeviceSerial { get;}
