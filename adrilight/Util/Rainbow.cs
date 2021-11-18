@@ -25,13 +25,23 @@ namespace adrilight
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public Rainbow(IDeviceSettings deviceSettings, IDeviceSpotSet deviceSpotSet)
+        public Rainbow(IDeviceSettings deviceSettings, IDeviceSpotSet deviceSpotSet, IDeviceSettings[] allDeviceSettings, IDeviceSpotSet[] allDeviceSpotSet)
         {
             DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
+            AllDeviceSettings = allDeviceSettings ?? throw new ArgumentNullException(nameof(allDeviceSettings));
             DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
+            AllDeviceSpotSet = allDeviceSpotSet ?? throw new ArgumentNullException(nameof(allDeviceSpotSet));
+            if(!DeviceSettings.IsHUB && DeviceSettings.ParrentLocation!=151293)
+            {
+                ParrentDevice = AllDeviceSettings.Where<IDeviceSettings>(x => x.HUBID == DeviceSettings.ParrentLocation).First();
+                ParrentDevice.PropertyChanged += ParrentPropertyChanged;
+                
+            }
+            
             //SettingsViewModel = settingsViewModel ?? throw new ArgumentNullException(nameof(settingsViewModel));
             //Remove SettingsViewmodel from construction because now we pass SpotSet Dirrectly to MainViewViewModel
             DeviceSettings.PropertyChanged += PropertyChanged;
+            
            // SettingsViewModel.PropertyChanged += PropertyChanged;
             RefreshColorState();
             _log.Info($"RainbowColor Created");
@@ -39,7 +49,13 @@ namespace adrilight
         }
         //Dependency Injection//
         private IDeviceSettings DeviceSettings { get; }
+        private IDeviceSettings ParrentDevice { get; }
+        private IDeviceSettings[] AllDeviceSettings { get; }
+        private IDeviceSpotSet[] AllDeviceSpotSet { get; }
         private IDeviceSpotSet DeviceSpotSet { get; }
+
+        private List<IDeviceSpotSet> _childSpotSet;
+           
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -53,16 +69,44 @@ namespace adrilight
                 case nameof(DeviceSettings.Brightness):
                 case nameof(DeviceSettings.SpotsX):
                 case nameof(DeviceSettings.SpotsY):
+                case nameof(DeviceSettings.SyncOn):
+                
 
                     RefreshColorState();
                     break;
             }
         }
+        private void ParrentPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(ParrentDevice.SyncOn):
+                    RefreshColorState();
+                    break;
+            }
+        }
+        
         private void RefreshColorState()
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 1;
+            var shouldBeRunning = false;
+            if (DeviceSettings.IsHUB)
+            {
+                 shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 1 && DeviceSettings.SyncOn;
+            }
+            else
+            {
+                if(DeviceSettings.ParrentLocation==151293)
+                 shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 1;
+                else 
+                {
+                    //find this child his parrents
+                    
+                    shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 1 && !ParrentDevice.SyncOn;
+                }
+            }
+            
             if (isRunning && !shouldBeRunning)
             {
                 //stop it!
@@ -95,6 +139,19 @@ namespace adrilight
          double _huePosIndex = 0;//index for rainbow mode only
          double _palettePosIndex = 0;//index for other custom palette
          double _startIndex = 0;
+         var isHub = DeviceSettings.IsHUB;
+            if(isHub)
+            {
+                _childSpotSet = new List<IDeviceSpotSet>();
+                foreach (var spotset in AllDeviceSpotSet)
+                {
+                    if (spotset.ParrentLocation == DeviceSettings.HUBID)
+                        _childSpotSet.Add(spotset);
+
+            }
+
+            }
+        
             if (IsRunning) throw new Exception(" Rainbow Color is already running!");
 
             IsRunning = true;
@@ -110,9 +167,19 @@ namespace adrilight
                     double brightness = DeviceSettings.Brightness / 100d;
                     int paletteSource = DeviceSettings.SelectedPalette;
                     var numLED = DeviceSpotSet.Spots.Length;
+                    if (isHub)
+                    {
+                        numLED = 0;
+                        foreach (var spotset in _childSpotSet)
+                        {
+                            numLED+=spotset.Spots.Length;
+                        }
+                    }
+                    
                     var colorOutput = new OpenRGB.NET.Models.Color[numLED];
                     var effectSpeed = DeviceSettings.EffectSpeed;
                     var frequency = DeviceSettings.ColorFrequency;
+                    
 
 
 
@@ -146,10 +213,6 @@ namespace adrilight
                         {
 
 
-                            //var newcolor = PaletteCreator(party);//get fullsize palette
-                            //fill led from fullsize palette color
-                            // int factor = 256 / numLED;
-                            // int position = _startIndex;
                             for (int i = 0; i < numLED; i++)
                             {
                                 //double position = i / (double)numLED;
@@ -200,6 +263,7 @@ namespace adrilight
                                 }
                                 else if (paletteSource == 11)
                                 {
+                                    GetCustomColor();
                                     colorPoint = GetColorByOffset(GradientPaletteColor(custom), position);
                                 }
                                 var newColor = new OpenRGB.NET.Models.Color(colorPoint.R, colorPoint.G, colorPoint.B);
@@ -220,12 +284,29 @@ namespace adrilight
                         }
 
                         counter = 0;
-                        foreach (IDeviceSpot spot in DeviceSpotSet.Spots)
+                        
+                        
+                        if(isHub)
                         {
-                            spot.SetColor(outputColor[counter].R, outputColor[counter].G, outputColor[counter].B, true);
-                            counter++;
-
+                            foreach (var spotSet in _childSpotSet)
+                            {
+                                foreach (IDeviceSpot spot in spotSet.Spots)
+                                {
+                                    spot.SetColor(outputColor[counter].R, outputColor[counter].G, outputColor[counter].B, true);
+                                    counter++;
+                                }
+                            }
                         }
+                        else
+                        {
+                            foreach (IDeviceSpot spot in DeviceSpotSet.Spots)
+                            {
+                                spot.SetColor(outputColor[counter].R, outputColor[counter].G, outputColor[counter].B, true);
+                                counter++;
+
+                            }
+                        }
+
 
 
                     }
@@ -270,7 +351,7 @@ namespace adrilight
             return bmp;
         }
 
-
+        
 
 
         private static OpenRGB.NET.Models.Color[] PaletteCreator(OpenRGB.NET.Models.Color[] colorCollection)
@@ -348,7 +429,7 @@ namespace adrilight
         }
         public GradientStopCollection GradientPaletteColor(Color[] ColorCollection)
         {
-            GetCustomColor();
+            
             GradientStopCollection gradientPalette = new GradientStopCollection(16);
             gradientPalette.Add(new GradientStop(ColorCollection[0], 0.00));
             gradientPalette.Add(new GradientStop(ColorCollection[1], 0.066));

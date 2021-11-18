@@ -33,14 +33,30 @@
             <RowDefinition Height="7*"/>
 
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.ColumnSpan="2" Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Width="568" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0">
+                
+            
+            <TextBlock Margin="10,0,0,0"   Text="LIGHTING" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="#FF898989"/>
+            <hc:ButtonGroup Visibility="{Binding DeviceLightingModeCollection, Converter={StaticResource boolToVisibilityConvert}}" Grid.Row="1" Grid.Column="1" x:Name="LightingModeSelection"  Style="{StaticResource ButtonGroupSolid}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0">
 
 
-            <TextBlock Margin="10,0,0,10" Grid.Row="1" Grid.Column="0" Text="LIGHTING" FontSize="14" VerticalAlignment="Bottom" HorizontalAlignment="Left" Foreground="#FF898989"/>
+                    <RadioButton Width="auto" Content="Đồng Bộ" IsChecked="{Binding CurrentDevice.SyncOn,Mode=TwoWay}" Command="{Binding Path=DataContext.LightingModeSelection, ElementName=LightingModeSelection}" CommandParameter="Đồng Bộ" GroupName="lightingMode" Style="{StaticResource RadioGroupItemDefault}" >
+                        </RadioButton>
+                    <RadioButton Width="auto" Content="Riêng Lẻ" Command="{Binding Path=DataContext.LightingModeSelection, ElementName=LightingModeSelection}" CommandParameter="Riêng Lẻ" GroupName="lightingMode" Style="{StaticResource RadioGroupItemDefault}" >
+                        </RadioButton>
+
+                </hc:ButtonGroup>
+            </Grid>
             <Grid Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -74,14 +90,14 @@
                         </TextBlock>
                     </Grid>
                 </hc:ProgressButton>
-
-                <hc:ButtonGroup Visibility="{Binding VisibleTabControl}"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0">
-                    <RadioButton Visibility="{Binding ARGB1Visibility}"  Content="ARGB1" IsChecked="{Binding ARGB1Checked}"/>
-                    <RadioButton Visibility="{Binding ARGB2Visibility}" Content="ARGB2" IsChecked="{Binding ARGB2Checked}"/>
-                    <RadioButton Visibility="{Binding PCI1}" Content="PCI1" IsChecked="{Binding PCI1Checked}"/>
-                    <RadioButton Visibility="{Binding PCI2}" Content="PCI2" IsChecked="{Binding PCI2Checked}"/>
-                    <RadioButton Visibility="{Binding PCI3}"  Content="PCI3" IsChecked="{Binding PCI3Checked}"/>
-                    <RadioButton Visibility="{Binding PCI4}"  Content="PCI4" IsChecked="{Binding PCI4Checked}"/>
+                <hc:ButtonGroup x:Name="outputNavigation" IsEnabled="{Binding HubOutputNavigationEnable}"  Style="{StaticResource ButtonGroupSolid}" ItemsSource="{Binding HUBOutputCollection}"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0">
+                    <hc:ButtonGroup.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton Width="60" Command="{Binding Path=DataContext.SelectCardCommand, ElementName=outputNavigation}" CommandParameter="{Binding}" GroupName="HUB" Style="{StaticResource RadioGroupItemDefault}" Content="{Binding DeviceName}">
+                                
+                            </RadioButton>
+                        </DataTemplate>
+                    </hc:ButtonGroup.ItemTemplate>
                 </hc:ButtonGroup>
             </Grid>
         </Grid>

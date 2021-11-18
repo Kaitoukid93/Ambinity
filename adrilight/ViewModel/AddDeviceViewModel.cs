@@ -57,16 +57,24 @@ namespace adrilight.ViewModel
         public IList<String> AvailableComPorts {
             get
             {
-                _AvailableComPorts = SerialPort.GetPortNames().Concat(new[] { "Không có" }).ToList();    
+                _AvailableComPorts = SerialPort.GetPortNames().Concat(new[] { "Không có" }).ToList();
                 _AvailableComPorts.Remove("COM1");
                 return _AvailableComPorts;
             }
         }
-
-        public AddDeviceViewModel(IDeviceSettings device)
-        {
-            Device = device;
+        private ObservableCollection<IDeviceSettings> _existedDevices;
+        public ObservableCollection<IDeviceSettings> ExistedDevices {
+            get { return _existedDevices; }
+            set {  _existedDevices = value; }
         }
+
+        public AddDeviceViewModel(ObservableCollection<IDeviceSettings> device)
+        {
+            ExistedDevices = device;
+           
+            
+        }
+       
         //private ViewModelBase _currentView;
         //private ViewModelBase _allDeviceView;
         ////private ViewModelBase _changePortView;
@@ -86,7 +94,7 @@ namespace adrilight.ViewModel
             set
             {
                 _basicRev1Checked = value;
-                if(value)
+                if (value)
                 {
                     Device.DeviceType = "ABRev1";
                     Device.RGBOrder = 0;
@@ -97,7 +105,7 @@ namespace adrilight.ViewModel
                     RaisePropertyChanged(() => Device.RGBOrder);
                     RaisePropertyChanged(() => IsNextable);
                 }
-              
+
             }
         }
         private bool _basicRev2Checked;
@@ -121,7 +129,7 @@ namespace adrilight.ViewModel
                     RaisePropertyChanged(() => IsNextable);
 
                 }
-                
+
 
             }
         }
@@ -131,9 +139,9 @@ namespace adrilight.ViewModel
             get { return _isNextable; }
             set
             {
-                
-                    _isNextable = value;
-                
+
+                _isNextable = value;
+
 
             }
         }
@@ -153,7 +161,66 @@ namespace adrilight.ViewModel
                     RaisePropertyChanged(() => Device.DeviceType);
                     RaisePropertyChanged(() => IsNextable);
                 }
-                
+
+            }
+        }
+
+        private List<IDeviceSettings> _availableOutputs;
+        public List<IDeviceSettings> AvailableOutputs {
+            get { return _availableOutputs; }
+            set {  _availableOutputs = value;}
+        }
+
+        private List<IDeviceSettings> _selectedOutputs;
+        public List<IDeviceSettings> SelectedOutputs {
+            get { return _selectedOutputs; }
+            set { _selectedOutputs = value; }
+        }
+        //private List<string> _selectedOutputs;
+        //public List<string> SelectedOutputs {
+        //    get { return _selectedOutputs; }
+        //    set { _selectedOutputs = value; }
+        //}
+
+
+        private bool _fanHUBChecked;
+        public bool FanHubChecked {
+
+            get { return _fanHUBChecked; }
+            set
+            {
+                _fanHUBChecked = value;
+                if (value)
+                {
+                    Device.DeviceType = "ABFANHUB"; // add parrent device
+                    Device.DeviceID = ExistedDevices.Count() + 1;
+                    Device.HUBID = ExistedDevices.Count() + 1;
+                    Device.IsHUB = true;
+                    AvailableOutputs = new List<IDeviceSettings>();//add child devices
+                    for (int i = 1; i < 11; i++)
+                    {
+                        var fan = new DeviceSettings();
+                        fan.DeviceName = "Fan" + i.ToString();
+                        fan.IsVissible = false;
+                        fan.ParrentLocation = Device.HUBID;
+                        fan.DeviceLayout = 2;
+                        fan.OutputLocation = i;
+                        fan.NumLED = 16;
+                        fan.SpotsX = 5;
+                        fan.SpotsY = 5;
+                        //fan.offset...
+                        fan.DeviceID = Device.DeviceID + i;
+
+                        AvailableOutputs.Add(fan);
+
+                    }
+                    //allow user to press 'Next'
+                    IsNextable = true;
+                    RaisePropertyChanged(() => Device.DeviceType);
+                    RaisePropertyChanged(() => AvailableOutputs);
+                    RaisePropertyChanged(() => IsNextable);
+                }
+
             }
         }
         private bool _hUBV2Checked;

@@ -55,6 +55,7 @@
 
 
                     <RadioButton x:Name="EDGE" Height="40" IsChecked="{Binding EDGEChecked}" Content="Ambino EDGE" FontSize="15"/>
+                    <RadioButton x:Name="Ambino_Fan_HUB" Height="40" IsChecked="{Binding FanHubChecked}" Content="Ambino Fan HUB" FontSize="15"/>
                     <RadioButton IsEnabled="True" x:Name="HUB"  Height="40" IsChecked="{Binding HUBV2Checked}" Content="Ambino HUBV2" FontSize="15"/>
                 </hc:ButtonGroup>
             </hc:TransitioningContentControl>
@@ -153,6 +154,65 @@
                     <hc:CheckComboBoxItem x:Name="PCI4" IsSelected="{Binding PCI4Selected}">
                         PCI4
                     </hc:CheckComboBoxItem>
+                </hc:CheckComboBox>
+            </hc:TransitioningContentControl>
+        </Grid>
+
+        <Grid Grid.ColumnSpan="2" Grid.Row="1">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=stepbar,Path=StepIndex}" Value="1"/>
+                                <Condition Binding="{Binding ElementName=Ambino_Fan_HUB, Path=IsChecked}" Value="true"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </MultiDataTrigger>
+
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade" >
+                <hc:CheckComboBox x:Name="FanSelection" SelectionChanged="FanSelection_SelectionChanged" ItemsSource="{Binding AvailableOutputs,Mode=TwoWay}" DisplayMemberPath="DeviceName" ShowClearButton="True" MaxWidth="380"  ShowSelectAllButton="True" VerticalAlignment="Center">
+                    <!--<hc:CheckComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <hc:CheckComboBoxItem  >
+                                
+                            </hc:CheckComboBoxItem>
+                        </DataTemplate>
+                    </hc:CheckComboBox.ItemTemplate>-->
+                    <!--<hc:CheckComboBoxItem x:Name="FAN1" IsSelected="{Binding ARGB1Selected}" >
+                        FAN1
+                    </hc:CheckComboBoxItem>
+                    <hc:CheckComboBoxItem x:Name="FAN2" IsSelected="{Binding ARGB2Selected}">
+                        FAN2
+                    </hc:CheckComboBoxItem>
+                    <hc:CheckComboBoxItem x:Name="FAN3" IsSelected="{Binding PCI1Selected}">
+                        FAN3
+                    </hc:CheckComboBoxItem>
+                    <hc:CheckComboBoxItem x:Name="FAN4" IsSelected="{Binding PCI2Selected}">
+                        FAN4
+                    </hc:CheckComboBoxItem>
+                    <hc:CheckComboBoxItem x:Name="FAN5" IsSelected="{Binding PCI3Selected}">
+                        FAN5
+                    </hc:CheckComboBoxItem>
+                    <hc:CheckComboBoxItem x:Name="FAN6" IsSelected="{Binding PCI4Selected}">
+                        FAN6
+                    </hc:CheckComboBoxItem>
+                    <hc:CheckComboBoxItem x:Name="FAN7" IsSelected="{Binding PCI4Selected}">
+                        FAN7
+                    </hc:CheckComboBoxItem>
+                    <hc:CheckComboBoxItem x:Name="FAN8" IsSelected="{Binding PCI4Selected}">
+                        FAN8
+                    </hc:CheckComboBoxItem>
+                    <hc:CheckComboBoxItem x:Name="FAN9" IsSelected="{Binding PCI4Selected}">
+                        FAN9
+                    </hc:CheckComboBoxItem>
+                    <hc:CheckComboBoxItem x:Name="FAN10" IsSelected="{Binding PCI4Selected}">
+                        FAN10
+                    </hc:CheckComboBoxItem>-->
                 </hc:CheckComboBox>
             </hc:TransitioningContentControl>
         </Grid>

@@ -1,4 +1,5 @@
 ﻿using adrilight.Util;
+using adrilight.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -35,6 +36,8 @@ namespace adrilight.View
             if (!isValid)
                 ComportBox.SelectedItem = null;
         }
+        public List<IDeviceSettings> _selectedFans=new List<IDeviceSettings>();
+
 
         private bool CheckSerialPort(string serialport)
         {
@@ -91,6 +94,19 @@ namespace adrilight.View
             return available;
 
 
+        }
+
+        private void FanSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_selectedFans != null)
+                _selectedFans.Clear();
+            foreach(var item in FanSelection.SelectedItems)
+            {
+                _selectedFans.Add(item as IDeviceSettings);
+            }
+            
+            var vm = this.DataContext as AddDeviceViewModel;
+            vm.SelectedOutputs = _selectedFans;
         }
     }
 }
