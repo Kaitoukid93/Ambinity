@@ -35,4 +35,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("3.0.1")]
 
 [assembly: InternalsVisibleTo("adrilight.Tests")]
-[assembly: AssemblyMetadata("SquirrelAwareVersion", "1")]
+//[assembly: AssemblyMetadata("SquirrelAwareVersion", "1")]

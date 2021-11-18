@@ -73,27 +73,20 @@ namespace adrilight
         private static Mutex _adrilightMutex;
         protected override void OnStartup(StartupEventArgs startupEvent)
         {
-            
-            if (Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Length > 1)
-                return;
-            //string mutexId = ((System.Runtime.InteropServices.GuidAttribute)System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(System.Runtime.InteropServices.GuidAttribute), false).GetValue(0)).Value.ToString();
-            //_mutex = new System.Threading.Mutex(true, mutexId, out bool createdNew);
-            //if (!createdNew) Current.Shutdown();
-            //else Exit += CloseMutexHandler;
-            //  IServiceProvider serviceProvider = CreateServiceProvider();
-            if (!ViewModelBase.IsInDesignModeStatic)
-            {
-                _adrilightMutex = new Mutex(true, "adrilight2");
-                if (!_adrilightMutex.WaitOne(TimeSpan.Zero, true))
-                {
-                    //another instance is already running!
-                    HandyControl.Controls.MessageBox.Show("There is already an instance of adrilight running. Please start only a single instance at any given time."
-                        , "Adrilight is already running!");
-                    Shutdown();
-                    return;
-                }
-            }
 
+           
+
+
+            _adrilightMutex = new Mutex(true, "adrilight2");
+            if (!_adrilightMutex.WaitOne(TimeSpan.Zero, true))
+            {
+                //another instance is already running!
+                HandyControl.Controls.MessageBox.Show("Adrilight đã được khởi chạy trước đó rồi, vui lòng kiểm tra Task Manager hoặc System Tray Icon"
+                    , "App đã được khởi chạy!");
+                Shutdown();
+                return;
+            }
+            
             SetupDebugLogging();
             SetupLoggingForProcessWideEvents();
 
