@@ -531,7 +531,7 @@ namespace adrilight.ViewModel
         public IGeneralSettings GeneralSettings { get; }
        
         public ISerialStream[] SerialStreams { get; }
-        public IOpenRGBClientDevice OpenRGBClientDevice { get; set; }
+        public IOpenRGBStream OpenRGBStream { get; set; }
         public ISerialDeviceDetection SerialDeviceDetection { get; set; }
          public static IShaderEffect ShaderEffect {get;set;}
         public IDesktopFrame DesktopFrame { get; set; }
@@ -543,7 +543,7 @@ namespace adrilight.ViewModel
             IDeviceSettings[] cards,
             IDeviceSpotSet[] deviceSpotSets,
             IGeneralSettings generalSettings,
-            IOpenRGBClientDevice openRGBDevices,
+            IOpenRGBStream openRGBStream,
             ISerialDeviceDetection serialDeviceDetection,
             ISerialStream[] serialStreams,
             IShaderEffect shaderEffect,
@@ -563,7 +563,7 @@ namespace adrilight.ViewModel
             AddedDevice = cards.Length;
             Context=context ?? throw new ArgumentNullException(nameof(context));
             SpotSets = new ObservableCollection<IDeviceSpotSet>();
-            OpenRGBClientDevice = openRGBDevices ?? throw new ArgumentNullException(nameof(openRGBDevices));
+            OpenRGBStream = openRGBStream ?? throw new ArgumentNullException(nameof(openRGBStream));
             SerialDeviceDetection = serialDeviceDetection ?? throw new ArgumentNullException(nameof(serialDeviceDetection));
             ShaderEffect = shaderEffect ?? throw new ArgumentNullException();
             ShaderEffect.PropertyChanged+= ShaderImageUpdate;
@@ -655,6 +655,8 @@ namespace adrilight.ViewModel
 
                                     MatrixBitmap.Unlock();
                                     ShaderBitmap = MatrixBitmap;
+                                    RaisePropertyChanged(() => DeviceRectWidthMax);
+                                    RaisePropertyChanged(() => DeviceRectHeightMax);
                                 }
                             });
                             break;
@@ -677,7 +679,8 @@ namespace adrilight.ViewModel
 
                                             MatrixBitmap.Unlock();
                                             ShaderBitmap = MatrixBitmap;
-
+                                            RaisePropertyChanged(() => DeviceRectWidthMax);
+                                            RaisePropertyChanged(() => DeviceRectHeightMax);
                                         }
                                         else
                                         {
@@ -703,7 +706,8 @@ namespace adrilight.ViewModel
 
                                             MatrixBitmap.Unlock();
                                             ShaderBitmap = MatrixBitmap;
-
+                                            RaisePropertyChanged(() => DeviceRectWidthMax);
+                                            RaisePropertyChanged(() => DeviceRectHeightMax);
                                         }
                                         else
                                         {
@@ -730,7 +734,8 @@ namespace adrilight.ViewModel
 
                                             MatrixBitmap.Unlock();
                                             ShaderBitmap = MatrixBitmap;
-
+                                            RaisePropertyChanged(() => DeviceRectWidthMax);
+                                            RaisePropertyChanged(() => DeviceRectHeightMax);
                                         }
                                         else
                                         {
@@ -925,23 +930,15 @@ namespace adrilight.ViewModel
         }
         
       
-        private int _deviceRectHeightMax = 135;
+       
         public int DeviceRectHeightMax {
-            get => _deviceRectHeightMax;
-            set
-            {
-                _deviceRectHeightMax = value;
-                RaisePropertyChanged();
-            }
+            get => (int)ShaderBitmap.Height - DeviceRectY;
+
         }
-        private int _deviceRectWidthtMax=240;
+       
         public int DeviceRectWidthMax {
-            get => _deviceRectWidthtMax;
-            set
-            {
-                _deviceRectWidthtMax = value;
-                RaisePropertyChanged();
-            }
+            get => (int)ShaderBitmap.Width - DeviceRectX;
+
         }
         public int DeviceRectHeight {
             get
@@ -1007,14 +1004,31 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-        private int _deviceScale;
-        public int DeviceScale {
-            get => _deviceScale;
+     
+        public bool SyncOn {
+            get => CurrentDevice.SyncOn;
             set
             {
-                _deviceScale = value;
+                
+                CurrentDevice.SyncOn = value;
+                HubOutputNavigationEnable = !value;
+                RaisePropertyChanged(() => CurrentDevice.SyncOn);
+                RaisePropertyChanged(() => HubOutputNavigationEnable);
                 RaisePropertyChanged();
-               
+
+            }
+        }
+        public bool SyncOff {
+            get => !CurrentDevice.SyncOn;
+            set
+            {
+
+                CurrentDevice.SyncOn = !value;
+                HubOutputNavigationEnable = value;
+                RaisePropertyChanged(() => HubOutputNavigationEnable);
+                RaisePropertyChanged(() => CurrentDevice.SyncOn);
+                RaisePropertyChanged();
+
             }
         }
         public override void ReadData()
@@ -1087,28 +1101,28 @@ namespace adrilight.ViewModel
                 }     
             });
 
-            LightingModeSelection = new RelayCommand<string>((p) => {
-                return p != null;
-            }, (p) =>
-            {
-                switch(p)
-                {
-                    case "Riêng Lẻ":
-                        //Enbale HUB output Navigation bar
-                        //Notify child devices to restart their own background service
-                        HubOutputNavigationEnable = true;
-                        RaisePropertyChanged(() => HubOutputNavigationEnable);
-                        break;
-                    case "Đồng Bộ":
-                        //disable navigation  
-                        HubOutputNavigationEnable = false;
-                        //Notify child devices to end their own background services and expose their spotset for parrent HUB to take over the Lighting control
-                        RaisePropertyChanged(() => HubOutputNavigationEnable);
-                        break;
-                }
+            //LightingModeSelection = new RelayCommand<string>((p) => {
+            //    return p != null;
+            //}, (p) =>
+            //{
+            //    switch(p)
+            //    {
+            //        case "Riêng Lẻ":
+            //            //Enbale HUB output Navigation bar
+            //            //Notify child devices to restart their own background service
+            //            HubOutputNavigationEnable = true;
+            //            RaisePropertyChanged(() => HubOutputNavigationEnable);
+            //            break;
+            //        case "Đồng Bộ":
+            //            //disable navigation  
+            //            HubOutputNavigationEnable = false;
+            //            //Notify child devices to end their own background services and expose their spotset for parrent HUB to take over the Lighting control
+            //            RaisePropertyChanged(() => HubOutputNavigationEnable);
+            //            break;
+            //    }
                   
                 
-            });
+            //});
             SelectShaderCommand = new RelayCommand<ShaderCard>((p) => {
                 return p != null;
             }, (p) =>
@@ -1208,85 +1222,93 @@ namespace adrilight.ViewModel
         {
             var detectedDevices = SerialDeviceDetection.RefreshDevice();
             var newdevices = new List<string>();
-            var openRGBdevices = new List<Device>();
-            var oldDeviceNum = Cards.Count;
-            if (OpenRGBClientDevice.DeviceList != null)
+            OpenRGBStream.RefreshTransferState();//refresh device list
+            //get a controer data (devices)
+            if(OpenRGBStream.AmbinityClient!=null)
             {
-                foreach (var device in OpenRGBClientDevice.DeviceList)//add openrgb device to list
-                {
-                    openRGBdevices.Add(device);
-                }
+                var openRGBdevices = OpenRGBStream.AmbinityClient.GetAllControllerData();
+                var detectedOpenRGBDevices = new List<Device>();
 
-                foreach (var device in OpenRGBClientDevice.DeviceList)// check if device already exist
+                var oldDeviceNum = Cards.Count;
+                if (OpenRGBStream.AmbinityClient != null)
                 {
-                    foreach (var item in Cards)
+                    foreach (var device in openRGBdevices)//add openrgb device to list
                     {
-                        if (device.Location == item.DevicePort)
-                            openRGBdevices.Remove(device);
+                        detectedOpenRGBDevices.Add(device);
                     }
-                }
-            }
 
-            if (openRGBdevices.Count > 0)
-            {
-                var result = HandyControl.Controls.MessageBox.Show("Phát hiện " + openRGBdevices.Count + " Thiết bị OpenRGB" + " Nhấn [Confirm] để add vào Dashboard", "OpenRGB Device", MessageBoxButton.OK, MessageBoxImage.Information);
-                if (result == MessageBoxResult.OK)//restart app
-                {
-                    foreach (var device in openRGBdevices)//convert openRGB device to ambino Device
+                    foreach (var device in openRGBdevices)// check if device already exist
                     {
-
-                        IDeviceSettings newDevice = new DeviceSettings();
-                        newDevice.DeviceName = device.Name.ToString();
-                        newDevice.DeviceType = device.Type.ToString();
-                        newDevice.DevicePort = device.Location.ToString();
-                        newDevice.DeviceID = Cards.Count + 1;
-                        newDevice.DeviceSerial = device.Serial;
-                        newDevice.NumLED = device.Colors.Length;
-                        newDevice.SpotsX = newDevice.NumLED;
-                        newDevice.SpotsY = 1;
-                        switch(device.Type)
+                        foreach (var item in Cards)
                         {
-                            case OpenRGB.NET.Enums.DeviceType.Mouse:
-                                newDevice.DeviceLayout = 1; //strip type
-                                break;
-                            case OpenRGB.NET.Enums.DeviceType.Keyboard:
-                                newDevice.DeviceLayout = 1; //strip type
-                                break;
-                            case OpenRGB.NET.Enums.DeviceType.Headset:
-                                newDevice.DeviceLayout = 1; //strip type
-                                break;
-                            case OpenRGB.NET.Enums.DeviceType.HeadsetStand:
-                                newDevice.DeviceLayout = 1; //strip type
-                                break;
-                            case OpenRGB.NET.Enums.DeviceType.Motherboard:
-                                newDevice.DeviceLayout = 1; //strip type
-                                break;
-                            case OpenRGB.NET.Enums.DeviceType.Dram:
-                                newDevice.DeviceLayout = 1; //strip type
-                                break;
-                            case OpenRGB.NET.Enums.DeviceType.Ledstrip:
-                                newDevice.DeviceLayout = 1; //strip type
-                                break;
-                            case OpenRGB.NET.Enums.DeviceType.Gpu:
-                                newDevice.DeviceLayout = 1; //strip type
-                                break;
-                            case OpenRGB.NET.Enums.DeviceType.Mousemat:
-                                newDevice.DeviceLayout = 1; //strip type
-                                break;
+                            if (device.Location == item.DevicePort)
+                                detectedOpenRGBDevices.Remove(device);
                         }
-                       
-                        Cards.Add(newDevice);
                     }
                 }
-            }
 
-        
-            if (oldDeviceNum != Cards.Count) //there are changes in device list, we simply restart the application to add process
-            {
-                WriteJson();
-                Application.Restart();
-                Process.GetCurrentProcess().Kill();
-            }
+                if (detectedOpenRGBDevices.Count > 0)
+                {
+                    var result = HandyControl.Controls.MessageBox.Show("Phát hiện " + detectedOpenRGBDevices.Count + " Thiết bị OpenRGB" + " Nhấn [Confirm] để add vào Dashboard", "OpenRGB Device", MessageBoxButton.OK, MessageBoxImage.Information);
+                    if (result == MessageBoxResult.OK)//restart app
+                    {
+                        foreach (var device in openRGBdevices)//convert openRGB device to ambino Device
+                        {
+
+                            IDeviceSettings newDevice = new DeviceSettings();
+                            newDevice.DeviceName = device.Name.ToString();
+                            newDevice.DeviceType = device.Type.ToString();
+                            newDevice.DevicePort = device.Location.ToString();
+                            newDevice.DeviceID = Cards.Count + 1;
+                            newDevice.DeviceSerial = device.Serial;
+                            newDevice.NumLED = device.Colors.Length;
+                            newDevice.SpotsX = newDevice.NumLED;
+                            newDevice.SpotsY = 1;
+                            switch (device.Type)
+                            {
+                                case OpenRGB.NET.Enums.DeviceType.Mouse:
+                                    newDevice.DeviceLayout = 1; //strip type
+                                    break;
+                                case OpenRGB.NET.Enums.DeviceType.Keyboard:
+                                    newDevice.DeviceLayout = 1; //strip type
+                                    break;
+                                case OpenRGB.NET.Enums.DeviceType.Headset:
+                                    newDevice.DeviceLayout = 1; //strip type
+                                    break;
+                                case OpenRGB.NET.Enums.DeviceType.HeadsetStand:
+                                    newDevice.DeviceLayout = 1; //strip type
+                                    break;
+                                case OpenRGB.NET.Enums.DeviceType.Motherboard:
+                                    newDevice.DeviceLayout = 1; //strip type
+                                    break;
+                                case OpenRGB.NET.Enums.DeviceType.Dram:
+                                    newDevice.DeviceLayout = 1; //strip type
+                                    break;
+                                case OpenRGB.NET.Enums.DeviceType.Ledstrip:
+                                    newDevice.DeviceLayout = 1; //strip type
+                                    break;
+                                case OpenRGB.NET.Enums.DeviceType.Gpu:
+                                    newDevice.DeviceLayout = 1; //strip type
+                                    break;
+                                case OpenRGB.NET.Enums.DeviceType.Mousemat:
+                                    newDevice.DeviceLayout = 1; //strip type
+                                    break;
+                            }
+
+                            Cards.Add(newDevice);
+                        }
+                    }
+                }
+
+
+                if (oldDeviceNum != Cards.Count) //there are changes in device list, we simply restart the application to add process
+                {
+                    WriteJson();
+                    Application.Restart();
+                    Process.GetCurrentProcess().Kill();
+                }
+            }    
+            
 
         }
 
@@ -1612,8 +1634,8 @@ namespace adrilight.ViewModel
                 DeviceRectY = dialogViewModel.DeviceRectY / 4;
                 //DeviceRectX = CurrentDevice.DeviceRectLeft;
                 //DeviceRectY = CurrentDevice.DeviceRectTop;
-                DeviceRectHeightMax = (int)ShaderBitmap.Height - DeviceRectY;
-                DeviceRectWidthMax = (int)ShaderBitmap.Width - DeviceRectX;
+                
+                
 
 
 
@@ -1622,8 +1644,8 @@ namespace adrilight.ViewModel
                 //RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
                 RaisePropertyChanged(() => DeviceRectX);
                 RaisePropertyChanged(() => DeviceRectY);
-                RaisePropertyChanged(() => DeviceRectWidthMax);
-                RaisePropertyChanged(() => DeviceRectHeightMax);
+                //RaisePropertyChanged(() => DeviceRectWidthMax);
+                //RaisePropertyChanged(() => DeviceRectHeightMax);
 
             }
 
@@ -1730,8 +1752,10 @@ namespace adrilight.ViewModel
                 ParrentLocation = CurrentDevice.HUBID;
                 var childList = new List<IDeviceSettings>();
                 HUBOutputCollection = new ObservableCollection<IDeviceSettings>();
-                HUBOutputCollection.Add(CurrentDevice);
+               // HUBOutputCollection.Add(CurrentDevice);
                 DeviceLightingModeCollection = true;
+                SyncOn = CurrentDevice.SyncOn;
+                RaisePropertyChanged(() => SyncOn);
                 //only HUB object has ability to sync it's child device
                 RaisePropertyChanged(() => DeviceLightingModeCollection);
 
@@ -1745,6 +1769,8 @@ namespace adrilight.ViewModel
                     }
                  
                 }
+                CurrentDevice = childList[0];// navigate to first output
+                CurrentDevice.IsNavigationSelected = true;
                 
                 //CurrentDevice = childList[0];
                 
@@ -1783,8 +1809,10 @@ namespace adrilight.ViewModel
            // DeviceRectY = CurrentDevice.DeviceRectTop;
           //  DeviceRectWidth = CurrentDevice.DeviceRectWidth;
           //  DeviceRectHeight = CurrentDevice.DeviceRectHeight;
-            DeviceRectHeightMax = 135 - DeviceRectY;
-            DeviceRectWidthMax = 240 - DeviceRectX;
+            //DeviceRectHeightMax = (int)ShaderBitmap.Height - DeviceRectY;
+            //DeviceRectWidthMax = (int)ShaderBitmap.Width - DeviceRectX;
+            RaisePropertyChanged(() => DeviceRectHeightMax);
+            RaisePropertyChanged(() => DeviceRectWidthMax);
 
             SetMenuItemActiveStatus(lighting);
         }

@@ -25,7 +25,6 @@ namespace adrilight
         public DesktopDuplicatorReader(IGeneralSettings userSettings,
             IDeviceSettings deviceSettings,
             IDeviceSpotSet deviceSpotSet ,
-            MainViewViewModel mainViewViewModel,
             IDesktopFrame desktopFrame,
              ISecondDesktopFrame secondDesktopFrame,
              IThirdDesktopFrame thirdDesktopFrame
@@ -40,10 +39,9 @@ namespace adrilight
 
             // GraphicAdapter = graphicAdapter;
             // Output = output;
-            MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
+            //MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
             // SettingsViewModel = settingsViewModel ?? throw new ArgumentNullException(nameof(settingsViewModel));
-            _retryPolicy = Policy.Handle<Exception>()
-                .WaitAndRetryForever(ProvideDelayDuration);
+            _retryPolicy = Policy.Handle<Exception>().WaitAndRetryForever(ProvideDelayDuration);
 
             UserSettings.PropertyChanged += PropertyChanged;
             DeviceSettings.PropertyChanged += PropertyChanged;
@@ -73,7 +71,7 @@ namespace adrilight
 
         public bool IsRunning { get; private set; } = false;
         public bool NeededRefreshing { get; private set; } = false;
-        private MainViewViewModel MainViewViewModel { get; }
+        //private MainViewViewModel MainViewViewModel { get; }
         private CancellationTokenSource _cancellationTokenSource;
 
         private Thread _workerThread;

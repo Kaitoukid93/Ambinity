@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.IO;
 using System.Security.Principal;
 
 public class StartUpManager
@@ -10,7 +11,9 @@ public class StartUpManager
     {
         using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
         {
-            key.SetValue(ApplicationName, "\"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\"");
+            var location = System.Reflection.Assembly.GetEntryAssembly().Location;
+            string folder = Path.GetDirectoryName(location);
+            key.SetValue(ApplicationName, folder + "\\" + "adrilight.exe");
         }
     }
 
@@ -18,7 +21,9 @@ public class StartUpManager
     {
         using (RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
         {
-            key.SetValue(ApplicationName, "\"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\"");
+            var location = System.Reflection.Assembly.GetEntryAssembly().Location;
+            string folder = Path.GetDirectoryName(location);
+            key.SetValue(ApplicationName, folder + "\\" + "adrilight.exe");
         }
     }
 

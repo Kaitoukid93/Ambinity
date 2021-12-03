@@ -26,36 +26,46 @@ namespace adrilight.Util
 
         }
         public OpenRGBClient AmbinityClient { get; set; }
-        public void RefreshOpenRGBDeviceState()
+        public bool IsInitialized { get; set; }
+        public bool RefreshOpenRGBDeviceState()//init
         {
+            IsInitialized = false;
             try
             {
 
-            
-            var client = new OpenRGBClient( "127.0.0.1",6742,name: "Ambinity", autoconnect: true, timeout: 1000);
-            AmbinityClient = client;
-            var deviceCount = client.GetControllerCount();
-            var devices = client.GetAllControllerData();
-            DeviceList = devices;
-            IsAvailable=true;
 
-            //for (int i = 0; i < devices.Length; i++)
-            //{
-            //    var leds = Enumerable.Range(0, devices[i].Colors.Length)
-            //        .Select(_ => new Color(255, 0, 255))
-            //        .ToArray();
-            //    client.UpdateLeds(i, leds);
-            //}
-            foreach (var device in devices)
-            {
-                _log.Info($"Device found : " + device.Name.ToString());
-            }
+                AmbinityClient = new OpenRGBClient( "127.0.0.1",6742,name: "Ambinity", autoconnect: true, timeout: 1000);
+            //AmbinityClient = client;
+                if(AmbinityClient != null)
+                {
+                    var deviceCount = AmbinityClient.GetControllerCount();
+                    var devices = AmbinityClient.GetAllControllerData();
+                    DeviceList = devices;
+                    IsAvailable = true;
+                    foreach (var device in devices)
+                    {
+                        _log.Info($"Device found : " + device.Name.ToString());
+                    }
+
+                }
+
+
+                //for (int i = 0; i < devices.Length; i++)
+                //{
+                //    var leds = Enumerable.Range(0, devices[i].Colors.Length)
+                //        .Select(_ => new Color(255, 0, 255))
+                //        .ToArray();
+                //    client.UpdateLeds(i, leds);
+                //}
+                IsInitialized = true;
             }
             catch(TimeoutException)
             {
                 HandyControl.Controls.MessageBox.Show("OpenRGB server Không khả dụng, hãy start server trong app OpenRGB (SDK Server)");
-                IsAvailable= false;
+                //IsAvailable= false;
+                
             }
+            return true;
         }
 
         private Device[] _deviceList;

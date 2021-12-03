@@ -11,8 +11,9 @@ namespace adrilight.Util
    public interface IOpenRGBClientDevice
     {
         Device[] DeviceList { get; set; }
-        OpenRGBClient AmbinityClient { get; set; }
-        void RefreshOpenRGBDeviceState();
+        OpenRGBClient AmbinityClient { get;  set; }
+        bool IsInitialized  { get; set; }
+       bool RefreshOpenRGBDeviceState();
         bool IsAvailable { get;set; }
     }
 }

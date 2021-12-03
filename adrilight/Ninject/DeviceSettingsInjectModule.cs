@@ -1,4 +1,5 @@
 ﻿using adrilight.Resources;
+using adrilight.Spots;
 using adrilight.Util;
 using Ninject.Modules;
 
@@ -12,11 +13,11 @@ namespace adrilight.Ninject
             var generalSettings = settingsManager.LoadIfExists() ?? settingsManager.MigrateOrDefault();
             var alldevicesettings = settingsManager.LoadDeviceIfExists();
             Bind<IGeneralSettings>().ToConstant(generalSettings);
-            Bind<IOpenRGBClientDevice>().To<OpenRGBClientDevice>().InSingletonScope();
+            //Bind<IOpenRGBClientDevice>().To<OpenRGBClientDevice>().InSingletonScope();
             Bind<ISerialDeviceDetection>().To<SerialDeviceDetection>().InSingletonScope();
             Bind<IShaderEffect>().To<ShaderEffect>().InSingletonScope();
             Bind<IContext>().To<WpfContext>().InSingletonScope();
-            Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
+            //Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
             Bind<IDesktopFrame>().To<DesktopFrame>().InSingletonScope();
             Bind<ISecondDesktopFrame>().To<SecondDesktopFrame>().InSingletonScope();
             Bind<IThirdDesktopFrame>().To<ThirdDesktopFrame>().InSingletonScope();
@@ -28,17 +29,18 @@ namespace adrilight.Ninject
                     foreach (var devicesetting in alldevicesettings)
                     {
                         var devicename = devicesetting.DeviceID.ToString();
-                        if (devicename == "151293")//non Ambino Device
-                        {
-                            var DeviceSerial = devicesetting.DeviceSerial;
-                            Bind<IDeviceSettings>().ToConstant(devicesetting).Named(DeviceSerial);
-                        }
-                        else
-                        {
+                        //if (devicename == "151293")//non Ambino Device
+                        //{
+                        //    var DeviceSerial = devicesetting.DeviceSerial;
+                        //    Bind<IDeviceSettings>().ToConstant(devicesetting).Named(DeviceSerial);
+                        //}
+                        //else
+                        //{
                             Bind<IDeviceSettings>().ToConstant(devicesetting).Named(devicename);
-                        }
-                            
-             
+                      
+                        //}
+
+
 
                     }
                 }

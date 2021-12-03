@@ -37,7 +37,7 @@ namespace adrilight
             var generalSettings = JsonConvert.DeserializeObject<GeneralSettings>(json);
             generalSettings.PropertyChanged += (_, __) => SaveSettings(generalSettings);
 
-           // HandleAutostart(settings);
+           HandleAutostart(generalSettings);
             return generalSettings;
         }
 
@@ -52,8 +52,18 @@ namespace adrilight
             return devices;
         }
 
-    
 
+        private static void HandleAutostart(GeneralSettings settings)
+        {
+            if (settings.Autostart)
+            {
+                StartUpManager.AddApplicationToCurrentUserStartup();
+            }
+            else
+            {
+                StartUpManager.RemoveApplicationFromCurrentUserStartup();
+            }
+        }
         public IGeneralSettings MigrateOrDefault()
         {
            
