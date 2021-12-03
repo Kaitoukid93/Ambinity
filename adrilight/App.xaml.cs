@@ -74,8 +74,8 @@ namespace adrilight
         protected override void OnStartup(StartupEventArgs startupEvent)
         {
 
-           
 
+         
 
             _adrilightMutex = new Mutex(true, "adrilight2");
             if (!_adrilightMutex.WaitOne(TimeSpan.Zero, true))
@@ -151,42 +151,42 @@ namespace adrilight
             return tc;
         }
 
-       
+
 
         internal static IKernel SetupDependencyInjection(bool isInDesignMode)
         {
 
             var kernel = new StandardKernel(new DeviceSettingsInjectModule());
-           
+
             //Load setting từ file Json//
-            var settingsManager = new UserSettingsManager();          
+            var settingsManager = new UserSettingsManager();
             var alldevicesettings = settingsManager.LoadDeviceIfExists();
-        
+
             kernel.Bind(x => x.FromThisAssembly()
               .SelectAllClasses()
               .BindAllInterfaces());
-           // var desktopDuplicationReader = kernel.Get<IDesktopDuplicatorReader>();
-           //var desktopDuplicationReaderSecondary = kernel.Get<IDesktopDuplicatorReaderSecondary>();
-           // var desktopDuplicationReaderThird = kernel.Get<IDesktopDuplicatorReaderThird>();
-            var openRGBClient = kernel.Get<IOpenRGBClientDevice>();
+            // var desktopDuplicationReader = kernel.Get<IDesktopDuplicatorReader>();
+            //var desktopDuplicationReaderSecondary = kernel.Get<IDesktopDuplicatorReaderSecondary>();
+            // var desktopDuplicationReaderThird = kernel.Get<IDesktopDuplicatorReaderThird>();
+          // var openRGBClient = kernel.Get<IOpenRGBClientDevice>();
             var serialDeviceDetection = kernel.Get<ISerialDeviceDetection>();
             var shaderEffect = kernel.Get<IShaderEffect>();
-            var context = kernel.Get<IContext>();    
+            var context = kernel.Get<IContext>();
             var desktopFrame = kernel.Get<IDesktopFrame>();
             var secondDesktopFrame = kernel.Get<ISecondDesktopFrame>();
             var thirdDesktopFrame = kernel.Get<IThirdDesktopFrame>();
-            
+
 
             //// tách riêng từng setting của từng device///
-            if (alldevicesettings!=null)
+            if (alldevicesettings != null)
             {
                 foreach (var devicesetting in alldevicesettings)
                 {
 
                     var DeviceName = devicesetting.DeviceID.ToString();
 
-                    
-                    if(!devicesetting.IsHUB)
+
+                    if (!devicesetting.IsHUB)
                     {
                         kernel.Bind<IDeviceSpotSet>().To<DeviceSpotSet>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName));
                         // kernel.Bind<ISpotSetReader>().To<SpotSetReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
@@ -212,10 +212,10 @@ namespace adrilight
                         {
                             if (devicesetting.ParrentLocation == 151293) // Ambino Device
                             {
-                                
-                                    kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                                    var serialStream = kernel.Get<ISerialStream>(DeviceName);
-                                
+
+                                kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                                var serialStream = kernel.Get<ISerialStream>(DeviceName);
+
 
                             }
                             kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
@@ -237,7 +237,7 @@ namespace adrilight
 
                     }
 
-                   
+
 
 
 
@@ -249,50 +249,53 @@ namespace adrilight
                 //{
                 //    if (devicesetting.IsHUB)//hub object, bind all spotset
                 //    {
-                        
+
 
                 //    }
                 //}
 
-            }
-            foreach (var devicesetting in alldevicesettings)
-            {
 
-                var DeviceName = devicesetting.DeviceID.ToString();
-
-
-                if (devicesetting.IsHUB)
+                foreach (var devicesetting in alldevicesettings)
                 {
-                    kernel.Bind<IDeviceSpotSet>().To<DeviceSpotSet>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName));
-                    kernel.Bind<ISerialStream>().To<SerialStreamHUB>().InSingletonScope().Named(devicesetting.DeviceID.ToString()).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(devicesetting.DeviceID.ToString()));
-                    var serialStream = kernel.Get<ISerialStream>(devicesetting.DeviceID.ToString());
-                    kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                    kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                    kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                    kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                    kernel.Bind<IShaderReader>().To<ShaderReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                    kernel.Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                    //  var spotSetReader = kernel.Get<ISpotSetReader>(DeviceName);
-                    var staticColor = kernel.Get<IStaticColor>(DeviceName);
-                    var rainbow = kernel.Get<IRainbow>(DeviceName);
-                    var music = kernel.Get<IMusic>(DeviceName);
-                    var atmosphere = kernel.Get<IAtmosphere>(DeviceName);
-                    var pixelation = kernel.Get<IShaderReader>(DeviceName);
-                    var screencapturing = kernel.Get<IDesktopDuplicatorReader>(DeviceName);
 
+                    var DeviceName = devicesetting.DeviceID.ToString();
+
+
+                    if (devicesetting.IsHUB)
+                    {
+                        kernel.Bind<IDeviceSpotSet>().To<DeviceSpotSet>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName));
+                        kernel.Bind<ISerialStream>().To<SerialStreamHUB>().InSingletonScope().Named(devicesetting.DeviceID.ToString()).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(devicesetting.DeviceID.ToString()));
+                        var serialStream = kernel.Get<ISerialStream>(devicesetting.DeviceID.ToString());
+                        kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                        kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                        kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                        kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                        kernel.Bind<IShaderReader>().To<ShaderReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                        kernel.Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                        //  var spotSetReader = kernel.Get<ISpotSetReader>(DeviceName);
+                        var staticColor = kernel.Get<IStaticColor>(DeviceName);
+                        var rainbow = kernel.Get<IRainbow>(DeviceName);
+                        var music = kernel.Get<IMusic>(DeviceName);
+                        var atmosphere = kernel.Get<IAtmosphere>(DeviceName);
+                        var pixelation = kernel.Get<IShaderReader>(DeviceName);
+                        var screencapturing = kernel.Get<IDesktopDuplicatorReader>(DeviceName);
+
+                    }
                 }
+
+                
+
             }
-                    var openRGBStream = kernel.Get<IOpenRGBStream>();
-            var alldevices = kernel.GetAll<IDeviceSettings>().ToList(); ;
-
-          
+            kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
+            var openRGBStream = kernel.Get<IOpenRGBStream>();
             return kernel;
-            // lighting viewmodel bây giờ chỉ có nhiệm vụ load data từ spotset và settings tương ứng với card sau đó display, không phải khởi tạo class như trước
-            // sau bước này thì tất cả các service đều được khởi tạo, SerialStream, SpotSet và service tương ứng với SelectedEffect được khởi chạy//
-            // điều này đảm bảo SpotSet có data để lightingviewmodel hiển thị, đồng thời SerialStream cũng lấy data đó gửi ra device
-            // kể từ sau khi app khởi động, mọi event điều chỉnh giá trị ở MainViewViewModel sẽ bắn về class đang chạy (rainbow, Music...) và class
-            // đó sẽ thay đổi ( những cái này trong từng class đã viết rồi), đồng thời settings được lưu
+                // lighting viewmodel bây giờ chỉ có nhiệm vụ load data từ spotset và settings tương ứng với card sau đó display, không phải khởi tạo class như trước
+                // sau bước này thì tất cả các service đều được khởi tạo, SerialStream, SpotSet và service tương ứng với SelectedEffect được khởi chạy//
+                // điều này đảm bảo SpotSet có data để lightingviewmodel hiển thị, đồng thời SerialStream cũng lấy data đó gửi ra device
+                // kể từ sau khi app khởi động, mọi event điều chỉnh giá trị ở MainViewViewModel sẽ bắn về class đang chạy (rainbow, Music...) và class
+                // đó sẽ thay đổi ( những cái này trong từng class đã viết rồi), đồng thời settings được lưu
 
+            
         }
 
         private void SetupLoggingForProcessWideEvents()

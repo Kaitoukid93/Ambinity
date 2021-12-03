@@ -34,6 +34,7 @@ namespace adrilight
         private int _matrixOrientation = 0;
         private int _maxBrightness = 100;
         private bool _syncOn = false;
+        private bool _isNavigationSelected = false;
 
 
         private int _mSens = 0;
@@ -232,6 +233,7 @@ namespace adrilight
         public int LimitFps { get => _limitFps; set { Set(() => LimitFps, ref _limitFps, value); } }
 
         public bool IsPreviewEnabled { get => _isPreviewEnabled; set { Set(() => IsPreviewEnabled, ref _isPreviewEnabled, value); } }
+        public bool IsNavigationSelected { get => _isNavigationSelected; set { Set(() => IsNavigationSelected, ref _isNavigationSelected, value); } }
         public byte SaturationTreshold { get => _saturationTreshold; set { Set(() => SaturationTreshold, ref _saturationTreshold, value); } }
         public int SpotHeight { get => _spotHeight; set { Set(() => SpotHeight, ref _spotHeight, value); } }
         public int SpotsX { get => _spotsX; set { Set(() => SpotsX, ref _spotsX, value); } }

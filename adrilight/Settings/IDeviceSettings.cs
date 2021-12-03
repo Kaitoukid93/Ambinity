@@ -33,6 +33,7 @@ namespace adrilight
         int ParentDeviceId { get; set; }
         int MaxBrightness { get; set; }
         int HUBID { get; set; }
+        bool IsNavigationSelected { get; set; }
         
         // DateTime? LastUpdateCheck { get; set; }
         [Obsolete]

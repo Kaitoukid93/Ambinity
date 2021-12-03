@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\packages\squirrel.windows.1.9.1\build\squirrel.windows.props" Condition="Exists('..\packages\squirrel.windows.1.9.1\build\squirrel.windows.props')" />
   <PropertyGroup>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
     <OutputType>WinExe</OutputType>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>C:\Users\vietd\OneDrive\Desktop\ambino 2.06\</PublishUrl>
@@ -66,12 +66,16 @@
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
+	<PropertyGroup>               
+    <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
+</PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
     <ApplicationIcon>zoe.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <MinimumPlatformVersion>7.0</MinimumPlatformVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <OutputPath>bin\x86\Debug\</OutputPath>
