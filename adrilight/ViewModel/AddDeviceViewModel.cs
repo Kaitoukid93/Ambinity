@@ -203,11 +203,13 @@ namespace adrilight.ViewModel
                         fan.DeviceName = "Fan" + i.ToString();
                         fan.IsVissible = false;
                         fan.ParrentLocation = Device.HUBID;
-                        fan.DeviceLayout = 2;
-                        fan.OutputLocation = i;
+                        fan.DeviceLayout = 0;
+                        fan.OutputLocation = i-1;
                         fan.NumLED = 16;
                         fan.SpotsX = 5;
                         fan.SpotsY = 5;
+                        fan.OffsetLed = 4;
+                        fan.LayoutEnabled = false;
                         //fan.offset...
                         fan.DeviceID = Device.DeviceID + i;
 
