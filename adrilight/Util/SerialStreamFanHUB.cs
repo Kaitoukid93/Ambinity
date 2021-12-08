@@ -14,11 +14,11 @@ using System.Collections.ObjectModel;
 namespace adrilight
 {
     internal sealed class
-        SerialStreamHUB : IDisposable, ISerialStream
+        SerialStreamFanHUB : IDisposable, ISerialStream
     {
         private ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public SerialStreamHUB(IDeviceSettings deviceSettings, IDeviceSpotSet[] deviceSpotSets, IGeneralSettings generalSettings)
+        public SerialStreamFanHUB(IDeviceSettings deviceSettings, IDeviceSpotSet[] deviceSpotSets, IGeneralSettings generalSettings)
         {
             GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
             DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
@@ -212,198 +212,136 @@ namespace adrilight
 
         public void DFU()
         {
-            int DFUStreamLength = _messagePreamble.Length + 3;
-            var DFUStream = ArrayPool<byte>.Shared.Rent(DFUStreamLength);
-            Buffer.BlockCopy(_messagePreamble, 0, DFUStream, 0 , _messagePreamble.Length);
-            int counter = _messagePreamble.Length;
-            DFUStream[counter++] = 1; //dummy value
-            DFUStream[counter++] = 1; //dummy value
-            DFUStream[counter++] = 2; //DFU mode value
-            //get DFU stream
-
-            //Open Serial port
             Stop();
-            var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.DevicePort, 2000000));
-            serialPort.Open();
-            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
-            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
-            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
-            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
-            serialPort.Write(DFUStream, 0, DFUStreamLength);//Send DFU stream
-                                                            // Thread.Sleep(1000);
-            serialPort.Close();
+            if (DeviceSettings.DevicePort != null)
+            {
+                var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.DevicePort, 1200));
+                serialPort.Open();
+                serialPort.Close();
 
-            //Close Serial port in under 5 sec (5sec is HUBv2 restart signal delay)
+            }
         }
 
 
-        private (byte[] Buffer, int OutputLength) GetOutputStream()
+        private (byte[] Buffer, int OutputLength) GetOutputStream(int whichOutput)
         {
-            int totalBufferLength = 0;
-           // int currentBufferLength = 0;
-            //foreach (var childSpotSet in ChildSpotSets) //caculate data buffer length
-            //{
-            //    int bufferLength = childSpotSet.Spots.Length * 3;
 
-            //    totalBufferLength += bufferLength;
-            //}
-            totalBufferLength = (50 * 4) * 3 + 16 * 3 + 160 * 3;
-            totalBufferLength += 3; //3 bytes extra
-            totalBufferLength += 3; //3 bytes for preamble 
-            
-            byte[] totalOutputStream;
-            int totalBufferOffset = 0;
-             totalOutputStream = ArrayPool<byte>.Shared.Rent(totalBufferLength);
-            totalOutputStream[0] = _messagePreamble[0];
-            totalOutputStream[1] = _messagePreamble[1];
-            totalOutputStream[2] = _messagePreamble[2];
-            byte lo = (byte)(((totalBufferLength-6)/3) & 0xff);
-            byte hi = (byte)((((totalBufferLength-6)/3) >> 8) & 0xff);
-            totalOutputStream[3] = hi;
-            totalOutputStream[4] = lo;
-            totalOutputStream[5] = 0;
-            totalBufferOffset = 6;
-            
 
-            foreach ( var childSpotSet in ChildSpotSets )
+            byte[] outputStream;
+            int counter = _messagePreamble.Length;
+            foreach (var childSpotSet in ChildSpotSets) //caculate data buffer length
             {
-                byte[] outputStream;
-                int counter =0;
-                lock (childSpotSet.Lock)
+                if(childSpotSet.OutputLocation==whichOutput) // found the output spotset
                 {
-                    const int colorsPerLed = 3;
-                    int bufferLength =  
-                        + (childSpotSet.Spots.Length * colorsPerLed);
-
-
-                    outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
-
-                    //Buffer.BlockCopy(_messagePreamble, 0, outputStream, 0, _messagePreamble.Length);
-
-
-
-
-                    ///device param///
-                    ///numleds/////đây là thiết bị dạng led màn hình có số led chiều dọc và chiều ngang, tổng số led sẽ là (dọc-1)*2+(ngang-1)*2///
-                    //////2 byte ngay tiếp sau Preamable là để ghép lại thành 1 số 16bit (vì số led có thể lớn hơn 255 nhiều) vi điều khiển sẽ dựa vào số led này để biết cần đọc bao nhiêu byte nữa///
-                    
-
-                    ///byte tiếp theo ngay bên dưới sẽ là byte quy định trạng thái thiết bị/// 1 là sáng bình thường, 2 là chế độ đèn ngủ (sáng theo màu lưu sẵn) 3 là chế độ DFU (nạp code)///
-                    //if(devcheck==false)
-                    //{
-                    //    outputStream[counter++] = 0;
-                    //}
-                    //else
-                    //{
-                   // outputStream[counter++] = 0;
-                    var allBlack = true;
-                    //}
-                    
-                    var RGBOrder = childSpotSet.RGBOrder;
-                    foreach (DeviceSpot spot in childSpotSet.Spots)
+                    lock (childSpotSet.Lock)
                     {
-                        
-                        switch (RGBOrder)
-                        {
-                            case 0: //RGB
-                                outputStream[counter++] = spot.Red; // blue
-                                outputStream[counter++] = spot.Green; // green
-                                outputStream[counter++] = spot.Blue; // red
-                                break;
-                            case 1: //RBG
-                                outputStream[counter++] = spot.Red; // blue
-                                outputStream[counter++] = spot.Blue; // green
-                                outputStream[counter++] = spot.Green;
-                                break;
-                            case 2: //BRG
-                                outputStream[counter++] = spot.Blue; // blue
-                                outputStream[counter++] = spot.Red; // green
-                                outputStream[counter++] = spot.Green; // red
-                                break;
-                            case 3: //BGR
-                                outputStream[counter++] = spot.Blue; // blue
-                                outputStream[counter++] = spot.Green; // green
-                                outputStream[counter++] = spot.Red; // red
-                                break;
-                            case 4://GBR
-                                outputStream[counter++] = spot.Green; // blue
-                                outputStream[counter++] = spot.Blue; // green
-                                outputStream[counter++] = spot.Red; // red
-                                break;
-                            case 5: //GRB
-                                outputStream[counter++] = spot.Green; // blue
-                                outputStream[counter++] = spot.Red; // green
-                                outputStream[counter++] = spot.Blue; // red
-                                break;
+                        const int colorsPerLed = 3;
+                        int bufferLength = _messagePreamble.Length + 3 + 3
+                            + (childSpotSet.Spots.Length * colorsPerLed);
 
+
+                        outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
+
+                        Buffer.BlockCopy(_messagePreamble, 0, outputStream, 0, _messagePreamble.Length);
+
+
+
+
+                        ///device param///
+                        ///numleds/////đây là thiết bị dạng led màn hình có số led chiều dọc và chiều ngang, tổng số led sẽ là (dọc-1)*2+(ngang-1)*2///
+                        //////2 byte ngay tiếp sau Preamable là để ghép lại thành 1 số 16bit (vì số led có thể lớn hơn 255 nhiều) vi điều khiển sẽ dựa vào số led này để biết cần đọc bao nhiêu byte nữa///
+                        byte lo = (byte)(childSpotSet.Spots.Length & 0xff);
+                        byte hi = (byte)((childSpotSet.Spots.Length >> 8) & 0xff);
+                        byte chk = (byte)(hi ^ lo ^ 0x55);
+                        outputStream[counter++] = hi;
+                        outputStream[counter++] = lo;
+                        outputStream[counter++] = chk;
+                        ////// Output specification
+
+                        outputStream[counter++] = (byte)whichOutput;
+                        outputStream[counter++] = 0;
+                        outputStream[counter++] = 0;
+                        var lEDOn = DeviceSettings.LEDOn;
+                        var allBlack = true;
+                        //}
+
+
+                        foreach (DeviceSpot spot in childSpotSet.Spots)
+                        {
+                            if (lEDOn)
+                            {
+                                var RGBOrder = childSpotSet.RGBOrder;
+                                switch (RGBOrder)
+                                {
+                                    case 0: //RGB
+                                        outputStream[counter++] = spot.Red; // blue
+                                        outputStream[counter++] = spot.Green; // green
+                                        outputStream[counter++] = spot.Blue; // red
+                                        break;
+                                    case 1: //GRB
+                                        outputStream[counter++] = spot.Green; // blue
+                                        outputStream[counter++] = spot.Red; // green
+                                        outputStream[counter++] = spot.Blue; // red
+                                        break;
+                                    case 2: //BRG
+                                        outputStream[counter++] = spot.Blue; // blue
+                                        outputStream[counter++] = spot.Red; // green
+                                        outputStream[counter++] = spot.Green; // red
+                                        break;
+                                    case 3: //BGR
+                                        outputStream[counter++] = spot.Blue; // blue
+                                        outputStream[counter++] = spot.Green; // green
+                                        outputStream[counter++] = spot.Red; // red
+                                        break;
+                                    case 4://GBR
+                                        outputStream[counter++] = spot.Green; // blue
+                                        outputStream[counter++] = spot.Blue; // green
+                                        outputStream[counter++] = spot.Red; // red
+                                        break;
+                                    case 5: //GRB
+                                        outputStream[counter++] = spot.Green; // blue
+                                        outputStream[counter++] = spot.Red; // green
+                                        outputStream[counter++] = spot.Blue; // red
+                                        break;
+
+
+
+                                }
+
+
+                                allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
+
+                            }
+                            else
+                            {
+                                outputStream[counter++] = 0; // blue
+                                outputStream[counter++] = 0; // green
+                                outputStream[counter++] = 0; // red
+                            }
 
 
                         }
 
 
-                        allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
 
 
 
+                        if (allBlack)
+                        {
+                            blackFrameCounter++;
+                        }
 
-
+                        return (outputStream, bufferLength);
                     }
-
-                    if (allBlack)
-                    {
-                        blackFrameCounter++;
-                    }
-                    //currentBufferLength += bufferLength+totalBufferOffset;
-                    switch(childSpotSet.OutputLocation)
-                    {
-                        case 0:    
-                    Buffer.BlockCopy(outputStream, 0, totalOutputStream, totalBufferOffset, bufferLength);
-                           // totalBufferOffset = currentBufferLength;
-
-                            break;
-                        case 1:
-                            totalBufferOffset = 54;
-                            Buffer.BlockCopy(outputStream, 0, totalOutputStream, totalBufferOffset, bufferLength);
-                            //totalBufferOffset = currentBufferLength;
-
-                            break;
-                        case 2:
-                            totalBufferOffset = 534;
-                            Buffer.BlockCopy(outputStream, 0, totalOutputStream, totalBufferOffset, bufferLength);
-                           // totalBufferOffset = currentBufferLength;
-
-                            break;
-                        case 3:
-                            totalBufferOffset =684;
-                            Buffer.BlockCopy(outputStream, 0, totalOutputStream, totalBufferOffset, bufferLength);
-                            //totalBufferOffset = currentBufferLength;
-
-                            break;
-                        case 4:
-                            totalBufferOffset = 834 ;
-                            Buffer.BlockCopy(outputStream, 0, totalOutputStream, totalBufferOffset, bufferLength);
-                           // totalBufferOffset = currentBufferLength;
-
-                            break;
-                        case 5:
-                            totalBufferOffset = 984 ;
-                            Buffer.BlockCopy(outputStream, 0, totalOutputStream, totalBufferOffset, bufferLength);
-                           // totalBufferOffset = currentBufferLength;
-
-                            break;
-                    }
-                      
-                        
-                   
 
 
                 }
-                
             }
-           
 
+            
+            return(null,0);
 
-            return (totalOutputStream, totalBufferLength);
+          
 
 
 
@@ -511,7 +449,7 @@ namespace adrilight
             {
                 try
                 {
-                    const int baudRate = 2000000;
+                    const int baudRate = 2500000;
                     string openedComPort = null;
 
 
@@ -529,30 +467,38 @@ namespace adrilight
 
                         }
                         //send frame data
-                        var (outputBuffer, streamLength) = GetOutputStream();
-
-
-
+                        for(int i = 0; i <9;i++)
+                        {
+                            var (outputBuffer, streamLength) = GetOutputStream(i);
+                            if(outputBuffer!=null)
                             serialPort.Write(outputBuffer, 0, streamLength);
+                            
+                            if (++frameCounter == 1024 && blackFrameCounter > 1000)
+                            {
+                                //there is maybe something wrong here because most frames where black. report it once per run only
+                                var settingsJson = JsonConvert.SerializeObject(DeviceSettings, Formatting.None);
+                                _log.Info($"Sent {frameCounter} frames already. {blackFrameCounter} were completely black. Settings= {settingsJson}");
+                            }
+                            ArrayPool<byte>.Shared.Return(outputBuffer);
+
+                            ////ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
+                            ////receiving over serial takes it time as well and the arduino does both tasks in sequence
+                            ////+1 ms extra safe zone
+                            var fastLedTime = ((streamLength - _messagePreamble.Length - _messagePostamble.Length) / 3.0 * 0.030d);
+                            var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
+                            var minTimespan = (int)(fastLedTime + 2*serialTransferTime) + 1;
+                            //wait for HUB to finish reading an writing to the LED
+                            Thread.Sleep(minTimespan);
+                        }
                         
 
 
-                        if (++frameCounter == 1024 && blackFrameCounter > 1000)
-                        {
-                            //there is maybe something wrong here because most frames where black. report it once per run only
-                            var settingsJson = JsonConvert.SerializeObject(DeviceSettings, Formatting.None);
-                            _log.Info($"Sent {frameCounter} frames already. {blackFrameCounter} were completely black. Settings= {settingsJson}");
-                        }
-                        ArrayPool<byte>.Shared.Return(outputBuffer);
 
-                        ////ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
-                        ////receiving over serial takes it time as well and the arduino does both tasks in sequence
-                        ////+1 ms extra safe zone
-                        var fastLedTime = ((streamLength - _messagePreamble.Length - _messagePostamble.Length) / 3.0 * 0.030d);
-                        var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
-                        var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
+                            
+                        
 
-                        Thread.Sleep(minTimespan);
+
+                       
                     }
                 }
                 catch (OperationCanceledException)
