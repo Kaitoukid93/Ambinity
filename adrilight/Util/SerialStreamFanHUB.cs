@@ -467,7 +467,7 @@ namespace adrilight
 
                         }
                         //send frame data
-                        for(int i = 0; i <9;i++)
+                        for(int i = 0; i <ChildSpotSets.Count-1;i++)
                         {
                             var (outputBuffer, streamLength) = GetOutputStream(i);
                             if(outputBuffer!=null)
