@@ -9,6 +9,8 @@ namespace adrilight
     {
         byte[] Frame { get; set; }
         void Stop();
+        int FrameWidth { get; set; }
+        int FrameHeight { get; set; }
         void RefreshCapturingState();
     }
 }

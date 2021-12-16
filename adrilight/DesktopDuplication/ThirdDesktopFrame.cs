@@ -63,6 +63,8 @@ namespace adrilight
 
         private Thread _workerThread;
         public byte[] Frame { get; set; }
+        public int FrameHeight { get; set; }
+        public int FrameWidth { get; set; }
 
         public void RefreshCaptureSource()
         {
@@ -200,6 +202,8 @@ namespace adrilight
                     // Copy the RGB values into the array.
                     System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
                     Frame = rgbValues;
+                    FrameWidth = image.Width;
+                    FrameHeight = image.Height;
                     RaisePropertyChanged(nameof(Frame));
                     // if(MainView.IsSettingsWindowOpen)
                     // MainView.SetPreviewImage(DesktopFrame);

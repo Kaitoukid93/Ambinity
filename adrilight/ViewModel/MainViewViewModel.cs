@@ -697,7 +697,7 @@ namespace adrilight.ViewModel
                                         var CurrentFrame = SecondDesktopFrame.Frame;
                                         if (CurrentFrame != null)
                                         {
-                                            var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                                            var MatrixBitmap = new WriteableBitmap(SecondDesktopFrame.FrameWidth, SecondDesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
                                             MatrixBitmap.Lock();
                                             IntPtr pixelAddress = MatrixBitmap.BackBuffer;
                                             Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
@@ -725,7 +725,7 @@ namespace adrilight.ViewModel
                                         var CurrentFrame = ThirdDesktopFrame.Frame;
                                         if (CurrentFrame != null)
                                         {
-                                            var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                                            var MatrixBitmap = new WriteableBitmap(ThirdDesktopFrame.FrameWidth, ThirdDesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
                                             MatrixBitmap.Lock();
                                             IntPtr pixelAddress = MatrixBitmap.BackBuffer;
                                             Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
@@ -1449,7 +1449,7 @@ namespace adrilight.ViewModel
         public async void ShowAddNewDialog()
         {
             
-            var vm = new ViewModel.AddDeviceViewModel(Cards);
+            var vm = new ViewModel.AddDeviceViewModel(Cards,DesktopFrame);
             var view = new View.AddDevice();
             view.DataContext = vm;
             bool addResult = (bool)await DialogHost.Show(view, "mainDialog");

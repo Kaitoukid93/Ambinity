@@ -53,6 +53,7 @@ namespace adrilight.ViewModel
                 stepBar.Prev();
             }
         }
+        private IDesktopFrame DesktopFrame;
         public IList<String> _AvailableComPorts;
         public IList<String> AvailableComPorts {
             get
@@ -68,11 +69,11 @@ namespace adrilight.ViewModel
             set {  _existedDevices = value; }
         }
 
-        public AddDeviceViewModel(ObservableCollection<IDeviceSettings> device)
+        public AddDeviceViewModel(ObservableCollection<IDeviceSettings> device, IDesktopFrame desktopFrame)
         {
             ExistedDevices = device;
-           
-            
+            DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
+
         }
        
         //private ViewModelBase _currentView;
@@ -124,6 +125,8 @@ namespace adrilight.ViewModel
                     Device.MaxBrightness = 55;
                     Device.Brightness = 40;
                     IsNextable = true;
+                    Device.DeviceRectHeight1 = DesktopFrame.FrameHeight;
+                    Device.DeviceRectWidth1 = DesktopFrame.FrameWidth;
                     RaisePropertyChanged(() => Device.DeviceType);
                     RaisePropertyChanged(() => Device.RGBOrder);
                     RaisePropertyChanged(() => IsNextable);
