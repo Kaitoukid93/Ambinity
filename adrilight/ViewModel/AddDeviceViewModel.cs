@@ -123,7 +123,7 @@ namespace adrilight.ViewModel
                     Device.DeviceLayout = 0;
                     Device.LayoutEnabled = false;
                     Device.MaxBrightness = 55;
-                    Device.Brightness = 40;
+                    Device.Brightness = 49;
                     IsNextable = true;
                     Device.DeviceRectHeight1 = DesktopFrame.FrameHeight;
                     Device.DeviceRectWidth1 = DesktopFrame.FrameWidth;
