@@ -25,13 +25,14 @@ namespace adrilight
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public Rainbow(IDeviceSettings deviceSettings, IDeviceSpotSet deviceSpotSet, IDeviceSettings[] allDeviceSettings, IDeviceSpotSet[] allDeviceSpotSet)
+        public Rainbow(IDeviceSettings deviceSettings,IRainbowTicker rainbowTicker, IDeviceSpotSet deviceSpotSet, IDeviceSettings[] allDeviceSettings, IDeviceSpotSet[] allDeviceSpotSet)
         {
             DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
             AllDeviceSettings = allDeviceSettings ?? throw new ArgumentNullException(nameof(allDeviceSettings));
             DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
             AllDeviceSpotSet = allDeviceSpotSet ?? throw new ArgumentNullException(nameof(allDeviceSpotSet));
-            if(!DeviceSettings.IsHUB && DeviceSettings.ParrentLocation!=151293)
+            RainbowTicker = rainbowTicker ?? throw new ArgumentNullException(nameof(rainbowTicker));
+            if (!DeviceSettings.IsHUB && DeviceSettings.ParrentLocation!=151293)
             {
                 ParrentDevice = AllDeviceSettings.Where<IDeviceSettings>(x => x.HUBID == DeviceSettings.ParrentLocation).First();
                 ParrentDevice.PropertyChanged += ParrentPropertyChanged;
@@ -53,6 +54,7 @@ namespace adrilight
         private IDeviceSettings[] AllDeviceSettings { get; }
         private IDeviceSpotSet[] AllDeviceSpotSet { get; }
         private IDeviceSpotSet DeviceSpotSet { get; }
+        private IRainbowTicker RainbowTicker { get; }
 
         private List<IDeviceSpotSet> _childSpotSet;
            
@@ -139,19 +141,19 @@ namespace adrilight
          double _huePosIndex = 0;//index for rainbow mode only
          double _palettePosIndex = 0;//index for other custom palette
          double _startIndex = 0;
-         //var isHub = DeviceSettings.IsHUB;
-         //   if(isHub)
-         //   {
-         //       _childSpotSet = new List<IDeviceSpotSet>();
-         //       foreach (var spotset in AllDeviceSpotSet)
-         //       {
-         //           if (spotset.ParrentLocation == DeviceSettings.HUBID)
-         //               _childSpotSet.Add(spotset);
+         bool isPort = DeviceSettings.ParrentLocation != 151293 ? true : false;
+            //   if(isHub)
+            //   {
+            //       _childSpotSet = new List<IDeviceSpotSet>();
+            //       foreach (var spotset in AllDeviceSpotSet)
+            //       {
+            //           if (spotset.ParrentLocation == DeviceSettings.HUBID)
+            //               _childSpotSet.Add(spotset);
 
-         //   }
+            //   }
 
-         //   }
-        
+            //   }
+
             if (IsRunning) throw new Exception(" Rainbow Color is already running!");
 
             IsRunning = true;
@@ -167,6 +169,9 @@ namespace adrilight
                     var brightness = DeviceSettings.Brightness / 100d;
                     int paletteSource = DeviceSettings.SelectedPalette;
                     var numLED = DeviceSpotSet.Spots.Length;
+                    var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
+                    var devicePowerMiliamps = DeviceSettings.DevicePowerMiliamps;
+                    var groupSelfIndex = DeviceSettings.GroupSelfIndex;
                     //if (isHub)
                     //{
                     //    numLED = 0;
@@ -175,7 +180,7 @@ namespace adrilight
                     //        numLED+=spotset.Spots.Length;
                     //    }
                     //}
-                    
+
                     var colorOutput = new OpenRGB.NET.Models.Color[numLED];
                     var effectSpeed = DeviceSettings.EffectSpeed;
                     var frequency = DeviceSettings.ColorFrequency;
@@ -210,16 +215,28 @@ namespace adrilight
 
                         //}
                         //else
-                        
 
 
+                           double position = 0;
                             for (int i = 0; i < numLED; i++)
                             {
                                 //double position = i / (double)numLED;
-                                var position = _startIndex + 1000d / (frequency * numLED) * i;
+                                if(isPort) // get position from rainbow ticker if device is hub object
+                            {
+                                position = RainbowTicker.StartIndex +  (groupSelfIndex*100d) + (100d/ (frequency * numLED) * i);
 
                                 if (position > 1000)
                                     position = position - 1000;
+                            }
+                            else
+                            {
+                                 position = _startIndex + 1000d / (frequency * numLED) * i;
+
+                                if (position > 1000)
+                                    position = position - 1000;
+
+                            }
+                               
                                 Color colorPoint = Color.FromRgb(0, 0, 0);
                             if (paletteSource == 0 )//party color palette
                             {
@@ -271,8 +288,8 @@ namespace adrilight
                                     colorPoint = GetColorByOffset(GradientPaletteColor(custom), position);
                                 }
                                 var newColor = new OpenRGB.NET.Models.Color(colorPoint.R, colorPoint.G, colorPoint.B);
-                                outputColor[i] = Brightness.applyBrightness(newColor, brightness);
-                            }
+                                outputColor[i] = Brightness.applyBrightness(newColor, brightness, DeviceSpotSet.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
+                        }
 
 
 
@@ -305,7 +322,7 @@ namespace adrilight
                         //{
                             foreach (IDeviceSpot spot in DeviceSpotSet.Spots)
                             {
-                                spot.SetColor(outputColor[counter].R, outputColor[counter].G, outputColor[counter].B, true);
+                                spot.SetColor(outputColor[spot.VID].R, outputColor[spot.VID].G, outputColor[spot.VID].B, true);
                                 counter++;
 
                             }
@@ -356,53 +373,6 @@ namespace adrilight
         }
 
         
-
-
-        private static OpenRGB.NET.Models.Color[] PaletteCreator(OpenRGB.NET.Models.Color[] colorCollection)
-        {
-            //numLED: number of LED to create on the view
-            //startIndex: index to start drawing palette
-            //playground: canvans to draw into
-            //isMusic: sound reaction boolean
-            //musicValue: value of current sound level
-            //numColor: number of color to create from colorCollection
-            //colorCollection: actually the palette
-            //expand color from Collection
-            // int factor = numLED / colorCollection.Count(); //scaling factor
-            int colorcount = 0;
-            var colorOutput = new OpenRGB.NET.Models.Color[256];
-            //todo: expand current palette to 256 color for smooth effect
-
-
-            for (int i = 0; i < 16; i++)
-            {
-                //for (int j = 0; j < factor; j++)
-                //{
-
-                //    if (colorcount > numLED)
-                //    {
-                //        colorcount = 0;
-                //    }
-                //    colorOutput[colorcount++] = colorCollection[i];
-                //}
-                for (int j = 0; j < 16; j++)
-                {
-                    colorOutput[colorcount++] = colorCollection[i];
-                }
-            }
-
-            //finally
-            //  fillRectFromColor(paletteOutput, playground, numLED);
-            return colorOutput;
-
-        }
-
-
-
-
-
-
-
 
 
 

@@ -34,7 +34,8 @@ namespace adrilight
         int MaxBrightness { get; set; }
         int HUBID { get; set; }
         bool IsNavigationSelected { get; set; }
-        
+        int DevicePowerVoltage { get; set; }
+        int DevicePowerMiliamps { get; set; }
         // DateTime? LastUpdateCheck { get; set; }
         [Obsolete]
         int LedsPerSpot { get; set; }
@@ -101,6 +102,8 @@ namespace adrilight
 
         //gifxelation//
         byte[] SnapShot { get; set; }
+        int[] VirtualIndex { get; set; }
+        int GroupSelfIndex { get; set; }
 
         int SelectedAudioDevice { get; set; }
         int SelectedDisplay { get; set; }

@@ -21,6 +21,7 @@ namespace adrilight.Ninject
             Bind<IDesktopFrame>().To<DesktopFrame>().InSingletonScope();
             Bind<ISecondDesktopFrame>().To<SecondDesktopFrame>().InSingletonScope();
             Bind<IThirdDesktopFrame>().To<ThirdDesktopFrame>().InSingletonScope();
+            Bind<IRainbowTicker>().To<RainbowTicker>().InSingletonScope();
 
             if (alldevicesettings!=null)
             {

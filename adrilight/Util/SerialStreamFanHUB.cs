@@ -486,7 +486,7 @@ namespace adrilight
                             ////+1 ms extra safe zone
                             var fastLedTime = ((streamLength - _messagePreamble.Length - _messagePostamble.Length) / 3.0 * 0.030d);
                             var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
-                            var minTimespan = (int)(fastLedTime + 2*serialTransferTime) + 1;
+                            var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
                             //wait for HUB to finish reading an writing to the LED
                             Thread.Sleep(minTimespan);
                         }

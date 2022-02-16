@@ -35,6 +35,9 @@ namespace adrilight
         private int _maxBrightness = 100;
         private bool _syncOn = false;
         private bool _isNavigationSelected = false;
+        private int _devicePowerMiliamps = 900;
+        private int _devicePowerVoltage = 5;
+        private int _groupSelfIndex = 0;
 
 
         private int _mSens = 0;
@@ -89,6 +92,7 @@ namespace adrilight
         private bool _isConnected = true;
         private byte _selectedPalette = 0;
         private byte[] _snapShot = new byte[256];
+        private int[] _virtualIndex = new int[256];
         private int _numLED = 32;
 
         private bool _useLinearLighting = true;
@@ -181,6 +185,9 @@ namespace adrilight
         public int MaxBrightness { get => _maxBrightness; set { Set(() => MaxBrightness, ref _maxBrightness, value); } }
         public int OutputLocation { get => _outputLocation; set { Set(() => OutputLocation, ref _outputLocation, value); } }
         
+        public int DevicePowerMiliamps { get => _devicePowerMiliamps; set { Set(() => DevicePowerMiliamps, ref _devicePowerMiliamps, value); } }
+
+        public int DevicePowerVoltage { get => _devicePowerVoltage; set { Set(() => DevicePowerVoltage, ref _devicePowerVoltage, value); } }
         public int MSens { get => _mSens; set { Set(() => MSens, ref _mSens, value); } }
        // public bool Autostart { get => _autostart; set { Set(() => Autostart, ref _autostart, value); } }
         public int BorderDistanceX { get => _borderDistanceX; set { Set(() => BorderDistanceX, ref _borderDistanceX, value); } }
@@ -201,6 +208,7 @@ namespace adrilight
 
         //public DateTime? LastUpdateCheck { get => _lastUpdateCheck; set { Set(() => LastUpdateCheck, ref _lastUpdateCheck, value); } }
         public int NumLED { get => _numLED; set { Set(() => NumLED, ref _numLED, value); } }
+        public int GroupSelfIndex { get => _groupSelfIndex; set { Set(() => GroupSelfIndex, ref _groupSelfIndex, value); } }
         public int DeviceRotation { get => _deviceRotation; set { Set(() => DeviceRotation, ref _deviceRotation, value); } }
         [Obsolete]
         public int LedsPerSpot { get => _ledsPerSpot; set { Set(() => LedsPerSpot, ref _ledsPerSpot, value); } }
@@ -255,6 +263,7 @@ namespace adrilight
         public int AtmosphereStart { get => _atmosphereStart; set { Set(() => AtmosphereStart, ref _atmosphereStart, value); } }
         public int AtmosphereStop { get => _atmosphereStop; set { Set(() => AtmosphereStop, ref _atmosphereStop, value); } }
         public byte[] SnapShot { get => _snapShot; set { Set(() => SnapShot, ref _snapShot, value); } }
+        public int[] VirtualIndex { get => _virtualIndex; set { Set(() => VirtualIndex, ref _virtualIndex, value); } }
 
         //public bool Comport4Open { get => _Comport4Open; set { Set(() => Comport4Open, ref _Comport4Open, value); } }
 

@@ -103,6 +103,8 @@ namespace adrilight
                     double brightness = DeviceSettings.Brightness / 100d;
                     int paletteSource = DeviceSettings.SelectedPalette;
                     var numLED = DeviceSpotSet.Spots.Length;
+                    var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
+                    var devicePowerMiliamps = DeviceSettings.DevicePowerMiliamps;
                     //   var colorOutput = new OpenRGB.NET.Models.Color[numLED];
 
 
@@ -125,7 +127,7 @@ namespace adrilight
 
                         foreach (var color in newcolor)
                         {
-                            outputColor[counter++] = Brightness.applyBrightness(color, brightness);
+                            outputColor[counter++] = Brightness.applyBrightness(color, brightness, DeviceSpotSet.Spots.Length, devicePowerMiliamps,devicePowerVoltage);
 
                         }
                         counter = 0;

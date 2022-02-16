@@ -15,7 +15,7 @@ namespace adrilight.Spots
         int RadiusX { get; set; }
         int RadiusY { get; set; }
         string ID { get; set; }
-
+        int VID { get; set; }
 
 
         void IndicateMissingValue();

@@ -175,6 +175,7 @@ namespace adrilight
             var desktopFrame = kernel.Get<IDesktopFrame>();
             var secondDesktopFrame = kernel.Get<ISecondDesktopFrame>();
             var thirdDesktopFrame = kernel.Get<IThirdDesktopFrame>();
+            var rainbowTicker = kernel.Get<IRainbowTicker>();
 
 
             //// tách riêng từng setting của từng device///

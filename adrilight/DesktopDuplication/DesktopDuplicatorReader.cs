@@ -198,6 +198,9 @@ namespace adrilight
                     var x = DeviceSettings.DeviceRectLeft1;
                     var y = DeviceSettings.DeviceRectTop1;
                     var brightness = DeviceSettings.Brightness/100d;
+                    var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
+                    var devicePowerMiliamps = DeviceSettings.DevicePowerMiliamps;
+                    
 
                     if (newImage == null)
                     {
@@ -248,7 +251,7 @@ namespace adrilight
 
                                     var spotColor = new OpenRGB.NET.Models.Color(finalR, finalG, finalB);
 
-                                    var semifinalSpotColor = Brightness.applyBrightness(spotColor, brightness);
+                                    var semifinalSpotColor = Brightness.applyBrightness(spotColor, brightness, DeviceSpotSet.Spots.Length, devicePowerMiliamps,devicePowerVoltage);
                                     ApplySmoothing(semifinalSpotColor.R, semifinalSpotColor.G, semifinalSpotColor.B
                                         , out byte RealfinalR, out byte RealfinalG, out byte RealfinalB,
                                      spot.Red, spot.Green, spot.Blue);

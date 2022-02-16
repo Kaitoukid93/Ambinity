@@ -14,7 +14,7 @@ namespace adrilight.Spots
     sealed class DeviceSpot : ViewModelBase, IDisposable, IDeviceSpot
     {
 
-        public DeviceSpot(int top, int left, int width, int height,int displayTop, int displayLeft, int displayWidth, int displayHeight,int index)
+        public DeviceSpot(int top, int left, int width, int height,int displayTop, int displayLeft, int displayWidth, int displayHeight,int index, int virtualIndex)
         {
             Rectangle = new Rectangle(top, left, width, height);
             DisplayRectangle = new Rectangle(displayTop, displayLeft, displayWidth, displayHeight);
@@ -22,6 +22,7 @@ namespace adrilight.Spots
             RadiusX = 0;
             RadiusY = 0;
             ID = index.ToString();
+            VID = virtualIndex;
         }
 
         public Rectangle Rectangle { get;  set; }
@@ -38,6 +39,7 @@ namespace adrilight.Spots
         public int RadiusX { get; set; }
         public int RadiusY { get;  set; }
         public string ID { get; set; }
+        public int VID { get; set; }
 
 
         public byte Red { get; private set; }

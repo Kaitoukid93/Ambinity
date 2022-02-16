@@ -187,6 +187,9 @@ namespace adrilight
 
                 while (!token.IsCancellationRequested)
                 {
+                    var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
+                    var devicePowerMiliamps = DeviceSettings.DevicePowerMiliamps;
+                    var brightness = DeviceSettings.Brightness/100d;
                     double senspercent = DeviceSettings.MSens / 100d;
                     //audio capture section//
                     int ret = BassWasapi.BASS_WASAPI_GetData(_fft, (int)BASSData.BASS_DATA_FFT2048);// get channel fft data
@@ -240,7 +243,8 @@ namespace adrilight
                             newcolor = OpenRGB.NET.Models.Color.GetHueRainbow(numLED, _huePosIndex, 1, 1, 1);
                             foreach (var color in newcolor)
                             {
-                                outputColor[counter] = Brightness.applyBrightness(color, brightnessMap[counter]);
+                                var musicBrightness = brightnessMap[counter] * brightness;
+                                outputColor[counter] = Brightness.applyBrightness(color, musicBrightness, DeviceSpotSet.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
                                 counter++;
 
                             }
@@ -271,8 +275,9 @@ namespace adrilight
                                 {
                                     colorPoint = GetColorByOffset(GradientPaletteColor(custom), position);
                                 }
+                                var musicBrightness = brightnessMap[i] * brightness;
                                 var newColor = new OpenRGB.NET.Models.Color(colorPoint.R, colorPoint.G, colorPoint.B);
-                                outputColor[i] = Brightness.applyBrightness(newColor, brightnessMap[i]);
+                                outputColor[i] = Brightness.applyBrightness(newColor, musicBrightness, DeviceSpotSet.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
 
 
                             }

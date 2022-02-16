@@ -169,6 +169,7 @@ namespace adrilight
         internal IDeviceSpot[] BuildDeviceSpots(IDeviceSettings deviceSettings, IGeneralSettings generalSettings) // general settings is for compare each device setting
         {
             //import all User Defined Setting
+            
             int rectWidth;
             int rectHeight;
             switch(deviceSettings.SelectedEffect)
@@ -233,8 +234,8 @@ namespace adrilight
         
         private IDeviceSpot[] BuildRectangle(int numSpot, int rectwidth, int rectheight, int displayRectWidth, int displayRectHeight, IDeviceSettings deviceSettings)
         {
-           
-            
+
+            int[] virtualIndex = DeviceSettings.VirtualIndex;
             var spotsX = deviceSettings.SpotsX; // number of spot on one side
             var spotsY = deviceSettings.SpotsY; // number of spot on one side   
             IDeviceSpot[] spotSet = new DeviceSpot[CountLeds(spotsX,spotsY)];
@@ -283,8 +284,7 @@ namespace adrilight
                                 index += relationIndex - i * 2;
                             }
                         }
-
-                        spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                        spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index]); // virtualIndex get from devicesetting
                     }
                 }
             }
@@ -348,7 +348,7 @@ namespace adrilight
                     var y = 0;// strip layout only has 1 row
                     var y1 = 0;
                     var index = counter++;
-                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
                 }
             }
             else
@@ -360,7 +360,7 @@ namespace adrilight
                     var y = i * spotheight;// strip layout only has 1 row
                     var y1 = i * displaySpotHeight;
                     var index = counter++;
-                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
                 }
             }
          
@@ -418,7 +418,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
                                     counter++;
 
                                 }
@@ -442,7 +442,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
                                     counter++;
 
                                 }
@@ -474,7 +474,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
                                     counter++;
 
                                 }
@@ -498,7 +498,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
                                     counter++;
 
                                 }
@@ -531,7 +531,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
                                     counter++;
 
                                 }
@@ -555,7 +555,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
                                     counter++;
 
                                 }
@@ -588,7 +588,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
                                     counter++;
 
                                 }
@@ -612,7 +612,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
                                     counter++;
 
                                 }
