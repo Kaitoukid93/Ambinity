@@ -13,7 +13,7 @@
               TextElement.FontSize="13"
               TextOptions.TextFormattingMode="Ideal" 
               TextOptions.TextRenderingMode="Auto"   
-              FontFamily="{StaticResource MaterialDesignFont}" d:DesignWidth="500" Height="400">
+              FontFamily="{StaticResource MaterialDesignFont}" d:DesignWidth="500" Height="auto">
 
 
     <Grid  Background="White" Margin="32" Name="PanelMain">
@@ -57,10 +57,12 @@
                     <RadioButton x:Name="EDGE" Height="40" IsChecked="{Binding EDGEChecked}" Content="Ambino EDGE" FontSize="15"/>
                     <RadioButton x:Name="Ambino_Fan_HUB" Height="40" IsChecked="{Binding FanHubChecked}" Content="Ambino Fan HUB" FontSize="15"/>
                     <RadioButton IsEnabled="True" x:Name="HUB"  Height="40" IsChecked="{Binding HUBV2Checked}" Content="Ambino HUBV2" FontSize="15"/>
+                    <RadioButton IsEnabled="True" x:Name="Group"  Height="40" IsChecked="{Binding GroupChecked}" Content="Group" FontSize="15"/>
+                    
                 </hc:ButtonGroup>
             </hc:TransitioningContentControl>
         </Grid>
-
+       <!--BasicRev1 page2-->
         <Grid Grid.ColumnSpan="2" Grid.Row="1">
             <Grid.Style>
                 <Style TargetType="Grid">
@@ -94,6 +96,8 @@
                 </hc:ButtonGroup>
             </hc:TransitioningContentControl>
         </Grid>
+
+        <!--EDGEChecked page2-->
         <Grid Grid.ColumnSpan="2" Grid.Row="1">
             <Grid.Style>
                 <Style TargetType="Grid">
@@ -118,6 +122,29 @@
                 </hc:ButtonGroup>
             </hc:TransitioningContentControl>
         </Grid>
+        <Grid Grid.ColumnSpan="2" Grid.Row="1">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=stepbar,Path=StepIndex}" Value="1"/>
+                                <Condition Binding="{Binding ElementName=Group, Path=IsChecked}" Value="true"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </MultiDataTrigger>
+
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade" >
+                <hc:CheckComboBox x:Name="GroupChildSelection" SelectionChanged="GroupChildSelection_SelectionChanged" ItemsSource="{Binding ExistedDevices,Mode=TwoWay}" DisplayMemberPath="DeviceName" ShowClearButton="True" MaxWidth="380"  ShowSelectAllButton="True" VerticalAlignment="Center">
+                
+                </hc:CheckComboBox>
+            </hc:TransitioningContentControl>
+        </Grid>
+        <!--HUBchecked page2-->
         <Grid Grid.ColumnSpan="2" Grid.Row="1">
             <Grid.Style>
                 <Style TargetType="Grid">
@@ -157,7 +184,7 @@
                 </hc:CheckComboBox>
             </hc:TransitioningContentControl>
         </Grid>
-
+        <!--FanHUBChecked page2-->
         <Grid Grid.ColumnSpan="2" Grid.Row="1">
             <Grid.Style>
                 <Style TargetType="Grid">
@@ -176,46 +203,10 @@
             </Grid.Style>
             <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade" >
                 <hc:CheckComboBox x:Name="FanSelection" SelectionChanged="FanSelection_SelectionChanged" ItemsSource="{Binding AvailableOutputs,Mode=TwoWay}" DisplayMemberPath="DeviceName" ShowClearButton="True" MaxWidth="380"  ShowSelectAllButton="True" VerticalAlignment="Center">
-                    <!--<hc:CheckComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <hc:CheckComboBoxItem  >
-                                
-                            </hc:CheckComboBoxItem>
-                        </DataTemplate>
-                    </hc:CheckComboBox.ItemTemplate>-->
-                    <!--<hc:CheckComboBoxItem x:Name="FAN1" IsSelected="{Binding ARGB1Selected}" >
-                        FAN1
-                    </hc:CheckComboBoxItem>
-                    <hc:CheckComboBoxItem x:Name="FAN2" IsSelected="{Binding ARGB2Selected}">
-                        FAN2
-                    </hc:CheckComboBoxItem>
-                    <hc:CheckComboBoxItem x:Name="FAN3" IsSelected="{Binding PCI1Selected}">
-                        FAN3
-                    </hc:CheckComboBoxItem>
-                    <hc:CheckComboBoxItem x:Name="FAN4" IsSelected="{Binding PCI2Selected}">
-                        FAN4
-                    </hc:CheckComboBoxItem>
-                    <hc:CheckComboBoxItem x:Name="FAN5" IsSelected="{Binding PCI3Selected}">
-                        FAN5
-                    </hc:CheckComboBoxItem>
-                    <hc:CheckComboBoxItem x:Name="FAN6" IsSelected="{Binding PCI4Selected}">
-                        FAN6
-                    </hc:CheckComboBoxItem>
-                    <hc:CheckComboBoxItem x:Name="FAN7" IsSelected="{Binding PCI4Selected}">
-                        FAN7
-                    </hc:CheckComboBoxItem>
-                    <hc:CheckComboBoxItem x:Name="FAN8" IsSelected="{Binding PCI4Selected}">
-                        FAN8
-                    </hc:CheckComboBoxItem>
-                    <hc:CheckComboBoxItem x:Name="FAN9" IsSelected="{Binding PCI4Selected}">
-                        FAN9
-                    </hc:CheckComboBoxItem>
-                    <hc:CheckComboBoxItem x:Name="FAN10" IsSelected="{Binding PCI4Selected}">
-                        FAN10
-                    </hc:CheckComboBoxItem>-->
                 </hc:CheckComboBox>
             </hc:TransitioningContentControl>
         </Grid>
+        <!--Comport page3-->
         <Grid Margin="8,16,0,0" Grid.ColumnSpan="2" Grid.Row="1">
             <Grid.Style>
                 <Style TargetType="Grid">
@@ -247,7 +238,7 @@
             </hc:TransitioningContentControl>
 
         </Grid>
-
+        <!--ItemName page4-->
         <Grid Margin="8,16,0,0" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Grid.Style>
                 <Style TargetType="Grid">
@@ -273,7 +264,24 @@
                     <TextBlock Grid.Row="0" Margin="0" Grid.Column="0" Text="Đặt Tên" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
                     <TextBlock Margin="0" Grid.Row="1" Grid.Column="0" Text="Tên hiển thị ở Dashboard" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left" Height="16"/>
                     <Rectangle  Grid.Row="1" Grid.ColumnSpan="2" Height="1" Fill="#14000000" VerticalAlignment="Bottom" Margin="14,0,14,5" Width="400"/>
-                    <TextBox Style="{StaticResource TextBoxExtend}" Text="{Binding Device.DeviceName}" Grid.Column="1" Grid.Row="0" Margin="0" VerticalAlignment="Center" Padding="12,6,8,6" HorizontalContentAlignment="Center"/>
+                    <TextBox                
+                        Grid.Column="1" 
+                        Grid.Row="0" 
+                        Margin="0" 
+                        VerticalAlignment="Center" 
+                        Padding="12,6,8,6" 
+                        HorizontalContentAlignment="Center">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend}">
+                                <Setter Property="Text" Value="{Binding Device.DeviceName}"></Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=Group}" Value="true">
+                                        <Setter Property="Text" Value="{Binding Group.GroupName}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
 
                 </Grid>
             </hc:TransitioningContentControl>

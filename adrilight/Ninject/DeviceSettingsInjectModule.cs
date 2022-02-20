@@ -12,6 +12,7 @@ namespace adrilight.Ninject
             var settingsManager = new UserSettingsManager();
             var generalSettings = settingsManager.LoadIfExists() ?? settingsManager.MigrateOrDefault();
             var alldevicesettings = settingsManager.LoadDeviceIfExists();
+            var allgroupsettings = settingsManager.LoadGroupIfExisrs();
             Bind<IGeneralSettings>().ToConstant(generalSettings);
             //Bind<IOpenRGBClientDevice>().To<OpenRGBClientDevice>().InSingletonScope();
             Bind<ISerialDeviceDetection>().To<SerialDeviceDetection>().InSingletonScope();
@@ -30,19 +31,8 @@ namespace adrilight.Ninject
                     foreach (var devicesetting in alldevicesettings)
                     {
                         var devicename = devicesetting.DeviceID.ToString();
-                        //if (devicename == "151293")//non Ambino Device
-                        //{
-                        //    var DeviceSerial = devicesetting.DeviceSerial;
-                        //    Bind<IDeviceSettings>().ToConstant(devicesetting).Named(DeviceSerial);
-                        //}
-                        //else
-                        //{
+                       
                             Bind<IDeviceSettings>().ToConstant(devicesetting).Named(devicename);
-                      
-                        //}
-
-
-
                     }
                 }
             }
@@ -50,8 +40,24 @@ namespace adrilight.Ninject
             {
                 // require user to add device then restart the app
             }
-           
-          
+
+            if (allgroupsettings != null)
+            {
+                if (allgroupsettings.Count > 0)
+                {
+                    foreach (var groupsettings in allgroupsettings)
+                    {
+                        var groupID = groupsettings.GroupID.ToString();
+
+                        Bind<IGroupSettings>().ToConstant(groupsettings).Named(groupID);
+                    }
+                }
+            }
+            else
+            {
+                // require user to add device then restart the app
+            }
+
         }
     }
 }

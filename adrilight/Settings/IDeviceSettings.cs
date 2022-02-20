@@ -104,6 +104,7 @@ namespace adrilight
         byte[] SnapShot { get; set; }
         int[] VirtualIndex { get; set; }
         int GroupSelfIndex { get; set; }
+        int GroupID { get; set; }
 
         int SelectedAudioDevice { get; set; }
         int SelectedDisplay { get; set; }

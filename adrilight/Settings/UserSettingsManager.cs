@@ -19,6 +19,7 @@ namespace adrilight
 
         private string JsonFileNameAndPath => Path.Combine(JsonPath, "adrilight-settings.json");
         private string JsonDeviceFileNameAndPath => Path.Combine(JsonPath, "adrilight-deviceInfos.json");
+        private string JsonGroupFileNameAndPath => Path.Combine(JsonPath, "adrilight-groupInfos.json");
 
         private void SaveSettings(IGeneralSettings generalSettings)
         {
@@ -51,7 +52,16 @@ namespace adrilight
 
             return devices;
         }
+        public List<GroupSettings> LoadGroupIfExisrs()
+        {
+            if (!File.Exists(JsonGroupFileNameAndPath)) return null;
 
+            var json = File.ReadAllText(JsonGroupFileNameAndPath);
+
+            var groups = JsonConvert.DeserializeObject<List<GroupSettings>>(json);
+
+            return groups;
+        }
 
         private static void HandleAutostart(GeneralSettings settings)
         {

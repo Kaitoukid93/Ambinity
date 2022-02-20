@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="adrilight.View.GroupLighting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:adrilight.View"
+             mc:Ignorable="d" 
+             xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf" xmlns:converters="clr-namespace:adrilight.Converter" xmlns:viewmodel="clr-namespace:adrilight.ViewModel"  d:DataContext="{d:DesignInstance Type=viewmodel:MainViewViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <!-- this control show all spotset in the same group-->
+        <ListView ItemsSource="{Binding SpotSets }">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding}"
+                            Width="360" Height="360" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20" >
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas Width="360" Height="360" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="{x:Type ContentPresenter}">
+                                <Setter Property="Canvas.Left" Value="{Binding DisplayRectangle.X,Mode=TwoWay}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding DisplayRectangle.Y, Mode=TwoWay}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+
+                                    <Rectangle ToolTip="{Binding ID}" Stroke="White" RadiusX="{Binding RadiusX}" RadiusY="{Binding RadiusY}" StrokeThickness="0.5" Width="{Binding DisplayRectangle.Width}" Height="{Binding DisplayRectangle.Height}">
+                                        <Rectangle.Fill>
+                                            <RadialGradientBrush>
+                                                <GradientStop Color="{Binding OnDemandColor}"  Offset="0"/>
+                                                <GradientStop Color="{Binding OnDemandColorTransparent}" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Rectangle.Fill>
+
+
+                                    </Rectangle>
+                                    <TextBlock Visibility="Collapsed" Text="{Binding ID }" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                                    <Rectangle Visibility="{Binding IsFirst, Converter={StaticResource BooleanToVisibilityConverter}}" RadiusX="4" RadiusY="4" Fill="#FF673AB7"
+                                               Width="5" 
+                                               Height="5" />
+
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</UserControl>

@@ -34,6 +34,7 @@ namespace adrilight.ViewModel
         private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adrilight\\");
 
         private string JsonDeviceFileNameAndPath => Path.Combine(JsonPath, "adrilight-deviceInfos.json");
+        private string JsonGroupFileNameAndPath => Path.Combine(JsonPath, "adrilight-groupInfos.json");
 
         #region constant string
         public const string ImagePathFormat = "pack://application:,,,/adrilight;component/View/Images/{0}";
@@ -237,6 +238,7 @@ namespace adrilight.ViewModel
         public ICommand BackCommand { get; set; }
         public ICommand DeviceRectDropCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
+        public ICommand DeleteGroupCommand { get; set; }
         public ICommand AdjustPositionCommand { get; set; }
         public ICommand SnapshotCommand { get; set; }
         public ICommand DeleteDeviceCommand { get; set; }
@@ -248,6 +250,16 @@ namespace adrilight.ViewModel
             {
                 if (_cards == value) return;
                 _cards = value;
+                RaisePropertyChanged();
+            }
+        }
+        private ObservableCollection<IGroupSettings> _groups;
+        public ObservableCollection<IGroupSettings> Groups {
+            get { return _groups; }
+            set
+            {
+                if (_groups == value) return;
+                _groups = value;
                 RaisePropertyChanged();
             }
         }
@@ -276,6 +288,7 @@ namespace adrilight.ViewModel
         // public IDeviceSettings Card1 { get; set; }
 
         public ICommand SelectCardCommand { get; set; }
+        public ICommand SelectGroupCommand { get; set; }
         public ICommand LightingModeSelection { get; set; }
         public ICommand SelectShaderCommand { get; set; }
         public ICommand ShowAddNewCommand { get; set; }
@@ -541,6 +554,7 @@ namespace adrilight.ViewModel
 
         public MainViewViewModel(IContext context,
             IDeviceSettings[] cards,
+            IGroupSettings[] groups,
             IDeviceSpotSet[] deviceSpotSets,
             IGeneralSettings generalSettings,
             IOpenRGBStream openRGBStream,
@@ -559,6 +573,7 @@ namespace adrilight.ViewModel
             SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
             ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
             Cards = new ObservableCollection<IDeviceSettings>();
+            Groups = new ObservableCollection<IGroupSettings>();
             DisplayCards = new ObservableCollection<IDeviceSettings>();
             AddedDevice = cards.Length;
             Context=context ?? throw new ArgumentNullException(nameof(context));
@@ -579,6 +594,10 @@ namespace adrilight.ViewModel
             foreach (IDeviceSpotSet spotSet in deviceSpotSets)
             {
                 SpotSets.Add(spotSet);
+            }
+            foreach(IGroupSettings group in groups)
+            {
+                Groups.Add(group);
             }
 
 
@@ -1067,6 +1086,12 @@ namespace adrilight.ViewModel
             {
                 ShowDeleteFromDashboard(p);
             });
+            DeleteGroupCommand = new RelayCommand<IGroupSettings>((p) => {
+                return true;
+            }, (p) =>
+            {
+                ShowDeleteGroupFromDashboard(p);
+            });
 
             SnapshotCommand = new RelayCommand<string>((p) => {
                 return true;
@@ -1100,6 +1125,15 @@ namespace adrilight.ViewModel
                     this.GotoChild(p);
                 }     
             });
+            SelectGroupCommand = new RelayCommand<IGroupSettings>((p) => {
+                return p != null;
+            }, (p) =>
+            {
+                if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+                {
+                    this.GotoGroup(p);
+                }
+            });
 
             //LightingModeSelection = new RelayCommand<string>((p) => {
             //    return p != null;
@@ -1120,8 +1154,8 @@ namespace adrilight.ViewModel
             //            RaisePropertyChanged(() => HubOutputNavigationEnable);
             //            break;
             //    }
-                  
-                
+
+
             //});
             SelectShaderCommand = new RelayCommand<ShaderCard>((p) => {
                 return p != null;
@@ -1303,7 +1337,7 @@ namespace adrilight.ViewModel
 
                 if (oldDeviceNum != Cards.Count) //there are changes in device list, we simply restart the application to add process
                 {
-                    WriteJson();
+                    WriteDeviceInfoJson();
                     Application.Restart();
                     Process.GetCurrentProcess().Kill();
                 }
@@ -1371,7 +1405,8 @@ namespace adrilight.ViewModel
            "Sáng màu tĩnh",
            "Sáng theo nhạc",
            "Atmosphere",
-           "Canvas Lighting"
+           "Canvas Lighting",
+           "Group Lighting"
         };
             AvailableMusicPalette = new ObservableCollection<string>
 {
@@ -1449,7 +1484,7 @@ namespace adrilight.ViewModel
         public async void ShowAddNewDialog()
         {
             
-            var vm = new ViewModel.AddDeviceViewModel(Cards,DesktopFrame);
+            var vm = new ViewModel.AddDeviceViewModel(Cards, Groups,DesktopFrame);
             var view = new View.AddDevice();
             view.DataContext = vm;
             bool addResult = (bool)await DialogHost.Show(view, "mainDialog");
@@ -1457,129 +1492,146 @@ namespace adrilight.ViewModel
             {
                 try
                 {
-                    if (vm.Device.DeviceType != "ABHV2"&& vm.Device.DeviceType!="ABFANHUB")
+                    switch (vm.AddedItemType)
                     {
-                     
-                        vm.Device.DeviceID = Cards.Count() + 1;
+                        case AddDeviceViewModel.AvailableTypes.Device:
+                            if (vm.Device.DeviceType != "ABHV2" && vm.Device.DeviceType != "ABFANHUB")
+                            {
 
-                        Cards.Add(vm.Device);
-                        WriteJson();
-                        
+                                vm.Device.DeviceID = Cards.Count() + 1;
+
+                                Cards.Add(vm.Device);
+                                WriteDeviceInfoJson();
+
+                            }
+                            else if (vm.Device.DeviceType == "ABFANHUB")
+                            {
+                                Cards.Add(vm.Device);//add HUB first
+                                foreach (var fan in vm.SelectedOutputs)//add child device
+                                {
+                                    Cards.Add(fan);
+                                }
+                                WriteDeviceInfoJson();
+                            }
+                            else
+                            {
+
+
+                                vm.Device.DeviceID = Cards.Count() + 1;
+                                vm.Device.IsHUB = true;
+                                vm.Device.HUBID = Cards.Count() + 1;
+                                Cards.Add(vm.Device);
+                                // WriteJson();
+
+                                if (vm.ARGB1Selected) // ARGB1 output port is in the list
+                                {
+                                    var argb1 = new DeviceSettings();
+                                    argb1.DeviceType = "Strip";                           //add to device settings
+                                    argb1.DeviceID = Cards.Count() + 1;
+                                    argb1.SpotsX = 5;
+                                    argb1.SpotsY = 5;
+                                    argb1.NumLED = 16;
+                                    argb1.DeviceName = "ARGB1";
+                                    argb1.ParrentLocation = vm.Device.HUBID;
+                                    argb1.OutputLocation = 0;
+                                    argb1.IsVissible = false;
+                                    argb1.DeviceLayout = 1;
+                                    Cards.Add(argb1);
+                                }
+                                if (vm.ARGB2Selected)
+                                {
+                                    var argb2 = new DeviceSettings();
+                                    argb2.DeviceType = "Matrix";                           //add to device settings
+                                    argb2.DeviceID = Cards.Count() + 1;
+                                    argb2.SpotsX = 20;
+                                    argb2.SpotsY = 6;
+                                    argb2.NumLED = 120;
+                                    argb2.DeviceName = "ARGB2";
+                                    argb2.ParrentLocation = vm.Device.HUBID;
+                                    argb2.OutputLocation = 1;
+                                    argb2.IsVissible = false;
+                                    argb2.DeviceLayout = 2;
+                                    Cards.Add(argb2);
+                                }
+                                if (vm.PCI1Selected)
+                                {
+                                    var PCI = new DeviceSettings();
+                                    PCI.DeviceType = "Square";                           //add to device settings
+                                    PCI.DeviceID = Cards.Count() + 1;
+                                    PCI.SpotsX = 12;
+                                    PCI.SpotsY = 7;
+                                    PCI.NumLED = 34;
+                                    PCI.DeviceName = "PCI1";
+                                    PCI.ParrentLocation = vm.Device.HUBID;
+                                    PCI.OutputLocation = 2;
+                                    PCI.DeviceLayout = 0;
+                                    PCI.IsVissible = false;
+                                    Cards.Add(PCI);
+                                }
+                                if (vm.PCI2Selected)
+                                {
+                                    var PCI = new DeviceSettings();
+                                    PCI.DeviceType = "Square";                           //add to device settings
+                                    PCI.DeviceID = Cards.Count() + 1;
+                                    PCI.SpotsX = 12;
+                                    PCI.SpotsY = 7;
+                                    PCI.NumLED = 34;
+                                    PCI.DeviceName = "PCI2";
+                                    PCI.ParrentLocation = vm.Device.HUBID;
+                                    PCI.OutputLocation = 3;
+                                    PCI.DeviceLayout = 0;
+                                    PCI.IsVissible = false;
+                                    Cards.Add(PCI);
+                                }
+                                if (vm.PCI3Selected)
+                                {
+                                    var PCI = new DeviceSettings();
+                                    PCI.DeviceType = "Square";                           //add to device settings
+                                    PCI.DeviceID = Cards.Count() + 1;
+                                    PCI.SpotsX = 12;
+                                    PCI.SpotsY = 7;
+                                    PCI.NumLED = 34;
+                                    PCI.DeviceName = "PCI3";
+                                    PCI.ParrentLocation = vm.Device.HUBID;
+                                    PCI.OutputLocation = 4;
+                                    PCI.DeviceLayout = 0;
+                                    PCI.IsVissible = false;
+                                    Cards.Add(PCI);
+                                }
+                                if (vm.PCI4Selected)
+                                {
+                                    var PCI = new DeviceSettings();
+                                    PCI.DeviceType = "Strip";                           //add to device settings
+                                    PCI.DeviceID = Cards.Count() + 1;
+                                    PCI.SpotsX = 12;
+                                    PCI.SpotsY = 7;
+                                    PCI.NumLED = 34;
+                                    PCI.DeviceName = "PCI4";
+                                    PCI.ParrentLocation = vm.Device.HUBID;
+                                    PCI.OutputLocation = 5;
+                                    PCI.DeviceLayout = 0;
+                                    PCI.IsVissible = false;
+                                    Cards.Add(PCI);
+                                }
+
+
+                                WriteDeviceInfoJson();
+                                // _isAddnew = false;
+                            }
+                            break;
+                        case AddDeviceViewModel.AvailableTypes.Group:
+                            Groups.Add(vm.Group);//add HUB first
+                            //foreach (var child in vm.SelectedChilds)//add child device
+                            //{
+                            //    Cards.Add(fan);
+                            //}
+                            WriteGroupInfoJson();
+                            WriteDeviceInfoJson();
+
+                            break;
+
                     }
-                    else if (vm.Device.DeviceType == "ABFANHUB")
-                    {
-                        Cards.Add(vm.Device);//add HUB first
-                        foreach(var fan in vm.SelectedOutputs)//add child device
-                        {
-                            Cards.Add(fan);
-                        }    
-                        WriteJson();
-                    }
-                    else
-                    {
-
-                        
-                        vm.Device.DeviceID = Cards.Count() + 1;
-                        vm.Device.IsHUB = true;
-                        vm.Device.HUBID = Cards.Count() + 1;
-                        Cards.Add(vm.Device);
-                        // WriteJson();
-                       
-                        if (vm.ARGB1Selected) // ARGB1 output port is in the list
-                        {
-                            var argb1 = new DeviceSettings();
-                            argb1.DeviceType = "Strip";                           //add to device settings
-                            argb1.DeviceID = Cards.Count() + 1;
-                            argb1.SpotsX = 5;
-                            argb1.SpotsY = 5;
-                            argb1.NumLED = 16;
-                            argb1.DeviceName = "ARGB1";
-                            argb1.ParrentLocation = vm.Device.HUBID;
-                            argb1.OutputLocation = 0;
-                            argb1.IsVissible = false;
-                            argb1.DeviceLayout = 1;
-                            Cards.Add(argb1);
-                        }
-                        if (vm.ARGB2Selected)
-                        {
-                            var argb2 = new DeviceSettings();
-                            argb2.DeviceType = "Matrix";                           //add to device settings
-                            argb2.DeviceID = Cards.Count() + 1;
-                            argb2.SpotsX = 20;
-                            argb2.SpotsY = 6;
-                            argb2.NumLED = 120;
-                            argb2.DeviceName = "ARGB2";
-                            argb2.ParrentLocation = vm.Device.HUBID;
-                            argb2.OutputLocation = 1;
-                            argb2.IsVissible = false;
-                            argb2.DeviceLayout = 2;
-                            Cards.Add(argb2);
-                        }
-                        if (vm.PCI1Selected)
-                        {
-                            var PCI = new DeviceSettings();
-                            PCI.DeviceType = "Square";                           //add to device settings
-                            PCI.DeviceID = Cards.Count() + 1;
-                            PCI.SpotsX = 12;
-                            PCI.SpotsY = 7;
-                            PCI.NumLED = 34;
-                            PCI.DeviceName = "PCI1";
-                            PCI.ParrentLocation = vm.Device.HUBID;
-                            PCI.OutputLocation = 2;
-                            PCI.DeviceLayout = 0;
-                            PCI.IsVissible = false;
-                            Cards.Add(PCI);
-                        }
-                        if (vm.PCI2Selected)
-                        {
-                            var PCI = new DeviceSettings();
-                            PCI.DeviceType = "Square";                           //add to device settings
-                            PCI.DeviceID = Cards.Count() + 1;
-                            PCI.SpotsX = 12;
-                            PCI.SpotsY = 7;
-                            PCI.NumLED = 34;
-                            PCI.DeviceName = "PCI2";
-                            PCI.ParrentLocation = vm.Device.HUBID;
-                            PCI.OutputLocation = 3;
-                            PCI.DeviceLayout = 0;
-                            PCI.IsVissible = false;
-                            Cards.Add(PCI);
-                        }
-                        if (vm.PCI3Selected)
-                        {
-                            var PCI = new DeviceSettings();
-                            PCI.DeviceType = "Square";                           //add to device settings
-                            PCI.DeviceID = Cards.Count() + 1;
-                            PCI.SpotsX = 12;
-                            PCI.SpotsY = 7;
-                            PCI.NumLED = 34;
-                            PCI.DeviceName = "PCI3";
-                            PCI.ParrentLocation = vm.Device.HUBID;
-                            PCI.OutputLocation = 4;
-                            PCI.DeviceLayout = 0;
-                            PCI.IsVissible = false;
-                            Cards.Add(PCI);
-                        }
-                        if (vm.PCI4Selected)
-                        {
-                            var PCI = new DeviceSettings();
-                            PCI.DeviceType = "Strip";                           //add to device settings
-                            PCI.DeviceID = Cards.Count() + 1;
-                            PCI.SpotsX = 12;
-                            PCI.SpotsY = 7;
-                            PCI.NumLED = 34;
-                            PCI.DeviceName = "PCI4";
-                            PCI.ParrentLocation = vm.Device.HUBID;
-                            PCI.OutputLocation = 5;
-                            PCI.DeviceLayout = 0;
-                            PCI.IsVissible = false;
-                            Cards.Add(PCI);
-                        }
-
-
-                        WriteJson();
-                        // _isAddnew = false;
-                    }
+                   
 
                 }
                 catch (Exception ex)
@@ -1614,7 +1666,7 @@ namespace adrilight.ViewModel
                     counter++;
 
                 }
-                WriteJson();
+                WriteDeviceInfoJson();
                 Application.Restart();
                 Process.GetCurrentProcess().Kill();
             }
@@ -1652,7 +1704,10 @@ namespace adrilight.ViewModel
 
 
         }
-        public async void ShowDeleteFromDashboard(IDeviceSettings device)
+        public async void ShowDeleteGroupFromDashboard(IGroupSettings group)
+        {
+        }
+            public async void ShowDeleteFromDashboard(IDeviceSettings device)
         {
             var view = new View.DeleteMessageDialog();
             DeleteMessageDialogViewModel dialogViewModel = new DeleteMessageDialogViewModel(device);
@@ -1668,7 +1723,7 @@ namespace adrilight.ViewModel
                     counter++;
 
                 }
-                WriteJson();
+                WriteDeviceInfoJson();
                 Application.Restart();
                 Process.GetCurrentProcess().Kill();
             }
@@ -1695,22 +1750,23 @@ namespace adrilight.ViewModel
                 Cards.Remove(device);
             }
             Cards.Remove(deviceInfo);
-            WriteJson();
+            WriteDeviceInfoJson();
         }
 
-        public void WriteJson()
+        public void WriteGroupInfoJson()
         {
-            var devices = new List<IDeviceSettings>();
+            
+            var groups = new List<IGroupSettings>();
 
-
-            foreach (var item in Cards)
+            
+            foreach(var group in Groups)
             {
-                devices.Add(item);
+                groups.Add(group);
             }
-
-            var json = JsonConvert.SerializeObject(devices, Formatting.Indented);
+          
+            var groupjson = JsonConvert.SerializeObject(groups, Formatting.Indented);
             Directory.CreateDirectory(JsonPath);
-            File.WriteAllText(JsonDeviceNameAndPath, json);
+            File.WriteAllText(JsonGroupFileNameAndPath, groupjson);
         }
        
         /// <summary>
@@ -1733,6 +1789,11 @@ namespace adrilight.ViewModel
             var json = JsonConvert.SerializeObject(devices, Formatting.Indented);
             Directory.CreateDirectory(JsonPath);
             File.WriteAllText(JsonDeviceFileNameAndPath, json);
+
+        }
+        public void GotoGroup(IGroupSettings group)
+        {
+
         }
         public void GotoChild(IDeviceSettings card)
         {

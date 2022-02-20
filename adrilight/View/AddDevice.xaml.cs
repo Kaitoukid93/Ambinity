@@ -37,6 +37,7 @@ namespace adrilight.View
                 ComportBox.SelectedItem = null;
         }
         public List<IDeviceSettings> _selectedFans=new List<IDeviceSettings>();
+        public List<IDeviceSettings> _selectedChild = new List<IDeviceSettings>();
 
 
         private bool CheckSerialPort(string serialport)
@@ -107,6 +108,18 @@ namespace adrilight.View
             
             var vm = this.DataContext as AddDeviceViewModel;
             vm.SelectedOutputs = _selectedFans;
+        }
+        private void GroupChildSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_selectedChild != null)
+                _selectedChild.Clear();
+            foreach (var item in GroupChildSelection.SelectedItems)
+            {
+                _selectedChild.Add(item as IDeviceSettings);
+            }
+
+            var vm = this.DataContext as AddDeviceViewModel;
+            vm.SelectedChilds = _selectedChild;
         }
     }
 }

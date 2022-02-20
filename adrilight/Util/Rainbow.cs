@@ -141,7 +141,7 @@ namespace adrilight
          double _huePosIndex = 0;//index for rainbow mode only
          double _palettePosIndex = 0;//index for other custom palette
          double _startIndex = 0;
-         bool isPort = DeviceSettings.ParrentLocation != 151293 ? true : false;
+            bool isInGroup = DeviceSettings.GroupID != 0 ? true : false;
             //   if(isHub)
             //   {
             //       _childSpotSet = new List<IDeviceSpotSet>();
@@ -195,101 +195,109 @@ namespace adrilight
                     int counter = 0;
                     lock (DeviceSpotSet.Lock)
                     {
-                        //if (paletteSource == 0)
-                        //{
-                        //    var newcolor = OpenRGB.NET.Models.Color.GetHueRainbow(numLED, _huePosIndex, 1, 1, 1);
+                        //1.check if device is in group mode
+                        //2.check which group device is in 
+                        //3.check which order(selfIndex) device is in 
+                        //4.check howmany devices is in the same Index ( mutual selfIndex )
+                        //5.calculate number of virtual LED in the Index
+                        //6.run the loop throuh all the virtual Index and set actual LED color acording to virtual Index
+                        // for example there are 4 devices with different number of LEDs is in the same Index
+                        // then the total numLED is spotset1.Length + spotset2.Length + spotset3.Length + spotset4.Length = n
+                        // so for (int i = 0; i< n; i++)
+                        // { position = RainbowTicker.StartIndex +  (groupSelfIndex*100d) + (100d/ (frequency * numLED) * i);
+                        // this will create an array of color which fit all the leds in the same selfIndex with the start color get from RainbowTicker.cs
+                        // But in which order?
+                        // well! this is why we got virtual Index.
+                        // example for a device in this index, the virtual order is 1-7-8-4-2 we can se there is only 5 leds but the virtual order is 8 
+                        // at the highest count. now when we set color for 5 spots of this device, first spot will take color[1] of the color array
+                        // second is color[7].... and last is color[2] because the color array created has the length of all spotsets in the same index
+                        // we will not encounter the error that position 7 or 8 is not exist because in the old way, the color array only has the length
+                        // of current device spotset.
+                        // so the different here is:
+                        // -if you want the effect jump from 1 device to another and jump back, you have to set them  the same selfIndex
+                        // -if you want the effect finish at 1 device and then start at another, you have to set them differentIndex
+                        /// this idea will help you create countless effect and animation yet simple in the UI...chill...
 
-                        //    foreach (var color in newcolor)
-                        //    {
-                        //        outputColor[counter++] = Brightness.applyBrightness(color, brightness);
 
-                        //    }
-                        //    if (_huePosIndex > 360)
-                        //    {
-                        //        _huePosIndex = 0;
-                        //    }
-                        //    else
-                        //    {
-                        //        _huePosIndex += effectSpeed;
-                        //    }
-
-                        //}
-                        //else
-
-
-                           double position = 0;
-                            for (int i = 0; i < numLED; i++)
+                        double position = 0;
+                        foreach (IDeviceSpot spot in DeviceSpotSet.Spots)
+                        {
+                            if (isInGroup) // get position from rainbow ticker if device is hub object
                             {
-                                //double position = i / (double)numLED;
-                                if(isPort) // get position from rainbow ticker if device is hub object
-                            {
-                                position = RainbowTicker.StartIndex +  (groupSelfIndex*100d) + (100d/ (frequency * numLED) * i);
+                                //position = RainbowTicker.StartIndex +  (groupSelfIndex*250d) + (500d/ (frequency * numLED) * i);
+                                position = RainbowTicker.StartIndex +  (500d /  160 * spot.VID);
+                                // this could be replace by using real ordering instead of adding groupSelfIndex because
+                                // the gradient hold entire rainbow spectrum
 
                                 if (position > 1000)
                                     position = position - 1000;
                             }
                             else
                             {
-                                 position = _startIndex + 1000d / (frequency * numLED) * i;
+                                position = _startIndex + 1000d / (frequency * numLED) * spot.VID;
 
                                 if (position > 1000)
                                     position = position - 1000;
 
                             }
-                               
-                                Color colorPoint = Color.FromRgb(0, 0, 0);
-                            if (paletteSource == 0 )//party color palette
+                            Color colorPoint = Color.FromRgb(0, 0, 0);
+                            if (paletteSource == 0)
                             {
                                 colorPoint = GetColorByOffset(GradientPaletteColor(rainbow), position);
                             }
                             else if (paletteSource == 1)//party color palette
-                                {
-                                    colorPoint = GetColorByOffset(GradientPaletteColor(cloud), position);
-                                }
-                                else if (paletteSource == 2)
-                                {
-                                    colorPoint = GetColorByOffset(GradientPaletteColor(forest), position);
-                                }
-                                else if (paletteSource == 3)
-                                {
-                                    colorPoint = GetColorByOffset(GradientPaletteColor(sunset), position);
-                                }
-                                else if (paletteSource == 4)
-                                {
-                                    colorPoint = GetColorByOffset(GradientPaletteColor(scarlet), position);
-                                }
-                                else if (paletteSource == 5)
-                                {
-                                    colorPoint = GetColorByOffset(GradientPaletteColor(aurora), position);
-                                }
-                                else if (paletteSource == 6)
-                                {
-                                    colorPoint = GetColorByOffset(GradientPaletteColor(france), position);
-                                }
-                                else if (paletteSource == 7)
-                                {
-                                    colorPoint = GetColorByOffset(GradientPaletteColor(lemon), position);
-                                }
-                                else if (paletteSource == 8)
-                                {
-                                    colorPoint = GetColorByOffset(GradientPaletteColor(badtrip), position);
-                                }
-                                else if (paletteSource == 9)
-                                {
-                                    colorPoint = GetColorByOffset(GradientPaletteColor(police), position);
-                                }
-                                else if (paletteSource == 10)
-                                {
-                                    colorPoint = GetColorByOffset(GradientPaletteColor(iceandfire), position);
-                                }
-                                else if (paletteSource == 11)
-                                {
-                                    GetCustomColor();
-                                    colorPoint = GetColorByOffset(GradientPaletteColor(custom), position);
-                                }
-                                var newColor = new OpenRGB.NET.Models.Color(colorPoint.R, colorPoint.G, colorPoint.B);
-                                outputColor[i] = Brightness.applyBrightness(newColor, brightness, DeviceSpotSet.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
+                            {
+                                colorPoint = GetColorByOffset(GradientPaletteColor(cloud), position);
+                            }
+                            else if (paletteSource == 2)
+                            {
+                                colorPoint = GetColorByOffset(GradientPaletteColor(forest), position);
+                            }
+                            else if (paletteSource == 3)
+                            {
+                                colorPoint = GetColorByOffset(GradientPaletteColor(sunset), position);
+                            }
+                            else if (paletteSource == 4)
+                            {
+                                colorPoint = GetColorByOffset(GradientPaletteColor(scarlet), position);
+                            }
+                            else if (paletteSource == 5)
+                            {
+                                colorPoint = GetColorByOffset(GradientPaletteColor(aurora), position);
+                            }
+                            else if (paletteSource == 6)
+                            {
+                                colorPoint = GetColorByOffset(GradientPaletteColor(france), position);
+                            }
+                            else if (paletteSource == 7)
+                            {
+                                colorPoint = GetColorByOffset(GradientPaletteColor(lemon), position);
+                            }
+                            else if (paletteSource == 8)
+                            {
+                                colorPoint = GetColorByOffset(GradientPaletteColor(badtrip), position);
+                            }
+                            else if (paletteSource == 9)
+                            {
+                                colorPoint = GetColorByOffset(GradientPaletteColor(police), position);
+                            }
+                            else if (paletteSource == 10)
+                            {
+                                colorPoint = GetColorByOffset(GradientPaletteColor(iceandfire), position);
+                            }
+                            else if (paletteSource == 11)
+                            {
+                                GetCustomColor();
+                                colorPoint = GetColorByOffset(GradientPaletteColor(custom), position);
+                            }
+                            spot.SetColor(colorPoint.R, colorPoint.G, colorPoint.B, true);
                         }
+
+                    
+
+                        
+                               
+                           
 
 
 
@@ -304,29 +312,17 @@ namespace adrilight
 
                         
 
-                        counter = 0;
+                        //counter = 0;
                         
                         
-                        //if(isHub)
-                        //{
-                        //    foreach (var spotSet in _childSpotSet)
+                      
+                        //    foreach (IDeviceSpot spot in DeviceSpotSet.Spots)
                         //    {
-                        //        foreach (IDeviceSpot spot in spotSet.Spots)
-                        //        {
-                        //            spot.SetColor(outputColor[counter].R, outputColor[counter].G, outputColor[counter].B, true);
-                        //            counter++;
-                        //        }
-                        //    }
-                        //}
-                        //else
-                        //{
-                            foreach (IDeviceSpot spot in DeviceSpotSet.Spots)
-                            {
-                                spot.SetColor(outputColor[spot.VID].R, outputColor[spot.VID].G, outputColor[spot.VID].B, true);
-                                counter++;
+                        //        spot.SetColor(outputColor[spot.VID].R, outputColor[spot.VID].G, outputColor[spot.VID].B, true);
+                        //        counter++;
 
-                            }
-                        //}
+                        //    }
+                      
 
 
 

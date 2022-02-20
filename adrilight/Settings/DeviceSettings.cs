@@ -96,6 +96,7 @@ namespace adrilight
         private int _numLED = 32;
 
         private bool _useLinearLighting = true;
+        private int _groupID;
       
 
         private int _selectedAudioDevice = 0;
@@ -264,7 +265,7 @@ namespace adrilight
         public int AtmosphereStop { get => _atmosphereStop; set { Set(() => AtmosphereStop, ref _atmosphereStop, value); } }
         public byte[] SnapShot { get => _snapShot; set { Set(() => SnapShot, ref _snapShot, value); } }
         public int[] VirtualIndex { get => _virtualIndex; set { Set(() => VirtualIndex, ref _virtualIndex, value); } }
-
+        public int GroupID { get => _groupID; set { Set(() => GroupID, ref _groupID, value); } }
         //public bool Comport4Open { get => _Comport4Open; set { Set(() => Comport4Open, ref _Comport4Open, value); } }
 
 

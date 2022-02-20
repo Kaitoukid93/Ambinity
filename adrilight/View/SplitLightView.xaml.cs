@@ -590,6 +590,10 @@ namespace adrilight.View
            
                 
         }
-       
+
+        private void SpotVirtualIDAssignment(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

@@ -20,7 +20,16 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-
+        private IGroupSettings _group;
+        public IGroupSettings Group {
+            get { return _group; }
+            set
+            {
+                if (_group == value) return;
+                _group = value;
+                RaisePropertyChanged();
+            }
+        }
         private int _stepIndex;
 
         public int StepIndex {
@@ -68,11 +77,39 @@ namespace adrilight.ViewModel
             get { return _existedDevices; }
             set {  _existedDevices = value; }
         }
+        private ObservableCollection<IGroupSettings> _existedGroup;
+        public ObservableCollection<IGroupSettings> ExistedGroup {
+            get { return _existedGroup; }
+            set { _existedGroup = value; }
+        }
 
-        public AddDeviceViewModel(ObservableCollection<IDeviceSettings> device, IDesktopFrame desktopFrame)
+        public AddDeviceViewModel(ObservableCollection<IDeviceSettings> devices, ObservableCollection<IGroupSettings> groups, IDesktopFrame desktopFrame)
         {
-            ExistedDevices = device;
+            ExistedDevices = devices;
+            ExistedGroup = groups;
             DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
+            ExistedDevicesName = new List<string>();
+            foreach(var device in ExistedDevices)
+            {
+                if(!device.IsHUB)
+                {
+                    var name = device.DeviceName;
+                    if (device.ParrentLocation != 151293)
+                    {
+                        var parrentName = "";
+                        foreach (var parrent in ExistedDevices)
+                            if (parrent.HUBID == device.ParrentLocation)
+                                parrentName = parrent.DeviceName;
+                        name = name + "(" + parrentName + ")";
+                    }
+                    //device is in hub
+
+
+                    ExistedDevicesName.Add(name);
+                }
+              
+            }
+            
 
         }
        
@@ -97,6 +134,7 @@ namespace adrilight.ViewModel
                 _basicRev1Checked = value;
                 if (value)
                 {
+                    AddedItemType = AvailableTypes.Device;
                     Device.DeviceType = "ABRev1";
                     Device.RGBOrder = 0;
                     Device.DeviceLayout = 0;
@@ -118,6 +156,7 @@ namespace adrilight.ViewModel
                 _basicRev2Checked = value;
                 if (value)
                 {
+                    AddedItemType = AvailableTypes.Device;
                     Device.DeviceType = "ABRev2";
                     Device.RGBOrder = 5;
                     Device.DeviceLayout = 0;
@@ -157,6 +196,7 @@ namespace adrilight.ViewModel
                 _eDGEChecked = value;
                 if (value)
                 {
+                    AddedItemType = AvailableTypes.Device;
                     Device.DeviceType = "ABEDGE";
                     Device.DeviceLayout = 1;
                     Device.LayoutEnabled = false;
@@ -167,25 +207,56 @@ namespace adrilight.ViewModel
 
             }
         }
-
+        
         private List<IDeviceSettings> _availableOutputs;
         public List<IDeviceSettings> AvailableOutputs {
             get { return _availableOutputs; }
             set {  _availableOutputs = value;}
         }
+        public  enum AvailableTypes { Device,Group};
+        private AvailableTypes _addedItemType;
+        public AvailableTypes AddedItemType {
+            get { return _addedItemType; }
+            set { _addedItemType = value; }
+        }
+      
+
 
         private List<IDeviceSettings> _selectedOutputs;
         public List<IDeviceSettings> SelectedOutputs {
             get { return _selectedOutputs; }
             set { _selectedOutputs = value; }
         }
+        private List<IDeviceSettings> _selectedChilds;
+        public List<IDeviceSettings> SelectedChilds {
+            get { return _selectedChilds; }
+            set
+            {
+                _selectedChilds = value;
+                SelectedChild_PropertyChanged();
+            }
+        }
+        private void SelectedChild_PropertyChanged()
+        {
+            if (SelectedChilds != null)
+            {
+                foreach (var child in SelectedChilds)
+                {
+                    child.SelectedEffect = 1;
+                    child.GroupID = Group.GroupID;
+                };
+            }
+        }
         //private List<string> _selectedOutputs;
         //public List<string> SelectedOutputs {
         //    get { return _selectedOutputs; }
         //    set { _selectedOutputs = value; }
         //}
-
-
+        private List<string> _existedDevicesName;
+        public List<string> ExistedDevicesName {
+            get { return _existedDevicesName; }
+            set { _existedDevicesName = value; }
+        }
         private bool _fanHUBChecked;
         public bool FanHubChecked {
 
@@ -195,6 +266,7 @@ namespace adrilight.ViewModel
                 _fanHUBChecked = value;
                 if (value)
                 {
+                    AddedItemType = AvailableTypes.Device;
                     Device.DeviceType = "ABFANHUB"; // add parrent device
                     Device.DeviceID = ExistedDevices.Count() + 1;
                     Device.HUBID = ExistedDevices.Count() + 1;
@@ -237,6 +309,7 @@ namespace adrilight.ViewModel
                 _hUBV2Checked = value;
                 if (value)
                 {
+                    AddedItemType = AvailableTypes.Device;
                     IsNextable = true;
                     Device.DeviceType = "ABHV2";
                     RaisePropertyChanged(() => Device.DeviceType);
@@ -245,6 +318,25 @@ namespace adrilight.ViewModel
                 
             }
         }
+        private bool _groupChecked;
+        public bool GroupChecked {
+
+            get { return _groupChecked; }
+            set
+            {
+                _groupChecked = value;
+                if (value)
+                {
+                    AddedItemType = AvailableTypes.Group;
+                    Group.GroupID = ExistedGroup.Count() + 1;
+                    Group.GroupName = "Group1";
+                    IsNextable = true;
+                    RaisePropertyChanged(() => IsNextable);
+                }
+
+            }
+        }
+      
         private bool _aRGB1Selected;
         public bool ARGB1Selected {
 
@@ -475,6 +567,7 @@ namespace adrilight.ViewModel
         public override void ReadData()
         {
             Device = new DeviceSettings();
+            Group = new GroupSettings();
             AvailableDevice = new ObservableCollection<string>
 {
           "Ambino Basic Rev1",
