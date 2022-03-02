@@ -99,6 +99,7 @@ namespace adrilight
         int IMX2 { get; set; }
         int IMY2 { get; set; }
         bool IMLockDim { get; set; }
+        bool GroupLightingEnable { get; set; }
 
         //gifxelation//
         byte[] SnapShot { get; set; }

@@ -45,6 +45,7 @@ namespace adrilight.ViewModel
         public const string general = "General";
         public const string lighting = "Lighting";
         public const string canvasLighting = "Canvas Lighting";
+        public const string groupLighting = "Group Lighting";
         #endregion
         #region property
         private ObservableCollection<VerticalMenuItem> _menuItems;
@@ -212,7 +213,19 @@ namespace adrilight.ViewModel
 
             }
         }
+        private IGroupSettings _currentGroup;
+        public IGroupSettings CurrentGroup {
+            get { return _currentGroup; }
+            set
+            {
+                if (_currentGroup == value) return;
+                if (_currentGroup != null) _currentGroup.PropertyChanged -= _currentDevice_PropertyChanged;
+                _currentGroup = value;
+                if (_currentGroup != null) _currentGroup.PropertyChanged += _currentDevice_PropertyChanged;
+                RaisePropertyChanged("CurrentGroup");
 
+            }
+        }
         private void _currentDevice_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (!IsDashboardType)
@@ -242,6 +255,7 @@ namespace adrilight.ViewModel
         public ICommand AdjustPositionCommand { get; set; }
         public ICommand SnapshotCommand { get; set; }
         public ICommand DeleteDeviceCommand { get; set; }
+        public ICommand SetNextSpotVIDCommand { get; set; }
         #endregion
         private ObservableCollection<IDeviceSettings> _cards;
         public ObservableCollection<IDeviceSettings> Cards {
@@ -1134,6 +1148,15 @@ namespace adrilight.ViewModel
                     this.GotoGroup(p);
                 }
             });
+            SetNextSpotVIDCommand = new RelayCommand<IDeviceSpot>((p) => {
+                return p != null;
+            }, (p) =>
+            {
+                if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+                {
+                    this.IncreaseVID(p);
+                }
+            });
 
             //LightingModeSelection = new RelayCommand<string>((p) => {
             //    return p != null;
@@ -1182,6 +1205,8 @@ namespace adrilight.ViewModel
             }, (p) =>
             {
                 BackToDashboard();
+               
+
             });
         }
 
@@ -1199,6 +1224,17 @@ namespace adrilight.ViewModel
             }
             CurrentDevice.SnapShot = snapshot;
             RaisePropertyChanged(() => CurrentDevice.SnapShot);
+        }
+        public void CurrentSpotSetVIDChanged()
+        {
+            
+          foreach(var spot in PreviewSpots)
+            {
+                CurrentDevice.VirtualIndex[spot.id] = spot.VID;
+               
+            }
+                
+            WriteDeviceInfoJson();
         }
 
         public void DeviceRectSavePosition()
@@ -1791,14 +1827,23 @@ namespace adrilight.ViewModel
             File.WriteAllText(JsonDeviceFileNameAndPath, json);
 
         }
+        public void IncreaseVID(IDeviceSpot spot)
+        {
+            spot.VID = 5;
+        }
         public void GotoGroup(IGroupSettings group)
         {
-
+            SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == groupLighting);
+            IsDashboardType = false;
+            IsSplitLightingWindowOpen = false;
+            IsCanvasLightingWindowOpen = false;
+            CurrentGroup = group;
+            SetMenuItemActiveStatus(groupLighting);
         }
         public void GotoChild(IDeviceSettings card)
         {
            
-            SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == general);
+            SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == lighting);
             IsDashboardType = false;
             CurrentDevice = card;
             IsSplitLightingWindowOpen = true;
@@ -1902,8 +1947,9 @@ namespace adrilight.ViewModel
             MenuItems.Add(new VerticalMenuItem() { Text = deviceSetting, IsActive = false, Type = MenuButtonType.Dashboard });
             MenuItems.Add(new VerticalMenuItem() { Text = appSetting, IsActive = false, Type = MenuButtonType.Dashboard });
             MenuItems.Add(new VerticalMenuItem() { Text = canvasLighting, IsActive = false, Type = MenuButtonType.Dashboard });
-            MenuItems.Add(new VerticalMenuItem() { Text = general, IsActive = true, Type = MenuButtonType.General });
-            MenuItems.Add(new VerticalMenuItem() { Text = lighting, IsActive = false, Type = MenuButtonType.General });
+            MenuItems.Add(new VerticalMenuItem() { Text = general, IsActive = true, Type = MenuButtonType.DeviceSettings });
+            MenuItems.Add(new VerticalMenuItem() { Text = lighting, IsActive = false, Type = MenuButtonType.DeviceSettings });
+            MenuItems.Add(new VerticalMenuItem() { Text = groupLighting, IsActive = false, Type = MenuButtonType.GroupLighting });
 
         }
         /// <summary>

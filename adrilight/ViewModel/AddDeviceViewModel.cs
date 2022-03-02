@@ -136,6 +136,8 @@ namespace adrilight.ViewModel
                 {
                     AddedItemType = AvailableTypes.Device;
                     Device.DeviceType = "ABRev1";
+                    Device.DevicePowerMiliamps = 900;
+                    Device.DevicePowerVoltage = 5;
                     Device.RGBOrder = 0;
                     Device.DeviceLayout = 0;
                     Device.LayoutEnabled = false;
@@ -244,6 +246,7 @@ namespace adrilight.ViewModel
                 {
                     child.SelectedEffect = 1;
                     child.GroupID = Group.GroupID;
+                    child.GroupLightingEnable = true;
                 };
             }
         }
@@ -278,6 +281,10 @@ namespace adrilight.ViewModel
                         fan.DeviceName = "Fan" + i.ToString();
                         fan.IsVissible = false;
                         fan.ParrentLocation = Device.HUBID;
+                        fan.SelectedEffect = 1;
+                        fan.SelectedPalette = 0;
+                        fan.DevicePowerVoltage = 5;
+                        fan.DevicePowerMiliamps = 500;
                         fan.DeviceLayout = 0;
                         fan.OutputLocation = i-1;
                         fan.NumLED = 16;

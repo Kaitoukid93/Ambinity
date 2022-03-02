@@ -595,5 +595,13 @@ namespace adrilight.View
         {
 
         }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            // tell viewmodel to update CurrentDevice's SpotVID and write to json
+            var vm = this.DataContext as MainViewViewModel;
+            vm.CurrentSpotSetVIDChanged();
+
+        }
     }
 }

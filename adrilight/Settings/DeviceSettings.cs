@@ -97,6 +97,7 @@ namespace adrilight
 
         private bool _useLinearLighting = true;
         private int _groupID;
+        private bool _groupLightingEnable = false;
       
 
         private int _selectedAudioDevice = 0;
@@ -271,6 +272,7 @@ namespace adrilight
 
 
         public bool UseLinearLighting { get => _useLinearLighting; set { Set(() => UseLinearLighting, ref _useLinearLighting, value); } }
+        public bool GroupLightingEnable { get => _groupLightingEnable; set { Set(() => GroupLightingEnable, ref _groupLightingEnable, value); } }
         //gifxelation//
 
         public bool GifPlayPause { get => _GifPlayPause; set { Set(() => GifPlayPause, ref _GifPlayPause, value); } }

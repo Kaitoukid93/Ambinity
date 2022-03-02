@@ -51,7 +51,7 @@
 
 
                 <TextBlock Margin="10,0,0,0"   Text="LIGHTING" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="#FF898989"/>
-            
+
             </Grid>
             <Grid Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
@@ -139,7 +139,7 @@
                     <DataTemplate>
                         <Grid>
 
-                            <Rectangle ToolTip="{Binding ID}" Stroke="White" RadiusX="{Binding RadiusX}" RadiusY="{Binding RadiusY}" StrokeThickness="0.5" Width="{Binding DisplayRectangle.Width}" Height="{Binding DisplayRectangle.Height}">
+                            <Rectangle ToolTip="{Binding ID}" Stroke="White" RadiusX="{Binding RadiusX}" RadiusY="{Binding RadiusY}" StrokeThickness="0.5" Width="{Binding DisplayRectangle.Width}" Height="{Binding DisplayRectangle.Height}" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity">
                                 <Rectangle.Fill>
                                     <RadialGradientBrush>
                                         <GradientStop Color="{Binding OnDemandColor}"  Offset="0"/>
@@ -147,9 +147,13 @@
                                     </RadialGradientBrush>
                                 </Rectangle.Fill>
 
-
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown" >
+                                        <i:InvokeCommandAction Command="{Binding DataContext.SetNextSpotVIDCommand,RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                             </Rectangle>
-                            <TextBlock Visibility="Collapsed" Text="{Binding ID }" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                            <TextBox   Visibility="{Binding ElementName=VIDEditEnable,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}" Text="{Binding VID }" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" LostFocus="TextBox_LostFocus"/>
                             <Rectangle Visibility="{Binding IsFirst, Converter={StaticResource BooleanToVisibilityConverter}}" RadiusX="4" RadiusY="4" Fill="#FF673AB7"
                                                Width="5" 
                                                Height="5" />
@@ -260,6 +264,22 @@
 
 
             </Button>
+            <TextBlock Text="Lock" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,280,0"/>
+            <ToggleButton x:Name="VIDEditEnable" IsChecked="True" ToolTip="Unlock để chỉnh sửa vị trí LED ảo " Foreground="#FF326CF3" Background="#3F326CF3" Padding="7" Command="{Binding SnapshotCommand}" Style="{StaticResource ToggleButtonSwitch}" Grid.Row="3"  materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0" Margin="0,0,235,0"  BorderBrush="{x:Null}"  HorizontalAlignment="Right" VerticalAlignment="Center">
+                <!--<Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    --><!--<TextBlock Grid.Column="1" Text="Snapshot" Margin="5,0,0,0" Height="18" VerticalAlignment="Top"/>
+                    <materialDesign:PackIcon  Grid.Column="0"
+                        Kind="Camera"
+                        Height="20"
+                        Width="20" VerticalAlignment="Center" HorizontalAlignment="Center" />--><!--
+                </Grid>-->
+
+
+            </ToggleButton>
 
             <!--<ComboBox  SelectedIndex="{Binding DeviceType}" Width="114" Grid.Row="3" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
                 <ComboBoxItem Content="Strip"/>

@@ -222,8 +222,8 @@ namespace adrilight
                         double position = 0;
                         foreach (IDeviceSpot spot in DeviceSpotSet.Spots)
                         {
-                            if (isInGroup) // get position from rainbow ticker if device is hub object
-                            {
+                            //if (isInGroup) // get position from rainbow ticker if device is hub object
+                            //{
                                 //position = RainbowTicker.StartIndex +  (groupSelfIndex*250d) + (500d/ (frequency * numLED) * i);
                                 position = RainbowTicker.StartIndex +  (500d /  160 * spot.VID);
                                 // this could be replace by using real ordering instead of adding groupSelfIndex because
@@ -231,15 +231,15 @@ namespace adrilight
 
                                 if (position > 1000)
                                     position = position - 1000;
-                            }
-                            else
-                            {
-                                position = _startIndex + 1000d / (frequency * numLED) * spot.VID;
+                            //}
+                            //else
+                            //{
+                            //    position = _startIndex + 1000d / (frequency * numLED) * spot.VID;
 
-                                if (position > 1000)
-                                    position = position - 1000;
+                            //    if (position > 1000)
+                            //        position = position - 1000;
 
-                            }
+                            //}
                             Color colorPoint = Color.FromRgb(0, 0, 0);
                             if (paletteSource == 0)
                             {

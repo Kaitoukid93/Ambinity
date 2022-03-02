@@ -22,11 +22,13 @@ namespace adrilight.Spots
             RadiusX = 0;
             RadiusY = 0;
             ID = index.ToString();
+            id = index;
             VID = virtualIndex;
         }
 
         public Rectangle Rectangle { get;  set; }
         public Rectangle DisplayRectangle { get; set; }
+        public int id { get; set; }
 
         private bool _isFirst;
         public bool IsFirst {
@@ -59,6 +61,10 @@ namespace adrilight.Spots
                 RaisePropertyChanged(nameof(OnDemandColorTransparent));
             }
         }
+        //public void SetNextVID(int currentGroupVIDCounter)
+        //{
+        //    VID = currentGroupVIDCounter + 1;
+        //}
 
         public void Dispose()
         {

@@ -55,7 +55,7 @@ namespace BO
                 OnPropertyChanged();
             }
         }
-        private MenuButtonType _type = MenuButtonType.General;
+        private MenuButtonType _type = MenuButtonType.Dashboard;
         public MenuButtonType Type
         {
             get { return _type; }
@@ -70,7 +70,8 @@ namespace BO
     }
     public enum MenuButtonType : byte
     {
-        General = 0,
-        Dashboard = 1
+        DeviceSettings = 0,
+        Dashboard = 1,
+        GroupLighting = 2
     }
 }

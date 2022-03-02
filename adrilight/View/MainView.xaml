@@ -213,11 +213,11 @@
             <DataTemplate x:Key="dashboardTemplate">
                 <local:AllDeviceView/>
             </DataTemplate>
-            <DataTemplate x:Key="generalTemplate">
-                <local:SplitLightView/>
-            </DataTemplate>
             <DataTemplate x:Key="lightingTemplate">
                 <local:SplitLightView/>
+            </DataTemplate>
+            <DataTemplate x:Key="groupLightingTemplate">
+                <local:GroupLighting/>
             </DataTemplate>
             <DataTemplate x:Key="deviceSettingTemplate">
                 <local:NewDeviceSettingsView/>
@@ -245,14 +245,11 @@
                     <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="Canvas Lighting">
                         <Setter Property="ContentTemplate" Value="{StaticResource canvasLightingTemplate}" />
                     </DataTrigger>
-                    <!--<DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="FAQ">
-                        <Setter Property="ContentTemplate" Value="{StaticResource faqTemplate}" />
-                    </DataTrigger>-->
-                    <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="General">
-                        <Setter Property="ContentTemplate" Value="{StaticResource lightingTemplate}" />
-                    </DataTrigger>
                     <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="Lighting">
                         <Setter Property="ContentTemplate" Value="{StaticResource lightingTemplate}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="Group Lighting">
+                        <Setter Property="ContentTemplate" Value="{StaticResource groupLightingTemplate}" />
                     </DataTrigger>
                     <!--  your other Status' here -->
                 </Style.Triggers>

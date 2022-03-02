@@ -15,6 +15,7 @@ namespace adrilight.Spots
         int RadiusX { get; set; }
         int RadiusY { get; set; }
         string ID { get; set; }
+        int id { get; set; }
         int VID { get; set; }
 
 
