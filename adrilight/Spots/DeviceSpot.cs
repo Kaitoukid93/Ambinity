@@ -61,6 +61,16 @@ namespace adrilight.Spots
                 RaisePropertyChanged(nameof(OnDemandColorTransparent));
             }
         }
+        public void SetVID(int vid)
+        {
+            VID = vid;
+          
+
+            
+                RaisePropertyChanged(nameof(VID));
+                
+            
+        }
         //public void SetNextVID(int currentGroupVIDCounter)
         //{
         //    VID = currentGroupVIDCounter + 1;

@@ -19,7 +19,9 @@ namespace adrilight.Spots
         int VID { get; set; }
 
 
+
         void IndicateMissingValue();
         void SetColor(byte red, byte green, byte blue, bool raiseEvents);
+        void SetVID(int vid);
     }
 }

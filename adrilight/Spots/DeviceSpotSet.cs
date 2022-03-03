@@ -297,6 +297,8 @@ namespace adrilight
             foreach (var spot in spotSet)
             {
                 spot.ID = (id++).ToString();
+                spot.id = id;
+                spot.VID = virtualIndex[id];
             }
 
             return spotSet;

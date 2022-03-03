@@ -246,6 +246,11 @@ namespace adrilight.ViewModel
 
             }
         }
+        //VIDs commands//
+        public ICommand ZerolAllCommand { get; set; }
+        public ICommand SetIncreamentCommand { get; set; }
+        public ICommand SetIncreamentCommandfromZero { get; set; }
+        public ICommand UserInputIncreamentCommand { get; set; }
 
         public ICommand SelectMenuItem { get; set; }
         public ICommand BackCommand { get; set; }
@@ -1072,6 +1077,32 @@ namespace adrilight.ViewModel
             // ReadFAQ();
 
             //CurrentView = _allDeviceView.CreateViewModel();
+            //VIDs command//
+            ZerolAllCommand = new RelayCommand<string>((p) => {
+                return true;
+            }, (p) =>
+            {
+                SetZerotoAll();
+            });
+            SetIncreamentCommandfromZero = new RelayCommand<string>((p) => {
+                return true;
+            }, (p) =>
+            {
+                SetIncreament(0,1);
+            });
+            SetIncreamentCommand = new RelayCommand<string>((p) => {
+                return true;
+            }, (p) =>
+            {
+                SetIncreament(10,1);
+            });
+
+            UserInputIncreamentCommand = new RelayCommand<string>((p) => {
+                return true;
+            }, (p) =>
+            {
+                ShowIncreamentDataDialog();
+            });
             SelectMenuItem = new RelayCommand<VerticalMenuItem>((p) => {
                 return true;
             }, (p) =>
@@ -1709,6 +1740,22 @@ namespace adrilight.ViewModel
 
 
         }
+        public async void ShowIncreamentDataDialog()
+        {
+            var view = new View.UserIncreamentInput();
+            UserIncreamentInputViewModel dialogViewModel = new UserIncreamentInputViewModel();
+            view.DataContext = dialogViewModel;
+            bool UserResult = (bool)await DialogHost.Show(view, "mainDialog");
+            if (UserResult)
+            {
+                var startIndex = dialogViewModel.StartIndex;
+                var spacing = dialogViewModel.Spacing;
+                SetIncreament(startIndex, spacing);
+                //apply increament function
+            }
+
+
+        }
         public async  void ShowAdjustPositon()
         {
             var view = new View.DeviceRectPositon();
@@ -1839,6 +1886,30 @@ namespace adrilight.ViewModel
             IsCanvasLightingWindowOpen = false;
             CurrentGroup = group;
             SetMenuItemActiveStatus(groupLighting);
+        }
+        //VIDs function
+        public void SetZerotoAll()
+        {
+            foreach(var spot in PreviewSpots)
+            {
+                spot.SetVID(0);
+                
+            }
+            CurrentSpotSetVIDChanged();
+        }
+        public void SetIncreament(int startIndex, int spacing)
+        {
+          
+            int counter = 0;
+            for (var i = startIndex; i < (startIndex + PreviewSpots.Length*spacing);i+=spacing)
+            {
+                PreviewSpots[counter++].SetVID(i);
+                
+            }
+                
+
+            
+            CurrentSpotSetVIDChanged();
         }
         public void GotoChild(IDeviceSettings card)
         {

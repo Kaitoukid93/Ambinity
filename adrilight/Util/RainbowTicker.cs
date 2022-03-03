@@ -150,7 +150,7 @@ namespace adrilight
                 while (!token.IsCancellationRequested)
                 {
 
-                            StartIndex += 0.3;
+                            StartIndex += 0.7;
                             if (StartIndex > 1000)
                             {
                             StartIndex = 0;

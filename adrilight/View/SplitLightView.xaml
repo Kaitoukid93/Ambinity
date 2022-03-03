@@ -162,10 +162,10 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Button Command="{Binding DeleteCommand}" Width="75" Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="3" Content="Delete" materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0" Margin="0,0,20,0" Background="#3FFD7E35" BorderBrush="{x:Null}" Foreground="#FFFD7E35" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <!--<Button Command="{Binding DeleteCommand}" Width="75" Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="3" Content="Delete" materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0" Margin="0,0,20,0" Background="#3FFD7E35" BorderBrush="{x:Null}" Foreground="#FFFD7E35" HorizontalAlignment="Right" VerticalAlignment="Center">
 
 
-            </Button>
+            </Button>-->
             <Border Height="{Binding CanvasHeight}" Grid.Row="5" Width="{Binding CanvasWidth}" BorderThickness="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,30,0,0">
                 <Border.Style>
                     <Style TargetType="Border">
@@ -217,26 +217,214 @@
 
             </Grid>
             <StackPanel Grid.Row="2"/>
-            <Button Foreground="#FF326CF3" Background="#3F326CF3" Padding="7" Command="{Binding SnapshotCommand}" Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="3"  materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0" Margin="0,-0.4,116,0"  BorderBrush="{x:Null}"  HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="1" Text="Snapshot" Margin="5,0,0,0" Height="18" VerticalAlignment="Top">
+            <!--tool bar stackpanel-->
+            <StackPanel Orientation="Horizontal" Grid.Row="3">
+                <!-- enale toggle button-->
+                <ToggleButton x:Name="VIDEditEnable" 
+                              IsChecked="True" 
+                              ToolTip="Unlock để chỉnh sửa vị trí LED ảo " 
+                              Foreground="#FF326CF3" 
+                              Background="#3F326CF3" 
+                              Padding="7" 
+                              Command="{Binding SnapshotCommand}" 
+                              Style="{StaticResource ToggleButtonSwitch}" 
+                              Grid.Row="3"  
+                              materialDesign:ButtonAssist.CornerRadius="7" 
+                              materialDesign:ShadowAssist.ShadowDepth="Depth0" 
+                              Margin="20,0,0,0"  BorderBrush="{x:Null}"  
+                              HorizontalAlignment="Left" 
+                              VerticalAlignment="Center">
+
+                </ToggleButton>
+                <!-- Zero All, set all spot VIDs to 0-->
+                <Button 
+                    Visibility="{Binding ElementName=VIDEditEnable,Path=IsChecked, Converter={StaticResource boolToVisibilityConvert}}" 
+                    Foreground="#FF326CF3" 
+                    Background="#3F326CF3" 
+                    Padding="7" 
+                    Command="{Binding ZerolAllCommand}" 
+                    Style="{StaticResource MaterialDesignFlatButton}" 
+                    Grid.Row="3"  
+                    materialDesign:ButtonAssist.CornerRadius="7" 
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0" 
+                    Margin="20,0,0,0"  
+                    BorderBrush="{x:Null}"  
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon  Grid.Column="0"
+                                                  Kind="NumberZeroCircle"
+                                                  Height="20"
+                                                  Width="20" 
+                                                  VerticalAlignment="Center" 
+                                                  HorizontalAlignment="Center" />
+                    </Grid>
 
 
-                    </TextBlock>
-                    <materialDesign:PackIcon  Grid.Column="0"
-                         Kind="Camera"
-    Height="20"
-    Width="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </Grid>
+                </Button>
+                <!-- increament from any startpoint-->
+                <Button 
+                    Visibility="{Binding ElementName=VIDEditEnable,Path=IsChecked, Converter={StaticResource boolToVisibilityConvert}}" 
+                    Foreground="#FF326CF3" 
+                    Background="#3F326CF3" 
+                    Padding="7" 
+                    Command="{Binding UserInputIncreamentCommand}" 
+                    Style="{StaticResource MaterialDesignFlatButton}" 
+                    Grid.Row="3"  
+                    materialDesign:ButtonAssist.CornerRadius="7" 
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0" 
+                    Margin="20,0,0,0"  
+                    BorderBrush="{x:Null}"  
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon  Grid.Column="0"
+                                                  Kind="Counter"
+                                                  Height="20"
+                                                  Width="20" 
+                                                  VerticalAlignment="Center" 
+                                                  HorizontalAlignment="Center" />
+                    </Grid>
 
 
-            </Button>
-            <Button Foreground="#FF326CF3" Background="#3F326CF3" Padding="7" Command="{Binding AdjustPositionCommand}"  Grid.Row="6
-                    "  materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0"  BorderBrush="{x:Null}"  HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,30,0,0">
+                </Button>
+                <!-- increament from zero-->
+                <Button 
+                    Visibility="{Binding ElementName=VIDEditEnable,Path=IsChecked, Converter={StaticResource boolToVisibilityConvert}}" 
+                    Foreground="#FF326CF3" 
+                    Background="#3F326CF3"
+                    Padding="7" 
+                    Command="{Binding SetIncreamentCommandfromZero}" 
+                    Style="{StaticResource MaterialDesignFlatButton}" 
+                    Grid.Row="3" 
+                    materialDesign:ButtonAssist.CornerRadius="7" 
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0" 
+                    Margin="20,0,0,0"  BorderBrush="{x:Null}"  
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon  Grid.Column="0"
+                                                  Kind="UndoVariant"
+                                                  Height="20"
+                                                  Width="20" 
+                                                  VerticalAlignment="Center" 
+                                                  HorizontalAlignment="Center" />
+                    </Grid>
+
+
+                </Button>
+                <!-- import-->
+                <Button 
+                    Visibility="{Binding ElementName=VIDEditEnable,Path=IsChecked, Converter={StaticResource boolToVisibilityConvert}}" 
+                    Foreground="#FF326CF3" 
+                    Background="#3F326CF3" 
+                    Padding="7" Command="{Binding SnapshotCommand}" 
+                    Style="{StaticResource MaterialDesignFlatButton}" 
+                    Grid.Row="3"  
+                    materialDesign:ButtonAssist.CornerRadius="7" 
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0" 
+                    Margin="20,0,0,0"  BorderBrush="{x:Null}"  
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon  Grid.Column="0"
+                                                  Kind="FileImport"
+                                                  Height="20"
+                                                  Width="20" 
+                                                  VerticalAlignment="Center" 
+                                                  HorizontalAlignment="Center" />
+                    </Grid>
+
+
+                </Button>
+                <!-- export-->
+                <Button 
+                    Visibility="{Binding ElementName=VIDEditEnable,Path=IsChecked, Converter={StaticResource boolToVisibilityConvert}}" 
+                    Foreground="#FF326CF3" 
+                    Background="#3F326CF3" 
+                    Padding="7" 
+                    Command="{Binding SnapshotCommand}" 
+                    Style="{StaticResource MaterialDesignFlatButton}" 
+                    Grid.Row="3"  
+                    materialDesign:ButtonAssist.CornerRadius="7" 
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0" Margin="20,0,0,0"  
+                    BorderBrush="{x:Null}"  
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon  Grid.Column="0"
+                                                  Kind="FileExport"
+                                                  Height="20"
+                                                  Width="20" 
+                                                  VerticalAlignment="Center" 
+                                                  HorizontalAlignment="Center" />
+                    </Grid>
+
+
+                </Button>
+                <!-- Snapshot button-->
+                <Button 
+                    Visibility="{Binding ElementName=VIDEditEnable,Path=IsChecked, Converter={StaticResource boolToVisibilityConvert}}" 
+                    Foreground="#FF326CF3"
+                    Background="#3F326CF3"
+                    Padding="7" Command="{Binding SnapshotCommand}" 
+                    Style="{StaticResource MaterialDesignFlatButton}" 
+                    Grid.Row="3"  
+                    materialDesign:ButtonAssist.CornerRadius="7" 
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0" 
+                    Margin="20,0,0,0"  BorderBrush="{x:Null}"  
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon  Grid.Column="0"
+                                                  Kind="Camera"
+                                                  Height="20"
+                                                  Width="20" 
+                                                  VerticalAlignment="Center" 
+                                                  HorizontalAlignment="Center" />
+                    </Grid>
+
+
+                </Button>
+             
+            </StackPanel>
+         <!--Adjust position buttons-->
+            <Button 
+                Foreground="#FF326CF3" 
+                Background="#3F326CF3" 
+                Padding="7" 
+                Command="{Binding AdjustPositionCommand}"  
+                Grid.Row="6"  
+                materialDesign:ButtonAssist.CornerRadius="7" 
+                materialDesign:ShadowAssist.ShadowDepth="Depth0"  
+                BorderBrush="{x:Null}"  
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Top" 
+                Margin="0,30,0,0">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
                         <Setter Property="Visibility" Value="Collapsed"></Setter>
@@ -264,22 +452,8 @@
 
 
             </Button>
-            <TextBlock Text="Lock" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,280,0"/>
-            <ToggleButton x:Name="VIDEditEnable" IsChecked="True" ToolTip="Unlock để chỉnh sửa vị trí LED ảo " Foreground="#FF326CF3" Background="#3F326CF3" Padding="7" Command="{Binding SnapshotCommand}" Style="{StaticResource ToggleButtonSwitch}" Grid.Row="3"  materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0" Margin="0,0,235,0"  BorderBrush="{x:Null}"  HorizontalAlignment="Right" VerticalAlignment="Center">
-                <!--<Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
-                    --><!--<TextBlock Grid.Column="1" Text="Snapshot" Margin="5,0,0,0" Height="18" VerticalAlignment="Top"/>
-                    <materialDesign:PackIcon  Grid.Column="0"
-                        Kind="Camera"
-                        Height="20"
-                        Width="20" VerticalAlignment="Center" HorizontalAlignment="Center" />--><!--
-                </Grid>-->
-
-
-            </ToggleButton>
+            <!--<TextBlock Text="Lock" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,280,0"/>-->
+            
 
             <!--<ComboBox  SelectedIndex="{Binding DeviceType}" Width="114" Grid.Row="3" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
                 <ComboBoxItem Content="Strip"/>

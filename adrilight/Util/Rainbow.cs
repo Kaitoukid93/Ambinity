@@ -225,7 +225,7 @@ namespace adrilight
                             //if (isInGroup) // get position from rainbow ticker if device is hub object
                             //{
                                 //position = RainbowTicker.StartIndex +  (groupSelfIndex*250d) + (500d/ (frequency * numLED) * i);
-                                position = RainbowTicker.StartIndex +  (500d /  160 * spot.VID);
+                                position = RainbowTicker.StartIndex +  (1500d /  160 * spot.VID);
                                 // this could be replace by using real ordering instead of adding groupSelfIndex because
                                 // the gradient hold entire rainbow spectrum
 
