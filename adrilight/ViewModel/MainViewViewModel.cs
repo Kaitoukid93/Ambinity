@@ -251,6 +251,8 @@ namespace adrilight.ViewModel
         public ICommand SetIncreamentCommand { get; set; }
         public ICommand SetIncreamentCommandfromZero { get; set; }
         public ICommand UserInputIncreamentCommand { get; set; }
+        public ICommand ExportSpotDataCommand { get; set; }
+        public ICommand ImportSpotDataCommand { get; set; }
 
         public ICommand SelectMenuItem { get; set; }
         public ICommand BackCommand { get; set; }
@@ -1043,32 +1045,8 @@ namespace adrilight.ViewModel
             }
         }
      
-        public bool SyncOn {
-            get => CurrentDevice.SyncOn;
-            set
-            {
-                
-                CurrentDevice.SyncOn = value;
-                HubOutputNavigationEnable = !value;
-                RaisePropertyChanged(() => CurrentDevice.SyncOn);
-                RaisePropertyChanged(() => HubOutputNavigationEnable);
-                RaisePropertyChanged();
-
-            }
-        }
-        public bool SyncOff {
-            get => !CurrentDevice.SyncOn;
-            set
-            {
-
-                CurrentDevice.SyncOn = !value;
-                HubOutputNavigationEnable = value;
-                RaisePropertyChanged(() => HubOutputNavigationEnable);
-                RaisePropertyChanged(() => CurrentDevice.SyncOn);
-                RaisePropertyChanged();
-
-            }
-        }
+      
+      
         public override void ReadData()
         {
             LoadMenu();
@@ -1082,19 +1060,19 @@ namespace adrilight.ViewModel
                 return true;
             }, (p) =>
             {
-                SetZerotoAll();
+                ShowZeroingDialog();
             });
             SetIncreamentCommandfromZero = new RelayCommand<string>((p) => {
                 return true;
             }, (p) =>
             {
-                SetIncreament(0,1);
+                SetIncreament(0,1,0,PreviewSpots.Length-1);
             });
             SetIncreamentCommand = new RelayCommand<string>((p) => {
                 return true;
             }, (p) =>
             {
-                SetIncreament(10,1);
+                SetIncreament(10,1,0,PreviewSpots.Length-1);
             });
 
             UserInputIncreamentCommand = new RelayCommand<string>((p) => {
@@ -1103,6 +1081,19 @@ namespace adrilight.ViewModel
             {
                 ShowIncreamentDataDialog();
             });
+            ExportSpotDataCommand = new RelayCommand<string>((p) => {
+                return true;
+            }, (p) =>
+            {
+                ExportCurrentSpotData();
+            });
+            ImportSpotDataCommand = new RelayCommand<string>((p) => {
+                return true;
+            }, (p) =>
+            {
+               ImportCurrentSpotData();
+            });
+
             SelectMenuItem = new RelayCommand<VerticalMenuItem>((p) => {
                 return true;
             }, (p) =>
@@ -1742,15 +1733,33 @@ namespace adrilight.ViewModel
         }
         public async void ShowIncreamentDataDialog()
         {
+            UserIncreamentInputViewModel dialogViewModel = new UserIncreamentInputViewModel(PreviewSpots);
             var view = new View.UserIncreamentInput();
-            UserIncreamentInputViewModel dialogViewModel = new UserIncreamentInputViewModel();
             view.DataContext = dialogViewModel;
             bool UserResult = (bool)await DialogHost.Show(view, "mainDialog");
             if (UserResult)
             {
                 var startIndex = dialogViewModel.StartIndex;
                 var spacing = dialogViewModel.Spacing;
-                SetIncreament(startIndex, spacing);
+                var startPoint = dialogViewModel.StartPoint;
+                var endPoint = dialogViewModel.EndPoint;
+                SetIncreament(startIndex, spacing,startPoint,endPoint);
+                //apply increament function
+            }
+
+
+        }
+        public async void ShowZeroingDialog()
+        {
+            UserIncreamentInputViewModel dialogViewModel = new UserIncreamentInputViewModel(PreviewSpots);
+            var view = new View.UserNumberInput();
+            view.DataContext = dialogViewModel;
+            bool UserResult = (bool)await DialogHost.Show(view, "mainDialog");
+            if (UserResult)
+            {
+                var spreadNumber = dialogViewModel.SpreadNumber;
+
+                SetZerotoAll(spreadNumber);
                 //apply increament function
             }
 
@@ -1874,6 +1883,71 @@ namespace adrilight.ViewModel
             File.WriteAllText(JsonDeviceFileNameAndPath, json);
 
         }
+        public void ExportCurrentSpotData()
+        {
+            SaveFileDialog Export = new SaveFileDialog();
+            Export.CreatePrompt = true;
+            Export.OverwritePrompt = true;
+
+            Export.Title = "Xuất dữ liệu";
+            Export.FileName = CurrentDevice.DeviceName + "Spot Data";
+            Export.CheckFileExists = false;
+            Export.CheckPathExists = true;
+            Export.DefaultExt = "vid";
+            Export.Filter = "All files (*.*)|*.*";
+            Export.InitialDirectory =
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            Export.RestoreDirectory = true;
+           
+            
+                string[] spotData = new string[256];
+                for(int i=0;i<PreviewSpots.Length;i++)
+                {
+                    spotData[i] = CurrentDevice.VirtualIndex[i].ToString();
+                }
+            if (Export.ShowDialog() == DialogResult.OK)
+            {
+                System.IO.File.WriteAllLines(Export.FileName, spotData);
+
+            }
+        }
+        public void ImportCurrentSpotData()
+        {
+            OpenFileDialog Import = new OpenFileDialog();
+            Import.Title = "Chọn vid file";
+            Import.CheckFileExists = true;
+            Import.CheckPathExists = true;
+            Import.DefaultExt = "vid";
+            Import.Filter = "Text files (*.vid)|*.vid";
+            Import.FilterIndex = 2;
+
+
+            Import.ShowDialog();
+
+
+            if (!string.IsNullOrEmpty(Import.FileName) && File.Exists(Import.FileName))
+            {
+
+
+                var lines = File.ReadAllLines(Import.FileName);
+
+
+                try
+                {
+                    for (int i=0;i<PreviewSpots.Length;i++)
+                    {
+                        PreviewSpots[i].SetVID(int.Parse(lines[i]));
+                    }
+                    CurrentSpotSetVIDChanged();
+                }
+                catch (FormatException)
+                {
+                    HandyControl.Controls.MessageBox.Show("Corrupted vid data File!!!");
+                }
+
+            }
+        }
+
         public void IncreaseVID(IDeviceSpot spot)
         {
             spot.VID = 5;
@@ -1888,20 +1962,20 @@ namespace adrilight.ViewModel
             SetMenuItemActiveStatus(groupLighting);
         }
         //VIDs function
-        public void SetZerotoAll()
+        public void SetZerotoAll(int number)
         {
             foreach(var spot in PreviewSpots)
             {
-                spot.SetVID(0);
+                spot.SetVID(number);
                 
             }
             CurrentSpotSetVIDChanged();
         }
-        public void SetIncreament(int startIndex, int spacing)
+        public void SetIncreament(int startIndex, int spacing, int startPoint, int endPoint)
         {
           
-            int counter = 0;
-            for (var i = startIndex; i < (startIndex + PreviewSpots.Length*spacing);i+=spacing)
+            int counter = startPoint;
+            for (var i = startIndex; i <= startIndex+(endPoint -startPoint)*spacing;i+=spacing)
             {
                 PreviewSpots[counter++].SetVID(i);
                 
@@ -1931,8 +2005,7 @@ namespace adrilight.ViewModel
                 HUBOutputCollection = new ObservableCollection<IDeviceSettings>();
                // HUBOutputCollection.Add(CurrentDevice);
                 DeviceLightingModeCollection = true;
-                SyncOn = CurrentDevice.SyncOn;
-                RaisePropertyChanged(() => SyncOn);
+              
                 //only HUB object has ability to sync it's child device
                 RaisePropertyChanged(() => DeviceLightingModeCollection);
 

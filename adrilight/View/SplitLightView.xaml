@@ -86,7 +86,7 @@
                         </TextBlock>
                     </Grid>
                 </hc:ProgressButton>
-                <hc:ButtonGroup x:Name="outputNavigation" IsEnabled="{Binding  HubOutputNavigationEnable}"  Style="{StaticResource ButtonGroupSolid}" ItemsSource="{Binding HUBOutputCollection}"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0">
+                <hc:ButtonGroup x:Name="outputNavigation" IsEnabled="true"  Style="{StaticResource ButtonGroupSolid}" ItemsSource="{Binding HUBOutputCollection}"  Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0">
                     <hc:ButtonGroup.ItemTemplate>
                         <DataTemplate>
                             <RadioButton IsChecked="{Binding IsNavigationSelected}" Width="60" Command="{Binding Path=DataContext.SelectCardCommand, ElementName=outputNavigation}" CommandParameter="{Binding}" GroupName="HUB" Style="{StaticResource RadioGroupItemDefault}" Content="{Binding DeviceName}">
@@ -226,7 +226,6 @@
                               Foreground="#FF326CF3" 
                               Background="#3F326CF3" 
                               Padding="7" 
-                              Command="{Binding SnapshotCommand}" 
                               Style="{StaticResource ToggleButtonSwitch}" 
                               Grid.Row="3"  
                               materialDesign:ButtonAssist.CornerRadius="7" 
@@ -330,7 +329,7 @@
                     Visibility="{Binding ElementName=VIDEditEnable,Path=IsChecked, Converter={StaticResource boolToVisibilityConvert}}" 
                     Foreground="#FF326CF3" 
                     Background="#3F326CF3" 
-                    Padding="7" Command="{Binding SnapshotCommand}" 
+                    Padding="7" Command="{Binding ImportSpotDataCommand }" 
                     Style="{StaticResource MaterialDesignFlatButton}" 
                     Grid.Row="3"  
                     materialDesign:ButtonAssist.CornerRadius="7" 
@@ -359,7 +358,7 @@
                     Foreground="#FF326CF3" 
                     Background="#3F326CF3" 
                     Padding="7" 
-                    Command="{Binding SnapshotCommand}" 
+                    Command="{Binding ExportSpotDataCommand}" 
                     Style="{StaticResource MaterialDesignFlatButton}" 
                     Grid.Row="3"  
                     materialDesign:ButtonAssist.CornerRadius="7" 
@@ -694,7 +693,7 @@
                     <Grid>
                         <Grid.Style>
                             <Style TargetType="Grid">
-                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                <Setter Property="Visibility" Value="Visible"></Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=EffectBox,Path=SelectedItem}" Value="Sáng theo dải màu">
                                         <Setter Property="Visibility" Value="Visible"/>
@@ -720,8 +719,37 @@
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Đồng bộ hệ thống" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
+                                    <ToggleButton x:Name="AmbinSync" 
+                              IsChecked="{Binding CurrentDevice.SyncOn }" 
+                              ToolTip="Unlock để chỉnh sửa vị trí LED ảo " 
+                              Foreground="#FF326CF3" 
+                              Background="#3F326CF3" 
+                              Padding="7" 
+                              Style="{StaticResource ToggleButtonSwitch}" 
+                              Grid.Column="1"
+                              Grid.Row="0"  
+                              materialDesign:ButtonAssist.CornerRadius="7" 
+                              materialDesign:ShadowAssist.ShadowDepth="Depth0" 
+                              Margin="0,0,10,0"  BorderBrush="{x:Null}"  
+                              HorizontalAlignment="Right" 
+                              VerticalAlignment="Center">
+
+                                    </ToggleButton>
+                                    <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Thiết bị sẽ chạy theo màu, vị trí đồng bộ với hệ thống" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989"/>
+
+                                </Grid>
+                                <Grid Height="80" Margin="0,0,10,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Chọn Dải Màu" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
-                                    <hc:ButtonGroup ToolTip="Ghép tất cả các output của HUB vê chung một hiệu ứng" Visibility="Collapsed" Grid.Column="0" x:Name="LightingModeSelection"  Style="{StaticResource ButtonGroupSolid}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0">
+                                    <!--<hc:ButtonGroup ToolTip="Ghép tất cả các output của HUB vê chung một hiệu ứng" Visibility="Collapsed" Grid.Column="0" x:Name="LightingModeSelection"  Style="{StaticResource ButtonGroupSolid}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0">
 
 
                                         <RadioButton Width="auto" Content="Đồng Bộ" IsChecked="{Binding SyncOn,Mode=TwoWay}" Command="{Binding Path=DataContext.LightingModeSelection, ElementName=LightingModeSelection}" CommandParameter="Đồng Bộ" GroupName="lightingMode" Style="{StaticResource RadioGroupItemDefault}" >
@@ -729,8 +757,8 @@
                                         <RadioButton Width="auto" Content="Riêng Lẻ" IsChecked="{Binding SyncOff,Mode=TwoWay}" Command="{Binding Path=DataContext.LightingModeSelection, ElementName=LightingModeSelection}" CommandParameter="Riêng Lẻ" GroupName="lightingMode" Style="{StaticResource RadioGroupItemDefault}" >
                                         </RadioButton>
 
-                                    </hc:ButtonGroup>
-                                    <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Chọn dải màu mà bạn yêu thích. Chọn // để tùy chỉnh" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989"/>
+                                    </hc:ButtonGroup>-->
+                                    <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Chọn dải màu mà bạn yêu thích. Chọn Custom để tùy chỉnh" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989"/>
                                     <Rectangle Grid.Row="1" Grid.ColumnSpan="2" Height="1" Width="585" Fill="#14000000" VerticalAlignment="Bottom" Margin="10,0"/>
                                     <ComboBox x:Name="RainbowPaletteBox" ItemsSource="{Binding AvailablePalette}" SelectedIndex="{Binding CurrentDevice.SelectedPalette}" Style="{StaticResource ComboBoxExtend}" Margin="0,0,10,0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center"/>
 

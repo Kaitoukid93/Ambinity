@@ -141,7 +141,7 @@ namespace adrilight
          double _huePosIndex = 0;//index for rainbow mode only
          double _palettePosIndex = 0;//index for other custom palette
          double _startIndex = 0;
-            bool isInGroup = DeviceSettings.GroupID != 0 ? true : false;
+         
             //   if(isHub)
             //   {
             //       _childSpotSet = new List<IDeviceSpotSet>();
@@ -172,6 +172,7 @@ namespace adrilight
                     var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
                     var devicePowerMiliamps = DeviceSettings.DevicePowerMiliamps;
                     var groupSelfIndex = DeviceSettings.GroupSelfIndex;
+                    bool inSync = DeviceSettings.SyncOn;
                     //if (isHub)
                     //{
                     //    numLED = 0;
@@ -222,8 +223,8 @@ namespace adrilight
                         double position = 0;
                         foreach (IDeviceSpot spot in DeviceSpotSet.Spots)
                         {
-                            //if (isInGroup) // get position from rainbow ticker if device is hub object
-                            //{
+                            if (inSync) // get position from rainbow ticker if device is hub object
+                            {
                                 //position = RainbowTicker.StartIndex +  (groupSelfIndex*250d) + (500d/ (frequency * numLED) * i);
                                 position = RainbowTicker.StartIndex +  (1500d /  160 * spot.VID);
                                 // this could be replace by using real ordering instead of adding groupSelfIndex because
@@ -231,16 +232,16 @@ namespace adrilight
 
                                 if (position > 1000)
                                     position = position - 1000;
-                            //}
-                            //else
-                            //{
-                            //    position = _startIndex + 1000d / (frequency * numLED) * spot.VID;
+                        }
+                            else
+                        {
+                            position = _startIndex + 1000d / (frequency * numLED) * spot.id;
 
-                            //    if (position > 1000)
-                            //        position = position - 1000;
+                            if (position > 1000)
+                                position = position - 1000;
 
-                            //}
-                            Color colorPoint = Color.FromRgb(0, 0, 0);
+                        }
+                        Color colorPoint = Color.FromRgb(0, 0, 0);
                             if (paletteSource == 0)
                             {
                                 colorPoint = GetColorByOffset(GradientPaletteColor(rainbow), position);

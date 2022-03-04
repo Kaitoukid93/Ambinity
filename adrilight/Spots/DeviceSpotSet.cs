@@ -296,9 +296,10 @@ namespace adrilight
             int id = 0;
             foreach (var spot in spotSet)
             {
-                spot.ID = (id++).ToString();
+                spot.ID = (id).ToString();
                 spot.id = id;
                 spot.VID = virtualIndex[id];
+                id++;
             }
 
             return spotSet;
@@ -335,6 +336,7 @@ namespace adrilight
                 spotsX = 1;
 
             }
+            int[] virtualIndex = DeviceSettings.VirtualIndex;
             var spotwidth = rectwidth / spotsX;
             var spotheight = rectheight / spotsY;
             var displaySpotWidth = displayRectWidth / spotsX;
@@ -375,9 +377,11 @@ namespace adrilight
             int id = 0;
             foreach (var spot in spotSet)
             {
-                spot.ID = (id++).ToString();
+                spot.ID = (id).ToString();
+                spot.id = id;
+                spot.VID = virtualIndex[id];
+                id++;
             }
-
             return spotSet;
 
 
@@ -388,7 +392,7 @@ namespace adrilight
             //{
             //    numSpot = 120; //strip type only support 120 leds since the resolution of the shader is 120
             //}
-            
+            int[] virtualIndex = DeviceSettings.VirtualIndex;
             var spotsX = deviceSettings.SpotsX; // number of spot on one side
             var spotsY = deviceSettings.SpotsY; // number of spot on one side
             IDeviceSpot[] spotSet = new DeviceSpot[spotsX*spotsY];
@@ -638,9 +642,11 @@ namespace adrilight
             int id = 0;
             foreach (var spot in spotSet)
             {
-                spot.ID = (id++).ToString();
+                spot.ID = (id).ToString();
+                spot.id = id;
+                spot.VID = virtualIndex[id];
+                id++;
             }
-
             return spotSet;
 
         }

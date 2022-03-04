@@ -19,21 +19,17 @@ namespace adrilight.View
     /// <summary>
     /// Interaction logic for UserIncreamentInput.xaml
     /// </summary>
-    public partial class UserIncreamentInput : UserControl
+    public partial class UserNumberInput : UserControl
     {
-        public UserIncreamentInput()
+        public UserNumberInput()
         {
             InitializeComponent();
-            StartPoint.VerifyFunc = str => double.TryParse(str, out var v)
-                ? v > StartPoint.Maximum
+            numberInput.VerifyFunc = str => double.TryParse(str, out var v)
+                ? v > 500
                     ? OperationResult.Failed("Error")
                     : OperationResult.Success()
                 : OperationResult.Failed("Error");
-            EndPoint.VerifyFunc = str => double.TryParse(str, out var v)
-               ? v > StartPoint.Maximum
-                   ? OperationResult.Failed("Error")
-                   : OperationResult.Success()
-               : OperationResult.Failed("Error");
+        
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BO;
+﻿using adrilight.Spots;
+using BO;
 using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
@@ -31,10 +32,52 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+        private int _startPoint;
+        public int StartPoint {
+            get { return _startPoint; }
+            set
+            {
+                if (_startPoint == value) return;
+                _startPoint = value;
+                RaisePropertyChanged();
+            }
+        }
+        public IDeviceSpot[] previewSpots;
+        private int _endPoint;
+        public int EndPoint {
+            get { return _endPoint; }
+            set
+            {
+                if (_endPoint == value) return;
+                _endPoint = value;
+                RaisePropertyChanged();
+            }
+        }
+        private int _maxSpotsLength;
 
-
-        public UserIncreamentInputViewModel()
+        public int MaxSpotsLength {
+            get { return _maxSpotsLength; }
+            set
+            {
+                if (_maxSpotsLength == value) return;
+                _maxSpotsLength = value;
+                RaisePropertyChanged();
+            }
+        }
+        private int _spreadNumber;
+        public int SpreadNumber {
+            get { return _spreadNumber; }
+            set
+            {
+                if (_spreadNumber == value) return;
+                _spreadNumber = value;
+                RaisePropertyChanged();
+            }
+        }
+        public UserIncreamentInputViewModel(IDeviceSpot[] spots)
         {
+            previewSpots = spots;
+            MaxSpotsLength = previewSpots.Length-1;
             //Card = device;
 
             //DeleteCommand = new RelayCommand<string>((p) => {

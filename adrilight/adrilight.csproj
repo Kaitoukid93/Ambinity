@@ -236,4 +236,15 @@
     <Resource Include="Shaders\Thumbnail\PixelRainbow.png" />
     <Resource Include="Shaders\Thumbnail\Plasma.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="View\UserNumberInput.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="View\UserNumberInput.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
 </Project>
