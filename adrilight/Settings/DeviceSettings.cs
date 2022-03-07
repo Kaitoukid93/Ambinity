@@ -1,4 +1,5 @@
 ﻿using adrilight.Spots;
+using adrilight.Util;
 using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
@@ -90,9 +91,10 @@ namespace adrilight
         //static color//
 
         private bool _isConnected = true;
-        private byte _selectedPalette = 0;
+        private int _selectedPalette = 0;
         private byte[] _snapShot = new byte[256];
         private int[] _virtualIndex = new int[256];
+        private int[] _musicIndex = new int[256];
         private int _numLED = 32;
 
         private bool _useLinearLighting = true;
@@ -110,7 +112,7 @@ namespace adrilight
         private byte _brightness = 80;
 
         
-        public byte _selectedMusicMode = 0;
+        public int _selectedMusicMode = 0;
 
 
         private string _filemau = "Blackout.txt";
@@ -118,42 +120,14 @@ namespace adrilight
        
         
 
-        private byte _selectedEffect = 0;
-        private Color _color0 = Color.FromArgb(255, 0, 255, 255);
-        private Color _color1 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color2 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color3 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color4 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color5 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color6 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color7 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color8 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color9 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color10 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color11 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color12 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color13 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color14 = Color.FromArgb(0, 0, 255, 255);
-        private Color _color15 = Color.FromArgb(0, 0, 255, 255);
-
-
-        private Color _mcolor0 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor1 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor2 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor3 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor4 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor5 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor6 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor7 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor8 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor9 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor10 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor11 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor12 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor13 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor14 = Color.FromArgb(0, 0, 255, 255);
-        private Color _mcolor15 = Color.FromArgb(0, 0, 255, 255);
+        private int _selectedEffect = 0;
+        private Color[] _customZone = new Color[16];
        
+        private Color[] _mCustomZone = new Color[16];
+     
+
+
+
 
 
 
@@ -266,6 +240,7 @@ namespace adrilight
         public int AtmosphereStop { get => _atmosphereStop; set { Set(() => AtmosphereStop, ref _atmosphereStop, value); } }
         public byte[] SnapShot { get => _snapShot; set { Set(() => SnapShot, ref _snapShot, value); } }
         public int[] VirtualIndex { get => _virtualIndex; set { Set(() => VirtualIndex, ref _virtualIndex, value); } }
+        public int[] MusicIndex { get => _musicIndex; set { Set(() => MusicIndex, ref _musicIndex, value); } }
         public int GroupID { get => _groupID; set { Set(() => GroupID, ref _groupID, value); } }
         //public bool Comport4Open { get => _Comport4Open; set { Set(() => Comport4Open, ref _Comport4Open, value); } }
 
@@ -294,15 +269,15 @@ namespace adrilight
         public string filemau { get => _filemau; set { Set(() => filemau, ref _filemau, value); } }
         public string filemauchip { get => _filemauchip; set { Set(() => filemauchip, ref _filemauchip, value); } }
 
-        public byte SelectedPalette { get => _selectedPalette; set { Set(() => SelectedPalette, ref _selectedPalette, value); } }
-        public byte SelectedMusicMode { get => _selectedMusicMode; set { Set(() => SelectedMusicMode, ref _selectedMusicMode, value); } }
+        public int SelectedPalette { get => _selectedPalette; set { Set(() => SelectedPalette, ref _selectedPalette, value); } }
+        public int SelectedMusicMode { get => _selectedMusicMode; set { Set(() => SelectedMusicMode, ref _selectedMusicMode, value); } }
 
         public byte Brightness { get => _brightness; set { Set(() => Brightness, ref _brightness, value); } }
 
         //ambilight smooth 
 
         
-        public byte SelectedEffect { get => _selectedEffect; set { Set(() => SelectedEffect, ref _selectedEffect, value); } }
+        public int SelectedEffect { get => _selectedEffect; set { Set(() => SelectedEffect, ref _selectedEffect, value); } }
         public int SelectedAudioDevice { get => _selectedAudioDevice; set { Set(() => SelectedAudioDevice, ref _selectedAudioDevice, value); } }
         public int SelectedDisplay { get => _selectedDisplay; set { Set(() => SelectedDisplay, ref _selectedDisplay, value); } }
         public int SelectedAdapter { get => _selectedAdapter; set { Set(() => SelectedAdapter, ref _selectedAdapter, value); } }
@@ -311,40 +286,12 @@ namespace adrilight
         public int SelectedMusicPalette { get => _selectedMusicPalette; set { Set(() => SelectedMusicPalette, ref _selectedMusicPalette, value); } }
         //Color Palette
 
-        public Color Color0 { get => _color0; set { Set(() => Color0, ref _color0, value); } }
-        public Color Color1 { get => _color1; set { Set(() => Color1, ref _color1, value); } }
-        public Color Color2 { get => _color2; set { Set(() => Color2, ref _color2, value); } }
-        public Color Color3 { get => _color3; set { Set(() => Color3, ref _color3, value); } }
-        public Color Color4 { get => _color4; set { Set(() => Color4, ref _color4, value); } }
-        public Color Color5 { get => _color5; set { Set(() => Color5, ref _color5, value); } }
-        public Color Color6 { get => _color6; set { Set(() => Color6, ref _color6, value); } }
-        public Color Color7 { get => _color7; set { Set(() => Color7, ref _color7, value); } }
-        public Color Color8 { get => _color8; set { Set(() => Color8, ref _color8, value); } }
-        public Color Color9 { get => _color9; set { Set(() => Color9, ref _color9, value); } }
-        public Color Color10 { get => _color10; set { Set(() => Color10, ref _color10, value); } }
-        public Color Color11 { get => _color11; set { Set(() => Color11, ref _color11, value); } }
-        public Color Color12 { get => _color12; set { Set(() => Color12, ref _color12, value); } }
-        public Color Color13 { get => _color13; set { Set(() => Color13, ref _color13, value); } }
-        public Color Color14 { get => _color14; set { Set(() => Color14, ref _color14, value); } }
-        public Color Color15 { get => _color15; set { Set(() => Color15, ref _color15, value); } }
+        public Color[] CustomZone { get => _customZone; set { Set(() => CustomZone, ref _customZone, value); } }
+        
+     
 
         //Color Palette
-        public Color MColor0 { get => _mcolor0; set { Set(() => MColor0, ref _mcolor0, value); } }
-        public Color MColor1 { get => _mcolor1; set { Set(() => MColor1, ref _mcolor1, value); } }
-        public Color MColor2 { get => _mcolor2; set { Set(() => MColor2, ref _mcolor2, value); } }
-        public Color MColor3 { get => _mcolor3; set { Set(() => MColor3, ref _mcolor3, value); } }
-        public Color MColor4 { get => _mcolor4; set { Set(() => MColor4, ref _mcolor4, value); } }
-        public Color MColor5 { get => _mcolor5; set { Set(() => MColor5, ref _mcolor5, value); } }
-        public Color MColor6 { get => _mcolor6; set { Set(() => MColor6, ref _mcolor6, value); } }
-        public Color MColor7 { get => _mcolor7; set { Set(() => MColor7, ref _mcolor7, value); } }
-        public Color MColor8 { get => _mcolor8; set { Set(() => MColor8, ref _mcolor8, value); } }
-        public Color MColor9 { get => _mcolor9; set { Set(() => MColor9, ref _mcolor9, value); } }
-        public Color MColor10 { get => _mcolor10; set { Set(() => MColor10, ref _mcolor10, value); } }
-        public Color MColor11 { get => _mcolor11; set { Set(() => MColor11, ref _mcolor11, value); } }
-        public Color MColor12 { get => _mcolor12; set { Set(() => MColor12, ref _mcolor12, value); } }
-        public Color MColor13 { get => _mcolor13; set { Set(() => MColor13, ref _mcolor13, value); } }
-        public Color MColor14 { get => _mcolor14; set { Set(() => MColor14, ref _mcolor14, value); } }
-        public Color MColor15 { get => _mcolor15; set { Set(() => MColor15, ref _mcolor15, value); } }
+        public Color[] MCustomZone { get => _mCustomZone; set { Set(() => MCustomZone, ref _mCustomZone, value); } }
         private int _parentDeviceId = -1;
         public int ParentDeviceId { get => _parentDeviceId; set { Set(() => _parentDeviceId, ref _parentDeviceId, value); } }
         // Add new

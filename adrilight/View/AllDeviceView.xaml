@@ -119,11 +119,11 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Margin="10,0,0,0" Grid.Row="0" Grid.Column="0" Text="DASHBOARD"  FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
-                <hc:ButtonGroup Grid.Column="1" Margin="50,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <!--<hc:ButtonGroup Grid.Column="1" Margin="50,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">
                     <RadioButton x:Name ="allDevices"  Content="All Devices" IsChecked="True"/>
                     <RadioButton x:Name="allGroups" Content="Groups"/>
 
-                </hc:ButtonGroup>
+                </hc:ButtonGroup>-->
             </Grid>
            
             <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="0" Text="Tất cả các thiết bị đã từng được thêm sẽ xuất hiện ở đây. Click vào từng thẻ để điều chỉnh" FontSize="14" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="#FF898989"/>
@@ -150,7 +150,6 @@
                        ItemContainerStyle="{StaticResource ListViewContainerStyle}"
                        BorderThickness="0" 
                        Tag="{Binding}"
-                       Visibility="{Binding ElementName=allDevices,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}"
                        Background="White">
 
                 <ListView.ItemsPanel>
@@ -343,7 +342,7 @@
             </ListView>
 
             <!-- all groups-->
-            <ListView  Margin="0,15,0,15" 
+            <!--<ListView  Margin="0,15,0,15" 
                        Name="groups" 
                        ItemsSource="{Binding Groups,UpdateSourceTrigger=PropertyChanged}"                        
                        IsTabStop="False"
@@ -392,12 +391,12 @@
                                     <Style TargetType="Border"  >
                                         <Setter Property="BorderBrush" Value="#FF898989"></Setter>
                                         <Setter Property="BorderThickness" Value="2"></Setter>
-                                        <!--<Style.Triggers>
+                                        --><!--<Style.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter Property="BorderBrush" Value="#7F326CF3"></Setter>
                                                 <Setter Property="BorderThickness" Value="6"></Setter>
                                             </Trigger>
-                                        </Style.Triggers>-->
+                                        </Style.Triggers>--><!--
                                     </Style>
                                 </Border.Style>
                                 <i:Interaction.Triggers>
@@ -408,11 +407,11 @@
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                                 <Grid>
-                                    <!--<i:Interaction.Triggers>
+                                    --><!--<i:Interaction.Triggers>
                                         <i:EventTrigger EventName="MouseDown">
                                             <i:InvokeCommandAction Command="{Binding Path=DataContext.SelectCardCommand, ElementName=itm}" CommandParameter="{Binding}"/>
                                         </i:EventTrigger>
-                                    </i:Interaction.Triggers>-->
+                                    </i:Interaction.Triggers>--><!--
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="58*"/>
                                         <ColumnDefinition Width="15*"/>
@@ -422,7 +421,7 @@
                                         <RowDefinition Height="64*"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <!--on off button-->
+                                    --><!--on off button--><!--
                                     <ToggleButton 
                                         IsChecked="{Binding LEDOn}" 
                                         Grid.Column="1" 
@@ -441,7 +440,7 @@
                                         Height="26"
                                         Width="26" />
                                     </ToggleButton>
-                                    <!--delete device button-->
+                                    --><!--delete device button--><!--
                                     <Button 
                                         BorderBrush="{x:Null}" 
                                         BorderThickness="1"
@@ -464,7 +463,7 @@
                                           Height="26"
                                           Width="26" />
                                     </Button>
-                                    <!--color dot-->
+                                    --><!--color dot--><!--
                                     <Rectangle 
                                         Margin="0,0,20,20" 
                                         Grid.Column="1" 
@@ -476,7 +475,7 @@
                                         RadiusY="10" 
                                         VerticalAlignment="Bottom" 
                                         HorizontalAlignment="Right"/>
-                                    <!--device information-->
+                                    --><!--device information--><!--
                                     <Grid Grid.Row="1" Grid.Column="0">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="13*"/>
@@ -514,7 +513,7 @@
                                             <TextBlock Padding="3" Text="{Binding Brightness,StringFormat=Độ sáng : {0}%}"/>
                                         </StackPanel>
                                     </Grid>
-                                    <!--<ListBox Grid.Row="2" Visibility="{Binding IsHUB,Converter={StaticResource boolToVisibilityConvert}}">
+                                    --><!--<ListBox Grid.Row="2" Visibility="{Binding IsHUB,Converter={StaticResource boolToVisibilityConvert}}">
                                         <ListBox.Resources>
                                             <CollectionViewSource x:Key="allDevice" Source="{Binding ChildCard}" />
                                         </ListBox.Resources>
@@ -529,18 +528,18 @@
                                         </ListBox.ItemsSource>
 
                                          Here you can customize everything you want 
-                                    </ListBox>-->
+                                    </ListBox>--><!--
                                 </Grid>
                             </Border>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-                <!--<ItemsControl.ItemsPanel>
+                --><!--<ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal"/>
                         </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>-->
-            </ListView>
+                    </ItemsControl.ItemsPanel>--><!--
+            </ListView>-->
         </Grid>
 
     </Grid>

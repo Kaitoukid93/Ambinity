@@ -17,6 +17,7 @@ namespace adrilight.Spots
         string ID { get; set; }
         int id { get; set; }
         int VID { get; set; }
+        int MID { get; set; }
 
 
 

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Linq;
 using System.Windows.Controls;
+using adrilight.Util;
 using HandyControl.Controls;
 
 namespace adrilight.ViewModel
@@ -167,7 +168,7 @@ namespace adrilight.ViewModel
                     Device.Brightness = 49;
                     IsNextable = true;
                     Device.DeviceRectHeight1 = DesktopFrame.FrameHeight;
-                    Device.DeviceRectWidth1 = DesktopFrame.FrameWidth;
+                    Device.DeviceRectWidth1 = DesktopFrame.FrameWidth;      
                     RaisePropertyChanged(() => Device.DeviceType);
                     RaisePropertyChanged(() => Device.RGBOrder);
                     RaisePropertyChanged(() => IsNextable);

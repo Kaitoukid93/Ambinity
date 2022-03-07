@@ -16,7 +16,7 @@ namespace adrilight
 {
     internal class Music : IMusic
     {
-       
+
 
         public static float[] _fft;
         public static int _lastlevel;
@@ -42,7 +42,7 @@ namespace adrilight
             //SettingsViewModel = settingsViewModel ?? throw new ArgumentNullException(nameof(settingsViewModel));
             //Remove SettingsViewmodel from construction because now we pass SpotSet Dirrectly to MainViewViewModel
             DeviceSettings.PropertyChanged += PropertyChanged;
-           // SettingsViewModel.PropertyChanged += PropertyChanged;
+            // SettingsViewModel.PropertyChanged += PropertyChanged;
             BassNet.Registration("saorihara93@gmail.com", "2X2831021152222");
             _process = new WASAPIPROC(Process);
             _fft = new float[1024];
@@ -54,7 +54,7 @@ namespace adrilight
         }
         //Dependency Injection//
         private IDeviceSettings DeviceSettings { get; }
-       //private SettingsViewModel SettingsViewModel { get; }
+        //private SettingsViewModel SettingsViewModel { get; }
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
         private IDeviceSpotSet DeviceSpotSet { get; }
@@ -70,7 +70,7 @@ namespace adrilight
                 case nameof(DeviceSettings.SelectedMusicPalette):
                 case nameof(DeviceSettings.SpotsX):
                 case nameof(DeviceSettings.SpotsY):
-                
+
 
                     RefreshAudioState();
                     break;
@@ -84,7 +84,7 @@ namespace adrilight
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = DeviceSettings.TransferActive &&DeviceSettings.SelectedEffect == 3;
+            var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 3;
 
 
 
@@ -94,7 +94,7 @@ namespace adrilight
                 _log.Debug("stopping the Music Color");
                 _cancellationTokenSource.Cancel();
                 _cancellationTokenSource = null;
-               // Free();
+                // Free();
             }
 
 
@@ -164,13 +164,13 @@ namespace adrilight
             return length;
         }
 
-       
+
         public void Run(CancellationToken token)
 
         {
 
-              double _huePosIndex = 0;//index for rainbow mode only
-       // public static double _palettePosIndex = 0;//index for other custom palette
+            double _huePosIndex = 0;//index for rainbow mode only
+                                    // public static double _palettePosIndex = 0;//index for other custom palette
             double _startIndex = 0;
             if (IsRunning) throw new Exception(" Music Color is already running!");
 
@@ -187,9 +187,6 @@ namespace adrilight
 
                 while (!token.IsCancellationRequested)
                 {
-                    var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
-                    var devicePowerMiliamps = DeviceSettings.DevicePowerMiliamps;
-                    var brightness = DeviceSettings.Brightness/100d;
                     double senspercent = DeviceSettings.MSens / 100d;
                     //audio capture section//
                     int ret = BassWasapi.BASS_WASAPI_GetData(_fft, (int)BASSData.BASS_DATA_FFT2048);// get channel fft data
@@ -226,8 +223,8 @@ namespace adrilight
                     volumeLeft = (volumeLeft * 6 + Utils.LowWord32(level) * 2) / 8;
                     volumeRight = (volumeRight * 6 + Utils.HighWord32(level) * 2) / 8;
                     _lastlevel = level;
-                    byte musicMode = DeviceSettings.SelectedMusicMode;
-                   // bool isPreviewRunning = (SettingsViewModel.IsSettingsWindowOpen && UserSettings.SelectedEffect == 3);
+                    int musicMode = DeviceSettings.SelectedMusicMode;
+                    // bool isPreviewRunning = (SettingsViewModel.IsSettingsWindowOpen && UserSettings.SelectedEffect == 3);
                     //audio capture section//
 
 
@@ -243,8 +240,7 @@ namespace adrilight
                             newcolor = OpenRGB.NET.Models.Color.GetHueRainbow(numLED, _huePosIndex, 1, 1, 1);
                             foreach (var color in newcolor)
                             {
-                                var musicBrightness = brightnessMap[counter] * brightness;
-                                outputColor[counter] = Brightness.applyBrightness(color, musicBrightness, DeviceSpotSet.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
+                                outputColor[counter] = Brightness.applyBrightness(color, brightnessMap[counter],numLED,DeviceSettings.DevicePowerMiliamps,DeviceSettings.DevicePowerVoltage);
                                 counter++;
 
                             }
@@ -275,9 +271,8 @@ namespace adrilight
                                 {
                                     colorPoint = GetColorByOffset(GradientPaletteColor(custom), position);
                                 }
-                                var musicBrightness = brightnessMap[i] * brightness;
                                 var newColor = new OpenRGB.NET.Models.Color(colorPoint.R, colorPoint.G, colorPoint.B);
-                                outputColor[i] = Brightness.applyBrightness(newColor, musicBrightness, DeviceSpotSet.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
+                                outputColor[i] = Brightness.applyBrightness(newColor, brightnessMap[i], numLED, DeviceSettings.DevicePowerMiliamps, DeviceSettings.DevicePowerVoltage);
 
 
                             }
@@ -399,7 +394,7 @@ namespace adrilight
         }
 
 
-        public static double[] SpectrumCreator(byte[] fft, int sensitivity, double levelLeft, double levelRight, byte musicMode, int numLED)//create brightnessmap based on input fft or volume
+        public static double[] SpectrumCreator(byte[] fft, int sensitivity, double levelLeft, double levelRight, int musicMode, int numLED)//create brightnessmap based on input fft or volume
         {
 
             int counter = 0;
@@ -779,24 +774,7 @@ namespace adrilight
         public Color[] custom = new Color[16];
         public void GetCustomColor()
         {
-            custom[0] = DeviceSettings.MColor0;
-            custom[1] = DeviceSettings.MColor1;
-            custom[2] = DeviceSettings.MColor2;
-            custom[3] = DeviceSettings.MColor3;
-            custom[4] = DeviceSettings.MColor4;
-            custom[5] = DeviceSettings.MColor5;
-            custom[6] = DeviceSettings.MColor6;
-            custom[7] = DeviceSettings.MColor7;
-            custom[8] = DeviceSettings.MColor8;
-            custom[9] = DeviceSettings.MColor9;
-            custom[10] = DeviceSettings.MColor10;
-            custom[11] = DeviceSettings.MColor11;
-            custom[12] = DeviceSettings.MColor12;
-            custom[13] = DeviceSettings.MColor13;
-            custom[14] = DeviceSettings.MColor14;
-            custom[15] = DeviceSettings.MColor15;
-
-
+            custom = DeviceSettings.MCustomZone;
         }
 
         public static Color[] cafe = {
@@ -926,5 +904,4 @@ namespace adrilight
 //            }
 
 //        }
-
 

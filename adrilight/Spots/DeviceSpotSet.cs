@@ -236,6 +236,7 @@ namespace adrilight
         {
 
             int[] virtualIndex = DeviceSettings.VirtualIndex;
+            int[] musicIndex = DeviceSettings.MusicIndex;
             var spotsX = deviceSettings.SpotsX; // number of spot on one side
             var spotsY = deviceSettings.SpotsY; // number of spot on one side   
             IDeviceSpot[] spotSet = new DeviceSpot[CountLeds(spotsX,spotsY)];
@@ -284,7 +285,7 @@ namespace adrilight
                                 index += relationIndex - i * 2;
                             }
                         }
-                        spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index]); // virtualIndex get from devicesetting
+                        spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index], musicIndex[index]); // virtualIndex get from devicesetting
                     }
                 }
             }
@@ -337,6 +338,7 @@ namespace adrilight
 
             }
             int[] virtualIndex = DeviceSettings.VirtualIndex;
+            int[] musicIndex = DeviceSettings.MusicIndex;
             var spotwidth = rectwidth / spotsX;
             var spotheight = rectheight / spotsY;
             var displaySpotWidth = displayRectWidth / spotsX;
@@ -352,7 +354,7 @@ namespace adrilight
                     var y = 0;// strip layout only has 1 row
                     var y1 = 0;
                     var index = counter++;
-                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
+                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index], musicIndex[index]);
                 }
             }
             else
@@ -364,7 +366,7 @@ namespace adrilight
                     var y = i * spotheight;// strip layout only has 1 row
                     var y1 = i * displaySpotHeight;
                     var index = counter++;
-                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
+                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index], musicIndex[index]);
                 }
             }
          
@@ -393,6 +395,7 @@ namespace adrilight
             //    numSpot = 120; //strip type only support 120 leds since the resolution of the shader is 120
             //}
             int[] virtualIndex = DeviceSettings.VirtualIndex;
+            int[] musicIndex = DeviceSettings.MusicIndex;
             var spotsX = deviceSettings.SpotsX; // number of spot on one side
             var spotsY = deviceSettings.SpotsY; // number of spot on one side
             IDeviceSpot[] spotSet = new DeviceSpot[spotsX*spotsY];
@@ -424,7 +427,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index], musicIndex[index]);
                                     counter++;
 
                                 }
@@ -448,7 +451,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index], musicIndex[index]);
                                     counter++;
 
                                 }
@@ -480,7 +483,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index], musicIndex[index]);
                                     counter++;
 
                                 }
@@ -504,7 +507,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index], musicIndex[index]);
                                     counter++;
 
                                 }
@@ -537,7 +540,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index], musicIndex[index]);
                                     counter++;
 
                                 }
@@ -561,7 +564,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index], musicIndex[index]);
                                     counter++;
 
                                 }
@@ -594,7 +597,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index], musicIndex[index]);
                                     counter++;
 
                                 }
@@ -618,7 +621,7 @@ namespace adrilight
 
                                     var index = counter;
 
-                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, index);
+                                    spotSet[index] = new DeviceSpot(x, y, spotwidth, spotheight, x1, y1, displaySpotWidth, displaySpotHeight, index, virtualIndex[index], musicIndex[index]);
                                     counter++;
 
                                 }

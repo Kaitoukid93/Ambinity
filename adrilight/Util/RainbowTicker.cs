@@ -25,19 +25,21 @@ namespace adrilight
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public RainbowTicker( IDeviceSettings[] allDeviceSettings)
+        public RainbowTicker( IDeviceSettings[] allDeviceSettings, IGeneralSettings generalSettings)
         {
             //DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
             AllDeviceSettings = allDeviceSettings ?? throw new ArgumentNullException(nameof(allDeviceSettings));
+            GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
             //DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
             //AllDeviceSpotSet = allDeviceSpotSet ?? throw new ArgumentNullException(nameof(allDeviceSpotSet));
            
             
           
-            //DeviceSettings.PropertyChanged += PropertyChanged;
+           GeneralSettings.PropertyChanged += PropertyChanged;
             
            
             RefreshColorState();
+
             _log.Info($"RainbowColor Created");
 
         }
@@ -46,6 +48,7 @@ namespace adrilight
        // private IDeviceSettings ParrentDevice { get; }
         private IDeviceSettings[] AllDeviceSettings { get; }
         private IDeviceSpotSet[] AllDeviceSpotSet { get; }
+        private IGeneralSettings GeneralSettings { get; }
         private IDeviceSpotSet DeviceSpotSet { get; }
         private double _startIndex;
      
@@ -54,7 +57,7 @@ namespace adrilight
             set {  _startIndex = value; }
         }
 
-        private List<IDeviceSpotSet> _childSpotSet;
+      
            
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
@@ -63,13 +66,8 @@ namespace adrilight
         {
             switch (e.PropertyName)
             {
-                case nameof(DeviceSettings.TransferActive):
-                case nameof(DeviceSettings.SelectedEffect):
-                case nameof(DeviceSettings.SelectedPalette):
-                case nameof(DeviceSettings.Brightness):
-                case nameof(DeviceSettings.SpotsX):
-                case nameof(DeviceSettings.SpotsY):
-                case nameof(DeviceSettings.SyncOn):
+                case nameof(GeneralSettings.SystemRainbowSpeed):
+               
                 
 
                     RefreshColorState();
@@ -90,22 +88,9 @@ namespace adrilight
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning; // Check if sync mode is enabled
-            //var shouldBeRunning = false;
-            //if (DeviceSettings.IsHUB)
-            //{
-            //     shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 1 && DeviceSettings.SyncOn;
-            //}
-            //else
-            //{
-            //    if(DeviceSettings.ParrentLocation==151293)
+          
                  var shouldBeRunning = true;
-                //else 
-                //{
-                //    //find this child his parrents
-                    
-                //    shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 1 && !ParrentDevice.SyncOn;
-                //}
-            //}
+          
             
             if (isRunning && !shouldBeRunning)
             {
@@ -135,8 +120,8 @@ namespace adrilight
         public void Run(CancellationToken token)
 
         {
-       
-        
+            
+
             if (IsRunning) throw new Exception(" Rainbow Ticker is already running!");
 
             IsRunning = true;
@@ -146,17 +131,18 @@ namespace adrilight
 
             try
             {
+                
 
                 while (!token.IsCancellationRequested)
                 {
-
-                            StartIndex += 0.7;
-                            if (StartIndex > 1000)
+                    double speed = GeneralSettings.SystemRainbowSpeed / 5d;
+                    StartIndex += speed;
+                            if (StartIndex > 450)
                             {
                             StartIndex = 0;
                             }
 
-                    Thread.Sleep(5); 
+                    Thread.Sleep(10); 
 
                 }
             }

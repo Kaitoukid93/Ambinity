@@ -31,6 +31,8 @@ namespace adrilight
         private int _screenSizeSecondary = 0;
         private int _screenSizeThird = 0;
         private string _selectedShader = "Gooey";
+        private int _selectedSystemPalette = 0;
+        private int _systemRainbowSpeed = 5;
 
         private bool _startMinimized = false;
 
@@ -129,9 +131,11 @@ namespace adrilight
 
         public int SelectedDisplay { get => _selectedDisplay; set { Set(() => SelectedDisplay, ref _selectedDisplay, value); } }
         public int SelectedAdapter { get => _selectedAdapter; set { Set(() => SelectedAdapter, ref _selectedAdapter, value); } }
-       
+        public int SelectedSystemPalette { get => _selectedSystemPalette; set { Set(() => SelectedSystemPalette, ref _selectedSystemPalette, value); } }
+        public int SystemRainbowSpeed { get => _systemRainbowSpeed; set { Set(() => SystemRainbowSpeed, ref _systemRainbowSpeed, value); } }
 
-       
+
+
 
 
 

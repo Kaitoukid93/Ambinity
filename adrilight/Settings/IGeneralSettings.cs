@@ -58,6 +58,8 @@ namespace adrilight
         int UseLinearLighting { get; set; }
         int LimitFps { get; set; }
         bool StartMinimized { get; set; }
+        int SelectedSystemPalette { get; set; }
+        int SystemRainbowSpeed { get; set; }
 
 
     }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using adrilight.Util;
 
 namespace adrilight
 {
@@ -85,8 +86,8 @@ namespace adrilight
 
         int AtmosphereStart { get; set; }
         int AtmosphereStop { get; set; }
-        byte SelectedEffect { get; set; }
-        byte SelectedMusicMode { get; set; }
+        int SelectedEffect { get; set; }
+        int SelectedMusicMode { get; set; }
         int SelectedMusicPalette { get; set; }
 
         //gifxelation//
@@ -104,6 +105,7 @@ namespace adrilight
         //gifxelation//
         byte[] SnapShot { get; set; }
         int[] VirtualIndex { get; set; }
+        int[] MusicIndex { get; set; }
         int GroupSelfIndex { get; set; }
         int GroupID { get; set; }
 
@@ -116,7 +118,7 @@ namespace adrilight
         byte DeviceSize { get; set; }
 
         //rainbow settings//
-        byte SelectedPalette { get; set; }
+        int SelectedPalette { get; set; }
         int EffectSpeed { get; set; }
         int ColorFrequency { get; set; }
         //rainbow settings//
@@ -129,41 +131,13 @@ namespace adrilight
 
 
         //Color Palette
-        Color Color0 { get; set; }
-        Color Color1 { get; set; }
-        Color Color2 { get; set; }
-        Color Color3 { get; set; }
-        Color Color4 { get; set; }
-        Color Color5 { get; set; }
-        Color Color6 { get; set; }
-        Color Color7 { get; set; }
-        Color Color8 { get; set; }
-        Color Color9 { get; set; }
-        Color Color10 { get; set; }
-        Color Color11 { get; set; }
-        Color Color12 { get; set; }
-        Color Color13 { get; set; }
-        Color Color14 { get; set; }
-        Color Color15 { get; set; }
+        Color [] CustomZone { get; set; }
+        Color[] MCustomZone { get; set; }
+
         int MSens { get; set; }
         //Color Palette
         //Music Color Palette
-        Color MColor0 { get; set; }
-        Color MColor1 { get; set; }
-        Color MColor2 { get; set; }
-        Color MColor3 { get; set; }
-        Color MColor4 { get; set; }
-        Color MColor5 { get; set; }
-        Color MColor6 { get; set; }
-        Color MColor7 { get; set; }
-        Color MColor8 { get; set; }
-        Color MColor9 { get; set; }
-        Color MColor10 { get; set; }
-        Color MColor11 { get; set; }
-        Color MColor12 { get; set; }
-        Color MColor13 { get; set; }
-        Color MColor14 { get; set; }
-        Color MColor15 { get; set; }
+       
         int LimitFps { get; set; }
         string DeviceName { get; set; }
     }

@@ -3,12 +3,12 @@
   <metadata>
     <id>adrilightApp</id>
     <!-- version will be replaced by MSBuild -->
-    <version>3.0.1</version>
+    <version>3.0.2</version>
     <title>adrilight</title>
     <authors>Ambinity</authors>
     <description>Simple App to control Ambino LED Devices</description>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <copyright>Copyright 2021</copyright>
+    <copyright>Copyright 2022</copyright>
     <iconUrl>https://github.com/Kaitoukid93/Ambinity/raw/master/adrilight/zoe.ico</iconUrl>
     <dependencies />
   </metadata>

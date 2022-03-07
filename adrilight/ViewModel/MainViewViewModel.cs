@@ -26,6 +26,7 @@ using System.Windows.Media;
 using System.Drawing;
 using System.Drawing.Imaging;
 using adrilight.Shaders;
+using HandyControl.Controls;
 
 namespace adrilight.ViewModel
 {
@@ -248,6 +249,7 @@ namespace adrilight.ViewModel
         }
         //VIDs commands//
         public ICommand ZerolAllCommand { get; set; }
+      
         public ICommand SetIncreamentCommand { get; set; }
         public ICommand SetIncreamentCommandfromZero { get; set; }
         public ICommand UserInputIncreamentCommand { get; set; }
@@ -258,11 +260,14 @@ namespace adrilight.ViewModel
         public ICommand BackCommand { get; set; }
         public ICommand DeviceRectDropCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
+        public ICommand SetCustomColorCommand{ get; set; }
         public ICommand DeleteGroupCommand { get; set; }
         public ICommand AdjustPositionCommand { get; set; }
         public ICommand SnapshotCommand { get; set; }
         public ICommand DeleteDeviceCommand { get; set; }
         public ICommand SetNextSpotVIDCommand { get; set; }
+        public ICommand SetZoneColorCommand { get; set; }
+        public ICommand GetZoneColorCommand { get; set; }
         #endregion
         private ObservableCollection<IDeviceSettings> _cards;
         public ObservableCollection<IDeviceSettings> Cards {
@@ -445,6 +450,44 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+
+        private int _currentSelectedCustomColorIndex;
+        public int CurrentSelectedCustomColorIndex {
+            get { return _currentSelectedCustomColorIndex; }
+            
+            set
+            {
+                if(value>=0)
+                    _currentSelectedCustomColorIndex = value;
+                
+               
+            }
+            
+        }
+
+        private ObservableCollection<System.Windows.Media.Color> _currentCustomZoneColor;
+        public ObservableCollection<System.Windows.Media.Color> CurrentCustomZoneColor {
+            get
+            {
+                if(_currentCustomZoneColor==null)
+                {
+                    _currentCustomZoneColor = new ObservableCollection<System.Windows.Media.Color>();
+                    foreach (var color in CurrentDevice.CustomZone)
+                    {
+                        _currentCustomZoneColor.Add(color);
+                    }
+                }
+              
+                return _currentCustomZoneColor;
+            }
+            set
+            {
+                _currentCustomZoneColor = value;
+            }
+        }
+            
+        
+
         
         //public int DeviceSpotX {
         //    get 
@@ -456,9 +499,9 @@ namespace adrilight.ViewModel
         //        if(CurrentDevice.SpotsY)
         //        CurrentDevice.SpotsX = value;
         //    }
-            
+
         //}
-        
+
         //public int DeviceSpotY {
         //    get => _deviceSpotY;
         //    set => _deviceSpotY = value;
@@ -620,6 +663,7 @@ namespace adrilight.ViewModel
             {
                 Groups.Add(group);
             }
+            
 
 
 
@@ -658,7 +702,7 @@ namespace adrilight.ViewModel
        
         }
       
-        public byte CurrentDeviceSelectedEffect {
+        public int CurrentDeviceSelectedEffect {
             get => CurrentDevice.SelectedEffect;
             set
             {
@@ -850,6 +894,18 @@ namespace adrilight.ViewModel
               
             }
         }
+        private System.Windows.Media.Color _currentPickedColor;
+        public System.Windows.Media.Color CurrentPickedColor {
+            get => _currentPickedColor;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _currentPickedColor, value);
+                RaisePropertyChanged();
+
+            }
+        }
+
         private bool _isCanvasLightingWindowOpen;
         public bool IsCanvasLightingWindowOpen {
             get => _isCanvasLightingWindowOpen;
@@ -1044,9 +1100,9 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-     
-      
-      
+
+        
+
         public override void ReadData()
         {
             LoadMenu();
@@ -1062,6 +1118,8 @@ namespace adrilight.ViewModel
             {
                 ShowZeroingDialog();
             });
+          
+
             SetIncreamentCommandfromZero = new RelayCommand<string>((p) => {
                 return true;
             }, (p) =>
@@ -1180,6 +1238,26 @@ namespace adrilight.ViewModel
                 }
             });
 
+            SetZoneColorCommand = new RelayCommand<string>((p) => {
+                return true;
+            }, (p) =>
+            {
+                if(Keyboard.IsKeyDown(Key.LeftCtrl)||Keyboard.IsKeyDown(Key.RightCtrl))
+                
+                    CurrentPickedColor = CurrentDevice.CustomZone[CurrentSelectedCustomColorIndex];
+                
+                else
+                SetCustomColor(CurrentSelectedCustomColorIndex);
+            });
+            GetZoneColorCommand = new RelayCommand<System.Windows.Media.Color>((p) => {
+                return true;
+            }, (p) =>
+            {
+
+                
+                
+            });
+
             //LightingModeSelection = new RelayCommand<string>((p) => {
             //    return p != null;
             //}, (p) =>
@@ -1246,6 +1324,16 @@ namespace adrilight.ViewModel
             }
             CurrentDevice.SnapShot = snapshot;
             RaisePropertyChanged(() => CurrentDevice.SnapShot);
+        }
+        public void SetCustomColor(int index)
+        {
+            CurrentDevice.CustomZone[index] = CurrentPickedColor;
+            CurrentCustomZoneColor.Clear();
+            foreach(var color in CurrentDevice.CustomZone)
+            {
+                CurrentCustomZoneColor.Add(color);
+            }
+            RaisePropertyChanged(nameof(CurrentCustomZoneColor));
         }
         public void CurrentSpotSetVIDChanged()
         {
@@ -1890,7 +1978,7 @@ namespace adrilight.ViewModel
             Export.OverwritePrompt = true;
 
             Export.Title = "Xuất dữ liệu";
-            Export.FileName = CurrentDevice.DeviceName + "Spot Data";
+            Export.FileName = CurrentDevice.DeviceName + " Spot Data";
             Export.CheckFileExists = false;
             Export.CheckPathExists = true;
             Export.DefaultExt = "vid";
@@ -2019,11 +2107,26 @@ namespace adrilight.ViewModel
                     }
                  
                 }
-                CurrentDevice = childList[0];// navigate to first output
-                CurrentDevice.IsNavigationSelected = true;
                 
-                //CurrentDevice = childList[0];
-                
+                int counter = 0;
+                foreach(var child in childList)
+                {
+                    if (child.IsNavigationSelected)
+                    {
+                        counter++;
+                        CurrentDevice = child;
+                    }
+                       
+                }
+                if (counter==0)
+                {
+                    CurrentDevice = childList[0];
+                    CurrentDevice.IsNavigationSelected = true;
+                }
+                    
+
+             
+
             }
             else
             {
