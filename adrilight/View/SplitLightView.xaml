@@ -42,6 +42,27 @@
                 
                     
                 </Setter>
+                <!--<Setter Property="ToolTip" Value="{Binding DocName}"/>-->
+                <Setter Property="Tag" Value="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}" />
+                <Setter Property="ContextMenu">
+                    <Setter.Value>
+                        <ContextMenu Style="{DynamicResource ContextMenuBaseStyle}">
+                            <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Edit"
+                                          Command="{Binding PlacementTarget.Tag.EditSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                          >
+                            </MenuItem>
+                            <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Share"
+                                          Command="{Binding PlacementTarget.Tag.EditSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                          >
+                            </MenuItem>
+                            <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Delete"
+                                          Command="{Binding PlacementTarget.Tag.EditSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                          >
+                            </MenuItem>
+                        </ContextMenu>
+                      
+                    </Setter.Value>
+                </Setter>
             </Style>
 
         </ResourceDictionary>
@@ -606,151 +627,9 @@
 
                                 </Grid>
                                 <hc:Divider Margin="10,10,10,10" />
-                                <Grid Height="auto">
-                                  
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                   
-                                    <TextBlock Style="{DynamicResource TextBlockDefaultSecLight}" Margin="10,0,0,10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"  VerticalAlignment="Center"  HorizontalAlignment="Left" Text="Màu sắc này tương tự như dải màu ở chế độ "/>
-
-                                    <ComboBox hc:InfoElement.Title="CHỌN MÀU SẮC" HorizontalAlignment="Left" SelectedIndex="{Binding CurrentDevice.SelectedMusicPalette}" x:Name="MusicPaletteBox" ItemsSource="{Binding AvailableMusicPalette}" Style="{StaticResource ComboBoxExtend}" Margin="10,10,10,10"  VerticalAlignment="Center"/>
-
-                                </Grid>
-                                <hc:Divider Margin="10,10,10,10" />
-                                <StackPanel Orientation="Vertical">
-                                    <StackPanel.Style>
-                                        <Style TargetType="StackPanel">
-                                            <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=MusicPaletteBox,Path=SelectedItem}" Value="Custom">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </StackPanel.Style>
-                                    <hc:TransitioningContentControl TransitionMode="Left2RightWithFade" Margin="0,0,10,0">
-                                        <Grid Height="auto">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="auto"/>
-                                                <ColumnDefinition Width="auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="*"/>
-                                                <RowDefinition Height="*"/>
-                                            </Grid.RowDefinitions>
-                                            <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="20, 10, 0, 10" Grid.Column="0" Text="CUSTOM ZONE"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
-                                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Margin="10, 0, 0, 10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Click vào từng ô màu để chọn màu mà bạn muốn"  VerticalAlignment="Center" />
-                                            <Button Grid.Column="1"
-                ToolTip="Thêm thiết bị theo cách thủ công"  
-                Content="Import" 
-                Style="{DynamicResource ButtonPrimary}"
-                Width="auto" 
-                Height="32" 
-                FontWeight="Bold"
-                FontSize="14"
-                VerticalAlignment="Center" 
-                Padding="5,0"
-                BorderBrush="BlueViolet"
-                BorderThickness="1"
-                hc:BorderElement.CornerRadius="7"
-                Command="{Binding ShowAddNewCommand}" 
-                HorizontalAlignment="Center" Margin="10,0,10,0">
-                                                <Button.Background>
-                                                    <SolidColorBrush Color="BlueViolet" Opacity="0.25">
-
-                                                    </SolidColorBrush>
-
-                                                </Button.Background>
-                                                <Button.Foreground>
-                                                    <SolidColorBrush Color="BlueViolet" />
-
-                                                </Button.Foreground>
-
-                                            </Button>
-
-                                            <Button Grid.Column="2"
-                ToolTip="Thêm thiết bị theo cách thủ công"  
-                Content="Save" 
-                Style="{DynamicResource ButtonPrimary}"
-                Width="auto" 
-                Height="32" 
-                FontWeight="Bold"
-                FontSize="14"
-                VerticalAlignment="Center" 
-                Padding="5,0"
-                BorderBrush="BlueViolet"
-                BorderThickness="1"
-                hc:BorderElement.CornerRadius="7"
-                Command="{Binding ShowAddNewCommand}" 
-                HorizontalAlignment="Center" Margin="10,0,10,0">
-                                                <Button.Background>
-                                                    <SolidColorBrush Color="BlueViolet" Opacity="0.25">
-
-                                                    </SolidColorBrush>
-
-                                                </Button.Background>
-                                                <Button.Foreground>
-                                                    <SolidColorBrush Color="BlueViolet" />
-
-                                                </Button.Foreground>
-
-                                            </Button>
-                                        </Grid>
-                                        
-                                    </hc:TransitioningContentControl>
-                                    <hc:Divider Margin="10,10,10,10" />
-                                    <hc:TransitioningContentControl TransitionMode="Left2RightWithFade">
-                                        <Grid >
-                                            <ListView HorizontalAlignment="Stretch"    Margin="10,10,10,10" x:Name="mRainbowCustomZone"  ItemsSource="{Binding CurrentCustomZoneColor}"  SelectedIndex="{Binding CurrentSelectedCustomColorIndex,Mode=OneWayToSource}"  VerticalAlignment="Center">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="SelectionChanged">
-                                                        <i:InvokeCommandAction Command="{Binding SetZoneColorCommand}" CommandParameter="SetZone"/>
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                                <ListView.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <hc:SimpleStackPanel Orientation="Horizontal">
-                                                        </hc:SimpleStackPanel>
-                                                    </ItemsPanelTemplate>
-                                                </ListView.ItemsPanel>
-                                                <ListView.Template>
-                                                    <ControlTemplate TargetType="{x:Type ItemsControl}">
-                                                        <Border>
-                                                            <hc:ScrollViewer CanContentScroll="true" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" >
-                                                                <ItemsPresenter />
-                                                            </hc:ScrollViewer>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </ListView.Template>
-                                                <ListView.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Rectangle  Fill="{Binding ., Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"   Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="20" Height="20" >
-                                                        </Rectangle>
-                                                    </DataTemplate>
-                                                </ListView.ItemTemplate>
-                                            </ListView>
-                                        </Grid>
-                                    </hc:TransitioningContentControl>
-
-
-                                    <hc:TransitioningContentControl TransitionMode="Left2RightWithFade">
-                                        <Grid  Height="auto">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <hc:ColorPicker  SelectedBrush="{Binding CurrentPickedColor,Converter={StaticResource ColorToBrushConverter},UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" x:Name="mColorPicker" Margin="0">
-
-
-                                            </hc:ColorPicker>
-
-                                        </Grid>
-
-                                    </hc:TransitioningContentControl>
-                                </StackPanel>
+                               
+                               
+                              
 
 
                             </StackPanel>
@@ -830,6 +709,7 @@
                                                     <i:InvokeCommandAction Command="{Binding ChangeCurrentDeviceSelectedPalette}" CommandParameter="{Binding ElementName=AvailablePalette,Path=SelectedItem}"/>
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
+                                            
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate DataType="data:CardModel">
                                                     <hc:Card ToolTip="{Binding Description}" hc:BorderElement.CornerRadius="2"  MaxWidth="120"  Effect="{StaticResource EffectShadow2}" Margin="8" Footer="{Binding Name}">
@@ -850,15 +730,7 @@
                                                             </ItemsControl>
                                                             
                                                         </Border>
-                                                        <hc:Card.ContextMenu>
-
-                                                            <ContextMenu Style="{DynamicResource ContextMenuBaseStyle}">
-                                                                <MenuItem Header="Share" Style="{DynamicResource MenuItemBaseStyle}"/>
-                                                                <MenuItem Header="Edit" Style="{DynamicResource MenuItemBaseStyle}"/>
-                                                                <MenuItem Header="Delete" Style="{DynamicResource MenuItemBaseStyle}"/>
-                                                               
-                                                            </ContextMenu>
-                                                            </hc:Card.ContextMenu>
+                                                       
                                                         <hc:Card.FooterTemplate>
                                                             <DataTemplate>
                                                                 <StackPanel Orientation="Horizontal" Margin="10">
@@ -947,138 +819,7 @@
 
                                 <hc:Divider Margin="10,10,10,10" />
 
-                                <StackPanel Orientation="Vertical">
-                                    <StackPanel.Style>
-                                        <Style TargetType="StackPanel">
-                                            <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=RainbowPaletteBox,Path=SelectedItem}" Value="Custom">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </StackPanel.Style>
-                                    <hc:TransitioningContentControl TransitionMode="Left2RightWithFade" Margin="0,0,10,0">
-                                        <Grid Height="auto">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="auto"/>
-                                                <ColumnDefinition Width="auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="*"/>
-                                                <RowDefinition Height="*"/>
-                                            </Grid.RowDefinitions>
-                                            <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="20, 10, 0, 10" Grid.Column="0" Text="CUSTOM ZONE"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
-                                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Margin="10, 0, 0, 10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Click vào từng ô màu để chọn màu mà bạn muốn"  VerticalAlignment="Center" />
-                                            <Button Grid.Column="1"
-                ToolTip="Thêm thiết bị theo cách thủ công"  
-                Content="Import" 
-                Style="{DynamicResource ButtonPrimary}"
-                Width="auto" 
-                Height="32" 
-                FontWeight="Bold"
-                FontSize="14"
-                VerticalAlignment="Center" 
-                Padding="5,0"
-                BorderBrush="BlueViolet"
-                BorderThickness="1"
-                hc:BorderElement.CornerRadius="7"
-                Command="{Binding ShowAddNewCommand}" 
-                HorizontalAlignment="Center" Margin="10,0,10,0">
-                                                <Button.Background>
-                                                    <SolidColorBrush Color="BlueViolet" Opacity="0.25">
-
-                                                    </SolidColorBrush>
-
-                                                </Button.Background>
-                                                <Button.Foreground>
-                                                    <SolidColorBrush Color="BlueViolet" />
-
-                                                </Button.Foreground>
-
-                                            </Button>
-
-                                            <Button Grid.Column="2"
-                ToolTip="Thêm thiết bị theo cách thủ công"  
-                Content="Save" 
-                Style="{DynamicResource ButtonPrimary}"
-                Width="auto" 
-                Height="32" 
-                FontWeight="Bold"
-                FontSize="14"
-                VerticalAlignment="Center" 
-                Padding="5,0"
-                BorderBrush="BlueViolet"
-                BorderThickness="1"
-                hc:BorderElement.CornerRadius="7"
-                Command="{Binding ShowAddNewCommand}" 
-                HorizontalAlignment="Center" Margin="10,0,10,0">
-                                                <Button.Background>
-                                                    <SolidColorBrush Color="BlueViolet" Opacity="0.25">
-
-                                                    </SolidColorBrush>
-
-                                                </Button.Background>
-                                                <Button.Foreground>
-                                                    <SolidColorBrush Color="BlueViolet" />
-
-                                                </Button.Foreground>
-
-                                            </Button>
-                                        </Grid>
-
-                                    </hc:TransitioningContentControl>
-                                    <hc:Divider Margin="10,10,10,10" />
-                                    <hc:TransitioningContentControl TransitionMode="Left2RightWithFade">
-                                        <Grid >
-                                            <ListView HorizontalAlignment="Stretch"    Margin="10,10,10,10" x:Name="RainbowCustomZone"  ItemsSource="{Binding CurrentCustomZoneColor}"  SelectedIndex="{Binding CurrentSelectedCustomColorIndex,Mode=OneWayToSource}"  VerticalAlignment="Center">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="SelectionChanged">
-                                                        <i:InvokeCommandAction Command="{Binding SetZoneColorCommand}" CommandParameter="SetZone"/>
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                                <ListView.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <hc:SimpleStackPanel Orientation="Horizontal">
-                                                        </hc:SimpleStackPanel>
-                                                    </ItemsPanelTemplate>
-                                                </ListView.ItemsPanel>
-                                                <ListView.Template>
-                                                    <ControlTemplate TargetType="{x:Type ItemsControl}">
-                                                        <Border>
-                                                            <hc:ScrollViewer CanContentScroll="true" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" >
-                                                                <ItemsPresenter />
-                                                            </hc:ScrollViewer>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </ListView.Template>
-                                                <ListView.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Rectangle  Fill="{Binding ., Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"   Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="20" Height="20" >
-                                                        </Rectangle>
-                                                    </DataTemplate>
-                                                </ListView.ItemTemplate>
-                                            </ListView>
-                                        </Grid>
-                                    </hc:TransitioningContentControl>
-
-
-                                    <hc:TransitioningContentControl TransitionMode="Left2RightWithFade">
-                                        <Grid  Height="auto">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <hc:ColorPicker  SelectedBrush="{Binding CurrentPickedColor,Converter={StaticResource ColorToBrushConverter},UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" x:Name="ColorPicker" Margin="0">
-
-
-                                            </hc:ColorPicker>
-
-                                        </Grid>
-
-                                    </hc:TransitioningContentControl>
-                                </StackPanel>
+                               
 
                             </StackPanel>
                         </hc:TransitioningContentControl>

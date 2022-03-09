@@ -27,6 +27,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using adrilight.Shaders;
 using HandyControl.Controls;
+using adrilight.View;
 
 namespace adrilight.ViewModel
 {
@@ -250,6 +251,7 @@ namespace adrilight.ViewModel
         }
         //VIDs commands//
         public ICommand ZerolAllCommand { get; set; }
+        public ICommand EditSelectedPaletteCommand { get; set; }
 
         public ICommand SetIncreamentCommand { get; set; }
         public ICommand SetIncreamentCommandfromZero { get; set; }
@@ -384,6 +386,7 @@ namespace adrilight.ViewModel
                 if (_availablePallete == value) return;
                 _availablePallete = value;
                 RaisePropertyChanged();
+                
             }
         }
         private ObservableCollection<string> _availableLayout;
@@ -462,32 +465,32 @@ namespace adrilight.ViewModel
             }
         }
 
-        private int _currentSelectedCustomColorIndex;
+       
         public int CurrentSelectedCustomColorIndex {
-            get { return _currentSelectedCustomColorIndex; }
+            
 
             set
             {
                 if (value >= 0)
-                    _currentSelectedCustomColorIndex = value;
+                {
+                    
+                    SetCustomColor(value);
+                }
+                    
 
 
             }
 
         }
+       
 
         private ObservableCollection<System.Windows.Media.Color> _currentCustomZoneColor;
         public ObservableCollection<System.Windows.Media.Color> CurrentCustomZoneColor {
             get
             {
-                if (_currentCustomZoneColor == null)
-                {
-                    _currentCustomZoneColor = new ObservableCollection<System.Windows.Media.Color>();
-                    foreach (var color in CurrentDevice.CustomZone)
-                    {
-                        _currentCustomZoneColor.Add(color);
-                    }
-                }
+                
+                   
+                
 
                 return _currentCustomZoneColor;
             }
@@ -1138,9 +1141,15 @@ namespace adrilight.ViewModel
             {
                 SetCurrentDeviceSelectedPalette(p);
             });
-        
 
-
+            EditSelectedPaletteCommand = new RelayCommand<ColorPaletteCard>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                OpenEditPaletteDialog(p);
+            });
+            
         SetIncreamentCommandfromZero = new RelayCommand<string>((p) =>
             {
                 return true;
@@ -1280,12 +1289,12 @@ namespace adrilight.ViewModel
                 return true;
             }, (p) =>
             {
-                if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                //if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
 
-                    CurrentPickedColor = CurrentDevice.CustomZone[CurrentSelectedCustomColorIndex];
+                //    CurrentPickedColor = CurrentDevice.CustomZone[CurrentSelectedCustomColorIndex];
 
-                else
-                    SetCustomColor(CurrentSelectedCustomColorIndex);
+                //else
+                //    SetCustomColor(CurrentSelectedCustomColorIndex);
             });
             GetZoneColorCommand = new RelayCommand<System.Windows.Media.Color>((p) =>
             {
@@ -1351,10 +1360,34 @@ namespace adrilight.ViewModel
 
             });
         }
+
+        public void OpenEditPaletteDialog(ColorPaletteCard palette)
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"PaletteEditWindow"}") is System.Windows.Window window)
+            {
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                CurrentCustomZoneColor.Clear();
+                foreach (var color in CurrentDevice.CurrentActivePalette)
+                {
+                    CurrentCustomZoneColor.Add(color);
+                }
+                RaisePropertyChanged(nameof(CurrentCustomZoneColor));
+                window.ShowDialog();
+            }
+        }
         public void SetCurrentDeviceSelectedPalette(ColorPaletteCard palette)
         {
             if(palette!=null)
-            CurrentDevice.CurrentActivePalette = palette.Thumbnail;
+            {
+                for (var i = 0; i < CurrentDevice.CurrentActivePalette.Length; i++)
+                {
+                    CurrentDevice.CurrentActivePalette[i] = palette.Thumbnail[i];
+
+                }
+                RaisePropertyChanged(nameof(CurrentDevice.CurrentActivePalette));
+            }
+                
+            
         }
 
         public void SnapShot()
@@ -1374,9 +1407,10 @@ namespace adrilight.ViewModel
         }
         public void SetCustomColor(int index)
         {
-            CurrentDevice.CustomZone[index] = CurrentPickedColor;
+            CurrentDevice.CurrentActivePalette[index] = CurrentPickedColor;
+            RaisePropertyChanged(nameof(CurrentDevice.CurrentActivePalette));
             CurrentCustomZoneColor.Clear();
-            foreach (var color in CurrentDevice.CustomZone)
+            foreach (var color in CurrentDevice.CurrentActivePalette)
             {
                 CurrentCustomZoneColor.Add(color);
             }
@@ -1676,18 +1710,20 @@ namespace adrilight.ViewModel
             {
                 AvailablePallete.Add(loadedPalette);
             }
-
+           WritePaletteCollectionJson();
+            CurrentCustomZoneColor = new ObservableCollection<System.Windows.Media.Color>();
+            
             //var shareMenu = new PaletteCardContextMenu("Share");
             //var shareMenuOptions = new List<PaletteCardContextMenu>();
             //shareMenuOptions.Add(new PaletteCardContextMenu("File Export"));
             //shareMenuOptions.Add(new PaletteCardContextMenu("Ambinity Post"));
             //shareMenu.MenuItem = shareMenuOptions;
-            
+
             //PaletteCardOptions = new List<PaletteCardContextMenu>();
             //PaletteCardOptions.Add(shareMenu);
             //PaletteCardOptions.Add(new PaletteCardContextMenu("Create new"));
             //PaletteCardOptions.Add(new PaletteCardContextMenu("Import"));
-            
+
 
 
 
@@ -1798,7 +1834,9 @@ namespace adrilight.ViewModel
 
 
             };
+                
                 return paletteCards;
+                
 
             }
 
