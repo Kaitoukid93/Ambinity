@@ -176,7 +176,9 @@ namespace adrilight
             var secondDesktopFrame = kernel.Get<ISecondDesktopFrame>();
             var thirdDesktopFrame = kernel.Get<IThirdDesktopFrame>();
             var rainbowTicker = kernel.Get<IRainbowTicker>();
-
+            kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
+            var openRGBStream = kernel.Get<IOpenRGBStream>();
+            kernel.Bind<MainViewViewModel>().ToSelf().InSingletonScope();
 
             //// tách riêng từng setting của từng device///
             if (alldevicesettings != null)
@@ -246,15 +248,7 @@ namespace adrilight
 
                 }
 
-                //foreach (var devicesetting in alldevicesettings)
-                //{
-                //    if (devicesetting.IsHUB)//hub object, bind all spotset
-                //    {
-
-
-                //    }
-                //}
-
+            
 
                 foreach (var devicesetting in alldevicesettings)
                 {
@@ -290,8 +284,7 @@ namespace adrilight
                 
 
             }
-            kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
-            var openRGBStream = kernel.Get<IOpenRGBStream>();
+           
             return kernel;
                 // lighting viewmodel bây giờ chỉ có nhiệm vụ load data từ spotset và settings tương ứng với card sau đó display, không phải khởi tạo class như trước
                 // sau bước này thì tất cả các service đều được khởi tạo, SerialStream, SpotSet và service tương ứng với SelectedEffect được khởi chạy//

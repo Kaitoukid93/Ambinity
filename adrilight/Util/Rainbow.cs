@@ -25,7 +25,7 @@ namespace adrilight
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public Rainbow(IDeviceSettings deviceSettings, IRainbowTicker rainbowTicker, IGeneralSettings generalSettings, IDeviceSpotSet deviceSpotSet, IDeviceSettings[] allDeviceSettings, IDeviceSpotSet[] allDeviceSpotSet)
+        public Rainbow(IDeviceSettings deviceSettings, IRainbowTicker rainbowTicker, IGeneralSettings generalSettings, IDeviceSpotSet deviceSpotSet, IDeviceSettings[] allDeviceSettings, IDeviceSpotSet[] allDeviceSpotSet , MainViewViewModel mainViewViewModel)
         {
             DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
             GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
@@ -33,6 +33,7 @@ namespace adrilight
             DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
             AllDeviceSpotSet = allDeviceSpotSet ?? throw new ArgumentNullException(nameof(allDeviceSpotSet));
             RainbowTicker = rainbowTicker ?? throw new ArgumentNullException(nameof(rainbowTicker));
+           MainViewViewModel= mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
             if (!DeviceSettings.IsHUB && DeviceSettings.ParrentLocation != 151293)
             {
                 ParrentDevice = AllDeviceSettings.Where<IDeviceSettings>(x => x.HUBID == DeviceSettings.ParrentLocation).First();
@@ -42,6 +43,7 @@ namespace adrilight
 
             DeviceSettings.PropertyChanged += PropertyChanged;
             GeneralSettings.PropertyChanged += PropertyChanged;
+            MainViewViewModel.PropertyChanged += PropertyChanged;
             RefreshColorState();
             _log.Info($"RainbowColor Created");
 
@@ -52,6 +54,7 @@ namespace adrilight
         private IDeviceSettings[] AllDeviceSettings { get; }
         private IDeviceSpotSet[] AllDeviceSpotSet { get; }
         private IDeviceSpotSet DeviceSpotSet { get; }
+        private MainViewViewModel MainViewViewModel { get; }
         private IRainbowTicker RainbowTicker { get; }
         private IGeneralSettings GeneralSettings { get; }
 
@@ -67,12 +70,12 @@ namespace adrilight
                 case nameof(DeviceSettings.SelectedEffect):
                     RefreshColorState();
                     break;
-                case nameof(DeviceSettings.SelectedPalette):
-                case nameof(GeneralSettings.SelectedSystemPalette):
-                case nameof(DeviceSettings.Brightness):
+                case nameof(DeviceSettings.CurrentActivePalette):
+                case nameof(GeneralSettings.SelectedSystemPalette): 
                 case nameof(DeviceSettings.SpotsX):
                 case nameof(DeviceSettings.SpotsY):
                 case nameof(DeviceSettings.SyncOn):
+                case nameof(MainViewViewModel.IsSplitLightingWindowOpen):
 
                     IsRunning = false;
                     RefreshColorState();
@@ -136,8 +139,8 @@ namespace adrilight
             {
 
 
-                var brightness = DeviceSettings.Brightness / 100d;
-                int paletteSource;
+
+                Color[] paletteSource;
 
                 var numLED = DeviceSpotSet.Spots.Length;
                 var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
@@ -149,54 +152,55 @@ namespace adrilight
 
 
                 if (DeviceSettings.SyncOn)
-                    paletteSource = GeneralSettings.SelectedSystemPalette;
+                    paletteSource = DeviceSettings.CurrentActivePalette;
                 else
-                    paletteSource = DeviceSettings.SelectedPalette;
-                switch (paletteSource)
-                {
-                    case 0:
-                        colorBank = GetColorGradientfromPalette(rainbow).ToArray();
-                        break;
-                    case 1:
-                        colorBank = GetColorGradientfromPalette(cloud).ToArray();
-                        break;
-                    case 2:
-                        colorBank = GetColorGradientfromPalette(forest).ToArray();
-                        break;
-                    case 3:
-                        colorBank = GetColorGradientfromPalette(sunset).ToArray();
-                        break;
-                    case 4:
-                        colorBank = GetColorGradientfromPalette(scarlet).ToArray();
-                        break;
-                    case 5:
-                        colorBank = GetColorGradientfromPalette(aurora).ToArray();
-                        break;
-                    case 6:
-                        colorBank = GetColorGradientfromPalette(france).ToArray();
-                        break;
-                    case 7:
-                        colorBank = GetColorGradientfromPalette(lemon).ToArray();
-                        break;
-                    case 8:
-                        colorBank = GetColorGradientfromPalette(badtrip).ToArray();
-                        break;
-                    case 9:
-                        colorBank = GetColorGradientfromPalette(police).ToArray();
-                        break;
-                    case 10:
-                        colorBank = GetColorGradientfromPalette(iceandfire).ToArray();
-                        break;
-                    case 11:
-                        GetCustomColor();
-                        colorBank = GetColorGradientfromPalette(custom).ToArray();
-                        break;
-                }
+                    paletteSource = DeviceSettings.CurrentActivePalette;
+                colorBank = GetColorGradientfromPalette(paletteSource).ToArray();
+                //switch (paletteSource)
+                //{
+                //    case 0:
+                //        colorBank = GetColorGradientfromPalette(rainbow).ToArray();
+                //        break;
+                //    case 1:
+                //        colorBank = GetColorGradientfromPalette(cloud).ToArray();
+                //        break;
+                //    case 2:
+                //        colorBank = GetColorGradientfromPalette(forest).ToArray();
+                //        break;
+                //    case 3:
+                //        colorBank = GetColorGradientfromPalette(sunset).ToArray();
+                //        break;
+                //    case 4:
+                //        colorBank = GetColorGradientfromPalette(scarlet).ToArray();
+                //        break;
+                //    case 5:
+                //        colorBank = GetColorGradientfromPalette(aurora).ToArray();
+                //        break;
+                //    case 6:
+                //        colorBank = GetColorGradientfromPalette(france).ToArray();
+                //        break;
+                //    case 7:
+                //        colorBank = GetColorGradientfromPalette(lemon).ToArray();
+                //        break;
+                //    case 8:
+                //        colorBank = GetColorGradientfromPalette(badtrip).ToArray();
+                //        break;
+                //    case 9:
+                //        colorBank = GetColorGradientfromPalette(police).ToArray();
+                //        break;
+                //    case 10:
+                //        colorBank = GetColorGradientfromPalette(iceandfire).ToArray();
+                //        break;
+                //    case 11:
+                //        GetCustomColor();
+                //        colorBank = GetColorGradientfromPalette(custom).ToArray();
+                //        break;
+                //}
 
 
                 while (!token.IsCancellationRequested)
                 {
-
+                    bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen;
                     lock (DeviceSpotSet.Lock)
                     {
 
@@ -218,8 +222,10 @@ namespace adrilight
                                     position = position - colorBank.Length;
 
                             }
-
-                            spot.SetColor(colorBank[position].R, colorBank[position].G, colorBank[position].B, true);
+                            var brightness = DeviceSettings.Brightness / 100d;
+                            var newColor = new OpenRGB.NET.Models.Color(colorBank[position].R, colorBank[position].G, colorBank[position].B);
+                            var outputColor=Brightness.applyBrightness(newColor, brightness, numLED, DeviceSettings.DevicePowerMiliamps, DeviceSettings.DevicePowerVoltage);
+                            spot.SetColor(outputColor.R, outputColor.G, outputColor.B, isPreviewRunning);
 
                         }
 

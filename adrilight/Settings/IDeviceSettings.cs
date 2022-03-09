@@ -132,6 +132,7 @@ namespace adrilight
 
         //Color Palette
         Color [] CustomZone { get; set; }
+        Color[] CurrentActivePalette { get; set; }
         Color[] MCustomZone { get; set; }
 
         int MSens { get; set; }

@@ -32,7 +32,8 @@ namespace adrilight.View
 
            
             InitializeComponent();
-          //  DataContext = MainView;
+            //  DataContext = MainView;
+          
 
             _timer = new DispatcherTimer {
                 Interval = TimeSpan.FromMilliseconds(10)

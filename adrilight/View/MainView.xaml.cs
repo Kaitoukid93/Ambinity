@@ -18,9 +18,9 @@ namespace adrilight.View
     /// <summary>
     /// Interaction logic for MainView.xaml
     /// </summary>
-    public partial class MainView : Window
+    public partial class MainView 
     {
-        public MainViewViewModel ViewModel;
+        
         public MainView()
         {
             InitializeComponent();
@@ -31,11 +31,26 @@ namespace adrilight.View
             if (view != null)
             {
                 view.IsCanvasLightingWindowOpen = true;
+                view.IsSplitLightingWindowOpen = true;
                 //view.IsSplitLightingWindowOpen = true;
             }
+
+
+        }
+        protected override void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+           
+            
+            NonClientAreaContent = new NonClientAreaContent();
+            
+
+            
+
+           
+          
         }
 
-        
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {           
            // this.DragMove();

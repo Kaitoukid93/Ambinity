@@ -8,24 +8,46 @@
              mc:Ignorable="d" 
              xmlns:hc="https://handyorg.github.io/handycontrol"
                xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf" xmlns:converters="clr-namespace:adrilight.Converter" xmlns:viewmodel="clr-namespace:adrilight.ViewModel" xmlns:lottieSharp="clr-namespace:LottieSharp;assembly=LottieSharp" d:DataContext="{d:DesignInstance Type=viewmodel:MainViewViewModel}"
-             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             Background="{DynamicResource RegionBrush}"
               TextElement.FontWeight="Regular"
-              TextElement.FontSize="13"
+              
               TextOptions.TextFormattingMode="Ideal" 
               TextOptions.TextRenderingMode="Auto"   
-              FontFamily="{StaticResource MaterialDesignFont}" Height="1072" Width="1000"
+              FontFamily="{StaticResource MaterialDesignFont}"  Height="1072" Width="1000"
     >
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
             <converters:BrushToHexConverter x:Key="BrushToHexConverter" />
             <BooleanToVisibilityConverter x:Key="boolToVisibilityConvert" />
-           
+
+            <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Border CornerRadius="2" Name="_Border"
+                                Padding="0"
+                                SnapsToDevicePixels="true">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="true">
+                                    <Setter TargetName="_Border" Property="Background" Value="{DynamicResource VioletBrush}"/>
+                                   
+                                    
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                
+                    
+                </Setter>
+            </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="White" Margin="10,0,0,0" HorizontalAlignment="Left">
+    <Grid  Margin="10,0,0,0" HorizontalAlignment="Left">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="auto" MinWidth="418"/>
@@ -52,7 +74,7 @@
                 </Grid.ColumnDefinitions>
 
 
-                <TextBlock Margin="10,0,0,0"   Text="LIGHTING" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="#FF898989"/>
+                <TextBlock Style="{DynamicResource TextBlockSubTitle}" Foreground="{DynamicResource SecondaryTextBrush}" Margin="10,0,0,0"   Text="LIGHTING"  VerticalAlignment="Center" HorizontalAlignment="Left" />
 
             </Grid>
             <Grid Grid.ColumnSpan="2">
@@ -65,15 +87,8 @@
 
 
 
-                <TextBox MaxLength="25" Style="{StaticResource TextBoxExtend}" Grid.Column="0" BorderThickness="0" Text="{Binding CurrentDevice.DeviceName}" hc:BorderElement.CornerRadius="7"  Margin="10,0,0,0"  BorderBrush="{x:Null}" VerticalAlignment="Center" FontWeight="SemiBold" Padding="12,5" VerticalContentAlignment="Center">
-                    <TextBox.Background>
-                        <SolidColorBrush Color="{Binding CurrentDevice.StaticColor}" Opacity="0.25" />
+                <TextBox  MaxLength="25" Style="{DynamicResource TextBoxExtend}" Grid.Column="0" BorderThickness="0" Text="{Binding CurrentDevice.DeviceName}" hc:BorderElement.CornerRadius="7"  Margin="10,0,0,0"  BorderBrush="{x:Null}" VerticalAlignment="Center" FontWeight="SemiBold" Padding="12,5" VerticalContentAlignment="Center">
 
-                    </TextBox.Background>
-                    <TextBox.Foreground>
-                        <SolidColorBrush Color="{Binding CurrentDevice.StaticColor}" Opacity="1" />
-
-                    </TextBox.Foreground>
                 </TextBox>
 
                 <hc:ProgressButton  ToolTip="DFU" Progress="{Binding DFUProgress,Mode=OneWayToSource}" hc:BorderElement.CornerRadius="7" Grid.Column="1" BorderThickness="0" x:Name="DFU"   Width="Auto" Margin="5" Checked="DFU_Checked" Click="DFU_Click" Height="32" HorizontalAlignment="Left" Background="#3F326CF3" Foreground="#FF326CF3">
@@ -475,23 +490,20 @@
         </Grid>
 
         <StackPanel Grid.Row="1" Grid.Column="0">
-            <hc:ScrollViewer  Height="650" Margin="1,1,1,1" Orientation="Vertical" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" IsInertiaEnabled="True">
+            <hc:ScrollViewer  Height="650" Margin="1,1,1,1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" IsInertiaEnabled="True">
                 <StackPanel Width="568">
 
 
-                    <Grid Height="80" Grid.Row="2" Grid.Column="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                    <Grid x:Name="rgborder" Height="auto"  >
+                       
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Thứ Tự Màu" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
-                        <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Nếu bạn thấy LED bị ngược ở một số màu cố định, thử đổi giá trị này nhé" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left"/>
-                        <Rectangle  Grid.Row="1" Grid.ColumnSpan="2" Height="1" Fill="#14000000" VerticalAlignment="Bottom" Width="685.4" Margin="10,0,10,5"/>
-                        <ComboBox SelectedIndex="{Binding CurrentDevice.RGBOrder}" Style="{StaticResource ComboBoxExtend}" Width="75" Grid.Column="1" Grid.Row="0" Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        
+                        <TextBlock Style="{DynamicResource TextBlockDefaultSecLight}"  Margin="10, 0, 0, 10" Grid.Row="1"   Text="Nếu bạn thấy LED bị ngược ở một số màu cố định, thử đổi giá trị này nhé"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                        
+                        <ComboBox hc:InfoElement.Title="THỨ TỰ MÀU"  SelectedIndex="{Binding CurrentDevice.RGBOrder}" Style="{StaticResource ComboBoxExtend}" Grid.Row="0" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                             <ComboBoxItem>
                                 RGB
                             </ComboBoxItem>
@@ -513,42 +525,42 @@
                         </ComboBox>
 
                     </Grid>
-                    <Grid Height="80">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="48*"/>
-                            <ColumnDefinition Width="422*"/>
-                            <ColumnDefinition Width="235*"/>
-                        </Grid.ColumnDefinitions>
+                    <hc:Divider Margin="10,10,10,10" />
+                    <Grid x:Name="brightness" Height="auto">
+                     
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Margin="10,10,0,9" Grid.Column="0" Text="Độ Sáng" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Grid.ColumnSpan="2"/>
-                        <TextBlock Margin="10,12,0,12" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="Độ sáng của toàn bộ dây LED, áp dụng cho tất cả các chế độ" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left" Width="378"/>
-                        <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Height="1" Fill="#14000000" VerticalAlignment="Bottom" Margin="10,0,10,5"/>
-                        <Slider Minimum="0" Maximum="100" Style="{StaticResource SliderBaseStyle}" Value="{Binding CurrentDevice.Brightness}" Width="150" Margin="0,0,10,0" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                        <Button Grid.Column="1"  Style="{StaticResource MaterialDesignFlatButton}" Content="{Binding CurrentDevice.Brightness}" materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0"  Background="#26000000" BorderBrush="{x:Null}" Foreground="#FF898989" Margin="0,4,20,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+                        <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="20,10,0,0" Grid.Column="0" Text="ĐỘ SÁNG"  VerticalAlignment="Center"  HorizontalAlignment="Left" />
+                        <TextBlock  Style="{DynamicResource TextBlockDefaultSecLight}" Margin="10,0,10,10" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Text="Độ sáng của toàn bộ dây LED, áp dụng cho tất cả các chế độ"  VerticalAlignment="Center"  HorizontalAlignment="Left" />
+                        
+                        <hc:PreviewSlider Margin="10,10,10,10" Grid.Row="1" Name="PreviewSliderHorizontal" HorizontalAlignment="Stretch" Value="{Binding CurrentDevice.Brightness}" Maximum="100">
+                            <hc:PreviewSlider.PreviewContent>
+                                <Label Style="{DynamicResource LabelPrimary}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0.00"/>
+                            </hc:PreviewSlider.PreviewContent>
+                        </hc:PreviewSlider>
 
                     </Grid>
-                    <Grid Height="80">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="89*"/>
-                            <ColumnDefinition Width="381*"/>
-                            <ColumnDefinition Width="235*"/>
-                        </Grid.ColumnDefinitions>
+                    <hc:Divider Margin="10,10,10,10" />
+                    <Grid x:Name="selectedeffect" Height="auto">
+                  
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Margin="10,0,0,-0.2" Grid.Column="0" Text="Chế Độ" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
-                        <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Chọn chế độ sáng chủ đạo cho thiết bị" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left"/>
-                        <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Height="1" Fill="#19000000" VerticalAlignment="Bottom" Margin="10,0,10,5"/>
-                        <ComboBox Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDeviceSelectedEffect, Mode=TwoWay}" x:Name="EffectBox" ItemsSource="{Binding AvailableEffects}" Grid.Column="2" Grid.Row="0" Margin="0,0,10,0" VerticalAlignment="Center">
+                        
+                        <TextBlock  Style="{DynamicResource TextBlockDefaultSecLight}" Margin="10,0,10,10" Grid.Row="1" Grid.Column="0"  Text="Chọn chế độ sáng chủ đạo cho thiết bị"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+
+                        <ComboBox HorizontalAlignment="Stretch" hc:InfoElement.Title="CHỌN CHẾ ĐỘ" Style="{StaticResource ComboBoxExtend}" SelectedIndex="{Binding CurrentDeviceSelectedEffect, Mode=TwoWay}" x:Name="EffectBox" ItemsSource="{Binding AvailableEffects}"  Grid.Row="0" Margin="10,10,10,10" VerticalAlignment="Center">
 
                         </ComboBox>
 
                     </Grid>
-                    <Grid>
+                    <hc:Divider Margin="10,10,10,10" />
+                    <Grid x:Name="music">
                         <Grid.Style>
                             <Style TargetType="Grid">
                                 <Setter Property="Visibility" Value="Collapsed"></Setter>
@@ -565,53 +577,48 @@
 
                             <StackPanel Margin="45,15,0,0" Orientation="Vertical">
 
-                                <TextBlock Margin="10,0,0,0" Padding="0,0,0,10" Text="CÀI ĐẶT NÂNG CAO CHO CHẾ ĐỘ SÁNG THEO NHẠC" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989"/>
-                                <Grid Height="80">
+                                <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockSubTitle}" Foreground="{DynamicResource SecondaryTextBrush}" Margin="10,0,0,0" Padding="0,0,0,10" Text="CÀI ĐẶT NÂNG CAO CHO CHẾ ĐỘ SÁNG THEO NHẠC" VerticalAlignment="Center" />
+                                <Grid Height="auto">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="74*"/>
-                                        <ColumnDefinition Width="53*"/>
-                                        <ColumnDefinition Width="136*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                       
+
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Margin="10,0,178,0" Grid.Column="0" Text="Chọn Nguồn Phát" FontSize="17" VerticalAlignment="Center" Foreground="Black" Grid.ColumnSpan="3" Height="20" HorizontalAlignment="Left"/>
-                                    <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="Chọn nguồn phát audio, nguồn phát này có ảnh hưởng đến tất cả các thiết bị LED" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" Height="17" HorizontalAlignment="Left"/>
-                                    <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Height="1" Fill="#26000000" VerticalAlignment="Bottom" Margin="10,0,10,5"/>
-                                    <ComboBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"  ItemsSource="{Binding AvailableAudioDevice}" SelectedIndex="{Binding CurrentDevice.SelectedAudioDevice}" Style="{StaticResource ComboBoxExtend}" Margin="10,0" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" Height="30"/>
+
+                                    <ComboBox hc:InfoElement.Title="CHỌN NGUỒN PHÁT" hc:InfoElement.Necessary="True" Margin="10,10,0,10" ItemsSource="{Binding AvailableAudioDevice}"  SelectedIndex="{Binding CurrentDevice.SelectedAudioDevice}" Style="{DynamicResource ComboBoxExtend}" HorizontalAlignment="Left"  VerticalAlignment="Center" />
 
                                 </Grid>
-                                <Grid Height="80">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                                <hc:Divider Margin="10,10,10,10" />
+                                <Grid  Height="auto">
+                                   
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Chọn Hiệu Ứng" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
-                                    <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Các hiệu ứng nháy theo nhạc được cài sẵn" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989"/>
-                                    <Rectangle Grid.Row="1" Margin="10,0,10,5" Grid.ColumnSpan="2" Height="1" Width="585" Fill="#26000000" VerticalAlignment="Bottom"/>
-                                    <ComboBox  SelectedIndex="{Binding CurrentDevice.SelectedMusicMode}" ItemsSource="{Binding AvailableMusicMode}" Style="{StaticResource ComboBoxExtend}" Margin="0,0,10,0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center"/>
+                                    
+                                    <TextBlock Style="{DynamicResource TextBlockDefaultSecLight}" HorizontalAlignment="Left" Margin="10, 0, 0, 10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Các hiệu ứng nháy theo nhạc được cài sẵn"  VerticalAlignment="Center" />
+
+                                    <ComboBox hc:InfoElement.Title="CHỌN HIỆU ỨNG"  HorizontalAlignment="Left"  SelectedIndex="{Binding CurrentDevice.SelectedMusicMode}" ItemsSource="{Binding AvailableMusicMode}" Style="{StaticResource ComboBoxExtend}"  Margin="10,10,10,10"  Grid.Row="0" VerticalAlignment="Center"/>
 
                                 </Grid>
-                                <Grid Height="80">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                                <hc:Divider Margin="10,10,10,10" />
+                                <Grid Height="auto">
+                                  
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Chọn Màu Sắc" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
-                                    <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left" Text="Màu sắc này tương tự như dải màu ở chế độ "/>
-                                    <Rectangle Grid.Row="1" Grid.ColumnSpan="2" Height="1" Width="585" Fill="#26000000" VerticalAlignment="Bottom" Margin="10,0,10,5"/>
-                                    <ComboBox SelectedIndex="{Binding CurrentDevice.SelectedMusicPalette}" x:Name="MusicPaletteBox" ItemsSource="{Binding AvailableMusicPalette}" Style="{StaticResource ComboBoxExtend}" Margin="0,0,10,0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center"/>
+                                   
+                                    <TextBlock Style="{DynamicResource TextBlockDefaultSecLight}" Margin="10,0,0,10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"  VerticalAlignment="Center"  HorizontalAlignment="Left" Text="Màu sắc này tương tự như dải màu ở chế độ "/>
+
+                                    <ComboBox hc:InfoElement.Title="CHỌN MÀU SẮC" HorizontalAlignment="Left" SelectedIndex="{Binding CurrentDevice.SelectedMusicPalette}" x:Name="MusicPaletteBox" ItemsSource="{Binding AvailableMusicPalette}" Style="{StaticResource ComboBoxExtend}" Margin="10,10,10,10"  VerticalAlignment="Center"/>
 
                                 </Grid>
+                                <hc:Divider Margin="10,10,10,10" />
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel.Style>
                                         <Style TargetType="StackPanel">
@@ -624,61 +631,122 @@
                                         </Style>
                                     </StackPanel.Style>
                                     <hc:TransitioningContentControl TransitionMode="Left2RightWithFade" Margin="0,0,10,0">
-                                        <Grid Height="80">
+                                        <Grid Height="auto">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="2*"/>
                                                 <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="*"/>
                                                 <RowDefinition Height="*"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Custom Zone" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
-                                            <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Click vào từng ô màu để chọn màu mà bạn muốn" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989"/>
-                                            <Button Grid.Column="1"  Style="{StaticResource MaterialDesignFlatButton}" Content="Import" materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0"  Background="#26000000" BorderBrush="{x:Null}" Foreground="#FF898989" Margin="0,0,90,0" HorizontalAlignment="Right" VerticalAlignment="Center" Click="Button_Click"/>
-                                            <Button Grid.Column="1"  Style="{StaticResource MaterialDesignFlatButton}" Content="Save" materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0"  Background="#26000000" BorderBrush="{x:Null}" Foreground="#FF898989" Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center" Click="Button_Click_1"/>
+                                            <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="20, 10, 0, 10" Grid.Column="0" Text="CUSTOM ZONE"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Margin="10, 0, 0, 10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Click vào từng ô màu để chọn màu mà bạn muốn"  VerticalAlignment="Center" />
+                                            <Button Grid.Column="1"
+                ToolTip="Thêm thiết bị theo cách thủ công"  
+                Content="Import" 
+                Style="{DynamicResource ButtonPrimary}"
+                Width="auto" 
+                Height="32" 
+                FontWeight="Bold"
+                FontSize="14"
+                VerticalAlignment="Center" 
+                Padding="5,0"
+                BorderBrush="BlueViolet"
+                BorderThickness="1"
+                hc:BorderElement.CornerRadius="7"
+                Command="{Binding ShowAddNewCommand}" 
+                HorizontalAlignment="Center" Margin="10,0,10,0">
+                                                <Button.Background>
+                                                    <SolidColorBrush Color="BlueViolet" Opacity="0.25">
 
+                                                    </SolidColorBrush>
+
+                                                </Button.Background>
+                                                <Button.Foreground>
+                                                    <SolidColorBrush Color="BlueViolet" />
+
+                                                </Button.Foreground>
+
+                                            </Button>
+
+                                            <Button Grid.Column="2"
+                ToolTip="Thêm thiết bị theo cách thủ công"  
+                Content="Save" 
+                Style="{DynamicResource ButtonPrimary}"
+                Width="auto" 
+                Height="32" 
+                FontWeight="Bold"
+                FontSize="14"
+                VerticalAlignment="Center" 
+                Padding="5,0"
+                BorderBrush="BlueViolet"
+                BorderThickness="1"
+                hc:BorderElement.CornerRadius="7"
+                Command="{Binding ShowAddNewCommand}" 
+                HorizontalAlignment="Center" Margin="10,0,10,0">
+                                                <Button.Background>
+                                                    <SolidColorBrush Color="BlueViolet" Opacity="0.25">
+
+                                                    </SolidColorBrush>
+
+                                                </Button.Background>
+                                                <Button.Foreground>
+                                                    <SolidColorBrush Color="BlueViolet" />
+
+                                                </Button.Foreground>
+
+                                            </Button>
                                         </Grid>
+                                        
                                     </hc:TransitioningContentControl>
+                                    <hc:Divider Margin="10,10,10,10" />
                                     <hc:TransitioningContentControl TransitionMode="Left2RightWithFade">
-                                        <Grid Height="80">
-                                            <Grid.ColumnDefinitions>
-
-                                                <ColumnDefinition Width="33*"/>
-                                                <ColumnDefinition Width="230*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="*"/>
-                                            </Grid.RowDefinitions>
-                                            <ItemsControl ItemsSource="{Binding CurrentDevice.MCustomZone}" Margin="10,24">
-                                                <ItemsControl.ItemsPanel>
+                                        <Grid >
+                                            <ListView HorizontalAlignment="Stretch"    Margin="10,10,10,10" x:Name="mRainbowCustomZone"  ItemsSource="{Binding CurrentCustomZoneColor}"  SelectedIndex="{Binding CurrentSelectedCustomColorIndex,Mode=OneWayToSource}"  VerticalAlignment="Center">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="SelectionChanged">
+                                                        <i:InvokeCommandAction Command="{Binding SetZoneColorCommand}" CommandParameter="SetZone"/>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                                <ListView.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.ColumnSpan="2" />
+                                                        <hc:SimpleStackPanel Orientation="Horizontal">
+                                                        </hc:SimpleStackPanel>
                                                     </ItemsPanelTemplate>
-                                                </ItemsControl.ItemsPanel>
-                                                <ItemsControl.ItemTemplate>
+                                                </ListView.ItemsPanel>
+                                                <ListView.Template>
+                                                    <ControlTemplate TargetType="{x:Type ItemsControl}">
+                                                        <Border>
+                                                            <hc:ScrollViewer CanContentScroll="true" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" >
+                                                                <ItemsPresenter />
+                                                            </hc:ScrollViewer>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </ListView.Template>
+                                                <ListView.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Button   Style="{StaticResource MaterialDesignFlatButton}" materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0"  Foreground="#FF898989" Margin="0,0,5,0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="26.5" Height="26.5" />
+                                                        <Rectangle  Fill="{Binding ., Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"   Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="20" Height="20" >
+                                                        </Rectangle>
                                                     </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-
-
-
-
-
-
+                                                </ListView.ItemTemplate>
+                                            </ListView>
                                         </Grid>
                                     </hc:TransitioningContentControl>
 
+
                                     <hc:TransitioningContentControl TransitionMode="Left2RightWithFade">
-                                        <Grid  Height="160">
+                                        <Grid  Height="auto">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <materialDesign:ColorPicker x:Name="mCustomZonePicker" Margin="0,0,0,20"/>
-                                            <TextBox Grid.Column="1"  Style="{StaticResource TextBoxExtend}" Text="{Binding Color, ElementName=CustomZonePicker, UpdateSourceTrigger=PropertyChanged}" Margin="8,73,262,57" HorizontalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Width="81"/>
+                                            <hc:ColorPicker  SelectedBrush="{Binding CurrentPickedColor,Converter={StaticResource ColorToBrushConverter},UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" x:Name="mColorPicker" Margin="0">
+
+
+                                            </hc:ColorPicker>
+
                                         </Grid>
 
                                     </hc:TransitioningContentControl>
@@ -690,10 +758,10 @@
 
                     </Grid>
                     <!-- Music-->
-                    <Grid>
+                    <Grid x:Name="rainbow">
                         <Grid.Style>
                             <Style TargetType="Grid">
-                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                <Setter Property="Visibility" Value="Visible"></Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=EffectBox,Path=SelectedItem}" Value="Sáng theo dải màu">
                                         <Setter Property="Visibility" Value="Visible"/>
@@ -704,22 +772,20 @@
 
 
 
-                        <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade" Margin="1,0" Width="568">
+                        <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade"  >
 
 
-                            <StackPanel  Margin="35,15,0,0" Orientation="Vertical" HorizontalAlignment="Left">
-
-                                <TextBlock Margin="10,0,0,0" Padding="0,0,0,10" Text="CÀI ĐẶT NÂNG CAO CHO CHẾ ĐỘ SÁNG THEO DẢI MÀU" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989" HorizontalAlignment="Left"/>
-                                <Grid Height="80" Margin="0,0,10,0">
+                            <StackPanel  Margin="45,15,0,0" Orientation="Vertical" >
+                                <Grid Height="auto" Margin="0,0,10,0">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Đồng bộ hệ thống" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
+                                    <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="10, 10, 10, 10" Grid.Column="0" Text="ĐỒNG BỘ HỆ THỐNG"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
                                     <ToggleButton x:Name="AmbinSync" 
                               IsChecked="{Binding CurrentDevice.SyncOn }" 
                               ToolTip="Unlock để chỉnh sửa vị trí LED ảo " 
@@ -736,62 +802,110 @@
                               VerticalAlignment="Center">
 
                                     </ToggleButton>
-                                    <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Thiết bị sẽ chạy theo màu, vị trí đồng bộ với hệ thống" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989"/>
+                                    <TextBlock Style="{DynamicResource TextBlockDefaultSecLight}" Margin="10, 0, 10, 10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Thiết bị sẽ chạy theo màu, vị trí đồng bộ với hệ thống" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
                                 </Grid>
-                                <Grid Height="80" Margin="0,0,10,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                                <hc:Divider Margin="10,10,10,10" />
+                                <Grid>
+
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Chọn Dải Màu" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
-                                    <!--<hc:ButtonGroup ToolTip="Ghép tất cả các output của HUB vê chung một hiệu ứng" Visibility="Collapsed" Grid.Column="0" x:Name="LightingModeSelection"  Style="{StaticResource ButtonGroupSolid}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0">
+                                    <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="10, 10, 10, 10"  Text="CHỌN DẢI MÀU"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                                    <hc:TransitioningContentControl Grid.Row="1">
+                                        <ListBox  ScrollViewer.CanContentScroll="True"
+                                                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                                                  ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" 
+                                                  Height="180"
+                                                  x:Name="AvailablePalette"
+                                                  Margin="0,10,0,10"
+                                                  BorderThickness="0" 
+                                                  SelectedIndex="{Binding CurrentDevice.SelectedPalette}"
+                                                  Style="{DynamicResource WrapPanelHorizontalListBox}" 
+                                                  ItemsPanel="{DynamicResource WrapPanelHorizontalItemsPanelTemplate}" 
+                                                  ItemsSource="{Binding AvailablePallete}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="SelectionChanged">
+                                                    <i:InvokeCommandAction Command="{Binding ChangeCurrentDeviceSelectedPalette}" CommandParameter="{Binding ElementName=AvailablePalette,Path=SelectedItem}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate DataType="data:CardModel">
+                                                    <hc:Card ToolTip="{Binding Description}" hc:BorderElement.CornerRadius="2"  MaxWidth="120"  Effect="{StaticResource EffectShadow2}" Margin="8" Footer="{Binding Name}">
+                                                        <Border CornerRadius="2,2,0,0" Style="{StaticResource BorderClip}">
+                                                            <ItemsControl ItemsSource="{Binding Thumbnail}">
+                                                                <ItemsControl.ItemsPanel>
+                                                                    <ItemsPanelTemplate>
+                                                                        <StackPanel Orientation="Horizontal">
+                                                                            
+                                                                        </StackPanel>
+                                                                    </ItemsPanelTemplate>
+                                                                </ItemsControl.ItemsPanel>
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <Rectangle  Fill="{Binding ., Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"   Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="7" Height="20" />
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                            
+                                                        </Border>
+                                                        <hc:Card.ContextMenu>
 
-
-                                        <RadioButton Width="auto" Content="Đồng Bộ" IsChecked="{Binding SyncOn,Mode=TwoWay}" Command="{Binding Path=DataContext.LightingModeSelection, ElementName=LightingModeSelection}" CommandParameter="Đồng Bộ" GroupName="lightingMode" Style="{StaticResource RadioGroupItemDefault}" >
-                                        </RadioButton>
-                                        <RadioButton Width="auto" Content="Riêng Lẻ" IsChecked="{Binding SyncOff,Mode=TwoWay}" Command="{Binding Path=DataContext.LightingModeSelection, ElementName=LightingModeSelection}" CommandParameter="Riêng Lẻ" GroupName="lightingMode" Style="{StaticResource RadioGroupItemDefault}" >
-                                        </RadioButton>
-
-                                    </hc:ButtonGroup>-->
-                                    <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Chọn dải màu mà bạn yêu thích. Chọn Custom để tùy chỉnh" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989"/>
-                                    <Rectangle Grid.Row="1" Grid.ColumnSpan="2" Height="1" Width="585" Fill="#14000000" VerticalAlignment="Bottom" Margin="10,0"/>
-                                    <ComboBox x:Name="RainbowPaletteBox" ItemsSource="{Binding AvailablePalette}"   Margin="0,0,10,0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
-                                        <ComboBox.Style>
-                                            <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend}">
-
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=AmbinSync,Path=IsChecked}" Value="false">
-                                                        <Setter Property="SelectedIndex" Value="{Binding CurrentDevice.SelectedPalette}"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ElementName=AmbinSync,Path=IsChecked}" Value="true">
-                                                        <Setter Property="SelectedIndex" Value="{Binding GeneralSettings.SelectedSystemPalette }"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ComboBox.Style>
-                                    </ComboBox>
-
+                                                            <ContextMenu Style="{DynamicResource ContextMenuBaseStyle}">
+                                                                <MenuItem Header="Share" Style="{DynamicResource MenuItemBaseStyle}"/>
+                                                                <MenuItem Header="Edit" Style="{DynamicResource MenuItemBaseStyle}"/>
+                                                                <MenuItem Header="Delete" Style="{DynamicResource MenuItemBaseStyle}"/>
+                                                               
+                                                            </ContextMenu>
+                                                            </hc:Card.ContextMenu>
+                                                        <hc:Card.FooterTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal" Margin="10">
+                                                                    <TextBlock TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Style="{StaticResource TextBlockDefault}" Text="{Binding DataContext.Name,RelativeSource={RelativeSource AncestorType=hc:Card}}" HorizontalAlignment="Left"/>
+                                                                    <!--<hc:SplitButton  Margin="0,0,0,0"   HorizontalAlignment="Right">
+                                                                        <hc:SplitButton.DropDownContent>
+                                                                            <StackPanel>
+                                                                                <MenuItem Header="Edit" Command="{Binding SelectCmd}" CommandParameter="Command1"/>
+                                                                                <MenuItem Header="Share" Command="{Binding SelectCmd}" CommandParameter="Command2"/>
+                                                                                <MenuItem Header="Export" Command="{Binding SelectCmd}" CommandParameter="Command3"/>
+                                                                                <MenuItem Header="Delete" Command="{Binding SelectCmd}" CommandParameter="Command3"/>
+                                                                            </StackPanel>
+                                                                        </hc:SplitButton.DropDownContent>
+                                                                    </hc:SplitButton>-->
+                                                                    
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </hc:Card.FooterTemplate>
+                                                        
+                                                        
+                                                    </hc:Card>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                            
+                                        </ListBox>
+                                    </hc:TransitioningContentControl>
                                 </Grid>
-                                <Grid Height="80" Margin="0,0,10,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                                <hc:Divider Margin="10,10,10,10" />
+
+
+                                <Grid  Height="auto">
+
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Tốc Độ Hiệu Ứng" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
-                                    <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Sự nhanh hay chậm của hiệu ứng áp dụng lên toàn bộ các dải màu" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989"/>
-                                    <Rectangle Grid.Row="1" Margin="10,0" Grid.ColumnSpan="2" Height="1" Width="585" Fill="#14000000" VerticalAlignment="Bottom"/>
-                                    <Slider Width="150"  Minimum="0" Maximum="15"  Margin="0,0,10,0" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                        <Slider.Style>
-                                            <Style TargetType="Slider" BasedOn="{StaticResource SliderBaseStyle}">
+
+                                    <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="20,10,0,0" Grid.Column="0" Text="TỐC ĐỘ "  VerticalAlignment="Center"  HorizontalAlignment="Left" />
+                                    <TextBlock  Style="{DynamicResource TextBlockDefaultSecLight}" Margin="10,0,10,10" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Text="Sự nhanh chậm của hiệu ứng còn phụ thuộc vào số lượng LE"  VerticalAlignment="Center"  HorizontalAlignment="Left" />
+
+                                    <hc:PreviewSlider Margin="10,10,10,10" Grid.Row="1"  HorizontalAlignment="Stretch"  Maximum="15">
+                                        <hc:PreviewSlider.PreviewContent>
+                                            <Label Style="{DynamicResource LabelPrimary}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0.00"/>
+                                        </hc:PreviewSlider.PreviewContent>
+                                        <hc:PreviewSlider.Style>
+                                            <Style TargetType="hc:PreviewSlider" BasedOn="{StaticResource PreviewSliderBaseStyle}" >
 
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ElementName=AmbinSync,Path=IsChecked}" Value="false">
@@ -808,42 +922,30 @@
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </Slider.Style>
-                                    </Slider>
-                                    <Button Grid.Column="0"    materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0"  Background="#26000000" BorderBrush="{x:Null}" Foreground="#FF898989" Margin="0,0,20,0" HorizontalAlignment="Right">
-                                        <Button.Style>
-                                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                                        </hc:PreviewSlider.Style>
+                                    </hc:PreviewSlider>
 
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=AmbinSync,Path=IsChecked}" Value="false">
-                                                        <Setter Property="Content" Value="{Binding CurrentDevice.EffectSpeed}"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ElementName=AmbinSync,Path=IsChecked}" Value="true">
-                                                        <Setter Property="Content" Value="{Binding GeneralSettings.SystemRainbowSpeed }"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
+                                    
 
-                                    </Button>
                                 </Grid>
+                                <hc:Divider Margin="10,10,10,10" />
                                 <Grid Visibility="{Binding ElementName=AmbinSync,Path=IsChecked,Converter={StaticResource InverseBoolToVisConverter}}" Height="80" Margin="0,0,10,0">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Tần Suất Lặp Lại" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
-                                    <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Số lần mà bạn muốn dải màu hiển thị trên dây LED trong 1 chu kỳ" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989"/>
-                                    <hc:NumericUpDown Minimum="1" Maximum="4" Grid.Column="1" Width="70" Value="{Binding CurrentDevice.ColorFrequency}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" HorizontalContentAlignment="Center"/>
+                                    <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="20,10,0,0" Grid.Column="0" Text="ĐỘ PHÂN GIẢI MÀU SẮC"  VerticalAlignment="Center"  HorizontalAlignment="Left" />
+                                    <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Margin="10, 0, 10, 10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Số lần mà bạn muốn dải màu hiển thị trên dây LED trong 1 chu kỳ"  VerticalAlignment="Center" />
+                                    <hc:NumericUpDown HorizontalContentAlignment="Center" Minimum="1" Maximum="4" Grid.Column="1"  Value="{Binding CurrentDevice.ColorFrequency}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" />
 
-                                    <Rectangle Margin="10,0,10,5" Grid.Row="1" Grid.ColumnSpan="2" Height="1" Fill="#26000000" VerticalAlignment="Bottom"/>
+                                    
                                 </Grid>
 
-
+                                <hc:Divider Margin="10,10,10,10" />
 
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel.Style>
@@ -857,34 +959,80 @@
                                         </Style>
                                     </StackPanel.Style>
                                     <hc:TransitioningContentControl TransitionMode="Left2RightWithFade" Margin="0,0,10,0">
-                                        <Grid Height="80">
+                                        <Grid Height="auto">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="2*"/>
                                                 <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="*"/>
                                                 <RowDefinition Height="*"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0" Margin="10, 0, 0, 0" Grid.Column="0" Text="Custom Zone" FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
-                                            <TextBlock Margin="10, 0, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Click vào từng ô màu để chọn màu mà bạn muốn" FontSize="14" VerticalAlignment="Center" Foreground="#FF898989"/>
-                                            <Button Grid.Column="1"  Style="{StaticResource MaterialDesignFlatButton}" Content="Import" materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0"  Background="#26000000" BorderBrush="{x:Null}" Foreground="#FF898989" Margin="0,0,90,0" HorizontalAlignment="Right" VerticalAlignment="Center" Click="Button_Click_2"/>
-                                            <Button Grid.Column="1"  Style="{StaticResource MaterialDesignFlatButton}" Content="Save" materialDesign:ButtonAssist.CornerRadius="7" materialDesign:ShadowAssist.ShadowDepth="Depth0"  Background="#26000000" BorderBrush="{x:Null}" Foreground="#FF898989" Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center" Click="Button_Click_3"/>
+                                            <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="20, 10, 0, 10" Grid.Column="0" Text="CUSTOM ZONE"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Margin="10, 0, 0, 10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Click vào từng ô màu để chọn màu mà bạn muốn"  VerticalAlignment="Center" />
+                                            <Button Grid.Column="1"
+                ToolTip="Thêm thiết bị theo cách thủ công"  
+                Content="Import" 
+                Style="{DynamicResource ButtonPrimary}"
+                Width="auto" 
+                Height="32" 
+                FontWeight="Bold"
+                FontSize="14"
+                VerticalAlignment="Center" 
+                Padding="5,0"
+                BorderBrush="BlueViolet"
+                BorderThickness="1"
+                hc:BorderElement.CornerRadius="7"
+                Command="{Binding ShowAddNewCommand}" 
+                HorizontalAlignment="Center" Margin="10,0,10,0">
+                                                <Button.Background>
+                                                    <SolidColorBrush Color="BlueViolet" Opacity="0.25">
 
+                                                    </SolidColorBrush>
+
+                                                </Button.Background>
+                                                <Button.Foreground>
+                                                    <SolidColorBrush Color="BlueViolet" />
+
+                                                </Button.Foreground>
+
+                                            </Button>
+
+                                            <Button Grid.Column="2"
+                ToolTip="Thêm thiết bị theo cách thủ công"  
+                Content="Save" 
+                Style="{DynamicResource ButtonPrimary}"
+                Width="auto" 
+                Height="32" 
+                FontWeight="Bold"
+                FontSize="14"
+                VerticalAlignment="Center" 
+                Padding="5,0"
+                BorderBrush="BlueViolet"
+                BorderThickness="1"
+                hc:BorderElement.CornerRadius="7"
+                Command="{Binding ShowAddNewCommand}" 
+                HorizontalAlignment="Center" Margin="10,0,10,0">
+                                                <Button.Background>
+                                                    <SolidColorBrush Color="BlueViolet" Opacity="0.25">
+
+                                                    </SolidColorBrush>
+
+                                                </Button.Background>
+                                                <Button.Foreground>
+                                                    <SolidColorBrush Color="BlueViolet" />
+
+                                                </Button.Foreground>
+
+                                            </Button>
                                         </Grid>
+
                                     </hc:TransitioningContentControl>
+                                    <hc:Divider Margin="10,10,10,10" />
                                     <hc:TransitioningContentControl TransitionMode="Left2RightWithFade">
-                                        <Grid Height="80">
-                                            <Grid.ColumnDefinitions>
-
-                                                <ColumnDefinition Width="33*"/>
-                                                <ColumnDefinition Width="230*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="*"/>
-                                            </Grid.RowDefinitions>
-
-                                            <ListView   Grid.ColumnSpan="2" Margin="0,0,0,0" x:Name="rainbowCustomZone"  ItemsSource="{Binding CurrentCustomZoneColor}"  SelectedIndex="{Binding CurrentSelectedCustomColorIndex,Mode=OneWayToSource}"  VerticalAlignment="Center">
+                                        <Grid >
+                                            <ListView HorizontalAlignment="Stretch"    Margin="10,10,10,10" x:Name="RainbowCustomZone"  ItemsSource="{Binding CurrentCustomZoneColor}"  SelectedIndex="{Binding CurrentSelectedCustomColorIndex,Mode=OneWayToSource}"  VerticalAlignment="Center">
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="SelectionChanged">
                                                         <i:InvokeCommandAction Command="{Binding SetZoneColorCommand}" CommandParameter="SetZone"/>
@@ -892,20 +1040,13 @@
                                                 </i:Interaction.Triggers>
                                                 <ListView.ItemsPanel>
                                                     <ItemsPanelTemplate>
-
                                                         <hc:SimpleStackPanel Orientation="Horizontal">
-                                                         
                                                         </hc:SimpleStackPanel>
-
-                                                        
-
                                                     </ItemsPanelTemplate>
-                                                    
                                                 </ListView.ItemsPanel>
                                                 <ListView.Template>
                                                     <ControlTemplate TargetType="{x:Type ItemsControl}">
                                                         <Border>
-
                                                             <hc:ScrollViewer CanContentScroll="true" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" >
                                                                 <ItemsPresenter />
                                                             </hc:ScrollViewer>
@@ -914,29 +1055,26 @@
                                                 </ListView.Template>
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Rectangle  Fill="{Binding ., Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"   Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="26.5" Height="26.5" >
-                                                            
+                                                        <Rectangle  Fill="{Binding ., Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"   Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="20" Height="20" >
                                                         </Rectangle>
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>
-                                                
                                             </ListView>
-
-
-
                                         </Grid>
                                     </hc:TransitioningContentControl>
 
+
                                     <hc:TransitioningContentControl TransitionMode="Left2RightWithFade">
-                                        <Grid  Height="500">
+                                        <Grid  Height="auto">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <hc:ColorPicker    SelectedBrush="{Binding CurrentPickedColor,Converter={StaticResource ColorToBrushConverter},UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" x:Name="ColorPicker" Margin="0">
-                                               
+                                            <hc:ColorPicker  SelectedBrush="{Binding CurrentPickedColor,Converter={StaticResource ColorToBrushConverter},UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" x:Name="ColorPicker" Margin="0">
+
+
                                             </hc:ColorPicker>
-                                            
+
                                         </Grid>
 
                                     </hc:TransitioningContentControl>
@@ -1092,7 +1230,7 @@
                     <!-- SpotReader(Screen Capture)-->
 
 
-                    <Grid Margin="45,0,0,0" Height="427">
+                    <Grid x:Name="static" Margin="45,0,0,0" Height="427">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
@@ -1177,7 +1315,7 @@
                     </Grid>
                     <!-- Static Color-->
 
-                    <Grid Margin="45,0,0,0" Height="427">
+                    <Grid x:Name="canvas" Margin="45,0,0,0" Height="427">
 
 
                         <Grid.Style>
@@ -1409,7 +1547,7 @@
 
                     <!--Canvas Lighting -->
 
-                    <Grid>
+                    <Grid x:Name="atmosphere">
                         <Grid.Style>
                             <Style TargetType="Grid">
                                 <Setter Property="Visibility" Value="Collapsed"></Setter>

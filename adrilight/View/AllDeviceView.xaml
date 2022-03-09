@@ -6,13 +6,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:local="clr-namespace:adrilight.View"
-             
+             Background="{DynamicResource RegionBrush}"
              xmlns:converters="clr-namespace:adrilight.Converter"
              mc:Ignorable="d" 
               xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf" xmlns:viewmodel="clr-namespace:adrilight.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainViewViewModel}"
-             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             
         TextElement.FontWeight="Regular"
-        TextElement.FontSize="13"
+        
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"         
              Name="alldevice"
@@ -24,11 +24,11 @@
             <converters:BrushToHexConverter x:Key="BrushToHexConverter" />
             <BooleanToVisibilityConverter x:Key="boolToVisibilityConvert" />
             <SolidColorBrush x:Key="Item.MouseOver.Background" Color="Gold"/>
-            <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
-            <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#21326CF3"/>
-            <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FFDADADA"/>
-            <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3F326CF3"/>
-            <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF326CF3"/>
+            <SolidColorBrush x:Key="Item.MouseOver.Border" Color="BlueViolet" Opacity="25"/>
+            <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="BlueViolet" Opacity="25"/>
+            <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="BlueViolet" Opacity="25"/>
+            <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="BlueViolet" Opacity="25"/>
+            <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="BlueViolet" Opacity="25"/>
 
             <Style x:Key="ListViewContainerStyle" TargetType="{x:Type ListViewItem}">
              
@@ -36,9 +36,9 @@
                 <Setter Property="Padding" Value="4,1"/>
                 <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
                 <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Background" Value="{DynamicResource RegionBrush}"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>
-                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderThickness" Value="2"/>
                 <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
                 <Setter Property="Width" Value="auto"/>
                 <Setter Property="Height" Value="auto"/>
@@ -56,8 +56,9 @@
                                     <MultiTrigger.Conditions>
                                         <Condition Property="IsMouseOver" Value="True"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
-                                    <Setter Property="BorderThickness" TargetName="Bd" Value="1"/>
+                                   
+                                    <!--<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>-->
+                                    <Setter Property="BorderThickness" TargetName="Bd" Value="2"/>
                                     <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
                                 </MultiTrigger>
 
@@ -118,7 +119,15 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Margin="10,0,0,0" Grid.Row="0" Grid.Column="0" Text="DASHBOARD"  FontSize="17" VerticalAlignment="Center" Foreground="Black" HorizontalAlignment="Left"/>
+                <TextBlock
+                    Margin="10,0,0,0" 
+                    Grid.Row="0" 
+                    Grid.Column="0" 
+                    Text="DASHBOARD"  
+                    
+                    VerticalAlignment="Center" 
+                    Style="{DynamicResource TextBlockSubTitle}"
+                    HorizontalAlignment="Left"/>
                 <!--<hc:ButtonGroup Grid.Column="1" Margin="50,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">
                     <RadioButton x:Name ="allDevices"  Content="All Devices" IsChecked="True"/>
                     <RadioButton x:Name="allGroups" Content="Groups"/>
@@ -126,14 +135,73 @@
                 </hc:ButtonGroup>-->
             </Grid>
            
-            <TextBlock Margin="10,0,0,0" Grid.Row="1" Grid.Column="0" Text="Tất cả các thiết bị đã từng được thêm sẽ xuất hiện ở đây. Click vào từng thẻ để điều chỉnh" FontSize="14" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="#FF898989"/>
+            <TextBlock 
+                Margin="10,0,0,0" 
+                Grid.Row="1" 
+                Grid.Column="0" 
+                Text="Tất cả các thiết bị đã từng được thêm sẽ xuất hiện ở đây. Click vào từng thẻ để điều chỉnh" 
+                Style="{DynamicResource TextBlockDefaultSecLight}"
+                VerticalAlignment="Top" 
+                HorizontalAlignment="Left" 
+                />
         </Grid>
         <Border Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" Height="32" HorizontalAlignment="Right" Width="95">
-            <Button ToolTip="Thêm thiết bị theo cách thủ công" Foreground="#FF326CF3" Background="#3F326CF3" Content="Thêm mới" Style="{StaticResource MaterialDesignFlatButton}" Width="75" Height="32" VerticalAlignment="Center" BorderThickness="0" Padding="0"   materialDesign:ButtonAssist.CornerRadius="7" Command="{Binding ShowAddNewCommand}" HorizontalAlignment="Right" Margin="0,0,20,0"/>
+            <Button 
+                ToolTip="Thêm thiết bị theo cách thủ công"  
+                Content="Thêm mới" 
+                Style="{DynamicResource ButtonPrimary}"
+                Width="75" 
+                Height="32" 
+                FontWeight="Bold"
+                FontSize="14"
+                VerticalAlignment="Center" 
+                Padding="0"
+                BorderBrush="BlueViolet"
+                BorderThickness="1"
+                hc:BorderElement.CornerRadius="7"
+                Command="{Binding ShowAddNewCommand}" 
+                HorizontalAlignment="Right" Margin="0,0,20,0">
+                <Button.Background>
+                    <SolidColorBrush Color="BlueViolet" Opacity="0.25">
+                        
+                    </SolidColorBrush>
+
+                </Button.Background>
+                <Button.Foreground>
+                    <SolidColorBrush Color="BlueViolet" />
+
+                </Button.Foreground>
+            
+            </Button>
 
 
         </Border>
-        <Button ToolTip="Dò tìm thiết bị" Foreground="#FF326CF3" Background="#3F326CF3" Content="Refresh" Style="{StaticResource MaterialDesignFlatButton}" Width="66" Height="32" VerticalAlignment="Top" BorderThickness="0" Padding="0"   materialDesign:ButtonAssist.CornerRadius="7" Command="{Binding RefreshDeviceCommand}" HorizontalAlignment="Right" Margin="0,0,120,0" Grid.Column="1" Click="Button_Click"/>
+        <Button 
+            ToolTip="Dò tìm thiết bị" 
+            Content="Refresh"
+            Style="{DynamicResource ButtonPrimary}" 
+            Width="66" 
+            Height="32" 
+            FontWeight="Bold"
+            FontSize="14"
+            VerticalAlignment="Top" 
+            BorderThickness="1" 
+            Padding="0"   
+            BorderBrush="BlueViolet"
+            hc:BorderElement.CornerRadius="7"
+            Command="{Binding RefreshDeviceCommand}" 
+            HorizontalAlignment="Right" Margin="0,0,120,0" 
+            Grid.Column="1" Click="Button_Click">
+            <Button.Background>
+                <SolidColorBrush Color="BlueViolet" Opacity="0.25"  />
+
+            </Button.Background>
+            <Button.Foreground>
+                <SolidColorBrush Color="BlueViolet" />
+
+            </Button.Foreground>
+        </Button>
+       
 
 
         <Grid x:Name="parrentGrid" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
@@ -150,7 +218,7 @@
                        ItemContainerStyle="{StaticResource ListViewContainerStyle}"
                        BorderThickness="0" 
                        Tag="{Binding}"
-                       Background="White">
+                                      >
 
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -163,7 +231,7 @@
                         <Border 
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}" 
-                            Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="False">
+                             Padding="{TemplateBinding Padding}" SnapsToDevicePixels="False">
                             <hc:ScrollViewer>
                                 <ItemsPresenter />
                             </hc:ScrollViewer>
@@ -186,7 +254,7 @@
                             <Border 
                                 Margin="-6"   
                                 CornerRadius="30" 
-                                Background="Transparent">
+                                Background="{DynamicResource RegionBrush}">
                                 <Border.Style>
                                     <Style TargetType="Border"  >
                                         <Setter Property="BorderBrush" Value="#FF898989"></Setter>
@@ -224,27 +292,36 @@
                                     <!--on off button-->
                                     <ToggleButton 
                                         IsChecked="{Binding LEDOn}" 
-                                        Grid.Column="1" 
-                                        BorderBrush="#FF326CF3" 
-                                        BorderThickness="1"
-                                        Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
-                                        ToolTip="Bật/Tắt"
-                                        Width="32" 
-                                        Height="32" 
-                                        Foreground="#FF326CF3" 
-                                        Background="#3F326CF3" 
-                                        HorizontalAlignment="Right" 
-                                        Margin="0,0,15,0">
-                                        <materialDesign:PackIcon
-                                        Kind="Power"
-                                        Height="26"
-                                        Width="26" />
+                                        BorderThickness="0"                                     
+                                        Margin="0,0,15,0" 
+                                        HorizontalAlignment="Right"
+                                        Grid.Column="1"
+                                        Style="{StaticResource ToggleButtonFlip}">
+                                        <hc:StatusSwitchElement.CheckedElement>
+                                            <Border 
+                                            Background="{DynamicResource PrimaryBrush}">
+                                                <TextBlock 
+                                                HorizontalAlignment="Center" 
+                                                VerticalAlignment="Center" 
+                                                Text="On" 
+                                                Foreground="{DynamicResource TextIconBrush}"/>
+                                            </Border>
+                                        </hc:StatusSwitchElement.CheckedElement>
+                                        
+                                        <Border Background="{DynamicResource DangerBrush}">
+                                            <TextBlock 
+                                                    HorizontalAlignment="Center" 
+                                                    VerticalAlignment="Center" 
+                                                    Text="Off" 
+                                                    Foreground="{DynamicResource TextIconBrush}"/>
+                                        </Border>
                                     </ToggleButton>
                                     <!--delete device button-->
                                     <Button 
                                         BorderBrush="{x:Null}" 
-                                        BorderThickness="1"
-                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        BorderThickness="1"   
+                                        hc:BorderElement.CornerRadius="7"
+                                        Style="{StaticResource ButtonPrimary}"
                                         ToolTip="Xóa Thiết bị" 
                                         Command="{Binding Path=DataContext.DeleteDeviceCommand, ElementName=itm}" 
                                         CommandParameter="{Binding}"
@@ -253,15 +330,20 @@
                                         Height="32" 
                                         Margin="0,0,5,0" 
                                         Padding="0" 
-                                        Background="#33FD7E35" 
-                                        materialDesign:ButtonAssist.CornerRadius="7" 
-                                        Foreground="#FFFD7E35" 
                                         VerticalAlignment="Center" 
                                         HorizontalAlignment="Right">
                                         <materialDesign:PackIcon
                                           Kind="Close"
                                           Height="26"
                                           Width="26" />
+                                        <Button.Background>
+                                            <SolidColorBrush Color="{DynamicResource DangerColor }" Opacity="0.25" />
+
+                                        </Button.Background>
+                                        <Button.Foreground>
+                                            <SolidColorBrush Color="{DynamicResource DangerColor}" Opacity="1" />
+
+                                        </Button.Foreground>
                                     </Button>
                                     <!--color dot-->
                                     <Rectangle 
@@ -297,20 +379,20 @@
                                                 <hc:RunningBlock.Content>
                                                     <TextBlock  Text="{Binding DeviceName}" 
                                                                 FlowDirection="RightToLeft"
-                                                                FontSize="20" 
-                                                                FontWeight="DemiBold"/>
+                                                                Style="{DynamicResource TextBlockTitle}"
+                                                                />
                                                 </hc:RunningBlock.Content>
-                                                <hc:RunningBlock.Background>
+                                                <!--<hc:RunningBlock.Background>
                                                     <SolidColorBrush 
                                                         Color="White" 
                                                         Opacity="0.25" />
-                                                </hc:RunningBlock.Background>
+                                                </hc:RunningBlock.Background>-->
 
                                             </hc:RunningBlock>
-                                            <TextBlock Padding="3" Text="{Binding DeviceType}" FontSize="14"/>
-                                            <TextBlock Padding="3" Text="{Binding DevicePort}"/>
-                                            <TextBlock Padding="3" Text="{Binding DeviceID, StringFormat=Device ID : {0}}"/>
-                                            <TextBlock Padding="3" Text="{Binding Brightness,StringFormat=Độ sáng : {0}%}"/>
+                                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Padding="3" Text="{Binding DeviceType}" />
+                                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Padding="3" Text="{Binding DevicePort}"/>
+                                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Padding="3" Text="{Binding DeviceID, StringFormat=Device ID : {0}}"/>
+                                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Padding="3" Text="{Binding Brightness,StringFormat=Độ sáng : {0}%}"/>
                                         </StackPanel>
                                     </Grid>
                                     <!--<ListBox Grid.Row="2" Visibility="{Binding IsHUB,Converter={StaticResource boolToVisibilityConvert}}">

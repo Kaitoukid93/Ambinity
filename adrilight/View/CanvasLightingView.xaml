@@ -9,15 +9,15 @@
               xmlns:converters="clr-namespace:adrilight.Converter"
 
                xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf" xmlns:viewmodel="clr-namespace:adrilight.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainViewViewModel}"
-             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             
               TextElement.FontWeight="Regular"
               TextElement.FontSize="13"
               TextOptions.TextFormattingMode="Ideal" 
               TextOptions.TextRenderingMode="Auto"   
-              FontFamily="{StaticResource MaterialDesignFont}" d:DesignWidth="1030" Height="1000">
+               d:DesignWidth="1030" Height="1000">
 
    
-    <Grid Background="White" Margin="20,0,0,0">
+    <Grid  Margin="20,0,0,0">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -30,7 +30,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Margin="10,0,0,0" Grid.Row="0" Grid.Column="0" Text="ĐỒNG BỘ HIỆU ỨNG" FontSize="17" VerticalAlignment="Center" Foreground="Black"/>
+            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockSubTitle}" Margin="10,0,0,0" Grid.Row="0" Grid.Column="0" Text="CANVAS" FontSize="17" VerticalAlignment="Center" />
             
         </Grid>
         
