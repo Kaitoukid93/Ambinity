@@ -52,11 +52,11 @@
                                           >
                             </MenuItem>
                             <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Share"
-                                          Command="{Binding PlacementTarget.Tag.EditSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                          Command="{Binding PlacementTarget.Tag.ExportCurrentSelectedPaletteToFileCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
                                           >
                             </MenuItem>
                             <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Delete"
-                                          Command="{Binding PlacementTarget.Tag.EditSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                          Command="{Binding PlacementTarget.Tag.DeleteSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
                                           >
                             </MenuItem>
                         </ContextMenu>
@@ -593,12 +593,29 @@
                             </Style>
                         </Grid.Style>
 
-                        <hc:TransitioningContentControl Width="568" TransitionMode="Right2LeftWithFade">
+                        <hc:TransitioningContentControl  TransitionMode="Right2LeftWithFade">
 
 
                             <StackPanel Margin="45,15,0,0" Orientation="Vertical">
-
-                                <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockSubTitle}" Foreground="{DynamicResource SecondaryTextBrush}" Margin="10,0,0,0" Padding="0,0,0,10" Text="CÀI ĐẶT NÂNG CAO CHO CHẾ ĐỘ SÁNG THEO NHẠC" VerticalAlignment="Center" />
+                                <Grid Margin="10,0,10,0" x:Name="Visualizer">
+                                    <ItemsControl ItemsSource="{Binding VisualizerFFT}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Rows="1">
+                                                    
+                                                </UniformGrid>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <ProgressBar Minimum="0" Maximum="255" Value="{Binding . }" Margin="5" Orientation="Vertical" Height="100"   hc:VisualElement.Text="" Style="{DynamicResource ProgressBarFlat}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    
+                                    
+                                   
+                                </Grid>
                                 <Grid Height="auto">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="auto"/>
@@ -627,9 +644,83 @@
 
                                 </Grid>
                                 <hc:Divider Margin="10,10,10,10" />
-                               
-                               
-                              
+
+                                <Grid>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="10, 10, 10, 10"  Text="CHỌN DẢI MÀU"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                                    <Button Command="{Binding ImportPaletteCardFromFileCommand}" Width="32" Padding="7,7" Margin="0,0,15,0" HorizontalAlignment="Right" Style="{DynamicResource ButtonDefault}" hc:IconElement.Geometry="{DynamicResource AddGeometry}"/>
+                                    <hc:TransitioningContentControl Grid.Row="1">
+                                        <ListBox  ScrollViewer.CanContentScroll="True"
+                                                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                                                  ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" 
+                                                  Height="180"
+                                                  x:Name="AvailableMPalette"
+                                                  Margin="0,10,0,10"
+                                                  BorderThickness="0" 
+                                                  
+                                                  SelectedIndex="{Binding CurrentDevice.SelectedMusicPalette}"
+                                                  Style="{DynamicResource WrapPanelHorizontalListBox}" 
+                                                  ItemsPanel="{DynamicResource WrapPanelHorizontalItemsPanelTemplate}" 
+                                                  ItemsSource="{Binding AvailablePallete}">
+                                            <!--<i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="SelectionChanged">
+                                                    <i:InvokeCommandAction Command="{Binding ChangeCurrentDeviceSelectedPalette}" CommandParameter="{Binding ElementName=AvailablePalette,Path=SelectedItem}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>-->
+
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate DataType="data:CardModel">
+                                                    <hc:Card ToolTip="{Binding Description}" hc:BorderElement.CornerRadius="2"  MaxWidth="120"  Effect="{StaticResource EffectShadow2}" Margin="8" Footer="{Binding Name}">
+                                                        <Border CornerRadius="2,2,0,0" Style="{StaticResource BorderClip}">
+                                                            <ItemsControl ItemsSource="{Binding Thumbnail}">
+                                                                <ItemsControl.ItemsPanel>
+                                                                    <ItemsPanelTemplate>
+                                                                        <StackPanel Orientation="Horizontal">
+
+                                                                        </StackPanel>
+                                                                    </ItemsPanelTemplate>
+                                                                </ItemsControl.ItemsPanel>
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <Rectangle  Fill="{Binding ., Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"   Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="7" Height="20" />
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+
+                                                        </Border>
+
+                                                        <hc:Card.FooterTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal" Margin="10">
+                                                                    <TextBlock TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Style="{StaticResource TextBlockDefault}" Text="{Binding DataContext.Name,RelativeSource={RelativeSource AncestorType=hc:Card}}" HorizontalAlignment="Left"/>
+                                                                    <!--<hc:SplitButton  Margin="0,0,0,0"   HorizontalAlignment="Right">
+                                                                        <hc:SplitButton.DropDownContent>
+                                                                            <StackPanel>
+                                                                                <MenuItem Header="Edit" Command="{Binding SelectCmd}" CommandParameter="Command1"/>
+                                                                                <MenuItem Header="Share" Command="{Binding SelectCmd}" CommandParameter="Command2"/>
+                                                                                <MenuItem Header="Export" Command="{Binding SelectCmd}" CommandParameter="Command3"/>
+                                                                                <MenuItem Header="Delete" Command="{Binding SelectCmd}" CommandParameter="Command3"/>
+                                                                            </StackPanel>
+                                                                        </hc:SplitButton.DropDownContent>
+                                                                    </hc:SplitButton>-->
+
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </hc:Card.FooterTemplate>
+
+
+                                                    </hc:Card>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+
+                                        </ListBox>
+                                    </hc:TransitioningContentControl>
+                                </Grid>
+
 
 
                             </StackPanel>
@@ -640,7 +731,7 @@
                     <Grid x:Name="rainbow">
                         <Grid.Style>
                             <Style TargetType="Grid">
-                                <Setter Property="Visibility" Value="Visible"></Setter>
+                                <Setter Property="Visibility" Value="Collapsed"></Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=EffectBox,Path=SelectedItem}" Value="Sáng theo dải màu">
                                         <Setter Property="Visibility" Value="Visible"/>
@@ -692,6 +783,7 @@
                                         <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
                                     <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="10, 10, 10, 10"  Text="CHỌN DẢI MÀU"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                                    <Button Command="{Binding ImportPaletteCardFromFileCommand}" Width="32" Padding="7,7" Margin="0,0,15,0" HorizontalAlignment="Right" Style="{DynamicResource ButtonDefault}" hc:IconElement.Geometry="{DynamicResource AddGeometry}"/>
                                     <hc:TransitioningContentControl Grid.Row="1">
                                         <ListBox  ScrollViewer.CanContentScroll="True"
                                                   ScrollViewer.VerticalScrollBarVisibility="Auto" 
@@ -700,15 +792,16 @@
                                                   x:Name="AvailablePalette"
                                                   Margin="0,10,0,10"
                                                   BorderThickness="0" 
+                                                  
                                                   SelectedIndex="{Binding CurrentDevice.SelectedPalette}"
                                                   Style="{DynamicResource WrapPanelHorizontalListBox}" 
                                                   ItemsPanel="{DynamicResource WrapPanelHorizontalItemsPanelTemplate}" 
                                                   ItemsSource="{Binding AvailablePallete}">
-                                            <i:Interaction.Triggers>
+                                            <!--<i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="SelectionChanged">
                                                     <i:InvokeCommandAction Command="{Binding ChangeCurrentDeviceSelectedPalette}" CommandParameter="{Binding ElementName=AvailablePalette,Path=SelectedItem}"/>
                                                 </i:EventTrigger>
-                                            </i:Interaction.Triggers>
+                                            </i:Interaction.Triggers>-->
                                             
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate DataType="data:CardModel">
@@ -800,24 +893,9 @@
                                     
 
                                 </Grid>
-                                <hc:Divider Margin="10,10,10,10" />
-                                <Grid Visibility="{Binding ElementName=AmbinSync,Path=IsChecked,Converter={StaticResource InverseBoolToVisConverter}}" Height="80" Margin="0,0,10,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="20,10,0,0" Grid.Column="0" Text="ĐỘ PHÂN GIẢI MÀU SẮC"  VerticalAlignment="Center"  HorizontalAlignment="Left" />
-                                    <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Margin="10, 0, 10, 10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Số lần mà bạn muốn dải màu hiển thị trên dây LED trong 1 chu kỳ"  VerticalAlignment="Center" />
-                                    <hc:NumericUpDown HorizontalContentAlignment="Center" Minimum="1" Maximum="4" Grid.Column="1"  Value="{Binding CurrentDevice.ColorFrequency}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" />
+                               
 
-                                    
-                                </Grid>
-
-                                <hc:Divider Margin="10,10,10,10" />
+                              
 
                                
 

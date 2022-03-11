@@ -40,6 +40,7 @@ namespace adrilight
         private int _devicePowerVoltage = 5;
         private int _groupSelfIndex = 0;
         private Color[] _currentActivePalette = DefaultColorCollection.rainbow;
+        private Color[] _currentActiveMusicPalette = DefaultColorCollection.rainbow;
 
 
         private int _mSens = 0;
@@ -290,6 +291,7 @@ namespace adrilight
         public Color[] CustomZone { get => _customZone; set { Set(() => CustomZone, ref _customZone, value); } }
 
         public Color[] CurrentActivePalette { get => _currentActivePalette; set { Set(() => CurrentActivePalette, ref _currentActivePalette, value); } }
+        public Color[] CurrentActiveMusicPalette { get => _currentActiveMusicPalette; set { Set(() => CurrentActiveMusicPalette, ref _currentActiveMusicPalette, value); } }
 
         //Color Palette
         public Color[] MCustomZone { get => _mCustomZone; set { Set(() => MCustomZone, ref _mCustomZone, value); } }

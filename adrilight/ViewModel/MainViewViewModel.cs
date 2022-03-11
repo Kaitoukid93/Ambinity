@@ -28,6 +28,7 @@ using System.Drawing.Imaging;
 using adrilight.Shaders;
 using HandyControl.Controls;
 using adrilight.View;
+using HandyControl.Data;
 
 namespace adrilight.ViewModel
 {
@@ -252,7 +253,11 @@ namespace adrilight.ViewModel
         //VIDs commands//
         public ICommand ZerolAllCommand { get; set; }
         public ICommand EditSelectedPaletteCommand { get; set; }
-
+        public ICommand ImportPaletteCardFromFileCommand { get; set; }
+        public ICommand ExportCurrentSelectedPaletteToFileCommand { get; set; }
+        public ICommand EditSelectedPaletteSaveConfirmCommand { get; set; }
+        public ICommand DeleteSelectedPaletteCommand { get; set; }
+        public ICommand CreateNewPaletteCommand { get; set; }
         public ICommand SetIncreamentCommand { get; set; }
         public ICommand SetIncreamentCommandfromZero { get; set; }
         public ICommand UserInputIncreamentCommand { get; set; }
@@ -378,8 +383,8 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-        private ObservableCollection<ColorPaletteCard> _availablePallete;
-        public ObservableCollection<ColorPaletteCard> AvailablePallete {
+        private ObservableCollection<IColorPaletteCard> _availablePallete;
+        public ObservableCollection<IColorPaletteCard> AvailablePallete {
             get { return _availablePallete; }
             set
             {
@@ -451,6 +456,29 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged(() => CanvasWidth);
                 RaisePropertyChanged(() => CanvasHeight);
             }
+        }
+        private byte[] _visualizerFFT;
+        public byte[] VisualizerFFT {
+            get { return _visualizerFFT; }
+            set
+            {
+                _visualizerFFT = value;
+                RaisePropertyChanged(nameof(VisualizerFFT));
+            }
+        }
+        private int _visualizerAvailableSpace;
+        public int VisualizerAvailableSpace {
+            get { return _visualizerAvailableSpace; }
+            set
+            {
+                _visualizerAvailableSpace = value;
+                RaisePropertyChanged(nameof(_visualizerAvailableSpace));
+            }
+        }
+        
+        public int MusicProgressBarWidth {
+            get { return (VisualizerAvailableSpace - (VisualizerFFT.Length - 1) * 5) / VisualizerFFT.Length; ; }
+            
         }
         public int CanvasWidth => ShaderBitmap.PixelWidth;
         public int CanvasHeight => ShaderBitmap.PixelHeight;
@@ -957,6 +985,18 @@ namespace adrilight.ViewModel
             }
         }
 
+        private IColorPaletteCard _currentActivePaletteCard;
+        public IColorPaletteCard CurrentActivePaletteCard {
+            get { return _currentActivePaletteCard; }
+            set {
+                _currentActivePaletteCard = value; 
+               
+                SetCurrentDeviceSelectedPalette(value);
+                }
+        }
+
+       
+
 
         public int DeviceRectX {
             get
@@ -999,6 +1039,32 @@ namespace adrilight.ViewModel
                 _hUBOutputCollection = value;
             }
         }
+        private string _newPaletteName;
+        public string NewPaletteName {
+            get { return _newPaletteName; }
+            set
+            {
+                _newPaletteName = value;
+            }
+        }
+        private string _newPaletteOwner;
+        public string NewPaletteOwner {
+            get { return _newPaletteOwner; }
+            set
+            {
+                _newPaletteOwner = value;
+            }
+        }
+        private string _newPaletteDescription;
+        public string NewPaletteDescription {
+            get { return _newPaletteDescription; }
+            set
+            {
+                _newPaletteDescription = value;
+            }
+        }
+
+
 
 
         public int DeviceRectY {
@@ -1127,30 +1193,54 @@ namespace adrilight.ViewModel
 
             //CurrentView = _allDeviceView.CreateViewModel();
             //VIDs command//
-            ZerolAllCommand = new RelayCommand<string>((p) =>
+
+           
+                    ZerolAllCommand = new RelayCommand<string>((p) =>
             {
                 return true;
             }, (p) =>
             {
                 ShowZeroingDialog();
             });
-           ChangeCurrentDeviceSelectedPalette  = new RelayCommand<ColorPaletteCard>((p) =>
+           ChangeCurrentDeviceSelectedPalette  = new RelayCommand<IColorPaletteCard>((p) =>
             {
                 return true;
             }, (p) =>
             {
-                SetCurrentDeviceSelectedPalette(p);
+                SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
             });
 
-            EditSelectedPaletteCommand = new RelayCommand<ColorPaletteCard>((p) =>
+            EditSelectedPaletteCommand = new RelayCommand<IColorPaletteCard>((p) =>
             {
                 return true;
             }, (p) =>
             {
-                OpenEditPaletteDialog(p);
+                OpenEditPaletteDialog();
             });
-            
-        SetIncreamentCommandfromZero = new RelayCommand<string>((p) =>
+
+            EditSelectedPaletteSaveConfirmCommand = new RelayCommand<string>((p) =>
+                 {
+                     return true;
+                 }, (p) =>
+                 {
+                     OpenSaveConfirmMessage();
+                 });
+
+            CreateNewPaletteCommand = new RelayCommand<string>((p) =>
+                   {
+                       return true;
+                   }, (p) =>
+                   {
+                       CreateNewPaletteFromCurrentEditPalette();
+                   });
+            DeleteSelectedPaletteCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                DeleteSelectedPalette(CurrentActivePaletteCard);
+            });
+            SetIncreamentCommandfromZero = new RelayCommand<string>((p) =>
             {
                 return true;
             }, (p) =>
@@ -1209,6 +1299,20 @@ namespace adrilight.ViewModel
             }, (p) =>
             {
                 ShowAdjustPositon();
+            });
+            ImportPaletteCardFromFileCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                ImportPaletteCardFromFile();
+            });
+            ExportCurrentSelectedPaletteToFileCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                ExportCurrentSelectedPaletteToFile();
             });
 
 
@@ -1361,7 +1465,160 @@ namespace adrilight.ViewModel
             });
         }
 
-        public void OpenEditPaletteDialog(ColorPaletteCard palette)
+        private void ExportCurrentSelectedPaletteToFile()
+        {
+            SaveFileDialog Export = new SaveFileDialog();
+            Export.CreatePrompt = true;
+            Export.OverwritePrompt = true;
+
+            Export.Title = "Xuất dữ liệu";
+            Export.FileName = CurrentActivePaletteCard.Name + " Color Palette";
+            Export.CheckFileExists = false;
+            Export.CheckPathExists = true;
+            Export.DefaultExt = "col";
+            Export.Filter = "All files (*.*)|*.*";
+            Export.InitialDirectory =
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            Export.RestoreDirectory = true;
+
+
+            string[] paletteData = new string[19];
+            paletteData[0] = CurrentActivePaletteCard.Name;
+            paletteData[1] = CurrentActivePaletteCard.Owner;
+            paletteData[2] = CurrentActivePaletteCard.Description;
+            for (int i = 0; i < CurrentActivePaletteCard.Thumbnail.Length; i++)
+            {
+                paletteData[i+3] = CurrentActivePaletteCard.Thumbnail[i].ToString();
+            }
+            if (Export.ShowDialog() == DialogResult.OK)
+            {
+                System.IO.File.WriteAllLines(Export.FileName, paletteData);
+
+            }
+        }
+        public void SetPreviewVisualizerFFT(byte[] fft)
+        {
+
+            VisualizerFFT = fft;
+        }
+        private void CreateNewPaletteFromCurrentEditPalette()
+        {
+            var name = NewPaletteName;
+            var owner = NewPaletteOwner;
+            var description = NewPaletteDescription;
+            var newPaletteThumbnail = new System.Windows.Media.Color[16];
+            int counter = 0;
+            foreach(var color in CurrentCustomZoneColor)
+            {
+                newPaletteThumbnail[counter++] = color;
+            }
+            IColorPaletteCard newpalette = new ColorPaletteCard(name, owner, "RGBPalette16", description, newPaletteThumbnail);
+            AvailablePallete.Add(newpalette);
+            CurrentActivePaletteCard = newpalette;
+            RaisePropertyChanged(nameof(CurrentActivePaletteCard));
+            SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
+            RaisePropertyChanged(nameof(AvailablePallete));
+            WritePaletteCollectionJson();
+        }
+        private void DeleteSelectedPalette(IColorPaletteCard palette)
+        {
+            if (AvailablePallete.ElementAt(CurrentDevice.SelectedPalette) == palette && AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette) == palette)
+            {
+                var result = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo {
+                    Message = " Có một chế độ khác đang sử dụng dải màu này, bạn có muốn xóa không ?",
+                    Caption = "Xóa dải màu",
+                    Button = MessageBoxButton.YesNo,
+                    IconBrushKey = ResourceToken.AccentBrush,
+                    IconKey = ResourceToken.AskGeometry,
+                    StyleKey = "MessageBoxCustom"
+                });
+                if (result == MessageBoxResult.Yes) // overwrite current palette
+                {
+                    
+                    CurrentDevice.SelectedPalette = 0;
+                    CurrentDevice.SelectedMusicPalette = 0;
+                    RaisePropertyChanged(nameof(CurrentDevice.SelectedPalette));
+                    RaisePropertyChanged(nameof(CurrentDevice.SelectedMusicPalette));
+                    CurrentActivePaletteCard = AvailablePallete.First();
+                    SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
+                    RaisePropertyChanged(nameof(CurrentActivePaletteCard));
+                    AvailablePallete.Remove(palette);
+                    RaisePropertyChanged(nameof(AvailablePallete));
+                    WritePaletteCollectionJson();
+                }
+                else
+                {
+
+                }
+
+            }
+            else
+            {
+                switch(CurrentDevice.SelectedEffect)
+                {
+                    case 1:
+                        CurrentDevice.SelectedPalette = 0;
+                        RaisePropertyChanged(nameof(CurrentDevice.SelectedPalette));
+                        break;
+                    case 3:
+                        CurrentDevice.SelectedMusicPalette = 0;
+                        RaisePropertyChanged(nameof(CurrentDevice.SelectedMusicPalette));
+                        break;
+                }
+                CurrentActivePaletteCard = AvailablePallete.First();
+                SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
+                RaisePropertyChanged(nameof(CurrentActivePaletteCard));
+                AvailablePallete.Remove(palette);
+                RaisePropertyChanged(nameof(AvailablePallete));
+                WritePaletteCollectionJson();
+
+            }
+           
+            
+            
+            
+            
+            WritePaletteCollectionJson();
+        }
+
+
+        private void OpenSaveConfirmMessage()
+        {
+           var result = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo {
+                Message = "Bạn có muốn ghi đè lên dải màu hiện tại?",
+                Caption = "Lưu dải màu",
+                Button = MessageBoxButton.YesNo,
+                IconBrushKey = ResourceToken.AccentBrush,
+                IconKey = ResourceToken.AskGeometry,
+                StyleKey = "MessageBoxCustom"
+            });
+            if (result == MessageBoxResult.Yes) // overwrite current palette
+            {
+                var activePalette = CurrentDevice.CurrentActivePalette;
+                CurrentActivePaletteCard.Thumbnail = activePalette;
+                SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
+                WritePaletteCollectionJson();
+                //reload all available palette;
+                AvailablePallete.Clear();
+                foreach (var palette in LoadPaletteIfExists())
+                {
+                    AvailablePallete.Add(palette);
+                }
+                CurrentCustomZoneColor.Clear();
+                foreach (var color in CurrentDevice.CurrentActivePalette)
+                {
+                    CurrentCustomZoneColor.Add(color);
+                }
+                RaisePropertyChanged(nameof(CurrentCustomZoneColor));
+            }
+
+            else // open create new dialog
+            {
+                OpenCreateNewDialog();
+            }
+        }
+
+        public void OpenEditPaletteDialog()
         {
             if (AssemblyHelper.CreateInternalInstance($"View.{"PaletteEditWindow"}") is System.Windows.Window window)
             {
@@ -1373,9 +1630,19 @@ namespace adrilight.ViewModel
                 }
                 RaisePropertyChanged(nameof(CurrentCustomZoneColor));
                 window.ShowDialog();
+                
             }
         }
-        public void SetCurrentDeviceSelectedPalette(ColorPaletteCard palette)
+        public void OpenCreateNewDialog()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"AddNewPaletteWindow"}") is System.Windows.Window window)
+            {
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+
+            }
+        }
+        public void SetCurrentDeviceSelectedPalette(IColorPaletteCard palette)
         {
             if(palette!=null)
             {
@@ -1384,7 +1651,10 @@ namespace adrilight.ViewModel
                     CurrentDevice.CurrentActivePalette[i] = palette.Thumbnail[i];
 
                 }
+                
+                RaisePropertyChanged(nameof(AvailablePallete));
                 RaisePropertyChanged(nameof(CurrentDevice.CurrentActivePalette));
+                WriteDeviceInfoJson();
             }
                 
             
@@ -1705,7 +1975,7 @@ namespace adrilight.ViewModel
 
 
             };
-            AvailablePallete = new ObservableCollection<ColorPaletteCard>();
+            AvailablePallete = new ObservableCollection<IColorPaletteCard>();
             foreach(var loadedPalette in LoadPaletteIfExists())
             {
                 AvailablePallete.Add(loadedPalette);
@@ -1728,123 +1998,47 @@ namespace adrilight.ViewModel
 
 
         }
-        public List<ColorPaletteCard> LoadPaletteIfExists()
+        public List<IColorPaletteCard> LoadPaletteIfExists()
         {
             if (!File.Exists(JsonPaletteFileNameAndPath))
             {
                 //create default palette
-                var paletteCards = new List<ColorPaletteCard>
+                var paletteCards = new List<IColorPaletteCard>();
+                IColorPaletteCard rainbow = new ColorPaletteCard("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.rainbow);
+                IColorPaletteCard police = new ColorPaletteCard("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.police);
+                IColorPaletteCard forest = new ColorPaletteCard("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.forest);
+                IColorPaletteCard aurora = new ColorPaletteCard("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.aurora);
+                IColorPaletteCard iceandfire = new ColorPaletteCard("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.iceandfire);
+                IColorPaletteCard scarlet = new ColorPaletteCard("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.scarlet);
 
-{
-
-                new ColorPaletteCard
-                {
-                    Name = "Full Rainbow",
-                    Owner = "Zooey",
-                    Type = "RGBPalette16",
-                    Description= "Full Color Spectrum",
-                    Thumbnail= DefaultColorCollection.rainbow
-
-                },
-                new ColorPaletteCard
-                {
-                    Name = "Cloud",
-                    Owner = "Zooey",
-                    Type = "RGBPalette16",
-                    Description= "Blue and White Color blend together",
-                    Thumbnail= DefaultColorCollection.cloud
-
-                },
-                  new ColorPaletteCard
-                {
-                    Name = "Police",
-                    Owner = "Zooey",
-                    Type = "RGBPalette16",
-                    Description= "Police Car Light mimic",
-                    Thumbnail= DefaultColorCollection.police
-
-                },
-                  new ColorPaletteCard
-                {
-                    Name = "Forest",
-                    Owner = "Zooey",
-                    Type = "RGBPalette16",
-                    Description= "Forest Color by FastLED",
-                    Thumbnail= DefaultColorCollection.forest
-
-                },
-                  new ColorPaletteCard
-                {
-                    Name = "Aurora",
-                    Owner = "Zooey",
-                    Type = "RGBPalette16",
-                    Description= "Aurora Sky Light",
-                    Thumbnail= DefaultColorCollection.aurora
-
-                },
-                  new ColorPaletteCard
-                {
-                    Name = "Ice and Fire",
-                    Owner = "Zooey",
-                    Type = "RGBPalette16",
-                    Description= "Ice and Fire Color simulation by Zoe",
-                    Thumbnail= DefaultColorCollection.iceandfire
-
-                },
-                  new ColorPaletteCard
-                {
-                    Name = "Scarlet",
-                    Owner = "Zooey",
-                    Type = "RGBPalette16",
-                    Thumbnail= DefaultColorCollection.scarlet
-
-                },
-                  new ColorPaletteCard
-                {
-                    Name = "Bad Trip",
-                    Owner = "Zooey",
-                    Type = "RGBPalette16",
-                    Thumbnail= DefaultColorCollection.badtrip
-
-                },
-                  new ColorPaletteCard
-                {
-                    Name = "SunSet",
-                    Owner = "Zooey",
-                    Type = "RGBPalette16",
-                    Thumbnail= DefaultColorCollection.sunset
-
-                },
-                  new ColorPaletteCard
-                {
-                    Name = "France",
-                    Owner = "Zooey",
-                    Type = "RGBPalette16",
-                    Thumbnail= DefaultColorCollection.france
-
-                },
-                  new ColorPaletteCard
-                {
-                    Name = "Lemon",
-                    Owner = "Zooey",
-                    Type = "RGBPalette16",
-                    Thumbnail= DefaultColorCollection.lemon
-
-                },
-
-
-            };
+                paletteCards.Add(rainbow);
+                paletteCards.Add(police);
+                paletteCards.Add(forest);
+                paletteCards.Add(aurora);
+                paletteCards.Add(iceandfire);
+                paletteCards.Add(scarlet);
                 
+
+
+
+
+
+
                 return paletteCards;
                 
 
             }
 
             var json = File.ReadAllText(JsonPaletteFileNameAndPath);
-
+            var loadedPaletteCard = new List<IColorPaletteCard>();
             var existPaletteCard = JsonConvert.DeserializeObject<List<ColorPaletteCard>>(json);
+            foreach(var paletteCard in existPaletteCard)
+            {
+                loadedPaletteCard.Add(paletteCard);
+            }
 
-            return existPaletteCard;
+
+            return loadedPaletteCard;
         }
         public async void ShowAddNewDialog()
         {
@@ -2177,6 +2371,7 @@ namespace adrilight.ViewModel
             SelectedVerticalMenuItem = menuItem;
             SetMenuItemActiveStatus(menuItem.Text);
         }
+
         public void WriteDeviceInfoJson()
         {
 
@@ -2193,7 +2388,7 @@ namespace adrilight.ViewModel
         public void WritePaletteCollectionJson()
         {
 
-            var palettes = new List<ColorPaletteCard>();
+            var palettes = new List<IColorPaletteCard>();
             foreach (var palette in AvailablePallete)
             {
                 palettes.Add(palette);
@@ -2264,6 +2459,57 @@ namespace adrilight.ViewModel
                 {
                     HandyControl.Controls.MessageBox.Show("Corrupted vid data File!!!");
                 }
+
+            }
+        }
+        public void ImportPaletteCardFromFile()
+        {
+            OpenFileDialog Import = new OpenFileDialog();
+            Import.Title = "Chọn col file";
+            Import.CheckFileExists = true;
+            Import.CheckPathExists = true;
+            Import.DefaultExt = "col";
+            Import.Filter = "Text files (*.col)|*.col";
+            Import.FilterIndex = 2;
+
+
+            Import.ShowDialog();
+
+
+            if (!string.IsNullOrEmpty(Import.FileName) && File.Exists(Import.FileName))
+            {
+
+                
+                var lines = File.ReadAllLines(Import.FileName);
+                 if(lines.Length<19)
+                {
+                    HandyControl.Controls.MessageBox.Show("Corrupted Color Palette data File!!!");
+                    return;
+                }
+                  
+                var name = lines[0];
+                var owner = lines[1];
+                var description = lines[2];
+                var color = new System.Windows.Media.Color[16];
+                try
+                {
+                    for (int i = 0; i < color.Length; i++)
+                    {
+                        color[i] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(lines[i + 3]);
+                    }
+
+                    IColorPaletteCard importedPaletteCard= new ColorPaletteCard(name,owner,"Imported from local file",description,color);
+                    AvailablePallete.Add(importedPaletteCard);
+                    RaisePropertyChanged(nameof(AvailablePallete));
+                    WritePaletteCollectionJson();
+
+                }
+                catch (FormatException)
+                {
+                    HandyControl.Controls.MessageBox.Show("Corrupted Color Palette data File!!!");
+                }
+
+
 
             }
         }
@@ -2382,23 +2628,53 @@ namespace adrilight.ViewModel
 
 
 
-            foreach (var spotset in SpotSets)
-                if (spotset.ID == CurrentDevice.DeviceID)
-                {
-                    PreviewSpots = spotset.Spots;
-                }
+            switch (CurrentDevice.SelectedEffect)
+            {
+                case 1:
+                    CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedPalette);
+                    RaisePropertyChanged(() => CurrentActivePaletteCard);
+                    break;
+                case 3:
+                    CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette);
+                    RaisePropertyChanged(() => CurrentActivePaletteCard);
+                    break;
+            }
 
 
-
-            // DeviceRectX = CurrentDevice.DeviceRectLeft;
-            // DeviceRectY = CurrentDevice.DeviceRectTop;
-            //  DeviceRectWidth = CurrentDevice.DeviceRectWidth;
-            //  DeviceRectHeight = CurrentDevice.DeviceRectHeight;
-            //DeviceRectHeightMax = (int)ShaderBitmap.Height - DeviceRectY;
-            //DeviceRectWidthMax = (int)ShaderBitmap.Width - DeviceRectX;
+            
             RaisePropertyChanged(() => DeviceRectHeightMax);
             RaisePropertyChanged(() => DeviceRectWidthMax);
+            CurrentDevice.PropertyChanged += (s, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(CurrentDevice.SelectedEffect):
+                        switch (CurrentDevice.SelectedEffect)
+                        {
+                            case 1:
+                                CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedPalette);
+                                RaisePropertyChanged(() => CurrentActivePaletteCard);
+                                break;
+                            case 3:
+                                CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette);
+                                RaisePropertyChanged(() => CurrentActivePaletteCard);
+                                break;
+                        }
+                        RaisePropertyChanged(() => CurrentActivePaletteCard);
 
+                        break;
+                    case nameof(CurrentDevice.SelectedPalette):
+                        CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedPalette);
+                        RaisePropertyChanged(() => CurrentActivePaletteCard);
+
+                        break;
+                    case nameof(CurrentDevice.SelectedMusicPalette):
+                        CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette);
+                        RaisePropertyChanged(() => CurrentActivePaletteCard);
+
+                        break;
+                }
+            };
             SetMenuItemActiveStatus(lighting);
         }
         public void BackToDashboard()

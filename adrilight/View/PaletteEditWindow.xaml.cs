@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HandyControl.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,16 @@ namespace adrilight.View
             }
             e.Handled = true;
 
+        }
+
+        private void ColorPicker_Confirmed(object sender, HandyControl.Data.FunctionEventArgs<Color> e)
+        {
+            this.Close();
+        }
+
+        private void mColorPicker_Canceled(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

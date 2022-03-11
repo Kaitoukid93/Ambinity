@@ -60,11 +60,15 @@
 
 
         <hc:TransitioningContentControl Margin="10" TransitionMode="Left2RightWithFade">
-            
-                <hc:ColorPicker  SelectedBrush="{Binding CurrentPickedColor,Converter={StaticResource ColorToBrushConverter},UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" x:Name="mColorPicker" Margin="0">
 
+            <hc:ColorPicker Confirmed="ColorPicker_Confirmed" Canceled="mColorPicker_Canceled" SelectedBrush="{Binding CurrentPickedColor,Converter={StaticResource ColorToBrushConverter},UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" x:Name="mColorPicker" Margin="0">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Confirmed" >
+                        <i:InvokeCommandAction Command="{Binding EditSelectedPaletteSaveConfirmCommand }" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
 
-                </hc:ColorPicker>
+            </hc:ColorPicker>
 
            
 
