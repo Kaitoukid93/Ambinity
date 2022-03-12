@@ -107,7 +107,7 @@ namespace adrilight.Util
 
                 while (!token.IsCancellationRequested)
                 {
-                    var numLED = DeviceSpotSet.Spots.Length;
+                    var numLED = DeviceSpotSet.LEDSetup.Spots.Length;
                     Color currentStaticColor = DeviceSettings.StaticColor;
                     var colorOutput = new OpenRGB.NET.Models.Color[numLED];
                     double peekBrightness = 0.0;
@@ -138,7 +138,7 @@ namespace adrilight.Util
                             else
                             {
                                 peekBrightness = DeviceSettings.Brightness / 100.0;
-                                colorOutput[i] = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(currentStaticColor.R, currentStaticColor.G, currentStaticColor.B), peekBrightness, DeviceSpotSet.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
+                                colorOutput[i] = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(currentStaticColor.R, currentStaticColor.G, currentStaticColor.B), peekBrightness, DeviceSpotSet.LEDSetup.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
                             }
                         }
 
@@ -149,7 +149,7 @@ namespace adrilight.Util
                         }
 
                         int counter = 0;
-                        foreach (IDeviceSpot spot in DeviceSpotSet.Spots)
+                        foreach (IDeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
                         {
 
                             spot.SetColor(colorOutput[counter].R, colorOutput[counter].G, colorOutput[counter].B, true);
@@ -214,9 +214,9 @@ namespace adrilight.Util
         public GradientStopCollection GradientStaticColor(Color staticColor, int powerSuplyMiliamps, int powersupplyVoltage)
         {
             Color startColor = Color.FromRgb(0, 0, 0);
-            OpenRGB.NET.Models.Color staticColorHalf = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(staticColor.R, staticColor.G, staticColor.B), 0.5, DeviceSpotSet.Spots.Length,powerSuplyMiliamps,powersupplyVoltage);
+            OpenRGB.NET.Models.Color staticColorHalf = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(staticColor.R, staticColor.G, staticColor.B), 0.5, DeviceSpotSet.LEDSetup.Spots.Length,powerSuplyMiliamps,powersupplyVoltage);
             Color staticColorMiddle = Color.FromRgb(staticColorHalf.R, staticColorHalf.G, staticColorHalf.B);
-            OpenRGB.NET.Models.Color staticColorQuad = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(staticColor.R, staticColor.G, staticColor.B), 0.25, DeviceSpotSet.Spots.Length, powerSuplyMiliamps, powersupplyVoltage);
+            OpenRGB.NET.Models.Color staticColorQuad = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(staticColor.R, staticColor.G, staticColor.B), 0.25, DeviceSpotSet.LEDSetup.Spots.Length, powerSuplyMiliamps, powersupplyVoltage);
             Color staticColorQuat = Color.FromRgb(staticColorQuad.R, staticColorQuad.G, staticColorQuad.B);
 
             GradientStopCollection gradientPalette = new GradientStopCollection(2);

@@ -245,7 +245,8 @@ namespace adrilight.ViewModel
                 foreach (var spotset in SpotSets)
                     if (spotset.ID == CurrentDevice.DeviceID)
                     {
-                        PreviewSpots = spotset.Spots;
+                        PreviewSpots = spotset.LEDSetup.Spots;
+                        CurrentLEDSetup = spotset.LEDSetup;
                     }
 
             }
@@ -443,7 +444,15 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-
+        public ILEDSetup _currentLEDSetup;
+        public ILEDSetup CurrentLEDSetup {
+            get => _currentLEDSetup;
+            set
+            {
+                _currentLEDSetup = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public WriteableBitmap _shaderBitmap;
         public WriteableBitmap ShaderBitmap {
@@ -1382,10 +1391,8 @@ namespace adrilight.ViewModel
                 return p != null;
             }, (p) =>
             {
-                if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
-                {
-                    this.IncreaseVID(p);
-                }
+                p.SetStroke(0.5);
+                
             });
 
             SetZoneColorCommand = new RelayCommand<string>((p) =>
@@ -2557,6 +2564,13 @@ namespace adrilight.ViewModel
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == lighting);
             IsDashboardType = false;
             CurrentDevice = card;
+            foreach (var spotset in SpotSets)
+                if (spotset.ID == CurrentDevice.DeviceID)
+                {
+                    
+                    PreviewSpots = spotset.LEDSetup.Spots;
+                    CurrentLEDSetup = spotset.LEDSetup;
+                }
             IsSplitLightingWindowOpen = true;
             IsCanvasLightingWindowOpen = false;
             RaisePropertyChanged(() => CurrentDeviceSelectedEffect);
@@ -2631,11 +2645,11 @@ namespace adrilight.ViewModel
             switch (CurrentDevice.SelectedEffect)
             {
                 case 1:
-                    CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedPalette);
+                    //CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedPalette);
                     RaisePropertyChanged(() => CurrentActivePaletteCard);
                     break;
                 case 3:
-                    CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette);
+                    //CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette);
                     RaisePropertyChanged(() => CurrentActivePaletteCard);
                     break;
             }

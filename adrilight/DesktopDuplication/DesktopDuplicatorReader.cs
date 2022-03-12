@@ -163,7 +163,7 @@ namespace adrilight
             if (index < 10 + 256)
             {
                 //steps where there is also led dimming
-                DeviceSpotSet.IndicateMissingValues();
+               // DeviceSpotSet.IndicateMissingValues();
                 return TimeSpan.FromMilliseconds(5000d / 256);
             }
             return TimeSpan.FromMilliseconds(1000);
@@ -233,7 +233,7 @@ namespace adrilight
                         //}
                         //else
                         //{
-                            Parallel.ForEach(DeviceSpotSet.Spots
+                            Parallel.ForEach(DeviceSpotSet.LEDSetup.Spots
                                 , spot =>
                                 {
                                     const int numberOfSteps = 15;
@@ -251,7 +251,7 @@ namespace adrilight
 
                                     var spotColor = new OpenRGB.NET.Models.Color(finalR, finalG, finalB);
 
-                                    var semifinalSpotColor = Brightness.applyBrightness(spotColor, brightness, DeviceSpotSet.Spots.Length, devicePowerMiliamps,devicePowerVoltage);
+                                    var semifinalSpotColor = Brightness.applyBrightness(spotColor, brightness, DeviceSpotSet.LEDSetup.Spots.Length, devicePowerMiliamps,devicePowerVoltage);
                                     ApplySmoothing(semifinalSpotColor.R, semifinalSpotColor.G, semifinalSpotColor.B
                                         , out byte RealfinalR, out byte RealfinalG, out byte RealfinalB,
                                      spot.Red, spot.Green, spot.Blue);

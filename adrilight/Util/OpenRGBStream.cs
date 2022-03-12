@@ -212,11 +212,11 @@ namespace adrilight
                     {
                         if (spotSet.DeviceLocation == devices[i].Location)
                         {
-                            var colors = new OpenRGB.NET.Models.Color[spotSet.Spots.Length];
+                            var colors = new OpenRGB.NET.Models.Color[spotSet.LEDSetup.Spots.Length];
                             lock (spotSet.Lock)
                             {
                                 int counter = 0;
-                                foreach (DeviceSpot spot in spotSet.Spots)
+                                foreach (DeviceSpot spot in spotSet.LEDSetup.Spots)
                                 {
                                     var color = new OpenRGB.NET.Models.Color(spot.Red, spot.Green, spot.Blue);
                                     colors[counter++] = color;

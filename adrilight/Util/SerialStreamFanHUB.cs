@@ -237,7 +237,7 @@ namespace adrilight
                     {
                         const int colorsPerLed = 3;
                         int bufferLength = _messagePreamble.Length + 3 + 3
-                            + (childSpotSet.Spots.Length * colorsPerLed);
+                            + (childSpotSet.LEDSetup.Spots.Length * colorsPerLed);
 
 
                         outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
@@ -250,8 +250,8 @@ namespace adrilight
                         ///device param///
                         ///numleds/////đây là thiết bị dạng led màn hình có số led chiều dọc và chiều ngang, tổng số led sẽ là (dọc-1)*2+(ngang-1)*2///
                         //////2 byte ngay tiếp sau Preamable là để ghép lại thành 1 số 16bit (vì số led có thể lớn hơn 255 nhiều) vi điều khiển sẽ dựa vào số led này để biết cần đọc bao nhiêu byte nữa///
-                        byte lo = (byte)(childSpotSet.Spots.Length & 0xff);
-                        byte hi = (byte)((childSpotSet.Spots.Length >> 8) & 0xff);
+                        byte lo = (byte)(childSpotSet.LEDSetup.Spots.Length & 0xff);
+                        byte hi = (byte)((childSpotSet.LEDSetup.Spots.Length >> 8) & 0xff);
                         byte chk = (byte)(hi ^ lo ^ 0x55);
                         outputStream[counter++] = hi;
                         outputStream[counter++] = lo;
@@ -266,7 +266,7 @@ namespace adrilight
                         //}
 
 
-                        foreach (DeviceSpot spot in childSpotSet.Spots)
+                        foreach (DeviceSpot spot in childSpotSet.LEDSetup.Spots)
                         {
                             if (lEDOn)
                             {

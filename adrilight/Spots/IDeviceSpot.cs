@@ -18,11 +18,17 @@ namespace adrilight.Spots
         int id { get; set; }
         int VID { get; set; }
         int MID { get; set; }
-
+        int YIndex { get; set; }
+        int XIndex { get; set; }
+        bool IsActivated { get; set; }
+        double BorderThickness { get; set; }
 
 
         void IndicateMissingValue();
         void SetColor(byte red, byte green, byte blue, bool raiseEvents);
         void SetVID(int vid);
+        void SetStroke(double strokeThickness);
+
+
     }
 }

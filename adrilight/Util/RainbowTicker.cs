@@ -137,7 +137,7 @@ namespace adrilight
                 {
                     double speed = GeneralSettings.SystemRainbowSpeed / 5d;
                     StartIndex += speed;
-                            if (StartIndex > 450)
+                            if (StartIndex > 120)
                             {
                             StartIndex = 0;
                             }

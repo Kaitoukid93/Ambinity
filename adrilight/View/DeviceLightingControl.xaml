@@ -9,10 +9,10 @@
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:converters="clr-namespace:adrilight.Converter" 
              xmlns:viewmodel="clr-namespace:adrilight.ViewModel" 
+              
              xmlns:lottieSharp="clr-namespace:LottieSharp;assembly=LottieSharp" 
              d:DataContext="{d:DesignInstance Type=viewmodel:MainViewViewModel}"
-             Background="{DynamicResource RegionBrush}"
-             Height="1072" Width="1000">
+             Background="{DynamicResource RegionBrush}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -60,27 +60,73 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="10">
+
+    <Grid   Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="300"/>
         </Grid.RowDefinitions>
-        <ListBox ItemsSource="{Binding CurrentLedSetup}">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="{Binding MatrixWidth}" 
-                                 Rows="{Binding MatrixHeight}">
-                        
-                    </UniformGrid>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Rectangle Grid.Row="{Binding YIndex}" Grid.Column="{Binding YIndex}">
-                        
-                    </Rectangle>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <Grid x:Name="MotherGrid"  ClipToBounds="true" Grid.Row="0">
+            <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center"  Name="PreviewBox" 
+                               
+                 Margin="8">
+                <ItemsControl   MouseDown="Window_MouseDown"
+                                MouseUp="Window_MouseUp"
+                                MouseMove="Window_MouseMove"
+                          Name="PreviewGird"  
+                          BorderThickness="1"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center" 
+                          ItemsSource="{Binding CurrentLEDSetup.Spots}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Center" VerticalAlignment="Center" Name="PreviewCanvas"
+                               
+                                Margin="0" 
+                                Width="{Binding CurrentDevice.DeviceRectWidth}" 
+                                Height="{Binding CurrentDevice.DeviceRectHeight}" >
+                            </Canvas>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Canvas.Left" Value="{Binding Rectangle.X}"/>
+                            <Setter Property="Canvas.Top" Value="{Binding Rectangle.Y}"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Rectangle Stroke="OrangeRed" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
+                                    <Rectangle.Fill>
+                                        <SolidColorBrush Color="{Binding OnDemandColor}"  />
+                                    </Rectangle.Fill>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown" >
+                                            <i:InvokeCommandAction Command="{Binding DataContext.SetNextSpotVIDCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding .}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Rectangle>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Viewbox>
+            <Canvas
+                x:Name="dragSelectionCanvas"
+                Visibility="Collapsed">
+                <Border  x:Name="dragSelectionBorder"
+                     BorderBrush="Blue"
+                     BorderThickness="2"
+                     Background="LightBlue"
+                     CornerRadius="1"
+                     Opacity="0.5"/>
+            </Canvas>
+        </Grid>
+
+      
+
+       
     </Grid>
 </UserControl>

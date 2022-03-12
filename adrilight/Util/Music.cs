@@ -204,6 +204,15 @@ namespace adrilight
                 Color[] paletteSource;
                 paletteSource = DeviceSettings.CurrentActivePalette;
                 colorBank = GetColorGradientfromPalette(paletteSource).ToArray();
+                IDeviceSpot[] currentActiveSpots = new DeviceSpot[32];
+                int counter = 0;
+                foreach (var spot in DeviceSpotSet.LEDSetup.Spots)
+                {
+                    if (spot.IsActivated)
+                    {
+                        currentActiveSpots[counter++] = spot;
+                    }
+                }
                 while (!token.IsCancellationRequested)
                 {
                    
@@ -214,7 +223,7 @@ namespace adrilight
 
                     int musicMode = DeviceSettings.SelectedMusicMode;
                     bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen;
-                    var numLED = DeviceSpotSet.Spots.Length;
+                    var numLED = DeviceSpotSet.LEDSetup.Spots.Length;
                     var spectrumdata = GetCurrentFFT(numLED);
                     if (spectrumdata == null) return;
                     if (isPreviewRunning)
@@ -230,7 +239,7 @@ namespace adrilight
 
 
                         int position = 0;
-                        foreach (var spot in DeviceSpotSet.Spots)
+                        foreach (var spot in currentActiveSpots)
                         {
 
                             

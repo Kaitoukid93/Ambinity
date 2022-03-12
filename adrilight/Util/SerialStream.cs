@@ -219,7 +219,7 @@ namespace adrilight
             {
                 const int colorsPerLed = 3;
                 int bufferLength = _messagePreamble.Length + 3
-                    + (DeviceSpotSet.Spots.Length * colorsPerLed);
+                    + (DeviceSpotSet.LEDSetup.Spots.Length * colorsPerLed);
 
 
                 outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
@@ -252,7 +252,7 @@ namespace adrilight
                 //}
 
                
-                    foreach (DeviceSpot spot in DeviceSpotSet.Spots)
+                    foreach (DeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
                     {
                     if (lEDOn)
                     {
@@ -334,7 +334,7 @@ namespace adrilight
             {
                 const int colorsPerLed = 3;
                 int bufferLength = _messagePreamble.Length + 3
-                    + (DeviceSpotSet.Spots.Length * colorsPerLed);
+                    + (DeviceSpotSet.LEDSetup.Spots.Length * colorsPerLed);
 
 
                 outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
@@ -359,7 +359,7 @@ namespace adrilight
                 int snapshotCounter = 0;
                 if(GeneralSettings.SentryMode==1)
                 {
-                    foreach (DeviceSpot spot in DeviceSpotSet.Spots)
+                    foreach (DeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
                     {
 
                         outputStream[counter++] = DeviceSettings.SnapShot[snapshotCounter++]; // blue
@@ -373,7 +373,7 @@ namespace adrilight
                 }
                 else if(GeneralSettings.SentryMode==0)
                 {
-                    foreach (DeviceSpot spot in DeviceSpotSet.Spots)
+                    foreach (DeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
                     {
 
                         outputStream[counter++] = 0; // blue

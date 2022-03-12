@@ -17,7 +17,7 @@ namespace adrilight
     {
         private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adrilight\\");
         private string JsonLEDSetupFileNameAndPath => Path.Combine(JsonPath, "adrilight-LEDSetups.json");
-        public LEDSetup(string name, string owner, string type, string description, IDeviceSpot[] spots, int matrixWidth, int matrixHeight)
+        public LEDSetup(string name, string owner, string type, string description, IDeviceSpot[] spots, int matrixWidth, int matrixHeight, int setupID)
         {
             Name = name;
             Owner = owner;
@@ -26,7 +26,7 @@ namespace adrilight
             Spots = spots;
             MatrixWidth = matrixWidth;
             MatrixHeight = matrixHeight;
-
+            SetupID = setupID;
 
         }
 
@@ -37,6 +37,7 @@ namespace adrilight
         public IDeviceSpot[] Spots { get; set; }
         public int MatrixWidth { get; set; }
         public int MatrixHeight { get; set; }
+        public int SetupID { get; set; }    // to match with device ID
       
        
     }

@@ -214,7 +214,7 @@
                 <local:AllDeviceView/>
             </DataTemplate>
             <DataTemplate x:Key="lightingTemplate">
-                <local:SplitLightView/>
+                <local:DeviceLightingControl/>
             </DataTemplate>
             <DataTemplate x:Key="groupLightingTemplate">
                 <local:GroupLighting/>
@@ -261,15 +261,12 @@
         <materialDesign:DialogHost 
                Identifier="mainDialog"  >
 
-            <Grid   materialDesign:ShadowAssist.ShadowDepth="Depth5">
+            <Grid>
 
 
-                <Grid Margin="20,10,20,20" Grid.Row="0" HorizontalAlignment="Left">
+                <Grid Margin="20,10,0,20" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
-
-
-
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 

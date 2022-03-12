@@ -16,7 +16,10 @@ namespace adrilight.Spots
         IDeviceSpot[] Spots { get; set; }
         string TargetType { get; set; }
         string Description { get; set; }
+        int MatrixWidth { get; set; }
+        int MatrixHeight { get; set; }
+        int SetupID { get; set; }    // to match with device ID
     }
 
 }
-}
+

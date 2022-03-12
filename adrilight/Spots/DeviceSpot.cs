@@ -14,7 +14,7 @@ namespace adrilight.Spots
     sealed class DeviceSpot : ViewModelBase, IDisposable, IDeviceSpot
     {
 
-        public DeviceSpot(int top, int left, int width, int height,int displayTop, int displayLeft, int displayWidth, int displayHeight,int index, int virtualIndex , int musicIndex)
+        public DeviceSpot(int x, int y,int top, int left, int width, int height,int displayTop, int displayLeft, int displayWidth, int displayHeight,int index,int positionIndex, int virtualIndex , int musicIndex, bool isActivated)
         {
             Rectangle = new Rectangle(top, left, width, height);
             DisplayRectangle = new Rectangle(displayTop, displayLeft, displayWidth, displayHeight);
@@ -25,6 +25,11 @@ namespace adrilight.Spots
             id = index;
             VID = virtualIndex;
             MID = musicIndex;
+            XIndex = x;
+            YIndex = y;
+            PID = positionIndex;
+            IsActivated = isActivated;
+            BorderThickness = 0;
             
         }
 
@@ -45,6 +50,11 @@ namespace adrilight.Spots
         public int RadiusY { get;  set; }
         public string ID { get; set; }
         public int VID { get; set; }
+        public int PID { get; set; }
+        public int XIndex { get; set; }
+        public int YIndex { get; set; }
+        public bool IsActivated { get; set; }
+        public double BorderThickness { get; set; }
 
 
         public byte Red { get; private set; }
@@ -63,6 +73,11 @@ namespace adrilight.Spots
                 RaisePropertyChanged(nameof(OnDemandColor));
                 RaisePropertyChanged(nameof(OnDemandColorTransparent));
             }
+        }
+        public void SetStroke(double strokeThickness)
+        {
+            BorderThickness=strokeThickness;
+            RaisePropertyChanged(nameof(BorderThickness));
         }
         public void SetVID(int vid)
         {

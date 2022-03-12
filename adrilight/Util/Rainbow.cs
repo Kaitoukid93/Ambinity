@@ -136,7 +136,7 @@ namespace adrilight
 
                 Color[] paletteSource;
 
-                var numLED = DeviceSpotSet.Spots.Length;
+                var numLED = DeviceSpotSet.LEDSetup.Spots.Length;
                 var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
                 var devicePowerMiliamps = DeviceSettings.DevicePowerMiliamps;
                 var groupSelfIndex = DeviceSettings.GroupSelfIndex;
@@ -148,6 +148,7 @@ namespace adrilight
                 else
                     paletteSource = DeviceSettings.CurrentActivePalette;
                 colorBank = GetColorGradientfromPalette(paletteSource).ToArray();
+              
                 while (!token.IsCancellationRequested)
                 {
                     bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen;
@@ -155,26 +156,26 @@ namespace adrilight
                     {
 
                         int position = 0;
-                        foreach (var spot in DeviceSpotSet.Spots)
+                        foreach (var spot in DeviceSpotSet.LEDSetup.Spots)
                         {
 
                             if (DeviceSettings.SyncOn)
                             {
 
-                                position = (int)RainbowTicker.StartIndex + spot.VID;
+                                position = (int)RainbowTicker.StartIndex + spot.id;
                                 if (position >= colorBank.Length)
                                     position = position - colorBank.Length; // run with VID
                             }
                             else
                             {
-                                position = (int)RainbowTicker.StartIndex + spot.id;//run linear with physical id
+                                position = (int)RainbowTicker.StartIndex + spot.XIndex*5;//run linear with physical id
                                 if (position >= colorBank.Length)
                                     position = position - colorBank.Length;
 
                             }
                             var brightness = DeviceSettings.Brightness / 100d;
                             var newColor = new OpenRGB.NET.Models.Color(colorBank[position].R, colorBank[position].G, colorBank[position].B);
-                            var outputColor=Brightness.applyBrightness(newColor, brightness, numLED, DeviceSettings.DevicePowerMiliamps, DeviceSettings.DevicePowerVoltage);
+                            var outputColor=Brightness.applyBrightness(newColor, brightness, numLED, DeviceSettings.DevicePowerMiliamps, DeviceSettings.DevicePowerVoltage);                        
                             spot.SetColor(outputColor.R, outputColor.G, outputColor.B, isPreviewRunning);
 
                         }
@@ -309,7 +310,7 @@ namespace adrilight
             var colors = new List<Color>();
             for (int i = 0; i < colorCollection.Length - 1; i++)
             {
-                var gradient = GetColorGradient(colorCollection[i], colorCollection[i + 1], 32);
+                var gradient = GetColorGradient(colorCollection[i], colorCollection[i + 1], 10);
                 colors = colors.Concat(gradient).ToList();
             }
             return colors;

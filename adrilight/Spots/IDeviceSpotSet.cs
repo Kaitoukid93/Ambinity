@@ -10,12 +10,12 @@ namespace adrilight.Spots
     {
         
 
-        IDeviceSpot[] Spots { get; set; }
+        //IDeviceSpot[] Spots { get; set; }
         
-          
+        ILEDSetup LEDSetup { get; set; }  
         object Lock { get; }
        
-        int CountLeds(int spotsX, int spotsY);
+       // int CountLeds(int spotsX, int spotsY);
         int ID { get;  }
        
         int ParrentLocation { get;  } // for Child in hub Object
@@ -23,7 +23,7 @@ namespace adrilight.Spots
         int RGBOrder { get; set; }
         string DeviceSerial { get;}
         string DeviceLocation { get; } //for OpenRGB Device
-        void IndicateMissingValues();
+        //void IndicateMissingValues();
 
     }
 }

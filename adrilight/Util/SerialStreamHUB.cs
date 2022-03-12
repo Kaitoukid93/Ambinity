@@ -273,7 +273,7 @@ namespace adrilight
                 {
                     const int colorsPerLed = 3;
                     int bufferLength =  
-                        + (childSpotSet.Spots.Length * colorsPerLed);
+                        + (childSpotSet.LEDSetup.Spots.Length * colorsPerLed);
 
 
                     outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
@@ -300,7 +300,7 @@ namespace adrilight
                     //}
                     
                     var RGBOrder = childSpotSet.RGBOrder;
-                    foreach (DeviceSpot spot in childSpotSet.Spots)
+                    foreach (DeviceSpot spot in childSpotSet.LEDSetup.Spots)
                     {
                         
                         switch (RGBOrder)
