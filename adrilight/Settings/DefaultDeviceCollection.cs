@@ -10,7 +10,7 @@ namespace adrilight.Settings
     {
         public static DeviceSettings ambinoBasic = new DeviceSettings {
             DeviceName = "Ambino Basic",
-            DeviceID = "ABBASIC",
+            DeviceID = 0,
             DeviceSerial = "ABBASICCH552",
             DeviceType = "ABRev2",
             Manufacturer = "Ambino Vietnam",

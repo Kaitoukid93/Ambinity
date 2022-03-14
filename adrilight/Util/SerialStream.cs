@@ -17,11 +17,11 @@ namespace adrilight
     {
         private ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public SerialStream(IDeviceSettings deviceSettings, IDeviceSpotSet deviceSpotSet, IGeneralSettings generalSettings)
+        public SerialStream(IDeviceSettings deviceSettings, IGeneralSettings generalSettings)
         {
             GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
             DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
-            DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
+            //DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
             DeviceSettings.PropertyChanged += UserSettings_PropertyChanged;
             RefreshTransferState();
 
@@ -32,7 +32,7 @@ namespace adrilight
         //Dependency Injection//
         private IDeviceSettings DeviceSettings { get; set; }
         private IGeneralSettings GeneralSettings { get; set; }
-        private IDeviceSpotSet DeviceSpotSet { get; set; }
+       // private IDeviceSpotSet DeviceSpotSet { get; set; }
         private bool CheckSerialPort(string serialport)
         {
             Stop();//stop current serial stream first to avoid access denied
@@ -94,23 +94,23 @@ namespace adrilight
         {
             switch (e.PropertyName)
             {
-                case nameof(DeviceSettings.TransferActive):
-                case nameof(DeviceSettings.DevicePort):
+                case nameof(DeviceSettings.IsTransferActive):
+                case nameof(DeviceSettings.OutputPort):
                     RefreshTransferState();
                     break;
             }
         }
 
-        public bool IsValid() => SerialPort.GetPortNames().Contains(DeviceSettings.DevicePort) || DeviceSettings.DevicePort == "Không có";
+        public bool IsValid() => SerialPort.GetPortNames().Contains(DeviceSettings.OutputPort) || DeviceSettings.OutputPort == "Không có";
         // public bool IsAcess() => !BlockedComport.Contains(UserSettings.ComPort);
         // public IList<string> BlockedComport = new List<string>();
 
         private void RefreshTransferState()
         {
 
-            if (DeviceSettings.TransferActive)
+            if (DeviceSettings.IsTransferActive)
             {
-                if (IsValid() && CheckSerialPort(DeviceSettings.DevicePort))
+                if (IsValid() && CheckSerialPort(DeviceSettings.OutputPort))
                 {
 
                     //start it
@@ -119,12 +119,12 @@ namespace adrilight
                 }
                 else
                 {
-                    DeviceSettings.TransferActive = false;
-                    DeviceSettings.DevicePort = null;
+                    DeviceSettings.IsTransferActive = false;
+                    DeviceSettings.OutputPort = null;
                 }
             }
 
-            else if (!DeviceSettings.TransferActive && IsRunning)
+            else if (!DeviceSettings.IsTransferActive && IsRunning)
             {
                 //stop it
                 _log.Debug("stopping the serial stream");
@@ -146,13 +146,13 @@ namespace adrilight
         private int frameCounter;
         private int blackFrameCounter;
         private int _iD;
-        public int ID {
-            get { return DeviceSettings.DeviceID; }
-            set
-            {
-                _iD = value;
-            }
-        }
+        //public int ID {
+        //    get { return DeviceSettings.DeviceID; }
+        //    set
+        //    {
+        //        _iD = value;
+        //    }
+        //}
 
 
         public void Start()
@@ -193,9 +193,9 @@ namespace adrilight
            
                 
                 Stop();
-            if(DeviceSettings.DevicePort!=null)
+            if(DeviceSettings.OutputPort!=null)
             {
-                var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.DevicePort, 1200));
+                var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.OutputPort, 1200));
                 serialPort.Open();
                 serialPort.Close();
                 
@@ -210,16 +210,17 @@ namespace adrilight
 
 
 
-        private (byte[] Buffer, int OutputLength) GetOutputStream()
+        private (byte[] Buffer, int OutputLength) GetOutputStream( int output)
         {
             byte[] outputStream;
+            var currentOutput = DeviceSettings.AvailableOutputs[output];
 
             int counter = _messagePreamble.Length;
-            lock (DeviceSpotSet.Lock)
+            lock (currentOutput.OutputLEDSetup.Lock)
             {
                 const int colorsPerLed = 3;
                 int bufferLength = _messagePreamble.Length + 3
-                    + (DeviceSpotSet.LEDSetup.Spots.Length * colorsPerLed);
+                    + (currentOutput.OutputLEDSetup.Spots.Length * colorsPerLed);
 
 
                 outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
@@ -229,65 +230,60 @@ namespace adrilight
 
 
 
-                ///device param///
-                ///numleds/////đây là thiết bị dạng led màn hình có số led chiều dọc và chiều ngang, tổng số led sẽ là (dọc-1)*2+(ngang-1)*2///
-                //////2 byte ngay tiếp sau Preamable là để ghép lại thành 1 số 16bit (vì số led có thể lớn hơn 255 nhiều) vi điều khiển sẽ dựa vào số led này để biết cần đọc bao nhiêu byte nữa///
-                byte lo = (byte)(((DeviceSettings.SpotsX - 1) * 2 + (DeviceSettings.SpotsY - 1) * 2) & 0xff);
-                byte hi = (byte)((((DeviceSettings.SpotsX - 1) * 2 + (DeviceSettings.SpotsY - 1) * 2) >> 8) & 0xff);
-                byte chk = (byte)(hi ^ lo ^ 0x55);
-                outputStream[counter++] = hi;
-                outputStream[counter++] = lo;
+                
+                
+                    
+                    byte lo = (byte)(((currentOutput.OutputNumLEDX - 1) * 2 + (currentOutput.OutputNumLEDY - 1) * 2) & 0xff);
+                    byte hi = (byte)((((currentOutput.OutputNumLEDX - 1) * 2 + (currentOutput.OutputNumLEDY - 1) * 2) >> 8) & 0xff);
+                    byte chk = (byte)(hi ^ lo ^ 0x55);
+                    outputStream[counter++] = hi;
+                    outputStream[counter++] = lo;
+                
+               
 
 
-                ///byte tiếp theo ngay bên dưới sẽ là byte quy định trạng thái thiết bị/// 1 là sáng bình thường, 2 là chế độ đèn ngủ (sáng theo màu lưu sẵn) 3 là chế độ DFU (nạp code)///
-                //if(devcheck==false)
-                //{
-                //    outputStream[counter++] = 0;
-                //}
-                //else
-                //{
                 outputStream[counter++] = chk;
-                var lEDOn = DeviceSettings.LEDOn;
+                var isEnabled = currentOutput.OutputIsEnabled;
                 var allBlack = true;
                 //}
 
                
-                    foreach (DeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
+                    foreach (DeviceSpot spot in currentOutput.OutputLEDSetup.Spots)
                     {
-                    if (lEDOn)
+                    if (isEnabled)
                     {
-                        var RGBOrder = DeviceSettings.RGBOrder;
+                        var RGBOrder = currentOutput.OutputRGBLEDOrder;
                         switch (RGBOrder)
                         {
-                            case 0: //RGB
+                            case "RGB": //RGB
                                 outputStream[counter++] = spot.Red; // blue
                                 outputStream[counter++] = spot.Green; // green
                                 outputStream[counter++] = spot.Blue; // red
                                 break;
-                            case 1: //GRB
+                            case "GRB": //GRB
                                 outputStream[counter++] = spot.Green; // blue
                                 outputStream[counter++] = spot.Red; // green
                                 outputStream[counter++] = spot.Blue; // red
                                 break;
-                            case 2: //BRG
+                            case "BRG": //BRG
                                 outputStream[counter++] = spot.Blue; // blue
                                 outputStream[counter++] = spot.Red; // green
                                 outputStream[counter++] = spot.Green; // red
                                 break;
-                            case 3: //BGR
+                            case "BGR": //BGR
                                 outputStream[counter++] = spot.Blue; // blue
                                 outputStream[counter++] = spot.Green; // green
                                 outputStream[counter++] = spot.Red; // red
                                 break;
-                            case 4://GBR
+                            case "GBR"://GBR
                                 outputStream[counter++] = spot.Green; // blue
                                 outputStream[counter++] = spot.Blue; // green
                                 outputStream[counter++] = spot.Red; // red
                                 break;
-                            case 5: //GRB
-                                outputStream[counter++] = spot.Green; // blue
-                                outputStream[counter++] = spot.Red; // green
-                                outputStream[counter++] = spot.Blue; // red
+                            case "RBG": //GBR
+                                outputStream[counter++] = spot.Red; // blue
+                                outputStream[counter++] = spot.Blue; // green
+                                outputStream[counter++] = spot.Green; // red
                                 break;
 
 
@@ -325,81 +321,81 @@ namespace adrilight
 
 
         }
-        private (byte[] Buffer, int OutputLength) GetOutputStreamSleep()
-        {
-            byte[] outputStream;
+        //private (byte[] Buffer, int OutputLength) GetOutputStreamSleep()
+        //{
+        //    byte[] outputStream;
 
-            int counter = _messagePreamble.Length;
-            lock (DeviceSpotSet.Lock)
-            {
-                const int colorsPerLed = 3;
-                int bufferLength = _messagePreamble.Length + 3
-                    + (DeviceSpotSet.LEDSetup.Spots.Length * colorsPerLed);
-
-
-                outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
-
-                Buffer.BlockCopy(_messagePreamble, 0, outputStream, 0, _messagePreamble.Length);
+        //    int counter = _messagePreamble.Length;
+        //    lock (DeviceSpotSet.Lock)
+        //    {
+        //        const int colorsPerLed = 3;
+        //        int bufferLength = _messagePreamble.Length + 3
+        //            + (DeviceSpotSet.LEDSetup.Spots.Length * colorsPerLed);
 
 
+        //        outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
+
+        //        Buffer.BlockCopy(_messagePreamble, 0, outputStream, 0, _messagePreamble.Length);
 
 
-                ///device param///
-                ///numleds/////đây là thiết bị dạng led màn hình có số led chiều dọc và chiều ngang, tổng số led sẽ là (dọc-1)*2+(ngang-1)*2///
-                //////2 byte ngay tiếp sau Preamable là để ghép lại thành 1 số 16bit (vì số led có thể lớn hơn 255 nhiều) vi điều khiển sẽ dựa vào số led này để biết cần đọc bao nhiêu byte nữa///
-                byte lo = (byte)(((DeviceSettings.SpotsX - 1) * 2 + (DeviceSettings.SpotsY - 1) * 2) & 0xff);
-                byte hi = (byte)((((DeviceSettings.SpotsX - 1) * 2 + (DeviceSettings.SpotsY - 1) * 2) >> 8) & 0xff);
-                outputStream[counter++] = hi;
-                outputStream[counter++] = lo;
-                byte chk = (byte)(hi ^ lo ^ 0x55);
-                outputStream[counter++] = chk;
-                var allBlack = true;
+
+
+        //        ///device param///
+        //        ///numleds/////đây là thiết bị dạng led màn hình có số led chiều dọc và chiều ngang, tổng số led sẽ là (dọc-1)*2+(ngang-1)*2///
+        //        //////2 byte ngay tiếp sau Preamable là để ghép lại thành 1 số 16bit (vì số led có thể lớn hơn 255 nhiều) vi điều khiển sẽ dựa vào số led này để biết cần đọc bao nhiêu byte nữa///
+        //        byte lo = (byte)(((DeviceSettings.SpotsX - 1) * 2 + (DeviceSettings.SpotsY - 1) * 2) & 0xff);
+        //        byte hi = (byte)((((DeviceSettings.SpotsX - 1) * 2 + (DeviceSettings.SpotsY - 1) * 2) >> 8) & 0xff);
+        //        outputStream[counter++] = hi;
+        //        outputStream[counter++] = lo;
+        //        byte chk = (byte)(hi ^ lo ^ 0x55);
+        //        outputStream[counter++] = chk;
+        //        var allBlack = true;
        
 
-                int snapshotCounter = 0;
-                if(GeneralSettings.SentryMode==1)
-                {
-                    foreach (DeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
-                    {
+        //        int snapshotCounter = 0;
+        //        if(GeneralSettings.SentryMode==1)
+        //        {
+        //            foreach (DeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
+        //            {
 
-                        outputStream[counter++] = DeviceSettings.SnapShot[snapshotCounter++]; // blue
-                        outputStream[counter++] = DeviceSettings.SnapShot[snapshotCounter++]; // green
-                        outputStream[counter++] = DeviceSettings.SnapShot[snapshotCounter++]; // red
+        //                outputStream[counter++] = DeviceSettings.SnapShot[snapshotCounter++]; // blue
+        //                outputStream[counter++] = DeviceSettings.SnapShot[snapshotCounter++]; // green
+        //                outputStream[counter++] = DeviceSettings.SnapShot[snapshotCounter++]; // red
 
-                        allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
-
-
-                    }
-                }
-                else if(GeneralSettings.SentryMode==0)
-                {
-                    foreach (DeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
-                    {
-
-                        outputStream[counter++] = 0; // blue
-                        outputStream[counter++] = 0; // green
-                        outputStream[counter++] = 0; // red
-
-                        allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
+        //                allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
 
 
-                    }
-                }
+        //            }
+        //        }
+        //        else if(GeneralSettings.SentryMode==0)
+        //        {
+        //            foreach (DeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
+        //            {
+
+        //                outputStream[counter++] = 0; // blue
+        //                outputStream[counter++] = 0; // green
+        //                outputStream[counter++] = 0; // red
+
+        //                allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
+
+
+        //            }
+        //        }
                
 
-                if (allBlack)
-                {
-                    blackFrameCounter++;
-                }
+        //        if (allBlack)
+        //        {
+        //            blackFrameCounter++;
+        //        }
 
-                return (outputStream, bufferLength);
-            }
-
-
+        //        return (outputStream, bufferLength);
+        //    }
 
 
 
-        }
+
+
+        //}
 
         private void DoWork(object tokenObject)
         {
@@ -407,7 +403,7 @@ namespace adrilight
             ISerialPortWrapper serialPort = null;
 
 
-            if (String.IsNullOrEmpty(DeviceSettings.DevicePort))
+            if (String.IsNullOrEmpty(DeviceSettings.OutputPort))
             {
                 _log.Warn("Cannot start the serial sending because the comport is not selected.");
                 return;
@@ -429,58 +425,51 @@ namespace adrilight
                     while (!cancellationToken.IsCancellationRequested)
                     {
                         //open or change the serial port
-                        if (openedComPort != DeviceSettings.DevicePort)
+                        if (openedComPort != DeviceSettings.OutputPort)
                         {
                             serialPort?.Close();
-                            serialPort = DeviceSettings.DevicePort != "Không có" ? (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.DevicePort, baudRate)) : new FakeSerialPort();
+                            serialPort = DeviceSettings.OutputPort != "Không có" ? (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.OutputPort, baudRate)) : new FakeSerialPort();
                            // serialPort.DisableDtr();
                            // serialPort.DisableRts();
                             serialPort.Open();
-                            openedComPort = DeviceSettings.DevicePort;
+                            openedComPort = DeviceSettings.OutputPort;
 
                         }
                         //send frame data
-                        var (outputBuffer, streamLength) = GetOutputStream();
-
-
-
-
-
-
-                        //if (LedOutsideCase.DFUVal == 1)
-                        //{
-                        //    serialPort?.Close();
-                        //    serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(UserSettings.ComPort, 1200));
-                        //    serialPort.Open();
-                        //    serialPort.Close();
-
-                        //}
-                        // else
-                        //{
-                        serialPort.Write(outputBuffer, 0, streamLength);
-                        //}
-
-
-
-
-
-
-                        if (++frameCounter == 1024 && blackFrameCounter > 1000)
+                        for(int i = 0; i < DeviceSettings.AvailableOutputs.Length; i++)
                         {
-                            //there is maybe something wrong here because most frames where black. report it once per run only
-                            var settingsJson = JsonConvert.SerializeObject(DeviceSettings, Formatting.None);
-                            _log.Info($"Sent {frameCounter} frames already. {blackFrameCounter} were completely black. Settings= {settingsJson}");
+                            var (outputBuffer, streamLength) = GetOutputStream(i);
+                            serialPort.Write(outputBuffer, 0, streamLength);
+                            if (++frameCounter == 1024 && blackFrameCounter > 1000)
+                            {
+                                //there is maybe something wrong here because most frames where black. report it once per run only
+                                var settingsJson = JsonConvert.SerializeObject(DeviceSettings, Formatting.None);
+                                _log.Info($"Sent {frameCounter} frames already. {blackFrameCounter} were completely black. Settings= {settingsJson}");
+                            }
+                            ArrayPool<byte>.Shared.Return(outputBuffer);
+
+                            //ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
+                            //receiving over serial takes it time as well and the arduino does both tasks in sequence
+                            //+1 ms extra safe zone
+                            var fastLedTime = ((streamLength - _messagePreamble.Length - _messagePostamble.Length) / 3.0 * 0.030d);
+                            var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
+                            var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
+
+                            Thread.Sleep(minTimespan);
                         }
-                        ArrayPool<byte>.Shared.Return(outputBuffer);
+                        
 
-                        //ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
-                        //receiving over serial takes it time as well and the arduino does both tasks in sequence
-                        //+1 ms extra safe zone
-                        var fastLedTime = ((streamLength - _messagePreamble.Length - _messagePostamble.Length) / 3.0 * 0.030d);
-                        var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
-                        var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
 
-                        Thread.Sleep(minTimespan);
+
+
+
+
+
+
+
+
+
+                   
                     }
                 }
                 catch (OperationCanceledException)
@@ -525,14 +514,14 @@ namespace adrilight
                         // serialPort.Close();
                         //Thread.Sleep(500);
                         // serialPort.Open();
-                        var (outputBuffer, streamLength) = GetOutputStreamSleep();
-                        serialPort.Write(outputBuffer, 0, streamLength);
-                        serialPort.Write(outputBuffer, 0, streamLength);
-                        serialPort.Write(outputBuffer, 0, streamLength);
-                        serialPort.Write(outputBuffer, 0, streamLength);
-                        serialPort.Write(outputBuffer, 0, streamLength);
-                        serialPort.Write(outputBuffer, 0, streamLength);
-                        _log.Debug("Last Frame Sent!");
+                        //var (outputBuffer, streamLength) = GetOutputStreamSleep();
+                        //serialPort.Write(outputBuffer, 0, streamLength);
+                        //serialPort.Write(outputBuffer, 0, streamLength);
+                        //serialPort.Write(outputBuffer, 0, streamLength);
+                        //serialPort.Write(outputBuffer, 0, streamLength);
+                        //serialPort.Write(outputBuffer, 0, streamLength);
+                        //serialPort.Write(outputBuffer, 0, streamLength);
+                        //_log.Debug("Last Frame Sent!");
 
                         serialPort.Close();
                         serialPort.Dispose();

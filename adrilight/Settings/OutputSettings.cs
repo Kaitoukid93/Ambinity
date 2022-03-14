@@ -40,13 +40,14 @@ namespace adrilight
         private int _outputSelectedAudioDevice;
         private int _outputSelectedDisplay;
         private int _outputSelectedChasingPalette;
+        private int _outputSelectedMode;
         private int _outputPaletteSpeed;
         private int _outputPaletteBlendStep;
         private Color _outputStaticColor;
         private bool _outputIsBreathing;
         private int _outputBreathingSpeed;
         private Color[] _outputCurrentActivePalette;
-        private IDeviceSpot[] _outputSpotSet;
+        private ILEDSetup _outputLEDSetup;
 
         public string OutputName  { get => _outputName; set { Set(() => OutputName, ref _outputName, value);}}
         public int OutputID { get => _outputID; set { Set(() => OutputID, ref _outputID, value); } }
@@ -72,6 +73,7 @@ namespace adrilight
         public string OutputAtmosphereMode { get => _outputAtmosphereMode; set { Set(() => OutputAtmosphereMode, ref _outputAtmosphereMode, value); } }
         //string SelectedEffect { get; set; }
         public int OutputSelectedMusicMode { get => _outputSelectedMusicMode; set { Set(() => OutputSelectedMusicMode, ref _outputSelectedMusicMode, value); } }
+        public int OutputSelectedMode { get => _outputSelectedMode; set { Set(() => OutputSelectedMode, ref _outputSelectedMode, value); } }
         public int OutputSelectedMusicPalette { get => _outputSelectedMusicPalette; set { Set(() => OutputSelectedMusicPalette, ref _outputSelectedMusicPalette, value); } }
         public Color[] OutputSentryModeColorSource { get => _outputSentryModeColorSource; set { Set(() => OutputSentryModeColorSource, ref _outputSentryModeColorSource, value); } }
         public int OutputSelectedAudioDevice { get => _outputSelectedAudioDevice; set { Set(() => OutputSelectedAudioDevice, ref _outputSelectedAudioDevice, value); } }
@@ -83,7 +85,7 @@ namespace adrilight
         public bool OutputIsBreathing { get => _outputIsBreathing; set { Set(() => OutputIsBreathing, ref _outputIsBreathing, value); } }
         public int OutputBreathingSpeed { get => _outputBreathingSpeed; set { Set(() => OutputBreathingSpeed, ref _outputBreathingSpeed, value); } }
         public Color[] OutputCurrentActivePalette { get => _outputCurrentActivePalette; set { Set(() => OutputCurrentActivePalette, ref _outputCurrentActivePalette, value); } }
-        public IDeviceSpot[] OutputSpotSet { get => _outputSpotSet; set { Set(() => OutputSpotSet, ref _outputSpotSet, value); } }
+        public ILEDSetup OutputLEDSetup { get => _outputLEDSetup; set { Set(() => OutputLEDSetup, ref _outputLEDSetup, value); } }
 
     }
 }

@@ -25,18 +25,18 @@ namespace adrilight
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public Rainbow(IDeviceSettings deviceSettings, IRainbowTicker rainbowTicker, IGeneralSettings generalSettings, IDeviceSpotSet deviceSpotSet, MainViewViewModel mainViewViewModel)
+        public Rainbow(IOutputSettings outputSettings, IRainbowTicker rainbowTicker, IGeneralSettings generalSettings, MainViewViewModel mainViewViewModel)
         {
-            DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
+            OutputSettings = outputSettings ?? throw new ArgumentNullException(nameof(outputSettings));
             GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
-           
-            DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
-            
+           // OutputSpotSet = outputSpotSet ?? throw new ArgumentException(nameof(outputSpotSet));
+
+
             RainbowTicker = rainbowTicker ?? throw new ArgumentNullException(nameof(rainbowTicker));
            MainViewViewModel= mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
             
 
-            DeviceSettings.PropertyChanged += PropertyChanged;
+            OutputSettings.PropertyChanged += PropertyChanged;
             GeneralSettings.PropertyChanged += PropertyChanged;
             MainViewViewModel.PropertyChanged += PropertyChanged;
             RefreshColorState();
@@ -44,11 +44,12 @@ namespace adrilight
 
         }
         //Dependency Injection//
-        private IDeviceSettings DeviceSettings { get; }
-        private IDeviceSpotSet DeviceSpotSet { get; }
+        private IOutputSettings OutputSettings { get; }
+       
         private MainViewViewModel MainViewViewModel { get; }
         private IRainbowTicker RainbowTicker { get; }
         private IGeneralSettings GeneralSettings { get; }
+       // private IDeviceSpotSet OutputSpotSet { get; }
 
         private Color[] colorBank = new Color[256];
         public bool IsRunning { get; private set; } = false;
@@ -58,15 +59,12 @@ namespace adrilight
         {
             switch (e.PropertyName)
             {
-                case nameof(DeviceSettings.TransferActive):
-                case nameof(DeviceSettings.SelectedEffect):
-                case nameof(DeviceSettings.SpotsX):
-                case nameof(DeviceSettings.SpotsY):
-                case nameof(DeviceSettings.SyncOn):
+                case nameof(OutputSettings.OutputIsEnabled):
+                case nameof(OutputSettings.OutputSelectedChasingPalette):
                 case nameof(MainViewViewModel.IsSplitLightingWindowOpen):
                     RefreshColorState();
                     break;
-                case nameof(DeviceSettings.CurrentActivePalette):
+                case nameof(OutputSettings.OutputCurrentActivePalette):
                 
                     ColorPaletteChanged();
                     break;
@@ -80,7 +78,7 @@ namespace adrilight
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 1;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode==1;
 
             if (isRunning && !shouldBeRunning)
             {
@@ -97,7 +95,7 @@ namespace adrilight
                 var thread = new Thread(() => Run(_cancellationTokenSource.Token)) {
                     IsBackground = true,
                     Priority = ThreadPriority.BelowNormal,
-                    Name = "RainbowColorCreator" + DeviceSettings
+                    Name = "RainbowColorCreator" + OutputSettings.OutputUniqueID
                 };
                 thread.Start();
             }
@@ -105,12 +103,13 @@ namespace adrilight
         private void ColorPaletteChanged()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 1;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 1;
+
 
             if (isRunning && shouldBeRunning)
             {
                 // rainbow is running and we need to change the color bank
-                colorBank = GetColorGradientfromPalette(DeviceSettings.CurrentActivePalette).ToArray();
+                colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette).ToArray();
             }
 
         }
@@ -134,48 +133,39 @@ namespace adrilight
 
 
 
-                Color[] paletteSource;
-
-                var numLED = DeviceSpotSet.LEDSetup.Spots.Length;
-                var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
-                var devicePowerMiliamps = DeviceSettings.DevicePowerMiliamps;
-                var groupSelfIndex = DeviceSettings.GroupSelfIndex;
-                var colorOutput = new OpenRGB.NET.Models.Color[numLED];
-                var effectSpeed = DeviceSettings.EffectSpeed;
-                var frequency = DeviceSettings.ColorFrequency;
-                if (DeviceSettings.SyncOn)
-                    paletteSource = DeviceSettings.CurrentActivePalette;
-                else
-                    paletteSource = DeviceSettings.CurrentActivePalette;
+                var numLED = OutputSettings.OutputNumLED;
+                var outputPowerVoltage = OutputSettings.OutputPowerVoltage;
+                var outputPowerMiliamps = OutputSettings.OutputPowerMiliamps;
+                var effectSpeed = OutputSettings.OutputPaletteSpeed;
+                var frequency = OutputSettings.OutputPaletteBlendStep;
+                Color[] paletteSource = OutputSettings.OutputCurrentActivePalette;
                 colorBank = GetColorGradientfromPalette(paletteSource).ToArray();
               
                 while (!token.IsCancellationRequested)
                 {
                     bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen;
-                    lock (DeviceSpotSet.Lock)
+                    lock (OutputSettings.OutputLEDSetup.Lock)
                     {
 
                         int position = 0;
-                        foreach (var spot in DeviceSpotSet.LEDSetup.Spots)
+                        foreach (var spot in OutputSettings.OutputLEDSetup.Spots)
                         {
 
-                            if (DeviceSettings.SyncOn)
-                            {
-
+                           
                                 position = (int)RainbowTicker.StartIndex + spot.id;
                                 if (position >= colorBank.Length)
                                     position = position - colorBank.Length; // run with VID
-                            }
-                            else
-                            {
-                                position = (int)RainbowTicker.StartIndex + spot.XIndex*5;//run linear with physical id
-                                if (position >= colorBank.Length)
-                                    position = position - colorBank.Length;
+                            
+                            //else
+                            //{
+                            //    position = (int)RainbowTicker.StartIndex + spot.XIndex*5;//run linear with physical id
+                            //    if (position >= colorBank.Length)
+                            //        position = position - colorBank.Length;
 
-                            }
-                            var brightness = DeviceSettings.Brightness / 100d;
+                            //}
+                            var brightness = OutputSettings.OutputBrightness / 100d;
                             var newColor = new OpenRGB.NET.Models.Color(colorBank[position].R, colorBank[position].G, colorBank[position].B);
-                            var outputColor=Brightness.applyBrightness(newColor, brightness, numLED, DeviceSettings.DevicePowerMiliamps, DeviceSettings.DevicePowerVoltage);                        
+                            var outputColor=Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);                        
                             spot.SetColor(outputColor.R, outputColor.G, outputColor.B, isPreviewRunning);
 
                         }
@@ -550,12 +540,12 @@ namespace adrilight
 
         //Custom color by color picker value
         public Color[] custom = new Color[16];
-        public void GetCustomColor()
-        {
-            custom = DeviceSettings.CustomZone;
+        //public void GetCustomColor()
+        //{
+        //    custom = DeviceSettings.CustomZone;
 
 
-        }
+        //}
 
 
     }

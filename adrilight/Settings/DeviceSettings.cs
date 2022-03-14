@@ -13,7 +13,7 @@ namespace adrilight
 {
     internal class DeviceSettings : ViewModelBase, IDeviceSettings
     {
-        private string _deviceID;
+        private int _deviceID;
         private string _deviceName;
         private string _deviceSerial;
         private string _deviceType;
@@ -26,7 +26,7 @@ namespace adrilight
         private bool _isTransferActive;
         private IOutputSettings[] _availableOutput;
 
-        public string DeviceID { get =>_deviceID; set { Set(() => DeviceID, ref _deviceID, value); } }
+        public int DeviceID { get =>_deviceID; set { Set(() => DeviceID, ref _deviceID, value); } }
         public string DeviceName { get => _deviceName; set { Set(() => Devicename, ref _deviceName, value); } }
         public string DeviceSerial { get => _deviceSerial; set { Set(() => _deviceSerial, ref _deviceSerial, value); } }
         public string DeviceType { get => _deviceType; set { Set(() => _deviceType, ref _deviceType, value); } }

@@ -142,7 +142,7 @@ namespace adrilight
                 InstrumentationKey = ik
             };
 
-            tc.Context.User.Id = settings.InstallationId.ToString();
+            tc.Context.User.Id = "1234";//settings.InstallationId.ToString();
             tc.Context.Session.Id = Guid.NewGuid().ToString();
             tc.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
 
@@ -160,7 +160,7 @@ namespace adrilight
 
             //Load setting từ file Json//
             var settingsManager = new UserSettingsManager();
-            var alldevicesettings = settingsManager.LoadDeviceIfExists();
+            var existedDevice = settingsManager.LoadDeviceIfExists();
 
             kernel.Bind(x => x.FromThisAssembly()
               .SelectAllClasses()
@@ -176,114 +176,123 @@ namespace adrilight
             var secondDesktopFrame = kernel.Get<ISecondDesktopFrame>();
             var thirdDesktopFrame = kernel.Get<IThirdDesktopFrame>();
             var rainbowTicker = kernel.Get<IRainbowTicker>();
-            kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
+            //kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
             var openRGBStream = kernel.Get<IOpenRGBStream>();
             kernel.Bind<MainViewViewModel>().ToSelf().InSingletonScope();
 
             //// tách riêng từng setting của từng device///
-            if (alldevicesettings != null)
+            if (existedDevice != null)
             {
-                foreach (var devicesetting in alldevicesettings)
+                foreach (var device in existedDevice)
                 {
 
-                    var DeviceName = devicesetting.DeviceID.ToString();
+                    var iD = device.DeviceID.ToString();
+                    var outputs = device.AvailableOutputs;
 
 
-                    if (!devicesetting.IsHUB)
+                    //if (!devicesetting.IsHUB)
+                    //{
+                    //    kernel.Bind<IDeviceSpotSet>().To<DeviceSpotSet>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName));
+                    //    // kernel.Bind<ISpotSetReader>().To<SpotSetReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+
+                    //    if (devicesetting.DeviceSerial != "151293") // Openrgb device
+                    //    {
+
+                    //        kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                    //        kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                    //        kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                    //        kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                    //        kernel.Bind<IShaderReader>().To<ShaderReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                    //        kernel.Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                    //        //  var spotSetReader = kernel.Get<ISpotSetReader>(DeviceName);
+                    //        var staticColor = kernel.Get<IStaticColor>(DeviceName);
+                    //        var rainbow = kernel.Get<IRainbow>(DeviceName);
+                    //        var music = kernel.Get<IMusic>(DeviceName);
+                    //        var atmosphere = kernel.Get<IAtmosphere>(DeviceName);
+                    //        var pixelation = kernel.Get<IShaderReader>(DeviceName);
+                    //        var screencapturing = kernel.Get<IDesktopDuplicatorReader>(DeviceName);
+                    //    }
+                    //    else
+                    //    {
+                    //        if (devicesetting.ParrentLocation == 151293) // Ambino Device
+                    //        {
+
+                                kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
+
+
+
+                    //}
+                    foreach (var output in outputs)
                     {
-                        kernel.Bind<IDeviceSpotSet>().To<DeviceSpotSet>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName));
-                        // kernel.Bind<ISpotSetReader>().To<SpotSetReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-
-                        if (devicesetting.DeviceSerial != "151293") // Openrgb device
-                        {
-
-                            kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            kernel.Bind<IShaderReader>().To<ShaderReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            kernel.Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            //  var spotSetReader = kernel.Get<ISpotSetReader>(DeviceName);
-                            var staticColor = kernel.Get<IStaticColor>(DeviceName);
-                            var rainbow = kernel.Get<IRainbow>(DeviceName);
-                            var music = kernel.Get<IMusic>(DeviceName);
-                            var atmosphere = kernel.Get<IAtmosphere>(DeviceName);
-                            var pixelation = kernel.Get<IShaderReader>(DeviceName);
-                            var screencapturing = kernel.Get<IDesktopDuplicatorReader>(DeviceName);
-                        }
-                        else
-                        {
-                            if (devicesetting.ParrentLocation == 151293) // Ambino Device
-                            {
-
-                                kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                                var serialStream = kernel.Get<ISerialStream>(DeviceName);
-
-
-                            }
-                            kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            kernel.Bind<IShaderReader>().To<ShaderReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            kernel.Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                            //  var spotSetReader = kernel.Get<ISpotSetReader>(DeviceName);
-                            var staticColor = kernel.Get<IStaticColor>(DeviceName);
-                            var rainbow = kernel.Get<IRainbow>(DeviceName);
-                            var music = kernel.Get<IMusic>(DeviceName);
-                            var atmosphere = kernel.Get<IAtmosphere>(DeviceName);
-                            var pixelation = kernel.Get<IShaderReader>(DeviceName);
-                            var screencapturing = kernel.Get<IDesktopDuplicatorReader>(DeviceName);
-                        }
-
-
-
+                        var outputID = iD + output.OutputID.ToString();
+                        //kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                        kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
+                        var rainbow = kernel.Get<IRainbow>(outputID);
                     }
-
-
-
-
-
-
-
-                }
-
-            
-
-                foreach (var devicesetting in alldevicesettings)
-                {
-
-                    var DeviceName = devicesetting.DeviceID.ToString();
-
-
-                    if (devicesetting.IsHUB)
-                    {
-                        kernel.Bind<IDeviceSpotSet>().To<DeviceSpotSet>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName));
-                        if(devicesetting.DeviceType== "ABFANHUB")
-                            kernel.Bind<ISerialStream>().To<SerialStreamFanHUB>().InSingletonScope().Named(devicesetting.DeviceID.ToString()).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(devicesetting.DeviceID.ToString()));
-                        else if(devicesetting.DeviceType== "ABHV2")
-                            kernel.Bind<ISerialStream>().To<SerialStreamHUB>().InSingletonScope().Named(devicesetting.DeviceID.ToString()).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(devicesetting.DeviceID.ToString()));
-                        var serialStream = kernel.Get<ISerialStream>(devicesetting.DeviceID.ToString());
-                        kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                        kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                        kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                        kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                        kernel.Bind<IShaderReader>().To<ShaderReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
-                        kernel.Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                        //kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                        //kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                        //kernel.Bind<IShaderReader>().To<ShaderReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                        //kernel.Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
                         //  var spotSetReader = kernel.Get<ISpotSetReader>(DeviceName);
-                        var staticColor = kernel.Get<IStaticColor>(DeviceName);
-                        var rainbow = kernel.Get<IRainbow>(DeviceName);
-                        var music = kernel.Get<IMusic>(DeviceName);
-                        var atmosphere = kernel.Get<IAtmosphere>(DeviceName);
-                        var pixelation = kernel.Get<IShaderReader>(DeviceName);
-                        var screencapturing = kernel.Get<IDesktopDuplicatorReader>(DeviceName);
+                        var serialStream = kernel.Get<ISerialStream>(iD);
+                        //var staticColor = kernel.Get<IStaticColor>(DeviceName);
+                        
+                        //var music = kernel.Get<IMusic>(DeviceName);
+                        //var atmosphere = kernel.Get<IAtmosphere>(DeviceName);
+                        //var pixelation = kernel.Get<IShaderReader>(DeviceName);
+                        //var screencapturing = kernel.Get<IDesktopDuplicatorReader>(DeviceName);
+                    }
+                            
+                        //}
+
+
 
                     }
-                }
+
+
+
+
+
+
 
                 
 
-            }
+            
+
+                //foreach (var devicesetting in alldevicesettings)
+                //{
+
+                //    var DeviceName = devicesetting.DeviceID.ToString();
+
+
+                //    if (devicesetting.IsHUB)
+                //    {
+                //        kernel.Bind<IDeviceSpotSet>().To<DeviceSpotSet>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName));
+                //        if(devicesetting.DeviceType== "ABFANHUB")
+                //            kernel.Bind<ISerialStream>().To<SerialStreamFanHUB>().InSingletonScope().Named(devicesetting.DeviceID.ToString()).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(devicesetting.DeviceID.ToString()));
+                //        else if(devicesetting.DeviceType== "ABHV2")
+                //            kernel.Bind<ISerialStream>().To<SerialStreamHUB>().InSingletonScope().Named(devicesetting.DeviceID.ToString()).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(devicesetting.DeviceID.ToString()));
+                //        var serialStream = kernel.Get<ISerialStream>(devicesetting.DeviceID.ToString());
+                //        kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                //        kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                //        kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                //        kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                //        kernel.Bind<IShaderReader>().To<ShaderReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                //        kernel.Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
+                //        //  var spotSetReader = kernel.Get<ISpotSetReader>(DeviceName);
+                //        var staticColor = kernel.Get<IStaticColor>(DeviceName);
+                //        var rainbow = kernel.Get<IRainbow>(DeviceName);
+                //        var music = kernel.Get<IMusic>(DeviceName);
+                //        var atmosphere = kernel.Get<IAtmosphere>(DeviceName);
+                //        var pixelation = kernel.Get<IShaderReader>(DeviceName);
+                //        var screencapturing = kernel.Get<IDesktopDuplicatorReader>(DeviceName);
+
+                //    }
+                //}
+
+                
+
+            
            
             return kernel;
                 // lighting viewmodel bây giờ chỉ có nhiệm vụ load data từ spotset và settings tương ứng với card sau đó display, không phải khởi tạo class như trước
@@ -436,83 +445,83 @@ namespace adrilight
             var contextMenu = new ContextMenuStrip();
             
 
-            var allDevices = kernel.GetAll<IDeviceSettings>();
-            foreach (var device in allDevices)
-            {
-                if (!device.IsHUB && device.ParrentLocation == 151293)
-                {
-                    var deviceMenu = new ToolStripMenuItem(device.DeviceName);
+            //var allDevices = kernel.GetAll<IDeviceSettings>();
+            //foreach (var device in allDevices)
+            //{
+            //    if (!device.IsHUB && device.ParrentLocation == 151293)
+            //    {
+            //        var deviceMenu = new ToolStripMenuItem(device.DeviceName);
 
-                    deviceMenu.DropDownItems.Add(new ToolStripMenuItem("Bật/Tắt LED",null, (s, e) =>
-                    {
-                        if (device.LEDOn)
-                            device.LEDOn = false;
-                        else
-                            device.LEDOn = true;
+            //        deviceMenu.DropDownItems.Add(new ToolStripMenuItem("Bật/Tắt LED",null, (s, e) =>
+            //        {
+            //            if (device.LEDOn)
+            //                device.LEDOn = false;
+            //            else
+            //                device.LEDOn = true;
 
-                    }));
-                    contextMenu.Items.Add(deviceMenu);
-                }
+            //        }));
+            //        contextMenu.Items.Add(deviceMenu);
+            //    }
 
 
-            }
-            var SyncAll = new ToolStripMenuItem("Đồng bộ tất cả", null, (s, e) =>
-            {
+            //}
+            //var SyncAll = new ToolStripMenuItem("Đồng bộ tất cả", null, (s, e) =>
+            //{
                 
 
-            });
-            SyncAll.DropDownItems.Add(new ToolStripMenuItem("Theo màn hình", null, (s, e) =>
-            {
-                foreach (var device in allDevices)
-                {
-                    device.SelectedEffect = 0;
-                }
+            //});
+            //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Theo màn hình", null, (s, e) =>
+            //{
+            //    foreach (var device in allDevices)
+            //    {
+            //        device.SelectedEffect = 0;
+            //    }
 
-            }));
+            //}));
 
-            SyncAll.DropDownItems.Add(new ToolStripMenuItem("Màu tĩnh",null, (s, e) =>
-                    {
-                        foreach (var device in allDevices)
-                        {
-                            device.SelectedEffect = 2;
-                        }
+            //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Màu tĩnh",null, (s, e) =>
+            //        {
+            //            foreach (var device in allDevices)
+            //            {
+            //                device.SelectedEffect = 2;
+            //            }
 
-                    }));
-            SyncAll.DropDownItems.Add(new ToolStripMenuItem("Dải màu", null, (s, e) =>
-            {
-                foreach (var device in allDevices)
-                {
-                    device.SelectedEffect = 1;
-                }
+            //        }));
+            //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Dải màu", null, (s, e) =>
+            //{
+            //    foreach (var device in allDevices)
+            //    {
+            //        device.SelectedEffect = 1;
+            //    }
 
-            }));
-            SyncAll.DropDownItems.Add(new ToolStripMenuItem("Theo Nhạc", null, (s, e) =>
-            {
-                foreach (var device in allDevices)
-                {
-                    device.SelectedEffect = 3;
-                }
+            //}));
+            //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Theo Nhạc", null, (s, e) =>
+            //{
+            //    foreach (var device in allDevices)
+            //    {
+            //        device.SelectedEffect = 3;
+            //    }
 
-            }));
-            SyncAll.DropDownItems.Add(new ToolStripMenuItem("Atmosphere", null, (s, e) =>
-            {
-                foreach (var device in allDevices)
-                {
-                    device.SelectedEffect = 4;
-                }
+            //}));
+            //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Atmosphere", null, (s, e) =>
+            //{
+            //    foreach (var device in allDevices)
+            //    {
+            //        device.SelectedEffect = 4;
+            //    }
 
-            }));
-            SyncAll.DropDownItems.Add(new ToolStripMenuItem("Canvas Lighting", null, (s, e) =>
-            {
-                foreach (var device in allDevices)
-                {
-                    device.SelectedEffect = 5;
-                }
+            //}));
+            //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Canvas Lighting", null, (s, e) =>
+            //{
+            //    foreach (var device in allDevices)
+            //    {
+            //        device.SelectedEffect = 5;
+            //    }
 
-            }));
+            //}));
             var dashboard = new ToolStripMenuItem("Dashboard", null, (s, e) => OpenSettingsWindow());
             var exit = new ToolStripMenuItem("Thoát", null, (s, e) => Shutdown(0));
-            contextMenu.Items.Add(SyncAll);
+            //contextMenu.Items.Add(SyncAll);
             contextMenu.Items.Add(dashboard);
             contextMenu.Items.Add(exit);
             // contextMenu.Items.Add(new MenuItem("Dashboard", (s, e) => OpenNewUI()));

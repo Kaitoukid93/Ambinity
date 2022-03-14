@@ -11,7 +11,7 @@ namespace adrilight.Ninject
         {
             var settingsManager = new UserSettingsManager();
             var generalSettings = settingsManager.LoadIfExists() ?? settingsManager.MigrateOrDefault();
-            var alldevicesettings = settingsManager.LoadDeviceIfExists();
+            var existedDevices = settingsManager.LoadDeviceIfExists();
             var allgroupsettings = settingsManager.LoadGroupIfExisrs();
             Bind<IGeneralSettings>().ToConstant(generalSettings);
             //Bind<IOpenRGBClientDevice>().To<OpenRGBClientDevice>().InSingletonScope();
@@ -24,15 +24,20 @@ namespace adrilight.Ninject
             Bind<IThirdDesktopFrame>().To<ThirdDesktopFrame>().InSingletonScope();
             Bind<IRainbowTicker>().To<RainbowTicker>().InSingletonScope();
 
-            if (alldevicesettings!=null)
+            if (existedDevices != null)
             {
-                if (alldevicesettings.Count > 0)
+                if (existedDevices.Count > 0)
                 {
-                    foreach (var devicesetting in alldevicesettings)
+                    foreach (var device in existedDevices)
                     {
-                        var devicename = devicesetting.DeviceID.ToString();
+                        var iD = device.DeviceID.ToString();
                        
-                            Bind<IDeviceSettings>().ToConstant(devicesetting).Named(devicename);
+                            Bind<IDeviceSettings>().ToConstant(device).Named(iD);
+                        foreach(var output in device.AvailableOutputs)
+                        {
+                            var outputID = iD+output.OutputID.ToString();
+                            Bind<IOutputSettings>().ToConstant(output).Named(outputID);
+                        }
                     }
                 }
             }

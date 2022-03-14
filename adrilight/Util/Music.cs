@@ -37,15 +37,21 @@ namespace adrilight
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public Music(IDeviceSettings deviceSettings, IDeviceSpotSet deviceSpotSet, IRainbowTicker rainbowTicker, MainViewViewModel mainViewViewModel)
+        public Music(IOutputSettings outputSettings, IRainbowTicker rainbowTicker, IGeneralSettings generalSettings, MainViewViewModel mainViewViewModel)
         {
-            DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
-            DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
+            OutputSettings = outputSettings ?? throw new ArgumentNullException(nameof(outputSettings));
+            GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
+           // OutputSpotSet = outputSpotSet ?? throw new ArgumentException(nameof(outputSpotSet));
+
+
             RainbowTicker = rainbowTicker ?? throw new ArgumentNullException(nameof(rainbowTicker));
             MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
-            DeviceSettings.PropertyChanged += PropertyChanged;
+
+
+            OutputSettings.PropertyChanged += PropertyChanged;
+            GeneralSettings.PropertyChanged += PropertyChanged;
             MainViewViewModel.PropertyChanged += PropertyChanged;
-            // SettingsViewModel.PropertyChanged += PropertyChanged;
+           
             BassNet.Registration("saorihara93@gmail.com", "2X2831021152222");
             _process = new WASAPIPROC(Process);
             _fft = new float[1024];
@@ -56,42 +62,44 @@ namespace adrilight
 
         }
         //Dependency Injection//
-        private IDeviceSettings DeviceSettings { get; }
-        private IRainbowTicker RainbowTicker { get; }
+        private IOutputSettings OutputSettings { get; }
+
         private MainViewViewModel MainViewViewModel { get; }
-        //private SettingsViewModel SettingsViewModel { get; }
+        private IRainbowTicker RainbowTicker { get; }
+        private IGeneralSettings GeneralSettings { get; }
+         //private IDeviceSpotSet OutputSpotSet { get; }
+
+        private Color[] colorBank = new Color[256];
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
-        private IDeviceSpotSet DeviceSpotSet { get; }
-        private Color[] colorBank = new Color[256];
-        
+
         private void PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
+               switch (e.PropertyName)
             {
-                case nameof(DeviceSettings.TransferActive):
-                case nameof(DeviceSettings.SelectedEffect):
-                case nameof(DeviceSettings.Brightness):
-                case nameof(DeviceSettings.SelectedMusicMode):
-                case nameof(DeviceSettings.SpotsX):
-                case nameof(DeviceSettings.SpotsY):
+                case nameof(OutputSettings.OutputIsEnabled):
+                case nameof(OutputSettings.OutputSelectedChasingPalette):
                 case nameof(MainViewViewModel.IsSplitLightingWindowOpen):
                     RefreshAudioState();
                     break;
-                case nameof(DeviceSettings.SelectedAudioDevice):
-                    RefreshAudioDevice();
+                case nameof(OutputSettings.OutputCurrentActivePalette):
 
-                    break;
-                case nameof(DeviceSettings.CurrentActivePalette):
                     ColorPaletteChanged();
                     break;
+                case nameof(OutputSettings.OutputSelectedAudioDevice):
+
+                    RefreshAudioDevice();
+                    break;
+
+
             }
+        
         }
         private void RefreshAudioState()
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 3;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled;
 
 
 
@@ -140,7 +148,7 @@ namespace adrilight
         private void RefreshAudioDevice()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 3;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled;
             //var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 3;
             if (isRunning && shouldBeRunning)
             {
@@ -168,12 +176,12 @@ namespace adrilight
         private void ColorPaletteChanged()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 3;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled;
 
             if (isRunning && shouldBeRunning)
             {
                 // rainbow is running and we need to change the color bank
-                colorBank = GetColorGradientfromPalette(DeviceSettings.CurrentActivePalette).ToArray();
+                colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette).ToArray();
             }
 
         }
@@ -202,17 +210,11 @@ namespace adrilight
             try
             {
                 Color[] paletteSource;
-                paletteSource = DeviceSettings.CurrentActivePalette;
+                paletteSource = OutputSettings.OutputCurrentActivePalette;
                 colorBank = GetColorGradientfromPalette(paletteSource).ToArray();
-                IDeviceSpot[] currentActiveSpots = new DeviceSpot[32];
+                
                 int counter = 0;
-                foreach (var spot in DeviceSpotSet.LEDSetup.Spots)
-                {
-                    if (spot.IsActivated)
-                    {
-                        currentActiveSpots[counter++] = spot;
-                    }
-                }
+               
                 while (!token.IsCancellationRequested)
                 {
                    
@@ -221,16 +223,18 @@ namespace adrilight
 
 
 
-                    int musicMode = DeviceSettings.SelectedMusicMode;
+                    int musicMode = OutputSettings.OutputSelectedMusicMode;
                     bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen;
-                    var numLED = DeviceSpotSet.LEDSetup.Spots.Length;
+                    var outputPowerVoltage = OutputSettings.OutputPowerVoltage;
+                    var outputPowerMiliamps = OutputSettings.OutputPowerMiliamps;
+                    var numLED = OutputSettings.OutputNumLED;
                     var spectrumdata = GetCurrentFFT(numLED);
                     if (spectrumdata == null) return;
                     if (isPreviewRunning)
                         MainViewViewModel.VisualizerFFT = spectrumdata;
                     var brightnessMap = SpectrumCreator(spectrumdata, 0, volumeLeft, volumeRight, musicMode, numLED);// get brightness map based on spectrum data
 
-                    lock (DeviceSpotSet.Lock)
+                    lock (OutputSettings.OutputLEDSetup.Lock)
                     {
                         
                         
@@ -239,7 +243,7 @@ namespace adrilight
 
 
                         int position = 0;
-                        foreach (var spot in currentActiveSpots)
+                        foreach (var spot in OutputSettings.OutputLEDSetup.Spots)
                         {
 
                             
@@ -252,7 +256,7 @@ namespace adrilight
                             var brightness = brightnessMap[spot.VID];
                             var newColor = new OpenRGB.NET.Models.Color(colorBank[position].R, colorBank[position].G, colorBank[position].B);
                             
-                            var outputColor = Brightness.applyBrightness(newColor, brightness, numLED, DeviceSettings.DevicePowerMiliamps, DeviceSettings.DevicePowerVoltage);
+                            var outputColor = Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);
                             ApplySmoothing(outputColor.R, outputColor.G, outputColor.B, out byte FinalR, out byte FinalG, out byte FinalB, spot.Red, spot.Green, spot.Blue);
                             spot.SetColor(FinalR, FinalG, FinalB, isPreviewRunning);
                             
@@ -304,14 +308,14 @@ namespace adrilight
         public int AudioDeviceID {
             get
             {
-                if (DeviceSettings.SelectedAudioDevice > AvailableAudioDevice.Count)
+                if (OutputSettings.OutputSelectedAudioDevice > AvailableAudioDevice.Count)
                 {
                     System.Windows.MessageBox.Show("Last Selected Audio Device is not Available");
                     return -1;
                 }
                 else
                 {
-                    var currentDevice = AvailableAudioDevice.ElementAt(DeviceSettings.SelectedAudioDevice);
+                    var currentDevice = AvailableAudioDevice.ElementAt(OutputSettings.OutputSelectedAudioDevice);
 
                     var array = currentDevice.Split(' ');
                     _audioDeviceID = Convert.ToInt32(array[0]);
@@ -323,7 +327,7 @@ namespace adrilight
         public byte[] GetCurrentFFT( int numFreq)
         {
             byte[] spectrumdata = new byte[numFreq];
-            double senspercent = DeviceSettings.MSens / 100d;
+            double senspercent = 0 / 100d;
             //audio capture section//
             int ret = BassWasapi.BASS_WASAPI_GetData(_fft, (int)BASSData.BASS_DATA_FFT2048);// get channel fft data
             if (ret < -1) return null;

@@ -8,6 +8,6 @@
         void Stop();
         bool IsValid();
         void DFU();
-        int ID { get; set; }
+      
     }
 }

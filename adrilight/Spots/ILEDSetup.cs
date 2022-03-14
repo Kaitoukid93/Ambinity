@@ -18,6 +18,7 @@ namespace adrilight.Spots
         string Description { get; set; }
         int MatrixWidth { get; set; }
         int MatrixHeight { get; set; }
+        object Lock { get; }
         int SetupID { get; set; }    // to match with device ID
     }
 

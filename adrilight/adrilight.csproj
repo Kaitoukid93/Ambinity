@@ -201,6 +201,7 @@
     <Compile Remove="Factories\IDeviceSettingsFactories.cs" />
     <Compile Remove="Ninject\UseFirstArgumentAsNameInstanceProvider.cs" />
     <Compile Remove="Util\AdrilightUpdater.cs" />
+    <Compile Remove="Util\OpenRGBStream.cs" />
     <Compile Remove="ViewModel\DashBoardViewModel.cs" />
     <Compile Remove="ViewModel\ILightingViewModel.cs" />
     <Compile Remove="ViewModel\old\ISelectableViewPart.cs" />

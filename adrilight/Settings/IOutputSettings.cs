@@ -43,6 +43,7 @@ namespace adrilight
         Color[] OutputSentryModeColorSource { get; set; }
         int OutputSelectedAudioDevice { get; set; }
         int OutputSelectedDisplay { get; set; }
+        int OutputSelectedMode { get; set; }
 
 
 
@@ -63,7 +64,8 @@ namespace adrilight
 
  
         Color[] OutputCurrentActivePalette { get; set; }
-         IDeviceSpot[] OutputSpotSet { get; set; }
+        ILEDSetup OutputLEDSetup { get; set; }
+        
 
     }
 }

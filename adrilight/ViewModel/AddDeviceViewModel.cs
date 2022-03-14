@@ -91,26 +91,26 @@ namespace adrilight.ViewModel
             ExistedGroup = groups;
             DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
             ExistedDevicesName = new List<string>();
-            foreach(var device in ExistedDevices)
-            {
-                if(!device.IsHUB)
-                {
-                    var name = device.DeviceName;
-                    if (device.ParrentLocation != 151293)
-                    {
-                        var parrentName = "";
-                        foreach (var parrent in ExistedDevices)
-                            if (parrent.HUBID == device.ParrentLocation)
-                                parrentName = parrent.DeviceName;
-                        name = name + "(" + parrentName + ")";
-                    }
-                    //device is in hub
+            //foreach(var device in ExistedDevices)
+            //{
+            //    if(!device.IsHUB)
+            //    {
+            //        var name = device.DeviceName;
+            //        if (device.ParrentLocation != 151293)
+            //        {
+            //            var parrentName = "";
+            //            foreach (var parrent in ExistedDevices)
+            //                if (parrent.HUBID == device.ParrentLocation)
+            //                    parrentName = parrent.DeviceName;
+            //            name = name + "(" + parrentName + ")";
+            //        }
+            //        //device is in hub
 
 
-                    ExistedDevicesName.Add(name);
-                }
+            //        ExistedDevicesName.Add(name);
+            //    }
               
-            }
+            //}
             
 
         }
@@ -167,13 +167,7 @@ namespace adrilight.ViewModel
                 _eDGEChecked = value;
                 if (value)
                 {
-                    AddedItemType = AvailableTypes.Device;
-                    Device.DeviceType = "ABEDGE";
-                    Device.DeviceLayout = 1;
-                    Device.LayoutEnabled = false;
-                    IsNextable = true;
-                    RaisePropertyChanged(() => Device.DeviceType);
-                    RaisePropertyChanged(() => IsNextable);
+                    Device = DefaultDeviceCollection.ambinoBasic;
                 }
 
             }
@@ -204,21 +198,21 @@ namespace adrilight.ViewModel
             set
             {
                 _selectedChilds = value;
-                SelectedChild_PropertyChanged();
+                //SelectedChild_PropertyChanged();
             }
         }
-        private void SelectedChild_PropertyChanged()
-        {
-            if (SelectedChilds != null)
-            {
-                foreach (var child in SelectedChilds)
-                {
-                    child.SelectedEffect = 1;
-                    child.GroupID = Group.GroupID;
-                    child.GroupLightingEnable = true;
-                };
-            }
-        }
+        //private void SelectedChild_PropertyChanged()
+        //{
+        //    if (SelectedChilds != null)
+        //    {
+        //        foreach (var child in SelectedChilds)
+        //        {
+        //            child.SelectedEffect = 1;
+        //            child.GroupID = Group.GroupID;
+        //            child.GroupLightingEnable = true;
+        //        };
+        //    }
+        //}
         //private List<string> _selectedOutputs;
         //public List<string> SelectedOutputs {
         //    get { return _selectedOutputs; }
@@ -236,43 +230,43 @@ namespace adrilight.ViewModel
             set
             {
                 _fanHUBChecked = value;
-                if (value)
-                {
-                    AddedItemType = AvailableTypes.Device;
-                    Device.DeviceType = "ABFANHUB"; // add parrent device
-                    Device.DeviceID = ExistedDevices.Count() + 1;
-                    Device.HUBID = ExistedDevices.Count() + 1;
-                    Device.IsHUB = true;
-                    AvailableOutputs = new List<IDeviceSettings>();//add child devices
-                    for (int i = 1; i < 11; i++)
-                    {
-                        var fan = new DeviceSettings();
-                        fan.DeviceName = "Fan" + i.ToString();
-                        fan.IsVissible = false;
-                        fan.ParrentLocation = Device.HUBID;
-                        fan.SelectedEffect = 1;
-                        fan.SelectedPalette = 0;
-                        fan.DevicePowerVoltage = 5;
-                        fan.DevicePowerMiliamps = 500;
-                        fan.DeviceLayout = 0;
-                        fan.OutputLocation = i-1;
-                        fan.NumLED = 16;
-                        fan.SpotsX = 5;
-                        fan.SpotsY = 5;
-                        fan.OffsetLed = 4;
-                        fan.LayoutEnabled = false;
-                        //fan.offset...
-                        fan.DeviceID = Device.DeviceID + i;
+                //if (value)
+                //{
+                //    AddedItemType = AvailableTypes.Device;
+                //    Device.DeviceType = "ABFANHUB"; // add parrent device
+                //    Device.DeviceID = ExistedDevices.Count() + 1;
+                //    Device.HUBID = ExistedDevices.Count() + 1;
+                //    Device.IsHUB = true;
+                //    AvailableOutputs = new List<IDeviceSettings>();//add child devices
+                //    for (int i = 1; i < 11; i++)
+                //    {
+                //        var fan = new DeviceSettings();
+                //        fan.DeviceName = "Fan" + i.ToString();
+                //        fan.IsVissible = false;
+                //        fan.ParrentLocation = Device.HUBID;
+                //        fan.SelectedEffect = 1;
+                //        fan.SelectedPalette = 0;
+                //        fan.DevicePowerVoltage = 5;
+                //        fan.DevicePowerMiliamps = 500;
+                //        fan.DeviceLayout = 0;
+                //        fan.OutputLocation = i-1;
+                //        fan.NumLED = 16;
+                //        fan.SpotsX = 5;
+                //        fan.SpotsY = 5;
+                //        fan.OffsetLed = 4;
+                //        fan.LayoutEnabled = false;
+                //        //fan.offset...
+                //        fan.DeviceID = Device.DeviceID + i;
 
-                        AvailableOutputs.Add(fan);
+                //        AvailableOutputs.Add(fan);
 
-                    }
-                    //allow user to press 'Next'
-                    IsNextable = true;
-                    RaisePropertyChanged(() => Device.DeviceType);
-                    RaisePropertyChanged(() => AvailableOutputs);
-                    RaisePropertyChanged(() => IsNextable);
-                }
+                //    }
+                //    //allow user to press 'Next'
+                //    IsNextable = true;
+                //    RaisePropertyChanged(() => Device.DeviceType);
+                //    RaisePropertyChanged(() => AvailableOutputs);
+                //    RaisePropertyChanged(() => IsNextable);
+                //}
 
             }
         }
@@ -390,14 +384,13 @@ namespace adrilight.ViewModel
                 _checked24inch = value;
                 if (value)
                 {
-                    Device.SpotsX = 11;
-                    Device.SpotsY = 7;
-                    Device.OffsetLed=10;
-                    Device.NumLED = 32;
+                    Device.AvailableOutputs[0].OutputNumLEDX = 11;
+                    Device.AvailableOutputs[0].OutputNumLEDY = 7;
+                    Device.AvailableOutputs[0].OutputNumLED = 32;
                     IsNextable = true;
-                    RaisePropertyChanged(() => Device.SpotsX);
-                    RaisePropertyChanged(() => Device.SpotsY);
-                    RaisePropertyChanged(() => Device.NumLED);
+                    //RaisePropertyChanged(() => Device.SpotsX);
+                    //RaisePropertyChanged(() => Device.SpotsY);
+                    //RaisePropertyChanged(() => Device.NumLED);
                     RaisePropertyChanged(() => IsNextable);
                 }
 
@@ -412,14 +405,13 @@ namespace adrilight.ViewModel
                 _checked27inch = value;
                 if (value)
                 {
-                    Device.SpotsX = 13;
-                    Device.SpotsY = 7;
-                    Device.OffsetLed = 12;
-                    Device.NumLED = 36;
+                    Device.AvailableOutputs[0].OutputNumLEDX = 13;
+                    Device.AvailableOutputs[0].OutputNumLEDY = 7;
+                    Device.AvailableOutputs[0].OutputNumLED = 36;
                     IsNextable = true;
-                    RaisePropertyChanged(() => Device.SpotsX);
-                    RaisePropertyChanged(() => Device.SpotsY);
-                    RaisePropertyChanged(() => Device.NumLED);
+                    //RaisePropertyChanged(() => Device.SpotsX);
+                    //RaisePropertyChanged(() => Device.SpotsY);
+                    //RaisePropertyChanged(() => Device.NumLED);
                     RaisePropertyChanged(() => IsNextable);
                 }
 
@@ -434,14 +426,13 @@ namespace adrilight.ViewModel
                 _checked29inch = value;
                 if (value)
                 {
-                    Device.SpotsX = 14;
-                    Device.SpotsY = 7;
-                    Device.OffsetLed = 13;
-                    Device.NumLED = 38;
+                    Device.AvailableOutputs[0].OutputNumLEDX = 14;
+                    Device.AvailableOutputs[0].OutputNumLEDY = 7;
+                    Device.AvailableOutputs[0].OutputNumLED = 38;
                     IsNextable = true;
-                    RaisePropertyChanged(() => Device.SpotsX);
-                    RaisePropertyChanged(() => Device.SpotsY);
-                    RaisePropertyChanged(() => Device.NumLED);
+                    //RaisePropertyChanged(() => Device.SpotsX);
+                    //RaisePropertyChanged(() => Device.SpotsY);
+                    //RaisePropertyChanged(() => Device.NumLED);
                     RaisePropertyChanged(() => IsNextable);
                 }
 
@@ -456,14 +447,13 @@ namespace adrilight.ViewModel
                 _checked32inch = value;
                 if (value)
                 {
-                    Device.SpotsX = 14;
-                    Device.SpotsY = 9;
-                    Device.OffsetLed = 13;
-                    Device.NumLED = 42;
+                    Device.AvailableOutputs[0].OutputNumLEDX = 14;
+                    Device.AvailableOutputs[0].OutputNumLEDY = 9;
+                    Device.AvailableOutputs[0].OutputNumLED = 42;
                     IsNextable = true;
-                    RaisePropertyChanged(() => Device.SpotsX);
-                    RaisePropertyChanged(() => Device.SpotsY);
-                    RaisePropertyChanged(() => Device.NumLED);
+                    //RaisePropertyChanged(() => Device.SpotsX);
+                    //RaisePropertyChanged(() => Device.SpotsY);
+                    //RaisePropertyChanged(() => Device.NumLED);
                     RaisePropertyChanged(() => IsNextable);
                 }
 
@@ -478,14 +468,13 @@ namespace adrilight.ViewModel
                 _checked34inch = value;
                 if (value)
                 {
-                    Device.SpotsX = 16;
-                    Device.SpotsY = 7;
-                    Device.OffsetLed = 15;
-                    Device.NumLED = 42;
+                    Device.AvailableOutputs[0].OutputNumLEDX = 16;
+                    Device.AvailableOutputs[0].OutputNumLEDY = 7;
+                    Device.AvailableOutputs[0].OutputNumLED = 42;
                     IsNextable = true;
-                    RaisePropertyChanged(() => Device.SpotsX);
-                    RaisePropertyChanged(() => Device.SpotsY);
-                    RaisePropertyChanged(() => Device.NumLED);
+                    //RaisePropertyChanged(() => Device.SpotsX);
+                    //RaisePropertyChanged(() => Device.SpotsY);
+                    //RaisePropertyChanged(() => Device.NumLED);
                     RaisePropertyChanged(() => IsNextable);
                 }
 
@@ -500,13 +489,13 @@ namespace adrilight.ViewModel
                 _checked1m2 = value;
                 if (value)
                 {
-                    Device.SpotsX = 48;
-                    Device.SpotsY = 1;
-                    Device.NumLED = 48;
+                    Device.AvailableOutputs[0].OutputNumLEDX = 48;
+                    Device.AvailableOutputs[0].OutputNumLEDY = 1;
+                    Device.AvailableOutputs[0].OutputNumLED = 48;
                     IsNextable = true;
-                    RaisePropertyChanged(() => Device.SpotsX);
-                    RaisePropertyChanged(() => Device.SpotsY);
-                    RaisePropertyChanged(() => Device.NumLED);
+                    //RaisePropertyChanged(() => Device.SpotsX);
+                    //RaisePropertyChanged(() => Device.SpotsY);
+                    //RaisePropertyChanged(() => Device.NumLED);
                     RaisePropertyChanged(() => IsNextable);
                 }
 
@@ -522,13 +511,13 @@ namespace adrilight.ViewModel
                 _checked2m = value;
                 if (value)
                 {
-                    Device.SpotsX = 80;
-                    Device.SpotsY = 1;
-                    Device.NumLED = 80;
+                    Device.AvailableOutputs[0].OutputNumLEDX = 80;
+                    Device.AvailableOutputs[0].OutputNumLEDY = 1;
+                    Device.AvailableOutputs[0].OutputNumLED = 80;
                     IsNextable = true;
-                    RaisePropertyChanged(() => Device.SpotsX);
-                    RaisePropertyChanged(() => Device.NumLED);
-                    RaisePropertyChanged(() => Device.SpotsY);
+                    //RaisePropertyChanged(() => Device.SpotsX);
+                    //RaisePropertyChanged(() => Device.SpotsY);
+                    //RaisePropertyChanged(() => Device.NumLED);
                     RaisePropertyChanged(() => IsNextable);
                 }
 

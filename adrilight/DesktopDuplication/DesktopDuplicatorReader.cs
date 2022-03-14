@@ -27,7 +27,8 @@ namespace adrilight
             IDeviceSpotSet deviceSpotSet ,
             IDesktopFrame desktopFrame,
              ISecondDesktopFrame secondDesktopFrame,
-             IThirdDesktopFrame thirdDesktopFrame
+             IThirdDesktopFrame thirdDesktopFrame,
+             IOutputSettings outputSettings
             )
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
@@ -36,7 +37,7 @@ namespace adrilight
             DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
             SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
             ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
-
+            OutputSettings = outputSettings ?? throw new ArgumentNullException(nameof(outputSettings));
             // GraphicAdapter = graphicAdapter;
             // Output = output;
             //MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
@@ -57,7 +58,7 @@ namespace adrilight
             {
                 
                 case nameof(UserSettings.ShouldbeRunning):
-                case nameof(DeviceSettings.SelectedEffect):
+                case nameof(OutputSettings.OutputSelectedMode):
 
                     RefreshCapturingState();
                     break;
@@ -104,7 +105,7 @@ namespace adrilight
         public void RefreshCapturingState()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 0;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 0;
             //  var shouldBeRefreshing = NeededRefreshing;
 
 
@@ -146,6 +147,7 @@ namespace adrilight
         private IDesktopFrame DesktopFrame { get; }
         private ISecondDesktopFrame SecondDesktopFrame { get; }
         private IThirdDesktopFrame ThirdDesktopFrame { get; }
+        private IOutputSettings OutputSettings { get; }
 
 
 
@@ -193,13 +195,13 @@ namespace adrilight
                     var frameTime = Stopwatch.StartNew();
                     var newImage = _retryPolicy.Execute(() => GetNextFrame(image));
                     TraceFrameDetails(newImage);
-                    var width = DeviceSettings.DeviceRectWidth1;
-                    var height = DeviceSettings.DeviceRectHeight1;
-                    var x = DeviceSettings.DeviceRectLeft1;
-                    var y = DeviceSettings.DeviceRectTop1;
-                    var brightness = DeviceSettings.Brightness/100d;
-                    var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
-                    var devicePowerMiliamps = DeviceSettings.DevicePowerMiliamps;
+                    var width = OutputSettings.OutputPixelWidth;
+                    var height = OutputSettings.OutputPixelHeight;
+                    var x = OutputSettings.OutputLocationX;
+                    var y = OutputSettings.OutputLocationY;
+                    var brightness = OutputSettings.OutputBrightness/100d;
+                    var devicePowerVoltage = OutputSettings.OutputPowerVoltage;
+                    var devicePowerMiliamps = OutputSettings.OutputPowerMiliamps;
                     
 
                     if (newImage == null)
@@ -399,7 +401,7 @@ namespace adrilight
             {
                 byte[] CurrentFrame = null;
                 Bitmap DesktopImage;
-                switch(DeviceSettings.SelectedDisplay)
+                switch(OutputSettings.OutputSelectedDisplay)
                 {
                     case 0:
                          CurrentFrame = DesktopFrame.Frame;
@@ -426,10 +428,10 @@ namespace adrilight
                 else
                 {
                         DesktopImage = new Bitmap(DesktopFrame.FrameWidth, DesktopFrame.FrameHeight, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
-                        if (DeviceSettings.DeviceRectWidth1+DeviceSettings.DeviceRectLeft1 > DesktopFrame.FrameWidth)
-                            DeviceSettings.DeviceRectWidth1 = DesktopFrame.FrameWidth-DeviceSettings.DeviceRectLeft1;
-                        if (DeviceSettings.DeviceRectHeight1+DeviceSettings.DeviceRectTop1 > DesktopFrame.FrameHeight)
-                            DeviceSettings.DeviceRectHeight1 = DesktopFrame.FrameHeight-DeviceSettings.DeviceRectTop1;
+                        if (OutputSettings.OutputPixelWidth+ OutputSettings.OutputLocationX > DesktopFrame.FrameWidth)
+                            OutputSettings.OutputPixelWidth = DesktopFrame.FrameWidth-OutputSettings.OutputLocationX;
+                        if (OutputSettings.OutputPixelHeight+ OutputSettings.OutputLocationY > DesktopFrame.FrameHeight)
+                            OutputSettings.OutputPixelHeight = DesktopFrame.FrameHeight- OutputSettings.OutputLocationY;
 
                         //change deviceRectWidth and deviceRectHeight here, so we dont need notifypropertychanged on Display change resolution event,
                         // The SharpDXGI handle resolution change for us

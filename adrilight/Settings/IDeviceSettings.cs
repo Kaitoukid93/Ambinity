@@ -13,7 +13,7 @@ namespace adrilight
     public interface IDeviceSettings : INotifyPropertyChanged
     {
       
-        string DeviceID { get; set; }
+        int DeviceID { get; set; }
         string DeviceName { get; set; }
         string DeviceSerial { get; set; }
         string DeviceType { get; set; }

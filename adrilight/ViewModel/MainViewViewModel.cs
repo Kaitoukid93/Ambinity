@@ -153,43 +153,43 @@ namespace adrilight.ViewModel
 
             }
         }
-        private Visibility _visibleTabControl;
-        public Visibility VisibleTabControl {
-            get
-            {
-                if (CurrentDevice.IsHUB || CurrentDevice.ParrentLocation != 151293)
-                {
-                    return Visibility.Visible;
-                }
-                else return Visibility.Collapsed;
+        //private Visibility _visibleTabControl;
+        //public Visibility VisibleTabControl {
+        //    get
+        //    {
+        //        if (CurrentDevice.IsHUB || CurrentDevice.ParrentLocation != 151293)
+        //        {
+        //            return Visibility.Visible;
+        //        }
+        //        else return Visibility.Collapsed;
 
 
-            }
-            set
-            {
-                _visibleTabControl = value;
+        //    }
+        //    set
+        //    {
+        //        _visibleTabControl = value;
 
-            }
-        }
+        //    }
+        //}
 
-        private Visibility _dFUVisibility;
-        public Visibility DFUVisibility {
-            get
-            {
-                if (CurrentDevice.ParrentLocation != 151293)
-                {
-                    return Visibility.Collapsed;
-                }
-                else return Visibility.Visible;
+        //private Visibility _dFUVisibility;
+        //public Visibility DFUVisibility {
+        //    get
+        //    {
+        //        if (CurrentDevice.ParrentLocation != 151293)
+        //        {
+        //            return Visibility.Collapsed;
+        //        }
+        //        else return Visibility.Visible;
 
 
-            }
-            set
-            {
-                _dFUVisibility = value;
+        //    }
+        //    set
+        //    {
+        //        _dFUVisibility = value;
 
-            }
-        }
+        //    }
+        //}
         private ViewModelBase _currentView;
 
         private ViewModelBase _detailView;
@@ -217,6 +217,19 @@ namespace adrilight.ViewModel
 
             }
         }
+        private IOutputSettings _currentOutput;
+        public IOutputSettings CurrentOutput {
+            get { return _currentOutput; }
+            set
+            {
+                if (_currentOutput == value) return;
+                if (_currentOutput != null) _currentOutput.PropertyChanged -= _currentDevice_PropertyChanged;
+                _currentOutput = value;
+                if (_currentOutput != null) _currentOutput.PropertyChanged += _currentDevice_PropertyChanged;
+                RaisePropertyChanged("_currentOutput");
+
+            }
+        }
         private IGroupSettings _currentGroup;
         public IGroupSettings CurrentGroup {
             get { return _currentGroup; }
@@ -236,20 +249,20 @@ namespace adrilight.ViewModel
             {
                 WriteDeviceInfoJson();
             }
-            if (CurrentDevice.DeviceID == 151293)
-            {
+            //if (CurrentDevice.DeviceID == 151293)
+            //{
 
-            }
-            else
-            {
-                foreach (var spotset in SpotSets)
-                    if (spotset.ID == CurrentDevice.DeviceID)
-                    {
-                        PreviewSpots = spotset.LEDSetup.Spots;
-                        CurrentLEDSetup = spotset.LEDSetup;
-                    }
+            //}
+            //else
+            //{
+            //    foreach (var spotset in SpotSets)
+            //        if (spotset.ID == CurrentDevice.DeviceID)
+            //        {
+            //            PreviewSpots = spotset.LEDSetup.Spots;
+            //            CurrentLEDSetup = spotset.LEDSetup;
+            //        }
 
-            }
+            //}
         }
         //VIDs commands//
         public ICommand ZerolAllCommand { get; set; }
@@ -278,13 +291,13 @@ namespace adrilight.ViewModel
         public ICommand SetZoneColorCommand { get; set; }
         public ICommand GetZoneColorCommand { get; set; }
         #endregion
-        private ObservableCollection<IDeviceSettings> _cards;
-        public ObservableCollection<IDeviceSettings> Cards {
-            get { return _cards; }
+        private ObservableCollection<IDeviceSettings> _availableDevices;
+        public ObservableCollection<IDeviceSettings> AvailableDevices {
+            get { return _availableDevices; }
             set
             {
-                if (_cards == value) return;
-                _cards = value;
+                if (_availableDevices == value) return;
+                _availableDevices = value;
                 RaisePropertyChanged();
             }
         }
@@ -587,14 +600,14 @@ namespace adrilight.ViewModel
         public int AudioDeviceID {
             get
             {
-                if (CurrentDevice.SelectedAudioDevice > AvailableAudioDevice.Count)
+                if (CurrentOutput.OutputSelectedAudioDevice > AvailableAudioDevice.Count)
                 {
                     System.Windows.MessageBox.Show("Last Selected Audio Device is not Available");
                     return -1;
                 }
                 else
                 {
-                    var currentDevice = AvailableAudioDevice.ElementAt(CurrentDevice.SelectedAudioDevice);
+                    var currentDevice = AvailableAudioDevice.ElementAt(CurrentOutput.OutputSelectedAudioDevice);
 
                     var array = currentDevice.Split(' ');
                     _audioDeviceID = Convert.ToInt32(array[0]);
@@ -668,7 +681,7 @@ namespace adrilight.ViewModel
         public int AddedDevice { get; }
 
         public MainViewViewModel(IContext context,
-            IDeviceSettings[] cards,
+            IDeviceSettings[] devices,
             IGroupSettings[] groups,
             IDeviceSpotSet[] deviceSpotSets,
             IGeneralSettings generalSettings,
@@ -687,33 +700,33 @@ namespace adrilight.ViewModel
             DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
             SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
             ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
-            Cards = new ObservableCollection<IDeviceSettings>();
+            AvailableDevices = new ObservableCollection<IDeviceSettings>();
             Groups = new ObservableCollection<IGroupSettings>();
             DisplayCards = new ObservableCollection<IDeviceSettings>();
-            AddedDevice = cards.Length;
+            //AddedDevice = cards.Length;
             Context = context ?? throw new ArgumentNullException(nameof(context));
             SpotSets = new ObservableCollection<IDeviceSpotSet>();
             OpenRGBStream = openRGBStream ?? throw new ArgumentNullException(nameof(openRGBStream));
             SerialDeviceDetection = serialDeviceDetection ?? throw new ArgumentNullException(nameof(serialDeviceDetection));
             ShaderEffect = shaderEffect ?? throw new ArgumentNullException();
-            ShaderEffect.PropertyChanged += ShaderImageUpdate;
-            DesktopFrame.PropertyChanged += ShaderImageUpdate;
+            //ShaderEffect.PropertyChanged += ShaderImageUpdate;
+            //DesktopFrame.PropertyChanged += ShaderImageUpdate;
             //ShaderSpots = generalSpotSet.ShaderSpot;
             //ShaderBitmap = shaderEffect.MatrixBitmap;
-            foreach (IDeviceSettings card in cards)
+            foreach (IDeviceSettings device in devices)
             {
-                Cards.Add(card);
-                if (card.IsVissible)
-                    DisplayCards.Add(card);
+                AvailableDevices.Add(device);
+                //if (card.IsVissible)
+                //    DisplayCards.Add(card);
             }
-            foreach (IDeviceSpotSet spotSet in deviceSpotSets)
-            {
-                SpotSets.Add(spotSet);
-            }
-            foreach (IGroupSettings group in groups)
-            {
-                Groups.Add(group);
-            }
+            //foreach (IDeviceSpotSet spotSet in deviceSpotSets)
+            //{
+            //    SpotSets.Add(spotSet);
+            //}
+            //foreach (IGroupSettings group in groups)
+            //{
+            //    Groups.Add(group);
+            //}
 
 
 
@@ -753,165 +766,165 @@ namespace adrilight.ViewModel
 
         }
 
-        public int CurrentDeviceSelectedEffect {
-            get => CurrentDevice.SelectedEffect;
-            set
-            {
-                CurrentDevice.SelectedEffect = value;
-                RaisePropertyChanged(() => DeviceRectX);
-                RaisePropertyChanged(() => DeviceRectY);
-                RaisePropertyChanged(() => DeviceRectWidth);
-                RaisePropertyChanged(() => DeviceRectHeight);
-            }
+        //public int CurrentDeviceSelectedEffect {
+        //    get => CurrentDevice.SelectedEffect;
+        //    set
+        //    {
+        //        CurrentDevice.SelectedEffect = value;
+        //        RaisePropertyChanged(() => DeviceRectX);
+        //        RaisePropertyChanged(() => DeviceRectY);
+        //        RaisePropertyChanged(() => DeviceRectWidth);
+        //        RaisePropertyChanged(() => DeviceRectHeight);
+        //    }
 
-        }
+        //}
 
-        private void ShaderImageUpdate(object sender, PropertyChangedEventArgs e)
-        {
-            if (IsSplitLightingWindowOpen)
-            {
-                if (CurrentDevice != null)
-                {
-                    switch (CurrentDeviceSelectedEffect)
-                    {
-                        case 5:
-                            Context.Invoke(() =>
-                            {
-                                var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
-                                MatrixBitmap.Lock();
-                                IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                                var CurrentFrame = ShaderEffect.Frame;
+        //private void ShaderImageUpdate(object sender, PropertyChangedEventArgs e)
+        //{
+        //    if (IsSplitLightingWindowOpen)
+        //    {
+        //        if (CurrentDevice != null)
+        //        {
+        //            switch (CurrentDeviceSelectedEffect)
+        //            {
+        //                case 5:
+        //                    Context.Invoke(() =>
+        //                    {
+        //                        var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+        //                        MatrixBitmap.Lock();
+        //                        IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+        //                        var CurrentFrame = ShaderEffect.Frame;
 
-                                if (CurrentFrame != null)
-                                {
-                                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+        //                        if (CurrentFrame != null)
+        //                        {
+        //                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+        //                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-                                    MatrixBitmap.Unlock();
-                                    ShaderBitmap = MatrixBitmap;
-                                    RaisePropertyChanged(() => DeviceRectWidthMax);
-                                    RaisePropertyChanged(() => DeviceRectHeightMax);
-                                }
-                            });
-                            break;
-                        case 0:
-                            switch (CurrentDevice.SelectedDisplay)
-                            {
-                                case 0:
-                                    Context.Invoke(() =>
-                                    {
+        //                            MatrixBitmap.Unlock();
+        //                            ShaderBitmap = MatrixBitmap;
+        //                            RaisePropertyChanged(() => DeviceRectWidthMax);
+        //                            RaisePropertyChanged(() => DeviceRectHeightMax);
+        //                        }
+        //                    });
+        //                    break;
+        //                case 0:
+        //                    switch (CurrentDevice.SelectedDisplay)
+        //                    {
+        //                        case 0:
+        //                            Context.Invoke(() =>
+        //                            {
 
-                                        var CurrentFrame = DesktopFrame.Frame;
-                                        if (CurrentFrame != null)
-                                        {
-                                            var MatrixBitmap = new WriteableBitmap(DesktopFrame.FrameWidth, DesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
-                                            MatrixBitmap.Lock();
-                                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+        //                                var CurrentFrame = DesktopFrame.Frame;
+        //                                if (CurrentFrame != null)
+        //                                {
+        //                                    var MatrixBitmap = new WriteableBitmap(DesktopFrame.FrameWidth, DesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
+        //                                    MatrixBitmap.Lock();
+        //                                    IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+        //                                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, DesktopFrame.FrameWidth, DesktopFrame.FrameHeight));
+        //                                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, DesktopFrame.FrameWidth, DesktopFrame.FrameHeight));
 
-                                            MatrixBitmap.Unlock();
-                                            ShaderBitmap = MatrixBitmap;
-                                            RaisePropertyChanged(() => DeviceRectWidthMax);
-                                            RaisePropertyChanged(() => DeviceRectHeightMax);
-                                        }
-                                        else
-                                        {
-                                            //notify the UI show error message
+        //                                    MatrixBitmap.Unlock();
+        //                                    ShaderBitmap = MatrixBitmap;
+        //                                    RaisePropertyChanged(() => DeviceRectWidthMax);
+        //                                    RaisePropertyChanged(() => DeviceRectHeightMax);
+        //                                }
+        //                                else
+        //                                {
+        //                                    //notify the UI show error message
 
-                                        }
+        //                                }
 
-                                    });
-                                    break;
-                                case 1:
-                                    Context.Invoke(() =>
-                                    {
+        //                            });
+        //                            break;
+        //                        case 1:
+        //                            Context.Invoke(() =>
+        //                            {
 
-                                        var CurrentFrame = SecondDesktopFrame.Frame;
-                                        if (CurrentFrame != null)
-                                        {
-                                            var MatrixBitmap = new WriteableBitmap(SecondDesktopFrame.FrameWidth, SecondDesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
-                                            MatrixBitmap.Lock();
-                                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+        //                                var CurrentFrame = SecondDesktopFrame.Frame;
+        //                                if (CurrentFrame != null)
+        //                                {
+        //                                    var MatrixBitmap = new WriteableBitmap(SecondDesktopFrame.FrameWidth, SecondDesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
+        //                                    MatrixBitmap.Lock();
+        //                                    IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+        //                                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+        //                                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-                                            MatrixBitmap.Unlock();
-                                            ShaderBitmap = MatrixBitmap;
-                                            RaisePropertyChanged(() => DeviceRectWidthMax);
-                                            RaisePropertyChanged(() => DeviceRectHeightMax);
-                                        }
-                                        else
-                                        {
-                                            //notify the UI show error message
-                                            IsSecondDesktopValid = false;
-                                            RaisePropertyChanged(() => IsSecondDesktopValid);
-                                        }
+        //                                    MatrixBitmap.Unlock();
+        //                                    ShaderBitmap = MatrixBitmap;
+        //                                    RaisePropertyChanged(() => DeviceRectWidthMax);
+        //                                    RaisePropertyChanged(() => DeviceRectHeightMax);
+        //                                }
+        //                                else
+        //                                {
+        //                                    //notify the UI show error message
+        //                                    IsSecondDesktopValid = false;
+        //                                    RaisePropertyChanged(() => IsSecondDesktopValid);
+        //                                }
 
-                                    });
-                                    break;
-                                case 2:
-                                    Context.Invoke(() =>
-                                    {
+        //                            });
+        //                            break;
+        //                        case 2:
+        //                            Context.Invoke(() =>
+        //                            {
 
-                                        var CurrentFrame = ThirdDesktopFrame.Frame;
-                                        if (CurrentFrame != null)
-                                        {
-                                            var MatrixBitmap = new WriteableBitmap(ThirdDesktopFrame.FrameWidth, ThirdDesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
-                                            MatrixBitmap.Lock();
-                                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+        //                                var CurrentFrame = ThirdDesktopFrame.Frame;
+        //                                if (CurrentFrame != null)
+        //                                {
+        //                                    var MatrixBitmap = new WriteableBitmap(ThirdDesktopFrame.FrameWidth, ThirdDesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
+        //                                    MatrixBitmap.Lock();
+        //                                    IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+        //                                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-                                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+        //                                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-                                            MatrixBitmap.Unlock();
-                                            ShaderBitmap = MatrixBitmap;
-                                            RaisePropertyChanged(() => DeviceRectWidthMax);
-                                            RaisePropertyChanged(() => DeviceRectHeightMax);
-                                        }
-                                        else
-                                        {
-                                            //notify the UI show error message
-                                            IsThirdDesktopValid = false;
-                                            RaisePropertyChanged(() => IsThirdDesktopValid);
-                                        }
+        //                                    MatrixBitmap.Unlock();
+        //                                    ShaderBitmap = MatrixBitmap;
+        //                                    RaisePropertyChanged(() => DeviceRectWidthMax);
+        //                                    RaisePropertyChanged(() => DeviceRectHeightMax);
+        //                                }
+        //                                else
+        //                                {
+        //                                    //notify the UI show error message
+        //                                    IsThirdDesktopValid = false;
+        //                                    RaisePropertyChanged(() => IsThirdDesktopValid);
+        //                                }
 
-                                    });
-                                    break;
-                            }
+        //                            });
+        //                            break;
+        //                    }
 
-                            break;
-                    }
-                }
-            }
-
-
-            if (IsCanvasLightingWindowOpen)
-            {
-                Context.Invoke(() =>
-                {
-                    var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
-                    MatrixBitmap.Lock();
-                    IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                    var CurrentFrame = ShaderEffect.Frame;
-                    if (CurrentFrame != null)
-                    {
-                        Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
-
-                        MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
-
-                        MatrixBitmap.Unlock();
-                        ShaderBitmap = MatrixBitmap;
-                    }
-
-                });
-            }
+        //                    break;
+        //            }
+        //        }
+        //    }
 
 
-        }
+        //    if (IsCanvasLightingWindowOpen)
+        //    {
+        //        Context.Invoke(() =>
+        //        {
+        //            var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+        //            MatrixBitmap.Lock();
+        //            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+        //            var CurrentFrame = ShaderEffect.Frame;
+        //            if (CurrentFrame != null)
+        //            {
+        //                Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+
+        //                MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+
+        //                MatrixBitmap.Unlock();
+        //                ShaderBitmap = MatrixBitmap;
+        //            }
+
+        //        });
+        //    }
+
+
+        //}
 
         [DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
@@ -1010,32 +1023,26 @@ namespace adrilight.ViewModel
         public int DeviceRectX {
             get
             {
-                switch (CurrentDeviceSelectedEffect)
-                {
-                    case 0://ambilight mode
-                        return CurrentDevice.DeviceRectLeft1;
-                    case 5:
-                        return CurrentDevice.DeviceRectLeft;
-                    default:
-                        return CurrentDevice.DeviceRectLeft;
-                }
+                return CurrentOutput.OutputLocationX;
             }
 
             set
             {
-                switch (CurrentDeviceSelectedEffect)
-                {
-                    case 0://ambilight mode
-                        CurrentDevice.DeviceRectLeft1 = value;
-                        RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft1);
-                        break;
-                    case 5:
-                        CurrentDevice.DeviceRectLeft = value;
-                        RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
-                        break;
+                CurrentOutput.OutputLocationX = value;
 
+                RaisePropertyChanged();
+            }
+        }
+        public int DeviceRectY {
+            get
+            {
+                return CurrentOutput.OutputLocationY;
+            }
 
-                }
+            set
+            {
+                CurrentOutput.OutputLocationX = value;
+
                 RaisePropertyChanged();
             }
         }
@@ -1076,38 +1083,7 @@ namespace adrilight.ViewModel
 
 
 
-        public int DeviceRectY {
-            get
-            {
-                switch (CurrentDeviceSelectedEffect)
-                {
-                    case 0://ambilight mode
-                        return CurrentDevice.DeviceRectTop1;
-                    case 5:
-                        return CurrentDevice.DeviceRectTop;
-                    default:
-                        return CurrentDevice.DeviceRectTop;
-                }
-            }
-
-            set
-            {
-                switch (CurrentDeviceSelectedEffect)
-                {
-                    case 0://ambilight mode
-                        CurrentDevice.DeviceRectTop1 = value;
-                        RaisePropertyChanged(() => CurrentDevice.DeviceRectTop1);
-                        break;
-                    case 5:
-                        CurrentDevice.DeviceRectTop = value;
-                        RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
-                        break;
-
-
-                }
-                RaisePropertyChanged();
-            }
-        }
+       
         //public List<PaletteCardContextMenu> PaletteCardOptions { get; set; }
         private bool _hubOutputsNavigationEnable;
         public bool HubOutputNavigationEnable {
@@ -1129,64 +1105,24 @@ namespace adrilight.ViewModel
         public int DeviceRectHeight {
             get
             {
-                switch (CurrentDeviceSelectedEffect)
-                {
-                    case 0://ambilight mode
-                        return CurrentDevice.DeviceRectHeight1;
-                    case 5:
-                        return CurrentDevice.DeviceRectHeight;
-                    default:
-                        return CurrentDevice.DeviceRectHeight;
-                }
+                return CurrentOutput.OutputPixelHeight;
             }
 
             set
             {
-                switch (CurrentDeviceSelectedEffect)
-                {
-                    case 0://ambilight mode
-                        CurrentDevice.DeviceRectHeight1 = value;
-                        RaisePropertyChanged(() => CurrentDevice.DeviceRectHeight1);
-                        break;
-                    case 5:
-                        CurrentDevice.DeviceRectHeight = value;
-                        RaisePropertyChanged(() => CurrentDevice.DeviceRectHeight);
-                        break;
-
-
-                }
+                CurrentOutput.OutputPixelHeight = value;
                 RaisePropertyChanged();
             }
         }
         public int DeviceRectWidth {
             get
             {
-                switch (CurrentDevice.SelectedEffect)
-                {
-                    case 0://ambilight mode
-                        return CurrentDevice.DeviceRectWidth1;
-                    case 5:
-                        return CurrentDevice.DeviceRectWidth;
-                    default:
-                        return CurrentDevice.DeviceRectWidth;
-                }
+                return CurrentOutput.OutputPixelWidth;
             }
 
             set
             {
-                switch (CurrentDevice.SelectedEffect)
-                {
-                    case 0://ambilight mode
-                        CurrentDevice.DeviceRectWidth1 = value;
-                        RaisePropertyChanged(() => CurrentDevice.DeviceRectWidth1);
-                        break;
-                    case 5:
-                        CurrentDevice.DeviceRectWidth = value;
-                        RaisePropertyChanged(() => CurrentDevice.DeviceRectWidth);
-                        break;
-
-
-                }
+                CurrentOutput.OutputPixelHeight= value;
                 RaisePropertyChanged();
             }
         }
@@ -1346,7 +1282,7 @@ namespace adrilight.ViewModel
             }, (p) =>
             {
 
-                SnapShot();
+                //SnapShot();
             });
 
             DeviceRectDropCommand = new RelayCommand<string>((p) =>
@@ -1529,7 +1465,7 @@ namespace adrilight.ViewModel
         }
         private void DeleteSelectedPalette(IColorPaletteCard palette)
         {
-            if (AvailablePallete.ElementAt(CurrentDevice.SelectedPalette) == palette && AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette) == palette)
+            if (AvailablePallete.ElementAt(CurrentOutput.OutputSelectedChasingPalette) == palette && AvailablePallete.ElementAt(CurrentOutput.OutputSelectedMusicPalette) == palette)
             {
                 var result = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo {
                     Message = " Có một chế độ khác đang sử dụng dải màu này, bạn có muốn xóa không ?",
@@ -1542,10 +1478,10 @@ namespace adrilight.ViewModel
                 if (result == MessageBoxResult.Yes) // overwrite current palette
                 {
                     
-                    CurrentDevice.SelectedPalette = 0;
-                    CurrentDevice.SelectedMusicPalette = 0;
-                    RaisePropertyChanged(nameof(CurrentDevice.SelectedPalette));
-                    RaisePropertyChanged(nameof(CurrentDevice.SelectedMusicPalette));
+                    CurrentOutput.OutputSelectedChasingPalette = 0;
+                    CurrentOutput.OutputSelectedMusicPalette = 0;
+                    RaisePropertyChanged(nameof(CurrentOutput.OutputSelectedChasingPalette));
+                    RaisePropertyChanged(nameof(CurrentOutput.OutputSelectedMusicPalette));
                     CurrentActivePaletteCard = AvailablePallete.First();
                     SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
                     RaisePropertyChanged(nameof(CurrentActivePaletteCard));
@@ -1561,15 +1497,15 @@ namespace adrilight.ViewModel
             }
             else
             {
-                switch(CurrentDevice.SelectedEffect)
+                switch(CurrentOutput.OutputSelectedMode)
                 {
                     case 1:
-                        CurrentDevice.SelectedPalette = 0;
-                        RaisePropertyChanged(nameof(CurrentDevice.SelectedPalette));
+                        CurrentOutput.OutputSelectedChasingPalette = 0;
+                        RaisePropertyChanged(nameof(CurrentOutput.OutputSelectedChasingPalette));
                         break;
                     case 3:
-                        CurrentDevice.SelectedMusicPalette = 0;
-                        RaisePropertyChanged(nameof(CurrentDevice.SelectedMusicPalette));
+                        CurrentOutput.OutputSelectedMusicPalette = 0;
+                        RaisePropertyChanged(nameof(CurrentOutput.OutputSelectedMusicPalette));
                         break;
                 }
                 CurrentActivePaletteCard = AvailablePallete.First();
@@ -1601,7 +1537,7 @@ namespace adrilight.ViewModel
             });
             if (result == MessageBoxResult.Yes) // overwrite current palette
             {
-                var activePalette = CurrentDevice.CurrentActivePalette;
+                var activePalette = CurrentOutput.OutputCurrentActivePalette;
                 CurrentActivePaletteCard.Thumbnail = activePalette;
                 SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
                 WritePaletteCollectionJson();
@@ -1612,7 +1548,7 @@ namespace adrilight.ViewModel
                     AvailablePallete.Add(palette);
                 }
                 CurrentCustomZoneColor.Clear();
-                foreach (var color in CurrentDevice.CurrentActivePalette)
+                foreach (var color in CurrentOutput.OutputCurrentActivePalette)
                 {
                     CurrentCustomZoneColor.Add(color);
                 }
@@ -1631,7 +1567,7 @@ namespace adrilight.ViewModel
             {
                 window.Owner = System.Windows.Application.Current.MainWindow;
                 CurrentCustomZoneColor.Clear();
-                foreach (var color in CurrentDevice.CurrentActivePalette)
+                foreach (var color in CurrentOutput.OutputCurrentActivePalette)
                 {
                     CurrentCustomZoneColor.Add(color);
                 }
@@ -1653,41 +1589,41 @@ namespace adrilight.ViewModel
         {
             if(palette!=null)
             {
-                for (var i = 0; i < CurrentDevice.CurrentActivePalette.Length; i++)
+                for (var i = 0; i < CurrentOutput.OutputCurrentActivePalette.Length; i++)
                 {
-                    CurrentDevice.CurrentActivePalette[i] = palette.Thumbnail[i];
+                    CurrentOutput.OutputCurrentActivePalette[i] = palette.Thumbnail[i];
 
                 }
                 
                 RaisePropertyChanged(nameof(AvailablePallete));
-                RaisePropertyChanged(nameof(CurrentDevice.CurrentActivePalette));
+                RaisePropertyChanged(nameof(CurrentOutput.OutputCurrentActivePalette));
                 WriteDeviceInfoJson();
             }
                 
             
         }
 
-        public void SnapShot()
-        {
-            int counter = 0;
-            byte[] snapshot = new byte[256];
-            foreach (IDeviceSpot spot in PreviewSpots)
-            {
+        //public void SnapShot()
+        //{
+        //    int counter = 0;
+        //    byte[] snapshot = new byte[256];
+        //    foreach (IDeviceSpot spot in PreviewSpots)
+        //    {
 
-                snapshot[counter++] = spot.Red;
-                snapshot[counter++] = spot.Green;
-                snapshot[counter++] = spot.Blue;
-                // counter++;
-            }
-            CurrentDevice.SnapShot = snapshot;
-            RaisePropertyChanged(() => CurrentDevice.SnapShot);
-        }
+        //        snapshot[counter++] = spot.Red;
+        //        snapshot[counter++] = spot.Green;
+        //        snapshot[counter++] = spot.Blue;
+        //        // counter++;
+        //    }
+        //    CurrentOutput.SnapShot = snapshot;
+        //    RaisePropertyChanged(() => CurrentDevice.SnapShot);
+        //}
         public void SetCustomColor(int index)
         {
-            CurrentDevice.CurrentActivePalette[index] = CurrentPickedColor;
-            RaisePropertyChanged(nameof(CurrentDevice.CurrentActivePalette));
+            CurrentOutput.OutputCurrentActivePalette[index] = CurrentPickedColor;
+            RaisePropertyChanged(nameof(CurrentOutput.OutputCurrentActivePalette));
             CurrentCustomZoneColor.Clear();
-            foreach (var color in CurrentDevice.CurrentActivePalette)
+            foreach (var color in CurrentOutput.OutputCurrentActivePalette)
             {
                 CurrentCustomZoneColor.Add(color);
             }
@@ -1696,11 +1632,11 @@ namespace adrilight.ViewModel
         public void CurrentSpotSetVIDChanged()
         {
 
-            foreach (var spot in PreviewSpots)
-            {
-                CurrentDevice.VirtualIndex[spot.id] = spot.VID;
+            //foreach (var spot in PreviewSpots)
+            //{
+            //    CurrentDevice.VirtualIndex[spot.id] = spot.VID;
 
-            }
+            //}
 
             WriteDeviceInfoJson();
         }
@@ -1708,13 +1644,13 @@ namespace adrilight.ViewModel
         public void DeviceRectSavePosition()
         {
             //save current device rect position to json database
-            CurrentDevice.DeviceRectLeft = DeviceRectX;
-            CurrentDevice.DeviceRectTop = DeviceRectY;
+            //CurrentDevice.DeviceRectLeft = DeviceRectX;
+            //CurrentDevice.DeviceRectTop = DeviceRectY;
             // CurrentDevice.DeviceRectWidth = DeviceRectWidth;
             //CurrentDevice.DeviceRectHeight = DeviceRectHeight;
             // CurrentDevice.DeviceScale = DeviceScale;
-            RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
-            RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
+            //RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
+            //RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
             // RaisePropertyChanged(() => CurrentDevice.DeviceRectWidth);
             // RaisePropertyChanged(() => CurrentDevice.DeviceRectHeight);
             // RaisePropertyChanged(() => CurrentDevice.DeviceScale);
@@ -1726,16 +1662,16 @@ namespace adrilight.ViewModel
             foreach (var serialStream in SerialStreams)
             {
 
-                if (CurrentDevice.ParrentLocation != 151293) // device is in hub object
-                {
-                    if (serialStream.ID == CurrentDevice.ParrentLocation)
-                        serialStream.DFU();
-                }
-                else
-                {
-                    if (serialStream.ID == CurrentDevice.DeviceID)
-                        serialStream.DFU();
-                }
+                //if (CurrentDevice.ParrentLocation != 151293) // device is in hub object
+                //{
+                //    if (serialStream.ID == CurrentDevice.ParrentLocation)
+                //        serialStream.DFU();
+                //}
+                //else
+                //{
+                //    if (serialStream.ID == CurrentDevice.DeviceID)
+                //        serialStream.DFU();
+                //}
             }
 
         }
@@ -1758,94 +1694,94 @@ namespace adrilight.ViewModel
 
         public void RefreshDevice()
         {
-            var detectedDevices = SerialDeviceDetection.RefreshDevice();
-            var newdevices = new List<string>();
-            OpenRGBStream.RefreshTransferState();//refresh device list
-            //get a controer data (devices)
-            if (OpenRGBStream.AmbinityClient != null)
-            {
-                var openRGBdevices = OpenRGBStream.AmbinityClient.GetAllControllerData();
-                var detectedOpenRGBDevices = new List<Device>();
+            //var detectedDevices = SerialDeviceDetection.RefreshDevice();
+            //var newdevices = new List<string>();
+            //OpenRGBStream.RefreshTransferState();//refresh device list
+            ////get a controer data (devices)
+            //if (OpenRGBStream.AmbinityClient != null)
+            //{
+            //    var openRGBdevices = OpenRGBStream.AmbinityClient.GetAllControllerData();
+            //    var detectedOpenRGBDevices = new List<Device>();
 
-                var oldDeviceNum = Cards.Count;
-                if (OpenRGBStream.AmbinityClient != null)
-                {
-                    foreach (var device in openRGBdevices)//add openrgb device to list
-                    {
-                        detectedOpenRGBDevices.Add(device);
-                    }
+            //    var oldDeviceNum = Cards.Count;
+            //    if (OpenRGBStream.AmbinityClient != null)
+            //    {
+            //        foreach (var device in openRGBdevices)//add openrgb device to list
+            //        {
+            //            detectedOpenRGBDevices.Add(device);
+            //        }
 
-                    foreach (var device in openRGBdevices)// check if device already exist
-                    {
-                        foreach (var item in Cards)
-                        {
-                            if (device.Location == item.DevicePort)
-                                detectedOpenRGBDevices.Remove(device);
-                        }
-                    }
-                }
+            //        foreach (var device in openRGBdevices)// check if device already exist
+            //        {
+            //            foreach (var item in Cards)
+            //            {
+            //                if (device.Location == item.DevicePort)
+            //                    detectedOpenRGBDevices.Remove(device);
+            //            }
+            //        }
+            //    }
 
-                if (detectedOpenRGBDevices.Count > 0)
-                {
-                    var result = HandyControl.Controls.MessageBox.Show("Phát hiện " + detectedOpenRGBDevices.Count + " Thiết bị OpenRGB" + " Nhấn [Confirm] để add vào Dashboard", "OpenRGB Device", MessageBoxButton.OK, MessageBoxImage.Information);
-                    if (result == MessageBoxResult.OK)//restart app
-                    {
-                        foreach (var device in openRGBdevices)//convert openRGB device to ambino Device
-                        {
+            //    if (detectedOpenRGBDevices.Count > 0)
+            //    {
+            //        var result = HandyControl.Controls.MessageBox.Show("Phát hiện " + detectedOpenRGBDevices.Count + " Thiết bị OpenRGB" + " Nhấn [Confirm] để add vào Dashboard", "OpenRGB Device", MessageBoxButton.OK, MessageBoxImage.Information);
+            //        if (result == MessageBoxResult.OK)//restart app
+            //        {
+            //            foreach (var device in openRGBdevices)//convert openRGB device to ambino Device
+            //            {
 
-                            IDeviceSettings newDevice = new DeviceSettings();
-                            newDevice.DeviceName = device.Name.ToString();
-                            newDevice.DeviceType = device.Type.ToString();
-                            newDevice.DevicePort = device.Location.ToString();
-                            newDevice.DeviceID = Cards.Count + 1;
-                            newDevice.DeviceSerial = device.Serial;
-                            newDevice.NumLED = device.Colors.Length;
-                            newDevice.SpotsX = newDevice.NumLED;
-                            newDevice.SpotsY = 1;
-                            switch (device.Type)
-                            {
-                                case OpenRGB.NET.Enums.DeviceType.Mouse:
-                                    newDevice.DeviceLayout = 1; //strip type
-                                    break;
-                                case OpenRGB.NET.Enums.DeviceType.Keyboard:
-                                    newDevice.DeviceLayout = 1; //strip type
-                                    break;
-                                case OpenRGB.NET.Enums.DeviceType.Headset:
-                                    newDevice.DeviceLayout = 1; //strip type
-                                    break;
-                                case OpenRGB.NET.Enums.DeviceType.HeadsetStand:
-                                    newDevice.DeviceLayout = 1; //strip type
-                                    break;
-                                case OpenRGB.NET.Enums.DeviceType.Motherboard:
-                                    newDevice.DeviceLayout = 1; //strip type
-                                    break;
-                                case OpenRGB.NET.Enums.DeviceType.Dram:
-                                    newDevice.DeviceLayout = 1; //strip type
-                                    break;
-                                case OpenRGB.NET.Enums.DeviceType.Ledstrip:
-                                    newDevice.DeviceLayout = 1; //strip type
-                                    break;
-                                case OpenRGB.NET.Enums.DeviceType.Gpu:
-                                    newDevice.DeviceLayout = 1; //strip type
-                                    break;
-                                case OpenRGB.NET.Enums.DeviceType.Mousemat:
-                                    newDevice.DeviceLayout = 1; //strip type
-                                    break;
-                            }
+            //                IDeviceSettings newDevice = new DeviceSettings();
+            //                newDevice.DeviceName = device.Name.ToString();
+            //                newDevice.DeviceType = device.Type.ToString();
+            //                newDevice.DevicePort = device.Location.ToString();
+            //                newDevice.DeviceID = Cards.Count + 1;
+            //                newDevice.DeviceSerial = device.Serial;
+            //                newDevice.NumLED = device.Colors.Length;
+            //                newDevice.SpotsX = newDevice.NumLED;
+            //                newDevice.SpotsY = 1;
+            //                switch (device.Type)
+            //                {
+            //                    case OpenRGB.NET.Enums.DeviceType.Mouse:
+            //                        newDevice.DeviceLayout = 1; //strip type
+            //                        break;
+            //                    case OpenRGB.NET.Enums.DeviceType.Keyboard:
+            //                        newDevice.DeviceLayout = 1; //strip type
+            //                        break;
+            //                    case OpenRGB.NET.Enums.DeviceType.Headset:
+            //                        newDevice.DeviceLayout = 1; //strip type
+            //                        break;
+            //                    case OpenRGB.NET.Enums.DeviceType.HeadsetStand:
+            //                        newDevice.DeviceLayout = 1; //strip type
+            //                        break;
+            //                    case OpenRGB.NET.Enums.DeviceType.Motherboard:
+            //                        newDevice.DeviceLayout = 1; //strip type
+            //                        break;
+            //                    case OpenRGB.NET.Enums.DeviceType.Dram:
+            //                        newDevice.DeviceLayout = 1; //strip type
+            //                        break;
+            //                    case OpenRGB.NET.Enums.DeviceType.Ledstrip:
+            //                        newDevice.DeviceLayout = 1; //strip type
+            //                        break;
+            //                    case OpenRGB.NET.Enums.DeviceType.Gpu:
+            //                        newDevice.DeviceLayout = 1; //strip type
+            //                        break;
+            //                    case OpenRGB.NET.Enums.DeviceType.Mousemat:
+            //                        newDevice.DeviceLayout = 1; //strip type
+            //                        break;
+            //                }
 
-                            Cards.Add(newDevice);
-                        }
-                    }
-                }
+            //                Cards.Add(newDevice);
+            //            }
+            //        }
+            //    }
 
 
-                if (oldDeviceNum != Cards.Count) //there are changes in device list, we simply restart the application to add process
-                {
-                    WriteDeviceInfoJson();
-                    Application.Restart();
-                    Process.GetCurrentProcess().Kill();
-                }
-            }
+            //    if (oldDeviceNum != Cards.Count) //there are changes in device list, we simply restart the application to add process
+            //    {
+            //        WriteDeviceInfoJson();
+            //        Application.Restart();
+            //        Process.GetCurrentProcess().Kill();
+            //    }
+            //}
 
 
         }
@@ -2050,7 +1986,7 @@ namespace adrilight.ViewModel
         public async void ShowAddNewDialog()
         {
 
-            var vm = new ViewModel.AddDeviceViewModel(Cards, Groups, DesktopFrame);
+            var vm = new ViewModel.AddDeviceViewModel(AvailableDevices, Groups, DesktopFrame);
             var view = new View.AddDevice();
             view.DataContext = vm;
             bool addResult = (bool)await DialogHost.Show(view, "mainDialog");
@@ -2061,129 +1997,129 @@ namespace adrilight.ViewModel
                     switch (vm.AddedItemType)
                     {
                         case AddDeviceViewModel.AvailableTypes.Device:
-                            if (vm.Device.DeviceType != "ABHV2" && vm.Device.DeviceType != "ABFANHUB")
-                            {
+                            //if (vm.Device.DeviceType != "ABHV2" && vm.Device.DeviceType != "ABFANHUB")
+                            //{
 
-                                vm.Device.DeviceID = Cards.Count() + 1;
+                                //vm.Device.DeviceID = AvailableDevices.Count() + 1);
 
-                                Cards.Add(vm.Device);
+                                AvailableDevices.Add(vm.Device);
                                 WriteDeviceInfoJson();
 
-                            }
-                            else if (vm.Device.DeviceType == "ABFANHUB")
-                            {
-                                Cards.Add(vm.Device);//add HUB first
-                                foreach (var fan in vm.SelectedOutputs)//add child device
-                                {
-                                    Cards.Add(fan);
-                                }
-                                WriteDeviceInfoJson();
-                            }
-                            else
-                            {
+                            //}
+                            //else if (vm.Device.DeviceType == "ABFANHUB")
+                            //{
+                            //    AvailableDevices.Add(vm.Device);//add HUB first
+                            //    foreach (var fan in vm.SelectedOutputs)//add child device
+                            //    {
+                            //        AvailableDevices.Add(fan);
+                            //    }
+                            //    WriteDeviceInfoJson();
+                            //}
+                            //else
+                            //{
 
 
-                                vm.Device.DeviceID = Cards.Count() + 1;
-                                vm.Device.IsHUB = true;
-                                vm.Device.HUBID = Cards.Count() + 1;
-                                Cards.Add(vm.Device);
-                                // WriteJson();
+                            //    vm.Device.DeviceID = Cards.Count() + 1;
+                            //    vm.Device.IsHUB = true;
+                            //    vm.Device.HUBID = Cards.Count() + 1;
+                            //    Cards.Add(vm.Device);
+                            //    // WriteJson();
 
-                                if (vm.ARGB1Selected) // ARGB1 output port is in the list
-                                {
-                                    var argb1 = new DeviceSettings();
-                                    argb1.DeviceType = "Strip";                           //add to device settings
-                                    argb1.DeviceID = Cards.Count() + 1;
-                                    argb1.SpotsX = 5;
-                                    argb1.SpotsY = 5;
-                                    argb1.NumLED = 16;
-                                    argb1.DeviceName = "ARGB1";
-                                    argb1.ParrentLocation = vm.Device.HUBID;
-                                    argb1.OutputLocation = 0;
-                                    argb1.IsVissible = false;
-                                    argb1.DeviceLayout = 1;
-                                    Cards.Add(argb1);
-                                }
-                                if (vm.ARGB2Selected)
-                                {
-                                    var argb2 = new DeviceSettings();
-                                    argb2.DeviceType = "Matrix";                           //add to device settings
-                                    argb2.DeviceID = Cards.Count() + 1;
-                                    argb2.SpotsX = 20;
-                                    argb2.SpotsY = 6;
-                                    argb2.NumLED = 120;
-                                    argb2.DeviceName = "ARGB2";
-                                    argb2.ParrentLocation = vm.Device.HUBID;
-                                    argb2.OutputLocation = 1;
-                                    argb2.IsVissible = false;
-                                    argb2.DeviceLayout = 2;
-                                    Cards.Add(argb2);
-                                }
-                                if (vm.PCI1Selected)
-                                {
-                                    var PCI = new DeviceSettings();
-                                    PCI.DeviceType = "Square";                           //add to device settings
-                                    PCI.DeviceID = Cards.Count() + 1;
-                                    PCI.SpotsX = 12;
-                                    PCI.SpotsY = 7;
-                                    PCI.NumLED = 34;
-                                    PCI.DeviceName = "PCI1";
-                                    PCI.ParrentLocation = vm.Device.HUBID;
-                                    PCI.OutputLocation = 2;
-                                    PCI.DeviceLayout = 0;
-                                    PCI.IsVissible = false;
-                                    Cards.Add(PCI);
-                                }
-                                if (vm.PCI2Selected)
-                                {
-                                    var PCI = new DeviceSettings();
-                                    PCI.DeviceType = "Square";                           //add to device settings
-                                    PCI.DeviceID = Cards.Count() + 1;
-                                    PCI.SpotsX = 12;
-                                    PCI.SpotsY = 7;
-                                    PCI.NumLED = 34;
-                                    PCI.DeviceName = "PCI2";
-                                    PCI.ParrentLocation = vm.Device.HUBID;
-                                    PCI.OutputLocation = 3;
-                                    PCI.DeviceLayout = 0;
-                                    PCI.IsVissible = false;
-                                    Cards.Add(PCI);
-                                }
-                                if (vm.PCI3Selected)
-                                {
-                                    var PCI = new DeviceSettings();
-                                    PCI.DeviceType = "Square";                           //add to device settings
-                                    PCI.DeviceID = Cards.Count() + 1;
-                                    PCI.SpotsX = 12;
-                                    PCI.SpotsY = 7;
-                                    PCI.NumLED = 34;
-                                    PCI.DeviceName = "PCI3";
-                                    PCI.ParrentLocation = vm.Device.HUBID;
-                                    PCI.OutputLocation = 4;
-                                    PCI.DeviceLayout = 0;
-                                    PCI.IsVissible = false;
-                                    Cards.Add(PCI);
-                                }
-                                if (vm.PCI4Selected)
-                                {
-                                    var PCI = new DeviceSettings();
-                                    PCI.DeviceType = "Strip";                           //add to device settings
-                                    PCI.DeviceID = Cards.Count() + 1;
-                                    PCI.SpotsX = 12;
-                                    PCI.SpotsY = 7;
-                                    PCI.NumLED = 34;
-                                    PCI.DeviceName = "PCI4";
-                                    PCI.ParrentLocation = vm.Device.HUBID;
-                                    PCI.OutputLocation = 5;
-                                    PCI.DeviceLayout = 0;
-                                    PCI.IsVissible = false;
-                                    Cards.Add(PCI);
-                                }
+                            //    if (vm.ARGB1Selected) // ARGB1 output port is in the list
+                            //    {
+                            //        var argb1 = new DeviceSettings();
+                            //        argb1.DeviceType = "Strip";                           //add to device settings
+                            //        argb1.DeviceID = Cards.Count() + 1;
+                            //        argb1.SpotsX = 5;
+                            //        argb1.SpotsY = 5;
+                            //        argb1.NumLED = 16;
+                            //        argb1.DeviceName = "ARGB1";
+                            //        argb1.ParrentLocation = vm.Device.HUBID;
+                            //        argb1.OutputLocation = 0;
+                            //        argb1.IsVissible = false;
+                            //        argb1.DeviceLayout = 1;
+                            //        Cards.Add(argb1);
+                            //    }
+                            //    if (vm.ARGB2Selected)
+                            //    {
+                            //        var argb2 = new DeviceSettings();
+                            //        argb2.DeviceType = "Matrix";                           //add to device settings
+                            //        argb2.DeviceID = Cards.Count() + 1;
+                            //        argb2.SpotsX = 20;
+                            //        argb2.SpotsY = 6;
+                            //        argb2.NumLED = 120;
+                            //        argb2.DeviceName = "ARGB2";
+                            //        argb2.ParrentLocation = vm.Device.HUBID;
+                            //        argb2.OutputLocation = 1;
+                            //        argb2.IsVissible = false;
+                            //        argb2.DeviceLayout = 2;
+                            //        Cards.Add(argb2);
+                            //    }
+                            //    if (vm.PCI1Selected)
+                            //    {
+                            //        var PCI = new DeviceSettings();
+                            //        PCI.DeviceType = "Square";                           //add to device settings
+                            //        PCI.DeviceID = Cards.Count() + 1;
+                            //        PCI.SpotsX = 12;
+                            //        PCI.SpotsY = 7;
+                            //        PCI.NumLED = 34;
+                            //        PCI.DeviceName = "PCI1";
+                            //        PCI.ParrentLocation = vm.Device.HUBID;
+                            //        PCI.OutputLocation = 2;
+                            //        PCI.DeviceLayout = 0;
+                            //        PCI.IsVissible = false;
+                            //        Cards.Add(PCI);
+                            //    }
+                            //    if (vm.PCI2Selected)
+                            //    {
+                            //        var PCI = new DeviceSettings();
+                            //        PCI.DeviceType = "Square";                           //add to device settings
+                            //        PCI.DeviceID = Cards.Count() + 1;
+                            //        PCI.SpotsX = 12;
+                            //        PCI.SpotsY = 7;
+                            //        PCI.NumLED = 34;
+                            //        PCI.DeviceName = "PCI2";
+                            //        PCI.ParrentLocation = vm.Device.HUBID;
+                            //        PCI.OutputLocation = 3;
+                            //        PCI.DeviceLayout = 0;
+                            //        PCI.IsVissible = false;
+                            //        Cards.Add(PCI);
+                            //    }
+                            //    if (vm.PCI3Selected)
+                            //    {
+                            //        var PCI = new DeviceSettings();
+                            //        PCI.DeviceType = "Square";                           //add to device settings
+                            //        PCI.DeviceID = Cards.Count() + 1;
+                            //        PCI.SpotsX = 12;
+                            //        PCI.SpotsY = 7;
+                            //        PCI.NumLED = 34;
+                            //        PCI.DeviceName = "PCI3";
+                            //        PCI.ParrentLocation = vm.Device.HUBID;
+                            //        PCI.OutputLocation = 4;
+                            //        PCI.DeviceLayout = 0;
+                            //        PCI.IsVissible = false;
+                            //        Cards.Add(PCI);
+                            //    }
+                            //    if (vm.PCI4Selected)
+                            //    {
+                            //        var PCI = new DeviceSettings();
+                            //        PCI.DeviceType = "Strip";                           //add to device settings
+                            //        PCI.DeviceID = Cards.Count() + 1;
+                            //        PCI.SpotsX = 12;
+                            //        PCI.SpotsY = 7;
+                            //        PCI.NumLED = 34;
+                            //        PCI.DeviceName = "PCI4";
+                            //        PCI.ParrentLocation = vm.Device.HUBID;
+                            //        PCI.OutputLocation = 5;
+                            //        PCI.DeviceLayout = 0;
+                            //        PCI.IsVissible = false;
+                            //        Cards.Add(PCI);
+                            //    }
 
 
-                                WriteDeviceInfoJson();
-                                // _isAddnew = false;
-                            }
+                            //    WriteDeviceInfoJson();
+                            //    // _isAddnew = false;
+                            //}
                             break;
                         case AddDeviceViewModel.AvailableTypes.Group:
                             Groups.Add(vm.Group);//add HUB first
@@ -2225,7 +2161,7 @@ namespace adrilight.ViewModel
             {
                 DeleteCard(CurrentDevice);
                 int counter = 1;
-                foreach (var card in Cards)
+                foreach (var card in AvailableDevices)
                 {
 
                     card.DeviceID = counter;
@@ -2276,8 +2212,8 @@ namespace adrilight.ViewModel
         public async void ShowAdjustPositon()
         {
             var view = new View.DeviceRectPositon();
-            var allDevices = Cards.ToArray();
-            AdjustPostionViewModel dialogViewModel = new AdjustPostionViewModel(DeviceRectX, DeviceRectY, DeviceRectWidth, DeviceRectHeight, allDevices, ShaderBitmap, CurrentDevice.SelectedEffect);
+            var allDevices = AvailableDevices.ToArray();
+            AdjustPostionViewModel dialogViewModel = new AdjustPostionViewModel(DeviceRectX, DeviceRectY, DeviceRectWidth, DeviceRectHeight, allDevices, ShaderBitmap, CurrentOutput.OutputSelectedMode);
             view.DataContext = dialogViewModel;
             bool dialogResult = (bool)await DialogHost.Show(view, "mainDialog");
             if (dialogResult)
@@ -2315,17 +2251,17 @@ namespace adrilight.ViewModel
             bool dialogResult = (bool)await DialogHost.Show(view, "mainDialog");
             if (dialogResult)
             {
-                DeleteCard(device);
-                int counter = 1;
-                foreach (var card in Cards)
-                {
-                    card.DeviceID = counter;
-                    counter++;
+                //DeleteCard(device);
+                //int counter = 1;
+                //foreach (var card in AvailableDevices)
+                //{
+                //    card.DeviceID = counter;
+                //    counter++;
 
-                }
-                WriteDeviceInfoJson();
-                Application.Restart();
-                Process.GetCurrentProcess().Kill();
+                //}
+                //WriteDeviceInfoJson();
+                //Application.Restart();
+                //Process.GetCurrentProcess().Kill();
             }
 
 
@@ -2333,23 +2269,10 @@ namespace adrilight.ViewModel
 
 
 
-        public void DeleteCard(IDeviceSettings deviceInfo)
+        public void DeleteCard(IDeviceSettings device)
         {
-            var childcards = new ObservableCollection<IDeviceSettings>();
-            if (deviceInfo.IsHUB)
-            {
-                foreach (var device in Cards)
-                {
-                    //if (device.ParrentLocation == deviceInfo.DeviceID)
-                    if (device.ParrentLocation == deviceInfo.HUBID)
-                        childcards.Add(device);
-                }
-            }
-            foreach (var device in childcards)
-            {
-                Cards.Remove(device);
-            }
-            Cards.Remove(deviceInfo);
+           
+            AvailableDevices.Remove(device);
             WriteDeviceInfoJson();
         }
 
@@ -2383,7 +2306,7 @@ namespace adrilight.ViewModel
         {
 
             var devices = new List<IDeviceSettings>();
-            foreach (var item in Cards)
+            foreach (var item in AvailableDevices)
             {
                 devices.Add(item);
             }
@@ -2425,7 +2348,7 @@ namespace adrilight.ViewModel
             string[] spotData = new string[256];
             for (int i = 0; i < PreviewSpots.Length; i++)
             {
-                spotData[i] = CurrentDevice.VirtualIndex[i].ToString();
+                //spotData[i] = CurrentDevice.VirtualIndex[i].ToString();
             }
             if (Export.ShowDialog() == DialogResult.OK)
             {
@@ -2558,137 +2481,133 @@ namespace adrilight.ViewModel
 
             CurrentSpotSetVIDChanged();
         }
-        public void GotoChild(IDeviceSettings card)
+        public void GotoChild(IDeviceSettings selectedDevice)
         {
 
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == lighting);
             IsDashboardType = false;
-            CurrentDevice = card;
-            foreach (var spotset in SpotSets)
-                if (spotset.ID == CurrentDevice.DeviceID)
-                {
-                    
-                    PreviewSpots = spotset.LEDSetup.Spots;
-                    CurrentLEDSetup = spotset.LEDSetup;
-                }
+            CurrentDevice = selectedDevice;
+            CurrentOutput = CurrentDevice.AvailableOutputs[0];
+            CurrentLEDSetup = CurrentOutput.OutputLEDSetup;
+            
             IsSplitLightingWindowOpen = true;
             IsCanvasLightingWindowOpen = false;
-            RaisePropertyChanged(() => CurrentDeviceSelectedEffect);
+            //RaisePropertyChanged(() => CurrentDeviceSelectedEffect);
             RaisePropertyChanged(() => DeviceRectX);
             RaisePropertyChanged(() => DeviceRectY);
             RaisePropertyChanged(() => DeviceRectWidth);
             RaisePropertyChanged(() => DeviceRectHeight);
-            if (CurrentDevice.IsHUB)
-            {
-                ParrentLocation = CurrentDevice.HUBID;
-                var childList = new List<IDeviceSettings>();
-                HUBOutputCollection = new ObservableCollection<IDeviceSettings>();
-                // HUBOutputCollection.Add(CurrentDevice);
-                DeviceLightingModeCollection = true;
+            //if (CurrentDevice.IsHUB)
+            //{
+            //    ParrentLocation = CurrentDevice.HUBID;
+            //    var childList = new List<IDeviceSettings>();
+            //    HUBOutputCollection = new ObservableCollection<IDeviceSettings>();
+            //    // HUBOutputCollection.Add(CurrentDevice);
+            //    DeviceLightingModeCollection = true;
 
-                //only HUB object has ability to sync it's child device
-                RaisePropertyChanged(() => DeviceLightingModeCollection);
-
-
-                foreach (var device in Cards)
-                {
-                    if (device.ParrentLocation == CurrentDevice.HUBID)
-                    {
-                        childList.Add(device);
-                        HUBOutputCollection.Add(device);
-                    }
-
-                }
-
-                int counter = 0;
-                foreach (var child in childList)
-                {
-                    if (child.IsNavigationSelected)
-                    {
-                        counter++;
-                        CurrentDevice = child;
-                    }
-
-                }
-                if (counter == 0)
-                {
-                    CurrentDevice = childList[0];
-                    CurrentDevice.IsNavigationSelected = true;
-                }
+            //    //only HUB object has ability to sync it's child device
+            //    RaisePropertyChanged(() => DeviceLightingModeCollection);
 
 
+            //    foreach (var device in Cards)
+            //    {
+            //        if (device.ParrentLocation == CurrentDevice.HUBID)
+            //        {
+            //            childList.Add(device);
+            //            HUBOutputCollection.Add(device);
+            //        }
 
+            //    }
 
-            }
-            else
-            {
-                if (CurrentDevice.ParrentLocation != 151293)
-                {
-                    DeviceLightingModeCollection = false;
-                    RaisePropertyChanged(() => DeviceLightingModeCollection);
-                    //keep current HUBOutputCollection
-                }
-                else
-                {
-                    if (HUBOutputCollection != null)
-                        HUBOutputCollection.Clear();
+            //    int counter = 0;
+            //    foreach (var child in childList)
+            //    {
+            //        if (child.IsNavigationSelected)
+            //        {
+            //            counter++;
+            //            CurrentDevice = child;
+            //        }
 
-                    DeviceLightingModeCollection = false;
-                    RaisePropertyChanged(() => DeviceLightingModeCollection);
-                    //Clear current HUBOutputCollection cuz this is a single output device
-                }
-
-            }
+            //    }
+            //    if (counter == 0)
+            //    {
+            //        CurrentDevice = childList[0];
+            //        CurrentDevice.IsNavigationSelected = true;
+            //    }
 
 
 
-            switch (CurrentDevice.SelectedEffect)
-            {
-                case 1:
-                    //CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedPalette);
-                    RaisePropertyChanged(() => CurrentActivePaletteCard);
-                    break;
-                case 3:
-                    //CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette);
-                    RaisePropertyChanged(() => CurrentActivePaletteCard);
-                    break;
-            }
+
+            //}
+            //else
+            //{
+            //    if (CurrentDevice.ParrentLocation != 151293)
+            //    {
+            //        DeviceLightingModeCollection = false;
+            //        RaisePropertyChanged(() => DeviceLightingModeCollection);
+            //        //keep current HUBOutputCollection
+            //    }
+            //    else
+            //    {
+            //        if (HUBOutputCollection != null)
+            //            HUBOutputCollection.Clear();
+
+            //        DeviceLightingModeCollection = false;
+            //        RaisePropertyChanged(() => DeviceLightingModeCollection);
+            //        //Clear current HUBOutputCollection cuz this is a single output device
+            //    }
+
+            //}
+
+
+
+            //switch (CurrentDevice.SelectedEffect)
+            //{
+            //    case 1:
+            //        //CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedPalette);
+            //        RaisePropertyChanged(() => CurrentActivePaletteCard);
+            //        break;
+            //    case 3:
+            //        //CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette);
+            //        RaisePropertyChanged(() => CurrentActivePaletteCard);
+            //        break;
+            //}
 
 
             
             RaisePropertyChanged(() => DeviceRectHeightMax);
             RaisePropertyChanged(() => DeviceRectWidthMax);
-            CurrentDevice.PropertyChanged += (s, e) =>
-            {
-                switch (e.PropertyName)
-                {
-                    case nameof(CurrentDevice.SelectedEffect):
-                        switch (CurrentDevice.SelectedEffect)
-                        {
-                            case 1:
-                                CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedPalette);
-                                RaisePropertyChanged(() => CurrentActivePaletteCard);
-                                break;
-                            case 3:
-                                CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette);
-                                RaisePropertyChanged(() => CurrentActivePaletteCard);
-                                break;
-                        }
-                        RaisePropertyChanged(() => CurrentActivePaletteCard);
+            //CurrentDevice.PropertyChanged += (s, e) =>
+            //{
+            //    switch (e.PropertyName)
+            //    {
+            //        case nameof(CurrentDevice.SelectedEffect):
+            //            switch (CurrentDevice.SelectedEffect)
+            //            {
+            //                case 1:
+            //                    CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedPalette);
+            //                    RaisePropertyChanged(() => CurrentActivePaletteCard);
+            //                    break;
+            //                case 3:
+            //                    CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette);
+            //                    RaisePropertyChanged(() => CurrentActivePaletteCard);
+            //                    break;
+            //            }
+            //            RaisePropertyChanged(() => CurrentActivePaletteCard);
 
-                        break;
-                    case nameof(CurrentDevice.SelectedPalette):
-                        CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedPalette);
-                        RaisePropertyChanged(() => CurrentActivePaletteCard);
+            //            break;
+            //        case nameof(CurrentDevice.SelectedPalette):
+            //            CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedPalette);
+            //            RaisePropertyChanged(() => CurrentActivePaletteCard);
 
-                        break;
-                    case nameof(CurrentDevice.SelectedMusicPalette):
-                        CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette);
-                        RaisePropertyChanged(() => CurrentActivePaletteCard);
+            //            break;
+            //        case nameof(CurrentDevice.SelectedMusicPalette):
+            //            CurrentActivePaletteCard = AvailablePallete.ElementAt(CurrentDevice.SelectedMusicPalette);
+            //            RaisePropertyChanged(() => CurrentActivePaletteCard);
 
-                        break;
-                }
-            };
+            //            break;
+            //    }
+            //};
             SetMenuItemActiveStatus(lighting);
         }
         public void BackToDashboard()
@@ -2701,10 +2620,10 @@ namespace adrilight.ViewModel
         }
         public void BackToDashboardAndDelete(IDeviceSettings device)
         {
-            Cards.Remove(device);
-            IsDashboardType = true;
-            SelectedVerticalMenuItem = MenuItems.FirstOrDefault();
-            SetMenuItemActiveStatus(dashboard);
+            //Cards.Remove(device);
+            //IsDashboardType = true;
+            //SelectedVerticalMenuItem = MenuItems.FirstOrDefault();
+            //SetMenuItemActiveStatus(dashboard);
         }
         /// <summary>
         /// Load vertical menu

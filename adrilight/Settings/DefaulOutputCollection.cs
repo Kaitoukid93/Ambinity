@@ -35,6 +35,7 @@ namespace adrilight.Settings
             OutputAtmosphereMode = "Dirrect",
             OutputSelectedMusicMode = 0,
             OutputSelectedMusicPalette = 0,
+            OutputSelectedMode = 1,
             //OutputSentryModeColorSource 
             OutputSelectedAudioDevice = 0,
             OutputSelectedDisplay = 0,
@@ -44,9 +45,12 @@ namespace adrilight.Settings
             OutputStaticColor = Color.FromRgb(0, 255, 0),
             OutputIsBreathing = false,
             OutputBreathingSpeed = 10,
-            OutputCurrentActivePalette = DefaultColorCollection.rainbow
+            OutputCurrentActivePalette = DefaultColorCollection.rainbow,
+           // create ledsetup if neccesary
 
 
-        };
+
+    };
     }
 }
+

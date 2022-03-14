@@ -18,12 +18,12 @@ namespace adrilight
         private ILogger _log = LogManager.GetCurrentClassLogger();
         private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adrilight\\");
         private string JsonLEDSetupFileNameAndPath => Path.Combine(JsonPath, "adrilight-LEDSetups.json");
-        public DeviceSpotSet(IDeviceSettings deviceSettings, IGeneralSettings generalSettings)
+        public DeviceSpotSet(IOutputSettings outputSettings, IGeneralSettings generalSettings)
         {
-            DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
+            OutputSettings = outputSettings ?? throw new ArgumentNullException(nameof(outputSettings));
             GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
 
-            DeviceSettings.PropertyChanged += (_, e) => DecideRefresh(e.PropertyName);
+            OutputSettings.PropertyChanged += (_, e) => DecideRefresh(e.PropertyName);
             GeneralSettings.PropertyChanged += (_, e) => DecideRefresh(e.PropertyName);
             Refresh();
 
@@ -34,33 +34,12 @@ namespace adrilight
         {
             switch (propertyName)
             {
-                case nameof(DeviceSettings.SpotsX):
-
-                case nameof(DeviceSettings.SpotsY):
-
-                case nameof(GeneralSettings.ScreenSize):
-                case nameof(DeviceSettings.SelectedDisplay):
-                case nameof(DeviceSettings.SelectedEffect):
-                case nameof(GeneralSettings.ScreenSizeSecondary):
-                case nameof(GeneralSettings.ScreenSizeThird):
-                case nameof(DeviceSettings.OffsetLed):
-                case nameof(DeviceSettings.MirrorX):
-                case nameof(DeviceSettings.MirrorY):
-                case nameof(DeviceSettings.DeviceRectWidth):
-                case nameof(DeviceSettings.DeviceRectHeight):
-                case nameof(DeviceSettings.DeviceRectWidth1):
-                case nameof(DeviceSettings.DeviceRectHeight1):
-                case nameof(DeviceSettings.NumLED):
-                case nameof(DeviceSettings.DeviceLayout):
-                case nameof(DeviceSettings.DeviceRotation):
-                case nameof(DeviceSettings.DeviceRectLeft):
-                case nameof(DeviceSettings.DeviceRectTop):
-                case nameof(DeviceSettings.DeviceRectLeft1):
-                case nameof(DeviceSettings.DeviceRectTop1):
-                case nameof(DeviceSettings.MatrixOrientation):
-                case nameof(DeviceSettings.MatrixStartPoint):
-
-
+                case nameof(OutputSettings.OutputNumLEDX):
+                case nameof(OutputSettings.OutputNumLEDY):
+                case nameof(OutputSettings.OutputNumLED):
+                case nameof(OutputSettings.OutputPixelWidth):
+                case nameof(OutputSettings.OutputPixelHeight):
+                //... there are more to come
                     Refresh();
                     break;
             }
@@ -80,72 +59,40 @@ namespace adrilight
 
 
 
-        public int ID {
-            get { return DeviceSettings.DeviceID; }
-
-        }
 
 
 
+    
 
-        public int ParrentLocation {
-            get { return DeviceSettings.ParrentLocation; }
-
-        }
-
-        public string DeviceSerial {
-            get { return DeviceSettings.DeviceSerial; }
-
-        }
-        public string DeviceLocation {
-            get { return DeviceSettings.DevicePort; }
-
-        }
-        private int _outputLocation;
-        public int OutputLocation {
-            get { return DeviceSettings.OutputLocation; }
-            set
-            {
-                _outputLocation = value;
-            }
-        }
-
-        private int _rGBOrder;
-        public int RGBOrder {
-            get { return DeviceSettings.RGBOrder; }
-            set
-            {
-                _rGBOrder = value;
-            }
-        }
+    
 
 
-        private IDeviceSettings DeviceSettings { get; }
+        private IOutputSettings OutputSettings { get; }
         private IGeneralSettings GeneralSettings { get; }
         private void Refresh()
         {
-            lock (Lock)
+            lock (OutputSettings.OutputLEDSetup.Lock)
             {
-                LEDSetup = BuildLEDSetup(DeviceSettings, GeneralSettings);
+                OutputSettings.OutputLEDSetup = BuildLEDSetup(OutputSettings, GeneralSettings);
 
             }
 
         }
 
-        internal ILEDSetup BuildLEDSetup(IDeviceSettings deviceSettings, IGeneralSettings generalSettings) // general settings is for compare each device setting
+        internal ILEDSetup BuildLEDSetup(IOutputSettings outputSettings, IGeneralSettings generalSettings) // general settings is for compare each device setting
         {
 
             var availableLEDSetups = LoadSetupIfExist();
-            int matrixWidth = deviceSettings.SpotsX;
-            int matrixHeight = deviceSettings.SpotsY;
-            int numLED = deviceSettings.NumLED;
-            string name = deviceSettings.DeviceName;
+            int matrixWidth = outputSettings.OutputNumLEDX;
+            int matrixHeight = outputSettings.OutputNumLEDY;
+            int numLED = outputSettings.OutputNumLED;
+            string name = outputSettings.OutputName;
             string owner = "Ambino";
             string description = "Default LED Setup for Ambino Basic Rev 2";
             string type = "ABRev2";
-            int setupID = deviceSettings.DeviceID;
-            int rectWidth = deviceSettings.DeviceRectWidth;
-            int rectHeight = deviceSettings.DeviceRectHeight;
+            int setupID = outputSettings.OutputID;
+            int rectWidth = outputSettings.OutputPixelWidth;
+            int rectHeight = outputSettings.OutputPixelHeight;
             
             IDeviceSpot[] spots = new DeviceSpot[numLED];
             List<IDeviceSpot> reorderedSpots = new List<IDeviceSpot>();
@@ -153,7 +100,7 @@ namespace adrilight
             //Create default spot
             var availableSpots = BuildMatrix(rectWidth, rectHeight, matrixWidth, matrixHeight);
             int counter = 0;
-            switch(deviceSettings.DeviceType)
+            switch(outputSettings.OutputType)
             {
                 case "ABRev2":
                     for (var i = 0; i < matrixHeight; i++) // bottom right ( default ambino basic start point) go up to top right
@@ -217,15 +164,15 @@ namespace adrilight
             ILEDSetup ledSetup = new LEDSetup(name, owner, type, description, reorderedActiveSpots, matrixWidth, matrixHeight, setupID);
            
             
-            if (availableLEDSetups != null)
-            {
-                foreach (var ledsetup in availableLEDSetups)
-                {
-                    if (ledsetup.SetupID == deviceSettings.DeviceID)//found match
-                        ledSetup = ledsetup;
+            //if (availableLEDSetups != null)
+            //{
+            //    foreach (var ledsetup in availableLEDSetups)
+            //    {
+            //        if (ledsetup.SetupID == outputSettings.OutputUniqueID)//found match
+            //            ledSetup = ledsetup;
 
-                }
-            }
+            //    }
+            //}
          
 
 
