@@ -10,137 +10,60 @@ using adrilight.Util;
 
 namespace adrilight
 {
-    public interface IDeviceSettings : INotifyPropertyChanged
+    public interface IOutputSettings : INotifyPropertyChanged
     {
         //bool Autostart { get; set; }
-        int BorderDistanceX { get; set; }
-        int BorderDistanceY { get; set; }
-        string DevicePort { get; set; }
-        string GifFilePath { get; set; }
-        int DeviceID { get; set; }
-        int ParrentLocation { get; set; }
-        string DeviceSerial { get; set; }
-        string DeviceType { get; set; }
-        int DeviceLayout { get; set; }
-        int DeviceRotation { get; set; }
-        int MatrixStartPoint { get; set; }
-        int MatrixStyle { get; set; }
-        int MatrixOrientation { get; set; }
-        bool LayoutEnabled { get; set; }
-        int RGBOrder { get; set; }
-        bool IsVissible { get; set; }
-        bool SyncOn { get; set; }
-        int OutputLocation { get; set; }
-        int ParentDeviceId { get; set; }
-        int MaxBrightness { get; set; }
-        int HUBID { get; set; }
-        bool IsNavigationSelected { get; set; }
-        int DevicePowerVoltage { get; set; }
-        int DevicePowerMiliamps { get; set; }
-        // DateTime? LastUpdateCheck { get; set; }
-        [Obsolete]
-        int LedsPerSpot { get; set; }
-        bool MirrorX { get; set; }
-        bool MirrorY { get; set; }
-        int OffsetLed { get; set; }
+     
+        string OutputName { get; set; }
+        int OutputID { get; set; }
+        string OutputType { get; set; }
+        int OutputNumLED { get; set; }
+        int OutputNumLEDX { get; set; }
+        int OutputNumLEDY { get; set; }
+        int OutputLocationX { get; set; }
+        int OutputLocationY { get; set; }
+        int OutputPixelWidth { get; set; }
+        int OutputPixelHeight { get; set; }
+        string OutputUniqueID { get; set; }
+        string OutputRGBLEDOrder { get; set; }
+        bool OutputIsVisible { get; set; }
+        int OutputBrightness { get; set; }
+        int OutputPowerVoltage { get; set; }
+        int OutputPowerMiliamps { get; set; }
+        byte OutputSaturationThreshold { get; set; }
 
-        [Obsolete]
-        int OffsetX { get; set; }
-        [Obsolete]
-        int OffsetY { get; set; }
-        bool IsPreviewEnabled { get; set; }
-        byte SaturationTreshold { get; set; }
-        int SpotHeight { get; set; }
-        int SpotsX { get; set; }
-        int NumLED { get; set; }
-        int SpotsY { get; set; }
-        
-        int SpotWidth { get; set; }
-        // bool StartMinimized { get; set; }
-        bool TransferActive { get; set; }
-        bool CaptureActive { get; set; }
-
-        bool IsConnected { get; set; }
-
-        bool UseLinearLighting { get; set; }
-
-
-        Guid InstallationId { get; set; }
-        bool IsHUB { get; set; }
-        bool LEDOn { get; set; }
-        int DeviceRectWidth { get; set; }
-        int DeviceRectHeight { get; set; }
-        int DeviceRectTop { get; set; }
-        int DeviceRectLeft { get; set; }
-
-        int DeviceRectWidth1 { get; set; }
-        int DeviceRectHeight1 { get; set; }
-        int DeviceRectTop1 { get; set; }
-        int DeviceRectLeft1 { get; set; }
-        int DeviceScale { get; set; }
-
-        byte Brightness { get; set; }
-        string filemau { get; set; }
-        string filemauchip { get; set; }
-       
-
-        int AtmosphereStart { get; set; }
-        int AtmosphereStop { get; set; }
-        int SelectedEffect { get; set; }
-        int SelectedMusicMode { get; set; }
-        int SelectedMusicPalette { get; set; }
-
-        //gifxelation//
-        bool GifPlayPause { get; set; }
-        byte IMInterpolationModeIndex { get; set; }
-        int IMX1 { get; set; }
-
-        int IMY1 { get; set; }
-
-        int IMX2 { get; set; }
-        int IMY2 { get; set; }
-        bool IMLockDim { get; set; }
-        bool GroupLightingEnable { get; set; }
-
-        //gifxelation//
-        byte[] SnapShot { get; set; }
-        int[] VirtualIndex { get; set; }
-        int[] MusicIndex { get; set; }
-        int GroupSelfIndex { get; set; }
-        int GroupID { get; set; }
-
-        int SelectedAudioDevice { get; set; }
-        int SelectedDisplay { get; set; }
-        int SelectedAdapter { get; set; }
+        bool OutputUseLinearLighting { get; set; }
+        bool OutputIsEnabled { get; set; }
+        Color OutputAtmosphereStartColor { get; set; }
+        Color OutputAtmosphereStopColor { get; set; }
+        string OutputAtmosphereMode { get; set; }
+        //string SelectedEffect { get; set; }
+        int OutputSelectedMusicMode { get; set; }
+        int OutputSelectedMusicPalette { get; set; }
+        Color[] OutputSentryModeColorSource { get; set; }
+        int OutputSelectedAudioDevice { get; set; }
+        int OutputSelectedDisplay { get; set; }
 
 
 
-        byte DeviceSize { get; set; }
+
 
         //rainbow settings//
-        int SelectedPalette { get; set; }
-        int EffectSpeed { get; set; }
-        int ColorFrequency { get; set; }
+        int OutputSelectedChasingPalette { get; set; }
+        int OutputPaletteSpeed { get; set; }
+        int OutputPaletteBlendStep { get; set; } // auto adjust step based on numLED
         //rainbow settings//
 
         //static color settings//
-        Color StaticColor { get; set; }
-        bool IsBreathing { get; set; }
-        int BreathingSpeed { get; set; }
+        Color OutputStaticColor { get; set; }
+        bool OutputIsBreathing { get; set; }
+        int OutputBreathingSpeed { get; set; }
         //static color settings//
 
 
-        //Color Palette
-        Color [] CustomZone { get; set; }
-        Color[] CurrentActivePalette { get; set; }
-        Color[] CurrentActiveMusicPalette { get; set; }
-        Color[] MCustomZone { get; set; }
+ 
+        Color[] OutputCurrentActivePalette { get; set; }
+         IDeviceSpot[] OutputSpotSet { get; set; }
 
-        int MSens { get; set; }
-        //Color Palette
-        //Music Color Palette
-       
-        int LimitFps { get; set; }
-        string DeviceName { get; set; }
     }
 }

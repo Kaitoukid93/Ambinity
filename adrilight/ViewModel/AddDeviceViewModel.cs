@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Linq;
 using System.Windows.Controls;
+using adrilight.Settings;
 using adrilight.Util;
 using HandyControl.Controls;
 
@@ -114,18 +115,7 @@ namespace adrilight.ViewModel
 
         }
        
-        //private ViewModelBase _currentView;
-        //private ViewModelBase _allDeviceView;
-        ////private ViewModelBase _changePortView;
-        ////private ViewModelBase _changeNameView;
-        //public ViewModelBase CurrentView {
-        //    get { return _currentView; }
-        //    set
-        //    {
-        //        _currentView = value;
-        //        RaisePropertyChanged("CurrentView");
-        //    }
-        //}
+      
         private bool _basicRev1Checked;
         public bool BasicRev1Checked {
 
@@ -135,17 +125,7 @@ namespace adrilight.ViewModel
                 _basicRev1Checked = value;
                 if (value)
                 {
-                    AddedItemType = AvailableTypes.Device;
-                    Device.DeviceType = "ABRev1";
-                    Device.DevicePowerMiliamps = 900;
-                    Device.DevicePowerVoltage = 5;
-                    Device.RGBOrder = 0;
-                    Device.DeviceLayout = 0;
-                    Device.LayoutEnabled = false;
-                    IsNextable = true;
-                    RaisePropertyChanged(() => Device.DeviceType);
-                    RaisePropertyChanged(() => Device.RGBOrder);
-                    RaisePropertyChanged(() => IsNextable);
+                    Device = DefaultDeviceCollection.ambinoBasic;
                 }
 
             }
@@ -159,19 +139,7 @@ namespace adrilight.ViewModel
                 _basicRev2Checked = value;
                 if (value)
                 {
-                    AddedItemType = AvailableTypes.Device;
-                    Device.DeviceType = "ABRev2";
-                    Device.RGBOrder = 5;
-                    Device.DeviceLayout = 0;
-                    Device.LayoutEnabled = false;
-                    Device.MaxBrightness = 55;
-                    Device.Brightness = 49;
-                    IsNextable = true;
-                    Device.DeviceRectHeight1 = DesktopFrame.FrameHeight;
-                    Device.DeviceRectWidth1 = DesktopFrame.FrameWidth;      
-                    RaisePropertyChanged(() => Device.DeviceType);
-                    RaisePropertyChanged(() => Device.RGBOrder);
-                    RaisePropertyChanged(() => IsNextable);
+                    Device = DefaultDeviceCollection.ambinoBasic;
 
                 }
 
