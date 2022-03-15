@@ -213,7 +213,7 @@
           <!-- all devices-->
             <ListView  Margin="0,15,0,15" 
                        Name="itm" 
-                       ItemsSource="{Binding DisplayCards,UpdateSourceTrigger=PropertyChanged}"                        
+                       ItemsSource="{Binding AvailableDevices,UpdateSourceTrigger=PropertyChanged}"                        
                        IsTabStop="False"
                        ItemContainerStyle="{StaticResource ListViewContainerStyle}"
                        BorderThickness="0" 

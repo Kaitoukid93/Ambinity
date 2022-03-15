@@ -83,8 +83,8 @@
                             <Canvas HorizontalAlignment="Center" VerticalAlignment="Center" Name="PreviewCanvas"
                                
                                 Margin="0" 
-                                Width="{Binding CurrentDevice.DeviceRectWidth}" 
-                                Height="{Binding CurrentDevice.DeviceRectHeight}" >
+                                Width="{Binding CurrentOutput.OutputPixelWidth}" 
+                                Height="{Binding CurrentOutput.OutputPixelHeight}" >
                             </Canvas>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>

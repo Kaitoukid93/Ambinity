@@ -20,7 +20,7 @@ namespace adrilight.Settings
             IsEnabled = true,
             OutputPort = "Không có",
             IsTransferActive = true,
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.rectangleFrameLEDSetupOutputType1 }
+            AvailableOutputs =   new OutputSettings[] { DefaulOutputCollection.rectangleFrameLEDSetupOutputType1(0), DefaulOutputCollection.rectangleFrameLEDSetupOutputType2(1) }
 
         };
 

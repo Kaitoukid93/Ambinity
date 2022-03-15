@@ -17,11 +17,11 @@ namespace adrilight
     {
         private ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public SerialStream(IDeviceSettings deviceSettings, IGeneralSettings generalSettings)
+        public SerialStream(IDeviceSettings deviceSettings ,IGeneralSettings generalSettings)
         {
             GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
             DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
-            //DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
+          // DeviceSpotSets = deviceSpotSets ?? throw new ArgumentNullException(nameof(deviceSpotSets));
             DeviceSettings.PropertyChanged += UserSettings_PropertyChanged;
             RefreshTransferState();
 
@@ -32,7 +32,7 @@ namespace adrilight
         //Dependency Injection//
         private IDeviceSettings DeviceSettings { get; set; }
         private IGeneralSettings GeneralSettings { get; set; }
-       // private IDeviceSpotSet DeviceSpotSet { get; set; }
+       // private IDeviceSpotSet[] DeviceSpotSets { get; set; }
         private bool CheckSerialPort(string serialport)
         {
             Stop();//stop current serial stream first to avoid access denied

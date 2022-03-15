@@ -72,7 +72,8 @@ namespace adrilight
         private void Refresh()
         {
             
-            lock (OutputSettings.OutputLEDSetup.Lock)
+
+            lock (Lock)
             {
                 OutputSettings.OutputLEDSetup = BuildLEDSetup(OutputSettings, GeneralSettings);
 
@@ -103,7 +104,7 @@ namespace adrilight
             int counter = 0;
             switch(outputSettings.OutputType)
             {
-                case "ABRev2":
+                case "Frame":
                     for (var i = 0; i < matrixHeight; i++) // bottom right ( default ambino basic start point) go up to top right
                     {
                         var spot = availableSpots[availableSpots.Length - 1 - matrixWidth * i];

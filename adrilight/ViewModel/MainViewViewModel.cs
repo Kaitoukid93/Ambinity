@@ -2489,7 +2489,7 @@ namespace adrilight.ViewModel
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == lighting);
             IsDashboardType = false;
             CurrentDevice = selectedDevice;
-            CurrentOutput = CurrentDevice.AvailableOutputs[0];
+            CurrentOutput = CurrentDevice.AvailableOutputs[1];
             CurrentLEDSetup = CurrentOutput.OutputLEDSetup;
             
             IsSplitLightingWindowOpen = true;
@@ -2499,6 +2499,7 @@ namespace adrilight.ViewModel
             RaisePropertyChanged(() => DeviceRectY);
             RaisePropertyChanged(() => DeviceRectWidth);
             RaisePropertyChanged(() => DeviceRectHeight);
+            WriteDeviceInfoJson();
             //if (CurrentDevice.IsHUB)
             //{
             //    ParrentLocation = CurrentDevice.HUBID;
@@ -2576,7 +2577,7 @@ namespace adrilight.ViewModel
             //}
 
 
-            
+
             RaisePropertyChanged(() => DeviceRectHeightMax);
             RaisePropertyChanged(() => DeviceRectWidthMax);
             //CurrentDevice.PropertyChanged += (s, e) =>

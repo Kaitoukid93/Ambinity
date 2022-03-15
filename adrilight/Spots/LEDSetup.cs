@@ -37,7 +37,7 @@ namespace adrilight
         public IDeviceSpot[] Spots { get; set; }
         public int MatrixWidth { get; set; }
         public int MatrixHeight { get; set; }
-        public object Lock { get; } = new object();
+        public object Lock { get; set; } = new object();
         public int SetupID { get; set; }    // to match with device ID
 
         
