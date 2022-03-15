@@ -226,6 +226,7 @@
   <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
   <ItemGroup>
     <None Remove="App.config" />
+    <None Remove="Resources\Image\screen.png" />
     <None Remove="Shaders\Thumbnail\Gooey.png" />
     <None Remove="Shaders\Thumbnail\MetaBalls.png" />
     <None Remove="Shaders\Thumbnail\PixelRainbow.png" />
@@ -235,6 +236,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Image\screen.png" />
     <Resource Include="Shaders\Thumbnail\Gooey.png" />
     <Resource Include="Shaders\Thumbnail\MetaBalls.png" />
     <Resource Include="Shaders\Thumbnail\PixelRainbow.png" />

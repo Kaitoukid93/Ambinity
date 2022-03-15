@@ -22,8 +22,10 @@ namespace adrilight
         string ProductionDate { get; set; }
         bool IsVisible { get; set; }
         bool IsEnabled { get; set; }
+        bool IsDummy { get; set; }
         string OutputPort { get; set; }
         bool IsTransferActive { get; set; }
         IOutputSettings[] AvailableOutputs { get; set; }
+        string GroupName { get; set; }
     }
 }

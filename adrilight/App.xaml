@@ -14,7 +14,7 @@
                 <Setter Property="CloseButtonForeground" Value="White"/>
             </Style>
             <ResourceDictionary.MergedDictionaries>
-                <hc:ThemeResources RequestedTheme="Dark" AccentColor="BlueViolet"/>
+                <hc:ThemeResources RequestedTheme="Dark" AccentColor="Orange"/>
 
                 <hc:Theme/>
                 

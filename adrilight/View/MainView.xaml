@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:adrilight.View"
         xmlns:vm="clr-namespace:adrilight.ViewModel"
          xmlns:hc="https://handyorg.github.io/handycontrol"
+           xmlns:converters="clr-namespace:adrilight.Converter"
          d:DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}"
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}" 
         Background="{DynamicResource RegionBrush}"
@@ -27,6 +28,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary
                     Source="ControlStyle.xaml">
+                    <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+                    <converters:BrushToHexConverter x:Key="BrushToHexConverter" />
+                    <BooleanToVisibilityConverter x:Key="boolToVisibilityConvert" />
                 </ResourceDictionary>
 
             </ResourceDictionary.MergedDictionaries>
@@ -210,6 +214,28 @@
                 </Setter>
 
             </Style>
+            <Style x:Key="DemoGroupItemStyle" TargetType="GroupItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="GroupItem">
+                            <hc:SimpleStackPanel>
+                                <hc:Divider Content="{Binding Name}" LineStrokeDashArray="2, 2" Padding="16,0" Margin="0,16,0,10"/>
+                                <ItemsPresenter Margin="{TemplateBinding Padding}"/>
+                            </hc:SimpleStackPanel>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="ListBoxItemTransparent" BasedOn="{hc:StaticResource ListBoxItemBaseStyle}" TargetType="ListBoxItem">
+                <Setter Property="Visibility" Value="{Binding IsVisible,Converter={StaticResource boolToVisibilityConvert}}"/>
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
+
+            <Style x:Key="ListBoxTransparent" BasedOn="{hc:StaticResource ListBoxBaseStyle}" TargetType="ListBox">
+                <Setter Property="hc:BorderElement.CornerRadius" Value="4"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="ItemContainerStyle" Value="{DynamicResource ListBoxItemTransparent}"/>
+            </Style>
             <DataTemplate x:Key="dashboardTemplate">
                 <local:AllDeviceView/>
             </DataTemplate>
@@ -233,10 +259,10 @@
             </DataTemplate>-->
             <Style x:Key="selectableContentStyle" TargetType="{x:Type ContentControl}">
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="Dashboard">
+                    <DataTrigger Binding="{Binding ElementName=DashboardLeftMenu, Path=SelectedItem}" Value="Dashboard">
                         <Setter Property="ContentTemplate" Value="{StaticResource dashboardTemplate}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="Device Settings">
+                    <DataTrigger Binding="{Binding ElementName=DashboardLeftMenu, Path=SelectedItem}" Value="Settings">
                         <Setter Property="ContentTemplate" Value="{StaticResource deviceSettingTemplate}" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="App Settings">
@@ -273,7 +299,7 @@
                     <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade">
                         
                     
-                    <StackPanel Visibility="{Binding IsDashboardType,Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,0">
+                    <StackPanel Visibility="Collapsed" Margin="0,0,0,0">
 
                         <ItemsControl ItemsSource="{Binding MenuItems,UpdateSourceTrigger=PropertyChanged}"
                                                 IsTabStop="False"
@@ -291,6 +317,95 @@
                         </ItemsControl>
 
                     </StackPanel>
+                    </hc:TransitioningContentControl>
+                    <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade">
+
+
+                        <StackPanel Visibility="{Binding IsDashboardType,Converter={StaticResource InverseBoolToVisConverter}}" Margin="0,7,0,0">
+
+                            <DockPanel>
+                                <Button Style="{StaticResource ButtonBaseStyle}" Command="{Binding BackCommand}" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="10,10,10,4" Content="Dashboard" BorderThickness="0" Background="{DynamicResource SecondaryRegionBrush}"/>
+
+
+                                <Grid Margin="10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <ListBox  Name="ListBoxDemo" ScrollViewer.CanContentScroll="False" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" VirtualizingStackPanel.IsVirtualizing="True" SelectedItem="{Binding CurrentDevice}" ItemsSource="{Binding AvailableDevices}" BorderThickness="0" SelectionMode="Single" Style="{DynamicResource ListBoxTransparent}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Width="16" Height="16" Source="/Resources/Image/screen.png" />
+                                                    <hc:HighlightTextBlock Margin="6,0,0,0" SourceText="{Binding DeviceName}" QueriesText="{Binding QueriesText}"/>
+                                                    <!--<Path Visibility="{Binding IsNew,Converter={StaticResource Boolean2VisibilityConverter}}" VerticalAlignment="Center" Data="{StaticResource NewGeometry}" Stretch="Uniform" Margin="10,0,0,0" Width="30" Height="14" Fill="{DynamicResource DangerBrush}"/>-->
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                        <ListBox.GroupStyle>
+                                            <GroupStyle ContainerStyle="{StaticResource DemoGroupItemStyle}"/>
+                                        </ListBox.GroupStyle>
+                                    </ListBox>
+                                </Grid>
+                                <hc:Interaction.Triggers>
+                                        <hc:EventTrigger EventName="SelectionChanged">
+                                            <hc:EventToCommand Command="{Binding SwitchDemoCmd}" PassEventArgsToCommand="True" />
+                                        </hc:EventTrigger>
+                                    </hc:Interaction.Triggers>
+                                
+                            </DockPanel>
+
+                        </StackPanel>
+                    </hc:TransitioningContentControl>
+                    <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade">
+
+
+                        <StackPanel Visibility="{Binding IsDashboardType,Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,7,0,0">
+
+                            <DockPanel>
+                                
+
+
+                                <Grid Margin="10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                   
+
+                                    <ListBox SelectedIndex="0"  Name="DashboardLeftMenu" ScrollViewer.CanContentScroll="False" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" VirtualizingStackPanel.IsVirtualizing="True"  ItemsSource="{Binding AvailableMenu}" BorderThickness="0" SelectionMode="Single" Style="{DynamicResource ListBoxTransparent}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Width="16" Height="16" Source="/Resources/Image/screen.png" />
+                                                    <hc:HighlightTextBlock Margin="6,0,0,0" SourceText="{Binding .}"/>
+                                                   
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                        <ListBox.GroupStyle>
+                                            <GroupStyle ContainerStyle="{StaticResource DemoGroupItemStyle}"/>
+                                        </ListBox.GroupStyle>
+                                    </ListBox>
+                                </Grid>
+                                <hc:Interaction.Triggers>
+                                    <hc:EventTrigger EventName="SelectionChanged">
+                                        <hc:EventToCommand Command="{Binding SwitchDemoCmd}" PassEventArgsToCommand="True" />
+                                    </hc:EventTrigger>
+                                </hc:Interaction.Triggers>
+
+                            </DockPanel>
+
+                        </StackPanel>
                     </hc:TransitioningContentControl>
 
                     <ContentControl Content="{Binding .,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource selectableContentStyle}" Grid.Column="1" Margin="1" >

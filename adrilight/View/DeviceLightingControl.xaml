@@ -77,7 +77,7 @@
                           BorderThickness="1"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center" 
-                          ItemsSource="{Binding CurrentLEDSetup.Spots}">
+                          ItemsSource="{Binding CurrentDevice.AvailableOutputs[0].OutputLEDSetup.Spots}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas HorizontalAlignment="Center" VerticalAlignment="Center" Name="PreviewCanvas"

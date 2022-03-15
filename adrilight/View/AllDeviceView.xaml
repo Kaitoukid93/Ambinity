@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:local="clr-namespace:adrilight.View"
+             xmlns:deviceSettings="clr-namespace:adrilight"
              Background="{DynamicResource RegionBrush}"
              xmlns:converters="clr-namespace:adrilight.Converter"
              mc:Ignorable="d" 
@@ -16,7 +17,7 @@
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"         
              Name="alldevice"
-        FontFamily="{StaticResource MaterialDesignFont}"
+       
              d:DesignHeight="800" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -29,27 +30,34 @@
             <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="BlueViolet" Opacity="25"/>
             <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="BlueViolet" Opacity="25"/>
             <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="BlueViolet" Opacity="25"/>
+           
+            <DropShadowEffect x:Key="Item.SelectedActive.Border.Shadow" BlurRadius="20"   RenderingBias ="Quality" ShadowDepth ="1" Color ="{Binding Color, Source={StaticResource PrimaryBrush}}"/>
 
             <Style x:Key="ListViewContainerStyle" TargetType="{x:Type ListViewItem}">
              
                 <Setter Property="SnapsToDevicePixels" Value="True"/>
-                <Setter Property="Padding" Value="4,1"/>
-                <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                <Setter Property="Padding" Value="0"/>
+                <!--<Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>-->
                 <Setter Property="Background" Value="{DynamicResource RegionBrush}"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>
-                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="BorderThickness" Value="4"/>
                 <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
                 <Setter Property="Width" Value="auto"/>
                 <Setter Property="Height" Value="auto"/>
                 <Setter Property="Focusable" Value="False"/>
+                <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                
+               
                 
 
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ListViewItem}">
-                            <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" Margin="5" CornerRadius="40" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                            <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" Margin="15" CornerRadius="30" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
                                 <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                
                             </Border>
                             <ControlTemplate.Triggers>
                                 <MultiTrigger>
@@ -58,8 +66,9 @@
                                     </MultiTrigger.Conditions>
                                    
                                     <!--<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>-->
-                                    <Setter Property="BorderThickness" TargetName="Bd" Value="2"/>
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
+                                    <Setter Property="BorderThickness" TargetName="Bd" Value="4"/>
+                                    <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
+                                    <Setter Property="Effect" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border.Shadow}"/>
                                 </MultiTrigger>
 
                                 <MultiTrigger>
@@ -67,17 +76,18 @@
                                         <Condition Property="Selector.IsSelectionActive" Value="False"/>
                                         <Condition Property="IsSelected" Value="True"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
+
+                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter Property="Effect" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border.Shadow}"/>
                                 </MultiTrigger>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="Selector.IsSelectionActive" Value="True"/>
                                         <Condition Property="IsSelected" Value="True"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
-                                    <Setter Property="BorderThickness" TargetName="Bd" Value="1"/>
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
+                                   
+                                    <Setter Property="BorderThickness" TargetName="Bd" Value="6"/>
+                                    <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
                                 </MultiTrigger>
                                 <Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
@@ -100,27 +110,21 @@
     </UserControl.Resources>
     <Grid Margin="20,10,0,0" >
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="191"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
+      
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="7*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
 
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid  Grid.Row="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+               
                 <TextBlock
-                    Margin="10,0,0,0" 
+                    Margin="30,10,10,10" 
                     Grid.Row="0" 
                     Grid.Column="0" 
                     Text="DASHBOARD"  
@@ -136,7 +140,7 @@
             </Grid>
            
             <TextBlock 
-                Margin="10,0,0,0" 
+                Margin="30,0,0,0" 
                 Grid.Row="1" 
                 Grid.Column="0" 
                 Text="Tất cả các thiết bị đã từng được thêm sẽ xuất hiện ở đây. Click vào từng thẻ để điều chỉnh" 
@@ -145,94 +149,37 @@
                 HorizontalAlignment="Left" 
                 />
         </Grid>
-        <Border Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" Height="32" HorizontalAlignment="Right" Width="95">
-            <Button 
-                ToolTip="Thêm thiết bị theo cách thủ công"  
-                Content="Thêm mới" 
-                Style="{DynamicResource ButtonPrimary}"
-                Width="75" 
-                Height="32" 
-                FontWeight="Bold"
-                FontSize="14"
-                VerticalAlignment="Center" 
-                Padding="0"
-                BorderBrush="BlueViolet"
-                BorderThickness="1"
-                hc:BorderElement.CornerRadius="7"
-                Command="{Binding ShowAddNewCommand}" 
-                HorizontalAlignment="Right" Margin="0,0,20,0">
-                <Button.Background>
-                    <SolidColorBrush Color="BlueViolet" Opacity="0.25">
-                        
-                    </SolidColorBrush>
-
-                </Button.Background>
-                <Button.Foreground>
-                    <SolidColorBrush Color="BlueViolet" />
-
-                </Button.Foreground>
-            
-            </Button>
+        
 
 
-        </Border>
-        <Button 
-            ToolTip="Dò tìm thiết bị" 
-            Content="Refresh"
-            Style="{DynamicResource ButtonPrimary}" 
-            Width="66" 
-            Height="32" 
-            FontWeight="Bold"
-            FontSize="14"
-            VerticalAlignment="Top" 
-            BorderThickness="1" 
-            Padding="0"   
-            BorderBrush="BlueViolet"
-            hc:BorderElement.CornerRadius="7"
-            Command="{Binding RefreshDeviceCommand}" 
-            HorizontalAlignment="Right" Margin="0,0,120,0" 
-            Grid.Column="1" Click="Button_Click">
-            <Button.Background>
-                <SolidColorBrush Color="BlueViolet" Opacity="0.25"  />
-
-            </Button.Background>
-            <Button.Foreground>
-                <SolidColorBrush Color="BlueViolet" />
-
-            </Button.Foreground>
-        </Button>
-       
-
-
-        <Grid x:Name="parrentGrid" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+        <Grid x:Name="parrentGrid" Grid.Row="1" >
 
 
 
 
 
           <!-- all devices-->
-            <ListView  Margin="0,15,0,15" 
+            <ListView  MaxWidth="1000"  
+                       
                        Name="itm" 
                        ItemsSource="{Binding AvailableDevices,UpdateSourceTrigger=PropertyChanged}"                        
                        IsTabStop="False"
                        ItemContainerStyle="{StaticResource ListViewContainerStyle}"
                        BorderThickness="0" 
                        Tag="{Binding}"
-                                      >
+                       HorizontalAlignment="Left">
 
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Width="900"/>
+                        <WrapPanel Orientation="Horizontal"/>
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
 
                 <ListView.Template>
                     <ControlTemplate TargetType="{x:Type ItemsControl}">
-                        <Border 
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" 
-                             Padding="{TemplateBinding Padding}" SnapsToDevicePixels="False">
-                            <hc:ScrollViewer>
+                        <Border Margin="10" 
+                            SnapsToDevicePixels="False">
+                            <hc:ScrollViewer HorizontalScrollBarVisibility="Disabled">
                                 <ItemsPresenter />
                             </hc:ScrollViewer>
                         </Border>
@@ -241,32 +188,34 @@
 
 
                 <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid IsEnabled="{Binding IsConnected,Mode=TwoWay}" 
+                    <DataTemplate >
+                        <Grid  IsEnabled="{Binding IsConnected,Mode=TwoWay}" 
                               x:Name="dev" 
-                              Visibility="{Binding IsVissible,Converter={StaticResource boolToVisibilityConvert}}"  
-                              Margin="20" 
+                              Visibility="{Binding IsVissible,Converter={StaticResource boolToVisibilityConvert}}"         
                               Width="230" 
                               Height="245" >
 
+                            <Button Visibility="{Binding IsDummy,Converter={StaticResource boolToVisibilityConvert}}" Command="{Binding Path=DataContext.ShowAddNewCommand, ElementName=itm}" hc:BorderElement.CornerRadius="30" Width="230" Height="245" Margin="0" hc:IconElement.Geometry="{DynamicResource AddGeometry}" hc:IconElement.Height="50" hc:IconElement.Width="50" Style="{DynamicResource ButtonDashedPrimary}">
+                                
+                            </Button>
 
-
-                            <Border 
-                                Margin="-6"   
+                            <Border  Visibility="{Binding IsDummy,Converter={StaticResource InverseBoolToVisConverter}}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
                                 CornerRadius="30" 
-                                Background="{DynamicResource RegionBrush}">
-                                <Border.Style>
+                                Background="{DynamicResource SecondaryRegionBrush}">
+                                <!--<Border.Style>
                                     <Style TargetType="Border"  >
                                         <Setter Property="BorderBrush" Value="#FF898989"></Setter>
                                         <Setter Property="BorderThickness" Value="2"></Setter>
-                                        <!--<Style.Triggers>
+                                        --><!--<Style.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter Property="BorderBrush" Value="#7F326CF3"></Setter>
                                                 <Setter Property="BorderThickness" Value="6"></Setter>
                                             </Trigger>
-                                        </Style.Triggers>-->
+                                        </Style.Triggers>--><!--
                                     </Style>
-                                </Border.Style>
+                                </Border.Style>-->
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="MouseLeftButtonDown">
                                         <i:InvokeCommandAction 
@@ -379,7 +328,7 @@
                                                 <hc:RunningBlock.Content>
                                                     <TextBlock  Text="{Binding DeviceName}" 
                                                                 FlowDirection="RightToLeft"
-                                                                Style="{DynamicResource TextBlockTitle}"
+                                                                Style="{DynamicResource TextBlockSubTitleBold}"
                                                                 />
                                                 </hc:RunningBlock.Content>
                                                 <!--<hc:RunningBlock.Background>

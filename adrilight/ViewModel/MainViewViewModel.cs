@@ -29,6 +29,7 @@ using adrilight.Shaders;
 using HandyControl.Controls;
 using adrilight.View;
 using HandyControl.Data;
+using System.Windows.Data;
 
 namespace adrilight.ViewModel
 {
@@ -651,6 +652,7 @@ namespace adrilight.ViewModel
 
         public ObservableCollection<string> AvailableMusicPalette { get; private set; }
         public ObservableCollection<string> AvailableMusicMode { get; private set; }
+        public ObservableCollection<string> AvailableMenu { get; private set; }
         public ICommand SelectGif { get; set; }
         public BitmapImage gifimage;
         public Stream gifStreamSource;
@@ -716,9 +718,14 @@ namespace adrilight.ViewModel
             foreach (IDeviceSettings device in devices)
             {
                 AvailableDevices.Add(device);
+                
                 //if (card.IsVissible)
                 //    DisplayCards.Add(card);
             }
+            var addNewButton = new DeviceSettings {
+                IsDummy = true
+            };
+            AvailableDevices.Add(addNewButton);
             //foreach (IDeviceSpotSet spotSet in deviceSpotSets)
             //{
             //    SpotSets.Add(spotSet);
@@ -1879,6 +1886,13 @@ namespace adrilight.ViewModel
           "Naughty boy"
 
         };
+            AvailableMenu = new ObservableCollection<string>
+{
+          "Dashboard",
+           "Settings",
+         
+
+        };
 
             AvailableShader = new ObservableCollection<ShaderCard>
 
@@ -2308,6 +2322,7 @@ namespace adrilight.ViewModel
             var devices = new List<IDeviceSettings>();
             foreach (var item in AvailableDevices)
             {
+                if(!item.IsDummy)
                 devices.Add(item);
             }
    

@@ -24,7 +24,11 @@ namespace adrilight
         private bool _isEnabled;
         private string _outputPort;
         private bool _isTransferActive;
+        bool _isDummy = false;
         private IOutputSettings[] _availableOutput;
+        private string _groupName = "Ambino Devices";
+
+      
 
         public int DeviceID { get =>_deviceID; set { Set(() => DeviceID, ref _deviceID, value); } }
         public string DeviceName { get => _deviceName; set { Set(() => DeviceName, ref _deviceName, value); } }
@@ -37,10 +41,11 @@ namespace adrilight
         public bool IsEnabled { get => _isEnabled; set { Set(() => IsEnabled, ref _isEnabled, value); } }
         public string OutputPort { get => _outputPort; set { Set(() => OutputPort, ref _outputPort, value); } }
         public bool IsTransferActive { get => _isTransferActive; set { Set(() => IsTransferActive, ref _isTransferActive, value); } }
+        public bool IsDummy { get => _isDummy; set { Set(() => IsDummy, ref _isDummy, value); } }
         public IOutputSettings[] AvailableOutputs { get => _availableOutput; set { Set(() => AvailableOutputs, ref _availableOutput, value); } }
 
 
-
+        public string GroupName { get => _groupName; set { Set(() => GroupName, ref _groupName, value); } }
 
     }
 }
