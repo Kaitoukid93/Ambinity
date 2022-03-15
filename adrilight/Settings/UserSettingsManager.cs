@@ -48,7 +48,7 @@ namespace adrilight
 
             var json = File.ReadAllText(JsonDeviceFileNameAndPath);
 
-            var devices = JsonConvert.DeserializeObject<List<DeviceSettings>>(json);
+            var devices = JsonConvert.DeserializeObject<List<DeviceSettings>>(json, new JsonSerializerSettings() {TypeNameHandling = TypeNameHandling.Auto});
 
             return devices;
         }

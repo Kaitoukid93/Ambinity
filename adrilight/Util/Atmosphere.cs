@@ -26,20 +26,20 @@ namespace adrilight
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public Atmosphere(IDeviceSettings deviceSettings, IDeviceSpotSet deviceSpotSet)
+        public Atmosphere(IOutputSettings outputSettings)
         {
-            DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
-            DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
+            OutputSettings = outputSettings ?? throw new ArgumentNullException(nameof(outputSettings));
+            
             //SettingsViewModel = settingsViewModel ?? throw new ArgumentNullException(nameof(settingsViewModel));
             //Remove SettingsViewmodel from construction because now we pass SpotSet Dirrectly to MainViewViewModel
-            DeviceSettings.PropertyChanged += PropertyChanged;
+            OutputSettings.PropertyChanged += PropertyChanged;
             RefreshColorState();
             _log.Info($"Atmosphere Color Created");
 
         }
         //Dependency Inject//
-        private IDeviceSettings DeviceSettings { get; }
-        private IDeviceSpotSet DeviceSpotSet { get; }
+        private IOutputSettings OutputSettings { get; }
+       
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -47,11 +47,9 @@ namespace adrilight
         {
             switch (e.PropertyName)
             {
-                case nameof(DeviceSettings.TransferActive):
-                case nameof(DeviceSettings.SelectedEffect):
-                case nameof(DeviceSettings.Brightness):
-                case nameof(DeviceSettings.SpotsX):
-                case nameof(DeviceSettings.SpotsY):
+                case nameof(OutputSettings.OutputIsEnabled):
+                case nameof(OutputSettings.OutputSelectedMode):
+                case nameof(OutputSettings.OutputBrightness):
                     RefreshColorState();
                     break;
             }
@@ -60,7 +58,7 @@ namespace adrilight
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 4;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 4;
             if (isRunning && !shouldBeRunning)
             {
                 //stop it!
@@ -100,21 +98,21 @@ namespace adrilight
 
                 while (!token.IsCancellationRequested)
                 {
-                    double brightness = DeviceSettings.Brightness / 100d;
-                    int paletteSource = DeviceSettings.SelectedPalette;
-                    var numLED = DeviceSpotSet.LEDSetup.Spots.Length;
-                    var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
-                    var devicePowerMiliamps = DeviceSettings.DevicePowerMiliamps;
+                    double brightness = OutputSettings.OutputBrightness / 100d;
+                    int paletteSource = OutputSettings.OutputSelectedChasingPalette;
+                    var numLED = OutputSettings.OutputLEDSetup.Spots.Length;
+                    var devicePowerVoltage = OutputSettings.OutputPowerVoltage;
+                    var devicePowerMiliamps = OutputSettings.OutputPowerMiliamps;
                     //   var colorOutput = new OpenRGB.NET.Models.Color[numLED];
 
 
                     OpenRGB.NET.Models.Color[] outputColor = new OpenRGB.NET.Models.Color[numLED];
                     int counter = 0;
-                    double hueStart = DeviceSettings.AtmosphereStart;
-                    double hueStop = DeviceSettings.AtmosphereStop;
-                    var newcolor = GetHueGradient(numLED, hueStart, hueStop, 1.0, 1.0);
-                    lock (DeviceSpotSet.Lock)
-                    {
+                    Color startColor = OutputSettings.OutputAtmosphereStartColor;
+                    Color stopColor = OutputSettings.OutputAtmosphereStopColor;
+                    //var newcolor = GetHueGradient(numLED, hueStart, hueStop, 1.0, 1.0);
+                    //lock (DeviceSpotSet.Lock)
+                    //{
 
 
 
@@ -122,25 +120,25 @@ namespace adrilight
 
 
 
-                        //now fill new color to palette output to display and send out serial
+                    //    //now fill new color to palette output to display and send out serial
 
 
-                        foreach (var color in newcolor)
-                        {
-                            outputColor[counter++] = Brightness.applyBrightness(color, brightness, DeviceSpotSet.LEDSetup.Spots.Length, devicePowerMiliamps,devicePowerVoltage);
+                    //    foreach (var color in newcolor)
+                    //    {
+                    //        outputColor[counter++] = Brightness.applyBrightness(color, brightness, DeviceSpotSet.LEDSetup.Spots.Length, devicePowerMiliamps,devicePowerVoltage);
 
-                        }
-                        counter = 0;
-                        foreach (IDeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
-                        {
-                            spot.SetColor(outputColor[counter].R, outputColor[counter].G, outputColor[counter].B, true);
-                            counter++;
+                    //    }
+                    //    counter = 0;
+                    //    foreach (IDeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
+                    //    {
+                    //        spot.SetColor(outputColor[counter].R, outputColor[counter].G, outputColor[counter].B, true);
+                    //        counter++;
 
-                        }
+                    //    }
 
 
 
-                    }
+                    //}
                     Thread.Sleep(10); //motion speed
                 }
                

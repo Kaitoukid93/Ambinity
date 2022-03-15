@@ -682,10 +682,10 @@ namespace adrilight.ViewModel
 
         public MainViewViewModel(IContext context,
             IDeviceSettings[] devices,
-            IGroupSettings[] groups,
-            IDeviceSpotSet[] deviceSpotSets,
+            //IGroupSettings[] groups,
+            //IDeviceSpotSet[] deviceSpotSets,
             IGeneralSettings generalSettings,
-            IOpenRGBStream openRGBStream,
+            //IOpenRGBStream openRGBStream,
             ISerialDeviceDetection serialDeviceDetection,
             ISerialStream[] serialStreams,
             IShaderEffect shaderEffect,
@@ -706,7 +706,7 @@ namespace adrilight.ViewModel
             //AddedDevice = cards.Length;
             Context = context ?? throw new ArgumentNullException(nameof(context));
             SpotSets = new ObservableCollection<IDeviceSpotSet>();
-            OpenRGBStream = openRGBStream ?? throw new ArgumentNullException(nameof(openRGBStream));
+            //OpenRGBStream = openRGBStream ?? throw new ArgumentNullException(nameof(openRGBStream));
             SerialDeviceDetection = serialDeviceDetection ?? throw new ArgumentNullException(nameof(serialDeviceDetection));
             ShaderEffect = shaderEffect ?? throw new ArgumentNullException();
             //ShaderEffect.PropertyChanged += ShaderImageUpdate;
@@ -2211,31 +2211,31 @@ namespace adrilight.ViewModel
         }
         public async void ShowAdjustPositon()
         {
-            var view = new View.DeviceRectPositon();
-            var allDevices = AvailableDevices.ToArray();
-            AdjustPostionViewModel dialogViewModel = new AdjustPostionViewModel(DeviceRectX, DeviceRectY, DeviceRectWidth, DeviceRectHeight, allDevices, ShaderBitmap, CurrentOutput.OutputSelectedMode);
-            view.DataContext = dialogViewModel;
-            bool dialogResult = (bool)await DialogHost.Show(view, "mainDialog");
-            if (dialogResult)
-            {   //save current device rect position to json database
-                DeviceRectX = dialogViewModel.DeviceRectX / 4;
-                DeviceRectY = dialogViewModel.DeviceRectY / 4;
-                //DeviceRectX = CurrentDevice.DeviceRectLeft;
-                //DeviceRectY = CurrentDevice.DeviceRectTop;
+            //var view = new View.DeviceRectPositon();
+            //var allDevices = AvailableDevices.ToArray();
+            ////AdjustPostionViewModel dialogViewModel = new AdjustPostionViewModel(DeviceRectX, DeviceRectY, DeviceRectWidth, DeviceRectHeight, allDevices, ShaderBitmap, CurrentOutput.OutputSelectedMode);
+            //view.DataContext = dialogViewModel;
+            //bool dialogResult = (bool)await DialogHost.Show(view, "mainDialog");
+            //if (dialogResult)
+            //{   //save current device rect position to json database
+            //    DeviceRectX = dialogViewModel.DeviceRectX / 4;
+            //    DeviceRectY = dialogViewModel.DeviceRectY / 4;
+            //    //DeviceRectX = CurrentDevice.DeviceRectLeft;
+            //    //DeviceRectY = CurrentDevice.DeviceRectTop;
 
 
 
 
 
 
-                //RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
-                //RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
-                RaisePropertyChanged(() => DeviceRectX);
-                RaisePropertyChanged(() => DeviceRectY);
-                //RaisePropertyChanged(() => DeviceRectWidthMax);
-                //RaisePropertyChanged(() => DeviceRectHeightMax);
+            //    //RaisePropertyChanged(() => CurrentDevice.DeviceRectLeft);
+            //    //RaisePropertyChanged(() => CurrentDevice.DeviceRectTop);
+            //    RaisePropertyChanged(() => DeviceRectX);
+            //    RaisePropertyChanged(() => DeviceRectY);
+            //    //RaisePropertyChanged(() => DeviceRectWidthMax);
+            //    //RaisePropertyChanged(() => DeviceRectHeightMax);
 
-            }
+            //}
 
 
 
@@ -2310,7 +2310,9 @@ namespace adrilight.ViewModel
             {
                 devices.Add(item);
             }
-            var json = JsonConvert.SerializeObject(devices, Formatting.Indented);
+   
+            var json = JsonConvert.SerializeObject(devices, new JsonSerializerSettings() {
+                TypeNameHandling = TypeNameHandling.Auto});
             Directory.CreateDirectory(JsonPath);
             File.WriteAllText(JsonDeviceFileNameAndPath, json);
 

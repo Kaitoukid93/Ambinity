@@ -21,13 +21,13 @@ namespace adrilight.Util
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
         
-        public StaticColor(IDeviceSettings deviceSettings, IDeviceSpotSet deviceSpotSet)
+        public StaticColor(IOutputSettings outputSettings)
         {
-            DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
-            DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
+            OutputSettings = outputSettings ?? throw new ArgumentNullException(nameof(outputSettings));
+
             //SettingsViewModel = settingsViewModel ?? throw new ArgumentNullException(nameof(settingsViewModel));
             //Remove SettingsViewmodel from construction because now we pass SpotSet Dirrectly to MainViewViewModel
-           DeviceSettings.PropertyChanged += PropertyChanged;
+            OutputSettings.PropertyChanged += PropertyChanged;
             RefreshColorState();
             _log.Info($"Static Color Created");
 
@@ -38,12 +38,9 @@ namespace adrilight.Util
         {
             switch (e.PropertyName)
             {
-                case nameof(DeviceSettings.TransferActive):
-                case nameof(DeviceSettings.StaticColor):
-                case nameof(DeviceSettings.SelectedEffect):
-                case nameof(DeviceSettings.SpotsX):
-                case nameof(DeviceSettings.SpotsY):
-
+                case nameof(OutputSettings.OutputIsEnabled):
+                case nameof(OutputSettings.OutputSelectedMode):
+                case nameof(OutputSettings.OutputBrightness):
                     RefreshColorState();
                     break;
 
@@ -51,8 +48,8 @@ namespace adrilight.Util
         }
 
         //DependencyInjection//
-        private IDeviceSettings DeviceSettings { get; }
-        private IDeviceSpotSet DeviceSpotSet { get; }
+        private IOutputSettings OutputSettings { get; }
+     
 
 
         public bool IsRunning { get; private set; } = false;
@@ -60,7 +57,7 @@ namespace adrilight.Util
         private void RefreshColorState()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 2;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 2;
             if (isRunning && !shouldBeRunning)
             {
                 //stop it!
@@ -107,17 +104,17 @@ namespace adrilight.Util
 
                 while (!token.IsCancellationRequested)
                 {
-                    var numLED = DeviceSpotSet.LEDSetup.Spots.Length;
-                    Color currentStaticColor = DeviceSettings.StaticColor;
+                    var numLED = OutputSettings.OutputLEDSetup.Spots.Length;
+                    Color currentStaticColor = OutputSettings.OutputStaticColor;
                     var colorOutput = new OpenRGB.NET.Models.Color[numLED];
                     double peekBrightness = 0.0;
-                    int breathingSpeed = DeviceSettings.BreathingSpeed;
-                    var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
-                    var devicePowerMiliamps = DeviceSettings.DevicePowerMiliamps;
+                    int breathingSpeed = OutputSettings.OutputBreathingSpeed;
+                    var devicePowerVoltage = OutputSettings.OutputPowerVoltage;
+                    var devicePowerMiliamps = OutputSettings.OutputPowerMiliamps;
 
 
-                    bool isBreathing = DeviceSettings.IsBreathing;
-                    lock (DeviceSpotSet.Lock)
+                    bool isBreathing = OutputSettings.OutputIsBreathing;
+                    lock (OutputSettings.OutputLEDSetup.Lock)
                     {
                         for (var i = 0; i < colorOutput.Count(); i++)
                         {
@@ -137,8 +134,8 @@ namespace adrilight.Util
 
                             else
                             {
-                                peekBrightness = DeviceSettings.Brightness / 100.0;
-                                colorOutput[i] = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(currentStaticColor.R, currentStaticColor.G, currentStaticColor.B), peekBrightness, DeviceSpotSet.LEDSetup.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
+                                peekBrightness = OutputSettings.OutputBrightness / 100.0;
+                                colorOutput[i] = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(currentStaticColor.R, currentStaticColor.G, currentStaticColor.B), peekBrightness, OutputSettings.OutputLEDSetup.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
                             }
                         }
 
@@ -149,7 +146,7 @@ namespace adrilight.Util
                         }
 
                         int counter = 0;
-                        foreach (IDeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
+                        foreach (IDeviceSpot spot in OutputSettings.OutputLEDSetup.Spots)
                         {
 
                             spot.SetColor(colorOutput[counter].R, colorOutput[counter].G, colorOutput[counter].B, true);
@@ -214,9 +211,9 @@ namespace adrilight.Util
         public GradientStopCollection GradientStaticColor(Color staticColor, int powerSuplyMiliamps, int powersupplyVoltage)
         {
             Color startColor = Color.FromRgb(0, 0, 0);
-            OpenRGB.NET.Models.Color staticColorHalf = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(staticColor.R, staticColor.G, staticColor.B), 0.5, DeviceSpotSet.LEDSetup.Spots.Length,powerSuplyMiliamps,powersupplyVoltage);
+            OpenRGB.NET.Models.Color staticColorHalf = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(staticColor.R, staticColor.G, staticColor.B), 0.5, OutputSettings.OutputLEDSetup.Spots.Length,powerSuplyMiliamps,powersupplyVoltage);
             Color staticColorMiddle = Color.FromRgb(staticColorHalf.R, staticColorHalf.G, staticColorHalf.B);
-            OpenRGB.NET.Models.Color staticColorQuad = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(staticColor.R, staticColor.G, staticColor.B), 0.25, DeviceSpotSet.LEDSetup.Spots.Length, powerSuplyMiliamps, powersupplyVoltage);
+            OpenRGB.NET.Models.Color staticColorQuad = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(staticColor.R, staticColor.G, staticColor.B), 0.25, OutputSettings.OutputLEDSetup.Spots.Length, powerSuplyMiliamps, powersupplyVoltage);
             Color staticColorQuat = Color.FromRgb(staticColorQuad.R, staticColorQuad.G, staticColorQuad.B);
 
             GradientStopCollection gradientPalette = new GradientStopCollection(2);

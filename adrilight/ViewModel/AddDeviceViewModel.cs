@@ -126,6 +126,8 @@ namespace adrilight.ViewModel
                 if (value)
                 {
                     Device = DefaultDeviceCollection.ambinoBasic;
+                    IsNextable = true;
+                    RaisePropertyChanged(nameof(IsNextable));
                 }
 
             }
@@ -140,6 +142,8 @@ namespace adrilight.ViewModel
                 if (value)
                 {
                     Device = DefaultDeviceCollection.ambinoBasic;
+                    IsNextable = true;
+                    RaisePropertyChanged(nameof(IsNextable));
 
                 }
 
@@ -168,6 +172,8 @@ namespace adrilight.ViewModel
                 if (value)
                 {
                     Device = DefaultDeviceCollection.ambinoBasic;
+                    IsNextable = true;
+                    RaisePropertyChanged(nameof(IsNextable));
                 }
 
             }
@@ -531,7 +537,7 @@ namespace adrilight.ViewModel
         /// </summary>
         public override void ReadData()
         {
-            Device = new DeviceSettings();
+            Device = DefaultDeviceCollection.ambinoBasic;
             Group = new GroupSettings();
             AvailableDevice = new ObservableCollection<string>
 {

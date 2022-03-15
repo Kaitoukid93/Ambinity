@@ -71,6 +71,7 @@ namespace adrilight
         private IGeneralSettings GeneralSettings { get; }
         private void Refresh()
         {
+            
             lock (OutputSettings.OutputLEDSetup.Lock)
             {
                 OutputSettings.OutputLEDSetup = BuildLEDSetup(OutputSettings, GeneralSettings);

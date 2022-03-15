@@ -39,6 +39,7 @@ namespace adrilight
         public int MatrixHeight { get; set; }
         public object Lock { get; } = new object();
         public int SetupID { get; set; }    // to match with device ID
+
         
        
     }

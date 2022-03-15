@@ -27,7 +27,7 @@ namespace adrilight
         private IOutputSettings[] _availableOutput;
 
         public int DeviceID { get =>_deviceID; set { Set(() => DeviceID, ref _deviceID, value); } }
-        public string DeviceName { get => _deviceName; set { Set(() => Devicename, ref _deviceName, value); } }
+        public string DeviceName { get => _deviceName; set { Set(() => DeviceName, ref _deviceName, value); } }
         public string DeviceSerial { get => _deviceSerial; set { Set(() => _deviceSerial, ref _deviceSerial, value); } }
         public string DeviceType { get => _deviceType; set { Set(() => _deviceType, ref _deviceType, value); } }
         public string Manufacturer { get => _manufacturer; set { Set(() => _manufacturer, ref _manufacturer, value); } }

@@ -13,6 +13,7 @@ namespace adrilight
 {
     internal class OutputSettings : ViewModelBase, IOutputSettings
     {
+       
         private string _outputName;
         private int _outputID;
         private int _outputNumLED;

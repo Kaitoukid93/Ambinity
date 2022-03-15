@@ -177,7 +177,7 @@ namespace adrilight
             var thirdDesktopFrame = kernel.Get<IThirdDesktopFrame>();
             var rainbowTicker = kernel.Get<IRainbowTicker>();
             //kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
-            var openRGBStream = kernel.Get<IOpenRGBStream>();
+            //var openRGBStream = kernel.Get<IOpenRGBStream>();
             kernel.Bind<MainViewViewModel>().ToSelf().InSingletonScope();
 
             //// tách riêng từng setting của từng device///
@@ -217,7 +217,7 @@ namespace adrilight
                     //        if (devicesetting.ParrentLocation == 151293) // Ambino Device
                     //        {
 
-                                kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
+                    kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
 
 
 
@@ -227,7 +227,10 @@ namespace adrilight
                         var outputID = iD + output.OutputID.ToString();
                         //kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
                         kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
+                        kernel.Bind<IDeviceSpotSet>().To<DeviceSpotSet>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
+                        var spotset = kernel.Get<IDeviceSpotSet>(outputID);
                         var rainbow = kernel.Get<IRainbow>(outputID);
+                        
                     }
                         //kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
                         //kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));

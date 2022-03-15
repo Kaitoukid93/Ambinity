@@ -22,17 +22,17 @@ namespace adrilight.Util
     internal class ShaderReader :IShaderReader
     {
         private readonly ILogger _log = LogManager.GetCurrentClassLogger();
-        public ShaderReader(IGeneralSettings generalSettings, IDeviceSpotSet deviceSpotSet, IDeviceSettings deviceSettings, IShaderEffect shaderEffect)
+        public ShaderReader(IGeneralSettings generalSettings, IOutputSettings outputSettings, IShaderEffect shaderEffect)
         {
 
             ShaderEffect = shaderEffect ?? throw new ArgumentNullException(nameof(shaderEffect));
             GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
-            DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
-            DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
+            
+            OutputSettings = outputSettings ?? throw new ArgumentNullException(nameof(outputSettings));
             _retryPolicy = Policy.Handle<Exception>()
                 .WaitAndRetryForever(ProvideDelayDuration);
             GeneralSettings.PropertyChanged += PropertyChanged;
-            DeviceSettings.PropertyChanged += DevicePropertyChanged;
+            OutputSettings.PropertyChanged += PropertyChanged;
 
 
 
@@ -42,8 +42,8 @@ namespace adrilight.Util
         }
         public bool IsRunning { get; set; }
         private IGeneralSettings GeneralSettings { get; }
-        private IDeviceSettings DeviceSettings { get; }
-        private IDeviceSpotSet DeviceSpotSet { get; }
+        private IOutputSettings OutputSettings { get; }
+       
         private IShaderEffect ShaderEffect {  get; }
         private CancellationTokenSource _cancellationTokenSource;
         private readonly Policy _retryPolicy;
@@ -70,7 +70,8 @@ namespace adrilight.Util
 
                 case nameof(GeneralSettings.ShaderCanvasHeight):
                 case nameof(GeneralSettings.ShaderCanvasWidth):
-                
+                case nameof(OutputSettings.OutputLocationX):
+                case nameof(OutputSettings.OutputLocationY):
                     //case nameof(GeneralSettings.Shaderparam1):
                     //case nameof(GeneralSettings.Shaderparam2):
                     //case nameof(GeneralSettings.Shaderparam3):
@@ -79,23 +80,7 @@ namespace adrilight.Util
                     break;
             }
         }
-        private void DevicePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-
-                case nameof(DeviceSettings.TransferActive):
-                case nameof(DeviceSettings.SelectedEffect):
-                case nameof(DeviceSettings.DeviceRectLeft):
-                case nameof(DeviceSettings.DeviceRectTop):
-                    //case nameof(DeviceSettings.DeviceCanvasX):
-                    //case nameof(DeviceSettings.DeviceCanvasY):
-                    //case nameof(DeviceSettings.DeviceSizeX):
-                    //case nameof(DeviceSettings.DeviceSizeY):
-                    RefreshReadingState();
-            break;
-            }
-        }
+     
         public void Run(CancellationToken token)
         {
             if (IsRunning) throw new Exception(nameof(ShaderReader) + " is already running!");
@@ -117,13 +102,13 @@ namespace adrilight.Util
                     //get bitmap image of each frame
                     var frameTime = Stopwatch.StartNew();
                     var newImage = _retryPolicy.Execute(() => GetShaderFrame(image));
-                    var width = DeviceSettings.DeviceRectWidth;
-                    var height = DeviceSettings.DeviceRectHeight;
-                    var x = DeviceSettings.DeviceRectLeft;
-                    var y = DeviceSettings.DeviceRectTop;
-                    var brightness = DeviceSettings.Brightness/100d;
-                    var devicePowerVoltage = DeviceSettings.DevicePowerVoltage;
-                    var devicePowerMiliamps = DeviceSettings.DevicePowerMiliamps;
+                    var width = OutputSettings.OutputPixelWidth;
+                    var height = OutputSettings.OutputPixelHeight;
+                    var x = OutputSettings.OutputLocationX;
+                    var y = OutputSettings.OutputLocationY;
+                    var brightness = OutputSettings.OutputBrightness/100d;
+                    var devicePowerVoltage = OutputSettings.OutputPowerVoltage;
+                    var devicePowerMiliamps = OutputSettings.OutputPowerMiliamps;
                     // TraceFrameDetails(newImage);
 
                     if (newImage == null)
@@ -137,14 +122,14 @@ namespace adrilight.Util
                     
                     image.LockBits(new Rectangle(x, y, width, height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppRgb, bitmapData);
 
-                    lock (DeviceSpotSet.Lock)
+                    lock (OutputSettings.OutputLEDSetup.Lock)
                     {
                        var useLinearLighting = GeneralSettings.UseLinearLighting == 0;
 
           
 
                      
-                        Parallel.ForEach(DeviceSpotSet.LEDSetup.Spots
+                        Parallel.ForEach(OutputSettings.OutputLEDSetup.Spots
                             , spot =>
                             {
                             const int numberOfSteps = 15;
@@ -162,7 +147,7 @@ namespace adrilight.Util
 
                             var spotColor = new OpenRGB.NET.Models.Color(finalR, finalG, finalB);
 
-                            var semifinalSpotColor =  Brightness.applyBrightness(spotColor, brightness, DeviceSpotSet.LEDSetup.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
+                            var semifinalSpotColor =  Brightness.applyBrightness(spotColor, brightness, OutputSettings.OutputLEDSetup.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
                                 ApplySmoothing(semifinalSpotColor.R, semifinalSpotColor.G, semifinalSpotColor.B
                                     , out byte RealfinalR, out byte RealfinalG, out byte RealfinalB,
                                  spot.Red, spot.Green, spot.Blue);
@@ -353,7 +338,7 @@ namespace adrilight.Util
              //update if parametter changed (position, size...)
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 5;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 5;
 
             //  var shouldBeRefreshing = NeededRefreshing;
 
@@ -362,7 +347,7 @@ namespace adrilight.Util
             if (isRunning && !shouldBeRunning)
             {
                 //stop it!
-                _log.Debug("stopping the Shader Reading for device Named " + DeviceSettings.DeviceName);
+                _log.Debug("stopping the Shader Reading for device Named " + OutputSettings.OutputName);
                 _cancellationTokenSource.Cancel();
                 _cancellationTokenSource = null;
 
@@ -372,7 +357,7 @@ namespace adrilight.Util
             else if (!isRunning && shouldBeRunning)
             {
                 //start it
-                _log.Debug("starting the Shader Reading for device Named " + DeviceSettings.DeviceName);
+                _log.Debug("starting the Shader Reading for device Named " + OutputSettings.OutputName);
                 _cancellationTokenSource = new CancellationTokenSource();
                 var thread = new Thread(() => Run(_cancellationTokenSource.Token)) {
                     IsBackground = true,

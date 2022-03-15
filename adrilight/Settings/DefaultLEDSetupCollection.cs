@@ -9,7 +9,12 @@ namespace adrilight.Settings
 {
     internal class DefaultLEDSetupCollection
     {
-        public ILEDSetup BuildLEDSetup(int matrixWidth, int matrixHeight, int numLED, string name, string owner, string description, string type, int rectWidth, int rectHeight, string outputType) // general settings is for compare each device setting
+        public static ILEDSetup defaultLED;
+        public DefaultLEDSetupCollection()
+        {
+            defaultLED = BuildLEDSetup(11, 7, 32, "123", "456", "789", "ABRev2", 240, 135, "ABRev2");
+        }
+        internal ILEDSetup BuildLEDSetup(int matrixWidth, int matrixHeight, int numLED, string name, string owner, string description, string type, int rectWidth, int rectHeight, string outputType) // general settings is for compare each device setting
         {
 
            
