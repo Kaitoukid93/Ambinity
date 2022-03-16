@@ -157,6 +157,7 @@
     <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
     <PackageReference Include="NLog" Version="4.7.12" />
     <PackageReference Include="SharpDX" Version="4.2.0" />
+    <PackageReference Include="SharpVectors" Version="1.7.7" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
     <PackageReference Include="squirrel.windows" Version="2.0.2-netcore" />
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.8.1" />
@@ -226,6 +227,7 @@
   <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
   <ItemGroup>
     <None Remove="App.config" />
+    <None Remove="Resources\Image\lamp.svg" />
     <None Remove="Resources\Image\screen.png" />
     <None Remove="Shaders\Thumbnail\Gooey.png" />
     <None Remove="Shaders\Thumbnail\MetaBalls.png" />
@@ -236,6 +238,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Image\lamp.svg" />
     <Resource Include="Resources\Image\screen.png" />
     <Resource Include="Shaders\Thumbnail\Gooey.png" />
     <Resource Include="Shaders\Thumbnail\MetaBalls.png" />

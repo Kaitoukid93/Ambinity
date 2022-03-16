@@ -9,16 +9,21 @@
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:converters="clr-namespace:adrilight.Converter" 
              xmlns:viewmodel="clr-namespace:adrilight.ViewModel" 
-              
-             xmlns:lottieSharp="clr-namespace:LottieSharp;assembly=LottieSharp" 
              d:DataContext="{d:DesignInstance Type=viewmodel:MainViewViewModel}"
              Background="{DynamicResource RegionBrush}">
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
-            <converters:BrushToHexConverter x:Key="BrushToHexConverter" />
-            <BooleanToVisibilityConverter x:Key="boolToVisibilityConvert" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="ControlStyle.xaml">
+                    <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+                    <converters:BrushToHexConverter x:Key="BrushToHexConverter" />
+                    <BooleanToVisibilityConverter x:Key="boolToVisibilityConvert" />
+                </ResourceDictionary>
+
+            </ResourceDictionary.MergedDictionaries>
+            
             <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -58,15 +63,22 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid   Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="300"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="MotherGrid"  ClipToBounds="true" Grid.Row="0">
+        <Border Margin="10"  Background="{StaticResource DarkMaskBrush}" CornerRadius="7">
+            
+       
+        <hc:SimplePanel   ClipToBounds="true" Grid.Row="0">
+            
+
+        <Grid x:Name="MotherGrid"  ClipToBounds="true" >
             <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center"  Name="PreviewBox" 
                                
                  Margin="8">
@@ -123,6 +135,53 @@
                      CornerRadius="1"
                      Opacity="0.5"/>
             </Canvas>
+        </Grid>
+        </hc:SimplePanel>
+        </Border>
+        <Grid x:Name="DaughterGrid" Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border MaxWidth="600"   Height="auto" Margin="10"  Background="{StaticResource DarkMaskBrush}" CornerRadius="7">
+                <StackPanel>
+        
+                        
+                   
+                    <hc:ButtonGroup x:Name="Fx"  Margin="8,8,8,8" Style="{DynamicResource ButtonGroupBaseStyle}">
+                            <hc:ButtonGroup.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel>
+                                        
+                                    </WrapPanel>
+                                </ItemsPanelTemplate>
+                            </hc:ButtonGroup.ItemsPanel>
+                        <RadioButton x:Name="ScreenCapture" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource screencapture }"  Style="{DynamicResource RadioButtonIcon}" Content="Screen Capture"/>
+                        <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource colorpalette }" Style="{DynamicResource RadioButtonIcon}" Content="Color Palette"/>
+                        <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource music}" Content="Music Reactive" IsChecked="True"/>
+                        <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource static}" Content="Static Color"/>
+                        <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource canvas}" Content="Canvas"/>
+                    </hc:ButtonGroup>
+                    <hc:TransitioningContentControl Visibility="{Binding ElementName=ScreenCapture,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}" TransitionMode="Left2RightWithFade">
+                        <local:ScreenCapturingControl  Margin="4">
+
+                        </local:ScreenCapturingControl>
+
+                    </hc:TransitioningContentControl>
+                    
+                </StackPanel>
+                
+              
+             
+                </Border>
+            <Border Grid.Column="1" Margin="10" Background="{StaticResource DarkMaskBrush}" CornerRadius="7">
+            <StackPanel Height="300" 
+                        hc:BorderElement.CornerRadius="30"  
+                        Grid.Column="1"
+                        x:Name="CollectionPanel">
+
+            </StackPanel>
+                </Border>
         </Grid>
 
       

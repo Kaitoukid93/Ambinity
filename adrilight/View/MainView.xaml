@@ -318,10 +318,13 @@
 
                     </StackPanel>
                     </hc:TransitioningContentControl>
-                    <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade">
+                    <Grid Visibility="{Binding IsDashboardType,Converter={StaticResource InverseBoolToVisConverter}}" >
 
 
-                        <StackPanel Visibility="{Binding IsDashboardType,Converter={StaticResource InverseBoolToVisConverter}}" Margin="0,7,0,0">
+                        <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade" >
+
+
+                            <StackPanel  Margin="0,7,0,0">
 
                             <DockPanel>
                                 <Button Style="{StaticResource ButtonBaseStyle}" Command="{Binding BackCommand}" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="10,10,10,4" Content="Dashboard" BorderThickness="0" Background="{DynamicResource SecondaryRegionBrush}"/>
@@ -343,7 +346,6 @@
                                                 <StackPanel Orientation="Horizontal">
                                                     <Image Width="16" Height="16" Source="/Resources/Image/screen.png" />
                                                     <hc:HighlightTextBlock Margin="6,0,0,0" SourceText="{Binding DeviceName}" QueriesText="{Binding QueriesText}"/>
-                                                    <!--<Path Visibility="{Binding IsNew,Converter={StaticResource Boolean2VisibilityConverter}}" VerticalAlignment="Center" Data="{StaticResource NewGeometry}" Stretch="Uniform" Margin="10,0,0,0" Width="30" Height="14" Fill="{DynamicResource DangerBrush}"/>-->
                                                 </StackPanel>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
@@ -362,10 +364,14 @@
 
                         </StackPanel>
                     </hc:TransitioningContentControl>
-                    <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade">
+                    </Grid>
+                    <Grid Visibility="Collapsed">
+                        
+                    
+                    <hc:TransitioningContentControl  TransitionMode="Right2LeftWithFade">
 
 
-                        <StackPanel Visibility="{Binding IsDashboardType,Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,7,0,0">
+                        <StackPanel  Margin="0,7,0,0">
 
                             <DockPanel>
                                 
@@ -407,12 +413,18 @@
 
                         </StackPanel>
                     </hc:TransitioningContentControl>
-
-                    <ContentControl Content="{Binding .,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource selectableContentStyle}" Grid.Column="1" Margin="1" >
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        
+                    
+                    <hc:TransitioningContentControl Grid.Column="1" TransitionMode="Right2LeftWithFade">
+                        
+                    
+                    <ContentControl Content="{Binding .,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource selectableContentStyle}"  >
 
                     </ContentControl>
-
-
+                    </hc:TransitioningContentControl>
+                    </Grid>
                 </Grid>
             </Grid>
 

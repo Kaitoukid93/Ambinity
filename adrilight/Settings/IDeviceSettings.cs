@@ -27,5 +27,7 @@ namespace adrilight
         bool IsTransferActive { get; set; }
         IOutputSettings[] AvailableOutputs { get; set; }
         string GroupName { get; set; }
+        string SmallIcon { get; set; }
+        string BigIcon { get; set; }
     }
 }

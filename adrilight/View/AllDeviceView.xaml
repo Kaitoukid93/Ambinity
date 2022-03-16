@@ -8,6 +8,7 @@
              xmlns:local="clr-namespace:adrilight.View"
              xmlns:deviceSettings="clr-namespace:adrilight"
              Background="{DynamicResource RegionBrush}"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              xmlns:converters="clr-namespace:adrilight.Converter"
              mc:Ignorable="d" 
               xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf" xmlns:viewmodel="clr-namespace:adrilight.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainViewViewModel}"
@@ -48,9 +49,24 @@
                 <Setter Property="Focusable" Value="False"/>
                 <Setter Property="VerticalContentAlignment" Value="Stretch"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                
-               
-                
+                <Setter Property="Tag" Value="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}" />
+                <Setter Property="ContextMenu">
+                    <Setter.Value>
+                        <ContextMenu Style="{DynamicResource ContextMenuBaseStyle}">
+                            <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Share"
+                                           
+                                          >
+                            </MenuItem>
+                            <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Delete"
+                                          Command="{Binding PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                          >
+                            </MenuItem>
+                        </ContextMenu>
+
+                    </Setter.Value>
+                </Setter>
+
+
 
                 <Setter Property="Template">
                     <Setter.Value>
@@ -97,6 +113,8 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+         
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary
                     Source="ControlStyle.xaml">
@@ -193,9 +211,9 @@
                               x:Name="dev" 
                               Visibility="{Binding IsVissible,Converter={StaticResource boolToVisibilityConvert}}"         
                               Width="230" 
-                              Height="245" >
+                              Height="260" >
 
-                            <Button Visibility="{Binding IsDummy,Converter={StaticResource boolToVisibilityConvert}}" Command="{Binding Path=DataContext.ShowAddNewCommand, ElementName=itm}" hc:BorderElement.CornerRadius="30" Width="230" Height="245" Margin="0" hc:IconElement.Geometry="{DynamicResource AddGeometry}" hc:IconElement.Height="50" hc:IconElement.Width="50" Style="{DynamicResource ButtonDashedPrimary}">
+                            <Button Visibility="{Binding IsDummy,Converter={StaticResource boolToVisibilityConvert}}" Command="{Binding Path=DataContext.ShowAddNewCommand, ElementName=itm}" hc:BorderElement.CornerRadius="30" Width="230" Height="260" Margin="0" hc:IconElement.Geometry="{DynamicResource AddGeometry}" hc:IconElement.Height="50" hc:IconElement.Width="50" Style="{DynamicResource ButtonDashedPrimary}">
                                 
                             </Button>
 
@@ -203,7 +221,7 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
                                 CornerRadius="30" 
-                                Background="{DynamicResource SecondaryRegionBrush}">
+                                Background="{DynamicResource DarkMaskBrush}">
                                 <!--<Border.Style>
                                     <Style TargetType="Border"  >
                                         <Setter Property="BorderBrush" Value="#FF898989"></Setter>
@@ -223,100 +241,50 @@
                                             CommandParameter="{Binding}"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
-                                <Grid>
+                                <Grid Margin="20">
                                     <!--<i:Interaction.Triggers>
                                         <i:EventTrigger EventName="MouseDown">
                                             <i:InvokeCommandAction Command="{Binding Path=DataContext.SelectCardCommand, ElementName=itm}" CommandParameter="{Binding}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>-->
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="58*"/>
-                                        <ColumnDefinition Width="15*"/>
-                                    </Grid.ColumnDefinitions>
+                                 
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="22*"/>
-                                        <RowDefinition Height="64*"/>
-                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                        
                                     </Grid.RowDefinitions>
                                     <!--on off button-->
                                     <ToggleButton 
-                                        IsChecked="{Binding LEDOn}" 
+                                        IsChecked="{Binding IsEnabled}" 
                                         BorderThickness="0"                                     
-                                        Margin="0,0,15,0" 
+                                        Margin="0,0,0,0" 
                                         HorizontalAlignment="Right"
-                                        Grid.Column="1"
-                                        Style="{StaticResource ToggleButtonFlip}">
-                                        <hc:StatusSwitchElement.CheckedElement>
-                                            <Border 
-                                            Background="{DynamicResource PrimaryBrush}">
-                                                <TextBlock 
-                                                HorizontalAlignment="Center" 
-                                                VerticalAlignment="Center" 
-                                                Text="On" 
-                                                Foreground="{DynamicResource TextIconBrush}"/>
-                                            </Border>
-                                        </hc:StatusSwitchElement.CheckedElement>
-                                        
-                                        <Border Background="{DynamicResource DangerBrush}">
-                                            <TextBlock 
-                                                    HorizontalAlignment="Center" 
-                                                    VerticalAlignment="Center" 
-                                                    Text="Off" 
-                                                    Foreground="{DynamicResource TextIconBrush}"/>
-                                        </Border>
+                                        VerticalAlignment="Center"
+
+                                        Grid.Row="0"
+                                        Style="{StaticResource ToggleButtonSwitch}">
                                     </ToggleButton>
                                     <!--delete device button-->
-                                    <Button 
-                                        BorderBrush="{x:Null}" 
-                                        BorderThickness="1"   
-                                        hc:BorderElement.CornerRadius="7"
-                                        Style="{StaticResource ButtonPrimary}"
-                                        ToolTip="Xóa Thiết bị" 
-                                        Command="{Binding Path=DataContext.DeleteDeviceCommand, ElementName=itm}" 
-                                        CommandParameter="{Binding}"
-                                        Grid.Column="0"
-                                        Width="32" 
-                                        Height="32" 
-                                        Margin="0,0,5,0" 
-                                        Padding="0" 
-                                        VerticalAlignment="Center" 
-                                        HorizontalAlignment="Right">
-                                        <materialDesign:PackIcon
-                                          Kind="Close"
-                                          Height="26"
-                                          Width="26" />
-                                        <Button.Background>
-                                            <SolidColorBrush Color="{DynamicResource DangerColor }" Opacity="0.25" />
+                                    
+                                    <!--Icon-->
+                                    <Border HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="0,0,0,0" Width="71" Height="71" CornerRadius="15" >
+                                        <Border.Background>
+                                            <SolidColorBrush Color ="{Binding Color, Source={StaticResource PrimaryBrush}}" Opacity="0.1"/>
+                                        </Border.Background>
+                                        <Image Source="{svgc:SvgImage Source=/Resources/Image/lamp.svg}" Height="35" Width="35"/>
+                                    </Border>
+                                    
 
-                                        </Button.Background>
-                                        <Button.Foreground>
-                                            <SolidColorBrush Color="{DynamicResource DangerColor}" Opacity="1" />
-
-                                        </Button.Foreground>
-                                    </Button>
-                                    <!--color dot-->
-                                    <Rectangle 
-                                        Margin="0,0,20,20" 
-                                        Grid.Column="1" 
-                                        Grid.Row="1" 
-                                        Fill="{Binding StaticColor,Converter={StaticResource ColorToBrushConverter}}" 
-                                        Width="19" 
-                                        Height="19" 
-                                        RadiusX="10" 
-                                        RadiusY="10" 
-                                        VerticalAlignment="Bottom" 
-                                        HorizontalAlignment="Right"/>
                                     <!--device information-->
-                                    <Grid Grid.Row="1" Grid.Column="0">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="13*"/>
-                                            <RowDefinition Height="51*"/>
-                                        </Grid.RowDefinitions>
+                                    
+                                        <!--Big icon-->
+                                       
                                         <StackPanel  
-                                            Margin="20,0,0,0" 
+                                            Margin="0,20,0,20"
                                             Grid.Row="1" 
-                                            Grid.ColumnSpan="1">
+                                            >
                                             <hc:RunningBlock 
+                                                Margin="10,10,10,0"
                                                 BorderThickness="0" 
                                                 Padding="0"  
                                                 Duration="0:0:9" 
@@ -328,7 +296,7 @@
                                                 <hc:RunningBlock.Content>
                                                     <TextBlock  Text="{Binding DeviceName}" 
                                                                 FlowDirection="RightToLeft"
-                                                                Style="{DynamicResource TextBlockSubTitleBold}"
+                                                                Style="{DynamicResource TextBlockTitle}"
                                                                 />
                                                 </hc:RunningBlock.Content>
                                                 <!--<hc:RunningBlock.Background>
@@ -338,12 +306,12 @@
                                                 </hc:RunningBlock.Background>-->
 
                                             </hc:RunningBlock>
-                                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Padding="3" Text="{Binding DeviceType}" />
-                                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Padding="3" Text="{Binding DevicePort}"/>
-                                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Padding="3" Text="{Binding DeviceID, StringFormat=Device ID : {0}}"/>
-                                            <TextBlock HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Padding="3" Text="{Binding Brightness,StringFormat=Độ sáng : {0}%}"/>
+                                            <TextBlock Margin="10" HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}"  Text="{Binding DeviceType}" />
+                                            <TextBlock Margin="10" HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultDanger}"  Text="{Binding OutputPort}"/>
+                                          
+                                            
                                         </StackPanel>
-                                    </Grid>
+                                    
                                     <!--<ListBox Grid.Row="2" Visibility="{Binding IsHUB,Converter={StaticResource boolToVisibilityConvert}}">
                                         <ListBox.Resources>
                                             <CollectionViewSource x:Key="allDevice" Source="{Binding ChildCard}" />
