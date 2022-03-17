@@ -267,6 +267,7 @@ namespace adrilight.ViewModel
         }
         //VIDs commands//
         public ICommand ZerolAllCommand { get; set; }
+        public ICommand LaunchPositionEditWindowCommand { get; set; }
         public ICommand EditSelectedPaletteCommand { get; set; }
         public ICommand ImportPaletteCardFromFileCommand { get; set; }
         public ICommand ExportCurrentSelectedPaletteToFileCommand { get; set; }
@@ -633,18 +634,18 @@ namespace adrilight.ViewModel
 
         public ObservableCollection<string> AvailablePalette { get; private set; }
         public IContext Context { get; }
-        public IList<String> _AvailableDisplays;
-        public IList<String> AvailableDisplays {
+        private List<string> _availableDisplays;
+        public List<string> AvailableDisplays {
             get
             {
-                var listDisplay = new List<String>();
+                var listDisplay = new List<string>();
                 foreach (var screen in System.Windows.Forms.Screen.AllScreens)
                 {
 
                     listDisplay.Add(screen.DeviceName);
                 }
-                _AvailableDisplays = listDisplay;
-                return _AvailableDisplays;
+                _availableDisplays = listDisplay;
+                return _availableDisplays;
             }
         }
 
@@ -691,7 +692,7 @@ namespace adrilight.ViewModel
             ISerialDeviceDetection serialDeviceDetection,
             ISerialStream[] serialStreams,
             IShaderEffect shaderEffect,
-            IDesktopFrame desktopFrame,
+            
             ISecondDesktopFrame secondDesktopFrame,
             IThirdDesktopFrame thirdDesktopFrame
            )
@@ -699,7 +700,7 @@ namespace adrilight.ViewModel
 
             GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
             SerialStreams = serialStreams ?? throw new ArgumentNullException(nameof(serialStreams));
-            DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
+            //DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
             SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
             ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
             AvailableDevices = new ObservableCollection<IDeviceSettings>();
@@ -786,127 +787,127 @@ namespace adrilight.ViewModel
 
         //}
 
-        //private void ShaderImageUpdate(object sender, PropertyChangedEventArgs e)
-        //{
-        //    if (IsSplitLightingWindowOpen)
-        //    {
-        //        if (CurrentDevice != null)
-        //        {
-        //            switch (CurrentDeviceSelectedEffect)
-        //            {
-        //                case 5:
-        //                    Context.Invoke(() =>
-        //                    {
-        //                        var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
-        //                        MatrixBitmap.Lock();
-        //                        IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-        //                        var CurrentFrame = ShaderEffect.Frame;
+        public void ShaderImageUpdate(byte[] frame)
+        {
+            //if (IsSplitLightingWindowOpen)
+            //{
+            //    if (CurrentDevice != null)
+            //    {
+            //        switch (CurrentDeviceSelectedEffect)
+            //        {
+            //            case 5:
+            //                Context.Invoke(() =>
+            //                {
+            //                    var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+            //                    MatrixBitmap.Lock();
+            //                    IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+            //                    var CurrentFrame = ShaderEffect.Frame;
 
-        //                        if (CurrentFrame != null)
-        //                        {
-        //                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+            //                    if (CurrentFrame != null)
+            //                    {
+            //                        Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-        //                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+            //                        MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-        //                            MatrixBitmap.Unlock();
-        //                            ShaderBitmap = MatrixBitmap;
-        //                            RaisePropertyChanged(() => DeviceRectWidthMax);
-        //                            RaisePropertyChanged(() => DeviceRectHeightMax);
-        //                        }
-        //                    });
-        //                    break;
-        //                case 0:
-        //                    switch (CurrentDevice.SelectedDisplay)
-        //                    {
-        //                        case 0:
-        //                            Context.Invoke(() =>
-        //                            {
+            //                        MatrixBitmap.Unlock();
+            //                        ShaderBitmap = MatrixBitmap;
+            //                        RaisePropertyChanged(() => DeviceRectWidthMax);
+            //                        RaisePropertyChanged(() => DeviceRectHeightMax);
+            //                    }
+            //                });
+            //                break;
+            //            case 0:
+            //                switch (CurrentDevice.SelectedDisplay)
+            //                {
+            //                    case 0:
+                                    Context.Invoke(() =>
+                                    {
 
-        //                                var CurrentFrame = DesktopFrame.Frame;
-        //                                if (CurrentFrame != null)
-        //                                {
-        //                                    var MatrixBitmap = new WriteableBitmap(DesktopFrame.FrameWidth, DesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
-        //                                    MatrixBitmap.Lock();
-        //                                    IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-        //                                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+                                        var CurrentFrame = frame;
+                                        if (CurrentFrame != null)
+                                        {
+                                            var MatrixBitmap = new WriteableBitmap(240, 135, 96, 96, PixelFormats.Bgra32, null);
+                                            MatrixBitmap.Lock();
+                                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-        //                                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, DesktopFrame.FrameWidth, DesktopFrame.FrameHeight));
+                                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-        //                                    MatrixBitmap.Unlock();
-        //                                    ShaderBitmap = MatrixBitmap;
-        //                                    RaisePropertyChanged(() => DeviceRectWidthMax);
-        //                                    RaisePropertyChanged(() => DeviceRectHeightMax);
-        //                                }
-        //                                else
-        //                                {
-        //                                    //notify the UI show error message
+                                            MatrixBitmap.Unlock();
+                                            ShaderBitmap = MatrixBitmap;
+                                            //RaisePropertyChanged(() => DeviceRectWidthMax);
+                                            //RaisePropertyChanged(() => DeviceRectHeightMax);
+                                        }
+                                        else
+                                        {
+                                            //notify the UI show error message
 
-        //                                }
+                                        }
 
-        //                            });
-        //                            break;
-        //                        case 1:
-        //                            Context.Invoke(() =>
-        //                            {
+                                    });
+                //                    break;
+                //                case 1:
+                //                    Context.Invoke(() =>
+                //                    {
 
-        //                                var CurrentFrame = SecondDesktopFrame.Frame;
-        //                                if (CurrentFrame != null)
-        //                                {
-        //                                    var MatrixBitmap = new WriteableBitmap(SecondDesktopFrame.FrameWidth, SecondDesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
-        //                                    MatrixBitmap.Lock();
-        //                                    IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-        //                                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+                //                        var CurrentFrame = SecondDesktopFrame.Frame;
+                //                        if (CurrentFrame != null)
+                //                        {
+                //                            var MatrixBitmap = new WriteableBitmap(SecondDesktopFrame.FrameWidth, SecondDesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
+                //                            MatrixBitmap.Lock();
+                //                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                //                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-        //                                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+                //                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-        //                                    MatrixBitmap.Unlock();
-        //                                    ShaderBitmap = MatrixBitmap;
-        //                                    RaisePropertyChanged(() => DeviceRectWidthMax);
-        //                                    RaisePropertyChanged(() => DeviceRectHeightMax);
-        //                                }
-        //                                else
-        //                                {
-        //                                    //notify the UI show error message
-        //                                    IsSecondDesktopValid = false;
-        //                                    RaisePropertyChanged(() => IsSecondDesktopValid);
-        //                                }
+                //                            MatrixBitmap.Unlock();
+                //                            ShaderBitmap = MatrixBitmap;
+                //                            RaisePropertyChanged(() => DeviceRectWidthMax);
+                //                            RaisePropertyChanged(() => DeviceRectHeightMax);
+                //                        }
+                //                        else
+                //                        {
+                //                            //notify the UI show error message
+                //                            IsSecondDesktopValid = false;
+                //                            RaisePropertyChanged(() => IsSecondDesktopValid);
+                //                        }
 
-        //                            });
-        //                            break;
-        //                        case 2:
-        //                            Context.Invoke(() =>
-        //                            {
+                //                    });
+                //                    break;
+                //                case 2:
+                //                    Context.Invoke(() =>
+                //                    {
 
-        //                                var CurrentFrame = ThirdDesktopFrame.Frame;
-        //                                if (CurrentFrame != null)
-        //                                {
-        //                                    var MatrixBitmap = new WriteableBitmap(ThirdDesktopFrame.FrameWidth, ThirdDesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
-        //                                    MatrixBitmap.Lock();
-        //                                    IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-        //                                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+                //                        var CurrentFrame = ThirdDesktopFrame.Frame;
+                //                        if (CurrentFrame != null)
+                //                        {
+                //                            var MatrixBitmap = new WriteableBitmap(ThirdDesktopFrame.FrameWidth, ThirdDesktopFrame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
+                //                            MatrixBitmap.Lock();
+                //                            IntPtr pixelAddress = MatrixBitmap.BackBuffer;
+                //                            Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
 
-        //                                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
+                //                            MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, 240, 135));
 
-        //                                    MatrixBitmap.Unlock();
-        //                                    ShaderBitmap = MatrixBitmap;
-        //                                    RaisePropertyChanged(() => DeviceRectWidthMax);
-        //                                    RaisePropertyChanged(() => DeviceRectHeightMax);
-        //                                }
-        //                                else
-        //                                {
-        //                                    //notify the UI show error message
-        //                                    IsThirdDesktopValid = false;
-        //                                    RaisePropertyChanged(() => IsThirdDesktopValid);
-        //                                }
+                //                            MatrixBitmap.Unlock();
+                //                            ShaderBitmap = MatrixBitmap;
+                //                            RaisePropertyChanged(() => DeviceRectWidthMax);
+                //                            RaisePropertyChanged(() => DeviceRectHeightMax);
+                //                        }
+                //                        else
+                //                        {
+                //                            //notify the UI show error message
+                //                            IsThirdDesktopValid = false;
+                //                            RaisePropertyChanged(() => IsThirdDesktopValid);
+                //                        }
 
-        //                            });
-        //                            break;
-        //                    }
+                //                    });
+                //                    break;
+                //            }
 
-        //                    break;
-        //            }
-        //        }
-        //    }
+                //            break;
+                //    }
+                //}
+            }
 
 
         //    if (IsCanvasLightingWindowOpen)
@@ -1169,6 +1170,14 @@ namespace adrilight.ViewModel
             {
                 OpenEditPaletteDialog();
             });
+            LaunchPositionEditWindowCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                OpenPositionEditWindow();
+            });
+
 
             EditSelectedPaletteSaveConfirmCommand = new RelayCommand<string>((p) =>
                  {
@@ -1413,6 +1422,16 @@ namespace adrilight.ViewModel
 
 
             });
+        }
+
+        private static void OpenPositionEditWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"PositionEditWindow"}") is System.Windows.Window window)
+            {
+                window.Owner = System.Windows.Application.Current.MainWindow;                
+                window.ShowDialog();
+
+            }
         }
 
         private void ExportCurrentSelectedPaletteToFile()
@@ -2504,7 +2523,7 @@ namespace adrilight.ViewModel
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == lighting);
             IsDashboardType = false;
             CurrentDevice = selectedDevice;
-            CurrentOutput = CurrentDevice.AvailableOutputs[1];
+            CurrentOutput = CurrentDevice.AvailableOutputs[0];
             CurrentLEDSetup = CurrentOutput.OutputLEDSetup;
             
             IsSplitLightingWindowOpen = true;

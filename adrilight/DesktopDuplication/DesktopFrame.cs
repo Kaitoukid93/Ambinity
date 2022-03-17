@@ -23,13 +23,13 @@ namespace adrilight
     {
         private readonly ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public DesktopFrame(IGeneralSettings userSettings)
+        public DesktopFrame(IGeneralSettings userSettings, MainViewViewModel mainViewViewModel)
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
 
 
 
-            // SettingsViewModel = settingsViewModel ?? throw new ArgumentNullException(nameof(settingsViewModel));
+            MainViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
             _retryPolicy = Policy.Handle<Exception>()
                 .WaitAndRetryForever(ProvideDelayDuration);
 
@@ -140,7 +140,7 @@ namespace adrilight
 
 
         private IGeneralSettings UserSettings { get; set; }
-
+        private MainViewViewModel MainViewModel { get; set; }
 
 
 
@@ -222,14 +222,13 @@ namespace adrilight
                     // if(MainView.IsSettingsWindowOpen)
                     // MainView.SetPreviewImage(DesktopFrame);
 
-                    //bool isPreviewRunning = SettingsViewModel.IsSettingsWindowOpen && SettingsViewModel.IsPreviewTabOpen;
-                    //if (isPreviewRunning)
-                    //{
-                    //   MainViewViewModel.SetPreviewImage(image);
+                 
+                    
+                        MainViewModel.ShaderImageUpdate(Frame);
 
 
 
-                    image.UnlockBits(bitmapData);
+                        image.UnlockBits(bitmapData);
                     int minFrameTimeInMs = 1000 / UserSettings.LimitFps;
                     var elapsedMs = (int)frameTime.ElapsedMilliseconds;
                     if (elapsedMs < minFrameTimeInMs)

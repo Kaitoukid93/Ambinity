@@ -249,12 +249,26 @@
     <Compile Update="View\AddNewPaletteWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\PositionEditWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\ScreenCapturingSidePanel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\UserNumberInput.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="View\AddNewPaletteWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\PositionEditWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ScreenCapturingSidePanel.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

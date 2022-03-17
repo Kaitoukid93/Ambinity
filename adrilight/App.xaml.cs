@@ -157,7 +157,7 @@ namespace adrilight
         {
 
             var kernel = new StandardKernel(new DeviceSettingsInjectModule());
-
+            kernel.Bind<MainViewViewModel>().ToSelf().InSingletonScope();
             //Load setting từ file Json//
             var settingsManager = new UserSettingsManager();
             var existedDevice = settingsManager.LoadDeviceIfExists();
@@ -178,7 +178,7 @@ namespace adrilight
             var rainbowTicker = kernel.Get<IRainbowTicker>();
             //kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
             //var openRGBStream = kernel.Get<IOpenRGBStream>();
-            kernel.Bind<MainViewViewModel>().ToSelf().InSingletonScope();
+            
 
             //// tách riêng từng setting của từng device///
             if (existedDevice != null)

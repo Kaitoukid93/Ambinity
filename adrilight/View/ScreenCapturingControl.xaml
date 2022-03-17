@@ -45,16 +45,16 @@
                             </WrapPanel>
                         </ItemsPanelTemplate>
                     </hc:ButtonGroup.ItemsPanel>
-                    <RadioButton x:Name="ScreenCapture" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource fullscreen }"  Style="{DynamicResource RadioButtonIcon}" Content="Full Screen"/>
-                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource Left }" Style="{DynamicResource RadioButtonIcon}" Content="Left"/>
-                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource right}" Content="Right" IsChecked="True"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource fullscreen }"  Style="{DynamicResource RadioButtonIcon}" Content="Full Screen"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource left }" Style="{DynamicResource RadioButtonIcon}" Content="Left"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource right}" Content="Right" />
                     <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource up}" Content="Top"/>
                     <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource down}" Content="Bottom"/>
-                    <RadioButton x:Name="customCaptureZone" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource custom}" Content="Custom"/>
+                    <RadioButton IsChecked="True" x:Name="customCaptureZone" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource custom}" Content="Custom"/>
                 </hc:ButtonGroup>
                     <Grid Visibility="{Binding ElementName=customCaptureZone,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
                         <hc:TransitioningContentControl  TransitionMode="Left2Right">
-                            <Button   Style="{DynamicResource ButtonDashedInfo}" Content="Edit" ToolTip="Launch Zone Editor" hc:IconElement.Geometry="{DynamicResource WindowRestoreGeometry}"/>
+                            <Button Command="{Binding LaunchPositionEditWindowCommand}" CommandParameter="edit"  Style="{DynamicResource ButtonDashedInfo}" Content="Edit" ToolTip="Launch Zone Editor" hc:IconElement.Geometry="{DynamicResource WindowRestoreGeometry}"/>
                         </hc:TransitioningContentControl>
                     </Grid>
                     
@@ -80,8 +80,8 @@
 
                             <hc:Divider Grid.Column="1" Margin="25,0,25,0" LineStrokeThickness="2" LineStroke="{DynamicResource DarkPrimaryBrush}" Orientation="Vertical" MaxHeight="25"/>
 
-                        <GroupBox Grid.Column="2" VerticalAlignment="Bottom"  Width="300" hc:TitleElement.TitleWidth="75" Header="Smoothness" Margin="5" Style="{DynamicResource GroupBoxOriginal}" HorizontalContentAlignment="Left" hc:TitleElement.TitlePlacement="Left">
-                            <hc:PreviewSlider Grid.Column="1" Width="200" HorizontalAlignment="Left" Margin="35,0,0,0" Minimum="5" Maximum="30">
+                        <GroupBox Grid.Column="2" VerticalAlignment="Bottom"  Width="300" hc:TitleElement.TitleWidth="105" Header="Smoothness" Margin="5" Style="{DynamicResource GroupBoxOriginal}" HorizontalContentAlignment="Left" hc:TitleElement.TitlePlacement="Left">
+                            <hc:PreviewSlider Grid.Column="1" Width="200" HorizontalAlignment="Left" Margin="0,0,0,0" Minimum="5" Maximum="30">
                                 <hc:PreviewSlider.PreviewContent>
                                     <Label Style="{DynamicResource LabelBaseStyle}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
                                 </hc:PreviewSlider.PreviewContent>

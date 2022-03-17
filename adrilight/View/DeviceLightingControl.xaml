@@ -175,12 +175,20 @@
              
                 </Border>
             <Border Grid.Column="1" Margin="10" Background="{StaticResource DarkMaskBrush}" CornerRadius="7">
-            <StackPanel Height="300" 
+            <!--<StackPanel Height="300" 
                         hc:BorderElement.CornerRadius="30"  
                         Grid.Column="1"
-                        x:Name="CollectionPanel">
+                        x:Name="CollectionPanel">-->
+                    <Grid Margin="1" Visibility="{Binding ElementName=ScreenCapture,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                        <hc:TransitioningContentControl>
+                            <local:ScreenCapturingSidePanel>
 
-            </StackPanel>
+                            </local:ScreenCapturingSidePanel>
+                        </hc:TransitioningContentControl>
+                    </Grid>
+                    
+
+            <!--</StackPanel>-->
                 </Border>
         </Grid>
 
