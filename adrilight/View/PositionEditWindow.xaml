@@ -150,8 +150,8 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
 
-                <Button Margin="15" Content="Cancel"  Style="{DynamicResource ButtonPrimary}" Background="Transparent"  Command="hc:ControlCommands.StartScreenshot"/>
-                <Button Margin="15" Content="Save and Apply"  Style="{DynamicResource ButtonPrimary}"  Command="hc:ControlCommands.StartScreenshot"/>
+                <Button Margin="15" Content="Cancel"  Style="{DynamicResource ButtonPrimary}" Background="Transparent" />
+                <Button Margin="15" Content="Save and Apply"  Style="{DynamicResource ButtonPrimary}"/>
             </StackPanel>
         </Grid>
             

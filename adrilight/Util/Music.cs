@@ -230,7 +230,7 @@ namespace adrilight
                     var numLED = OutputSettings.OutputNumLED;
                     var spectrumdata = GetCurrentFFT(numLED);
                     if (spectrumdata == null) return;
-                    if (isPreviewRunning)
+                    //if (isPreviewRunning)
                         MainViewViewModel.VisualizerFFT = spectrumdata;
                     var brightnessMap = SpectrumCreator(spectrumdata, 0, volumeLeft, volumeRight, musicMode, numLED);// get brightness map based on spectrum data
 
@@ -258,7 +258,7 @@ namespace adrilight
                             
                             var outputColor = Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);
                             ApplySmoothing(outputColor.R, outputColor.G, outputColor.B, out byte FinalR, out byte FinalG, out byte FinalB, spot.Red, spot.Green, spot.Blue);
-                            spot.SetColor(FinalR, FinalG, FinalB, isPreviewRunning);
+                            spot.SetColor(FinalR, FinalG, FinalB, true);
                             
                             
                             

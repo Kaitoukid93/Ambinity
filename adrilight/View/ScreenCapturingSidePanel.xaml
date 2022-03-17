@@ -31,10 +31,30 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Margin="10" HorizontalAlignment="Left" Text="Select Capture Source" Style="{DynamicResource TextBlockTitleBold}"/>
-        <Grid Grid.Row="1" >
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+
+            </Grid.ColumnDefinitions>
+            <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                <Path Margin="5" Data="{StaticResource screencapture}" 
+          Width="30" 
+          Height="30" 
+          Fill="White"
+          Stretch="Fill" />
+                <!--<TextBlock  Margin="5,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Left" Text="Music Reactive" Style="{DynamicResource TextBlockTitleBold}"/>-->
+            </StackPanel>
+
+
+            <ComboBox hc:InfoElement.TitlePlacement="Left" hc:InfoElement.Title="Capture Source"  Grid.Column="1" HorizontalAlignment="Right" Margin="10"  MinWidth="100" SelectedIndex="{Binding CurrentOutput.OutputSelectedDisplay}"  ItemsSource="{Binding AvailableDisplays}" hc:InfoElement.Necessary="True"  Style="{DynamicResource ComboBoxExtend}"/>
+
+
+        </Grid>
+
+        <Grid MaxHeight="250" Grid.Row="1" >
             
-            <Viewbox  HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" >
+            <Viewbox   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" >
                 <Canvas Width="{Binding ShaderBitmap.Width}" Height="{Binding ShaderBitmap.Height}" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image HorizontalAlignment="Center" VerticalAlignment="Center"   Source="{Binding ShaderBitmap}" />
                     <Rectangle Stroke="White" StrokeThickness="1" Canvas.Left="{Binding DeviceRectX}" Canvas.Top="{Binding DeviceRectY}" Width="{Binding DeviceRectWidth}" Height="{Binding DeviceRectHeight}">
@@ -48,12 +68,7 @@
             </Viewbox>
             
         </Grid>
-        <Grid Grid.Row="2">
-           
-                <ComboBox HorizontalAlignment="Left" Margin="10" MaxWidth="200" hc:InfoElement.Title="Select Screen" ItemsSource="{Binding AvailableDisplays}" hc:InfoElement.Necessary="True"  Style="{DynamicResource ComboBoxExtend}"/>
-           
-            
-        </Grid>
+       
 
     </Grid>
     
