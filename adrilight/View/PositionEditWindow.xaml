@@ -15,8 +15,7 @@
            Title="Edit Current Output Position" 
            Height="420" 
            Width="880" 
-           WindowStartupLocation="Manual" 
-           Left="0" Top="0">
+           WindowStartupLocation="CenterOwner" >
 
     <Window.Resources>
         <ResourceDictionary>

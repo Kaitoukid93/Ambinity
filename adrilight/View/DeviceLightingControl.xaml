@@ -148,7 +148,7 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Border MaxWidth="600"   Height="auto" Margin="10"  Background="{StaticResource DarkMaskBrush}" CornerRadius="7">
+            <Border MaxWidth="600" MinHeight="360"   Height="auto" Margin="10"  Background="{StaticResource DarkMaskBrush}" CornerRadius="7">
                 <StackPanel>
         
                         
@@ -164,7 +164,7 @@
                         <RadioButton x:Name="ScreenCapture" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource screencapture }"  Style="{DynamicResource RadioButtonIcon}" Content="Screen Capture"/>
                         <RadioButton x:Name="ColorPalette" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource colorpalette }" Style="{DynamicResource RadioButtonIcon}" Content="Color Palette"/>
                         <RadioButton x:Name="Music" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource music}" Content="Music Reactive" IsChecked="True"/>
-                        <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource static}" Content="Static Color"/>
+                        <RadioButton x:Name="Static" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource static}" Content="Static Color"/>
                         <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource canvas}" Content="Canvas"/>
                     </hc:ButtonGroup>
                     <Grid Visibility="{Binding ElementName=ScreenCapture,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
@@ -191,13 +191,20 @@
                             </local:MusicControl>
                         </hc:TransitioningContentControl>
                     </Grid>
+                    <Grid x:Name="StaticColorControlPanel"  Visibility="{Binding ElementName=Static,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                        <hc:TransitioningContentControl>
+                            <local:StaticColorControl Margin="4">
+
+                            </local:StaticColorControl>
+                        </hc:TransitioningContentControl>
+                    </Grid>
 
                 </StackPanel>
                 
               
              
                 </Border>
-            <Border MaxHeight="305" Grid.Column="1" Margin="10" Background="{StaticResource DarkMaskBrush}" CornerRadius="7">
+            <Border MinHeight="360" Grid.Column="1" Margin="10" Background="{StaticResource DarkMaskBrush}" CornerRadius="7">
             <StackPanel>
                     <Grid x:Name="CaptureSidePanel" Margin="1" Visibility="{Binding ElementName=ScreenCapture,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
                         <hc:TransitioningContentControl>
@@ -220,7 +227,13 @@
                             </local:MusicSidePanel>
                         </hc:TransitioningContentControl>
                     </Grid>
-
+                    <Grid x:Name="StaticColorSidePanel" Margin="1" Visibility="{Binding ElementName=Static,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                        <hc:TransitioningContentControl>
+                            <local:StaticColorSidePanel>
+                           
+                            </local:StaticColorSidePanel>
+                        </hc:TransitioningContentControl>
+                    </Grid>
 
                 </StackPanel>
                 </Border>

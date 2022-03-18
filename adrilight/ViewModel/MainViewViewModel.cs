@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+
 using adrilight.Resources;
 using adrilight.Spots;
 using adrilight.Util;
@@ -24,12 +25,14 @@ using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Windows.Media;
 using System.Drawing;
-using System.Drawing.Imaging;
+
 using adrilight.Shaders;
 using HandyControl.Controls;
 using adrilight.View;
 using HandyControl.Data;
 using System.Windows.Data;
+using Color = System.Windows.Media.Color;
+using ColorConverter = System.Windows.Media.ColorConverter;
 
 namespace adrilight.ViewModel
 {
@@ -269,6 +272,7 @@ namespace adrilight.ViewModel
         public ICommand ZerolAllCommand { get; set; }
         public ICommand LaunchPositionEditWindowCommand { get; set; }
         public ICommand EditSelectedPaletteCommand { get; set; }
+        public ICommand AddNewSolidColorCommand { get; set; }
         public ICommand ImportPaletteCardFromFileCommand { get; set; }
         public ICommand ExportCurrentSelectedPaletteToFileCommand { get; set; }
         public ICommand EditSelectedPaletteSaveConfirmCommand { get; set; }
@@ -410,6 +414,28 @@ namespace adrilight.ViewModel
                 
             }
         }
+        private ObservableCollection<IGradientColorCard> _availableGradient;
+        public ObservableCollection<IGradientColorCard> AvailableGradient {
+            get { return _availableGradient; }
+            set
+            {
+                if (_availableGradient == value) return;
+                _availableGradient = value;
+                RaisePropertyChanged();
+
+            }
+        }
+        private ObservableCollection<Color> _availableSolidColors;
+        public ObservableCollection<Color> AvailableSolidColors {
+            get { return _availableSolidColors; }
+            set
+            {
+                if (_availableSolidColors == value) return;
+                _availableSolidColors = value;
+                RaisePropertyChanged();
+
+            }
+        }
         private ObservableCollection<string> _availableLayout;
         public ObservableCollection<string> AvailableLayout {
             get { return _availableLayout; }
@@ -540,9 +566,7 @@ namespace adrilight.ViewModel
         public ObservableCollection<System.Windows.Media.Color> CurrentCustomZoneColor {
             get
             {
-                
-                   
-                
+              
 
                 return _currentCustomZoneColor;
             }
@@ -977,6 +1001,120 @@ namespace adrilight.ViewModel
 
             }
         }
+        /// <summary>
+        /// This group define visibility binding property and mode selecting for device
+        /// </summary>
+        /// 1.StaticColor
+        private bool _isStaticColorGradientChecked;
+        public bool IsStaticColorGradientChecked {
+            get => _isStaticColorGradientChecked;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _isStaticColorGradientChecked, value);
+                RaisePropertyChanged();
+
+            }
+        }
+        private bool _isStaticColorBreathingChecked;
+        public bool IsStaticColorBreathingChecked {
+            get => _isStaticColorBreathingChecked;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _isStaticColorBreathingChecked, value);
+                RaisePropertyChanged();
+
+            }
+        }
+        private bool _isStaticColorSpectrumCyclingChecked;
+        public bool IsStaticColorSpectrumCyclingChecked {
+            get => _isStaticColorSpectrumCyclingChecked;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _isStaticColorSpectrumCyclingChecked, value);
+                RaisePropertyChanged();
+
+            }
+        }
+        private bool _isStaticColorSolidChecked;
+        public bool IsStaticColorSolidChecked {
+            get => _isStaticColorSolidChecked;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _isStaticColorSolidChecked, value);
+                RaisePropertyChanged();
+
+            }
+        }
+        private bool _isStaticColorSolidModeAlwaysChecked;
+        public bool IsStaticColorSolidModeAlwaysChecked {
+            get => _isStaticColorSolidModeAlwaysChecked;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _isStaticColorSolidModeAlwaysChecked, value);
+                RaisePropertyChanged();
+
+            }
+        }
+        private bool _isStaticColorSolidModeColorChangedChecked;
+        public bool IsStaticColorSolidModeColorChangedChecked {
+            get => _isStaticColorSolidModeColorChangedChecked;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _isStaticColorSolidModeColorChangedChecked, value);
+                RaisePropertyChanged();
+
+            }
+        }
+        private bool _isStaticColorGradientModeFullCycleChecked;
+        public bool IsStaticColorGradientModeFullCycleChecked {
+            get => _isStaticColorGradientModeFullCycleChecked;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _isStaticColorGradientModeFullCycleChecked, value);
+                RaisePropertyChanged();
+
+            }
+        }
+        private bool _isStaticColorGradientModeFirstChecked;
+        public bool IsStaticColorGradientModeFirstChecked {
+            get => _isStaticColorGradientModeFirstChecked;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _isStaticColorGradientModeFirstChecked, value);
+                RaisePropertyChanged();
+
+            }
+        }
+        private bool _isStaticColorGradientModeLastChecked;
+        public bool IsStaticColorGradientModeLastChecked {
+            get => _isStaticColorGradientModeFirstChecked;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _isStaticColorGradientModeLastChecked, value);
+                RaisePropertyChanged();
+
+            }
+        }
+        private bool _isStaticColorGradientModeCustomChecked;
+        public bool IsStaticColorGradientModeCustomChecked {
+            get => _isStaticColorGradientModeCustomChecked;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _isStaticColorGradientModeCustomChecked, value);
+                RaisePropertyChanged();
+
+            }
+        }
 
         private bool _isCanvasLightingWindowOpen;
         public bool IsCanvasLightingWindowOpen {
@@ -1179,6 +1317,13 @@ namespace adrilight.ViewModel
             });
 
 
+            AddNewSolidColorCommand = new RelayCommand<string>((p) =>
+                 {
+                     return true;
+                 }, (p) =>
+                 {
+                     OpenColorPickerWindow();
+                 });
             EditSelectedPaletteSaveConfirmCommand = new RelayCommand<string>((p) =>
                  {
                      return true;
@@ -1424,6 +1569,16 @@ namespace adrilight.ViewModel
             });
         }
 
+        private void OpenColorPickerWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"ColorPickerWindow"}") is System.Windows.Window window)
+            {
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+
+            }
+        }
+
         private static void OpenPositionEditWindow()
         {
             if (AssemblyHelper.CreateInternalInstance($"View.{"PositionEditWindow"}") is System.Windows.Window window)
@@ -1573,6 +1728,7 @@ namespace adrilight.ViewModel
                 {
                     AvailablePallete.Add(palette);
                 }
+               
                 CurrentCustomZoneColor.Clear();
                 foreach (var color in CurrentOutput.OutputCurrentActivePalette)
                 {
@@ -1715,7 +1871,7 @@ namespace adrilight.ViewModel
 
         }
 
-
+        
 
 
         public void RefreshDevice()
@@ -1957,8 +2113,18 @@ namespace adrilight.ViewModel
                 AvailablePallete.Add(loadedPalette);
             }
            WritePaletteCollectionJson();
+
+            AvailableGradient = new ObservableCollection<IGradientColorCard>();
+            foreach (var gradient in LoadGradientIfExists())
+            {
+                AvailableGradient.Add(gradient);
+            }
+            AvailableSolidColors = new ObservableCollection<Color>();
+            foreach(var color in LoadSolidColorIfExists())
+            {
+                AvailableSolidColors.Add(color);
+            }
             CurrentCustomZoneColor = new ObservableCollection<System.Windows.Media.Color>();
-            
             //var shareMenu = new PaletteCardContextMenu("Share");
             //var shareMenuOptions = new List<PaletteCardContextMenu>();
             //shareMenuOptions.Add(new PaletteCardContextMenu("File Export"));
@@ -2015,6 +2181,105 @@ namespace adrilight.ViewModel
 
 
             return loadedPaletteCard;
+        }
+        public Color[] LoadSolidColorIfExists()
+        {
+         
+            Color[] colors =
+            {
+        (Color)ColorConverter.ConvertFromString("Red"),
+        Color.FromArgb(255, 255, 192, 192),
+        Color.FromArgb(255, 255, 224, 192),
+        Color.FromArgb(255, 255, 255, 192),
+        Color.FromArgb(255, 192, 255, 192),
+        Color.FromArgb(255, 192, 255, 255),
+        Color.FromArgb(255, 192, 192, 255),
+        Color.FromArgb(255, 255, 192, 255),
+        Color.FromArgb(255, 224, 224, 224),
+        Color.FromArgb(255, 255, 128, 128),
+        Color.FromArgb(255, 255, 192, 128),
+        Color.FromArgb(255, 255, 255, 128),
+        Color.FromArgb(255, 128, 255, 128),
+        Color.FromArgb(255, 128, 255, 255),
+        Color.FromArgb(255, 128, 128, 255),
+        Color.FromArgb(255, 255, 128, 255),
+        (Color)ColorConverter.ConvertFromString("Silver"),
+        (Color)ColorConverter.ConvertFromString("Red"),
+        Color.FromArgb(255, 255, 128, 0),
+        (Color)ColorConverter.ConvertFromString("Yellow"),
+        (Color)ColorConverter.ConvertFromString("Lime"),
+        (Color)ColorConverter.ConvertFromString("Cyan"),
+        (Color)ColorConverter.ConvertFromString("Blue"),
+        (Color)ColorConverter.ConvertFromString("Fuchsia"),
+        (Color)ColorConverter.ConvertFromString("Gray"),
+        Color.FromArgb(255, 192, 0, 0),
+        Color.FromArgb(255, 192, 64, 0),
+        Color.FromArgb(255, 192, 192, 0),
+        Color.FromArgb(255, 0, 192, 0),
+        Color.FromArgb(255, 0, 192, 192),
+        Color.FromArgb(255, 0, 0, 192),
+        Color.FromArgb(255, 192, 0, 192),
+        Color.FromArgb(255, 64, 64, 64),
+        (Color)ColorConverter.ConvertFromString("Maroon"),
+        Color.FromArgb(255, 128, 64, 0),
+        (Color)ColorConverter.ConvertFromString("Olive"),
+        (Color)ColorConverter.ConvertFromString("Green"),
+        (Color)ColorConverter.ConvertFromString("Teal"),
+        (Color)ColorConverter.ConvertFromString("Navy"),
+        (Color)ColorConverter.ConvertFromString("Purple"),
+        (Color)ColorConverter.ConvertFromString("Black"),
+        Color.FromArgb(255, 64, 0, 0),
+        Color.FromArgb(255, 128, 64, 64),
+        Color.FromArgb(255, 64, 64, 0),
+        Color.FromArgb(255, 0, 64, 0),
+        Color.FromArgb(255, 0, 64, 64),
+        Color.FromArgb(255, 0, 0, 64),
+        Color.FromArgb(255, 64, 0, 64),
+    };
+           
+            return colors;
+        }
+        public List<IGradientColorCard> LoadGradientIfExists()
+        {
+            //if (!File.Exists(JsonPaletteFileNameAndPath))
+            //{
+                //create default palette
+                var gradientCards = new List<IGradientColorCard>();
+            IGradientColorCard a = new GradientColorCard("Default", "Zooey", "RGBGradient", "Full Color Spectrum", System.Windows.Media.Color.FromRgb(254,141,198), System.Windows.Media.Color.FromRgb(254, 209, 199));
+            IGradientColorCard b = new GradientColorCard("Default", "Zooey", "RGBGradient", "Police Car Light mimic", System.Windows.Media.Color.FromRgb(127, 0, 255), System.Windows.Media.Color.FromRgb(255, 0, 255));
+            IGradientColorCard c = new GradientColorCard("Default", "Zooey", "RGBGradient", "Full Color Spectrum", System.Windows.Media.Color.FromRgb(251, 176, 64), System.Windows.Media.Color.FromRgb(249, 237, 50));
+            IGradientColorCard d = new GradientColorCard("Default", "Zooey", "RGBGradient", "Police Car Light mimic", System.Windows.Media.Color.FromRgb(0, 161, 255), System.Windows.Media.Color.FromRgb(0, 255, 143));
+            IGradientColorCard e = new GradientColorCard("Default", "Zooey", "RGBGradient", "Full Color Spectrum", System.Windows.Media.Color.FromRgb(238, 42, 123), System.Windows.Media.Color.FromRgb(255, 125, 184));
+            IGradientColorCard f = new GradientColorCard("Default", "Zooey", "RGBGradient", "Police Car Light mimic", System.Windows.Media.Color.FromRgb(255, 0, 212), System.Windows.Media.Color.FromRgb(0, 221, 255));
+
+            gradientCards.Add(a);
+            gradientCards.Add(b);
+            gradientCards.Add(c);
+            gradientCards.Add(d);
+            gradientCards.Add(e);
+            gradientCards.Add(f);
+
+
+
+
+
+
+
+                return gradientCards;
+
+
+            //}
+
+            //var json = File.ReadAllText(JsonPaletteFileNameAndPath);
+            //var loadedPaletteCard = new List<IColorPaletteCard>();
+            //var existPaletteCard = JsonConvert.DeserializeObject<List<ColorPaletteCard>>(json);
+            //foreach (var paletteCard in existPaletteCard)
+            //{
+            //    loadedPaletteCard.Add(paletteCard);
+            //}
+
+
+            return gradientCards;
         }
         public async void ShowAddNewDialog()
         {

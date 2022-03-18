@@ -249,6 +249,15 @@
     <Compile Update="View\AddNewPaletteWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\ColorPickerWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\StaticColorSidePanel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\StaticColorControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\MusicSidePanel.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -273,6 +282,18 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="View\AddNewPaletteWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ColorPickerWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\StaticColorSidePanel.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\StaticColorControl.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
