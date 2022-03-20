@@ -141,6 +141,16 @@
             </StackPanel>
         </Grid>
         <Grid  Margin="20,0,0,0" Grid.Row="1" Grid.Column="0">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=WizardStep,Path=StepIndex}" Value="0">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <StackPanel>
                 <hc:NumericUpDown HorizontalAlignment="Left"  Name="MatrixWidth" HorizontalContentAlignment="Center" Value="{Binding CurrentOutput.OutputNumLEDX}"
                      hc:InfoElement.Title="Map Width" Margin="0,32,0,0" hc:InfoElement.Necessary="True" Style="{DynamicResource NumericUpDownPlus}"/>
@@ -153,6 +163,16 @@
             
         </Grid>
         <Grid Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center"  ClipToBounds="true" Grid.Row="1" x:Name="MotherGrid">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=WizardStep,Path=StepIndex}" Value="0">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <Viewbox  HorizontalAlignment="Left" VerticalAlignment="Top"  Name="PreviewBox">
                 <Viewbox.ContextMenu>
                     <ContextMenu Style="{DynamicResource ContextMenuBaseStyle}">
@@ -231,6 +251,108 @@
                      CornerRadius="1"
                      Opacity="0.5"/>
             </Canvas>
+        </Grid>
+        <Grid Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center"  ClipToBounds="true" Grid.Row="1" x:Name="Step2Grid">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=WizardStep,Path=StepIndex}" Value="1">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Viewbox  HorizontalAlignment="Left" VerticalAlignment="Top"  >
+                <Viewbox.ContextMenu>
+                    <ContextMenu Style="{DynamicResource ContextMenuBaseStyle}">
+                        <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Edit Position ID"
+                                         Command="{Binding LaunchPIDEditWindowCommand}"
+                                          >
+                        </MenuItem>
+                        <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Edit Virtual ID"
+                                         
+                                          >
+                        </MenuItem>
+                        <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Edit Music ID"
+                                          
+                                          >
+                        </MenuItem>
+                    </ContextMenu>
+                </Viewbox.ContextMenu>
+                <ItemsControl 
+                          
+                          BorderThickness="1"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center" 
+                          ItemsSource="{Binding ActivatedSpots}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Center" VerticalAlignment="Top" Name="PreviewCanvas"
+                               
+                                Margin="0" 
+                                Width="{Binding CurrentOutput.OutputPixelWidth}" 
+                                Height="{Binding CurrentOutput.OutputPixelHeight}" >
+                            </Canvas>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Canvas.Left" Value="{Binding Rectangle.X}"/>
+                            <Setter Property="Canvas.Top" Value="{Binding Rectangle.Y}"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Rectangle Stroke="OrangeRed" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
+                                    <Rectangle.Fill>
+                                        <SolidColorBrush Color="{Binding OnDemandColor}"  />
+                                    </Rectangle.Fill>
+                                    <Rectangle.Style>
+                                        <Style TargetType="{x:Type Rectangle}">
+
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Opacity"  Value="0.5"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Rectangle.Style>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown" >
+                                            <i:InvokeCommandAction Command="{Binding DataContext.SetSpotPIDCommand,RelativeSource={RelativeSource AncestorType={x:Type local:PIDEditWindow}}}" CommandParameter="{Binding .}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Rectangle>
+                                
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="5" Text="{Binding id}"  IsHitTestVisible="False"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Viewbox>
+          
+        </Grid>
+        <Grid  Margin="20,0,0,0" Grid.Row="1" Grid.Column="0">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=WizardStep,Path=StepIndex}" Value="1">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <StackPanel>
+
+                <hc:Badge   HorizontalAlignment="Left" Value="{Binding MaxLEDCount}"  BadgeMargin="0,-14,-10,0" Height="30" Margin="0,40,0,0" Style="{DynamicResource BadgePrimary}">
+                    <Button  Command="{Binding ResetMaxCountCommand}"  Style="{DynamicResource ButtonDefault}" Content="Click to reset" CommandParameter="Reset"/>
+                </hc:Badge>
+            </StackPanel>
+
         </Grid>
 
 

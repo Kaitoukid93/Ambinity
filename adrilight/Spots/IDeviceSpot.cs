@@ -27,6 +27,7 @@ namespace adrilight.Spots
         void IndicateMissingValue();
         void SetColor(byte red, byte green, byte blue, bool raiseEvents);
         void SetVID(int vid);
+        void SetID(int id);
         void SetStroke(double strokeThickness);
 
 

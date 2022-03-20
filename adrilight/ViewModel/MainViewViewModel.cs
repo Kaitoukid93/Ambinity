@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 using OpenRGB.NET.Models;
 using Un4seen.BassWasapi;
 using BO;
-using Application = System.Windows.Forms.Application;
+
 using GalaSoft.MvvmLight;
 using System.Windows.Threading;
 using System.Runtime.InteropServices;
@@ -271,6 +271,8 @@ namespace adrilight.ViewModel
         //VIDs commands//
         public ICommand ZerolAllCommand { get; set; }
         public ICommand ResetCountCommand { get; set; }
+        public ICommand SetSpotPIDCommand { get; set; }
+        public ICommand ResetMaxCountCommand { get; set; }
         public ICommand JumpToNextWizardStateCommand { get; set; }
         public ICommand LaunchPositionEditWindowCommand { get; set; }
         public ICommand LaunchPIDEditWindowCommand { get; set; }
@@ -1015,6 +1017,17 @@ namespace adrilight.ViewModel
 
             }
         }
+        private IDeviceSpot[] _bufferSpots;
+        public IDeviceSpot[] BufferSpots {
+            get => _bufferSpots;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _bufferSpots, value);
+                RaisePropertyChanged();
+
+            }
+        }
         /// <summary>
         /// This group define visibility binding property and mode selecting for device
         /// </summary>
@@ -1139,6 +1152,12 @@ namespace adrilight.ViewModel
 
             get => _count;
             set => Set(ref _count, value);
+        }
+        private int _maxLEDCount = 0;
+        public int MaxLEDCount {
+
+            get => _maxLEDCount;
+            set => Set(ref _maxLEDCount, value);
         }
 
         private bool _isCanvasLightingWindowOpen;
@@ -1540,7 +1559,10 @@ namespace adrilight.ViewModel
 
                 if(CurrentLEDEditWizardState==1)
                 {
+                    
+                    BufferSpots = new IDeviceSpot[MaxLEDCount];
                     GrabActivatedSpot();
+                   
                 }
                 else if (CurrentLEDEditWizardState==2)
                 {
@@ -1572,6 +1594,30 @@ namespace adrilight.ViewModel
                
                 
             });
+            SetSpotPIDCommand = new RelayCommand<IDeviceSpot>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                if (p.OnDemandColor == Color.FromRgb(0,0,0))
+                {
+                    p.SetColor(100,27,0,true);
+                    p.SetID(ActivatedSpots.Count() - MaxLEDCount--);
+
+
+
+                }
+
+                else
+                {
+                    p.SetColor(0, 0, 0, true);
+                    p.SetID (0);
+                    MaxLEDCount++;
+                }
+
+
+            });
+
             ResetCountCommand = new RelayCommand<string>((p) =>
             {
                 return p != null;
@@ -1585,6 +1631,20 @@ namespace adrilight.ViewModel
                 }
 
             });
+            ResetMaxCountCommand = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+
+                MaxLEDCount = ActivatedSpots.Count;
+                foreach (var spot in ActivatedSpots)
+                {
+                    spot.SetColor(0, 0, 0, true);
+                }
+
+            });
+
 
             SetZoneColorCommand = new RelayCommand<string>((p) =>
             {
@@ -1676,8 +1736,15 @@ namespace adrilight.ViewModel
             foreach(var spot in CurrentOutput.OutputLEDSetup.Spots)
             {
                 if (spot.IsActivated)
+                {
                     ActivatedSpots.Add(spot);
+                    spot.SetStroke(0);
+
+                }
+                   
             }
+          
+            
         }
 
         private void LaunchPIDEditWindow()
@@ -1687,6 +1754,10 @@ namespace adrilight.ViewModel
                 CurrentOutput.IsInSpotEditWizard = true;
                 ActivatedSpots = new List<IDeviceSpot>();
                 RaisePropertyChanged(nameof(CurrentOutput.IsInSpotEditWizard));
+                foreach(var spot in CurrentOutput.OutputLEDSetup.Spots)
+                {
+                    spot.SetColor(0, 0, 0,true);
+                }
                 window.Owner = System.Windows.Application.Current.MainWindow;
                 window.ShowDialog();
 
@@ -2562,7 +2633,7 @@ namespace adrilight.ViewModel
                 {
                     HandyControl.Controls.MessageBox.Show(ex.Message);
                 }
-                Application.Restart();
+                System.Windows.Forms.Application.Restart();
                 Process.GetCurrentProcess().Kill();
             }
 
@@ -2591,7 +2662,7 @@ namespace adrilight.ViewModel
 
                 }
                 WriteDeviceInfoJson();
-                Application.Restart();
+                System.Windows.Forms.Application.Restart();
                 Process.GetCurrentProcess().Kill();
             }
 

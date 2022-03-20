@@ -89,6 +89,16 @@ namespace adrilight.Spots
                 
             
         }
+        public void SetID(int ID)
+        {
+            id = ID;
+
+
+
+            RaisePropertyChanged(nameof(id));
+
+
+        }
         //public void SetNextVID(int currentGroupVIDCounter)
         //{
         //    VID = currentGroupVIDCounter + 1;

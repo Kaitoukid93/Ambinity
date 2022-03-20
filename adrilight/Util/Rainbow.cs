@@ -112,8 +112,8 @@ namespace adrilight
             {
                 // rainbow is running and we need to change the color bank
                 colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette).ToArray();
-                if(isInEditWizard)
-                    colorBank = GetColorGradientfromPalette(DefaultColorCollection.black).ToArray();
+                //if(isInEditWizard)
+                //    colorBank = GetColorGradientfromPalette(DefaultColorCollection.black).ToArray();
             }
 
         }
@@ -169,7 +169,8 @@ namespace adrilight
                             //}
                             var brightness = OutputSettings.OutputBrightness / 100d;
                             var newColor = new OpenRGB.NET.Models.Color(colorBank[position].R, colorBank[position].G, colorBank[position].B);
-                            var outputColor=Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);                        
+                            var outputColor=Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);    
+                            if(!OutputSettings.IsInSpotEditWizard)
                             spot.SetColor(outputColor.R, outputColor.G, outputColor.B, isPreviewRunning);
 
                         }
