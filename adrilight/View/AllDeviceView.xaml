@@ -33,7 +33,7 @@
             <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="BlueViolet" Opacity="25"/>
            
             <DropShadowEffect x:Key="Item.SelectedActive.Border.Shadow" BlurRadius="20"   RenderingBias ="Quality" ShadowDepth ="1" Color ="{Binding Color, Source={StaticResource PrimaryBrush}}"/>
-
+            <DropShadowEffect x:Key="Item.MouseOver.Border.Shadow" BlurRadius="20"   RenderingBias ="Quality" ShadowDepth ="1" Color ="{Binding Color, Source={StaticResource DarkMaskBrush}}"/>
             <Style x:Key="ListViewContainerStyle" TargetType="{x:Type ListViewItem}">
              
                 <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -79,10 +79,11 @@
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="IsMouseOver" Value="True"/>
+                                        <Condition Property="IsSelected" Value="False"/>
                                     </MultiTrigger.Conditions>
                                    
                                     <!--<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>-->
-                                    <Setter Property="BorderThickness" TargetName="Bd" Value="4"/>
+                                    <!--<Setter Property="BorderThickness" TargetName="Bd" Value="4"/>-->
                                     <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
                                     <Setter Property="Effect" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border.Shadow}"/>
                                 </MultiTrigger>
@@ -93,7 +94,7 @@
                                         <Condition Property="IsSelected" Value="True"/>
                                     </MultiTrigger.Conditions>
 
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>
+                                    <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
                                     <Setter Property="Effect" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border.Shadow}"/>
                                 </MultiTrigger>
                                 <MultiTrigger>
@@ -102,8 +103,8 @@
                                         <Condition Property="IsSelected" Value="True"/>
                                     </MultiTrigger.Conditions>
                                    
-                                    <Setter Property="BorderThickness" TargetName="Bd" Value="6"/>
-                                    <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
+                                    <!--<Setter Property="BorderThickness" TargetName="Bd" Value="6"/>-->
+                                    <Setter Property="Effect" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border.Shadow}"/>
                                 </MultiTrigger>
                                 <Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>

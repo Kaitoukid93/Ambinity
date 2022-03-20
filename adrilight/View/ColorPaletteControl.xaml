@@ -103,9 +103,10 @@
                                         </WrapPanel>
                                     </ItemsPanelTemplate>
                                 </hc:ButtonGroup.ItemsPanel>
-                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource linear }"  Style="{DynamicResource RadioButtonIcon}" Content="Natural"/>
+                               
                                 <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource fullspectrum }"   Style="{DynamicResource RadioButtonIcon}" Content="Full Spectrum"/>
-                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource number}"  Content="Number"/>
+                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource first}"  Content="First"/>
+                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource last}"  Content="Last"/>
                                 <RadioButton x:Name="customWB" IsChecked="True" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource custom}" Foreground="{DynamicResource SuccessBrush}" Content="Custom"/>
 
 

@@ -1,4 +1,5 @@
 ﻿using adrilight.ViewModel;
+using HandyControl.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,26 +12,64 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace adrilight.View
 {
     /// <summary>
-    /// Interaction logic for DeviceLigtingControl.xaml
+    /// Interaction logic for PaletteEditWindow.xaml
     /// </summary>
-    public  partial class DeviceLightingControl : UserControl
+    public partial class PIDEditWindow 
     {
         private bool isLeftMouseButtonDownOnWindow = false;
         private bool isDraggingSelectionRect = false;
         private Point origMouseDownPoint;
         private static readonly double DragThreshold = 1;
-
-        public  DeviceLightingControl()
+        public PIDEditWindow()
         {
             InitializeComponent();
-           
+            MatrixWidth.VerifyFunc = str => double.TryParse(str, out var v)
+               ? v>25
+                   ? OperationResult.Failed("This LED Number is not Supported")
+                   : OperationResult.Success()
+               : OperationResult.Failed("This LED Number is not Supported");
 
+            MatrixHeight.VerifyFunc = str => double.TryParse(str, out var v)
+               ? v > 25
+                   ? OperationResult.Failed("This LED Number is not Supported")
+                   : OperationResult.Success()
+               : OperationResult.Failed("This LED Number is not Supported");
+        }
+        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+
+            ScrollViewer scrollViewer = (ScrollViewer)sender;
+            if (e.Delta < 0)
+            {
+                scrollViewer.LineRight();
+            }
+            else
+            {
+                scrollViewer.LineLeft();
+            }
+            e.Handled = true;
+
+        }
+
+
+        private void Confirmed(object sender, EventArgs e)
+        {
+            ViewModel.CurrentOutput.IsInSpotEditWizard = false;
+            ViewModel.Count = 0;
+            this.Close();
+            
+        }
+
+        private void Canceled(object sender, EventArgs e)
+        {
+            ViewModel.CurrentOutput.IsInSpotEditWizard = false;
+            ViewModel.Count = 0;
+            this.Close();
         }
 
         private MainViewViewModel ViewModel {
@@ -83,7 +122,7 @@ namespace adrilight.View
                 //
                 // Drag selection is in progress.
                 //
-                
+
                 Point curMouseDownPoint = e.GetPosition(PreviewGird);
                 UpdateDragSelectionRect(origMouseDownPoint, curMouseDownPoint);
 
@@ -110,8 +149,8 @@ namespace adrilight.View
                     //  Clear selection immediately when starting drag selection.
                     //
                     //listBox.SelectedItems.Clear();
-                    
-                    
+
+
                     InitDragSelectionRect(origMouseDownPoint, curMouseDownPoint);
                 }
 
@@ -120,7 +159,7 @@ namespace adrilight.View
         }
         private void InitDragSelectionRect(Point pt1, Point pt2)
         {
-            
+
 
             UpdateDragSelectionRect(pt1, pt2);
 
@@ -164,10 +203,10 @@ namespace adrilight.View
             ScaleTransform scale = child.Transform as ScaleTransform;
             var offsetX = (MotherGrid.ActualWidth - PreviewBox.ActualWidth) / 2;
             var offsetY = (MotherGrid.ActualHeight - PreviewBox.ActualHeight) / 2;
-            Canvas.SetLeft(dragSelectionBorder,offsetX+ x * scale.ScaleX); ;
-            Canvas.SetTop(dragSelectionBorder, offsetY+ y * scale.ScaleY);
-            dragSelectionBorder.Width = width*scale.ScaleX;
-            dragSelectionBorder.Height = height*scale.ScaleY;
+            Canvas.SetLeft(dragSelectionBorder, offsetX + x * scale.ScaleX); ;
+            Canvas.SetTop(dragSelectionBorder, offsetY + y * scale.ScaleY);
+            dragSelectionBorder.Width = width * scale.ScaleX;
+            dragSelectionBorder.Height = height * scale.ScaleY;
         }
         private void ApplyDragSelectionRect()
         {
@@ -176,11 +215,11 @@ namespace adrilight.View
             ScaleTransform scale = child.Transform as ScaleTransform;
             var offsetX = (MotherGrid.ActualWidth - PreviewBox.ActualWidth) / 2;
             var offsetY = (MotherGrid.ActualHeight - PreviewBox.ActualHeight) / 2;
-            double x = (Canvas.GetLeft(dragSelectionBorder)-offsetX)/scale.ScaleX;
-            double y = (Canvas.GetTop(dragSelectionBorder)-offsetY)/scale.ScaleY;
-            double width = dragSelectionBorder.Width/scale.ScaleX;
-            double height = dragSelectionBorder.Height/scale.ScaleY;
-            
+            double x = (Canvas.GetLeft(dragSelectionBorder) - offsetX) / scale.ScaleX;
+            double y = (Canvas.GetTop(dragSelectionBorder) - offsetY) / scale.ScaleY;
+            double width = dragSelectionBorder.Width / scale.ScaleX;
+            double height = dragSelectionBorder.Height / scale.ScaleY;
+
             Rect dragRect = new Rect(x, y, width, height);
 
             //
@@ -192,7 +231,7 @@ namespace adrilight.View
             //
             // Clear the current selection.
             ////
-            foreach(var spot in ViewModel.CurrentOutput.OutputLEDSetup.Spots)
+            foreach (var spot in ViewModel.CurrentOutput.OutputLEDSetup.Spots)
             {
                 spot.SetStroke(0);
             };

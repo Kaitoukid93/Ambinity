@@ -217,7 +217,7 @@ namespace adrilight.ViewModel
                 if (_currentDevice != null) _currentDevice.PropertyChanged -= _currentDevice_PropertyChanged;
                 _currentDevice = value;
                 if (_currentDevice != null) _currentDevice.PropertyChanged += _currentDevice_PropertyChanged;
-                RaisePropertyChanged("CurrentDevice");
+                RaisePropertyChanged(nameof(CurrentDevice));
 
             }
         }
@@ -270,7 +270,10 @@ namespace adrilight.ViewModel
         }
         //VIDs commands//
         public ICommand ZerolAllCommand { get; set; }
+        public ICommand ResetCountCommand { get; set; }
+        public ICommand JumpToNextWizardStateCommand { get; set; }
         public ICommand LaunchPositionEditWindowCommand { get; set; }
+        public ICommand LaunchPIDEditWindowCommand { get; set; }
         public ICommand EditSelectedPaletteCommand { get; set; }
         public ICommand AddNewSolidColorCommand { get; set; }
         public ICommand ImportPaletteCardFromFileCommand { get; set; }
@@ -293,7 +296,7 @@ namespace adrilight.ViewModel
         public ICommand AdjustPositionCommand { get; set; }
         public ICommand SnapshotCommand { get; set; }
         public ICommand DeleteDeviceCommand { get; set; }
-        public ICommand SetNextSpotVIDCommand { get; set; }
+        public ICommand SetSpotActiveCommand { get; set; }
         public ICommand SetZoneColorCommand { get; set; }
         public ICommand GetZoneColorCommand { get; set; }
         #endregion
@@ -1001,6 +1004,17 @@ namespace adrilight.ViewModel
 
             }
         }
+        private int _currentLEDEditWizardState=0;
+        public int CurrentLEDEditWizardState {
+            get => _currentLEDEditWizardState;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _currentLEDEditWizardState, value);
+                RaisePropertyChanged();
+
+            }
+        }
         /// <summary>
         /// This group define visibility binding property and mode selecting for device
         /// </summary>
@@ -1025,8 +1039,12 @@ namespace adrilight.ViewModel
                 Set(ref _isStaticColorBreathingChecked, value);
                 RaisePropertyChanged();
 
+               
+
             }
         }
+
+       
         private bool _isStaticColorSpectrumCyclingChecked;
         public bool IsStaticColorSpectrumCyclingChecked {
             get => _isStaticColorSpectrumCyclingChecked;
@@ -1046,6 +1064,7 @@ namespace adrilight.ViewModel
                 // _log.Info("PreviewImageSource created.");
                 Set(ref _isStaticColorSolidChecked, value);
                 RaisePropertyChanged();
+               
 
             }
         }
@@ -1114,6 +1133,12 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
 
             }
+        }
+        private int _count = 0;
+        public int Count {
+
+            get => _count;
+            set => Set(ref _count, value);
         }
 
         private bool _isCanvasLightingWindowOpen;
@@ -1188,6 +1213,20 @@ namespace adrilight.ViewModel
             set
             {
                 CurrentOutput.OutputLocationX = value;
+
+                RaisePropertyChanged();
+            }
+        }
+        private List<IDeviceSpot> _activatedSpots;
+        public List<IDeviceSpot> ActivatedSpots {
+            get
+            {
+                return _activatedSpots;
+            }
+
+            set
+            {
+                _activatedSpots = value;
 
                 RaisePropertyChanged();
             }
@@ -1445,6 +1484,15 @@ namespace adrilight.ViewModel
 
                 //SnapShot();
             });
+            LaunchPIDEditWindowCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+
+                LaunchPIDEditWindow();
+            });
+            
 
             DeviceRectDropCommand = new RelayCommand<string>((p) =>
             {
@@ -1483,13 +1531,59 @@ namespace adrilight.ViewModel
                     this.GotoGroup(p);
                 }
             });
-            SetNextSpotVIDCommand = new RelayCommand<IDeviceSpot>((p) =>
+            JumpToNextWizardStateCommand = new RelayCommand<string>((p) =>
             {
                 return p != null;
             }, (p) =>
             {
-                p.SetStroke(0.5);
+                CurrentLEDEditWizardState++;
+
+                if(CurrentLEDEditWizardState==1)
+                {
+                    GrabActivatedSpot();
+                }
+                else if (CurrentLEDEditWizardState==2)
+                {
+                    ReorderActivatedSpot();
+                }
+                else if (CurrentLEDEditWizardState==3)
+                {
+                    RunTestSequence();
+                }
+            });
+            
+            SetSpotActiveCommand = new RelayCommand<IDeviceSpot>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {   if (p.BorderThickness != 0)
+                {
+                    p.SetStroke(0);
+                    Count--;
+                    p.IsActivated = false;
+                }
+                    
+                else
+                {
+                    p.SetStroke(0.5);
+                    Count++;
+                    p.IsActivated = true;
+                }
+               
                 
+            });
+            ResetCountCommand = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+
+                Count = 0;
+                foreach(var spot in CurrentOutput.OutputLEDSetup.Spots)
+                {
+                    spot.SetStroke(0);
+                }
+
             });
 
             SetZoneColorCommand = new RelayCommand<string>((p) =>
@@ -1567,6 +1661,36 @@ namespace adrilight.ViewModel
 
 
             });
+        }
+
+        private void RunTestSequence()
+        {
+
+        }
+        private void ReorderActivatedSpot()
+        {
+
+        }
+        private void GrabActivatedSpot()
+        {
+            foreach(var spot in CurrentOutput.OutputLEDSetup.Spots)
+            {
+                if (spot.IsActivated)
+                    ActivatedSpots.Add(spot);
+            }
+        }
+
+        private void LaunchPIDEditWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"PIDEditWindow"}") is System.Windows.Window window)
+            {
+                CurrentOutput.IsInSpotEditWizard = true;
+                ActivatedSpots = new List<IDeviceSpot>();
+                RaisePropertyChanged(nameof(CurrentOutput.IsInSpotEditWizard));
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+
+            }
         }
 
         private void OpenColorPickerWindow()
@@ -2065,7 +2189,7 @@ namespace adrilight.ViewModel
 {
           "Dashboard",
            "Settings",
-         
+
 
         };
 
@@ -2108,11 +2232,11 @@ namespace adrilight.ViewModel
 
             };
             AvailablePallete = new ObservableCollection<IColorPaletteCard>();
-            foreach(var loadedPalette in LoadPaletteIfExists())
+            foreach (var loadedPalette in LoadPaletteIfExists())
             {
                 AvailablePallete.Add(loadedPalette);
             }
-           WritePaletteCollectionJson();
+            WritePaletteCollectionJson();
 
             AvailableGradient = new ObservableCollection<IGradientColorCard>();
             foreach (var gradient in LoadGradientIfExists())
@@ -2120,7 +2244,7 @@ namespace adrilight.ViewModel
                 AvailableGradient.Add(gradient);
             }
             AvailableSolidColors = new ObservableCollection<Color>();
-            foreach(var color in LoadSolidColorIfExists())
+            foreach (var color in LoadSolidColorIfExists())
             {
                 AvailableSolidColors.Add(color);
             }
@@ -2138,8 +2262,8 @@ namespace adrilight.ViewModel
 
 
 
-
-        }
+           
+            }
         public List<IColorPaletteCard> LoadPaletteIfExists()
         {
             if (!File.Exists(JsonPaletteFileNameAndPath))
@@ -2152,7 +2276,7 @@ namespace adrilight.ViewModel
                 IColorPaletteCard aurora = new ColorPaletteCard("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.aurora);
                 IColorPaletteCard iceandfire = new ColorPaletteCard("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.iceandfire);
                 IColorPaletteCard scarlet = new ColorPaletteCard("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.scarlet);
-
+                
                 paletteCards.Add(rainbow);
                 paletteCards.Add(police);
                 paletteCards.Add(forest);
@@ -2788,9 +2912,15 @@ namespace adrilight.ViewModel
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == lighting);
             IsDashboardType = false;
             CurrentDevice = selectedDevice;
-            CurrentOutput = CurrentDevice.AvailableOutputs[0];
+            if(CurrentDevice.SelectedOutput>=0)
+            CurrentOutput = CurrentDevice.AvailableOutputs[CurrentDevice.SelectedOutput];
+            else
+            {
+                CurrentDevice.SelectedOutput=0;
+                CurrentOutput = CurrentDevice.AvailableOutputs[CurrentDevice.SelectedOutput];
+            }
             CurrentLEDSetup = CurrentOutput.OutputLEDSetup;
-            
+            RaisePropertyChanged(nameof(CurrentDevice.SelectedOutput));
             IsSplitLightingWindowOpen = true;
             IsCanvasLightingWindowOpen = false;
             //RaisePropertyChanged(() => CurrentDeviceSelectedEffect);
@@ -2860,7 +2990,34 @@ namespace adrilight.ViewModel
             //    }
 
             //}
+            CurrentDevice.PropertyChanged += (s, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(CurrentDevice.SelectedOutput):
+                        if(CurrentDevice.SelectedOutput>=0)
+                            {
+                            CurrentOutput = CurrentDevice.AvailableOutputs[CurrentDevice.SelectedOutput];
+                            RaisePropertyChanged(nameof(CurrentOutput));
+                            }
+                        else
+                        {
+                            CurrentOutput = CurrentDevice.AvailableOutputs[0];
+                        }
+                       
+                        break;
+                    case nameof(CurrentDevice):
+                        
+                            CurrentOutput = CurrentDevice.AvailableOutputs[0];
+                            CurrentDevice.SelectedOutput = 0;
+                            RaisePropertyChanged(nameof(CurrentOutput));
+                       
 
+                        break;
+
+
+                }
+            };
 
 
             //switch (CurrentDevice.SelectedEffect)

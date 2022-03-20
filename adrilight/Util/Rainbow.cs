@@ -62,10 +62,12 @@ namespace adrilight
                 case nameof(OutputSettings.OutputIsEnabled):
                 case nameof(OutputSettings.OutputSelectedChasingPalette):
                 case nameof(MainViewViewModel.IsSplitLightingWindowOpen):
+                
                     RefreshColorState();
                     break;
                 case nameof(OutputSettings.OutputCurrentActivePalette):
-                
+                case nameof(OutputSettings.IsInSpotEditWizard):
+
                     ColorPaletteChanged();
                     break;
 
@@ -78,7 +80,7 @@ namespace adrilight
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode==1;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 1;
 
             if (isRunning && !shouldBeRunning)
             {
@@ -104,12 +106,14 @@ namespace adrilight
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
             var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 1;
-
+            var isInEditWizard = OutputSettings.IsInSpotEditWizard;
 
             if (isRunning && shouldBeRunning)
             {
                 // rainbow is running and we need to change the color bank
                 colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette).ToArray();
+                if(isInEditWizard)
+                    colorBank = GetColorGradientfromPalette(DefaultColorCollection.black).ToArray();
             }
 
         }
@@ -152,7 +156,7 @@ namespace adrilight
                         {
 
                            
-                                position = (int)RainbowTicker.StartIndex + spot.id;
+                                position = (int)RainbowTicker.StartIndex + spot.VID*10;
                                 if (position >= colorBank.Length)
                                     position = position - colorBank.Length; // run with VID
                             

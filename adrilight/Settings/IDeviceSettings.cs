@@ -29,5 +29,6 @@ namespace adrilight
         string GroupName { get; set; }
         string SmallIcon { get; set; }
         string BigIcon { get; set; }
+        int SelectedOutput { get; set; }
     }
 }

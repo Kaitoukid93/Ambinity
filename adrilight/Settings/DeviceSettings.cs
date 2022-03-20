@@ -29,6 +29,7 @@ namespace adrilight
         private string _groupName = "Ambino Devices";
         private string _smallIcon = "";
         private string _bigIcon = "";
+        private int _selectedOutput = 0;
 
       
 
@@ -50,6 +51,7 @@ namespace adrilight
         public string GroupName { get => _groupName; set { Set(() => GroupName, ref _groupName, value); } }
         public string SmallIcon { get => _smallIcon; set { Set(() => SmallIcon, ref _smallIcon, value); } }
         public string BigIcon { get => _bigIcon; set { Set(() => BigIcon, ref _bigIcon, value); } }
+        public int SelectedOutput { get => _selectedOutput; set { Set(() => SelectedOutput, ref _selectedOutput, value); } }
 
     }
 }

@@ -44,6 +44,7 @@ namespace adrilight
         int OutputSelectedAudioDevice { get; set; }
         int OutputSelectedDisplay { get; set; }
         int OutputSelectedMode { get; set; }
+        bool IsInSpotEditWizard { get; set; } 
 
 
 

@@ -42,7 +42,7 @@
           Width="30" 
           Height="30" 
           Fill="White"
-          Stretch="Fill" />
+          Stretch="Uniform" />
                 <!--<TextBlock  Margin="5,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Left" Text="Music Reactive" Style="{DynamicResource TextBlockTitleBold}"/>-->
             </StackPanel>
 
@@ -52,7 +52,20 @@
 
         </Grid>
         <StackPanel Grid.Row="1">
-            <Grid Visibility="{Binding IsStaticColorSolidChecked,Converter={StaticResource boolToVisibilityConvert}}" Grid.Row="1" >
+            <Grid   Grid.Row="1" >
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsStaticColorBreathingChecked}" Value="true">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsStaticColorSolidChecked}" Value="true">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
 
 
 

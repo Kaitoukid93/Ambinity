@@ -49,6 +49,7 @@ namespace adrilight
         private int _outputBreathingSpeed;
         private Color[] _outputCurrentActivePalette;
         private ILEDSetup _outputLEDSetup;
+        private bool _isInSpotEditWizard;
 
         public string OutputName  { get => _outputName; set { Set(() => OutputName, ref _outputName, value);}}
         public int OutputID { get => _outputID; set { Set(() => OutputID, ref _outputID, value); } }
@@ -87,6 +88,7 @@ namespace adrilight
         public int OutputBreathingSpeed { get => _outputBreathingSpeed; set { Set(() => OutputBreathingSpeed, ref _outputBreathingSpeed, value); } }
         public Color[] OutputCurrentActivePalette { get => _outputCurrentActivePalette; set { Set(() => OutputCurrentActivePalette, ref _outputCurrentActivePalette, value); } }
         public ILEDSetup OutputLEDSetup { get => _outputLEDSetup; set { Set(() => OutputLEDSetup, ref _outputLEDSetup, value); } }
+        public bool IsInSpotEditWizard { get => _isInSpotEditWizard; set { Set(() => IsInSpotEditWizard, ref _isInSpotEditWizard, value); } }
 
     }
 }

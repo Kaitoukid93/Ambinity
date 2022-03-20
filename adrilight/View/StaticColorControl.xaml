@@ -48,7 +48,7 @@
                         <RadioButton IsChecked="{Binding IsStaticColorSolidChecked}" x:Name="static" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource solidrect }"  Style="{DynamicResource RadioButtonIcon}" Content="Static"/>
                         <RadioButton IsChecked="{Binding IsStaticColorBreathingChecked}" x:Name="breathing" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource breathing}" Content="Breathing" />
                         <RadioButton IsChecked="{Binding IsStaticColorSpectrumCyclingChecked}" x:Name="spectrumcycling" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource spectrumcycling}"  Content="Spectrum Cycling"/>
-                        <RadioButton IsChecked="{Binding IsStaticColorGradientChecked}" x:Name="atmosphere" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource atmosphere}" Content="Atmosphere"/>
+                        <RadioButton IsChecked="{Binding IsStaticColorGradientChecked}" x:Name="atmosphere" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource atmosphere}" Content="Gradient"/>
                         <!--<RadioButton IsChecked="True" x:Name="customCaptureZone" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource custom}" Content="Custom"/>-->
                     </hc:ButtonGroup>
                     <!--<Grid Visibility="{Binding ElementName=customCaptureZone,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
@@ -111,7 +111,10 @@
 
                     </Grid>
                     <Grid Margin="10,0,0,0" Visibility="{Binding ElementName=atmosphere,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
-                        <GroupBox HorizontalAlignment="Left"     VerticalAlignment="Bottom"   hc:TitleElement.TitleWidth="90" Header="Position"  Style="{DynamicResource GroupBoxOriginal}" HorizontalContentAlignment="Left" hc:TitleElement.TitlePlacement="Left" hc:TitleElement.VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            
+                       
+                            <GroupBox HorizontalAlignment="Left"       hc:TitleElement.TitleWidth="90" Header="Position"  Style="{DynamicResource GroupBoxOriginal}" HorizontalContentAlignment="Left" hc:TitleElement.TitlePlacement="Left" hc:TitleElement.VerticalAlignment="Center">
                             <hc:ButtonGroup  x:Name="atmosMode"   Style="{DynamicResource ButtonGroupBaseStyle}">
                                 <hc:ButtonGroup.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -120,14 +123,21 @@
                                         </WrapPanel>
                                     </ItemsPanelTemplate>
                                 </hc:ButtonGroup.ItemsPanel>
-                                <RadioButton  BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource fullspectrum }"  Style="{DynamicResource RadioButtonIcon}" Content="Full Cycle"/>
-                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource first}" Content="First"/>
-                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource last }" Content="Last"/>
-                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource number}" Content="N Position"/>
+                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource fullspectrum }"   Style="{DynamicResource RadioButtonIcon}" Content="Full Spectrum"/>
+                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource first}"  Content="First"/>
+                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource last}"  Content="Last"/>
+                                <RadioButton x:Name="customWB" IsChecked="True" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource custom}"  Content="Custom"/>
+
 
                             </hc:ButtonGroup>
-                        </GroupBox>
 
+                        </GroupBox>
+                        <Grid Visibility="{Binding ElementName=customWB,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                            <hc:TransitioningContentControl Margin="10,0,0,2"  TransitionMode="Left2Right">
+                                <Button   Style="{DynamicResource ButtonDashedInfo}" Content="Edit" ToolTip="Launch White Balance Editor" hc:IconElement.Geometry="{DynamicResource WindowRestoreGeometry}"/>
+                            </hc:TransitioningContentControl>
+                        </Grid>
+                        </StackPanel>
                     </Grid>
                     <StackPanel Orientation="Horizontal">
 

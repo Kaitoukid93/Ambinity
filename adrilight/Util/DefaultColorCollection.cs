@@ -240,5 +240,24 @@ namespace adrilight.Util
              Color.FromRgb (0,255,224)
 
     };
+        public static Color[] black = {
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0)
+
+        };
     }
 }

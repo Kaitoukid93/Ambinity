@@ -39,9 +39,12 @@ namespace adrilight
                 case nameof(OutputSettings.OutputNumLED):
                 case nameof(OutputSettings.OutputPixelWidth):
                 case nameof(OutputSettings.OutputPixelHeight):
-                //... there are more to come
+                case nameof(OutputSettings.IsInSpotEditWizard):
+                    //... there are more to come
                     Refresh();
                     break;
+               
+                    
             }
         }
 
@@ -165,7 +168,10 @@ namespace adrilight
 
             ILEDSetup ledSetup = new LEDSetup(name, owner, type, description, reorderedActiveSpots, matrixWidth, matrixHeight, setupID);
            
-            
+            if(OutputSettings.IsInSpotEditWizard)
+            {
+                ledSetup = new LEDSetup(name, owner, type, description, BuildMatrix(rectWidth, rectHeight, matrixWidth, matrixHeight), matrixWidth, matrixHeight, setupID);
+            }
             //if (availableLEDSetups != null)
             //{
             //    foreach (var ledsetup in availableLEDSetups)
@@ -195,7 +201,7 @@ namespace adrilight
 
         private IDeviceSpot[] BuildMatrix(int rectwidth, int rectheight, int spotsX, int spotsY)
         {
-            int spacing = 3;
+            int spacing = 1;
             IDeviceSpot[] spotSet = new DeviceSpot[spotsX*spotsY];
             var compareWidth = (rectwidth-(spacing*(spotsX+1)))/ spotsX;
             var compareHeight = (rectheight-(spacing*(spotsY+1)))/ spotsY;
@@ -216,7 +222,7 @@ namespace adrilight
                     var y = spacing*j+(rectheight - (spotsY * spotSize)-spacing*(spotsY-1))/2 + j*spotSize;
                     var index = counter;
 
-                    spotSet[index] = new DeviceSpot(i,j,x, y, spotSize, spotSize, 0, 0, 0, 0,index, index, index, index, false);
+                    spotSet[index] = new DeviceSpot(i,j,x, y, spotSize, spotSize, 0, 0, 0, 0,index, index, i, index, false);
                     counter++;
 
                 }
