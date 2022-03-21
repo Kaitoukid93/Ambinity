@@ -156,7 +156,7 @@ namespace adrilight
                         {
 
                            
-                                position = (int)RainbowTicker.StartIndex + spot.VID*10;
+                                position = (int)RainbowTicker.StartIndex + spot.VID;
                                 if (position >= colorBank.Length)
                                     position = position - colorBank.Length; // run with VID
                             

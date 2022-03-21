@@ -22,6 +22,7 @@ namespace adrilight.Spots
         int XIndex { get; set; }
         bool IsActivated { get; set; }
         double BorderThickness { get; set; }
+        bool IsIDVissible { get; set; }
 
 
         void IndicateMissingValue();
@@ -29,6 +30,7 @@ namespace adrilight.Spots
         void SetVID(int vid);
         void SetID(int id);
         void SetStroke(double strokeThickness);
+        void SetIDVissible (bool isIDVissible);
 
 
     }

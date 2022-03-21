@@ -126,7 +126,7 @@ namespace adrilight.Settings
                     var y = spacing * j + (rectheight - (spotsY * spotSize) - spacing * (spotsY - 1)) / 2 + j * spotSize;
                     var index = counter;
 
-                    spotSet[index] = new DeviceSpot(i, j, x, y, spotSize, spotSize, 0, 0, 0, 0, index, index, index, index, false);
+                    spotSet[index] = new DeviceSpot(i, j, x, y, spotSize, spotSize, 0, 0, 0, 0, index, index, index, index, false,false);
                     counter++;
 
                 }

@@ -2,6 +2,7 @@
 using HandyControl.Data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,27 +20,32 @@ namespace adrilight.View
     /// <summary>
     /// Interaction logic for PaletteEditWindow.xaml
     /// </summary>
-    public partial class PIDEditWindow 
+    public partial class PIDEditWindow
     {
         private bool isLeftMouseButtonDownOnWindow = false;
         private bool isDraggingSelectionRect = false;
         private Point origMouseDownPoint;
+        private double _scale = 1;
         private static readonly double DragThreshold = 1;
         public PIDEditWindow()
         {
             InitializeComponent();
             MatrixWidth.VerifyFunc = str => double.TryParse(str, out var v)
-               ? v>25
+               ? v > 80
                    ? OperationResult.Failed("This LED Number is not Supported")
                    : OperationResult.Success()
                : OperationResult.Failed("This LED Number is not Supported");
 
             MatrixHeight.VerifyFunc = str => double.TryParse(str, out var v)
-               ? v > 25
+               ? v > 80
                    ? OperationResult.Failed("This LED Number is not Supported")
                    : OperationResult.Success()
                : OperationResult.Failed("This LED Number is not Supported");
+
         }
+
+
+
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
 
@@ -56,19 +62,46 @@ namespace adrilight.View
 
         }
 
+        private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers != ModifierKeys.Control)
+                return;
 
+            if (e.Delta < 0 && _scale > 0.7)
+            {
+                _scale -= 0.1;
+                MotherGrid.LayoutTransform = new ScaleTransform(_scale, _scale);
+            }
+            else if (e.Delta > 0 && _scale < 1.5)
+            {
+                _scale += 0.1;
+                MotherGrid.LayoutTransform = new ScaleTransform(_scale, _scale);
+            }
+
+        }
         private void Confirmed(object sender, EventArgs e)
         {
-            ViewModel.CurrentOutput.IsInSpotEditWizard = false;
-            ViewModel.Count = 0;
+
             this.Close();
-            
+
+        }
+        private void PIDEditWindowClosed(object sender, CancelEventArgs e)
+        {
+            ViewModel.CurrentOutput.OutputLEDSetup.Spots = ViewModel.BackupSpots.ToArray();
+            ViewModel.RaisePropertyChanged(nameof(ViewModel.CurrentOutput));
+            ViewModel.WriteDeviceInfoJson();
+            ViewModel.CurrentOutput.IsInSpotEditWizard = false;
+            ViewModel.CurrentLEDEditWizardState = 0;
+
+            ViewModel.Count = 0;
+
+
         }
 
         private void Canceled(object sender, EventArgs e)
         {
-            ViewModel.CurrentOutput.IsInSpotEditWizard = false;
-            ViewModel.Count = 0;
+
+
             this.Close();
         }
 
@@ -256,5 +289,6 @@ namespace adrilight.View
             //}
         }
 
-        
+
+    }
 }

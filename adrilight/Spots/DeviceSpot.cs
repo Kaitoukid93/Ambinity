@@ -14,7 +14,7 @@ namespace adrilight.Spots
     sealed class DeviceSpot : ViewModelBase, IDisposable, IDeviceSpot
     {
 
-        public DeviceSpot(int x, int y,int top, int left, int width, int height,int displayTop, int displayLeft, int displayWidth, int displayHeight,int index,int positionIndex, int virtualIndex , int musicIndex, bool isActivated)
+        public DeviceSpot(int x, int y,int top, int left, int width, int height,int displayTop, int displayLeft, int displayWidth, int displayHeight,int index,int positionIndex, int virtualIndex , int musicIndex, bool isActivated, bool isIDVissible)
         {
             Rectangle = new Rectangle(top, left, width, height);
             DisplayRectangle = new Rectangle(displayTop, displayLeft, displayWidth, displayHeight);
@@ -30,7 +30,10 @@ namespace adrilight.Spots
             PID = positionIndex;
             IsActivated = isActivated;
             BorderThickness = 0;
-            
+            IsIDVissible = isIDVissible;
+
+
+
         }
 
         public Rectangle Rectangle { get;  set; }
@@ -43,6 +46,7 @@ namespace adrilight.Spots
             set { Set(() => IsFirst, ref _isFirst, value); }
         }
         public int MID { get; set; }
+        public bool IsIDVissible { get; set; }
 
         public Color OnDemandColor => Color.FromRgb(Red, Green, Blue);
         public Color OnDemandColorTransparent => Color.FromArgb(255, Red, Green, Blue);
@@ -88,6 +92,16 @@ namespace adrilight.Spots
                 RaisePropertyChanged(nameof(VID));
                 
             
+        }
+        public void SetIDVissible(bool iDVissible)
+        {
+            IsIDVissible = iDVissible;
+
+
+
+            RaisePropertyChanged(nameof(IsIDVissible));
+
+
         }
         public void SetID(int ID)
         {

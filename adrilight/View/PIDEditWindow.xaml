@@ -11,7 +11,7 @@
            Background="{DynamicResource MainContentBackgroundBrush}"
            d:DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}"
            DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}" 
-           
+           Closing="PIDEditWindowClosed"
            Title="Edit LEDs PID" 
            Height="480" 
            Width="854" 
@@ -80,9 +80,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <hc:StepBar x:Name="WizardStep" StepIndex="{Binding CurrentLEDEditWizardState}" Margin="0,0,0,32" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Dock="Top">
+        <hc:StepBar x:Name="WizardStep" StepIndex="{Binding CurrentLEDEditWizardState, Mode=TwoWay}" Margin="0,0,0,32" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Dock="Top">
             <hc:StepBarItem Content="Create LEDs Map"/>
-            <hc:StepBarItem Content="Chose your LEDs Position"/>
             <hc:StepBarItem Content="Assign the LED Order"/>
             <hc:StepBarItem Content="Run Test Effect"/>
         </hc:StepBar>
@@ -100,7 +99,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Button Click="Canceled"  Margin="10"  Content="Cancel" Background="Transparent" BorderBrush="Transparent">
+                <Button Click="Canceled" Command="{Binding CancelEditWizardCommand}" CommandParameter="cancel"  Margin="10"  Content="Cancel" Background="Transparent" BorderBrush="Transparent">
                     <Button.Style>
                         <Style BasedOn="{StaticResource ButtonDefault}" TargetType="Button">
                             <Setter Property="Visibility" Value="Collapsed"></Setter>
@@ -113,24 +112,24 @@
                     </Button.Style>
                 </Button>
                 
-                <Button  Click="Confirmed" Margin="10"  Content="Done" >
+                <Button Command="{Binding SaveNewUserEditLEDSetup}" CommandParameter="save"  Click="Confirmed" Margin="10"  Content="Done" >
                     <Button.Style>
                         <Style BasedOn="{StaticResource ButtonPrimary}" TargetType="Button">
                             <Setter Property="Visibility" Value="Collapsed"></Setter>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=WizardStep,Path=StepIndex}" Value="3">
+                                <DataTrigger Binding="{Binding ElementName=WizardStep,Path=StepIndex}" Value="2">
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
                             </Style.Triggers>   
                         </Style>
                     </Button.Style>
                 </Button>
-                <Button Margin="10" Command="{Binding JumpToNextWizardStateCommand}" CommandParameter="next"   Content="Next" >
+                <Button IsEnabled="{Binding IsNextable}" Margin="10" Command="{Binding JumpToNextWizardStateCommand}" CommandParameter="next"   Content="Next" >
                     <Button.Style>
                         <Style BasedOn="{StaticResource ButtonPrimary}" TargetType="Button">
                             <Setter Property="Visibility" Value="Visible"></Setter>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=WizardStep,Path=StepIndex}" Value="3">
+                                <DataTrigger Binding="{Binding ElementName=WizardStep,Path=StepIndex}" Value="2">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -152,9 +151,9 @@
                 </Style>
             </Grid.Style>
             <StackPanel>
-                <hc:NumericUpDown HorizontalAlignment="Left"  Name="MatrixWidth" HorizontalContentAlignment="Center" Value="{Binding CurrentOutput.OutputNumLEDX}"
+                <hc:NumericUpDown Minimum="1" HorizontalAlignment="Left"  Name="MatrixWidth" HorizontalContentAlignment="Center" Value="{Binding CurrentOutput.OutputNumLEDX}"
                      hc:InfoElement.Title="Map Width" Margin="0,32,0,0" hc:InfoElement.Necessary="True" Style="{DynamicResource NumericUpDownPlus}"/>
-                <hc:NumericUpDown HorizontalAlignment="Left"  Name="MatrixHeight" HorizontalContentAlignment="Center" Value="{Binding CurrentOutput.OutputNumLEDY}"
+                <hc:NumericUpDown Minimum="1" HorizontalAlignment="Left"  Name="MatrixHeight" HorizontalContentAlignment="Center" Value="{Binding CurrentOutput.OutputNumLEDY}"
                      hc:InfoElement.Title="Map Height" Margin="0,32,0,0" hc:InfoElement.Necessary="True" Style="{DynamicResource NumericUpDownPlus}"/>
                 <hc:Badge HorizontalAlignment="Left" Value="{Binding Count}" BadgeMargin="0,-14,-10,0" Height="30" Margin="0,40,0,0" Style="{DynamicResource BadgePrimary}">
                     <Button  Command="{Binding ResetCountCommand}"  Style="{DynamicResource ButtonDefault}" Content="Click to reset" CommandParameter="Reset"/>
@@ -173,7 +172,8 @@
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
-            <Viewbox  HorizontalAlignment="Left" VerticalAlignment="Top"  Name="PreviewBox">
+            <Viewbox   HorizontalAlignment="Left" VerticalAlignment="Top"  Name="PreviewBox">
+         
                 <Viewbox.ContextMenu>
                     <ContextMenu Style="{DynamicResource ContextMenuBaseStyle}">
                         <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Edit Position ID"
@@ -198,11 +198,12 @@
                           ItemsSource="{Binding CurrentOutput.OutputLEDSetup.Spots}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <Canvas HorizontalAlignment="Center" VerticalAlignment="Top" Name="PreviewCanvas"
+                            <Canvas HorizontalAlignment="Left" VerticalAlignment="Top" Name="PreviewCanvas"
                                
                                 Margin="0" 
                                 Width="{Binding CurrentOutput.OutputPixelWidth}" 
                                 Height="{Binding CurrentOutput.OutputPixelHeight}" >
+                               
                             </Canvas>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
@@ -216,7 +217,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid>
-                                <Rectangle Stroke="OrangeRed" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
+                                <Rectangle ToolTip="{Binding id}" Stroke="OrangeRed" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
                                     <Rectangle.Fill>
                                         <SolidColorBrush Color="{Binding OnDemandColor}"  />
                                     </Rectangle.Fill>
@@ -285,7 +286,7 @@
                           BorderThickness="1"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center" 
-                          ItemsSource="{Binding ActivatedSpots}">
+                          ItemsSource="{Binding ActivatedSpots,Mode=TwoWay}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas HorizontalAlignment="Center" VerticalAlignment="Top" Name="PreviewCanvas"
@@ -327,7 +328,7 @@
                                     </i:Interaction.Triggers>
                                 </Rectangle>
                                 
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="5" Text="{Binding id}"  IsHitTestVisible="False"/>
+                                <TextBlock Visibility="{Binding IsIDVissible,Converter={StaticResource boolToVisibilityConvert},Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="5" Text="{Binding id}"  IsHitTestVisible="False"/>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

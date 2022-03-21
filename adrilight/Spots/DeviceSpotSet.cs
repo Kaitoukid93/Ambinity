@@ -86,8 +86,6 @@ namespace adrilight
 
         internal ILEDSetup BuildLEDSetup(IOutputSettings outputSettings, IGeneralSettings generalSettings) // general settings is for compare each device setting
         {
-
-            var availableLEDSetups = LoadSetupIfExist();
             int matrixWidth = outputSettings.OutputNumLEDX;
             int matrixHeight = outputSettings.OutputNumLEDY;
             int numLED = outputSettings.OutputNumLED;
@@ -98,75 +96,81 @@ namespace adrilight
             int setupID = outputSettings.OutputID;
             int rectWidth = outputSettings.OutputPixelWidth;
             int rectHeight = outputSettings.OutputPixelHeight;
-            
+
             IDeviceSpot[] spots = new DeviceSpot[numLED];
             List<IDeviceSpot> reorderedSpots = new List<IDeviceSpot>();
 
             //Create default spot
             var availableSpots = BuildMatrix(rectWidth, rectHeight, matrixWidth, matrixHeight);
             int counter = 0;
-            switch(outputSettings.OutputType)
+            ILEDSetup ledSetup = outputSettings.OutputLEDSetup;
+            if(ledSetup == null)
             {
-                case "Frame":
-                    for (var i = 0; i < matrixHeight; i++) // bottom right ( default ambino basic start point) go up to top right
-                    {
-                        var spot = availableSpots[availableSpots.Length - 1 - matrixWidth * i];
-                        spot.IsActivated = true;
-                        spot.id = counter++;
-                        reorderedSpots.Add(spot);
-                    }
-                    for (var i = 0; i < matrixWidth - 1; i++) // top right go left to top left
-                    {
-                        var spot = availableSpots[matrixWidth - 2 - i];
-                        spot.IsActivated = true;
-                        spot.id = counter++;
-                        reorderedSpots.Add(spot);
-                    }
-                    for (var i = 0; i < matrixHeight - 1; i++) // top left go down to bottom left
-                    {
-                        var spot = availableSpots[matrixWidth * (i + 1)];
-                        spot.IsActivated = true;
-                        spot.id = counter++;
-                        reorderedSpots.Add(spot);
-                    }
-                    for (var i = 0; i < matrixWidth - 2; i++) // top left go down to bottom left
-                    {
-                        var spot = availableSpots[matrixWidth * (matrixHeight - 1) + i + 1];
-                        spot.IsActivated = true;
-                        spot.id = counter++;
-                        reorderedSpots.Add(spot);
+                switch (outputSettings.OutputType)
+                {
+                    case "Frame":
+                        for (var i = 0; i < matrixHeight; i++) // bottom right ( default ambino basic start point) go up to top right
+                        {
+                            var spot = availableSpots[availableSpots.Length - 1 - matrixWidth * i];
+                            spot.IsActivated = true;
+                            spot.id = counter++;
+                            reorderedSpots.Add(spot);
+                        }
+                        for (var i = 0; i < matrixWidth - 1; i++) // top right go left to top left
+                        {
+                            var spot = availableSpots[matrixWidth - 2 - i];
+                            spot.IsActivated = true;
+                            spot.id = counter++;
+                            reorderedSpots.Add(spot);
+                        }
+                        for (var i = 0; i < matrixHeight - 1; i++) // top left go down to bottom left
+                        {
+                            var spot = availableSpots[matrixWidth * (i + 1)];
+                            spot.IsActivated = true;
+                            spot.id = counter++;
+                            reorderedSpots.Add(spot);
+                        }
+                        for (var i = 0; i < matrixWidth - 2; i++) // top left go down to bottom left
+                        {
+                            var spot = availableSpots[matrixWidth * (matrixHeight - 1) + i + 1];
+                            spot.IsActivated = true;
+                            spot.id = counter++;
+                            reorderedSpots.Add(spot);
 
-                    }
-                    break;
-                case "Keyboard":
-                    foreach(var spot in availableSpots)
-                    {
-                        spot.IsActivated = true;
-                        reorderedSpots.Add(spot);
-                    }
-                    break;
-                case "ABEDGE":
-                    foreach (var spot in availableSpots)
-                    {
-                        if(spot.YIndex == 0)
-                        spot.IsActivated = true;
-                        reorderedSpots.Add(spot);
-                    }
-                    break;
+                        }
+                        break;
+                    case "Keyboard":
+                        foreach (var spot in availableSpots)
+                        {
+                            spot.IsActivated = true;
+                            reorderedSpots.Add(spot);
+                        }
+                        break;
+                    case "ABEDGE":
+                        foreach (var spot in availableSpots)
+                        {
+                            if (spot.YIndex == 0)
+                                spot.IsActivated = true;
+                            reorderedSpots.Add(spot);
+                        }
+                        break;
 
 
+                }
+
+                counter = 0;
+
+                IDeviceSpot[] reorderedActiveSpots = new DeviceSpot[reorderedSpots.Count];
+
+                foreach (var spot in reorderedSpots)
+                {
+                    reorderedActiveSpots[counter++] = spot;
+                }
+
+                ledSetup = new LEDSetup(name, owner, type, description, reorderedActiveSpots, matrixWidth, matrixHeight, setupID);
             }
            
-            counter = 0;
-
-            IDeviceSpot[] reorderedActiveSpots = new DeviceSpot[reorderedSpots.Count];
-            
-                foreach(var spot in reorderedSpots)
-            {
-                reorderedActiveSpots[counter++] = spot;
-            }
-
-            ILEDSetup ledSetup = new LEDSetup(name, owner, type, description, reorderedActiveSpots, matrixWidth, matrixHeight, setupID);
+           
            
             if(OutputSettings.IsInSpotEditWizard)
             {
@@ -202,6 +206,10 @@ namespace adrilight
         private IDeviceSpot[] BuildMatrix(int rectwidth, int rectheight, int spotsX, int spotsY)
         {
             int spacing = 1;
+            if (spotsX == 0)
+                spotsX = 1;
+            if (spotsY == 0)
+                spotsY = 1;
             IDeviceSpot[] spotSet = new DeviceSpot[spotsX*spotsY];
             var compareWidth = (rectwidth-(spacing*(spotsX+1)))/ spotsX;
             var compareHeight = (rectheight-(spacing*(spotsY+1)))/ spotsY;
@@ -222,7 +230,7 @@ namespace adrilight
                     var y = spacing*j+(rectheight - (spotsY * spotSize)-spacing*(spotsY-1))/2 + j*spotSize;
                     var index = counter;
 
-                    spotSet[index] = new DeviceSpot(i,j,x, y, spotSize, spotSize, 0, 0, 0, 0,index, index, i, index, false);
+                    spotSet[index] = new DeviceSpot(i,j,x, y, spotSize, spotSize, 0, 0, 0, 0,index, index, i, index, false,false);
                     counter++;
 
                 }

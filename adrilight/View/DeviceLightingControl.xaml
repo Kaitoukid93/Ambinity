@@ -123,22 +123,30 @@
                 <Setter Property="Tag" Value="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}" />
                 <Setter Property="ContextMenu">
                     <Setter.Value>
-                        <ContextMenu Style="{DynamicResource ContextMenuBaseStyle}">
-                            <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Edit"
-                                          Command="{Binding PlacementTarget.Tag.EditSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
-                                          >
+                        <ContextMenu     Style="{DynamicResource ContextMenuBaseStyle}">
+                            <MenuItem  Style="{DynamicResource MenuItemBaseStyle}" Header="LED Setup">
+                                <MenuItem.Icon>
+                                    <Path Data="{StaticResource ledsetup}" Fill="White" Stretch="Uniform"/>
+                                </MenuItem.Icon>
+                                <MenuItem   Header="Edit LED Setup"
+                                         Command="{Binding PlacementTarget.Tag.LaunchPIDEditWindowCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                                    <MenuItem.Icon>
+                                        <Path Data="{StaticResource edit}" Fill="White" Stretch="Uniform"/>
+                                    </MenuItem.Icon>
+                                        </MenuItem>
+                                <MenuItem Header="Import Existing LED Setup">
+                                    <MenuItem.Icon>
+                                        <Path Data="{StaticResource import}" Fill="White" Stretch="Uniform"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </MenuItem>
-                            <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Share"
-                                          Command="{Binding PlacementTarget.Tag.ExportCurrentSelectedPaletteToFileCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
-                                          >
-                            </MenuItem>
-                            <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Delete"
-                                          Command="{Binding PlacementTarget.Tag.DeleteSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
-                                          >
-                            </MenuItem>
+
                         </ContextMenu>
 
                     </Setter.Value>
+                </Setter>
+                <Setter Property="ContextMenuService.Placement" Value="Bottom">
+                    
                 </Setter>
             </Style>
           
@@ -178,7 +186,7 @@
                                                   ItemsPanel="{DynamicResource WrapPanelVerticalItemsPanelTemplate}" 
                                                   ItemsSource="{Binding CurrentDevice.AvailableOutputs}">
 
-                                <ListBox.ItemTemplate>
+                                <ListBox.ItemTemplate >
                                     <DataTemplate >
                                         <Grid  IsEnabled="{Binding IsConnected,Mode=TwoWay}" 
                                                x:Name="output" 
@@ -208,15 +216,17 @@
                                                     </Grid.ColumnDefinitions>
                                                     <!--on off button-->
                                                     <Grid Grid.Column="2">
-                                                       
-                                                        <ToggleButton IsChecked="{Binding IsEnabled}" 
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <ToggleButton IsChecked="{Binding IsEnabled}" 
                                                                       BorderThickness="0"  
                                                                       Margin="0,0,18,0" 
                                                                       HorizontalAlignment="Right"
                                                                       VerticalAlignment="center"
                                                                       Grid.Row="0"
                                                                       Style="{StaticResource ToggleButtonSwitch}">
-                                                        </ToggleButton>
+                                                            </ToggleButton>
+                                                        </StackPanel>
+                                                        
                                                        
                                                     </Grid>
                                               
@@ -234,9 +244,9 @@
 
                                                     <!--Icon-->
                                                     <Border HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" Height="50" CornerRadius="6" >
-                                                        <Border.Background>
+                                                        <!--<Border.Background>
                                                             <SolidColorBrush Color ="{Binding Color, Source={StaticResource PrimaryBrush}}" Opacity="0.1"/>
-                                                        </Border.Background>
+                                                        </Border.Background>-->
                                                         <Path Margin="5" Data="{StaticResource mouse}" Width="32" Height="32" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
                                                     </Border>
 
@@ -258,31 +268,13 @@
                     </Grid>
                     <Grid VerticalAlignment="Top" HorizontalAlignment="Left"  ClipToBounds="true" Grid.Column="1" x:Name="MotherGrid">
                         <Viewbox  HorizontalAlignment="Left" VerticalAlignment="Top"  Name="PreviewBox">
-                            <Viewbox.ContextMenu>
-                                <ContextMenu Style="{DynamicResource ContextMenuBaseStyle}">
-                                    <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Position ID">
-                                        <MenuItem   Header="Edit Position ID"
-                                         Command="{Binding LaunchPIDEditWindowCommand}">
-                                        </MenuItem>
-                                        <MenuItem   Header="Import Existing Position ID">
-                                        </MenuItem>
-                                    </MenuItem>
-                                    <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Edit Virtual ID"
-                                         
-                                          >
-                                    </MenuItem>
-                                    <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Edit Music ID"
-                                          
-                                          >
-                                    </MenuItem>
-                                </ContextMenu>
-                            </Viewbox.ContextMenu>
+                         
                             <ItemsControl
                           Name="PreviewGird"  
                           BorderThickness="1"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center" 
-                          ItemsSource="{Binding CurrentOutput.OutputLEDSetup.Spots}">
+                          ItemsSource="{Binding CurrentOutput.OutputLEDSetup.Spots,Mode=TwoWay}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas HorizontalAlignment="Center" VerticalAlignment="Top" Name="PreviewCanvas"
@@ -303,7 +295,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <Rectangle Stroke="OrangeRed" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
+                                            <Rectangle ToolTip="{Binding id}" Stroke="OrangeRed" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
                                                 <Rectangle.Fill>
                                                     <SolidColorBrush Color="{Binding OnDemandColor}"  />
                                                 </Rectangle.Fill>
