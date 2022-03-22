@@ -159,7 +159,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Border Margin="10"  Background="{StaticResource RegionBrush}" CornerRadius="7">
+        <Border Margin="10"  Background="{DynamicResource DarkOpacityBrush}" CornerRadius="7">
             
        
         <hc:SimplePanel   ClipToBounds="true" Grid.Row="0">
@@ -343,7 +343,7 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Border MaxWidth="600" MinHeight="360"   Height="auto" Margin="10"  Background="{StaticResource DarkMaskBrush}" CornerRadius="7">
+            <Border MaxWidth="600" MinHeight="360"   Height="auto" Margin="10"  Background="{DynamicResource DarkOpacityBrush}" CornerRadius="7">
                 <StackPanel>
         
                         
@@ -399,7 +399,7 @@
               
              
                 </Border>
-            <Border MinHeight="360" Grid.Column="1" Margin="10" Background="{StaticResource DarkMaskBrush}" CornerRadius="7">
+            <Border MinHeight="360" Grid.Column="1" Margin="10" Background="{DynamicResource DarkOpacityBrush}" CornerRadius="7">
             <StackPanel>
                     <Grid x:Name="CaptureSidePanel" Margin="1" Visibility="{Binding ElementName=ScreenCaptureRad,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
                         <hc:TransitioningContentControl>
