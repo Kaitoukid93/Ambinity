@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using adrilight.Resources;
 using adrilight.Spots;
 using adrilight.Util;
-using MaterialDesignThemes.Wpf;
+
 using Newtonsoft.Json;
 using OpenRGB.NET.Models;
 using Un4seen.BassWasapi;
@@ -271,10 +271,13 @@ namespace adrilight.ViewModel
         //VIDs commands//
         public ICommand ZerolAllCommand { get; set; }
         public ICommand CancelEditWizardCommand { get; set; }
+        public ICommand SetBorderSpotActiveCommand { get; set; }
         public ICommand SaveNewUserEditLEDSetup { get; set; }
         public ICommand ResetCountCommand { get; set; }
         public ICommand SetSpotPIDCommand { get; set; }
         public ICommand ResetMaxCountCommand { get; set; }
+        public ICommand SetPIDNeutral { get; set; }
+        public ICommand SetPIDReverseNeutral { get; set; }
         public ICommand JumpToNextWizardStateCommand { get; set; }
         public ICommand BackToPreviousWizardStateCommand { get; set; }
         public ICommand LaunchPositionEditWindowCommand { get; set; }
@@ -302,6 +305,7 @@ namespace adrilight.ViewModel
         public ICommand SnapshotCommand { get; set; }
         public ICommand DeleteDeviceCommand { get; set; }
         public ICommand SetSpotActiveCommand { get; set; }
+        public ICommand SetAllSpotActiveCommand { get; set; }
         public ICommand SetZoneColorCommand { get; set; }
         public ICommand GetZoneColorCommand { get; set; }
         #endregion
@@ -1035,25 +1039,26 @@ namespace adrilight.ViewModel
         /// This group define visibility binding property and mode selecting for device
         /// </summary>
         /// 1.StaticColor
-        private bool _isStaticColorGradientChecked;
+        #region StaticColor Dependency
+       
         public bool IsStaticColorGradientChecked {
-            get => _isStaticColorGradientChecked;
+            get => CurrentOutput.OutputStaticColorMode=="gradient";
             set
             {
-                // _log.Info("PreviewImageSource created.");
-                Set(ref _isStaticColorGradientChecked, value);
-                RaisePropertyChanged();
+                
+                CurrentOutput.OutputStaticColorMode = "gradient";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorMode));
 
             }
         }
-        private bool _isStaticColorBreathingChecked;
+        
         public bool IsStaticColorBreathingChecked {
-            get => _isStaticColorBreathingChecked;
+            get => CurrentOutput.OutputStaticColorMode == "breathing";
             set
             {
-                // _log.Info("PreviewImageSource created.");
-                Set(ref _isStaticColorBreathingChecked, value);
-                RaisePropertyChanged();
+                
+                CurrentOutput.OutputStaticColorMode = "breathing";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorMode));
 
 
 
@@ -1061,95 +1066,209 @@ namespace adrilight.ViewModel
         }
 
 
-        private bool _isStaticColorSpectrumCyclingChecked;
+       
         public bool IsStaticColorSpectrumCyclingChecked {
-            get => _isStaticColorSpectrumCyclingChecked;
+            get => CurrentOutput.OutputStaticColorMode == "spectrumcycling";
             set
             {
-                // _log.Info("PreviewImageSource created.");
-                Set(ref _isStaticColorSpectrumCyclingChecked, value);
-                RaisePropertyChanged();
+                CurrentOutput.OutputStaticColorMode = "spectrumcycling";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorMode));
 
             }
         }
-        private bool _isStaticColorSolidChecked;
+     
         public bool IsStaticColorSolidChecked {
-            get => _isStaticColorSolidChecked;
+            get => CurrentOutput.OutputStaticColorMode == "solid";
             set
             {
-                // _log.Info("PreviewImageSource created.");
-                Set(ref _isStaticColorSolidChecked, value);
-                RaisePropertyChanged();
+                CurrentOutput.OutputStaticColorMode = "solid";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorMode));
+
 
 
             }
         }
-        private bool _isStaticColorSolidModeAlwaysChecked;
-        public bool IsStaticColorSolidModeAlwaysChecked {
-            get => _isStaticColorSolidModeAlwaysChecked;
-            set
-            {
-                // _log.Info("PreviewImageSource created.");
-                Set(ref _isStaticColorSolidModeAlwaysChecked, value);
-                RaisePropertyChanged();
-
-            }
-        }
-        private bool _isStaticColorSolidModeColorChangedChecked;
-        public bool IsStaticColorSolidModeColorChangedChecked {
-            get => _isStaticColorSolidModeColorChangedChecked;
-            set
-            {
-                // _log.Info("PreviewImageSource created.");
-                Set(ref _isStaticColorSolidModeColorChangedChecked, value);
-                RaisePropertyChanged();
-
-            }
-        }
-        private bool _isStaticColorGradientModeFullCycleChecked;
+       
+   
         public bool IsStaticColorGradientModeFullCycleChecked {
-            get => _isStaticColorGradientModeFullCycleChecked;
+            get => CurrentOutput.OutputStaticColorGradientMode == "full";
             set
             {
-                // _log.Info("PreviewImageSource created.");
-                Set(ref _isStaticColorGradientModeFullCycleChecked, value);
-                RaisePropertyChanged();
+                CurrentOutput.OutputStaticColorGradientMode = "full";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorGradientMode));
 
             }
         }
-        private bool _isStaticColorGradientModeFirstChecked;
+       
         public bool IsStaticColorGradientModeFirstChecked {
-            get => _isStaticColorGradientModeFirstChecked;
+            get => CurrentOutput.OutputStaticColorGradientMode == "first";
             set
             {
-                // _log.Info("PreviewImageSource created.");
-                Set(ref _isStaticColorGradientModeFirstChecked, value);
-                RaisePropertyChanged();
+                CurrentOutput.OutputStaticColorGradientMode = "first";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorGradientMode));
 
             }
         }
-        private bool _isStaticColorGradientModeLastChecked;
+      
         public bool IsStaticColorGradientModeLastChecked {
-            get => _isStaticColorGradientModeFirstChecked;
+            get => CurrentOutput.OutputStaticColorGradientMode == "last";
             set
             {
-                // _log.Info("PreviewImageSource created.");
-                Set(ref _isStaticColorGradientModeLastChecked, value);
-                RaisePropertyChanged();
+                CurrentOutput.OutputStaticColorGradientMode = "last";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorGradientMode));
 
             }
         }
-        private bool _isStaticColorGradientModeCustomChecked;
+   
         public bool IsStaticColorGradientModeCustomChecked {
-            get => _isStaticColorGradientModeCustomChecked;
+            get => CurrentOutput.OutputStaticColorGradientMode == "custom";
             set
             {
-                // _log.Info("PreviewImageSource created.");
-                Set(ref _isStaticColorGradientModeCustomChecked, value);
-                RaisePropertyChanged();
+
+                CurrentOutput.OutputStaticColorGradientMode = "custom";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorGradientMode));
 
             }
         }
+        #endregion
+        #region Screen Capture Dependency
+      
+        public bool IsRightScreenRegionChecked {
+            get => CurrentOutput.OutputScreenCapturePosition == "right";
+            set
+            {
+                CurrentOutput.OutputScreenCapturePosition = "right";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
+                RaisePropertyChanged(() => IsRightScreenRegionChecked);
+                RaisePropertyChanged(() => IsLeftScreenRegionChecked);
+                RaisePropertyChanged(() => IsTopScreenRegionChecked);
+                RaisePropertyChanged(() => IsBottomScreenRegionChecked);
+                RaisePropertyChanged(() => IsCustomScreenRegionChecked);
+                RaisePropertyChanged(() => IsFullScreenRegionChecked);
+            }
+        }
+        
+        public bool IsLeftScreenRegionChecked {
+            get => CurrentOutput.OutputScreenCapturePosition == "left";
+            set
+            {
+                CurrentOutput.OutputScreenCapturePosition = "left";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
+                RaisePropertyChanged(() => IsRightScreenRegionChecked);
+                RaisePropertyChanged(() => IsLeftScreenRegionChecked);
+                RaisePropertyChanged(() => IsTopScreenRegionChecked);
+                RaisePropertyChanged(() => IsBottomScreenRegionChecked);
+                RaisePropertyChanged(() => IsCustomScreenRegionChecked);
+                RaisePropertyChanged(() => IsFullScreenRegionChecked);
+            }
+        }
+       
+        public bool IsTopScreenRegionChecked {
+            get => CurrentOutput.OutputScreenCapturePosition == "top";
+            set
+            {
+                CurrentOutput.OutputScreenCapturePosition = "top";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
+                RaisePropertyChanged(() => IsRightScreenRegionChecked);
+                RaisePropertyChanged(() => IsLeftScreenRegionChecked);
+                RaisePropertyChanged(() => IsTopScreenRegionChecked);
+                RaisePropertyChanged(() => IsBottomScreenRegionChecked);
+                RaisePropertyChanged(() => IsCustomScreenRegionChecked);
+                RaisePropertyChanged(() => IsFullScreenRegionChecked);
+            }
+        }
+       
+        public bool IsBottomScreenRegionChecked {
+            get => CurrentOutput.OutputScreenCapturePosition == "bot";
+            set
+            {
+                CurrentOutput.OutputScreenCapturePosition = "bot";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
+                RaisePropertyChanged(() => IsRightScreenRegionChecked);
+                RaisePropertyChanged(() => IsLeftScreenRegionChecked);
+                RaisePropertyChanged(() => IsTopScreenRegionChecked);
+                RaisePropertyChanged(() => IsBottomScreenRegionChecked);
+                RaisePropertyChanged(() => IsCustomScreenRegionChecked);
+                RaisePropertyChanged(() => IsFullScreenRegionChecked);
+            }
+        }
+     
+        public bool IsCustomScreenRegionChecked {
+            get => CurrentOutput.OutputScreenCapturePosition == "custom";
+            set
+            {
+                CurrentOutput.OutputScreenCapturePosition = "custom";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
+                RaisePropertyChanged(() => IsRightScreenRegionChecked);
+                RaisePropertyChanged(() => IsLeftScreenRegionChecked);
+                RaisePropertyChanged(() => IsTopScreenRegionChecked);
+                RaisePropertyChanged(() => IsBottomScreenRegionChecked);
+                RaisePropertyChanged(() => IsCustomScreenRegionChecked);
+                RaisePropertyChanged(() => IsFullScreenRegionChecked);
+            }
+        }
+        public bool IsFullScreenRegionChecked {
+            get => CurrentOutput.OutputScreenCapturePosition == "full";
+            set
+            {
+                CurrentOutput.OutputScreenCapturePosition = "full";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
+                RaisePropertyChanged(() => IsRightScreenRegionChecked);
+                RaisePropertyChanged(() => IsLeftScreenRegionChecked);
+                RaisePropertyChanged(() => IsTopScreenRegionChecked);
+                RaisePropertyChanged(() => IsBottomScreenRegionChecked);
+                RaisePropertyChanged(() => IsCustomScreenRegionChecked);
+                RaisePropertyChanged(() => IsFullScreenRegionChecked);
+            }
+        }
+       
+        public bool IsWarmWBSelected {
+            get => CurrentOutput.OutputScreenCaptureWB == "warm";
+            set
+            {
+
+                CurrentOutput.OutputScreenCapturePosition = "warm";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCaptureWB));
+            }
+        }
+
+       
+        public bool IsNaturalWBSelected {
+            get => CurrentOutput.OutputScreenCaptureWB == "natural";
+            set
+            {
+
+                CurrentOutput.OutputScreenCapturePosition = "natural";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCaptureWB));
+            }
+        }
+        
+        public bool IsColdWBSelected {
+            get => CurrentOutput.OutputScreenCaptureWB == "cold";
+            set
+            {
+
+                CurrentOutput.OutputScreenCapturePosition = "cold";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCaptureWB));
+            }
+        }
+        
+        public bool IsCustomWBSelected {
+            get => CurrentOutput.OutputScreenCaptureWB == "custom";
+            set
+            {
+
+                CurrentOutput.OutputScreenCapturePosition = "custom";
+                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCaptureWB));
+            }
+        }
+
+
+
+        #endregion
+
+
+
         private int _count = 0;
         public int Count {
 
@@ -1616,7 +1735,7 @@ namespace adrilight.ViewModel
                 else if (CurrentLEDEditWizardState == 2)
                 {
                     ReorderActivatedSpot();
-                    RunTestSequence();
+                    CurrentOutput.IsInSpotEditWizard = false;
                 }
 
             });
@@ -1633,6 +1752,7 @@ namespace adrilight.ViewModel
                      return p != null;
                  }, (p) =>
                  {
+                     CurrentOutput.IsInSpotEditWizard = true;
                      CurrentLEDEditWizardState--;
 
                      //if (CurrentLEDEditWizardState == 1)
@@ -1686,6 +1806,44 @@ namespace adrilight.ViewModel
 
 
             });
+            SetAllSpotActiveCommand = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                Count=0;
+                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                    {
+                        spot.SetStroke(0.5);
+                        spot.IsActivated = true;
+                        Count++;
+                    }
+               
+
+
+
+            });
+            SetBorderSpotActiveCommand = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                Count=0;
+                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                {
+                    spot.SetStroke(0);
+                    spot.IsActivated = false;
+                    if (spot.XIndex == 0 || spot.YIndex == 0|| spot.XIndex == CurrentOutput.OutputNumLEDX-1 || spot.YIndex == CurrentOutput.OutputNumLEDY-1)
+                    {
+                        spot.SetStroke(0.5);
+                        spot.IsActivated = true;
+                        Count++;
+                    }
+
+                }
+
+
+            });
             SetSpotPIDCommand = new RelayCommand<IDeviceSpot>((p) =>
             {
                 return p != null;
@@ -1726,6 +1884,46 @@ namespace adrilight.ViewModel
                 foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
                 {
                     spot.SetStroke(0);
+                }
+
+            });
+            SetPIDNeutral = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                MaxLEDCount = ActivatedSpots.Count;
+                foreach (var spot in ActivatedSpots)
+                {
+                    spot.SetColor(0, 0, 0, true);
+                    spot.SetIDVissible(false);
+                }
+                foreach (var spot in ActivatedSpots)
+                {
+                    spot.SetColor(100, 27, 0, true);
+                    spot.SetID(ActivatedSpots.Count() - MaxLEDCount--);
+                    spot.SetIDVissible(true);
+                   
+                }
+
+            });
+            SetPIDReverseNeutral = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                MaxLEDCount = ActivatedSpots.Count;
+                foreach (var spot in ActivatedSpots)
+                {
+                    spot.SetColor(0, 0, 0, true);
+                    spot.SetIDVissible(false);
+                }
+                foreach (var spot in ActivatedSpots)
+                {
+                    spot.SetColor(100, 27, 0, true);
+                    spot.SetID(MaxLEDCount--);
+                    spot.SetIDVissible(true);
+
                 }
 
             });
@@ -2588,7 +2786,7 @@ namespace adrilight.ViewModel
             var vm = new ViewModel.AddDeviceViewModel(AvailableDevices, Groups, DesktopFrame);
             var view = new View.AddDevice();
             view.DataContext = vm;
-            bool addResult = (bool)await DialogHost.Show(view, "mainDialog");
+            bool addResult=false;
             if (addResult)
             {
                 try
@@ -2755,7 +2953,7 @@ namespace adrilight.ViewModel
             var view = new View.DeleteMessageDialog();
             DeleteMessageDialogViewModel dialogViewModel = new DeleteMessageDialogViewModel(CurrentDevice);
             view.DataContext = dialogViewModel;
-            bool addResult = (bool)await DialogHost.Show(view, "mainDialog");
+            bool addResult = false;
             if (addResult)
             {
                 DeleteCard(CurrentDevice);
@@ -2776,35 +2974,35 @@ namespace adrilight.ViewModel
         }
         public async void ShowIncreamentDataDialog()
         {
-            UserIncreamentInputViewModel dialogViewModel = new UserIncreamentInputViewModel(PreviewSpots);
-            var view = new View.UserIncreamentInput();
-            view.DataContext = dialogViewModel;
-            bool UserResult = (bool)await DialogHost.Show(view, "mainDialog");
-            if (UserResult)
-            {
-                var startIndex = dialogViewModel.StartIndex;
-                var spacing = dialogViewModel.Spacing;
-                var startPoint = dialogViewModel.StartPoint;
-                var endPoint = dialogViewModel.EndPoint;
-                SetIncreament(startIndex, spacing, startPoint, endPoint);
-                //apply increament function
-            }
+            //UserIncreamentInputViewModel dialogViewModel = new UserIncreamentInputViewModel(PreviewSpots);
+            //var view = new View.UserIncreamentInput();
+            //view.DataContext = dialogViewModel;
+            //bool UserResult = (bool)await DialogHost.Show(view, "mainDialog");
+            //if (UserResult)
+            //{
+            //    var startIndex = dialogViewModel.StartIndex;
+            //    var spacing = dialogViewModel.Spacing;
+            //    var startPoint = dialogViewModel.StartPoint;
+            //    var endPoint = dialogViewModel.EndPoint;
+            //    SetIncreament(startIndex, spacing, startPoint, endPoint);
+            //    //apply increament function
+            //}
 
 
         }
         public async void ShowZeroingDialog()
         {
-            UserIncreamentInputViewModel dialogViewModel = new UserIncreamentInputViewModel(PreviewSpots);
-            var view = new View.UserNumberInput();
-            view.DataContext = dialogViewModel;
-            bool UserResult = (bool)await DialogHost.Show(view, "mainDialog");
-            if (UserResult)
-            {
-                var spreadNumber = dialogViewModel.SpreadNumber;
+            //UserIncreamentInputViewModel dialogViewModel = new UserIncreamentInputViewModel(PreviewSpots);
+            //var view = new View.UserNumberInput();
+            //view.DataContext = dialogViewModel;
+            //bool UserResult = (bool)await DialogHost.Show(view, "mainDialog");
+            //if (UserResult)
+            //{
+            //    var spreadNumber = dialogViewModel.SpreadNumber;
 
-                SetZerotoAll(spreadNumber);
-                //apply increament function
-            }
+            //    SetZerotoAll(spreadNumber);
+            //    //apply increament function
+            //}
 
 
         }
@@ -2844,24 +3042,24 @@ namespace adrilight.ViewModel
         }
         public async void ShowDeleteFromDashboard(IDeviceSettings device)
         {
-            var view = new View.DeleteMessageDialog();
-            DeleteMessageDialogViewModel dialogViewModel = new DeleteMessageDialogViewModel(device);
-            view.DataContext = dialogViewModel;
-            bool dialogResult = (bool)await DialogHost.Show(view, "mainDialog");
-            if (dialogResult)
-            {
-                //DeleteCard(device);
-                //int counter = 1;
-                //foreach (var card in AvailableDevices)
-                //{
-                //    card.DeviceID = counter;
-                //    counter++;
+            //var view = new View.DeleteMessageDialog();
+            //DeleteMessageDialogViewModel dialogViewModel = new DeleteMessageDialogViewModel(device);
+            //view.DataContext = dialogViewModel;
+            //bool dialogResult = (bool)await DialogHost.Show(view, "mainDialog");
+            //if (dialogResult)
+            //{
+            //    //DeleteCard(device);
+            //    //int counter = 1;
+            //    //foreach (var card in AvailableDevices)
+            //    //{
+            //    //    card.DeviceID = counter;
+            //    //    counter++;
 
-                //}
-                //WriteDeviceInfoJson();
-                //Application.Restart();
-                //Process.GetCurrentProcess().Kill();
-            }
+            //    //}
+            //    //WriteDeviceInfoJson();
+            //    //Application.Restart();
+            //    //Process.GetCurrentProcess().Kill();
+            //}
 
 
         }

@@ -135,8 +135,8 @@
                     </Rectangle.Fill>
                 </Rectangle>-->
                 </Border>
-                
-                <ContentControl Style="{StaticResource DragDropResize}" Width="{Binding DeviceRectWidth}" Height="{Binding DeviceRectHeight}"  Canvas.Left="{Binding DeviceRectX}" Canvas.Top="{Binding DeviceRectY}" />
+
+                <ContentControl Style="{StaticResource DragDropResize}" Width="{Binding CurrentOutput.OutputPixelWidth}" Height="{Binding CurrentOutput.OutputPixelHeight}"  Canvas.Left="{Binding CurrentOutput.OutputLocationX}" Canvas.Top="{Binding CurrentOutput.OutputLocationY}" />
 
             </Canvas>
 

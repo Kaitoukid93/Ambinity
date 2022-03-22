@@ -44,7 +44,8 @@ namespace adrilight
         int OutputSelectedAudioDevice { get; set; }
         int OutputSelectedDisplay { get; set; }
         int OutputSelectedMode { get; set; }
-        bool IsInSpotEditWizard { get; set; } 
+        bool IsInSpotEditWizard { get; set; }
+       
 
 
 
@@ -58,7 +59,10 @@ namespace adrilight
 
         //static color settings//
         Color OutputStaticColor { get; set; }
-        bool OutputIsBreathing { get; set; }
+        string OutputStaticColorMode { get; set; }
+        string OutputStaticColorGradientMode { get; set; }
+        string OutputScreenCapturePosition { get; set; }
+        string OutputScreenCaptureWB { get; set; }
         int OutputBreathingSpeed { get; set; }
         //static color settings//
 

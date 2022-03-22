@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:adrilight.View"
              mc:Ignorable="d" 
-               xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf" xmlns:viewmodel="clr-namespace:adrilight.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainViewViewModel}"
+                xmlns:viewmodel="clr-namespace:adrilight.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainViewViewModel}"
              
               TextElement.FontWeight="Regular"
              

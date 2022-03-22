@@ -46,7 +46,6 @@ namespace adrilight.Settings
                 OutputPaletteSpeed = 1,
                 OutputPaletteBlendStep = 16,
                 OutputStaticColor = Color.FromRgb(0, 255, 0),
-                OutputIsBreathing = false,
                 OutputBreathingSpeed = 10,
                 OutputCurrentActivePalette = DefaultColorCollection.rainbow,
                 // create ledsetup if neccesary
@@ -94,7 +93,6 @@ namespace adrilight.Settings
                 OutputPaletteSpeed = 1,
                 OutputPaletteBlendStep = 16,
                 OutputStaticColor = Color.FromRgb(0, 255, 0),
-                OutputIsBreathing = false,
                 OutputBreathingSpeed = 10,
                 OutputCurrentActivePalette = DefaultColorCollection.rainbow,
                 // create ledsetup if neccesary

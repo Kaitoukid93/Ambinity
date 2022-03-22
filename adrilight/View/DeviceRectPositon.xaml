@@ -13,7 +13,7 @@
             <RowDefinition Height ="10*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Grid.Row="1" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:ButtonAssist.CornerRadius="7"  Width="75" Height="32" Content="Apply" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" IsDefault="True" Foreground="#FF326CF3" Background="#3F326CF3" Grid.ColumnSpan="2" Margin="0,0,20,10" HorizontalAlignment="Right" VerticalAlignment="Center">
+        <Button Grid.Row="1" Style="{StaticResource MaterialDesignFlatButton}"  Width="75" Height="32" Content="Apply" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" IsDefault="True" Foreground="#FF326CF3" Background="#3F326CF3" Grid.ColumnSpan="2" Margin="0,0,20,10" HorizontalAlignment="Right" VerticalAlignment="Center">
             <Button.CommandParameter>
                 <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">True</system:Boolean>
             </Button.CommandParameter>
@@ -69,7 +69,7 @@
             
 
         </Canvas>
-        <Button Grid.Row="1" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:ButtonAssist.CornerRadius="7"  Width="75" Height="32" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" IsDefault="True" Background="#3FFD7E35" BorderBrush="{x:Null}" Foreground="#FFFD7E35" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,150,10">
+        <Button Grid.Row="1" Style="{dy MaterialDesignFlatButton}" materialDesign:ButtonAssist.CornerRadius="7"  Width="75" Height="32" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" IsDefault="True" Background="#3FFD7E35" BorderBrush="{x:Null}" Foreground="#FFFD7E35" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,150,10">
             <Button.CommandParameter>
                 <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">False</system:Boolean>
             </Button.CommandParameter>

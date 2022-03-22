@@ -113,7 +113,7 @@ namespace adrilight.Util
                     var devicePowerMiliamps = OutputSettings.OutputPowerMiliamps;
 
 
-                    bool isBreathing = OutputSettings.OutputIsBreathing;
+                    bool isBreathing = OutputSettings.OutputStaticColorMode=="breathing";
                     lock (OutputSettings.OutputLEDSetup.Lock)
                     {
                         for (var i = 0; i < colorOutput.Count(); i++)

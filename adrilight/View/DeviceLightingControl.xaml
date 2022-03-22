@@ -266,8 +266,8 @@
                         </hc:TransitioningContentControl>
 
                     </Grid>
-                    <Grid VerticalAlignment="Top" HorizontalAlignment="Left"  ClipToBounds="true" Grid.Column="1" x:Name="MotherGrid">
-                        <Viewbox  HorizontalAlignment="Left" VerticalAlignment="Top"  Name="PreviewBox">
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Center"  ClipToBounds="true" Grid.Column="1" x:Name="MotherGrid">
+                        <Viewbox  HorizontalAlignment="Center" VerticalAlignment="Top"  Name="PreviewBox">
                          
                             <ItemsControl
                           Name="PreviewGird"  
@@ -356,13 +356,13 @@
                                     </WrapPanel>
                                 </ItemsPanelTemplate>
                             </hc:ButtonGroup.ItemsPanel>
-                        <RadioButton x:Name="ScreenCapture" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource screencapture }" hc:IconElement.Width="20" hc:IconElement.Height="20" Style="{DynamicResource RadioButtonIcon}" Content="Screen Capture"/>
-                        <RadioButton x:Name="ColorPalette" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource colorpalette }" Style="{DynamicResource RadioButtonIcon}" Content="Color Palette"/>
-                        <RadioButton x:Name="Music" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource music}" Content="Music Reactive" IsChecked="True"/>
-                        <RadioButton x:Name="Static" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource static}" Content="Static Color"/>
+                        <RadioButton x:Name="ScreenCaptureRad" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource screencapture }" hc:IconElement.Width="20" hc:IconElement.Height="20" Style="{DynamicResource RadioButtonIcon}" Content="Screen Capture"/>
+                        <RadioButton x:Name="ColorPaletteRad" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource colorpalette }" Style="{DynamicResource RadioButtonIcon}" Content="Color Palette"/>
+                        <RadioButton x:Name="MusicRad" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource music}" Content="Music Reactive" IsChecked="True"/>
+                        <RadioButton x:Name="StaticRad" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource static}" Content="Static Color"/>
                         <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource canvas}" Content="Canvas"/>
                     </hc:ButtonGroup>
-                    <Grid Visibility="{Binding ElementName=ScreenCapture,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                    <Grid x:Name="ScreenCapture" Visibility="{Binding ElementName=ScreenCaptureRad,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
                         <hc:TransitioningContentControl>
                             <local:ScreenCapturingControl  Margin="4">
 
@@ -371,7 +371,7 @@
                         </hc:TransitioningContentControl>
                     </Grid>
                    
-                    <Grid x:Name="PaletteControlPanel"  Visibility="{Binding ElementName=ColorPalette,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                    <Grid x:Name="PaletteControlPanel"  Visibility="{Binding ElementName=ColorPaletteRad,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
                         <hc:TransitioningContentControl>
                             <local:ColorPaletteControl Margin="4">
 
@@ -379,14 +379,14 @@
                         </hc:TransitioningContentControl>
                     </Grid>
 
-                    <Grid x:Name="MusicControlPanel"  Visibility="{Binding ElementName=Music,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                    <Grid x:Name="MusicControlPanel"  Visibility="{Binding ElementName=MusicRad,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
                         <hc:TransitioningContentControl>
                             <local:MusicControl Margin="4">
 
                             </local:MusicControl>
                         </hc:TransitioningContentControl>
                     </Grid>
-                    <Grid x:Name="StaticColorControlPanel"  Visibility="{Binding ElementName=Static,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                    <Grid x:Name="StaticColorControlPanel"  Visibility="{Binding ElementName=StaticRad,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
                         <hc:TransitioningContentControl>
                             <local:StaticColorControl Margin="4">
 
@@ -401,28 +401,28 @@
                 </Border>
             <Border MinHeight="360" Grid.Column="1" Margin="10" Background="{StaticResource DarkMaskBrush}" CornerRadius="7">
             <StackPanel>
-                    <Grid x:Name="CaptureSidePanel" Margin="1" Visibility="{Binding ElementName=ScreenCapture,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                    <Grid x:Name="CaptureSidePanel" Margin="1" Visibility="{Binding ElementName=ScreenCaptureRad,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
                         <hc:TransitioningContentControl>
                             <local:ScreenCapturingSidePanel>
 
                             </local:ScreenCapturingSidePanel>
                         </hc:TransitioningContentControl>
                     </Grid>
-                    <Grid x:Name="PaletteSidePanel" Margin="1" Visibility="{Binding ElementName=ColorPalette,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                    <Grid x:Name="PaletteSidePanel" Margin="1" Visibility="{Binding ElementName=ColorPaletteRad,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
                         <hc:TransitioningContentControl>
                             <local:ColorPaletteSidePanel>
 
                             </local:ColorPaletteSidePanel>
                         </hc:TransitioningContentControl>
                     </Grid>
-                    <Grid x:Name="MusicSidePanel" Margin="1" Visibility="{Binding ElementName=Music,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                    <Grid x:Name="MusicSidePanel" Margin="1" Visibility="{Binding ElementName=MusicRad,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
                         <hc:TransitioningContentControl>
                             <local:MusicSidePanel>
 
                             </local:MusicSidePanel>
                         </hc:TransitioningContentControl>
                     </Grid>
-                    <Grid x:Name="StaticColorSidePanel" Margin="1" Visibility="{Binding ElementName=Static,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                    <Grid x:Name="StaticColorSidePanel" Margin="1" Visibility="{Binding ElementName=StaticRad,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
                         <hc:TransitioningContentControl>
                             <local:StaticColorSidePanel>
                            

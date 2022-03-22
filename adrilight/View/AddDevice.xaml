@@ -7,13 +7,13 @@
              xmlns:vm="clr-namespace:adrilight.ViewModel"
               xmlns:hc="https://handyorg.github.io/handycontrol"
              mc:Ignorable="d" 
-               xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf" xmlns:viewmodel="clr-namespace:adrilight.ViewModel" d:DataContext="{d:DesignInstance Type=vm:AddDeviceViewModel}"
-             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+              xmlns:viewmodel="clr-namespace:adrilight.ViewModel" d:DataContext="{d:DesignInstance Type=vm:AddDeviceViewModel}"
+             
               TextElement.FontWeight="Regular"
               TextElement.FontSize="13"
               TextOptions.TextFormattingMode="Ideal" 
               TextOptions.TextRenderingMode="Auto"   
-              FontFamily="{StaticResource MaterialDesignFont}" d:DesignWidth="500" Height="auto">
+              d:DesignWidth="500" Height="auto">
 
 
     <Grid  Background="White" Margin="32" Name="PanelMain">
@@ -289,9 +289,9 @@
         </Grid>
         <Grid Grid.Row="2" Margin="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
 
-            <Button Command="{Binding PrevCmd}" CommandParameter="{Binding ElementName=PanelMain}" Width="75" Margin="20,0,20,0" Content="Prev" materialDesign:ButtonAssist.CornerRadius="7"  HorizontalAlignment="Left" Foreground="#FF326CF3" Background="#3F326CF3">
+            <Button Command="{Binding PrevCmd}" CommandParameter="{Binding ElementName=PanelMain}" Width="75" Margin="20,0,20,0" Content="Prev"   HorizontalAlignment="Left" Foreground="#FF326CF3" Background="#3F326CF3">
                 <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                    <Style TargetType="Button" BasedOn="{DynamicResource ButtonDefault}">
                         <Setter Property="Visibility" Value="Collapsed"></Setter>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding ElementName=stepbar,Path=StepIndex}" Value="1">
@@ -307,9 +307,9 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Width="75" Margin="33,0,0,0" Content="Cancel" materialDesign:ButtonAssist.CornerRadius="7"  HorizontalAlignment="Left" Background="#3FFD7E35" Foreground="#FFFD7E35">
+            <Button  Width="75" Margin="33,0,0,0" Content="Cancel"   HorizontalAlignment="Left" Background="#3FFD7E35" Foreground="#FFFD7E35">
                 <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                    <Style TargetType="Button" BasedOn="{DynamicResource ButtonDefault}">
                         <Setter Property="Visibility" Value="Collapsed"></Setter>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding ElementName=stepbar,Path=StepIndex}" Value="0">
@@ -322,9 +322,9 @@
                     <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">False</system:Boolean>
                 </Button.CommandParameter>
             </Button>
-            <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Width="75" Margin="0,0,20,0" materialDesign:ButtonAssist.CornerRadius="7" Content="Finish"  HorizontalAlignment="Right" Foreground="#FF326CF3" Background="#3F326CF3">
+            <Button  Width="75" Margin="0,0,20,0"  Content="Finish"  HorizontalAlignment="Right" Foreground="#FF326CF3" Background="#3F326CF3">
                 <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                    <Style TargetType="Button" BasedOn="{DynamicResource ButtonDefault}">
                         <Setter Property="Visibility" Value="Collapsed"></Setter>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding ElementName=stepbar,Path=StepIndex}" Value="3">
@@ -337,9 +337,9 @@
                     <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">True</system:Boolean>
                 </Button.CommandParameter>
             </Button>
-            <Button materialDesign:ButtonAssist.CornerRadius="7" IsEnabled="{Binding IsNextable}" Command="{Binding NextCmd}" CommandParameter="{Binding ElementName=PanelMain}" Width="75" Margin="0,0,20,0" Content="Next"  HorizontalAlignment="Right" Background="#3F326CF3" Foreground="#FF326CF3">
+            <Button  IsEnabled="{Binding IsNextable}" Command="{Binding NextCmd}" CommandParameter="{Binding ElementName=PanelMain}" Width="75" Margin="0,0,20,0" Content="Next"  HorizontalAlignment="Right" Background="#3F326CF3" Foreground="#FF326CF3">
                 <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                    <Style TargetType="Button" BasedOn="{DynamicResource ButtonDefault}">
                         <Setter Property="Visibility" Value="Collapsed"></Setter>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding ElementName=stepbar,Path=StepIndex}" Value="1">

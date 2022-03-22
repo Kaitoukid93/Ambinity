@@ -13,8 +13,8 @@
            DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}" 
            Closing="PIDEditWindowClosed"
            Title="Edit LEDs PID" 
-           Height="480" 
-           Width="854" 
+           Height="540" 
+           Width="1000" 
            WindowStartupLocation="CenterOwner" 
            >
 
@@ -83,7 +83,7 @@
         <hc:StepBar x:Name="WizardStep" StepIndex="{Binding CurrentLEDEditWizardState, Mode=TwoWay}" Margin="0,0,0,32" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Dock="Top">
             <hc:StepBarItem Content="Create LEDs Map"/>
             <hc:StepBarItem Content="Assign the LED Order"/>
-            <hc:StepBarItem Content="Run Test Effect"/>
+            <hc:StepBarItem Content="Finishing"/>
         </hc:StepBar>
         <Grid Grid.Column="1" Grid.Row=" 2">
             <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="right">
@@ -150,15 +150,30 @@
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
-            <StackPanel>
-                <hc:NumericUpDown Minimum="1" HorizontalAlignment="Left"  Name="MatrixWidth" HorizontalContentAlignment="Center" Value="{Binding CurrentOutput.OutputNumLEDX}"
-                     hc:InfoElement.Title="Map Width" Margin="0,32,0,0" hc:InfoElement.Necessary="True" Style="{DynamicResource NumericUpDownPlus}"/>
-                <hc:NumericUpDown Minimum="1" HorizontalAlignment="Left"  Name="MatrixHeight" HorizontalContentAlignment="Center" Value="{Binding CurrentOutput.OutputNumLEDY}"
-                     hc:InfoElement.Title="Map Height" Margin="0,32,0,0" hc:InfoElement.Necessary="True" Style="{DynamicResource NumericUpDownPlus}"/>
-                <hc:Badge HorizontalAlignment="Left" Value="{Binding Count}" BadgeMargin="0,-14,-10,0" Height="30" Margin="0,40,0,0" Style="{DynamicResource BadgePrimary}">
-                    <Button  Command="{Binding ResetCountCommand}"  Style="{DynamicResource ButtonDefault}" Content="Click to reset" CommandParameter="Reset"/>
+           
+                <StackPanel>
+                <Border Margin="10" CornerRadius="8" Padding="5,5" Background="{DynamicResource DarkMaskBrush}">
+                    <StackPanel>
+                        <hc:NumericUpDown Minimum="1" HorizontalAlignment="Left"  Name="MatrixWidth" HorizontalContentAlignment="Center" Value="{Binding CurrentOutput.OutputNumLEDX}"
+                     hc:InfoElement.Title="Map Width" Margin="0,0,0,20" hc:InfoElement.Necessary="True" Style="{DynamicResource NumericUpDownPlus}"/>
+                        <hc:NumericUpDown Minimum="1" HorizontalAlignment="Left"  Name="MatrixHeight" HorizontalContentAlignment="Center" Value="{Binding CurrentOutput.OutputNumLEDY}"
+                     hc:InfoElement.Title="Map Height" Margin="0,0,0,1" hc:InfoElement.Necessary="True" Style="{DynamicResource NumericUpDownPlus}"/>
+                    </StackPanel>
+                </Border>
+                <Border Margin="10,8" CornerRadius="8" Padding="5,5" Background="{DynamicResource DarkMaskBrush}">
+                    <StackPanel>
+                       
+                        <Button HorizontalAlignment="Stretch" Margin="0,1,0,15"  Command="{Binding SetAllSpotActiveCommand}"  Style="{DynamicResource ButtonDefault}" Content="All" CommandParameter="Reset"/>
+                        <Button HorizontalAlignment="Stretch" Margin="0,15,0,1"  Command="{Binding SetBorderSpotActiveCommand}"  Style="{DynamicResource ButtonDefault}" Content="Rectangle" CommandParameter="Reset"/>
+                        
+                    </StackPanel>
+                </Border>
+                <hc:Badge HorizontalAlignment="Stretch" Value="{Binding Count}" BadgeMargin="0,-14,-10,0" Height="30" Margin="10,20,10,20" Style="{DynamicResource BadgePrimary}">
+                    <Button HorizontalAlignment="Stretch"  Command="{Binding ResetCountCommand}"  Style="{DynamicResource ButtonDefault}" Content="Reset" CommandParameter="Reset"/>
                 </hc:Badge>
             </StackPanel>
+            
+            
             
         </Grid>
         <Grid Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center"  ClipToBounds="true" Grid.Row="1" x:Name="MotherGrid">
@@ -348,14 +363,47 @@
                 </Style>
             </Grid.Style>
             <StackPanel>
-
-                <hc:Badge   HorizontalAlignment="Left" Value="{Binding MaxLEDCount}"  BadgeMargin="0,-14,-10,0" Height="30" Margin="0,40,0,0" Style="{DynamicResource BadgePrimary}">
-                    <Button  Command="{Binding ResetMaxCountCommand}"  Style="{DynamicResource ButtonDefault}" Content="Click to reset" CommandParameter="Reset"/>
+                <Border Margin="10" CornerRadius="8" Padding="5,5" Background="{DynamicResource DarkMaskBrush}">
+                    <StackPanel>
+                        <Button HorizontalAlignment="Stretch" Margin="0,1,0,15"  Command="{Binding SetPIDNeutral}"  Style="{DynamicResource ButtonDefault}" Content="Neutral" CommandParameter="Reset"/>
+                        <Button HorizontalAlignment="Stretch" Margin="0,15,0,1"  Command="{Binding SetPIDReverseNeutral}"  Style="{DynamicResource ButtonDefault}" Content="Reverse" CommandParameter="Reset"/>
+                    </StackPanel>
+                   
+                </Border>
+                    <hc:Badge   HorizontalAlignment="Stretch" Value="{Binding MaxLEDCount}"  BadgeMargin="0,-14,-10,0" Height="30" Margin="10,20,10,20" Style="{DynamicResource BadgePrimary}">
+                    <Button  HorizontalAlignment="Stretch" Command="{Binding ResetMaxCountCommand}"  Style="{DynamicResource ButtonDefault}" Content="Click to reset" CommandParameter="Reset"/>
                 </hc:Badge>
+                
+               
+
             </StackPanel>
 
         </Grid>
 
+        <Grid Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" MinWidth="300" MaxWidth="600">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=WizardStep,Path=StepIndex}" Value="2">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <StackPanel>
+                <TextBlock Text="Tạo LED Setup" Style="{DynamicResource TextBlockLarge}">
 
-    </Grid>
+                </TextBlock>
+                <Grid>
+                    
+                </Grid>
+                
+                <TextBox   Text="123" MaxLength="100"   hc:InfoElement.Placeholder="Ví dụ : Keyboard" hc:InfoElement.Title="NAME" Style="{DynamicResource TextBoxExtend}" hc:InfoElement.Necessary="True" />
+                <TextBox   Text="{Binding CurrentOutput.OutputLEDSetup.Owner, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MaxLength="100"  hc:InfoElement.Placeholder="Ví dụ : Zooey" hc:InfoElement.Title="CREATOR" Style="{DynamicResource TextBoxExtend}" hc:InfoElement.Necessary="True" />
+                <TextBox   Text="{Binding CurrentOutput.OutputLEDSetup.Description, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MaxLength="100"  hc:InfoElement.Placeholder="Ví dụ : General Keyboard Matrix layout" hc:InfoElement.Title="DESCRIPTION" Style="{DynamicResource TextBoxExtend}" hc:InfoElement.Necessary="False" />
+           </StackPanel>
+            </Grid>
+
+        </Grid>
 </hc:Window>

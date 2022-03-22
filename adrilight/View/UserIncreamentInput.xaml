@@ -39,11 +39,10 @@
                     Foreground="#FFFD7E35" 
                     Background="#3FFD7E35"
                     Padding="7" 
-                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                    Style="{StaticResource MaterialDesignFlatButton}" 
+                    
+                    Style="{DynamicResource ButtonDefault}" 
                     IsCancel="true"
-                    materialDesign:ButtonAssist.CornerRadius="7" 
-                    materialDesign:ShadowAssist.ShadowDepth="Depth0" 
+                
                     Margin="0,0,15,0"  BorderBrush="{x:Null}"  
                     HorizontalAlignment="Right" 
                     VerticalAlignment="Center">
@@ -55,12 +54,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
-                    <materialDesign:PackIcon  Grid.Column="0"
-                                                  Kind="Cancel"
-                                                  Height="20"
-                                                  Width="20" 
-                                                  VerticalAlignment="Center" 
-                                                  HorizontalAlignment="Center" />
+             
                 </Grid>
 
 
@@ -70,11 +64,9 @@
                     Foreground="#FF326CF3" 
                     Background="#3F326CF3"
                     Padding="7" 
-                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                    Style="{StaticResource MaterialDesignFlatButton}" 
+              
                     IsDefault="True"
-                    materialDesign:ButtonAssist.CornerRadius="7" 
-                    materialDesign:ShadowAssist.ShadowDepth="Depth0" 
+                 
                     Margin="0,0,15,0"  BorderBrush="{x:Null}"  
                     HorizontalAlignment="Right" 
                     VerticalAlignment="Center">
@@ -86,12 +78,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
-                    <materialDesign:PackIcon  Grid.Column="0"
-                                                  Kind="Check"
-                                                  Height="20"
-                                                  Width="20" 
-                                                  VerticalAlignment="Center" 
-                                                  HorizontalAlignment="Center" />
+               
                 </Grid>
 
 

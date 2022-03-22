@@ -45,14 +45,14 @@
                             </WrapPanel>
                         </ItemsPanelTemplate>
                     </hc:ButtonGroup.ItemsPanel>
-                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource fullscreen }"  Style="{DynamicResource RadioButtonIcon}" Content="Full Screen"/>
-                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource left }" Style="{DynamicResource RadioButtonIcon}" Content="Left"/>
-                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource right}" Content="Right" />
-                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource up}" Content="Top"/>
-                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource down}" Content="Bottom"/>
-                    <RadioButton IsChecked="True" x:Name="customCaptureZone" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource custom}" Content="Custom"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource fullscreen }" IsChecked="{Binding IsFullScreenRegionChecked,Mode=TwoWay}"  Style="{DynamicResource RadioButtonIcon}" Content="Full Screen"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource left }" IsChecked="{Binding IsLeftScreenRegionChecked,Mode=TwoWay}" Style="{DynamicResource RadioButtonIcon}" Content="Left"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource right}" IsChecked="{Binding IsRightScreenRegionChecked,Mode=TwoWay}" Content="Right" />
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource up}" IsChecked="{Binding IsTopScreenRegionChecked,Mode=TwoWay}" Content="Top"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource down}" IsChecked="{Binding IsBottomScreenRegionChecked,Mode=TwoWay}" Content="Bottom"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" IsChecked="{Binding IsCustomScreenRegionChecked,Mode=TwoWay}" hc:IconElement.Geometry="{StaticResource custom}" Content="Custom"/>
                 </hc:ButtonGroup>
-                    <Grid Visibility="{Binding ElementName=customCaptureZone,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
+                    <Grid Visibility="{Binding IsCustomScreenRegionChecked}">
                         <hc:TransitioningContentControl  TransitionMode="Left2Right">
                             <Button Command="{Binding LaunchPositionEditWindowCommand}" CommandParameter="edit"  Style="{DynamicResource ButtonDashedInfo}" Content="Edit" ToolTip="Launch Zone Editor" hc:IconElement.Geometry="{DynamicResource WindowRestoreGeometry}"/>
                         </hc:TransitioningContentControl>

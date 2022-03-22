@@ -10,7 +10,7 @@
          d:DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}"
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}" 
         Background="{DynamicResource RegionBrush}"
-        xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+       
         mc:Ignorable="d" Top="20"
         WindowStartupLocation="CenterScreen"
         
@@ -242,18 +242,18 @@
             <DataTemplate x:Key="lightingTemplate">
                 <local:DeviceLightingControl/>
             </DataTemplate>
-            <DataTemplate x:Key="groupLightingTemplate">
+            <!--<DataTemplate x:Key="groupLightingTemplate">
                 <local:GroupLighting/>
-            </DataTemplate>
+            </DataTemplate>-->
             <DataTemplate x:Key="deviceSettingTemplate">
                 <local:NewDeviceSettingsView/>
             </DataTemplate>
             <DataTemplate x:Key="appSettingTemplate">
                 <local:NewAppSettingsView/>
             </DataTemplate>
-            <DataTemplate x:Key="canvasLightingTemplate">
+            <!--<DataTemplate x:Key="canvasLightingTemplate">
                 <local:CanvasLightingView/>
-            </DataTemplate>
+            </DataTemplate>-->
             <!--<DataTemplate x:Key="faqTemplate">
                 <local:FAQ/>
             </DataTemplate>-->
@@ -284,8 +284,8 @@
     </Window.Resources>
 
     <Grid>
-        <materialDesign:DialogHost 
-               Identifier="mainDialog"  >
+        <hc:DialogContainer
+                 >
 
             <Grid>
 
@@ -306,7 +306,7 @@
                                                 BorderThickness="0">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Style="{StaticResource sideBtn}" materialDesign:ShadowAssist.ShadowDepth="Depth0" Command="{Binding DataContext.SelectMenuItem,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}" BorderBrush="#FFB9B9B9"></Button>
+                                    <Button Style="{StaticResource sideBtn}"  Command="{Binding DataContext.SelectMenuItem,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}" BorderBrush="#FFB9B9B9"></Button>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>
@@ -318,7 +318,7 @@
 
                     </StackPanel>
                     </hc:TransitioningContentControl>
-                    <Grid Visibility="{Binding IsDashboardType,Converter={StaticResource InverseBoolToVisConverter}}" >
+                    <Grid Visibility="Collapsed" >
 
 
                         <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade" >
@@ -428,7 +428,7 @@
                 </Grid>
             </Grid>
 
-        </materialDesign:DialogHost>
+        </hc:DialogContainer>
     </Grid>
 
 </hc:Window>

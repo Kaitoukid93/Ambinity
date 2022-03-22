@@ -67,6 +67,7 @@ namespace adrilight
                     break;
                 case nameof(OutputSettings.OutputCurrentActivePalette):
                 case nameof(OutputSettings.IsInSpotEditWizard):
+                
 
                     ColorPaletteChanged();
                     break;

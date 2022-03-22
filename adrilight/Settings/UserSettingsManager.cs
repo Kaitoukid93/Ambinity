@@ -34,12 +34,18 @@ namespace adrilight
             if (!File.Exists(JsonFileNameAndPath)) return null;
 
             var json = File.ReadAllText(JsonFileNameAndPath);
+            try
+            {
+                var generalSettings = JsonConvert.DeserializeObject<GeneralSettings>(json);
+                generalSettings.PropertyChanged += (_, __) => SaveSettings(generalSettings);
 
-            var generalSettings = JsonConvert.DeserializeObject<GeneralSettings>(json);
-            generalSettings.PropertyChanged += (_, __) => SaveSettings(generalSettings);
-
-           HandleAutostart(generalSettings);
-            return generalSettings;
+                HandleAutostart(generalSettings);
+                return generalSettings;
+            }
+           catch(JsonReaderException)
+            {
+                return null;
+            }
         }
 
         public List<DeviceSettings> LoadDeviceIfExists()
