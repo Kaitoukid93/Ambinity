@@ -45,15 +45,24 @@ namespace adrilight
         private int _outputPaletteSpeed;
         private int _outputPaletteBlendStep;
         private Color _outputStaticColor;
-        private string _outputStaticColorMode="solid";
-        private string _outputStaticColorGradientMode = "full";
-        private string _outputScreenCapturePosition = "full";
-        private string _outputScreenCaptureWB = "natural";
+        private int _outputStaticColorMode=0;
+        private int _outputStaticColorGradientMode = 0;
+        private int _outputScreenCapturePosition = 0;
+        private int _outputScreenCaptureWB = 0;
+        private int _outputMusicDancingMode = 0;
+        private int _outputColorPaletteMode = 0;
         private int _outputBreathingSpeed;
-        private Color[] _outputCurrentActivePalette;
+        private IColorPalette _outputCurrentActivePalette;
         private ILEDSetup _outputLEDSetup;
         private bool _isInSpotEditWizard=false;
-       
+        private string _geometry = "generaldevice";
+        private int _outputSmoothness = 2;
+        private int _outputPaletteChasingPosition;
+        private int _outputScreenCaptureWBRed=100;
+        private int _outputScreenCaptureWBGreen=100;
+        private int _outputScreenCaptureWBlue=100;
+
+
         public string OutputName  { get => _outputName; set { Set(() => OutputName, ref _outputName, value);}}
         public int OutputID { get => _outputID; set { Set(() => OutputID, ref _outputID, value); } }
         public string OutputType { get => _outputName; set { Set(() => OutputType, ref _outputName, value); } }
@@ -87,14 +96,23 @@ namespace adrilight
         public int OutputPaletteSpeed { get => _outputPaletteSpeed; set { Set(() => OutputPaletteSpeed, ref _outputPaletteSpeed, value); } }
         public int OutputPaletteBlendStep { get => _outputPaletteBlendStep; set { Set(() => OutputPaletteBlendStep, ref _outputPaletteBlendStep, value); } }
         public Color OutputStaticColor { get => _outputStaticColor; set { Set(() => OutputStaticColor, ref _outputStaticColor, value); } }
-        public string OutputStaticColorMode { get => _outputStaticColorMode; set { Set(() => OutputStaticColorMode, ref _outputStaticColorMode, value); } }
-        public string OutputStaticColorGradientMode { get =>_outputStaticColorGradientMode; set { Set(() => OutputStaticColorGradientMode, ref _outputStaticColorGradientMode, value); } }
-        public string OutputScreenCapturePosition { get => _outputScreenCapturePosition; set { Set(() => OutputScreenCapturePosition, ref _outputScreenCapturePosition, value); } }
-        public string OutputScreenCaptureWB { get => _outputScreenCaptureWB; set { Set(() => OutputScreenCaptureWB, ref _outputScreenCaptureWB, value); } }
+        public int OutputStaticColorMode { get => _outputStaticColorMode; set { Set(() => OutputStaticColorMode, ref _outputStaticColorMode, value); } }
+        public int OutputColorPaletteMode { get => _outputColorPaletteMode; set { Set(() => OutputColorPaletteMode, ref _outputColorPaletteMode, value); } }
+        public int OutputStaticColorGradientMode { get =>_outputStaticColorGradientMode; set { Set(() => OutputStaticColorGradientMode, ref _outputStaticColorGradientMode, value); } }
+        public int OutputScreenCapturePosition { get => _outputScreenCapturePosition; set { Set(() => OutputScreenCapturePosition, ref _outputScreenCapturePosition, value); } }
+        public int OutputScreenCaptureWB { get => _outputScreenCaptureWB; set { Set(() => OutputScreenCaptureWB, ref _outputScreenCaptureWB, value); } }
+        public int OutputMusicDancingMode { get => _outputMusicDancingMode; set { Set(() => OutputMusicDancingMode, ref _outputMusicDancingMode, value); } }
         public int OutputBreathingSpeed { get => _outputBreathingSpeed; set { Set(() => OutputBreathingSpeed, ref _outputBreathingSpeed, value); } }
-        public Color[] OutputCurrentActivePalette { get => _outputCurrentActivePalette; set { Set(() => OutputCurrentActivePalette, ref _outputCurrentActivePalette, value); } }
+        public IColorPalette OutputCurrentActivePalette { get => _outputCurrentActivePalette; set { Set(() => OutputCurrentActivePalette, ref _outputCurrentActivePalette, value); } }
         public ILEDSetup OutputLEDSetup { get => _outputLEDSetup; set { Set(() => OutputLEDSetup, ref _outputLEDSetup, value); } }
         public bool IsInSpotEditWizard { get => _isInSpotEditWizard; set { Set(() => IsInSpotEditWizard, ref _isInSpotEditWizard, value); } }
-        
+        public string Geometry { get => _geometry; set { Set(() => Geometry, ref _geometry, value); } }
+        public int OutputSmoothness { get => _outputSmoothness; set { Set(() => OutputSmoothness, ref _outputSmoothness, value); } }
+
+        public int OutputPaletteChasingPosition { get => _outputPaletteChasingPosition; set { Set(() => OutputPaletteChasingPosition, ref _outputPaletteChasingPosition, value); } }
+        public int OutputScreenCaptureWBRed { get => _outputScreenCaptureWBRed; set { Set(() => OutputScreenCaptureWBRed, ref _outputScreenCaptureWBRed, value); } }
+        public int OutputScreenCaptureWBGreen { get => _outputScreenCaptureWBGreen; set { Set(() => OutputScreenCaptureWBGreen, ref _outputScreenCaptureWBGreen, value); } }
+        public int OutputScreenCaptureWBlue { get => _outputScreenCaptureWBlue; set { Set(() => OutputScreenCaptureWBlue, ref _outputScreenCaptureWBlue, value); } }
+      
     }
 }

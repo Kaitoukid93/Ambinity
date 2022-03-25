@@ -33,6 +33,7 @@ using HandyControl.Data;
 using System.Windows.Data;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
+using adrilight.Settings;
 
 namespace adrilight.ViewModel
 {
@@ -279,6 +280,9 @@ namespace adrilight.ViewModel
         public ICommand SetPIDNeutral { get; set; }
         public ICommand SetPIDReverseNeutral { get; set; }
         public ICommand JumpToNextWizardStateCommand { get; set; }
+        public ICommand JumpToNextAddDeviceWizardStateCommand { get; set; }
+        public ICommand AddCurrentSelectedDeviceToDashboard { get; set; }
+        public ICommand BackToPreviousAddDeviceWizardStateCommand { get; set; }
         public ICommand BackToPreviousWizardStateCommand { get; set; }
         public ICommand LaunchPositionEditWindowCommand { get; set; }
         public ICommand LaunchPIDEditWindowCommand { get; set; }
@@ -415,8 +419,8 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-        private ObservableCollection<IColorPaletteCard> _availablePallete;
-        public ObservableCollection<IColorPaletteCard> AvailablePallete {
+        private ObservableCollection<IColorPalette> _availablePallete;
+        public ObservableCollection<IColorPalette> AvailablePallete {
             get { return _availablePallete; }
             set
             {
@@ -574,19 +578,7 @@ namespace adrilight.ViewModel
         }
 
 
-        private ObservableCollection<System.Windows.Media.Color> _currentCustomZoneColor;
-        public ObservableCollection<System.Windows.Media.Color> CurrentCustomZoneColor {
-            get
-            {
 
-
-                return _currentCustomZoneColor;
-            }
-            set
-            {
-                _currentCustomZoneColor = value;
-            }
-        }
 
 
 
@@ -663,9 +655,16 @@ namespace adrilight.ViewModel
             set { _deviceLightingModeCollection = value; }
         }
 
+        private ObservableCollection<IDeviceCatergory> _availableDeviceCatergoryToAdd;
 
+        public ObservableCollection<IDeviceCatergory> AvailableDeviceCatergoryToAdd { get => _availableDeviceCatergoryToAdd; set => Set(ref _availableDeviceCatergoryToAdd, value); }
+        private IDeviceCatergory _currentSelectedCatergoryToAdd;
 
+        public IDeviceCatergory CurrentSelectedCatergoryToAdd { get => _currentSelectedCatergoryToAdd; set => Set(ref _currentSelectedCatergoryToAdd, value); }
 
+        private IDeviceSettings _currentSelectedDeviceToAdd;
+
+        public IDeviceSettings CurrentSelectedDeviceToAdd { get => _currentSelectedDeviceToAdd; set => Set(ref _currentSelectedDeviceToAdd, value); }
 
 
         public ObservableCollection<string> AvailablePalette { get; private set; }
@@ -740,6 +739,7 @@ namespace adrilight.ViewModel
             SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
             ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
             AvailableDevices = new ObservableCollection<IDeviceSettings>();
+            AvailableDeviceCatergoryToAdd = new ObservableCollection<IDeviceCatergory>();
             Groups = new ObservableCollection<IGroupSettings>();
             DisplayCards = new ObservableCollection<IDeviceSettings>();
             //AddedDevice = cards.Length;
@@ -763,25 +763,40 @@ namespace adrilight.ViewModel
                 IsDummy = true
             };
             AvailableDevices.Add(addNewButton);
-            //foreach (IDeviceSpotSet spotSet in deviceSpotSets)
-            //{
-            //    SpotSets.Add(spotSet);
-            //}
-            //foreach (IGroupSettings group in groups)
-            //{
-            //    Groups.Add(group);
-            //}
 
+            IDeviceCatergory ambinoBasic = new DeviceCatergory {
+                Description = "Ambino Ambient Lighting Kit",
+                Name = "AMBINO BASIC",
+                Geometry = "ambinobasic",
+                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoBasic24,
+                                                 DefaultDeviceCollection.ambinoBasic27,
+                                                 DefaultDeviceCollection.ambinoBasic29,
+                                                 DefaultDeviceCollection.ambinoBasic32,
+                                                 DefaultDeviceCollection.ambinoBasic34
 
+                }
+            };
+            IDeviceCatergory ambinoEDGE = new DeviceCatergory {
+                Description = "Ambino Ambient Lighting Kit",
+                Name = "AMBINO EDGE",
+                Geometry = "ambinoedge",
+                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoEdge1m2,
+                                                 DefaultDeviceCollection.ambinoEdge2m
 
-
-            // WriteJson();
-
-
-
-
-
-
+                }
+            };
+            IDeviceCatergory ambinoHUB = new DeviceCatergory {
+                Description = "Ambino HUB Collection",
+                Name = "AMBINO HUB",
+                Geometry = "ambinohub",
+                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoHUBV2,
+                                                 DefaultDeviceCollection.ambinoFanHub,
+                                                 DefaultDeviceCollection.ambinoHUBV3
+                }
+            };
+            AvailableDeviceCatergoryToAdd.Add(ambinoBasic);
+            AvailableDeviceCatergoryToAdd.Add(ambinoEDGE);
+            AvailableDeviceCatergoryToAdd.Add(ambinoHUB);
 
             GeneralSettings.PropertyChanged += (s, e) =>
             {
@@ -1024,6 +1039,18 @@ namespace adrilight.ViewModel
 
             }
         }
+        private int _currentAddDeviceWizardState = 0;
+        public int CurrentAddDeviceWizardState {
+            get => _currentAddDeviceWizardState;
+            set
+            {
+                // _log.Info("PreviewImageSource created.");
+                Set(ref _currentAddDeviceWizardState, value);
+                RaisePropertyChanged();
+
+            }
+        }
+
         private IDeviceSpot[] _bufferSpots;
         public IDeviceSpot[] BufferSpots {
             get => _bufferSpots;
@@ -1039,233 +1066,233 @@ namespace adrilight.ViewModel
         /// This group define visibility binding property and mode selecting for device
         /// </summary>
         /// 1.StaticColor
-        #region StaticColor Dependency
-       
-        public bool IsStaticColorGradientChecked {
-            get => CurrentOutput.OutputStaticColorMode=="gradient";
-            set
-            {
-                
-                CurrentOutput.OutputStaticColorMode = "gradient";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorMode));
+        //#region StaticColor Dependency
 
-            }
-        }
-        
-        public bool IsStaticColorBreathingChecked {
-            get => CurrentOutput.OutputStaticColorMode == "breathing";
-            set
-            {
-                
-                CurrentOutput.OutputStaticColorMode = "breathing";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorMode));
+        //public bool IsStaticColorGradientChecked {
+        //    get => CurrentOutput.OutputStaticColorMode=="gradient";
+        //    set
+        //    {
 
+        //        CurrentOutput.OutputStaticColorMode = "gradient";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorMode));
 
+        //    }
+        //}
 
-            }
-        }
+        //public bool IsStaticColorBreathingChecked {
+        //    get => CurrentOutput.OutputStaticColorMode == "breathing";
+        //    set
+        //    {
 
-
-       
-        public bool IsStaticColorSpectrumCyclingChecked {
-            get => CurrentOutput.OutputStaticColorMode == "spectrumcycling";
-            set
-            {
-                CurrentOutput.OutputStaticColorMode = "spectrumcycling";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorMode));
-
-            }
-        }
-     
-        public bool IsStaticColorSolidChecked {
-            get => CurrentOutput.OutputStaticColorMode == "solid";
-            set
-            {
-                CurrentOutput.OutputStaticColorMode = "solid";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorMode));
+        //        CurrentOutput.OutputStaticColorMode = "breathing";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorMode));
 
 
 
-            }
-        }
-       
-   
-        public bool IsStaticColorGradientModeFullCycleChecked {
-            get => CurrentOutput.OutputStaticColorGradientMode == "full";
-            set
-            {
-                CurrentOutput.OutputStaticColorGradientMode = "full";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorGradientMode));
-
-            }
-        }
-       
-        public bool IsStaticColorGradientModeFirstChecked {
-            get => CurrentOutput.OutputStaticColorGradientMode == "first";
-            set
-            {
-                CurrentOutput.OutputStaticColorGradientMode = "first";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorGradientMode));
-
-            }
-        }
-      
-        public bool IsStaticColorGradientModeLastChecked {
-            get => CurrentOutput.OutputStaticColorGradientMode == "last";
-            set
-            {
-                CurrentOutput.OutputStaticColorGradientMode = "last";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorGradientMode));
-
-            }
-        }
-   
-        public bool IsStaticColorGradientModeCustomChecked {
-            get => CurrentOutput.OutputStaticColorGradientMode == "custom";
-            set
-            {
-
-                CurrentOutput.OutputStaticColorGradientMode = "custom";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorGradientMode));
-
-            }
-        }
-        #endregion
-        #region Screen Capture Dependency
-      
-        public bool IsRightScreenRegionChecked {
-            get => CurrentOutput.OutputScreenCapturePosition == "right";
-            set
-            {
-                CurrentOutput.OutputScreenCapturePosition = "right";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
-                RaisePropertyChanged(() => IsRightScreenRegionChecked);
-                RaisePropertyChanged(() => IsLeftScreenRegionChecked);
-                RaisePropertyChanged(() => IsTopScreenRegionChecked);
-                RaisePropertyChanged(() => IsBottomScreenRegionChecked);
-                RaisePropertyChanged(() => IsCustomScreenRegionChecked);
-                RaisePropertyChanged(() => IsFullScreenRegionChecked);
-            }
-        }
-        
-        public bool IsLeftScreenRegionChecked {
-            get => CurrentOutput.OutputScreenCapturePosition == "left";
-            set
-            {
-                CurrentOutput.OutputScreenCapturePosition = "left";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
-                RaisePropertyChanged(() => IsRightScreenRegionChecked);
-                RaisePropertyChanged(() => IsLeftScreenRegionChecked);
-                RaisePropertyChanged(() => IsTopScreenRegionChecked);
-                RaisePropertyChanged(() => IsBottomScreenRegionChecked);
-                RaisePropertyChanged(() => IsCustomScreenRegionChecked);
-                RaisePropertyChanged(() => IsFullScreenRegionChecked);
-            }
-        }
-       
-        public bool IsTopScreenRegionChecked {
-            get => CurrentOutput.OutputScreenCapturePosition == "top";
-            set
-            {
-                CurrentOutput.OutputScreenCapturePosition = "top";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
-                RaisePropertyChanged(() => IsRightScreenRegionChecked);
-                RaisePropertyChanged(() => IsLeftScreenRegionChecked);
-                RaisePropertyChanged(() => IsTopScreenRegionChecked);
-                RaisePropertyChanged(() => IsBottomScreenRegionChecked);
-                RaisePropertyChanged(() => IsCustomScreenRegionChecked);
-                RaisePropertyChanged(() => IsFullScreenRegionChecked);
-            }
-        }
-       
-        public bool IsBottomScreenRegionChecked {
-            get => CurrentOutput.OutputScreenCapturePosition == "bot";
-            set
-            {
-                CurrentOutput.OutputScreenCapturePosition = "bot";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
-                RaisePropertyChanged(() => IsRightScreenRegionChecked);
-                RaisePropertyChanged(() => IsLeftScreenRegionChecked);
-                RaisePropertyChanged(() => IsTopScreenRegionChecked);
-                RaisePropertyChanged(() => IsBottomScreenRegionChecked);
-                RaisePropertyChanged(() => IsCustomScreenRegionChecked);
-                RaisePropertyChanged(() => IsFullScreenRegionChecked);
-            }
-        }
-     
-        public bool IsCustomScreenRegionChecked {
-            get => CurrentOutput.OutputScreenCapturePosition == "custom";
-            set
-            {
-                CurrentOutput.OutputScreenCapturePosition = "custom";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
-                RaisePropertyChanged(() => IsRightScreenRegionChecked);
-                RaisePropertyChanged(() => IsLeftScreenRegionChecked);
-                RaisePropertyChanged(() => IsTopScreenRegionChecked);
-                RaisePropertyChanged(() => IsBottomScreenRegionChecked);
-                RaisePropertyChanged(() => IsCustomScreenRegionChecked);
-                RaisePropertyChanged(() => IsFullScreenRegionChecked);
-            }
-        }
-        public bool IsFullScreenRegionChecked {
-            get => CurrentOutput.OutputScreenCapturePosition == "full";
-            set
-            {
-                CurrentOutput.OutputScreenCapturePosition = "full";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
-                RaisePropertyChanged(() => IsRightScreenRegionChecked);
-                RaisePropertyChanged(() => IsLeftScreenRegionChecked);
-                RaisePropertyChanged(() => IsTopScreenRegionChecked);
-                RaisePropertyChanged(() => IsBottomScreenRegionChecked);
-                RaisePropertyChanged(() => IsCustomScreenRegionChecked);
-                RaisePropertyChanged(() => IsFullScreenRegionChecked);
-            }
-        }
-       
-        public bool IsWarmWBSelected {
-            get => CurrentOutput.OutputScreenCaptureWB == "warm";
-            set
-            {
-
-                CurrentOutput.OutputScreenCapturePosition = "warm";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCaptureWB));
-            }
-        }
-
-       
-        public bool IsNaturalWBSelected {
-            get => CurrentOutput.OutputScreenCaptureWB == "natural";
-            set
-            {
-
-                CurrentOutput.OutputScreenCapturePosition = "natural";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCaptureWB));
-            }
-        }
-        
-        public bool IsColdWBSelected {
-            get => CurrentOutput.OutputScreenCaptureWB == "cold";
-            set
-            {
-
-                CurrentOutput.OutputScreenCapturePosition = "cold";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCaptureWB));
-            }
-        }
-        
-        public bool IsCustomWBSelected {
-            get => CurrentOutput.OutputScreenCaptureWB == "custom";
-            set
-            {
-
-                CurrentOutput.OutputScreenCapturePosition = "custom";
-                RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCaptureWB));
-            }
-        }
+        //    }
+        //}
 
 
 
-        #endregion
+        //public bool IsStaticColorSpectrumCyclingChecked {
+        //    get => CurrentOutput.OutputStaticColorMode == "spectrumcycling";
+        //    set
+        //    {
+        //        CurrentOutput.OutputStaticColorMode = "spectrumcycling";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorMode));
+
+        //    }
+        //}
+
+        //public bool IsStaticColorSolidChecked {
+        //    get => CurrentOutput.OutputStaticColorMode == "solid";
+        //    set
+        //    {
+        //        CurrentOutput.OutputStaticColorMode = "solid";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorMode));
+
+
+
+        //    }
+        //}
+
+
+        //public bool IsStaticColorGradientModeFullCycleChecked {
+        //    get => CurrentOutput.OutputStaticColorGradientMode == "full";
+        //    set
+        //    {
+        //        CurrentOutput.OutputStaticColorGradientMode = "full";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorGradientMode));
+
+        //    }
+        //}
+
+        //public bool IsStaticColorGradientModeFirstChecked {
+        //    get => CurrentOutput.OutputStaticColorGradientMode == "first";
+        //    set
+        //    {
+        //        CurrentOutput.OutputStaticColorGradientMode = "first";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorGradientMode));
+
+        //    }
+        //}
+
+        //public bool IsStaticColorGradientModeLastChecked {
+        //    get => CurrentOutput.OutputStaticColorGradientMode == "last";
+        //    set
+        //    {
+        //        CurrentOutput.OutputStaticColorGradientMode = "last";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorGradientMode));
+
+        //    }
+        //}
+
+        //public bool IsStaticColorGradientModeCustomChecked {
+        //    get => CurrentOutput.OutputStaticColorGradientMode == "custom";
+        //    set
+        //    {
+
+        //        CurrentOutput.OutputStaticColorGradientMode = "custom";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputStaticColorGradientMode));
+
+        //    }
+        //}
+        //#endregion
+        //#region Screen Capture Dependency
+
+        //public bool IsRightScreenRegionChecked {
+        //    get => CurrentOutput.OutputScreenCapturePosition == "right";
+        //    set
+        //    {
+        //        CurrentOutput.OutputScreenCapturePosition = "right";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
+        //        RaisePropertyChanged(() => IsRightScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsLeftScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsTopScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsBottomScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsCustomScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsFullScreenRegionChecked);
+        //    }
+        //}
+
+        //public bool IsLeftScreenRegionChecked {
+        //    get => CurrentOutput.OutputScreenCapturePosition == "left";
+        //    set
+        //    {
+        //        CurrentOutput.OutputScreenCapturePosition = "left";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
+        //        RaisePropertyChanged(() => IsRightScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsLeftScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsTopScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsBottomScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsCustomScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsFullScreenRegionChecked);
+        //    }
+        //}
+
+        //public bool IsTopScreenRegionChecked {
+        //    get => CurrentOutput.OutputScreenCapturePosition == "top";
+        //    set
+        //    {
+        //        CurrentOutput.OutputScreenCapturePosition = "top";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
+        //        RaisePropertyChanged(() => IsRightScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsLeftScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsTopScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsBottomScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsCustomScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsFullScreenRegionChecked);
+        //    }
+        //}
+
+        //public bool IsBottomScreenRegionChecked {
+        //    get => CurrentOutput.OutputScreenCapturePosition == "bot";
+        //    set
+        //    {
+        //        CurrentOutput.OutputScreenCapturePosition = "bot";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
+        //        RaisePropertyChanged(() => IsRightScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsLeftScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsTopScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsBottomScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsCustomScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsFullScreenRegionChecked);
+        //    }
+        //}
+
+        //public bool IsCustomScreenRegionChecked {
+        //    get => CurrentOutput.OutputScreenCapturePosition == "custom";
+        //    set
+        //    {
+        //        CurrentOutput.OutputScreenCapturePosition = "custom";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
+        //        RaisePropertyChanged(() => IsRightScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsLeftScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsTopScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsBottomScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsCustomScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsFullScreenRegionChecked);
+        //    }
+        //}
+        //public bool IsFullScreenRegionChecked {
+        //    get => CurrentOutput.OutputScreenCapturePosition == "full";
+        //    set
+        //    {
+        //        CurrentOutput.OutputScreenCapturePosition = "full";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCapturePosition));
+        //        RaisePropertyChanged(() => IsRightScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsLeftScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsTopScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsBottomScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsCustomScreenRegionChecked);
+        //        RaisePropertyChanged(() => IsFullScreenRegionChecked);
+        //    }
+        //}
+
+        //public bool IsWarmWBSelected {
+        //    get => CurrentOutput.OutputScreenCaptureWB == "warm";
+        //    set
+        //    {
+
+        //        CurrentOutput.OutputScreenCapturePosition = "warm";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCaptureWB));
+        //    }
+        //}
+
+
+        //public bool IsNaturalWBSelected {
+        //    get => CurrentOutput.OutputScreenCaptureWB == "natural";
+        //    set
+        //    {
+
+        //        CurrentOutput.OutputScreenCapturePosition = "natural";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCaptureWB));
+        //    }
+        //}
+
+        //public bool IsColdWBSelected {
+        //    get => CurrentOutput.OutputScreenCaptureWB == "cold";
+        //    set
+        //    {
+
+        //        CurrentOutput.OutputScreenCapturePosition = "cold";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCaptureWB));
+        //    }
+        //}
+
+        //public bool IsCustomWBSelected {
+        //    get => CurrentOutput.OutputScreenCaptureWB == "custom";
+        //    set
+        //    {
+
+        //        CurrentOutput.OutputScreenCapturePosition = "custom";
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputScreenCaptureWB));
+        //    }
+        //}
+
+
+
+        //#endregion
 
 
 
@@ -1327,15 +1354,49 @@ namespace adrilight.ViewModel
                 // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
             }
         }
-
-        private IColorPaletteCard _currentActivePaletteCard;
-        public IColorPaletteCard CurrentActivePaletteCard {
-            get { return _currentActivePaletteCard; }
+        private ObservableCollection<ILightingMode> _availableLightingMode;
+        public ObservableCollection<ILightingMode> AvailableLightingMode {
+            get => _availableLightingMode;
             set
             {
-                _currentActivePaletteCard = value;
+                Set(ref _availableLightingMode, value);
+                // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
+            }
+        }
+        private ILightingMode _currentSelectedLightingMode;
+        public ILightingMode CurrentSelectedLightingMode {
+            get => _currentSelectedLightingMode;
+            set
+            {
+                Set(ref _currentSelectedLightingMode, value);
+                // _log.Info($"IsSettingsWindowOpen is now {_isSettingsWindowOpen}");
+            }
+        }
 
-                SetCurrentDeviceSelectedPalette(value);
+
+        private IColorPalette _currentActivePalette;
+        public IColorPalette CurrentActivePalette {
+            get { return _currentActivePalette; }
+            set
+            {
+                if (value != null)
+                {
+                    _currentActivePalette = value;
+                    CurrentOutput.OutputCurrentActivePalette = value;
+                    RaisePropertyChanged(nameof(CurrentOutput.OutputCurrentActivePalette));
+                }
+
+                //SetCurrentDeviceSelectedPalette(value);
+            }
+        }
+        private ObservableCollection<Color> _currentEditingColors;
+        public ObservableCollection<Color> CurrentEditingColors {
+            get { return _currentEditingColors; }
+            set
+            {
+                _currentEditingColors = value;
+
+                //SetCurrentDeviceSelectedPalette(value);
             }
         }
 
@@ -1397,14 +1458,7 @@ namespace adrilight.ViewModel
             }
         }
 
-        private ObservableCollection<IDeviceSettings> _hUBOutputCollection;
-        public ObservableCollection<IDeviceSettings> HUBOutputCollection {
-            get { return _hUBOutputCollection; }
-            set
-            {
-                _hUBOutputCollection = value;
-            }
-        }
+       
         private string _newPaletteName;
         public string NewPaletteName {
             get { return _newPaletteName; }
@@ -1434,12 +1488,7 @@ namespace adrilight.ViewModel
 
 
 
-        //public List<PaletteCardContextMenu> PaletteCardOptions { get; set; }
-        private bool _hubOutputsNavigationEnable;
-        public bool HubOutputNavigationEnable {
-            get { return _hubOutputsNavigationEnable; }
-            set { _hubOutputsNavigationEnable = value; }
-        }
+      
 
 
 
@@ -1508,20 +1557,20 @@ namespace adrilight.ViewModel
     {
         ShowZeroingDialog();
     });
-            ChangeCurrentDeviceSelectedPalette = new RelayCommand<IColorPaletteCard>((p) =>
+            ChangeCurrentDeviceSelectedPalette = new RelayCommand<IColorPalette>((p) =>
             {
                 return true;
             }, (p) =>
             {
-                SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
+                //SetCurrentDeviceSelectedPalette(CurrentActivePalette);
             });
 
-            EditSelectedPaletteCommand = new RelayCommand<IColorPaletteCard>((p) =>
+            EditSelectedPaletteCommand = new RelayCommand<string>((p) =>
             {
                 return true;
             }, (p) =>
             {
-                OpenEditPaletteDialog();
+                EditCurrentPalette(p);
             });
             LaunchPositionEditWindowCommand = new RelayCommand<string>((p) =>
             {
@@ -1544,7 +1593,7 @@ namespace adrilight.ViewModel
                      return true;
                  }, (p) =>
                  {
-                     OpenSaveConfirmMessage();
+                     SaveCurrentEditedPalette(p);
                  });
 
             CreateNewPaletteCommand = new RelayCommand<string>((p) =>
@@ -1552,14 +1601,14 @@ namespace adrilight.ViewModel
                        return true;
                    }, (p) =>
                    {
-                       CreateNewPaletteFromCurrentEditPalette();
+                       CreateNewPalette();
                    });
-            DeleteSelectedPaletteCommand = new RelayCommand<string>((p) =>
+            DeleteSelectedPaletteCommand = new RelayCommand<IColorPalette>((p) =>
             {
                 return true;
             }, (p) =>
             {
-                DeleteSelectedPalette(CurrentActivePaletteCard);
+                DeleteSelectedPalette(p);
             });
             SetIncreamentCommandfromZero = new RelayCommand<string>((p) =>
             {
@@ -1628,12 +1677,12 @@ namespace adrilight.ViewModel
             {
                 ImportPaletteCardFromFile();
             });
-            ExportCurrentSelectedPaletteToFileCommand = new RelayCommand<string>((p) =>
+            ExportCurrentSelectedPaletteToFileCommand = new RelayCommand<IColorPalette>((p) =>
             {
                 return true;
             }, (p) =>
             {
-                ExportCurrentSelectedPaletteToFile();
+                ExportCurrentSelectedPaletteToFile(p);
             });
 
 
@@ -1740,6 +1789,39 @@ namespace adrilight.ViewModel
 
             });
 
+            JumpToNextAddDeviceWizardStateCommand = new RelayCommand<string>((p) =>
+                   {
+                       return p != null;
+                   }, (p) =>
+                   {
+                       CurrentAddDeviceWizardState++;
+
+
+
+                   });
+            AddCurrentSelectedDeviceToDashboard = new RelayCommand<string>((p) =>
+           {
+               return p != null;
+           }, (p) =>
+           {
+               AddDevice();
+
+
+
+           }
+            );
+            BackToPreviousAddDeviceWizardStateCommand = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                CurrentAddDeviceWizardState--;
+
+
+
+            });
+
+
             CancelEditWizardCommand = new RelayCommand<string>((p) =>
                  {
                      return p != null;
@@ -1802,7 +1884,7 @@ namespace adrilight.ViewModel
                         p.IsActivated = true;
                     }
                 }
-             
+
 
 
             });
@@ -1811,14 +1893,14 @@ namespace adrilight.ViewModel
                 return p != null;
             }, (p) =>
             {
-                Count=0;
+                Count = 0;
                 foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
-                    {
-                        spot.SetStroke(0.5);
-                        spot.IsActivated = true;
-                        Count++;
-                    }
-               
+                {
+                    spot.SetStroke(0.5);
+                    spot.IsActivated = true;
+                    Count++;
+                }
+
 
 
 
@@ -1828,12 +1910,12 @@ namespace adrilight.ViewModel
                 return p != null;
             }, (p) =>
             {
-                Count=0;
+                Count = 0;
                 foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
                 {
                     spot.SetStroke(0);
                     spot.IsActivated = false;
-                    if (spot.XIndex == 0 || spot.YIndex == 0|| spot.XIndex == CurrentOutput.OutputNumLEDX-1 || spot.YIndex == CurrentOutput.OutputNumLEDY-1)
+                    if (spot.XIndex == 0 || spot.YIndex == 0 || spot.XIndex == CurrentOutput.OutputNumLEDX - 1 || spot.YIndex == CurrentOutput.OutputNumLEDY - 1)
                     {
                         spot.SetStroke(0.5);
                         spot.IsActivated = true;
@@ -1849,27 +1931,27 @@ namespace adrilight.ViewModel
                 return p != null;
             }, (p) =>
             {
-                
-                    if (p.OnDemandColor == Color.FromRgb(0, 0, 0))
-                    {
-                        p.SetColor(100, 27, 0, true);
-                        p.SetID(ActivatedSpots.Count() - MaxLEDCount--);
-                        p.SetIDVissible(true);
+
+                if (p.OnDemandColor == Color.FromRgb(0, 0, 0))
+                {
+                    p.SetColor(100, 27, 0, true);
+                    p.SetID(ActivatedSpots.Count() - MaxLEDCount--);
+                    p.SetIDVissible(true);
 
 
 
 
-                    }
+                }
 
-                    else
-                    {
-                        p.SetColor(0, 0, 0, true);
-                        p.SetID(0);
-                        p.SetIDVissible(false);
-                        MaxLEDCount++;
-                    }
-                
-              
+                else
+                {
+                    p.SetColor(0, 0, 0, true);
+                    p.SetID(0);
+                    p.SetIDVissible(false);
+                    MaxLEDCount++;
+                }
+
+
 
 
             });
@@ -1903,7 +1985,7 @@ namespace adrilight.ViewModel
                     spot.SetColor(100, 27, 0, true);
                     spot.SetID(ActivatedSpots.Count() - MaxLEDCount--);
                     spot.SetIDVissible(true);
-                   
+
                 }
 
             });
@@ -2007,7 +2089,7 @@ namespace adrilight.ViewModel
                 return true;
             }, (p) =>
             {
-                ShowAddNewDialog();
+                ShowAddNewWindow();
             });
             BackCommand = new RelayCommand<string>((p) =>
             {
@@ -2018,6 +2100,15 @@ namespace adrilight.ViewModel
 
 
             });
+        }
+
+        private void AddDevice()
+        {
+            CurrentSelectedDeviceToAdd.DeviceID = AvailableDevices.Count + 1;
+            AvailableDevices.Add(CurrentSelectedDeviceToAdd);
+            WriteDeviceInfoJson();
+            System.Windows.Forms.Application.Restart();
+            Process.GetCurrentProcess().Kill();
         }
 
         private void RunTestSequence()
@@ -2091,14 +2182,14 @@ namespace adrilight.ViewModel
             }
         }
 
-        private void ExportCurrentSelectedPaletteToFile()
+        private void ExportCurrentSelectedPaletteToFile(IColorPalette palette)
         {
             SaveFileDialog Export = new SaveFileDialog();
             Export.CreatePrompt = true;
             Export.OverwritePrompt = true;
 
             Export.Title = "Xuất dữ liệu";
-            Export.FileName = CurrentActivePaletteCard.Name + " Color Palette";
+            Export.FileName = palette.Name + " Color Palette";
             Export.CheckFileExists = false;
             Export.CheckPathExists = true;
             Export.DefaultExt = "col";
@@ -2109,12 +2200,12 @@ namespace adrilight.ViewModel
 
 
             string[] paletteData = new string[19];
-            paletteData[0] = CurrentActivePaletteCard.Name;
-            paletteData[1] = CurrentActivePaletteCard.Owner;
-            paletteData[2] = CurrentActivePaletteCard.Description;
-            for (int i = 0; i < CurrentActivePaletteCard.Thumbnail.Length; i++)
+            paletteData[0] = palette.Name;
+            paletteData[1] = palette.Owner;
+            paletteData[2] = palette.Description;
+            for (int i = 0; i < palette.Colors.Length; i++)
             {
-                paletteData[i + 3] = CurrentActivePaletteCard.Thumbnail[i].ToString();
+                paletteData[i + 3] = palette.Colors[i].ToString();
             }
             if (Export.ShowDialog() == DialogResult.OK)
             {
@@ -2127,165 +2218,226 @@ namespace adrilight.ViewModel
 
             VisualizerFFT = fft;
         }
-        private void CreateNewPaletteFromCurrentEditPalette()
+        private void CreateNewPalette()
         {
+            var lastSelectedPaletteIndex = CurrentOutput.OutputSelectedChasingPalette;
             var name = NewPaletteName;
             var owner = NewPaletteOwner;
             var description = NewPaletteDescription;
-            var newPaletteThumbnail = new System.Windows.Media.Color[16];
+            var colors = new System.Windows.Media.Color[16];
             int counter = 0;
-            foreach (var color in CurrentCustomZoneColor)
+            foreach(var color in CurrentEditingColors)
             {
-                newPaletteThumbnail[counter++] = color;
+                colors[counter++] = color;
             }
-            IColorPaletteCard newpalette = new ColorPaletteCard(name, owner, "RGBPalette16", description, newPaletteThumbnail);
+            AvailablePallete.Clear();
+            foreach (var palette in LoadPaletteIfExists())
+            {
+                AvailablePallete.Add(palette);
+            }
+            IColorPalette newpalette = new ColorPalette(name, owner, "RGBPalette16", description, colors);
             AvailablePallete.Add(newpalette);
-            CurrentActivePaletteCard = newpalette;
-            RaisePropertyChanged(nameof(CurrentActivePaletteCard));
-            SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
-            RaisePropertyChanged(nameof(AvailablePallete));
+            
             WritePaletteCollectionJson();
+            AvailablePallete.Clear();
+            foreach (var palette in LoadPaletteIfExists())
+            {
+                AvailablePallete.Add(palette);
+            }
+            CurrentOutput.OutputSelectedChasingPalette = lastSelectedPaletteIndex;
+
         }
-        private void DeleteSelectedPalette(IColorPaletteCard palette)
+        private void EditCurrentPalette(string param)
         {
-            if (AvailablePallete.ElementAt(CurrentOutput.OutputSelectedChasingPalette) == palette && AvailablePallete.ElementAt(CurrentOutput.OutputSelectedMusicPalette) == palette)
+            ////var name = NewPaletteName;
+            ////var owner = NewPaletteOwner;
+            ////var description = NewPaletteDescription;
+            ////var colors = new System.Windows.Media.Color[16];
+            ////IColorPalette newpalette = new ColorPalette(name, owner, "RGBPalette16", description, colors);
+            //AvailablePallete.Add(newpalette);
+            //CurrentActivePalette = AvailablePallete.Last();
+            //RaisePropertyChanged(nameof(AvailablePallete));
+            //RaisePropertyChanged(nameof(CurrentActivePalette));
+            //WritePaletteCollectionJson();
+            OpenEditPaletteDialog(param);
+        }
+        private void DeleteSelectedPalette(IColorPalette selectedpalette)
+        {
+            if(AvailablePallete.Count==1)
             {
                 var result = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo {
-                    Message = " Có một chế độ khác đang sử dụng dải màu này, bạn có muốn xóa không ?",
+                    Message = " Please don't delete all Color Palette in this section, atleast keep one left!!!",
                     Caption = "Xóa dải màu",
-                    Button = MessageBoxButton.YesNo,
+                    Button = MessageBoxButton.OK,
                     IconBrushKey = ResourceToken.AccentBrush,
-                    IconKey = ResourceToken.AskGeometry,
+                    IconKey = ResourceToken.WarningGeometry,
                     StyleKey = "MessageBoxCustom"
                 });
-                if (result == MessageBoxResult.Yes) // overwrite current palette
-                {
 
-                    CurrentOutput.OutputSelectedChasingPalette = 0;
-                    CurrentOutput.OutputSelectedMusicPalette = 0;
-                    RaisePropertyChanged(nameof(CurrentOutput.OutputSelectedChasingPalette));
-                    RaisePropertyChanged(nameof(CurrentOutput.OutputSelectedMusicPalette));
-                    CurrentActivePaletteCard = AvailablePallete.First();
-                    SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
-                    RaisePropertyChanged(nameof(CurrentActivePaletteCard));
-                    AvailablePallete.Remove(palette);
-                    RaisePropertyChanged(nameof(AvailablePallete));
-                    WritePaletteCollectionJson();
-                }
-                else
-                {
-
-                }
-
+                return;
             }
-            else
-            {
-                switch (CurrentOutput.OutputSelectedMode)
-                {
-                    case 1:
-                        CurrentOutput.OutputSelectedChasingPalette = 0;
-                        RaisePropertyChanged(nameof(CurrentOutput.OutputSelectedChasingPalette));
-                        break;
-                    case 3:
-                        CurrentOutput.OutputSelectedMusicPalette = 0;
-                        RaisePropertyChanged(nameof(CurrentOutput.OutputSelectedMusicPalette));
-                        break;
-                }
-                CurrentActivePaletteCard = AvailablePallete.First();
-                SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
-                RaisePropertyChanged(nameof(CurrentActivePaletteCard));
-                AvailablePallete.Remove(palette);
-                RaisePropertyChanged(nameof(AvailablePallete));
-                WritePaletteCollectionJson();
-
-            }
-
-
-
-
-
+            AvailablePallete.Remove(selectedpalette);
             WritePaletteCollectionJson();
+            AvailablePallete.Clear();
+            foreach (var palette in LoadPaletteIfExists())
+            {
+                AvailablePallete.Add(palette);
+            }
+            CurrentOutput.OutputSelectedChasingPalette = 0;
+            CurrentActivePalette = AvailablePallete.First();
+            
+            //if (AvailablePallete.ElementAt(CurrentOutput.OutputSelectedChasingPalette) == palette && AvailablePallete.ElementAt(CurrentOutput.OutputSelectedMusicPalette) == palette)
+            //{
+            //    var result = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo {
+            //        Message = " Có một chế độ khác đang sử dụng dải màu này, bạn có muốn xóa không ?",
+            //        Caption = "Xóa dải màu",
+            //        Button = MessageBoxButton.YesNo,
+            //        IconBrushKey = ResourceToken.AccentBrush,
+            //        IconKey = ResourceToken.AskGeometry,
+            //        StyleKey = "MessageBoxCustom"
+            //    });
+            //    if (result == MessageBoxResult.Yes) // overwrite current palette
+            //    {
+
+            //        CurrentOutput.OutputSelectedChasingPalette = 0;
+            //        CurrentOutput.OutputSelectedMusicPalette = 0;
+            //        RaisePropertyChanged(nameof(CurrentOutput.OutputSelectedChasingPalette));
+            //        RaisePropertyChanged(nameof(CurrentOutput.OutputSelectedMusicPalette));
+            //        CurrentActivePaletteCard = AvailablePallete.First();
+            //        SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
+            //        RaisePropertyChanged(nameof(CurrentActivePaletteCard));
+            //        AvailablePallete.Remove(palette);
+            //        RaisePropertyChanged(nameof(AvailablePallete));
+            //        WritePaletteCollectionJson();
+            //    }
+            //    else
+            //    {
+
+            //    }
+
+            //}
+            //else
+            //{
+            //    switch (CurrentOutput.OutputSelectedMode)
+            //    {
+            //        case 1:
+            //            CurrentOutput.OutputSelectedChasingPalette = 0;
+            //            RaisePropertyChanged(nameof(CurrentOutput.OutputSelectedChasingPalette));
+            //            break;
+            //        case 3:
+            //            CurrentOutput.OutputSelectedMusicPalette = 0;
+            //            RaisePropertyChanged(nameof(CurrentOutput.OutputSelectedMusicPalette));
+            //            break;
+            //    }
+            //    CurrentActivePaletteCard = AvailablePallete.First();
+            //    SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
+            //    RaisePropertyChanged(nameof(CurrentActivePaletteCard));
+            //    AvailablePallete.Remove(palette);
+            //    RaisePropertyChanged(nameof(AvailablePallete));
+            //    WritePaletteCollectionJson();
+
+            //}
+
+
         }
 
 
-        private void OpenSaveConfirmMessage()
+        private void SaveCurrentEditedPalette(string param)
         {
-            var result = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo {
-                Message = "Bạn có muốn ghi đè lên dải màu hiện tại?",
-                Caption = "Lưu dải màu",
-                Button = MessageBoxButton.YesNo,
-                IconBrushKey = ResourceToken.AccentBrush,
-                IconKey = ResourceToken.AskGeometry,
-                StyleKey = "MessageBoxCustom"
-            });
-            if (result == MessageBoxResult.Yes) // overwrite current palette
+            //AvailablePallete[CurrentOutput.OutputSelectedChasingPalette] = CurrentActivePalette;
+            var lastSelectedPaletteIndex = CurrentOutput.OutputSelectedChasingPalette;
+            if (param == "save")
             {
-                var activePalette = CurrentOutput.OutputCurrentActivePalette;
-                CurrentActivePaletteCard.Thumbnail = activePalette;
-                SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
                 WritePaletteCollectionJson();
-                //reload all available palette;
-                AvailablePallete.Clear();
-                foreach (var palette in LoadPaletteIfExists())
-                {
-                    AvailablePallete.Add(palette);
-                }
-
-                CurrentCustomZoneColor.Clear();
-                foreach (var color in CurrentOutput.OutputCurrentActivePalette)
-                {
-                    CurrentCustomZoneColor.Add(color);
-                }
-                RaisePropertyChanged(nameof(CurrentCustomZoneColor));
             }
 
-            else // open create new dialog
+            //reload all available palette;
+            AvailablePallete.Clear();
+
+            foreach (var palette in LoadPaletteIfExists())
             {
-                OpenCreateNewDialog();
+                AvailablePallete.Add(palette);
             }
+            CurrentOutput.OutputSelectedChasingPalette = lastSelectedPaletteIndex;
+            //CurrentActivePalette = AvailablePallete[CurrentOutput.OutputSelectedChasingPalette];
+            //var result = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo {
+            //    Message = "Bạn có muốn ghi đè lên dải màu hiện tại?",
+            //    Caption = "Lưu dải màu",
+            //    Button = MessageBoxButton.YesNo,
+            //    IconBrushKey = ResourceToken.AccentBrush,
+            //    IconKey = ResourceToken.AskGeometry,
+            //    StyleKey = "MessageBoxCustom"
+            //});
+            //if (result == MessageBoxResult.Yes) // overwrite current palette
+            //{
+            //    var activePalette = CurrentOutput.OutputCurrentActivePalette;
+            //    CurrentActivePaletteCard.Thumbnail = activePalette;
+            //    SetCurrentDeviceSelectedPalette(CurrentActivePaletteCard);
+            //    WritePaletteCollectionJson();
+            //    //reload all available palette;
+            //    AvailablePallete.Clear();
+            //    foreach (var palette in LoadPaletteIfExists())
+            //    {
+            //        AvailablePallete.Add(palette);
+            //    }
+
+            //    CurrentCustomZoneColor.Clear();
+            //    foreach (var color in CurrentOutput.OutputCurrentActivePalette)
+            //    {
+            //        CurrentCustomZoneColor.Add(color);
+            //    }
+            //    RaisePropertyChanged(nameof(CurrentCustomZoneColor));
+            //}
+
+            //else // open create new dialog
+            //{
+            //OpenCreateNewDialog();
+            //}
         }
 
-        public void OpenEditPaletteDialog()
+        public void OpenEditPaletteDialog( string praram)
         {
-            if (AssemblyHelper.CreateInternalInstance($"View.{"PaletteEditWindow"}") is System.Windows.Window window)
-            {
-                window.Owner = System.Windows.Application.Current.MainWindow;
-                CurrentCustomZoneColor.Clear();
-                foreach (var color in CurrentOutput.OutputCurrentActivePalette)
+             var window = new PaletteEditWindow(praram);
+             window.Owner = System.Windows.Application.Current.MainWindow;
+                CurrentEditingColors = new ObservableCollection<Color>();
+                foreach (var color in CurrentActivePalette.Colors)
                 {
-                    CurrentCustomZoneColor.Add(color);
+                    CurrentEditingColors.Add(color);
                 }
-                RaisePropertyChanged(nameof(CurrentCustomZoneColor));
+                //CurrentCustomZoneColor = palette;
+
+                RaisePropertyChanged(nameof(CurrentEditingColors));
                 window.ShowDialog();
 
             }
-        }
+        
         public void OpenCreateNewDialog()
         {
             if (AssemblyHelper.CreateInternalInstance($"View.{"AddNewPaletteWindow"}") is System.Windows.Window window)
             {
+                
                 window.Owner = System.Windows.Application.Current.MainWindow;
                 window.ShowDialog();
-
+                
             }
         }
-        public void SetCurrentDeviceSelectedPalette(IColorPaletteCard palette)
-        {
-            if (palette != null)
-            {
-                for (var i = 0; i < CurrentOutput.OutputCurrentActivePalette.Length; i++)
-                {
-                    CurrentOutput.OutputCurrentActivePalette[i] = palette.Thumbnail[i];
+        //public void SetCurrentDeviceSelectedPalette(IColorPaletteCard palette)
+        //{
+        //    if (palette != null)
+        //    {
+        //        for (var i = 0; i < CurrentOutput.OutputCurrentActivePalette.Length; i++)
+        //        {
+        //            CurrentOutput.OutputCurrentActivePalette[i] = palette.Thumbnail[i];
 
-                }
+        //        }
 
-                RaisePropertyChanged(nameof(AvailablePallete));
-                RaisePropertyChanged(nameof(CurrentOutput.OutputCurrentActivePalette));
-                WriteDeviceInfoJson();
-            }
+        //        RaisePropertyChanged(nameof(AvailablePallete));
+        //        RaisePropertyChanged(nameof(CurrentOutput.OutputCurrentActivePalette));
+        //        WriteDeviceInfoJson();
+        //    }
 
 
-        }
+        //}
 
         //public void SnapShot()
         //{
@@ -2304,14 +2456,14 @@ namespace adrilight.ViewModel
         //}
         public void SetCustomColor(int index)
         {
-            CurrentOutput.OutputCurrentActivePalette[index] = CurrentPickedColor;
+            CurrentEditingColors[index] = CurrentPickedColor;
+            CurrentActivePalette.SetColor(index, CurrentPickedColor);
+            CurrentOutput.OutputCurrentActivePalette.SetColor(index, CurrentPickedColor);
+
+            RaisePropertyChanged(nameof(CurrentActivePalette));
             RaisePropertyChanged(nameof(CurrentOutput.OutputCurrentActivePalette));
-            CurrentCustomZoneColor.Clear();
-            foreach (var color in CurrentOutput.OutputCurrentActivePalette)
-            {
-                CurrentCustomZoneColor.Add(color);
-            }
-            RaisePropertyChanged(nameof(CurrentCustomZoneColor));
+
+
         }
         public void CurrentSpotSetVIDChanged()
         {
@@ -2473,22 +2625,18 @@ namespace adrilight.ViewModel
         public void ReadDataDevice()
         {
 
-            AvailablePalette = new ObservableCollection<string>
-       {
-           "Rainbow",
-           "Cloud",
-           "Forest",
-           "Sunset",
-           "Scarlet",
-           "Aurora",
-           "France",
-           "Lemon",
-           "Badtrip",
-           "Police",
-           "Ice and Fire",
-           "Custom"
 
-        };
+            AvailableLightingMode = new ObservableCollection<ILightingMode>();
+            var screencapture = new LightingMode { Name = "Screen Capture", Geometry = "screencapture", Description = "Screen sampling to LED" };
+            var palette = new LightingMode { Name = "Color Palette", Geometry = "colorpalette", Description = "Screen sampling to LED" };
+            var music = new LightingMode { Name = "Music Reactive", Geometry = "music", Description = "Screen sampling to LED" };
+            var staticcolor = new LightingMode { Name = "Static Color", Geometry = "static", Description = "Screen sampling to LED" };
+            var gifxelation = new LightingMode { Name = "Gifxelation", Geometry = "canvas", Description = "Screen sampling to LED" };
+            AvailableLightingMode.Add(screencapture);
+            AvailableLightingMode.Add(palette);
+            AvailableLightingMode.Add(music);
+            AvailableLightingMode.Add(staticcolor);
+            AvailableLightingMode.Add(gifxelation);
             AvailableLayout = new ObservableCollection<string>
         {
            "Square, Ring, Rectangle",
@@ -2609,7 +2757,7 @@ namespace adrilight.ViewModel
 
 
             };
-            AvailablePallete = new ObservableCollection<IColorPaletteCard>();
+            AvailablePallete = new ObservableCollection<IColorPalette>();
             foreach (var loadedPalette in LoadPaletteIfExists())
             {
                 AvailablePallete.Add(loadedPalette);
@@ -2626,7 +2774,7 @@ namespace adrilight.ViewModel
             {
                 AvailableSolidColors.Add(color);
             }
-            CurrentCustomZoneColor = new ObservableCollection<System.Windows.Media.Color>();
+            //CurrentCustomZoneColor = new ObservableCollection<System.Windows.Media.Color>();
             //var shareMenu = new PaletteCardContextMenu("Share");
             //var shareMenuOptions = new List<PaletteCardContextMenu>();
             //shareMenuOptions.Add(new PaletteCardContextMenu("File Export"));
@@ -2639,40 +2787,40 @@ namespace adrilight.ViewModel
             //PaletteCardOptions.Add(new PaletteCardContextMenu("Import"));
 
         }
-        public List<IColorPaletteCard> LoadPaletteIfExists()
+        public List<IColorPalette> LoadPaletteIfExists()
         {
             if (!File.Exists(JsonPaletteFileNameAndPath))
             {
                 //create default palette
-                var paletteCards = new List<IColorPaletteCard>();
-                IColorPaletteCard rainbow = new ColorPaletteCard("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.rainbow);
-                IColorPaletteCard police = new ColorPaletteCard("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.police);
-                IColorPaletteCard forest = new ColorPaletteCard("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.forest);
-                IColorPaletteCard aurora = new ColorPaletteCard("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.aurora);
-                IColorPaletteCard iceandfire = new ColorPaletteCard("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.iceandfire);
-                IColorPaletteCard scarlet = new ColorPaletteCard("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.scarlet);
+                var palettes = new List<IColorPalette>();
+                IColorPalette rainbow = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.rainbow);
+                IColorPalette police = new ColorPalette("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.police);
+                IColorPalette forest = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.forest);
+                IColorPalette aurora = new ColorPalette("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.aurora);
+                IColorPalette iceandfire = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.iceandfire);
+                IColorPalette scarlet = new ColorPalette("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.scarlet);
 
-                paletteCards.Add(rainbow);
-                paletteCards.Add(police);
-                paletteCards.Add(forest);
-                paletteCards.Add(aurora);
-                paletteCards.Add(iceandfire);
-                paletteCards.Add(scarlet);
-
-
+                palettes.Add(rainbow);
+                palettes.Add(police);
+                palettes.Add(forest);
+                palettes.Add(aurora);
+                palettes.Add(iceandfire);
+                palettes.Add(scarlet);
 
 
 
 
 
-                return paletteCards;
+
+
+                return palettes;
 
 
             }
 
             var json = File.ReadAllText(JsonPaletteFileNameAndPath);
-            var loadedPaletteCard = new List<IColorPaletteCard>();
-            var existPaletteCard = JsonConvert.DeserializeObject<List<ColorPaletteCard>>(json);
+            var loadedPaletteCard = new List<IColorPalette>();
+            var existPaletteCard = JsonConvert.DeserializeObject<List<ColorPalette>>(json);
             foreach (var paletteCard in existPaletteCard)
             {
                 loadedPaletteCard.Add(paletteCard);
@@ -2778,168 +2926,21 @@ namespace adrilight.ViewModel
             //}
 
 
-            return gradientCards;
+
         }
-        public async void ShowAddNewDialog()
+        public async void ShowAddNewWindow()
         {
-
-            var vm = new ViewModel.AddDeviceViewModel(AvailableDevices, Groups, DesktopFrame);
-            var view = new View.AddDevice();
-            view.DataContext = vm;
-            bool addResult=false;
-            if (addResult)
+            if (AssemblyHelper.CreateInternalInstance($"View.{"AddNewDeviceWindow"}") is System.Windows.Window window)
             {
-                try
-                {
-                    switch (vm.AddedItemType)
-                    {
-                        case AddDeviceViewModel.AvailableTypes.Device:
-                            //if (vm.Device.DeviceType != "ABHV2" && vm.Device.DeviceType != "ABFANHUB")
-                            //{
+                CurrentAddDeviceWizardState = 0;
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
 
-                            //vm.Device.DeviceID = AvailableDevices.Count() + 1);
-
-                            AvailableDevices.Add(vm.Device);
-                            WriteDeviceInfoJson();
-
-                            //}
-                            //else if (vm.Device.DeviceType == "ABFANHUB")
-                            //{
-                            //    AvailableDevices.Add(vm.Device);//add HUB first
-                            //    foreach (var fan in vm.SelectedOutputs)//add child device
-                            //    {
-                            //        AvailableDevices.Add(fan);
-                            //    }
-                            //    WriteDeviceInfoJson();
-                            //}
-                            //else
-                            //{
-
-
-                            //    vm.Device.DeviceID = Cards.Count() + 1;
-                            //    vm.Device.IsHUB = true;
-                            //    vm.Device.HUBID = Cards.Count() + 1;
-                            //    Cards.Add(vm.Device);
-                            //    // WriteJson();
-
-                            //    if (vm.ARGB1Selected) // ARGB1 output port is in the list
-                            //    {
-                            //        var argb1 = new DeviceSettings();
-                            //        argb1.DeviceType = "Strip";                           //add to device settings
-                            //        argb1.DeviceID = Cards.Count() + 1;
-                            //        argb1.SpotsX = 5;
-                            //        argb1.SpotsY = 5;
-                            //        argb1.NumLED = 16;
-                            //        argb1.DeviceName = "ARGB1";
-                            //        argb1.ParrentLocation = vm.Device.HUBID;
-                            //        argb1.OutputLocation = 0;
-                            //        argb1.IsVissible = false;
-                            //        argb1.DeviceLayout = 1;
-                            //        Cards.Add(argb1);
-                            //    }
-                            //    if (vm.ARGB2Selected)
-                            //    {
-                            //        var argb2 = new DeviceSettings();
-                            //        argb2.DeviceType = "Matrix";                           //add to device settings
-                            //        argb2.DeviceID = Cards.Count() + 1;
-                            //        argb2.SpotsX = 20;
-                            //        argb2.SpotsY = 6;
-                            //        argb2.NumLED = 120;
-                            //        argb2.DeviceName = "ARGB2";
-                            //        argb2.ParrentLocation = vm.Device.HUBID;
-                            //        argb2.OutputLocation = 1;
-                            //        argb2.IsVissible = false;
-                            //        argb2.DeviceLayout = 2;
-                            //        Cards.Add(argb2);
-                            //    }
-                            //    if (vm.PCI1Selected)
-                            //    {
-                            //        var PCI = new DeviceSettings();
-                            //        PCI.DeviceType = "Square";                           //add to device settings
-                            //        PCI.DeviceID = Cards.Count() + 1;
-                            //        PCI.SpotsX = 12;
-                            //        PCI.SpotsY = 7;
-                            //        PCI.NumLED = 34;
-                            //        PCI.DeviceName = "PCI1";
-                            //        PCI.ParrentLocation = vm.Device.HUBID;
-                            //        PCI.OutputLocation = 2;
-                            //        PCI.DeviceLayout = 0;
-                            //        PCI.IsVissible = false;
-                            //        Cards.Add(PCI);
-                            //    }
-                            //    if (vm.PCI2Selected)
-                            //    {
-                            //        var PCI = new DeviceSettings();
-                            //        PCI.DeviceType = "Square";                           //add to device settings
-                            //        PCI.DeviceID = Cards.Count() + 1;
-                            //        PCI.SpotsX = 12;
-                            //        PCI.SpotsY = 7;
-                            //        PCI.NumLED = 34;
-                            //        PCI.DeviceName = "PCI2";
-                            //        PCI.ParrentLocation = vm.Device.HUBID;
-                            //        PCI.OutputLocation = 3;
-                            //        PCI.DeviceLayout = 0;
-                            //        PCI.IsVissible = false;
-                            //        Cards.Add(PCI);
-                            //    }
-                            //    if (vm.PCI3Selected)
-                            //    {
-                            //        var PCI = new DeviceSettings();
-                            //        PCI.DeviceType = "Square";                           //add to device settings
-                            //        PCI.DeviceID = Cards.Count() + 1;
-                            //        PCI.SpotsX = 12;
-                            //        PCI.SpotsY = 7;
-                            //        PCI.NumLED = 34;
-                            //        PCI.DeviceName = "PCI3";
-                            //        PCI.ParrentLocation = vm.Device.HUBID;
-                            //        PCI.OutputLocation = 4;
-                            //        PCI.DeviceLayout = 0;
-                            //        PCI.IsVissible = false;
-                            //        Cards.Add(PCI);
-                            //    }
-                            //    if (vm.PCI4Selected)
-                            //    {
-                            //        var PCI = new DeviceSettings();
-                            //        PCI.DeviceType = "Strip";                           //add to device settings
-                            //        PCI.DeviceID = Cards.Count() + 1;
-                            //        PCI.SpotsX = 12;
-                            //        PCI.SpotsY = 7;
-                            //        PCI.NumLED = 34;
-                            //        PCI.DeviceName = "PCI4";
-                            //        PCI.ParrentLocation = vm.Device.HUBID;
-                            //        PCI.OutputLocation = 5;
-                            //        PCI.DeviceLayout = 0;
-                            //        PCI.IsVissible = false;
-                            //        Cards.Add(PCI);
-                            //    }
-
-
-                            //    WriteDeviceInfoJson();
-                            //    // _isAddnew = false;
-                            //}
-                            break;
-                        case AddDeviceViewModel.AvailableTypes.Group:
-                            Groups.Add(vm.Group);//add HUB first
-                            //foreach (var child in vm.SelectedChilds)//add child device
-                            //{
-                            //    Cards.Add(fan);
-                            //}
-                            WriteGroupInfoJson();
-                            WriteDeviceInfoJson();
-
-                            break;
-
-                    }
-
-
-                }
-                catch (Exception ex)
-                {
-                    HandyControl.Controls.MessageBox.Show(ex.Message);
-                }
-                System.Windows.Forms.Application.Restart();
-                Process.GetCurrentProcess().Kill();
             }
+
+
+            //System.Windows.Forms.Application.Restart();
+            //    Process.GetCurrentProcess().Kill();
 
 
         }
@@ -3119,7 +3120,7 @@ namespace adrilight.ViewModel
         public void WritePaletteCollectionJson()
         {
 
-            var palettes = new List<IColorPaletteCard>();
+            var palettes = new List<IColorPalette>();
             foreach (var palette in AvailablePallete)
             {
                 palettes.Add(palette);
@@ -3229,7 +3230,7 @@ namespace adrilight.ViewModel
                         color[i] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(lines[i + 3]);
                     }
 
-                    IColorPaletteCard importedPaletteCard = new ColorPaletteCard(name, owner, "Imported from local file", description, color);
+                    IColorPalette importedPaletteCard = new ColorPalette(name, owner, "Imported from local file", description, color);
                     AvailablePallete.Add(importedPaletteCard);
                     RaisePropertyChanged(nameof(AvailablePallete));
                     WritePaletteCollectionJson();
@@ -3391,7 +3392,7 @@ namespace adrilight.ViewModel
 
                         break;
 
-                  
+
 
 
 
@@ -3406,23 +3407,23 @@ namespace adrilight.ViewModel
                 {
                     case nameof(CurrentOutput.OutputNumLEDX):
                     case nameof(CurrentOutput.OutputNumLEDY):
-                        if (CurrentOutput.OutputNumLEDX> CurrentOutput.OutputNumLEDY)
+                        if (CurrentOutput.OutputNumLEDX > CurrentOutput.OutputNumLEDY)
                         {
                             CurrentOutput.OutputPixelHeight = (int)ShaderBitmap.Width * CurrentOutput.OutputNumLEDY / CurrentOutput.OutputNumLEDX;
                             CurrentOutput.OutputPixelWidth = (int)ShaderBitmap.Width;
                         }
-                       
+
                         else
                         {
                             CurrentOutput.OutputPixelWidth = (int)ShaderBitmap.Height * CurrentOutput.OutputNumLEDX / CurrentOutput.OutputNumLEDY;
                             CurrentOutput.OutputPixelHeight = (int)ShaderBitmap.Height;
                         }
-                        
+
                         RaisePropertyChanged(nameof(CurrentOutput.OutputPixelWidth));
                         RaisePropertyChanged(nameof(CurrentOutput.OutputPixelHeight));
                         break;
-                    
-                        
+
+
 
 
 
@@ -3533,6 +3534,8 @@ namespace adrilight.ViewModel
             }
             RaisePropertyChanged(nameof(MenuItems));
         }
+
+
 
     }
 }

@@ -30,8 +30,10 @@ namespace adrilight
         private string _smallIcon = "";
         private string _bigIcon = "";
         private int _selectedOutput = 0;
+        private string _geometry = "generaldevice";
 
-      
+
+
 
         public int DeviceID { get =>_deviceID; set { Set(() => DeviceID, ref _deviceID, value); } }
         public string DeviceName { get => _deviceName; set { Set(() => DeviceName, ref _deviceName, value); } }
@@ -52,6 +54,6 @@ namespace adrilight
         public string SmallIcon { get => _smallIcon; set { Set(() => SmallIcon, ref _smallIcon, value); } }
         public string BigIcon { get => _bigIcon; set { Set(() => BigIcon, ref _bigIcon, value); } }
         public int SelectedOutput { get => _selectedOutput; set { Set(() => SelectedOutput, ref _selectedOutput, value); } }
-
+        public string Geometry { get => _geometry; set { Set(() => Geometry, ref _geometry, value); } }
     }
 }

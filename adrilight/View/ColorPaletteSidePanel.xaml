@@ -23,6 +23,83 @@
                 </ResourceDictionary>
 
             </ResourceDictionary.MergedDictionaries>
+            <DropShadowEffect x:Key="Item.SelectedActive.Border.Shadow" BlurRadius="10"   RenderingBias ="Quality" ShadowDepth ="1" Color ="{Binding Color, Source={StaticResource PrimaryBrush}}"/>
+            <DropShadowEffect x:Key="Item.MouseOver.Border.Shadow" BlurRadius="10"   RenderingBias ="Quality" ShadowDepth ="1" Color ="{Binding Color, Source={StaticResource DarkMaskBrush}}"/>
+            <Style x:Key="_ListBoxCardsCollectionStyle" TargetType="ListBoxItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Border CornerRadius="7" Name="_Border"
+                                Padding="0"
+                                Margin="8"
+                                Background="{DynamicResource RegionBrush}"   
+                                BorderBrush="Transparent"
+                                BorderThickness="2"
+                                SnapsToDevicePixels="true">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                        <Condition Property="IsSelected" Value="True"/>
+                                    </MultiTrigger.Conditions>
+
+
+                                    <Setter Property="BorderBrush" TargetName="_Border" Value="{StaticResource PrimaryBrush}"/>
+                                    <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                        <Condition Property="IsSelected" Value="True"/>
+                                    </MultiTrigger.Conditions>
+
+
+
+                                    <Setter Property="BorderBrush" TargetName="_Border" Value="{StaticResource PrimaryBrush}"/>
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                        <Condition Property="IsSelected" Value="False"/>
+                                    </MultiTrigger.Conditions>
+
+                                    <!--<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>-->
+
+                                    <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
+                                    <Setter Property="Effect" TargetName="_Border" Value="{StaticResource Item.MouseOver.Border.Shadow}"/>
+                                </MultiTrigger>
+
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <!--<Setter Property="ToolTip" Value="{Binding DocName}"/>-->
+                <Setter Property="Tag" Value="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}" />
+                <Setter Property="ContextMenu">
+                    <Setter.Value>
+                        <ContextMenu >
+                            <MenuItem  Header="Edit"
+                                          Command="{Binding PlacementTarget.Tag.EditSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="overwrite"
+                                          >
+                            </MenuItem>
+                            <MenuItem  Header="Share" CommandParameter="{Binding .}"
+                                          Command="{Binding PlacementTarget.Tag.ExportCurrentSelectedPaletteToFileCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                          >
+                            </MenuItem>
+                            <MenuItem  Header="Delete" CommandParameter="{Binding .}"
+                                          Command="{Binding PlacementTarget.Tag.DeleteSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                          >
+                            </MenuItem>
+                        </ContextMenu>
+
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ContextMenuService.Placement" Value="Bottom">
+
+                </Setter>
+            </Style>
             </ResourceDictionary>
         </UserControl.Resources>
     <Grid>
@@ -32,11 +109,11 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <StackPanel Margin="5" Orientation="Horizontal">
-            <Path Margin="5" Data="{StaticResource colorpalette}" 
+            <!--<Path Margin="5" Data="{StaticResource colorpalette}" 
           Width="30" 
           Height="30" 
           Fill="White"
-          Stretch="Uniform" />
+          Stretch="Uniform" />-->
             <!--<TextBlock  Margin="5" HorizontalAlignment="Left" Text="Color Palette" Style="{DynamicResource TextBlockTitleBold}"/>-->
         </StackPanel>
         <Grid Grid.Row="1" >
@@ -47,23 +124,24 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="10, 10, 10, 10"  Text="CHỌN DẢI MÀU"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                <TextBlock Style="{DynamicResource TextBlockDefault}" FontWeight="SemiBold" Grid.Row="0" Margin="10, 10, 10, 10"  Text="CHỌN DẢI MÀU"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Button Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}"  Width="32" Padding="7,7" Margin="0,0,15,0" HorizontalAlignment="Right"  hc:IconElement.Geometry="{DynamicResource AddGeometry}">
+               
+                <Button  Content="Add New" Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}" BorderThickness="0"  Width="100" Padding="0,0" Margin="0,0,15,0" HorizontalAlignment="Right" hc:IconElement.Width="20" hc:IconElement.Height="20"  hc:IconElement.Geometry="{DynamicResource addnew}">
 
                 </Button>
-                <Popup AllowsTransparency="True" Grid.Column="1" PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="-28" Name="PopupAdd" VerticalOffset="6" StaysOpen="False">
-                    <Border Background="{DynamicResource SecondaryRegionBrush}" CornerRadius="4" Margin="16" Effect="{DynamicResource EffectShadow2}">
-                        <StackPanel Orientation="Vertical">
-                            <Button Command="{Binding ImportPaletteCardFromFileCommand}" BorderBrush="Transparent" Margin="5" Background="Transparent"  Content="From File" Style="{DynamicResource ButtonDefault}"/>
-                            <hc:Divider Margin="0"/>
-                            <Button Command="{Binding EditSelectedPaletteCommand}" BorderBrush="Transparent" Background="Transparent"  Margin="5" Content="Create New" Style="{DynamicResource ButtonDefault}"/>
-                        </StackPanel>
-                    </Border>
+                <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="0" Name="PopupAdd" VerticalOffset="2" StaysOpen="False">
+                    <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
+                        <Border Background="{DynamicResource RegionBrush}" CornerRadius="7" Margin="0,2,15,2"  Effect="{DynamicResource EffectShadow2}">
+                            <StackPanel Orientation="Vertical">
+                                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding ImportPaletteCardFromFileCommand}" hc:IconElement.Geometry="{DynamicResource addnew}" BorderBrush="Transparent" Margin="5"   Content="From File" Style="{DynamicResource ButtonDefault}"/>
+
+                                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding EditSelectedPaletteCommand}" hc:IconElement.Geometry="{DynamicResource SaveGeometry}" CommandParameter="createnew" BorderBrush="Transparent"   Margin="5" Content="Create New" Style="{DynamicResource ButtonDefault}"/>
+                            </StackPanel>
+
+                        </Border>
+                    </hc:TransitioningContentControl>
+                        
                 </Popup>
             </Grid>
           
@@ -72,21 +150,23 @@
                             <hc:TransitioningContentControl Grid.Row="1">
                     <ListBox Background="Transparent"  ScrollViewer.CanContentScroll="True"
                                                   ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                                                  ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" 
+                                                  ItemContainerStyle="{DynamicResource _ListBoxCardsCollectionStyle}" 
                                                   Height="180"
                                                   x:Name="AvailableMPalette"
                                                   Margin="0,10,0,10"
-                                                  BorderThickness="0"   
-                                                  SelectedIndex="{Binding CurrentDevice.SelectedMusicPalette}"
+                                                  BorderThickness="0"
+                                                  SelectedItem="{Binding CurrentActivePalette}"
+                                                  SelectedIndex="{Binding CurrentOutput.OutputSelectedChasingPalette}"
                                                   Style="{DynamicResource WrapPanelHorizontalListBox}" 
                                                   ItemsPanel="{DynamicResource WrapPanelHorizontalItemsPanelTemplate}" 
                                                   ItemsSource="{Binding AvailablePallete}">
-                     
-                        <ListBox.ItemTemplate>
+                 
+
+                    <ListBox.ItemTemplate>
                             <DataTemplate DataType="data:CardModel">
                                 <hc:Card BorderBrush="Transparent" ToolTip="{Binding Description}" hc:BorderElement.CornerRadius="2"  MaxWidth="120"  Effect="{StaticResource EffectShadow2}"  Footer="{Binding Name}">
                                     <Border CornerRadius="2,2,2,2" Style="{StaticResource BorderClip}">
-                                        <ItemsControl ItemsSource="{Binding Thumbnail}">
+                                        <ItemsControl ItemsSource="{Binding Colors}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <StackPanel Orientation="Horizontal">

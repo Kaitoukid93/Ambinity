@@ -181,7 +181,7 @@ namespace adrilight
             if (isRunning && shouldBeRunning)
             {
                 // rainbow is running and we need to change the color bank
-                colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette).ToArray();
+                colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette.Colors).ToArray();
             }
 
         }
@@ -210,7 +210,7 @@ namespace adrilight
             try
             {
                 Color[] paletteSource;
-                paletteSource = OutputSettings.OutputCurrentActivePalette;
+                paletteSource = OutputSettings.OutputCurrentActivePalette.Colors;
                 colorBank = GetColorGradientfromPalette(paletteSource).ToArray();
                 
                 int counter = 0;

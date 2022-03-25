@@ -1,4 +1,5 @@
-﻿using HandyControl.Data;
+﻿using adrilight.ViewModel;
+using HandyControl.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +20,17 @@ namespace adrilight.View
     /// Interaction logic for PaletteEditWindow.xaml
     /// </summary>
     public partial class PaletteEditWindow 
-    {
-        public PaletteEditWindow()
+    { private string _mode;
+        public PaletteEditWindow(string mode)
         {
             InitializeComponent();
+            _mode = mode;
+        }
+        private MainViewViewModel ViewModel {
+            get
+            {
+                return (MainViewViewModel)this.DataContext;
+            }
         }
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -42,7 +50,19 @@ namespace adrilight.View
 
         private void ColorPicker_Confirmed(object sender, HandyControl.Data.FunctionEventArgs<Color> e)
         {
-            this.Close();
+            switch (_mode)
+            {
+                case "overwrite":
+                    this.Close();
+                    break;
+                case "createnew":
+                    ViewModel.OpenCreateNewDialog();
+                    this.Close();
+                    break;
+                    
+            }
+
+            
         }
 
         private void mColorPicker_Canceled(object sender, EventArgs e)

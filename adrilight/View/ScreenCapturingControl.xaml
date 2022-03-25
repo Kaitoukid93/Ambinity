@@ -29,7 +29,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBoxItem">
-                            <Border CornerRadius="7" Name="_Border"
+                            <Border CornerRadius="4" Name="_Border"
                                 Padding="0"
                                 Margin="5"
                                 Background="Transparent"   
@@ -60,7 +60,7 @@
                                     </MultiTrigger.Conditions>
 
 
-                                    <Setter Property="BorderBrush" TargetName="_Border" Value="{DynamicResource PrimaryBrush}"/>
+                                    <Setter Property="Background" TargetName="_Border" Value="{DynamicResource SecondaryRegionBrush}"/>
                                     <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
                                 </MultiTrigger>
                                 <MultiTrigger>
@@ -69,7 +69,7 @@
                                         <Condition Property="IsSelected" Value="False"/>
                                     </MultiTrigger.Conditions>
 
-                                    <Setter Property="Background" TargetName="_Border" Value="{DynamicResource SecondaryRegionBrush}"/>
+                                    <Setter Property="Background" TargetName="_Border" Value="{DynamicResource DarkMaskBrush}"/>
 
                                     <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
                                    
@@ -80,11 +80,11 @@
                 </Setter>
 
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
-                <!--<Style.Triggers>
+                <Style.Triggers>
                     <Trigger Property="IsSelected" Value="True">
                         <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}" />
                     </Trigger>
-                </Style.Triggers>-->
+                </Style.Triggers>
 
             </Style>
         </ResourceDictionary>
@@ -93,15 +93,178 @@
         <StackPanel>
             <!--position-->
             <Grid x:Name="Mode">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Margin="10" HorizontalAlignment="Left" Text="Location" Style="{DynamicResource TextBlockTitleBold}"/>
-                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <GroupBox VerticalContentAlignment="Center" hc:TitleElement.TitlePlacement="Left" hc:TitleElement.TitleWidth="120" Margin="15,5" Style="{DynamicResource GroupBoxOriginal}">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock FontWeight="SemiBold" Text="LOCATION"/>
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
+                    <Border  Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
+                    <ListBox  x:Name="capturing_position"  
+                              SelectedIndex="{Binding CurrentOutput.OutputScreenCapturePosition}"
+                              ItemContainerStyle="{DynamicResource _listBoxModeSelectionStyle}"  
+                              
+                              Background="Transparent"
+                              BorderThickness="0"
+                              Style="{DynamicResource WrapPanelHorizontalListBox}">
 
-                    <Border Margin="8,8,8,8"  Background="{DynamicResource RegionBrush}" CornerRadius="11" BorderThickness="1">
-                        <ListBox  x:Name="capturing_position"  
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel>
+
+                                </WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBoxItem>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Path Stretch="Uniform" Margin="5" Data="{StaticResource fullscreen}" 
+                                      Width="20" 
+                                      Height="20" 
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
+                                <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Full Screen" Style="{DynamicResource TextBlockDefault}"/>
+                            </Grid>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Path Stretch="Uniform" Margin="5" Data="{StaticResource left}" 
+                                      Width="20" 
+                                      Height="20" 
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
+                                <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Left" Style="{DynamicResource TextBlockDefault}"/>
+                            </Grid>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Path Stretch="Uniform" Margin="5" Data="{StaticResource right}" 
+                                      Width="20" 
+                                      Height="20" 
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
+                                <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Right" Style="{DynamicResource TextBlockDefault}"/>
+                            </Grid>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Path Stretch="Uniform" Margin="5" Data="{StaticResource up}" 
+                                      Width="20" 
+                                      Height="20" 
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
+                                <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Top" Style="{DynamicResource TextBlockDefault}"/>
+                            </Grid>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Path Stretch="Uniform" Margin="5" Data="{StaticResource down}" 
+                                      Width="20" 
+                                      Height="20" 
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
+                                <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Bottom" Style="{DynamicResource TextBlockDefault}"/>
+                            </Grid>
+                        </ListBoxItem>
+                        <ListBoxItem >
+
+                            <Grid Background="Transparent">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown" >
+                                        <i:InvokeCommandAction Command="{Binding LaunchPositionEditWindowCommand }" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource adjustposition}" 
+                                      Width="20" 
+                                      Height="20" 
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
+                                <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Custom" Style="{DynamicResource TextBlockDefault}"/>
+                            </Grid>
+                        </ListBoxItem>
+
+
+                        <!--<RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource fullscreen }" IsChecked="{Binding CurrentOutput.OutputScreenCapturePosition,Mode=TwoWay}"  Style="{DynamicResource RadioButtonIcon}" Content="Full Screen"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource left }" IsChecked="{Binding IsLeftScreenRegionChecked,Mode=TwoWay}" Style="{DynamicResource RadioButtonIcon}" Content="Left"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource right}" IsChecked="{Binding IsRightScreenRegionChecked,Mode=TwoWay}" Content="Right" />
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource up}" IsChecked="{Binding IsTopScreenRegionChecked,Mode=TwoWay}" Content="Top"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource down}" IsChecked="{Binding IsBottomScreenRegionChecked,Mode=TwoWay}" Content="Bottom"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" IsChecked="{Binding IsCustomScreenRegionChecked,Mode=TwoWay}" hc:IconElement.Geometry="{StaticResource custom}" Content="Custom"/>-->
+                    </ListBox>
+                </Border>
+                </GroupBox>
+
+
+
+            </Grid>
+            <hc:Divider LineStroke="{DynamicResource SecondaryRegionBrush}" Margin="20,10,20,10">
+
+            </hc:Divider>
+            <Grid Margin="10,10,10,10" x:Name="Smoothness">
+
+
+
+
+
+
+
+                <GroupBox   VerticalAlignment="Center"   hc:TitleElement.TitleWidth="130" Header="SMOOTHNESS" Margin="5" Style="{DynamicResource GroupBoxOriginal}" HorizontalAlignment="Left" hc:TitleElement.TitlePlacement="Left">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock FontWeight="SemiBold" Text="SMOOTHNESS"/>
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Path Stretch="Uniform" Margin="0" Data="{StaticResource smoothness}" 
+                                      Width="20" 
+                                      Height="20" 
+                                      Fill="{DynamicResource PrimaryTextBrush}"/>
+                        <hc:PreviewSlider Grid.Column="1" MaxWidth="300" MinWidth="200" Value="{Binding CurrentOutput.OutputSmoothness}" HorizontalAlignment="Left" Margin="20,0,0,0" Minimum="0" Maximum="10">
+                            <hc:PreviewSlider.PreviewContent>
+                                <Label Style="{DynamicResource LabelBaseStyle}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
+                            </hc:PreviewSlider.PreviewContent>
+                        </hc:PreviewSlider>
+                    </StackPanel>
+
+                </GroupBox>
+
+
+            </Grid>
+            <hc:Divider LineStroke="{DynamicResource SecondaryRegionBrush}" Margin="20,10,20,10">
+                        
+                    </hc:Divider>
+            <Grid>
+
+                <GroupBox HorizontalAlignment="Left" VerticalContentAlignment="Center" hc:TitleElement.TitlePlacement="Left" hc:TitleElement.TitleWidth="120" Margin="15,5" Style="{DynamicResource GroupBoxOriginal}">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock FontWeight="SemiBold" Text="WHITE BALANCE"/>
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
+                    <Border Margin="0"  Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
+                        <ListBox SelectedIndex="{Binding CurrentOutput.OutputScreenCaptureWB}" HorizontalAlignment="Left"  x:Name="capturingWB"  
                              
                               ItemContainerStyle="{DynamicResource _listBoxModeSelectionStyle}"  
                               
@@ -122,11 +285,11 @@
                                         <ColumnDefinition Width="auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource fullscreen}" 
+                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource bulb}" 
                                       Width="20" 
                                       Height="20" 
                                       Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                                    <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Full Screen" Style="{DynamicResource TextBlockDefault}"/>
+                                    <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Warm" Style="{DynamicResource TextBlockDefault}"/>
                                 </Grid>
                             </ListBoxItem>
                             <ListBoxItem>
@@ -136,11 +299,11 @@
                                         <ColumnDefinition Width="auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource left}" 
+                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource brightness}" 
                                       Width="20" 
                                       Height="20" 
                                       Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                                    <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Left" Style="{DynamicResource TextBlockDefault}"/>
+                                    <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Natural" Style="{DynamicResource TextBlockDefault}"/>
                                 </Grid>
                             </ListBoxItem>
                             <ListBoxItem>
@@ -150,43 +313,16 @@
                                         <ColumnDefinition Width="auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource right}" 
+                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource cloud}" 
                                       Width="20" 
                                       Height="20" 
                                       Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                                    <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Right" Style="{DynamicResource TextBlockDefault}"/>
+                                    <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Cold" Style="{DynamicResource TextBlockDefault}"/>
                                 </Grid>
                             </ListBoxItem>
-                            <ListBoxItem>
-                                <Grid>
 
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource up}" 
-                                      Width="20" 
-                                      Height="20" 
-                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                                    <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Top" Style="{DynamicResource TextBlockDefault}"/>
-                                </Grid>
-                            </ListBoxItem>
-                            <ListBoxItem>
-                                <Grid>
-
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource down}" 
-                                      Width="20" 
-                                      Height="20" 
-                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                                    <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Bottom" Style="{DynamicResource TextBlockDefault}"/>
-                                </Grid>
-                            </ListBoxItem>
                             <ListBoxItem >
-                              
+
                                 <Grid Background="Transparent">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="MouseDown" >
@@ -198,7 +334,7 @@
                                         <ColumnDefinition Width="auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource edit}" 
+                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource wbajust}" 
                                       Width="20" 
                                       Height="20" 
                                       Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
@@ -215,82 +351,14 @@
                     <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" IsChecked="{Binding IsCustomScreenRegionChecked,Mode=TwoWay}" hc:IconElement.Geometry="{StaticResource custom}" Content="Custom"/>-->
                         </ListBox>
                     </Border>
-                   
-                    
-                </StackPanel>
+                </GroupBox>
+
+
             </Grid>
-            <Grid x:Name="Settings">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Margin="10" HorizontalAlignment="Left" Text="Settings" Style="{DynamicResource TextBlockTitleBold}"/>
-                <StackPanel Grid.Row="1" Orientation="Vertical">
-                   
-                    <Grid Margin="10,0,0,0" x:Name="Framerate">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        
-                            <hc:NumericUpDown Margin="5" Maximum="60" Minimum="20" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Width="180" hc:InfoElement.TitleWidth="120" hc:InfoElement.TitlePlacement="Left" hc:InfoElement.Title="Max FrameRate" Style="{DynamicResource NumericUpDownExtend}" />
-
-
-                            <hc:Divider Grid.Column="1" Margin="25,0,25,0" LineStrokeThickness="2" LineStroke="{DynamicResource DarkPrimaryBrush}" Orientation="Vertical" MaxHeight="25"/>
-
-                        <GroupBox Grid.Column="2" VerticalAlignment="Bottom"  Width="300" hc:TitleElement.TitleWidth="105" Header="Smoothness" Margin="5" Style="{DynamicResource GroupBoxOriginal}" HorizontalContentAlignment="Left" hc:TitleElement.TitlePlacement="Left">
-                            <hc:PreviewSlider Grid.Column="1" Width="200" HorizontalAlignment="Left" Margin="0,0,0,0" Minimum="5" Maximum="30">
-                                <hc:PreviewSlider.PreviewContent>
-                                    <Label Style="{DynamicResource LabelBaseStyle}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
-                                </hc:PreviewSlider.PreviewContent>
-                            </hc:PreviewSlider>
-                        </GroupBox>
-                          
-                       
-                    </Grid>
-                    <StackPanel Orientation="Horizontal">
-                        
-                    
-                    <GroupBox hc:TitleElement.TitleWidth="100" Header="White Balance" Margin="15,15,0,4" Style="{DynamicResource GroupBoxOriginal}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" hc:TitleElement.TitlePlacement="Left">
-                        
-                    
-                    <hc:ButtonGroup  x:Name="Wb"  Margin="10" Style="{DynamicResource ButtonGroupBaseStyle}">
-                        <hc:ButtonGroup.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel>
-
-                                </WrapPanel>
-                            </ItemsPanelTemplate>
-                        </hc:ButtonGroup.ItemsPanel>
-                            <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource rectangleWarm }" Foreground="Orange" Style="{DynamicResource RadioButtonIcon}" Content="Warm"/>
-                            <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource rectangleWarm }" Foreground="White"  Style="{DynamicResource RadioButtonIcon}" Content="Medium"/>
-                            <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource rectangleWarm}" Foreground="LightBlue" Content="Cold"/>
-                            <RadioButton x:Name="customWB" IsChecked="True" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource custom}" Foreground="{DynamicResource SuccessBrush}" Content="Custom"/>
-
-
-                        </hc:ButtonGroup>
-
-                    </GroupBox>
-                        <Grid Visibility="{Binding ElementName=customWB,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
-                        <hc:TransitioningContentControl Margin="0,15,15,4"  TransitionMode="Left2Right">
-                            <Button   Style="{DynamicResource ButtonDashedInfo}" Content="Edit" ToolTip="Launch White Balance Editor" hc:IconElement.Geometry="{DynamicResource WindowRestoreGeometry}"/>
-                        </hc:TransitioningContentControl>
-                    </Grid>
-                    </StackPanel>
-
-
-
-
-                </StackPanel>
-            </Grid>
-            
-
             <!--smooth bind to smooth factor-->
             <!--fps bind to max fps-->
             <!--saturation threshold bind to saturation threshold-->
             <!-- contrast bind to linear lighting or non linear fading, thanks to Fabsenet-->
-
             <!-- Position editor - bind to launch position editor command -->
         </StackPanel>
      

@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace adrilight.Util
 {
-    public interface IColorPaletteCard 
+    public interface ILightingMode
     {
         string Name { get; set; }
-        string Owner { get; set; }
-        System.Windows.Media.Color[] Thumbnail { get; set; }
-        string Type { get; set; }
         string Description { get; set; }
+        string Geometry { get; set; }
     }
 }

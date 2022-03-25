@@ -204,6 +204,7 @@
     <Compile Remove="Util\OpenRGBStream.cs" />
     <Compile Remove="Util\SerialStreamFanHUB.cs" />
     <Compile Remove="Util\SerialStreamHUB.cs" />
+    <Compile Remove="ViewModel\AddDeviceViewModel.cs" />
     <Compile Remove="ViewModel\AdjustPositionViewModel.cs" />
     <Compile Remove="ViewModel\DashBoardViewModel.cs" />
     <Compile Remove="ViewModel\ILightingViewModel.cs" />
@@ -212,6 +213,7 @@
     <Compile Remove="ViewModel\old\SettingsViewModel.cs" />
     <Compile Remove="ViewModel\old\ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Remove="ViewModel\old\ViewModelLocator.cs" />
+    <Compile Remove="View\AddDevice.xaml.cs" />
     <Compile Remove="View\CanvasLightingView.xaml.cs" />
     <Compile Remove="View\DeviceRectPositon.xaml.cs" />
     <Compile Remove="View\GroupLighting.xaml.cs" />
@@ -240,6 +242,7 @@
     <None Remove="Shaders\Thumbnail\Plasma.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Remove="View\AddDevice.xaml" />
     <Page Remove="View\CanvasLightingView.xaml" />
     <Page Remove="View\DeviceRectPositon.xaml" />
     <Page Remove="View\GroupLighting.xaml" />
@@ -259,6 +262,9 @@
     <Resource Include="Shaders\Thumbnail\Plasma.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\AddNewDeviceWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\AddNewPaletteWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -294,6 +300,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="View\AddNewDeviceWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\AddNewPaletteWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

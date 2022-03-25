@@ -37,7 +37,7 @@
                 <ColumnDefinition Width="*"/>
 
             </Grid.ColumnDefinitions>
-            <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+            <StackPanel Margin="5" Orientation="Horizontal">
                 <Path Margin="5" Data="{StaticResource static}" 
           Width="30" 
           Height="30" 
@@ -52,15 +52,15 @@
 
         </Grid>
         <StackPanel Grid.Row="1">
-            <Grid   Grid.Row="1" >
+            <Grid>
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Collapsed"></Setter>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsStaticColorBreathingChecked}" Value="true">
+                            <DataTrigger Binding="{Binding CurrentOutput.OutputStaticColorMode}" Value="0">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding IsStaticColorSolidChecked}" Value="true">
+                            <DataTrigger Binding="{Binding CurrentOutput.OutputStaticColorMode}" Value="1">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -73,15 +73,17 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="10, 10, 10, 10"  Text="CHOSE SOLID COLOR"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="10, 10, 10, 10"  Text="CHỌN MÀU"  FontWeight="SemiBold" VerticalAlignment="Center"  HorizontalAlignment="Left"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Button Command="{Binding AddNewSolidColorCommand}"  Style="{DynamicResource ButtonDefault}"  Width="32" Padding="7,7" Margin="0,0,15,0" HorizontalAlignment="Right"  hc:IconElement.Geometry="{DynamicResource AddGeometry}">
+                    
+                    <Button Command="{Binding AddNewSolidColorCommand}" Content="Add New" Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}" BorderThickness="0"  Width="100" Padding="0,0" Margin="0,0,15,0" HorizontalAlignment="Right" hc:IconElement.Width="20" hc:IconElement.Height="20"  hc:IconElement.Geometry="{DynamicResource addnew}">
 
                     </Button>
+                  
                 </Grid>
                 <Grid Grid.Row="1">
                     <hc:TransitioningContentControl Grid.Row="1">
@@ -114,33 +116,47 @@
             </Grid>
         
 
-        <Grid Visibility="{Binding IsStaticColorGradientChecked,Converter={StaticResource boolToVisibilityConvert}}"  >
+        <Grid>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentOutput.OutputStaticColorMode}" Value="3">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
 
 
 
-            <Grid.RowDefinitions>
+                <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="10, 10, 10, 10"  Text="CHOSE GRADIENT COLOR"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="10, 10, 10, 10"  Text="CHỌN GRADIENT" FontWeight="SemiBold"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}"  Width="32" Padding="7,7" Margin="0,0,15,0" HorizontalAlignment="Right"  hc:IconElement.Geometry="{DynamicResource AddGeometry}">
+                    <Button  Content="Add New" Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}" BorderThickness="0"  Width="100" Padding="0,0" Margin="0,0,15,0" HorizontalAlignment="Right" hc:IconElement.Width="20" hc:IconElement.Height="20"  hc:IconElement.Geometry="{DynamicResource addnew}">
 
-                </Button>
-                <Popup AllowsTransparency="True" Grid.Column="1" PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="-28" Name="PopupAdd" VerticalOffset="6" StaysOpen="False">
-                    <Border Background="{DynamicResource SecondaryRegionBrush}" CornerRadius="4" Margin="16" Effect="{DynamicResource EffectShadow2}">
-                        <StackPanel Orientation="Vertical">
-                            <Button Command="{Binding ImportPaletteCardFromFileCommand}" BorderBrush="Transparent" Margin="5" Background="Transparent"  Content="From File" Style="{DynamicResource ButtonDefault}"/>
-                            <hc:Divider Margin="0"/>
-                            <Button Command="{Binding EditSelectedPaletteCommand}" BorderBrush="Transparent" Background="Transparent"  Margin="5" Content="Create New" Style="{DynamicResource ButtonDefault}"/>
-                        </StackPanel>
-                    </Border>
-                </Popup>
-            </Grid>
+                    </Button>
+                    <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="0" Name="PopupAdd" VerticalOffset="2" StaysOpen="False">
+                        <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
+                            <Border Background="{DynamicResource RegionBrush}" CornerRadius="7" Margin="0,2,15,2"  Effect="{DynamicResource EffectShadow2}">
+                                <StackPanel Orientation="Vertical">
+                                    <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding ImportPaletteCardFromFileCommand}" hc:IconElement.Geometry="{DynamicResource addnew}" BorderBrush="Transparent" Margin="5"   Content="From File" Style="{DynamicResource ButtonDefault}"/>
+
+                                    <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding EditSelectedPaletteCommand}" hc:IconElement.Geometry="{DynamicResource SaveGeometry}" CommandParameter="createnew" BorderBrush="Transparent"   Margin="5" Content="Create New" Style="{DynamicResource ButtonDefault}"/>
+                                </StackPanel>
+
+                            </Border>
+                        </hc:TransitioningContentControl>
+
+                    </Popup>
+                </Grid>
 
 
 

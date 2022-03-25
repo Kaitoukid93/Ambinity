@@ -15,7 +15,7 @@
             </Style>
            
             <ResourceDictionary.MergedDictionaries>
-                <hc:ThemeResources RequestedTheme="Dark" AccentColor="DodgerBlue"/>
+                <hc:ThemeResources RequestedTheme="Dark" AccentColor="MediumPurple"/>
 
                 <hc:Theme/>
                 

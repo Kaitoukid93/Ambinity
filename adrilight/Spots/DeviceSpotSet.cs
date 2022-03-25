@@ -139,14 +139,14 @@ namespace adrilight
 
                         }
                         break;
-                    case "Keyboard":
+                    case "Matrix":
                         foreach (var spot in availableSpots)
                         {
                             spot.IsActivated = true;
                             reorderedSpots.Add(spot);
                         }
                         break;
-                    case "ABEDGE":
+                    case "Strip":
                         foreach (var spot in availableSpots)
                         {
                             if (spot.YIndex == 0)

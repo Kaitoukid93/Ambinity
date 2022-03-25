@@ -31,6 +31,7 @@ namespace adrilight
         int OutputPowerVoltage { get; set; }
         int OutputPowerMiliamps { get; set; }
         byte OutputSaturationThreshold { get; set; }
+        int OutputSmoothness { get; set; }
 
         bool OutputUseLinearLighting { get; set; }
         bool OutputIsEnabled { get; set; }
@@ -42,9 +43,11 @@ namespace adrilight
         int OutputSelectedMusicPalette { get; set; }
         Color[] OutputSentryModeColorSource { get; set; }
         int OutputSelectedAudioDevice { get; set; }
+        int OutputColorPaletteMode { get; set; }
         int OutputSelectedDisplay { get; set; }
         int OutputSelectedMode { get; set; }
         bool IsInSpotEditWizard { get; set; }
+        string Geometry { get; set; }
        
 
 
@@ -54,21 +57,27 @@ namespace adrilight
         //rainbow settings//
         int OutputSelectedChasingPalette { get; set; }
         int OutputPaletteSpeed { get; set; }
+        int OutputPaletteChasingPosition { get; set; }
         int OutputPaletteBlendStep { get; set; } // auto adjust step based on numLED
         //rainbow settings//
 
         //static color settings//
         Color OutputStaticColor { get; set; }
-        string OutputStaticColorMode { get; set; }
-        string OutputStaticColorGradientMode { get; set; }
-        string OutputScreenCapturePosition { get; set; }
-        string OutputScreenCaptureWB { get; set; }
+        int OutputStaticColorMode { get; set; }
+        int OutputStaticColorGradientMode { get; set; }
+        int OutputScreenCapturePosition { get; set; }
+        int OutputScreenCaptureWB { get; set; }
+        int OutputScreenCaptureWBRed { get; set; }
+        int OutputScreenCaptureWBGreen { get; set; }
+        int OutputScreenCaptureWBlue { get; set; }
+        int OutputMusicDancingMode { get; set; }
         int OutputBreathingSpeed { get; set; }
+
         //static color settings//
 
 
  
-        Color[] OutputCurrentActivePalette { get; set; }
+        IColorPalette OutputCurrentActivePalette { get; set; }
         ILEDSetup OutputLEDSetup { get; set; }
         
 

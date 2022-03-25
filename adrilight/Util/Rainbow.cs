@@ -60,7 +60,7 @@ namespace adrilight
             switch (e.PropertyName)
             {
                 case nameof(OutputSettings.OutputIsEnabled):
-                case nameof(OutputSettings.OutputSelectedChasingPalette):
+                
                 case nameof(MainViewViewModel.IsSplitLightingWindowOpen):
                 
                     RefreshColorState();
@@ -112,7 +112,7 @@ namespace adrilight
             if (isRunning && shouldBeRunning)
             {
                 // rainbow is running and we need to change the color bank
-                colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette).ToArray();
+                colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette.Colors).ToArray();
                 //if(isInEditWizard)
                 //    colorBank = GetColorGradientfromPalette(DefaultColorCollection.black).ToArray();
             }
@@ -143,7 +143,7 @@ namespace adrilight
                 var outputPowerMiliamps = OutputSettings.OutputPowerMiliamps;
                 var effectSpeed = OutputSettings.OutputPaletteSpeed;
                 var frequency = OutputSettings.OutputPaletteBlendStep;
-                Color[] paletteSource = OutputSettings.OutputCurrentActivePalette;
+                Color[] paletteSource = OutputSettings.OutputCurrentActivePalette.Colors;
                 colorBank = GetColorGradientfromPalette(paletteSource).ToArray();
               
                 while (!token.IsCancellationRequested)

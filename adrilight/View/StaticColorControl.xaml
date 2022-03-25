@@ -23,176 +23,224 @@
                 </ResourceDictionary>
 
             </ResourceDictionary.MergedDictionaries>
+            <DropShadowEffect x:Key="Item.MouseOver.Border.Shadow" BlurRadius="10"   RenderingBias ="Quality" ShadowDepth ="1" Color ="{Binding Color, Source={StaticResource DarkMaskBrush}}"/>
+            <Style x:Key="_listBoxModeSelectionStyle" TargetType="ListBoxItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Border CornerRadius="4" Name="_Border"
+                                Padding="0"
+                                Margin="5"
+                                Background="Transparent"   
+                                BorderBrush="{DynamicResource DarkMaskBrush}"
+                                BorderThickness="0"
+                                SnapsToDevicePixels="true">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                        <Condition Property="IsSelected" Value="True"/>
+                                    </MultiTrigger.Conditions>
+
+
+                                    <!--<Setter Property="BorderBrush" TargetName="_Border" Value="{DynamicResource PrimaryBrush}"/>-->
+                                    <Setter Property="Background" TargetName="_Border" Value="{DynamicResource SecondaryRegionBrush}"/>
+
+
+
+                                </MultiTrigger>
+
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                        <Condition Property="IsSelected" Value="True"/>
+                                    </MultiTrigger.Conditions>
+
+
+                                    <Setter Property="Background" TargetName="_Border" Value="{DynamicResource SecondaryRegionBrush}"/>
+                                    <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                        <Condition Property="IsSelected" Value="False"/>
+                                    </MultiTrigger.Conditions>
+
+                                    <Setter Property="Background" TargetName="_Border" Value="{DynamicResource DarkMaskBrush}"/>
+
+                                    <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
+
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}" />
+                    </Trigger>
+                </Style.Triggers>
+
+            </Style>
             </ResourceDictionary>
         </UserControl.Resources>
     <Grid>
         <StackPanel>
             <!--position-->
             <Grid x:Name="Mode">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Margin="10" HorizontalAlignment="Left" Text="Color Mode" Style="{DynamicResource TextBlockTitleBold}"/>
-                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <GroupBox HorizontalAlignment="Left" VerticalContentAlignment="Center" hc:TitleElement.TitlePlacement="Left" hc:TitleElement.TitleWidth="120" Margin="15,5" Style="{DynamicResource GroupBoxOriginal}">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock FontWeight="SemiBold" Text="MODE"/>
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
+                    <Border  Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
+                        <ListBox SelectedIndex="{Binding CurrentOutput.OutputStaticColorMode}"  x:Name="staticmode_selection"  
+                             
+                              ItemContainerStyle="{DynamicResource _listBoxModeSelectionStyle}"  
+                              
+                              Background="Transparent"
+                              BorderThickness="0"
+                              Style="{DynamicResource WrapPanelHorizontalListBox}">
+
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel>
+
+                                    </WrapPanel>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBoxItem>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource solidrect}" 
+                                      Width="20" 
+                                      Height="20" 
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
+                                    <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Solid" Style="{DynamicResource TextBlockDefault}"/>
+                                </Grid>
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <Grid>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource breathing}" 
+                                      Width="20" 
+                                      Height="20" 
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
+                                    <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Breathing" Style="{DynamicResource TextBlockDefault}"/>
+                                </Grid>
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <Grid>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource spectrumcycling}" 
+                                      Width="20" 
+                                      Height="20" 
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
+                                    <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Spectrum Cycling" Style="{DynamicResource TextBlockDefault}"/>
+                                </Grid>
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <Grid>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Path Stretch="Uniform" Margin="5" Data="{StaticResource atmosphere}" 
+                                      Width="20" 
+                                      Height="20" 
+                                      Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
+                                    <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="Gradient" Style="{DynamicResource TextBlockDefault}"/>
+                                </Grid>
+                            </ListBoxItem>
 
 
-                    <hc:ButtonGroup  x:Name="Fx"  Margin="8,8,8,8" Style="{DynamicResource ButtonGroupBaseStyle}">
-                        <hc:ButtonGroup.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel>
 
-                                </WrapPanel>
-                            </ItemsPanelTemplate>
-                        </hc:ButtonGroup.ItemsPanel>
-                        <RadioButton IsChecked="{Binding IsStaticColorSolidChecked}" x:Name="static" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource solidrect }"  Style="{DynamicResource RadioButtonIcon}" Content="Static"/>
-                        <RadioButton IsChecked="{Binding IsStaticColorBreathingChecked}" x:Name="breathing" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource breathing}" Content="Breathing" />
-                        <RadioButton IsChecked="{Binding IsStaticColorSpectrumCyclingChecked}" x:Name="spectrumcycling" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource spectrumcycling}"  Content="Spectrum Cycling"/>
-                        <RadioButton IsChecked="{Binding IsStaticColorGradientChecked}" x:Name="atmosphere" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource atmosphere}" Content="Gradient"/>
-                        <!--<RadioButton IsChecked="True" x:Name="customCaptureZone" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource custom}" Content="Custom"/>-->
-                    </hc:ButtonGroup>
-                    <!--<Grid Visibility="{Binding ElementName=customCaptureZone,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
-                        <hc:TransitioningContentControl  TransitionMode="Left2Right">
-                            <Button Command="{Binding LaunchPositionEditWindowCommand}" CommandParameter="edit"  Style="{DynamicResource ButtonDashedInfo}" Content="Edit" ToolTip="Launch Zone Editor" hc:IconElement.Geometry="{DynamicResource WindowRestoreGeometry}"/>
-                        </hc:TransitioningContentControl>
-                    </Grid>-->
+                            <!--<RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource fullscreen }" IsChecked="{Binding CurrentOutput.OutputScreenCapturePosition,Mode=TwoWay}"  Style="{DynamicResource RadioButtonIcon}" Content="Full Screen"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource left }" IsChecked="{Binding IsLeftScreenRegionChecked,Mode=TwoWay}" Style="{DynamicResource RadioButtonIcon}" Content="Left"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource right}" IsChecked="{Binding IsRightScreenRegionChecked,Mode=TwoWay}" Content="Right" />
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource up}" IsChecked="{Binding IsTopScreenRegionChecked,Mode=TwoWay}" Content="Top"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource down}" IsChecked="{Binding IsBottomScreenRegionChecked,Mode=TwoWay}" Content="Bottom"/>
+                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" IsChecked="{Binding IsCustomScreenRegionChecked,Mode=TwoWay}" hc:IconElement.Geometry="{StaticResource custom}" Content="Custom"/>-->
+                        </ListBox>
+                    </Border>
+                </GroupBox>
 
-                </StackPanel>
+
+
             </Grid>
-            <Grid x:Name="Settings">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Margin="10" HorizontalAlignment="Left" Text="Settings" Style="{DynamicResource TextBlockTitleBold}"/>
-                <StackPanel Grid.Row="1" Orientation="Vertical">
+            <hc:Divider Visibility="{Binding ElementName=Speed,Path=Visibility}" LineStroke="{DynamicResource RegionBrush}" Margin="20,10,20,10">
 
-                    <Grid  Visibility="{Binding ElementName=breathing,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}" Margin="10,0,0,0">
-                      
-
-                        <GroupBox HorizontalAlignment="Left"  Grid.Column="0" VerticalAlignment="Bottom"  Width="300" hc:TitleElement.TitleWidth="90" Header="Speed" Margin="5" Style="{DynamicResource GroupBoxOriginal}" HorizontalContentAlignment="Left" hc:TitleElement.TitlePlacement="Left">
-                            <hc:PreviewSlider Grid.Column="1" Width="200" HorizontalAlignment="Left" Margin="0,0,0,0" Minimum="5" Maximum="30">
-                                <hc:PreviewSlider.PreviewContent>
-                                    <Label Style="{DynamicResource LabelBaseStyle}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
-                                </hc:PreviewSlider.PreviewContent>
-                            </hc:PreviewSlider>
-                        </GroupBox>
-
-
-                    </Grid>
-                    <Grid Margin="10,0,0,0" Visibility="{Binding ElementName=static,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
-                        <GroupBox HorizontalAlignment="Left"     VerticalAlignment="Bottom"   hc:TitleElement.TitleWidth="90" Header="Send Data"  Style="{DynamicResource GroupBoxOriginal}" HorizontalContentAlignment="Left" hc:TitleElement.TitlePlacement="Left" hc:TitleElement.VerticalAlignment="Center">
-                            <hc:ButtonGroup  x:Name="datamode"   Style="{DynamicResource ButtonGroupBaseStyle}">
-                                <hc:ButtonGroup.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel>
-
-                                        </WrapPanel>
-                                    </ItemsPanelTemplate>
-                                </hc:ButtonGroup.ItemsPanel>
-                                <RadioButton  BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource always }"  Style="{DynamicResource RadioButtonIcon}" Content="Always"/>
-                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource colorchanged}" Content="When Color Changed" />
-
-                            </hc:ButtonGroup>
-                        </GroupBox>
-                       
-                    </Grid>
-                    <Grid  Visibility="{Binding ElementName=spectrumcycling,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}" Margin="10,0,0,0">
+            </hc:Divider>
+            <Grid Margin="10,10,10,10" x:Name="Speed">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=staticmode_selection,Path=SelectedIndex}" Value="1">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=staticmode_selection,Path=SelectedIndex}" Value="2">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
 
 
-                        <GroupBox HorizontalAlignment="Left" Grid.Column="0" VerticalAlignment="Bottom"  Width="300" hc:TitleElement.TitleWidth="90" Header="Speed" Margin="5" Style="{DynamicResource GroupBoxOriginal}" HorizontalContentAlignment="Left" hc:TitleElement.TitlePlacement="Left">
-                            <hc:PreviewSlider Grid.Column="1" Width="200" HorizontalAlignment="Left" Margin="0,0,0,0" Minimum="5" Maximum="30">
-                                <hc:PreviewSlider.PreviewContent>
-                                    <Label Style="{DynamicResource LabelBaseStyle}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
-                                </hc:PreviewSlider.PreviewContent>
-                            </hc:PreviewSlider>
-                        </GroupBox>
 
 
-                    </Grid>
-                    <Grid Margin="10,0,0,0" Visibility="{Binding ElementName=atmosphere,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
-                        <StackPanel Orientation="Horizontal">
-                            
-                       
-                            <GroupBox HorizontalAlignment="Left"       hc:TitleElement.TitleWidth="90" Header="Position"  Style="{DynamicResource GroupBoxOriginal}" HorizontalContentAlignment="Left" hc:TitleElement.TitlePlacement="Left" hc:TitleElement.VerticalAlignment="Center">
-                            <hc:ButtonGroup  x:Name="atmosMode"   Style="{DynamicResource ButtonGroupBaseStyle}">
-                                <hc:ButtonGroup.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel>
-
-                                        </WrapPanel>
-                                    </ItemsPanelTemplate>
-                                </hc:ButtonGroup.ItemsPanel>
-                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource fullspectrum }"   Style="{DynamicResource RadioButtonIcon}" Content="Full Spectrum"/>
-                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource first}"  Content="First"/>
-                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource last}"  Content="Last"/>
-                                <RadioButton x:Name="customWB" IsChecked="True" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource custom}"  Content="Custom"/>
 
 
-                            </hc:ButtonGroup>
 
-                        </GroupBox>
-                        <Grid Visibility="{Binding ElementName=customWB,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
-                            <hc:TransitioningContentControl Margin="10,0,0,2"  TransitionMode="Left2Right">
-                                <Button   Style="{DynamicResource ButtonDashedInfo}" Content="Edit" ToolTip="Launch White Balance Editor" hc:IconElement.Geometry="{DynamicResource WindowRestoreGeometry}"/>
-                            </hc:TransitioningContentControl>
-                        </Grid>
-                        </StackPanel>
-                    </Grid>
+                <GroupBox   VerticalAlignment="Center"   hc:TitleElement.TitleWidth="130" Header="SMOOTHNESS" Margin="5" Style="{DynamicResource GroupBoxOriginal}" HorizontalAlignment="Left" hc:TitleElement.TitlePlacement="Left">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock FontWeight="SemiBold" Text="SPEED"/>
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
                     <StackPanel Orientation="Horizontal">
-
-
-                        <!--<GroupBox hc:TitleElement.TitleWidth="100" Header="Device Order" Margin="15,15,0,4" Style="{DynamicResource GroupBoxOriginal}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" hc:TitleElement.TitlePlacement="Left">
-
-
-                            <hc:ButtonGroup  x:Name="Wb"  Margin="10" Style="{DynamicResource ButtonGroupBaseStyle}">
-                                <hc:ButtonGroup.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel>
-
-                                        </WrapPanel>
-                                    </ItemsPanelTemplate>
-                                </hc:ButtonGroup.ItemsPanel>
-                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource linear }"  Style="{DynamicResource RadioButtonIcon}" Content="Natural"/>
-                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource fullspectrum }"   Style="{DynamicResource RadioButtonIcon}" Content="Full Spectrum"/>
-                                <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource number}"  Content="Number"/>
-                                <RadioButton x:Name="customWB" IsChecked="True" BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource custom}" Foreground="{DynamicResource SuccessBrush}" Content="Custom"/>
-
-
-                            </hc:ButtonGroup>
-
-                        </GroupBox>
-                        <Grid Visibility="{Binding ElementName=customWB,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
-                            <hc:TransitioningContentControl Margin="0,15,15,4"  TransitionMode="Left2Right">
-                                <Button   Style="{DynamicResource ButtonDashedInfo}" Content="Edit" ToolTip="Launch White Balance Editor" hc:IconElement.Geometry="{DynamicResource WindowRestoreGeometry}"/>
-                            </hc:TransitioningContentControl>
-                        </Grid>-->
-                        <!--<GroupBox hc:TitleElement.TitleWidth="115" Header="Start Color" Margin="15,15,0,4" Style="{DynamicResource GroupBoxOriginal}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" hc:TitleElement.TitlePlacement="Left">
-                            <StackPanel Orientation="Horizontal">
-                                <Path Margin="5" Data="{StaticResource solidrect}" 
-                               Width="30" 
-                               Height="30"  
-                               Stretch="Fill">
-                                    <Path.Fill>
-                                        <SolidColorBrush Color="{DynamicResource AccentColor}"/>
-                                    </Path.Fill>
-                                </Path>
-                                <Grid Visibility="{Binding ElementName=customWB,Path=IsChecked,Converter={StaticResource boolToVisibilityConvert}}">
-                                    <hc:TransitioningContentControl Margin="15,0,0,0"  TransitionMode="Left2Right">
-                                        <Button   Style="{DynamicResource ButtonDashedInfo}" Content="Edit" ToolTip="Launch White Balance Editor" hc:IconElement.Geometry="{DynamicResource WindowRestoreGeometry}"/>
-                                    </hc:TransitioningContentControl>
-                                </Grid> 
-                            </StackPanel>
-                           
-                        </GroupBox>-->
-                        
+                        <Path Stretch="Uniform" Margin="0" Data="{StaticResource vumetter}" 
+                                      Width="20" 
+                                      Height="20" 
+                                      Fill="{DynamicResource PrimaryTextBrush}"/>
+                        <hc:PreviewSlider Grid.Column="1" MaxWidth="300" MinWidth="200" HorizontalAlignment="Left" Margin="20,0,0,0" Minimum="5" Maximum="30">
+                            <hc:PreviewSlider.PreviewContent>
+                                <Label Style="{DynamicResource LabelBaseStyle}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
+                            </hc:PreviewSlider.PreviewContent>
+                        </hc:PreviewSlider>
                     </StackPanel>
 
+                </GroupBox>
 
 
-
-                </StackPanel>
             </Grid>
+           
+           
+           
+           
+           
+           
+
+
+
+
 
 
             <!--smooth bind to smooth factor-->

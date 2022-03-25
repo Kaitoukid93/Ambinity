@@ -1,4 +1,5 @@
-﻿using HandyControl.Data;
+﻿using adrilight.ViewModel;
+using HandyControl.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,18 +19,24 @@ namespace adrilight.View
     /// <summary>
     /// Interaction logic for PaletteEditWindow.xaml
     /// </summary>
-    public partial class AddNewPaletteWindow 
+    public partial class AddNewDeviceWindow 
     {
-        public AddNewPaletteWindow()
+        public AddNewDeviceWindow()
         {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Cancel_Button_Click(object sender, RoutedEventArgs e)
         {
+           
             this.Close();
         }
+        private MainViewViewModel ViewModel {
+            get
+            {
+                return (MainViewViewModel)this.DataContext;
+            }
+        }
 
-      
     }
 }
