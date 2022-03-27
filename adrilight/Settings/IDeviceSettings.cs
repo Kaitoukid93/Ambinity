@@ -18,6 +18,7 @@ namespace adrilight
         string DeviceSerial { get; set; }
         string DeviceType { get; set; }
         string Manufacturer { get; set; }
+        string DeviceDescription { get; set; }
         string FirmwareVersion { get; set; }
         string ProductionDate { get; set; }
         bool IsVisible { get; set; }
@@ -27,9 +28,9 @@ namespace adrilight
         bool IsTransferActive { get; set; }
         IOutputSettings[] AvailableOutputs { get; set; }
         string GroupName { get; set; }
-        string SmallIcon { get; set; }
-        string BigIcon { get; set; }
         int SelectedOutput { get; set; }
         string Geometry { get; set; }
+        string DeviceConnectionGeometry { get; set; }
+        int Baudrate { get; set; }
     }
 }

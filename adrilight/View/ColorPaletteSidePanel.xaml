@@ -83,14 +83,23 @@
                             <MenuItem  Header="Edit"
                                           Command="{Binding PlacementTarget.Tag.EditSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="overwrite"
                                           >
+                                <MenuItem.Icon>
+                                    <Path   Data="{StaticResource edit}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem  Header="Share" CommandParameter="{Binding .}"
+                            <MenuItem  Header="Share" CommandParameter="{Binding .}" 
                                           Command="{Binding PlacementTarget.Tag.ExportCurrentSelectedPaletteToFileCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
                                           >
+                                <MenuItem.Icon>
+                                    <Path   Data="{StaticResource export}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem  Header="Delete" CommandParameter="{Binding .}"
+                            <MenuItem  Header="Delete" CommandParameter="{Binding .}" 
                                           Command="{Binding PlacementTarget.Tag.DeleteSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
                                           >
+                                <MenuItem.Icon>
+                                    <Path   Data="{StaticResource delete}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                </MenuItem.Icon>
                             </MenuItem>
                         </ContextMenu>
 
@@ -132,11 +141,11 @@
                 </Button>
                 <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="0" Name="PopupAdd" VerticalOffset="2" StaysOpen="False">
                     <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
-                        <Border Background="{DynamicResource RegionBrush}" CornerRadius="7" Margin="0,2,15,2"  Effect="{DynamicResource EffectShadow2}">
+                        <Border Background="{DynamicResource RegionBrush}" CornerRadius="7" Margin="0,2,15,15"  Effect="{DynamicResource EffectShadow3}">
                             <StackPanel Orientation="Vertical">
-                                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding ImportPaletteCardFromFileCommand}" hc:IconElement.Geometry="{DynamicResource addnew}" BorderBrush="Transparent" Margin="5"   Content="From File" Style="{DynamicResource ButtonDefault}"/>
+                                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding ImportPaletteCardFromFileCommand}" hc:IconElement.Geometry="{DynamicResource fromfile}" BorderBrush="Transparent" Margin="5"   Content="From File" Style="{DynamicResource ButtonDefault}"/>
 
-                                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding EditSelectedPaletteCommand}" hc:IconElement.Geometry="{DynamicResource SaveGeometry}" CommandParameter="createnew" BorderBrush="Transparent"   Margin="5" Content="Create New" Style="{DynamicResource ButtonDefault}"/>
+                                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding EditSelectedPaletteCommand}" hc:IconElement.Geometry="{DynamicResource addpalette}" CommandParameter="createnew" BorderBrush="Transparent"   Margin="5" Content="Create New" Style="{DynamicResource ButtonDefault}"/>
                             </StackPanel>
 
                         </Border>

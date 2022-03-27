@@ -15,6 +15,7 @@ namespace adrilight
     {
        
         private string _outputName;
+        private string _outputType;
         private int _outputID;
         private int _outputNumLED;
         private int _outputNumLEDX;
@@ -65,7 +66,7 @@ namespace adrilight
 
         public string OutputName  { get => _outputName; set { Set(() => OutputName, ref _outputName, value);}}
         public int OutputID { get => _outputID; set { Set(() => OutputID, ref _outputID, value); } }
-        public string OutputType { get => _outputName; set { Set(() => OutputType, ref _outputName, value); } }
+        public string OutputType { get => _outputType; set { Set(() => OutputType, ref _outputType, value); } }
         public int OutputNumLED { get => _outputNumLED; set { Set(() => OutputNumLED, ref _outputNumLED, value); } }
         public int OutputNumLEDX { get => _outputNumLEDX; set { Set(() => OutputNumLEDX, ref _outputNumLEDX, value); } }
         public int OutputNumLEDY { get => _outputNumLEDY; set { Set(() => OutputNumLEDY, ref _outputNumLEDY, value); } }

@@ -18,6 +18,7 @@ namespace adrilight
         private string _deviceSerial;
         private string _deviceType;
         private string _manufacturer;
+        string _deviceDescription;
         private string _firmwareVersion;
         private string _productionDate;
         private bool _isVisible;
@@ -31,6 +32,8 @@ namespace adrilight
         private string _bigIcon = "";
         private int _selectedOutput = 0;
         private string _geometry = "generaldevice";
+        private string _deviceConnectionGeometry = "connection";
+        private int _baudrate = 1000000;
 
 
 
@@ -49,11 +52,13 @@ namespace adrilight
         public bool IsDummy { get => _isDummy; set { Set(() => IsDummy, ref _isDummy, value); } }
         public IOutputSettings[] AvailableOutputs { get => _availableOutput; set { Set(() => AvailableOutputs, ref _availableOutput, value); } }
 
-
+        public int Baudrate { get => _baudrate; set { Set(() => Baudrate, ref _baudrate, value); } }
         public string GroupName { get => _groupName; set { Set(() => GroupName, ref _groupName, value); } }
         public string SmallIcon { get => _smallIcon; set { Set(() => SmallIcon, ref _smallIcon, value); } }
         public string BigIcon { get => _bigIcon; set { Set(() => BigIcon, ref _bigIcon, value); } }
         public int SelectedOutput { get => _selectedOutput; set { Set(() => SelectedOutput, ref _selectedOutput, value); } }
         public string Geometry { get => _geometry; set { Set(() => Geometry, ref _geometry, value); } }
+        public string DeviceDescription { get => _deviceDescription; set { Set(() => DeviceDescription, ref _deviceDescription, value); } }
+        public string DeviceConnectionGeometry { get => _deviceConnectionGeometry; set { Set(() => DeviceConnectionGeometry, ref _deviceConnectionGeometry, value); } }
     }
 }

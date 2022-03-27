@@ -67,6 +67,18 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+        private ObservableCollection<int> _availableBaudrates;
+        public ObservableCollection<int> AvailableBaudrates {
+            get {
+                return _availableBaudrates;
+            }
+
+            set
+            {
+                _availableBaudrates = value;
+                RaisePropertyChanged(nameof(AvailableBaudrates));
+            }       
+        }
         private VerticalMenuItem _selectedVerticalMenuItem;
         public VerticalMenuItem SelectedVerticalMenuItem {
             get { return _selectedVerticalMenuItem; }
@@ -271,13 +283,20 @@ namespace adrilight.ViewModel
         }
         //VIDs commands//
         public ICommand ZerolAllCommand { get; set; }
+        public ICommand OpenDeviceConnectionSettingsWindowCommand { get; set; }
+        public ICommand OpenDeviceFirmwareSettingsWindowCommand { get; set; }
+        public ICommand RenameSelectedItemCommand { get; set; }
+        public ICommand OpenAdvanceSettingWindowCommand { get; set; }
         public ICommand CancelEditWizardCommand { get; set; }
+        public ICommand ShowNameEditWindow { get; set; }
         public ICommand SetBorderSpotActiveCommand { get; set; }
         public ICommand SaveNewUserEditLEDSetup { get; set; }
         public ICommand ResetCountCommand { get; set; }
         public ICommand SetSpotPIDCommand { get; set; }
         public ICommand ResetMaxCountCommand { get; set; }
         public ICommand SetPIDNeutral { get; set; }
+        public ICommand SetCurrentSelectedVID { get; set; }
+        public ICommand SetCurrentSelectedVIDRange { get; set; }
         public ICommand SetPIDReverseNeutral { get; set; }
         public ICommand JumpToNextWizardStateCommand { get; set; }
         public ICommand JumpToNextAddDeviceWizardStateCommand { get; set; }
@@ -286,6 +305,7 @@ namespace adrilight.ViewModel
         public ICommand BackToPreviousWizardStateCommand { get; set; }
         public ICommand LaunchPositionEditWindowCommand { get; set; }
         public ICommand LaunchPIDEditWindowCommand { get; set; }
+        public ICommand LaunchVIDEditWindowCommand { get; set; }
         public ICommand EditSelectedPaletteCommand { get; set; }
         public ICommand AddNewSolidColorCommand { get; set; }
         public ICommand ImportPaletteCardFromFileCommand { get; set; }
@@ -1429,6 +1449,22 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+        private string _nameToChange;
+        public string NameToChange {
+            get
+            {
+                return _nameToChange;
+            }
+
+            set
+            {
+                _nameToChange = value;
+
+                RaisePropertyChanged();
+            }
+        }
+      
+        
         private List<IDeviceSpot> _activatedSpots;
         public List<IDeviceSpot> ActivatedSpots {
             get
@@ -1483,12 +1519,26 @@ namespace adrilight.ViewModel
                 _newPaletteDescription = value;
             }
         }
+        private int _rangeMinValue = 0;
+        public int RangeMinValue {
+            get { return _rangeMinValue; }
+            set
+            {
+                _rangeMinValue = value;
+            }
+        }
+        private int _rangeMaxValue = 100;
+        public int RangeMaxValue {
+            get { return _rangeMaxValue; }
+            set
+            {
+                _rangeMaxValue = value;
+            }
+        }
 
 
 
 
-
-      
 
 
 
@@ -1718,7 +1768,14 @@ namespace adrilight.ViewModel
                 LaunchPIDEditWindow();
             });
 
+            LaunchVIDEditWindowCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
 
+                LaunchVIDEditWindow();
+            });
             DeviceRectDropCommand = new RelayCommand<string>((p) =>
             {
                 return true;
@@ -1820,8 +1877,43 @@ namespace adrilight.ViewModel
 
 
             });
+            RenameSelectedItemCommand = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                CurrentOutput.OutputName = NameToChange;
+                RaisePropertyChanged(nameof(CurrentOutput.OutputName));
+            });
+            ShowNameEditWindow = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                OpenNameEditWindow();
+            });
 
-
+            OpenDeviceConnectionSettingsWindowCommand = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                OpenDeviceConnectionSettingsWindow();
+            });
+            OpenDeviceFirmwareSettingsWindowCommand = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                OpenDeviceFirmwareSettingsWindow();
+            });
+            OpenAdvanceSettingWindowCommand = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                OpenAdvanceSettingWindow();
+            });
             CancelEditWizardCommand = new RelayCommand<string>((p) =>
                  {
                      return p != null;
@@ -1969,6 +2061,24 @@ namespace adrilight.ViewModel
                 }
 
             });
+            SetCurrentSelectedVID = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                if(p!="")
+                ProcessSelectedSpots(p);
+
+            });
+            SetCurrentSelectedVIDRange = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+               
+                    ProcessSelectedSpotsWithRange();
+
+            });
             SetPIDNeutral = new RelayCommand<string>((p) =>
             {
                 return p != null;
@@ -2102,6 +2212,86 @@ namespace adrilight.ViewModel
             });
         }
 
+        private void ProcessSelectedSpotsWithRange()
+        {
+            int counter = 0;
+
+            foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+            {
+
+                if (spot.BorderThickness != 0)//spots is selected
+                {
+                    counter++;
+                }
+            }
+            var spacing = (RangeMaxValue - RangeMinValue) / counter;
+            if (spacing < 1)
+                spacing = 1;
+            int offset = RangeMinValue;
+            foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+            {
+
+                if (spot.BorderThickness != 0)//spots is selected
+                {
+                    spot.SetVID(offset);
+                    offset += spacing;
+                }
+            }
+        }
+
+        private void ProcessSelectedSpots(string userInput)
+        {
+            foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+            {
+                
+                    if (spot.BorderThickness != 0)//spots is selected
+                    {
+                        spot.SetVID(Int32.Parse(userInput));
+                    }
+                
+               
+
+            }
+        }
+
+        private void OpenDeviceConnectionSettingsWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"DeviceConnectionSettingsWindow"}") is System.Windows.Window window)
+            {
+
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+            }
+        }
+        private void OpenDeviceFirmwareSettingsWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"DeviceFirmwareSettingsWindow"}") is System.Windows.Window window)
+            {
+
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+            }
+        }
+        private void OpenNameEditWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"RenameItemWindow"}") is System.Windows.Window window)
+            {
+               
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+            }
+        }
+        private void OpenAdvanceSettingWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"OutputAdvanceSettingsWindow"}") is System.Windows.Window window)
+            {
+
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+            }
+        }
+
+        
         private void AddDevice()
         {
             CurrentSelectedDeviceToAdd.DeviceID = AvailableDevices.Count + 1;
@@ -2156,6 +2346,21 @@ namespace adrilight.ViewModel
                     spot.SetColor(0, 0, 0, true);
                 }
                 CurrentLEDEditWizardState = 0;
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+
+            }
+        }
+        private void LaunchVIDEditWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"VIDEditWindow"}") is System.Windows.Window window)
+            {
+                BackupSpots = new List<IDeviceSpot>();
+                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                {
+                    BackupSpots.Add(spot);
+                }
+
                 window.Owner = System.Windows.Application.Current.MainWindow;
                 window.ShowDialog();
 
@@ -2627,16 +2832,31 @@ namespace adrilight.ViewModel
 
 
             AvailableLightingMode = new ObservableCollection<ILightingMode>();
-            var screencapture = new LightingMode { Name = "Screen Capture", Geometry = "screencapture", Description = "Screen sampling to LED" };
+            var screencapture = new LightingMode { Name = "Screen Capture", Geometry = "ambilight", Description = "Screen sampling to LED" };
             var palette = new LightingMode { Name = "Color Palette", Geometry = "colorpalette", Description = "Screen sampling to LED" };
             var music = new LightingMode { Name = "Music Reactive", Geometry = "music", Description = "Screen sampling to LED" };
             var staticcolor = new LightingMode { Name = "Static Color", Geometry = "static", Description = "Screen sampling to LED" };
-            var gifxelation = new LightingMode { Name = "Gifxelation", Geometry = "canvas", Description = "Screen sampling to LED" };
+            var gifxelation = new LightingMode { Name = "Gifxelation", Geometry = "gifxelation", Description = "Screen sampling to LED" };
             AvailableLightingMode.Add(screencapture);
             AvailableLightingMode.Add(palette);
             AvailableLightingMode.Add(music);
             AvailableLightingMode.Add(staticcolor);
             AvailableLightingMode.Add(gifxelation);
+            AvailableBaudrates = new ObservableCollection<int> {
+                9600,
+                19200,
+                38400,
+                57600,
+                115200,
+                230400,
+                460800,
+                576000,
+                921600,
+                1000000,
+                1500000,
+                2000000,
+                2500000,
+            };
             AvailableLayout = new ObservableCollection<string>
         {
            "Square, Ring, Rectangle",

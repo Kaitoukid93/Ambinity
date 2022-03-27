@@ -69,9 +69,9 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ContextMenu}">
-                            <Border Padding="0" Effect="{DynamicResource EffectShadow3}" x:Name="Border"
+                            <Border Margin="10" Effect="{DynamicResource EffectShadow3}" Padding="0"  x:Name="Border"
                 Background="{StaticResource RegionBrush}"
-                BorderThickness="1">
+                BorderThickness="0">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="Transparent" />
                                 </Border.BorderBrush>
@@ -121,7 +121,7 @@
                 <Setter Property="Tag" Value="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}" />
                 <Setter Property="ContextMenu">
                     <Setter.Value>
-                        <ContextMenu Style="{DynamicResource ContextMenuBaseStyle}">
+                        <ContextMenu  Style="{DynamicResource ContextMenuBaseStyle}">
                             <MenuItem Style="{DynamicResource MenuItemBaseStyle}" Header="Edit"
                                           Command="{Binding PlacementTarget.Tag.EditSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
                                           >
@@ -143,9 +143,9 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBoxItem">
-                            <Border CornerRadius="4" Name="_Border"
+                            <Border CornerRadius="7" Name="_Border"
                                 Padding="0"
-                                Margin="8"
+                                Margin="0,0,15,15"
                                 Background="{DynamicResource RegionBrush}"   
                                 BorderBrush="Transparent"
                                 BorderThickness="3"
@@ -201,9 +201,20 @@
                                 
                                 
                             </MenuItem>
-                            <MenuItem  Header="Import Existing LED Setup" >
+                            <MenuItem  Header="Import LED Setup" >
                                 <MenuItem.Icon>
                                     <Path   Data="{StaticResource import}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="{Binding PlacementTarget.Tag.ShowNameEditWindow, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="rename"  Header="Rename" >
+                                <MenuItem.Icon>
+                                    <Path   Data="{StaticResource editname}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                           
+                            <MenuItem CommandParameter="advance" Command="{Binding PlacementTarget.Tag.OpenAdvanceSettingWindowCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Header="Advance Settings" >
+                                <MenuItem.Icon>
+                                    <Path   Data="{StaticResource advancesettings}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
                                 </MenuItem.Icon>
                             </MenuItem>
 
@@ -211,10 +222,13 @@
 
                     </Setter.Value>
                 </Setter>
-                <Setter Property="ContextMenuService.Placement" Value="Bottom">
+                <Setter Property="ContextMenuService.Placement" Value="Right">
 
                 </Setter>
                 <Setter Property="ContextMenuService.VerticalOffset" Value="0">
+
+                </Setter>
+                <Setter Property="ContextMenuService.HorizontalOffset" Value="5">
 
                 </Setter>
             </Style>
@@ -287,24 +301,158 @@
 
     <Grid   Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Border Margin="10"  Background="{DynamicResource DarkOpacityBrush}" CornerRadius="7">
 
 
-            <hc:SimplePanel   ClipToBounds="true" Grid.Row="0">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            
+            
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Margin="10" CornerRadius="7">
+                    <Border.Background>
+                        <SolidColorBrush Color ="{Binding Color, Source={StaticResource PrimaryBrush}}" Opacity="0.1"/>
+                    </Border.Background>
+                    <Path Margin="10" Data="{Binding CurrentDevice.Geometry, Converter={converters:StaticResourceConverter}}" Width="70" Height="70" Fill="{DynamicResource PrimaryBrush}" Stretch="Uniform" />
+                </Border>
+              
+                <StackPanel Margin="10,5" Grid.Column="1">
+                    <TextBlock HorizontalAlignment="Left" Margin="2" Style="{DynamicResource TextBlockTitle}" Text="{Binding CurrentDevice.DeviceName}" FontWeight="SemiBold"/>
+                    <TextBlock FontSize="13" HorizontalAlignment="Left" Margin="2" Style="{DynamicResource TextBlockDefault}" Text="{Binding CurrentDevice.DeviceDescription}" />
+                    <Button HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
+                        <Button.Content>
+                            <TextBlock FontSize="13" Text="Rename" Style="{DynamicResource TextBlockDefaultPrimary}"/>
+                        </Button.Content>
+                    </Button>
+                    
+                </StackPanel>
+            </Grid>
+            <Grid Margin="0,0,50,0" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Command="{Binding OpenDeviceFirmwareSettingsWindowCommand}" CommandParameter="connection" hc:BorderElement.CornerRadius="7" Margin="0,5,5,5" Height="65" VerticalAlignment="Stretch" HorizontalAlignment="Right" Padding="0"  BorderBrush="Transparent" Style="{DynamicResource ButtonDefault}" >
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Path Width="30" Height="30" Margin="5,10" Data="{StaticResource hardware}" Stretch="Uniform" >
+                            <Path.Style>
+                                <Style TargetType="Path">
+                                    <Setter Property="Fill" Value="{DynamicResource PrimaryBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentDevice.IsTransferActive}" Value="False">
+                                            <Setter Property="Fill" Value="{DynamicResource SecondaryTextBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+
+                                </Style>
+                            </Path.Style>
+
+                        </Path>
+
+                        <Grid HorizontalAlignment="Left" Grid.Column="1">
+                            <StackPanel HorizontalAlignment="Left">
+                                <TextBlock HorizontalAlignment="Left" Text="{Binding CurrentDevice.DeviceType}" Style="{DynamicResource TextBlockSubTitle}" FontWeight="SemiBold" Margin="5,2"/>
+                                <TextBlock Text="{Binding CurrentDevice.FirmwareVersion}" Style="{DynamicResource TextBlockDefaultPrimary}"  Margin="5,2" HorizontalAlignment="Left"/>
+                              
 
 
-                <Grid   ClipToBounds="true" >
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Button>
+            </Grid>
+            <Grid Margin="0,0,100,0" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Command="{Binding OpenDeviceConnectionSettingsWindowCommand}" CommandParameter="connection" hc:BorderElement.CornerRadius="7" Margin="0,5,5,5" Height="65" VerticalAlignment="Stretch" HorizontalAlignment="Right" Padding="0"  BorderBrush="Transparent" Style="{DynamicResource ButtonDefault}" >
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Path Width="30" Height="30" Margin="5,10" Data="{Binding CurrentDevice.DeviceConnectionGeometry, Converter={converters:StaticResourceConverter}}" Stretch="Uniform" >
+                            <Path.Style>
+                                <Style TargetType="Path">
+                                    <Setter Property="Fill" Value="{DynamicResource PrimaryBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentDevice.IsTransferActive}" Value="False">
+                                            <Setter Property="Fill" Value="{DynamicResource SecondaryTextBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+
+                                </Style>
+                            </Path.Style>
+                        
+                        </Path>
+                        
+                        <Grid HorizontalAlignment="Left" Grid.Column="1">
+                            <StackPanel HorizontalAlignment="Left">
+                                <TextBlock HorizontalAlignment="Left" Text="{Binding CurrentDevice.OutputPort}" Style="{DynamicResource TextBlockSubTitle}" FontWeight="SemiBold" Margin="5,2"/>
+                                <TextBlock Text="Connected" Style="{DynamicResource TextBlockDefaultPrimary}" Visibility="{Binding CurrentDevice.IsTransferActive,Converter={StaticResource boolToVisibilityConvert}}" Margin="5,2" HorizontalAlignment="Left"/>
+                                <TextBlock Text="Disconnected"  Margin="5,2" HorizontalAlignment="Left">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockDefaultSecLight }">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding CurrentDevice.IsTransferActive}" Value="False">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+
+                                        </Style>
+                                       
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                
+                               
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Button>
+            </Grid>
+            <Grid Grid.Column="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                    <Button Command="{Binding BackCommand}" Width="32" Height="32" Margin="10,10,10,10"  VerticalAlignment="Center" BorderThickness="2" HorizontalAlignment="Right" hc:IconElement.Geometry="{StaticResource esc}" Style="{DynamicResource ButtonIconCircular}" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                   
+                </StackPanel>
+               
+            </Grid>
+        </Grid>
+           
+
+        <Grid  Grid.Row="1"  ClipToBounds="true" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
+                        
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <Grid VerticalAlignment="Top" x:Name="outputsCollectionGrid">
-
-                        <hc:TransitioningContentControl Grid.Row="1">
+            <Border Margin="10" Padding="15,15,0,15"  Background="{DynamicResource DarkOpacityBrush}" CornerRadius="7">
+                <Grid VerticalAlignment="Top" x:Name="outputsCollectionGrid">
+              
+                    <hc:TransitioningContentControl Grid.Row="1">
                             <ListBox Background="Transparent"  ScrollViewer.CanContentScroll="True"
                                                   ScrollViewer.VerticalScrollBarVisibility="Auto" 
                                                   ItemContainerStyle="{DynamicResource _ListBoxOutputsCollectionStyle}" 
@@ -319,7 +467,7 @@
 
                                 <ListBox.ItemTemplate >
                                     <DataTemplate >
-                                        <Grid  IsEnabled="{Binding IsConnected,Mode=TwoWay}" 
+                                        <Grid IsEnabled="{Binding IsConnected,Mode=TwoWay}" 
                                                x:Name="output" 
                                                Visibility="{Binding IsVissible,Converter={StaticResource boolToVisibilityConvert}}"         
                                                Width="255" 
@@ -395,10 +543,14 @@
 
                             </ListBox>
                         </hc:TransitioningContentControl>
+                     
 
                     </Grid>
-                    <Grid VerticalAlignment="Top" HorizontalAlignment="Center"  ClipToBounds="true" Grid.Column="1" x:Name="MotherGrid">
-                        <Viewbox  HorizontalAlignment="Center" VerticalAlignment="Top"  Name="PreviewBox">
+            </Border>
+            <Border Padding="15" Margin="10" Grid.Column="1"  Background="{DynamicResource DarkOpacityBrush}" CornerRadius="7">
+                <Grid VerticalAlignment="Center" HorizontalAlignment="Center"  ClipToBounds="true" Grid.Column="1" x:Name="MotherGrid">
+               
+                    <Viewbox  HorizontalAlignment="Center" VerticalAlignment="Center"  Name="PreviewBox">
 
                             <ItemsControl
                           Name="PreviewGird"  
@@ -466,12 +618,12 @@
                      CornerRadius="1"
                      Opacity="0.5"/>
                         </Canvas>
+                    
                     </Grid>
-
+              </Border>
                 </Grid>
-            </hc:SimplePanel>
-        </Border>
-        <Grid x:Name="DaughterGrid" Grid.Row="1" >
+       
+        <Grid x:Name="DaughterGrid" Grid.Row="2" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
@@ -502,9 +654,9 @@
 
                                 </Button>
                                 
-                                <Popup Effect="{DynamicResource EffectShadow3}"  AllowsTransparency="True" Grid.Column="2" Grid.ColumnSpan="2" PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="0" Name="PopupMode" VerticalOffset="6" StaysOpen="False">
+                                <Popup Effect="{DynamicResource EffectShadow3}"  AllowsTransparency="True" Grid.Column="2" Grid.ColumnSpan="2" PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="15" Name="PopupMode" VerticalOffset="6" StaysOpen="False">
                                     <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
-                                        <Border Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
+                                        <Border  Margin="15,0,15,15" Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
                                             <ListBox SelectedItem="{Binding CurrentSelectedLightingMode}" SelectedIndex="{Binding CurrentOutput.OutputSelectedMode}" SelectionChanged="NewModeSelected"  x:Name="lightingmode_selection"  
                                                  ItemContainerStyle="{DynamicResource _listBoxGeneralModeSelectionStyle}"  
                                                  Background="Transparent"
