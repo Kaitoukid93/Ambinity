@@ -219,7 +219,7 @@ namespace adrilight
             lock (currentOutput.OutputLEDSetup.Lock)
             {
                 const int colorsPerLed = 3;
-                int bufferLength = _messagePreamble.Length + 3
+                int bufferLength = _messagePreamble.Length + 3 + 3
                     + (currentOutput.OutputLEDSetup.Spots.Length * colorsPerLed);
 
 
@@ -238,11 +238,10 @@ namespace adrilight
                     byte chk = (byte)(hi ^ lo ^ 0x55);
                     outputStream[counter++] = hi;
                     outputStream[counter++] = lo;
-                
-               
-
-
                 outputStream[counter++] = chk;
+                outputStream[counter++] = (byte)output;
+                outputStream[counter++] = 0;
+                outputStream[counter++] = 0;
                 var isEnabled = currentOutput.OutputIsEnabled;
                 var allBlack = true;
                 //}
@@ -417,7 +416,7 @@ namespace adrilight
             {
                 try
                 {
-                    const int baudRate = 1000000;
+                    const int baudRate = 2000000;
                     string openedComPort = null;
 
 

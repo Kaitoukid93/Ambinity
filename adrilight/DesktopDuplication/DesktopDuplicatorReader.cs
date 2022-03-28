@@ -23,8 +23,6 @@ namespace adrilight
         private readonly ILogger _log = LogManager.GetCurrentClassLogger();
 
         public DesktopDuplicatorReader(IGeneralSettings userSettings,
-            IDeviceSettings deviceSettings,
-            IDeviceSpotSet deviceSpotSet ,
             IDesktopFrame desktopFrame,
              ISecondDesktopFrame secondDesktopFrame,
              IThirdDesktopFrame thirdDesktopFrame,
@@ -32,8 +30,8 @@ namespace adrilight
             )
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
-            DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
-            DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
+            
+         
             DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
             SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
             ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
@@ -45,7 +43,7 @@ namespace adrilight
             _retryPolicy = Policy.Handle<Exception>().WaitAndRetryForever(ProvideDelayDuration);
 
             UserSettings.PropertyChanged += PropertyChanged;
-            DeviceSettings.PropertyChanged += PropertyChanged;
+            OutputSettings.PropertyChanged += PropertyChanged;
             // SettingsViewModel.PropertyChanged += PropertyChanged;
             RefreshCapturingState();
 
@@ -142,8 +140,8 @@ namespace adrilight
   
 
         private IGeneralSettings UserSettings { get; }
-        private IDeviceSettings DeviceSettings { get; }
-        private IDeviceSpotSet DeviceSpotSet { get; }
+      
+    
         private IDesktopFrame DesktopFrame { get; }
         private ISecondDesktopFrame SecondDesktopFrame { get; }
         private IThirdDesktopFrame ThirdDesktopFrame { get; }
@@ -220,7 +218,7 @@ namespace adrilight
                     image.LockBits(new Rectangle(x, y, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb, bitmapData);
 
 
-                    lock (DeviceSpotSet.Lock)
+                    lock (OutputSettings.OutputLEDSetup.Lock)
                     {
                         var useLinearLighting = UserSettings.UseLinearLighting==0;
 
@@ -235,7 +233,7 @@ namespace adrilight
                         //}
                         //else
                         //{
-                            Parallel.ForEach(DeviceSpotSet.LEDSetup.Spots
+                            Parallel.ForEach(OutputSettings.OutputLEDSetup.Spots
                                 , spot =>
                                 {
                                     const int numberOfSteps = 15;
@@ -253,7 +251,7 @@ namespace adrilight
 
                                     var spotColor = new OpenRGB.NET.Models.Color(finalR, finalG, finalB);
 
-                                    var semifinalSpotColor = Brightness.applyBrightness(spotColor, brightness, DeviceSpotSet.LEDSetup.Spots.Length, devicePowerMiliamps,devicePowerVoltage);
+                                    var semifinalSpotColor = Brightness.applyBrightness(spotColor, brightness, OutputSettings.OutputLEDSetup.Spots.Length, devicePowerMiliamps,devicePowerVoltage);
                                     ApplySmoothing(semifinalSpotColor.R, semifinalSpotColor.G, semifinalSpotColor.B
                                         , out byte RealfinalR, out byte RealfinalG, out byte RealfinalB,
                                      spot.Red, spot.Green, spot.Blue);

@@ -125,17 +125,20 @@ namespace adrilight.Settings
             OutputPort = "Không có",
             Geometry = "ambinofanhub",
             IsTransferActive = true,
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDMatrix(0, 5,5),
-                                                      DefaulOutputCollection.GenericLEDMatrix(1, 5,5),
-                                                      DefaulOutputCollection.GenericLEDMatrix(2, 5,5),
-                                                      DefaulOutputCollection.GenericLEDMatrix(3, 5,5),
-                                                      DefaulOutputCollection.GenericLEDMatrix(4, 5,5),
-                                                      DefaulOutputCollection.GenericLEDMatrix(5, 5,5),
-                                                      DefaulOutputCollection.GenericLEDMatrix(6, 5,5),
-                                                      DefaulOutputCollection.GenericLEDMatrix(7, 5,5),
-                                                      DefaulOutputCollection.GenericLEDMatrix(8, 5,5),
-                                                      DefaulOutputCollection.GenericLEDMatrix(9, 5,5)
-            }
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericRectangle(0, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle(1, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle(2, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle(3, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle(4, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle(5, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle(6, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle(7, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle(8, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle(9, 5,5)
+            },
+            AvailableUnionOutputs =  DefaulOutputCollection.GenericRectangle(0, 5,5)
+                                                      
+            
 
         };
         public static DeviceSettings ambinoHUBV2 = new DeviceSettings {

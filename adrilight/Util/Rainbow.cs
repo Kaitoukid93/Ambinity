@@ -60,7 +60,7 @@ namespace adrilight
             switch (e.PropertyName)
             {
                 case nameof(OutputSettings.OutputIsEnabled):
-                
+                case nameof(OutputSettings.OutputSelectedMode):
                 case nameof(MainViewViewModel.IsSplitLightingWindowOpen):
                 
                     RefreshColorState();

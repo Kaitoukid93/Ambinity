@@ -18,15 +18,16 @@ namespace adrilight
         private string _deviceSerial;
         private string _deviceType;
         private string _manufacturer;
-        string _deviceDescription;
+        private string _deviceDescription;
         private string _firmwareVersion;
         private string _productionDate;
         private bool _isVisible;
         private bool _isEnabled;
         private string _outputPort;
         private bool _isTransferActive;
-        bool _isDummy = false;
+        private bool _isDummy = false;
         private IOutputSettings[] _availableOutput;
+        private IOutputSettings _availableUnionOutputs;
         private string _groupName = "Ambino Devices";
         private string _smallIcon = "";
         private string _bigIcon = "";
@@ -34,6 +35,7 @@ namespace adrilight
         private string _geometry = "generaldevice";
         private string _deviceConnectionGeometry = "connection";
         private int _baudrate = 1000000;
+        private int _activatedProfileIndex = 0;
 
 
 
@@ -51,8 +53,9 @@ namespace adrilight
         public bool IsTransferActive { get => _isTransferActive; set { Set(() => IsTransferActive, ref _isTransferActive, value); } }
         public bool IsDummy { get => _isDummy; set { Set(() => IsDummy, ref _isDummy, value); } }
         public IOutputSettings[] AvailableOutputs { get => _availableOutput; set { Set(() => AvailableOutputs, ref _availableOutput, value); } }
-
+        public IOutputSettings AvailableUnionOutputs { get => _availableUnionOutputs; set { Set(() => AvailableUnionOutputs, ref _availableUnionOutputs, value); } }
         public int Baudrate { get => _baudrate; set { Set(() => Baudrate, ref _baudrate, value); } }
+        public int ActivatedProfileIndex { get => _activatedProfileIndex; set { Set(() => ActivatedProfileIndex, ref _activatedProfileIndex, value); } }
         public string GroupName { get => _groupName; set { Set(() => GroupName, ref _groupName, value); } }
         public string SmallIcon { get => _smallIcon; set { Set(() => SmallIcon, ref _smallIcon, value); } }
         public string BigIcon { get => _bigIcon; set { Set(() => BigIcon, ref _bigIcon, value); } }

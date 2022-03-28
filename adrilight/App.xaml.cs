@@ -165,9 +165,9 @@ namespace adrilight
             kernel.Bind(x => x.FromThisAssembly()
               .SelectAllClasses()
               .BindAllInterfaces());
-            // var desktopDuplicationReader = kernel.Get<IDesktopDuplicatorReader>();
+            //var desktopDuplicationReader = kernel.Get<IDesktopDuplicatorReader>();
             //var desktopDuplicationReaderSecondary = kernel.Get<IDesktopDuplicatorReaderSecondary>();
-            // var desktopDuplicationReaderThird = kernel.Get<IDesktopDuplicatorReaderThird>();
+            //var desktopDuplicationReaderThird = kernel.Get<IDesktopDuplicatorReaderThird>();
           // var openRGBClient = kernel.Get<IOpenRGBClientDevice>();
             var serialDeviceDetection = kernel.Get<ISerialDeviceDetection>();
             var shaderEffect = kernel.Get<IShaderEffect>();
@@ -229,10 +229,12 @@ namespace adrilight
                         kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
                         kernel.Bind<IDeviceSpotSet>().To<DeviceSpotSet>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
                         kernel.Bind<IMusic>().To<Music>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
+                        kernel.Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
                         var spotset = kernel.Get<IDeviceSpotSet>(outputID);
                         var rainbow = kernel.Get<IRainbow>(outputID);
+                        var screencapture = kernel.Get<IDesktopDuplicatorReader>(outputID);
                         // music = kernel.Get<IMusic>(outputID);
-                        
+
                     }
                         //kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
                         //kernel.Bind<IAtmosphere>().To<Atmosphere>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));

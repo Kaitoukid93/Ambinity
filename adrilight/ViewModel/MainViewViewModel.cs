@@ -34,6 +34,7 @@ using System.Windows.Data;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using adrilight.Settings;
+using System.Reflection;
 
 namespace adrilight.ViewModel
 {
@@ -42,6 +43,7 @@ namespace adrilight.ViewModel
         private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adrilight\\");
 
         private string JsonDeviceFileNameAndPath => Path.Combine(JsonPath, "adrilight-deviceInfos.json");
+        private string JsonDeviceProfileFileNameAndPath => Path.Combine(JsonPath, "adrilight-deviceProfiles.json");
         private string JsonGroupFileNameAndPath => Path.Combine(JsonPath, "adrilight-groupInfos.json");
         private string JsonPaletteFileNameAndPath => Path.Combine(JsonPath, "adrilight-PaletteCollection.json");
 
@@ -69,7 +71,8 @@ namespace adrilight.ViewModel
         }
         private ObservableCollection<int> _availableBaudrates;
         public ObservableCollection<int> AvailableBaudrates {
-            get {
+            get
+            {
                 return _availableBaudrates;
             }
 
@@ -77,7 +80,7 @@ namespace adrilight.ViewModel
             {
                 _availableBaudrates = value;
                 RaisePropertyChanged(nameof(AvailableBaudrates));
-            }       
+            }
         }
         private VerticalMenuItem _selectedVerticalMenuItem;
         public VerticalMenuItem SelectedVerticalMenuItem {
@@ -264,8 +267,10 @@ namespace adrilight.ViewModel
         {
             if (!IsDashboardType)
             {
+                
                 WriteDeviceInfoJson();
             }
+           
             //if (CurrentDevice.DeviceID == 151293)
             //{
 
@@ -283,6 +288,13 @@ namespace adrilight.ViewModel
         }
         //VIDs commands//
         public ICommand ZerolAllCommand { get; set; }
+        public ICommand ExportCurrentProfileCommand { get; set; }
+        public ICommand ImportProfileCommand { get; set; }
+        public ICommand SaveCurrentProfileCommand { get; set; }
+        public ICommand CreateNewProfileCommand { get; set; }
+        public ICommand OpenProfileCreateCommand { get; set; }
+        public ICommand ExportPIDCommand { get; set; }
+        public ICommand ImportPIDCommand { get; set; }
         public ICommand OpenDeviceConnectionSettingsWindowCommand { get; set; }
         public ICommand OpenDeviceFirmwareSettingsWindowCommand { get; set; }
         public ICommand RenameSelectedItemCommand { get; set; }
@@ -343,6 +355,35 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+        private ObservableCollection<IDeviceProfile> _availableProfiles;
+        public ObservableCollection<IDeviceProfile> AvailableProfiles {
+            get { return _availableProfiles; }
+            set
+            {
+                if (_availableProfiles == value) return;
+                _availableProfiles = value;
+                RaisePropertyChanged();
+            }
+        }
+        private IDeviceProfile _currentSelectedProfile;
+        public IDeviceProfile CurrentSelectedProfile {
+            get { return _currentSelectedProfile; }
+            set
+            {
+                if(value!=null)
+                {
+                    _currentSelectedProfile = value;
+                    LoadProfile();
+                    RaisePropertyChanged();
+                }
+               
+
+
+                //RaisePropertyChanged(nameof(CurrentDevice.AvailableOutputs));
+
+            }
+        }
+
         private ObservableCollection<IGroupSettings> _groups;
         public ObservableCollection<IGroupSettings> Groups {
             get { return _groups; }
@@ -1463,8 +1504,50 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-      
-        
+        private string _newProfileName;
+        public string NewProfileName {
+            get
+            {
+                return _newProfileName;
+            }
+
+            set
+            {
+                _newProfileName = value;
+
+                RaisePropertyChanged();
+            }
+        }
+        private string _newProfileOwner;
+        public string NewProfileOwner {
+            get
+            {
+                return _newProfileOwner;
+            }
+
+            set
+            {
+                _newProfileOwner = value;
+
+                RaisePropertyChanged();
+            }
+        }
+        private string _newProfileDescription;
+        public string NewProfileDescription {
+            get
+            {
+                return _newProfileDescription;
+            }
+
+            set
+            {
+                _newProfileDescription = value;
+
+                RaisePropertyChanged();
+            }
+        }
+
+
         private List<IDeviceSpot> _activatedSpots;
         public List<IDeviceSpot> ActivatedSpots {
             get
@@ -1494,7 +1577,7 @@ namespace adrilight.ViewModel
             }
         }
 
-       
+
         private string _newPaletteName;
         public string NewPaletteName {
             get { return _newPaletteName; }
@@ -1653,6 +1736,47 @@ namespace adrilight.ViewModel
                    {
                        CreateNewPalette();
                    });
+            SaveCurrentProfileCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                SaveCurrentProfile();
+            }
+            );
+            ExportCurrentProfileCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                ExportCurrentProfile();
+            }
+          );
+            ImportProfileCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+               ImportProfile();
+            }
+          );
+            CreateNewProfileCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                CreateNewProfile();
+            }
+            );
+            OpenProfileCreateCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                OpenCreatenewProfileWindow();
+            }
+           );
+            
             DeleteSelectedPaletteCommand = new RelayCommand<IColorPalette>((p) =>
             {
                 return true;
@@ -1734,7 +1858,20 @@ namespace adrilight.ViewModel
             {
                 ExportCurrentSelectedPaletteToFile(p);
             });
-
+            ExportPIDCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                ExportCurrentOutputPID();
+            });
+            ImportPIDCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                ImportCurrentOutputPID();
+            });
 
             DeleteDeviceCommand = new RelayCommand<IDeviceSettings>((p) =>
             {
@@ -2066,8 +2203,8 @@ namespace adrilight.ViewModel
                 return p != null;
             }, (p) =>
             {
-                if(p!="")
-                ProcessSelectedSpots(p);
+                if (p != "")
+                    ProcessSelectedSpots(p);
 
             });
             SetCurrentSelectedVIDRange = new RelayCommand<string>((p) =>
@@ -2075,8 +2212,8 @@ namespace adrilight.ViewModel
                 return p != null;
             }, (p) =>
             {
-               
-                    ProcessSelectedSpotsWithRange();
+
+                ProcessSelectedSpotsWithRange();
 
             });
             SetPIDNeutral = new RelayCommand<string>((p) =>
@@ -2212,6 +2349,204 @@ namespace adrilight.ViewModel
             });
         }
 
+        private void ImportProfile()
+        {
+
+            OpenFileDialog Import = new OpenFileDialog();
+            Import.Title = "Chọn Profile";
+            Import.CheckFileExists = true;
+            Import.CheckPathExists = true;
+            Import.DefaultExt = "Pro";
+            Import.Filter = "Text files (*.Pro)|*.Pro";
+            Import.FilterIndex = 2;
+
+
+            Import.ShowDialog();
+
+
+            if (!string.IsNullOrEmpty(Import.FileName) && File.Exists(Import.FileName))
+            {
+
+                var json = File.ReadAllText(Import.FileName);
+
+                var profile = JsonConvert.DeserializeObject<DeviceProfile>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
+                AvailableProfiles.Add(profile);
+                RaisePropertyChanged(nameof(AvailableProfiles));
+                WriteDeviceProfileCollection();
+
+            }
+        }
+
+        private void SaveCurrentProfile()
+        {
+            for (var i = 0; i < CurrentDevice.AvailableOutputs.Length; i++)
+            {
+                foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
+                {
+                    property.SetValue(CurrentSelectedProfile.OutputSettings[i], property.GetValue(CurrentDevice.AvailableOutputs[i], null), null);
+                }
+            }
+            WriteDeviceProfileCollection();
+            AvailableProfiles.Clear();
+            foreach (var profile in LoadDeviceProfileIfExist())
+            {
+                AvailableProfiles.Add(profile);
+            }
+            RaisePropertyChanged(nameof(AvailableProfiles));
+            Growl.Success("Profile saved successfully!");
+    }
+        private void ExportCurrentProfile()
+        {
+            SaveFileDialog Export = new SaveFileDialog();
+            Export.CreatePrompt = true;
+            Export.OverwritePrompt = true;
+
+            Export.Title = "Xuất dữ liệu";
+            Export.FileName = CurrentDevice.DeviceName + " Profile";
+            Export.CheckFileExists = false;
+            Export.CheckPathExists = true;
+            Export.DefaultExt = "Pro";
+            Export.Filter = "All files (*.*)|*.*";
+            Export.InitialDirectory =
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            Export.RestoreDirectory = true;
+
+
+            var ledsetupjson = JsonConvert.SerializeObject(CurrentSelectedProfile, new JsonSerializerSettings() {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
+
+            if (Export.ShowDialog() == DialogResult.OK)
+            {
+                Directory.CreateDirectory(JsonPath);
+                File.WriteAllText(Export.FileName, ledsetupjson);
+                Growl.Success("Profile exported successfully!");
+            }
+        }
+
+        private void LoadProfile()
+        {
+           for (var i =0; i<CurrentDevice.AvailableOutputs.Length;i++)
+            {
+
+                foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
+                {
+                    property.SetValue(CurrentDevice.AvailableOutputs[i], property.GetValue(CurrentSelectedProfile.OutputSettings[i], null), null);
+                }
+                //foreach (PropertyInfo property in CurrentDevice.AvailableOutputs[i].GetType().GetProperties())
+                //{
+                //property.SetValue(property);
+                //    // do something with the property
+                //}
+
+            }
+
+            WriteDeviceInfoJson();
+        }
+        private void CreateNewProfile()
+        {
+            var newprofile = new DeviceProfile {
+                Name = NewProfileName,
+                Description = NewProfileDescription,
+                Owner = NewProfileOwner,
+                DeviceType = CurrentDevice.DeviceType,
+                Geometry = "profile",
+                OutputSettings = CurrentDevice.AvailableOutputs
+        };
+            
+            AvailableProfiles.Add(newprofile);
+            
+            WriteDeviceProfileCollection();
+            AvailableProfiles.Clear();
+            foreach(var profile in LoadDeviceProfileIfExist())
+            {
+                AvailableProfiles.Add(profile);
+            }
+            RaisePropertyChanged(nameof(AvailableProfiles));
+            
+
+
+        }
+        private void OpenCreatenewProfileWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"AddNewProfileWindow"}") is System.Windows.Window window)
+            {
+
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+            }
+        }
+
+        private void ImportCurrentOutputPID()
+        {
+            OpenFileDialog Import = new OpenFileDialog();
+            Import.Title = "Chọn LED Setup file";
+            Import.CheckFileExists = true;
+            Import.CheckPathExists = true;
+            Import.DefaultExt = "json";
+            Import.Filter = "Text files (*.json)|*.json";
+            Import.FilterIndex = 2;
+
+
+            Import.ShowDialog();
+
+
+            if (!string.IsNullOrEmpty(Import.FileName) && File.Exists(Import.FileName))
+            {
+
+
+
+                var json = File.ReadAllText(Import.FileName);
+
+                try
+                {
+                    var ledSetup = JsonConvert.DeserializeObject<LEDSetup>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
+                    if (ledSetup.Spots.Length != CurrentOutput.OutputLEDSetup.Spots.Length)
+                        HandyControl.Controls.MessageBox.Show("Corrupted or incompatible data File!!!", "Incompatible Data File", MessageBoxButton.OK, MessageBoxImage.Error);
+                    else
+                    {
+                        CurrentOutput.OutputLEDSetup = ledSetup;
+                        RaisePropertyChanged(nameof(CurrentOutput.OutputLEDSetup));
+                    }
+
+                }
+                catch (FormatException)
+                {
+                    HandyControl.Controls.MessageBox.Show("Corrupted or incompatible data File!!!");
+                }
+
+            }
+        }
+
+        private void ExportCurrentOutputPID()
+        {
+            SaveFileDialog Export = new SaveFileDialog();
+            Export.CreatePrompt = true;
+            Export.OverwritePrompt = true;
+
+            Export.Title = "Xuất dữ liệu";
+            Export.FileName = CurrentOutput.OutputName + " LED Setup";
+            Export.CheckFileExists = false;
+            Export.CheckPathExists = true;
+            Export.DefaultExt = "json";
+            Export.Filter = "All files (*.*)|*.*";
+            Export.InitialDirectory =
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            Export.RestoreDirectory = true;
+
+
+            var ledsetupjson = JsonConvert.SerializeObject(CurrentOutput.OutputLEDSetup, new JsonSerializerSettings() {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
+
+            if (Export.ShowDialog() == DialogResult.OK)
+            {
+                Directory.CreateDirectory(JsonPath);
+                File.WriteAllText(Export.FileName, ledsetupjson);
+                Growl.Success("LED Setup saved successfully!");
+            }
+        }
+
         private void ProcessSelectedSpotsWithRange()
         {
             int counter = 0;
@@ -2219,7 +2554,7 @@ namespace adrilight.ViewModel
             foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
             {
 
-                if (spot.BorderThickness != 0)//spots is selected
+                if (spot.BorderThickness != 0)//spots is selecteds
                 {
                     counter++;
                 }
@@ -2243,13 +2578,13 @@ namespace adrilight.ViewModel
         {
             foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
             {
-                
-                    if (spot.BorderThickness != 0)//spots is selected
-                    {
-                        spot.SetVID(Int32.Parse(userInput));
-                    }
-                
-               
+
+                if (spot.BorderThickness != 0)//spots is selected
+                {
+                    spot.SetVID(Int32.Parse(userInput));
+                }
+
+
 
             }
         }
@@ -2276,7 +2611,7 @@ namespace adrilight.ViewModel
         {
             if (AssemblyHelper.CreateInternalInstance($"View.{"RenameItemWindow"}") is System.Windows.Window window)
             {
-               
+
                 window.Owner = System.Windows.Application.Current.MainWindow;
                 window.ShowDialog();
             }
@@ -2291,7 +2626,7 @@ namespace adrilight.ViewModel
             }
         }
 
-        
+
         private void AddDevice()
         {
             CurrentSelectedDeviceToAdd.DeviceID = AvailableDevices.Count + 1;
@@ -2415,7 +2750,7 @@ namespace adrilight.ViewModel
             if (Export.ShowDialog() == DialogResult.OK)
             {
                 System.IO.File.WriteAllLines(Export.FileName, paletteData);
-
+                Growl.Success("Palette saved successfully!");
             }
         }
         public void SetPreviewVisualizerFFT(byte[] fft)
@@ -2431,7 +2766,7 @@ namespace adrilight.ViewModel
             var description = NewPaletteDescription;
             var colors = new System.Windows.Media.Color[16];
             int counter = 0;
-            foreach(var color in CurrentEditingColors)
+            foreach (var color in CurrentEditingColors)
             {
                 colors[counter++] = color;
             }
@@ -2442,7 +2777,7 @@ namespace adrilight.ViewModel
             }
             IColorPalette newpalette = new ColorPalette(name, owner, "RGBPalette16", description, colors);
             AvailablePallete.Add(newpalette);
-            
+
             WritePaletteCollectionJson();
             AvailablePallete.Clear();
             foreach (var palette in LoadPaletteIfExists())
@@ -2468,7 +2803,7 @@ namespace adrilight.ViewModel
         }
         private void DeleteSelectedPalette(IColorPalette selectedpalette)
         {
-            if(AvailablePallete.Count==1)
+            if (AvailablePallete.Count == 1)
             {
                 var result = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo {
                     Message = " Please don't delete all Color Palette in this section, atleast keep one left!!!",
@@ -2490,7 +2825,7 @@ namespace adrilight.ViewModel
             }
             CurrentOutput.OutputSelectedChasingPalette = 0;
             CurrentActivePalette = AvailablePallete.First();
-            
+
             //if (AvailablePallete.ElementAt(CurrentOutput.OutputSelectedChasingPalette) == palette && AvailablePallete.ElementAt(CurrentOutput.OutputSelectedMusicPalette) == palette)
             //{
             //    var result = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo {
@@ -2600,30 +2935,30 @@ namespace adrilight.ViewModel
             //}
         }
 
-        public void OpenEditPaletteDialog( string praram)
+        public void OpenEditPaletteDialog(string praram)
         {
-             var window = new PaletteEditWindow(praram);
-             window.Owner = System.Windows.Application.Current.MainWindow;
-                CurrentEditingColors = new ObservableCollection<Color>();
-                foreach (var color in CurrentActivePalette.Colors)
-                {
-                    CurrentEditingColors.Add(color);
-                }
-                //CurrentCustomZoneColor = palette;
-
-                RaisePropertyChanged(nameof(CurrentEditingColors));
-                window.ShowDialog();
-
+            var window = new PaletteEditWindow(praram);
+            window.Owner = System.Windows.Application.Current.MainWindow;
+            CurrentEditingColors = new ObservableCollection<Color>();
+            foreach (var color in CurrentActivePalette.Colors)
+            {
+                CurrentEditingColors.Add(color);
             }
-        
+            //CurrentCustomZoneColor = palette;
+
+            RaisePropertyChanged(nameof(CurrentEditingColors));
+            window.ShowDialog();
+
+        }
+
         public void OpenCreateNewDialog()
         {
             if (AssemblyHelper.CreateInternalInstance($"View.{"AddNewPaletteWindow"}") is System.Windows.Window window)
             {
-                
+
                 window.Owner = System.Windows.Application.Current.MainWindow;
                 window.ShowDialog();
-                
+
             }
         }
         //public void SetCurrentDeviceSelectedPalette(IColorPaletteCard palette)
@@ -2994,6 +3329,13 @@ namespace adrilight.ViewModel
             {
                 AvailableSolidColors.Add(color);
             }
+
+            AvailableProfiles = new ObservableCollection<IDeviceProfile>();
+            foreach (var profile in LoadDeviceProfileIfExist())
+            {
+                AvailableProfiles.Add(profile);
+            }
+            WriteDeviceProfileCollection();
             //CurrentCustomZoneColor = new ObservableCollection<System.Windows.Media.Color>();
             //var shareMenu = new PaletteCardContextMenu("Share");
             //var shareMenuOptions = new List<PaletteCardContextMenu>();
@@ -3048,6 +3390,39 @@ namespace adrilight.ViewModel
 
 
             return loadedPaletteCard;
+        }
+        public List<IDeviceProfile> LoadDeviceProfileIfExist()
+        {
+            var loadedProfiles = new List<IDeviceProfile>();
+            if (!File.Exists(JsonDeviceProfileFileNameAndPath))
+            {
+                var defaultFanHubProfile = new DeviceProfile {
+                    Name = "Fan HUB Default",
+                    Owner = "Ambino",
+                    Geometry = "profile",
+                    DeviceType = "ABFANHUB",
+                    Description = "Default Profile for Ambino Fan HUB",
+                    OutputSettings = DefaultDeviceCollection.ambinoFanHub.AvailableOutputs
+
+                };
+                loadedProfiles.Add(defaultFanHubProfile);
+
+
+            }
+            else
+            {
+                var json = File.ReadAllText(JsonDeviceProfileFileNameAndPath);
+
+                var existedProfile = JsonConvert.DeserializeObject<List<DeviceProfile>>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
+                foreach (var profile in existedProfile)
+                {
+                    loadedProfiles.Add(profile);
+                }
+            }
+
+
+
+            return loadedProfiles;
         }
         public Color[] LoadSolidColorIfExists()
         {
@@ -3348,6 +3723,21 @@ namespace adrilight.ViewModel
             var json = JsonConvert.SerializeObject(palettes, Formatting.Indented);
             Directory.CreateDirectory(JsonPath);
             File.WriteAllText(JsonPaletteFileNameAndPath, json);
+
+        }
+        public void WriteDeviceProfileCollection()
+        {
+
+            var profiles = new List<IDeviceProfile>();
+            foreach (var profile in AvailableProfiles)
+            {
+                profiles.Add(profile);
+            }
+            var json = JsonConvert.SerializeObject(profiles, new JsonSerializerSettings() {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
+            Directory.CreateDirectory(JsonPath);
+            File.WriteAllText(JsonDeviceProfileFileNameAndPath, json);
 
         }
         public void ExportCurrentSpotData()

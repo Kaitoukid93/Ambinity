@@ -201,9 +201,14 @@
                                 
                                 
                             </MenuItem>
-                            <MenuItem  Header="Import LED Setup" >
+                            <MenuItem Command="{Binding PlacementTarget.Tag.ImportPIDCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"  Header="Import LED Setup" >
                                 <MenuItem.Icon>
                                     <Path   Data="{StaticResource import}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem  Command="{Binding PlacementTarget.Tag.ExportPIDCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Header="Export LED Setup" >
+                                <MenuItem.Icon>
+                                    <Path   Data="{StaticResource export}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Command="{Binding PlacementTarget.Tag.ShowNameEditWindow, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="rename"  Header="Rename" >
@@ -314,6 +319,7 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             
             
@@ -341,6 +347,94 @@
                 </StackPanel>
             </Grid>
             <Grid Margin="0,0,50,0" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Click="ButtonProfile_OnClick" CommandParameter="connection" hc:BorderElement.CornerRadius="7" Margin="0,5,5,5" Height="65" VerticalAlignment="Stretch" HorizontalAlignment="Right" Padding="0"  BorderBrush="Transparent" Style="{DynamicResource ButtonDefault}" >
+                  
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Path Width="30" Height="30" Margin="5,10" Data="{StaticResource profile}" Stretch="Uniform" >
+                            <Path.Style>
+                                <Style TargetType="Path">
+                                    <Setter Property="Fill" Value="{DynamicResource PrimaryBrush}"/>
+                                </Style>
+                            </Path.Style>
+
+                        </Path>
+
+                      
+                        <Popup Effect="{DynamicResource EffectShadow3}"  AllowsTransparency="True" Grid.Column="2" Grid.ColumnSpan="2" PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="15" Name="profile_selection" VerticalOffset="6" StaysOpen="False">
+                            <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
+                                <Border  Margin="15,0,15,15" Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
+                                    <StackPanel>
+                                
+                                        <Grid  >
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button ToolTip="Create New Profile" Command="{Binding OpenProfileCreateCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource newfile}" Padding="6" Margin="5"/>
+                                                <Button ToolTip="Import Profile" Command="{Binding ImportProfileCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource import}" Padding="6" Margin="5"/>
+                                                <Button ToolTip="Export Profile" Command="{Binding ExportCurrentProfileCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource export}" Padding="6" Margin="5"/>
+                                               
+                                                <Button ToolTip="Save" Command="{Binding SaveCurrentProfileCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource save}" Padding="6" Margin="5"/>
+                                            </StackPanel>  
+                                        </Grid>
+                                        <hc:Divider Visibility="{Binding ElementName=Order,Path=Visibility}" LineStroke="{DynamicResource SecondaryRegionBrush}" Margin="5,5,5,5">
+
+                                        </hc:Divider>
+                                        <ListBox  SelectedItem="{Binding CurrentSelectedProfile}"  SelectedIndex="{Binding CurrentDevice.ActivatedProfileIndex}" SelectionChanged="NewModeSelected"  
+                                                 ItemContainerStyle="{DynamicResource _listBoxGeneralModeSelectionStyle}"  
+                                                 Background="Transparent"
+                                                 BorderThickness="0"
+                                                 ItemsSource="{Binding AvailableProfiles}"
+                                                 Style="{DynamicResource StackPanelVerticalListBox}">
+
+                                            <ListBox.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel>
+
+                                                    </StackPanel>
+                                                </ItemsPanelTemplate>
+                                            </ListBox.ItemsPanel>
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="5">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Path HorizontalAlignment="Left" Stretch="Uniform" Margin="5" Data="{Binding Geometry,Converter={converters:StaticResourceConverter}}" 
+                                                          Width="20" 
+                                                          Height="20" 
+                                                          Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
+                                                        <TextBlock HorizontalAlignment="Left" Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="{Binding Name}" Style="{DynamicResource TextBlockDefault}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+
+                                        </ListBox>
+                                    </StackPanel>
+                                    
+                                </Border>
+                            </hc:TransitioningContentControl>
+
+                        </Popup>
+                    
+                    <Grid HorizontalAlignment="Left" Grid.Column="1">
+                            <StackPanel HorizontalAlignment="Left">
+                                <TextBlock HorizontalAlignment="Left" Text="{Binding CurrentSelectedProfile.Name,Mode=TwoWay}" Style="{DynamicResource TextBlockSubTitle}" FontWeight="SemiBold" Margin="5,2"/>
+                                <TextBlock Text="{Binding CurrentSelectedProfile.Owner, Mode=TwoWay}" Style="{DynamicResource TextBlockDefaultPrimary}"  Margin="5,2" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                  
+                </Button>
+            </Grid>
+            <Grid Margin="0,0,50,0" Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
@@ -378,7 +472,7 @@
                     </Grid>
                 </Button>
             </Grid>
-            <Grid Margin="0,0,100,0" Grid.Column="2">
+            <Grid Margin="0,0,100,0" Grid.Column="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
@@ -429,7 +523,7 @@
                     </Grid>
                 </Button>
             </Grid>
-            <Grid Grid.Column="3">
+            <Grid Grid.Column="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
