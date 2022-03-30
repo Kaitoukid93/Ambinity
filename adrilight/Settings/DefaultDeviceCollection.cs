@@ -11,7 +11,7 @@ namespace adrilight.Settings
         public static DeviceSettings ambinoBasic24 = new DeviceSettings {
             DeviceName = "Ambino Basic 24 inch",
             DeviceSerial = "ABBASIC24",
-            DeviceType = "ABBASIC",
+            DeviceType = "ABBASIC24",
             Manufacturer = "Ambino Vietnam",
             FirmwareVersion = "1.0.3",
             ProductionDate = "2022",
@@ -26,7 +26,7 @@ namespace adrilight.Settings
         public static DeviceSettings ambinoBasic27 = new DeviceSettings {
             DeviceName = "Ambino Basic 27 inch",
             DeviceSerial = "ABBASIC27",
-            DeviceType = "ABBASIC",
+            DeviceType = "ABBASIC27",
             Manufacturer = "Ambino Vietnam",
             FirmwareVersion = "1.0.3",
             ProductionDate = "2022",
@@ -41,7 +41,7 @@ namespace adrilight.Settings
         public static DeviceSettings ambinoBasic29 = new DeviceSettings {
             DeviceName = "Ambino Basic 29 inch",
             DeviceSerial = "ABBASIC29",
-            DeviceType = "ABBASIC",
+            DeviceType = "ABBASIC29",
             Manufacturer = "Ambino Vietnam",
             FirmwareVersion = "1.0.3",
             ProductionDate = "2022",
@@ -56,7 +56,7 @@ namespace adrilight.Settings
         public static DeviceSettings ambinoBasic32 = new DeviceSettings {
             DeviceName = "Ambino Basic 32 inch",
             DeviceSerial = "ABBASIC32",
-            DeviceType = "ABBASIC",
+            DeviceType = "ABBASIC32",
             Manufacturer = "Ambino Vietnam",
             FirmwareVersion = "1.0.3",
             ProductionDate = "2022",
@@ -71,7 +71,7 @@ namespace adrilight.Settings
         public static DeviceSettings ambinoBasic34 = new DeviceSettings {
             DeviceName = "Ambino Basic 34 inch",
             DeviceSerial = "ABBASIC34",
-            DeviceType = "ABBASIC",
+            DeviceType = "ABBASIC34",
             Manufacturer = "Ambino Vietnam",
             FirmwareVersion = "1.0.3",
             ProductionDate = "2022",
@@ -85,8 +85,8 @@ namespace adrilight.Settings
         };
         public static DeviceSettings ambinoEdge1m2 = new DeviceSettings {
             DeviceName = "Ambino EDGE 1.2m",
-            DeviceSerial = "ABEDGE.2",
-            DeviceType = "ABEDGE",
+            DeviceSerial = "ABEDGE1.2",
+            DeviceType = "ABEDGE1.2",
             Manufacturer = "Ambino Vietnam",
             FirmwareVersion = "1.0.3",
             ProductionDate = "2022",
@@ -101,7 +101,7 @@ namespace adrilight.Settings
          public static DeviceSettings ambinoEdge2m = new DeviceSettings {
              DeviceName = "Ambino EDGE 1.2m",
              DeviceSerial = "ABEDGE2.0",
-             DeviceType = "ABEDGE",
+             DeviceType = "ABEDGE2.0",
              Manufacturer = "Ambino Vietnam",
              FirmwareVersion = "1.0.3",
              ProductionDate = "2022",
@@ -125,18 +125,18 @@ namespace adrilight.Settings
             OutputPort = "Không có",
             Geometry = "ambinofanhub",
             IsTransferActive = true,
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericRectangle(0, 5,5),
-                                                      DefaulOutputCollection.GenericRectangle(1, 5,5),
-                                                      DefaulOutputCollection.GenericRectangle(2, 5,5),
-                                                      DefaulOutputCollection.GenericRectangle(3, 5,5),
-                                                      DefaulOutputCollection.GenericRectangle(4, 5,5),
-                                                      DefaulOutputCollection.GenericRectangle(5, 5,5),
-                                                      DefaulOutputCollection.GenericRectangle(6, 5,5),
-                                                      DefaulOutputCollection.GenericRectangle(7, 5,5),
-                                                      DefaulOutputCollection.GenericRectangle(8, 5,5),
-                                                      DefaulOutputCollection.GenericRectangle(9, 5,5)
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericRectangle("Fan1",0, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle("Fan2",1, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle("Fan3",2, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle("Fan4",3, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle("Fan5",4, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle("Fan6",5, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle("Fan7",6, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle("Fan8",7, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle("Fan9",8, 5,5),
+                                                      DefaulOutputCollection.GenericRectangle("Fan10",9, 5,5)
             },
-            AvailableUnionOutputs =  DefaulOutputCollection.GenericRectangle(0, 5,5)
+            
                                                       
             
 

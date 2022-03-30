@@ -20,10 +20,8 @@ namespace adrilight
         private int _outputNumLED;
         private int _outputNumLEDX;
         private int _outputNumLEDY;
-        private int _outputLocationX;
-        private int _outputLocationY;
-        private int _outputPixelWidth;
-        private int _outputPixelHeight;
+    
+
         private string _outputUniqueID;
         private string _outputRGBLEDOrder;
         private bool _outputIsVisible;
@@ -61,7 +59,14 @@ namespace adrilight
         private int _outputPaletteChasingPosition;
         private int _outputScreenCaptureWBRed=100;
         private int _outputScreenCaptureWBGreen=100;
-        private int _outputScreenCaptureWBlue=100;
+        private int _outputScreenCaptureWBBlue=100;
+        private int _outputScreenCapturePositionIndex = 0;
+        private System.Drawing.Rectangle _outputRectangle;
+        private bool _outputIsLoadingProfile = false;
+        private bool _outputIsBuildingLEDSetup = false;
+        private int _outputMusicSensitivity = 10;
+        private int _outputMusicVisualizerFreq = 0;
+
 
 
         public string OutputName  { get => _outputName; set { Set(() => OutputName, ref _outputName, value);}}
@@ -70,10 +75,7 @@ namespace adrilight
         public int OutputNumLED { get => _outputNumLED; set { Set(() => OutputNumLED, ref _outputNumLED, value); } }
         public int OutputNumLEDX { get => _outputNumLEDX; set { Set(() => OutputNumLEDX, ref _outputNumLEDX, value); } }
         public int OutputNumLEDY { get => _outputNumLEDY; set { Set(() => OutputNumLEDY, ref _outputNumLEDY, value); } }
-        public int OutputLocationX { get => _outputLocationX; set { Set(() => OutputLocationX, ref _outputLocationX, value); } }
-        public int OutputLocationY { get => _outputLocationY; set { Set(() => OutputLocationY, ref _outputLocationY, value); } }
-        public int OutputPixelWidth { get => _outputPixelWidth; set { Set(() => OutputPixelWidth, ref _outputPixelWidth, value); } }
-        public int OutputPixelHeight { get => _outputPixelHeight; set { Set(() => OutputPixelHeight, ref _outputPixelHeight, value); } }
+   
         public string OutputUniqueID { get => _outputUniqueID; set { Set(() => OutputUniqueID, ref _outputUniqueID, value); } }
         public string OutputRGBLEDOrder { get => _outputRGBLEDOrder; set { Set(() => OutputRGBLEDOrder, ref _outputRGBLEDOrder, value); } }
         public bool OutputIsVisible { get => _outputIsVisible; set { Set(() => OutputIsVisible, ref _outputIsVisible, value); } }
@@ -109,11 +111,17 @@ namespace adrilight
         public bool IsInSpotEditWizard { get => _isInSpotEditWizard; set { Set(() => IsInSpotEditWizard, ref _isInSpotEditWizard, value); } }
         public string Geometry { get => _geometry; set { Set(() => Geometry, ref _geometry, value); } }
         public int OutputSmoothness { get => _outputSmoothness; set { Set(() => OutputSmoothness, ref _outputSmoothness, value); } }
+        public int OutputMusicVisualizerFreq { get => _outputMusicVisualizerFreq; set { Set(() => OutputMusicVisualizerFreq, ref _outputMusicVisualizerFreq, value); } }
 
         public int OutputPaletteChasingPosition { get => _outputPaletteChasingPosition; set { Set(() => OutputPaletteChasingPosition, ref _outputPaletteChasingPosition, value); } }
         public int OutputScreenCaptureWBRed { get => _outputScreenCaptureWBRed; set { Set(() => OutputScreenCaptureWBRed, ref _outputScreenCaptureWBRed, value); } }
         public int OutputScreenCaptureWBGreen { get => _outputScreenCaptureWBGreen; set { Set(() => OutputScreenCaptureWBGreen, ref _outputScreenCaptureWBGreen, value); } }
-        public int OutputScreenCaptureWBlue { get => _outputScreenCaptureWBlue; set { Set(() => OutputScreenCaptureWBlue, ref _outputScreenCaptureWBlue, value); } }
-      
+        public int OutputScreenCaptureWBBlue { get => _outputScreenCaptureWBBlue; set { Set(() => OutputScreenCaptureWBBlue, ref _outputScreenCaptureWBBlue, value); } }
+        public int OutputMusicSensitivity { get => _outputMusicSensitivity; set { Set(() => OutputMusicSensitivity, ref _outputMusicSensitivity, value); } }
+        public int OutputScreenCapturePositionIndex { get => _outputScreenCapturePositionIndex; set { Set(() => OutputScreenCapturePositionIndex, ref _outputScreenCapturePositionIndex, value); } }
+
+        public System.Drawing.Rectangle OutputRectangle { get => _outputRectangle; set { Set(() => OutputRectangle, ref _outputRectangle, value); } }
+        public bool OutputIsLoadingProfile { get => _outputIsLoadingProfile; set { Set(() => OutputIsLoadingProfile, ref _outputIsLoadingProfile, value); } }
+        public bool OutputIsBuildingLEDSetup { get => _outputIsBuildingLEDSetup; set { Set(() => OutputIsBuildingLEDSetup, ref _outputIsBuildingLEDSetup, value); } }
     }
 }

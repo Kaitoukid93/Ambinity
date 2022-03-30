@@ -6,7 +6,7 @@ namespace adrilight
 {
     public interface IDesktopDuplicatorReader
     {
-        bool IsRunning { get; }
+        //bool IsRunning { get; }
 
         void Run(CancellationToken token);
         void Stop();

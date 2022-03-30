@@ -33,6 +33,7 @@ namespace adrilight
         private string _selectedShader = "Gooey";
         private int _selectedSystemPalette = 0;
         private int _systemRainbowSpeed = 5;
+        private bool _isProfileLoading = false;
 
         private bool _startMinimized = false;
 
@@ -134,11 +135,6 @@ namespace adrilight
         public int SelectedSystemPalette { get => _selectedSystemPalette; set { Set(() => SelectedSystemPalette, ref _selectedSystemPalette, value); } }
         public int SystemRainbowSpeed { get => _systemRainbowSpeed; set { Set(() => SystemRainbowSpeed, ref _systemRainbowSpeed, value); } }
 
-
-
-
-
-
-
+        public bool IsProfileLoading { get => _isProfileLoading; set { Set(() => IsProfileLoading, ref _isProfileLoading, value); } }
     }
 }

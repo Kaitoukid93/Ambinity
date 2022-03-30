@@ -233,7 +233,7 @@ namespace adrilight
                         var spotset = kernel.Get<IDeviceSpotSet>(outputID);
                         var rainbow = kernel.Get<IRainbow>(outputID);
                         var screencapture = kernel.Get<IDesktopDuplicatorReader>(outputID);
-                        // music = kernel.Get<IMusic>(outputID);
+                        var  music = kernel.Get<IMusic>(outputID);
 
                     }
                         //kernel.Bind<IMusic>().To<Music>().InTransientScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));

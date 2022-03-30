@@ -49,6 +49,7 @@ namespace adrilight
             {
 
                 case nameof(UserSettings.ShouldbeRunning):
+                case nameof(MainViewModel.IsSplitLightingWindowOpen):
 
                     RefreshCapturingState();
                     break;
@@ -186,6 +187,7 @@ namespace adrilight
 
                 while (!token.IsCancellationRequested)
                 {
+                    var isPreviewRunning = MainViewModel.IsSplitLightingWindowOpen;
                     var frameTime = Stopwatch.StartNew();
                     // var context = new Context();
                     // context.Add("image", image);
@@ -223,8 +225,8 @@ namespace adrilight
                     // MainView.SetPreviewImage(DesktopFrame);
 
                  
-                    
-                        MainViewModel.ShaderImageUpdate(Frame);
+                    if(isPreviewRunning)
+                        MainViewModel.ShaderImageUpdate(Frame, FrameWidth, FrameHeight);
 
 
 

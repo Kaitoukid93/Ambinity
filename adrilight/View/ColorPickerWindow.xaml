@@ -35,7 +35,7 @@
             <hc:ColorPicker   BorderThickness="0" Confirmed="ColorPicker_Confirmed" Canceled="mColorPicker_Canceled" SelectedBrush="{Binding CurrentPickedColor,Converter={StaticResource ColorToBrushConverter},UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" x:Name="mColorPicker" Margin="0">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Confirmed" >
-                        <i:InvokeCommandAction Command="{Binding }" />
+                        <i:InvokeCommandAction Command="{Binding AddPickedSolidColorCommand }" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
 

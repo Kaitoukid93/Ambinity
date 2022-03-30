@@ -83,6 +83,11 @@ namespace adrilight.Spots
             BorderThickness=strokeThickness;
             RaisePropertyChanged(nameof(BorderThickness));
         }
+        public void SetRectangle(Rectangle rectangle)
+        {
+            Rectangle = rectangle;
+            RaisePropertyChanged(nameof(Rectangle));
+        }
         public void SetVID(int vid)
         {
             VID = vid;
@@ -92,6 +97,16 @@ namespace adrilight.Spots
                 RaisePropertyChanged(nameof(VID));
                 
             
+        }
+        public void SetMID(int mid)
+        {
+            MID = mid;
+
+
+
+            RaisePropertyChanged(nameof(MID));
+
+
         }
         public void SetIDVissible(bool iDVissible)
         {

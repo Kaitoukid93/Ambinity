@@ -137,7 +137,7 @@
                 </Rectangle>-->
                 </Border>
 
-                <ContentControl Style="{StaticResource DragDropResize}" Width="{Binding CurrentOutput.OutputPixelWidth}" Height="{Binding CurrentOutput.OutputPixelHeight}"  Canvas.Left="{Binding CurrentOutput.OutputLocationX}" Canvas.Top="{Binding CurrentOutput.OutputLocationY}" />
+                <ContentControl x:Name="adjustingRect" Style="{StaticResource DragDropResize}" Width="{Binding AdjustingRectangleWidth,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="{Binding AdjustingRectangleHeight ,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Canvas.Left="{Binding AdjustingRectangleLeft,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Canvas.Top="{Binding AdjustingRectangleTop,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
 
             </Canvas>
 
@@ -148,10 +148,10 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <StackPanel HorizontalAlignment="Right" Grid.Column="2" Orientation="Horizontal">
 
-                <Button Margin="15" Content="Cancel"  Style="{DynamicResource ButtonPrimary}" Background="Transparent" />
-                <Button Margin="15" Content="Save and Apply"  Style="{DynamicResource ButtonPrimary}"/>
+                <Button Click="Button_Click_Cancel" Margin="15" Content="Cancel"  Style="{DynamicResource ButtonPrimary}" Background="Transparent" />
+                <Button Click="Button_Click"  Command="{Binding ApplyCurrentOutputCapturingPositionCommand}" CommandParameter="apply" Margin="15" Content="Save and Apply"  Style="{DynamicResource ButtonPrimary}"/>
             </StackPanel>
         </Grid>
             

@@ -101,7 +101,7 @@
                     </GroupBox.HeaderTemplate>
                     <Border  Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
                     <ListBox  x:Name="capturing_position"  
-                              SelectedIndex="{Binding CurrentOutput.OutputScreenCapturePosition}"
+                              SelectedIndex="{Binding CurrentOutput.OutputScreenCapturePositionIndex}"
                               ItemContainerStyle="{DynamicResource _listBoxModeSelectionStyle}"  
                               
                               Background="Transparent"
@@ -241,7 +241,7 @@
                                       Width="20" 
                                       Height="20" 
                                       Fill="{DynamicResource PrimaryTextBrush}"/>
-                        <hc:PreviewSlider Grid.Column="1" MaxWidth="300" MinWidth="200" Value="{Binding CurrentOutput.OutputSmoothness}" HorizontalAlignment="Left" Margin="20,0,0,0" Minimum="0" Maximum="10">
+                        <hc:PreviewSlider Grid.Column="1" MaxWidth="300" MinWidth="200" Value="{Binding CurrentOutput.OutputSmoothness}" HorizontalAlignment="Left" Margin="20,0,0,0" Minimum="0" Maximum="5">
                             <hc:PreviewSlider.PreviewContent>
                                 <Label Style="{DynamicResource LabelBaseStyle}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
                             </hc:PreviewSlider.PreviewContent>
@@ -326,7 +326,7 @@
                                 <Grid Background="Transparent">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="MouseDown" >
-                                            <i:InvokeCommandAction Command="{Binding LaunchPositionEditWindowCommand }" />
+                                            <i:InvokeCommandAction Command="{Binding LaunchWBAdjustWindowCommand }" />
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
 

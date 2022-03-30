@@ -29,8 +29,10 @@ namespace adrilight.Spots
         void SetColor(byte red, byte green, byte blue, bool raiseEvents);
         void SetVID(int vid);
         void SetID(int id);
+        void SetMID(int mid);
         void SetStroke(double strokeThickness);
         void SetIDVissible (bool isIDVissible);
+        void SetRectangle(Rectangle rectangle);
 
 
     }

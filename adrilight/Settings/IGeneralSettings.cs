@@ -18,6 +18,7 @@ namespace adrilight
         bool IsOpenRGBEnabled { get; set; }
 
         bool MirrorY { get; set; }
+        bool IsProfileLoading { get; set; }
 
         int OffsetLed { get; set; }
         int OffsetLed2 { get; set; }

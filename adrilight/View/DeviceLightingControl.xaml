@@ -351,6 +351,9 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                <hc:Badge  BadgeMargin="8,17,0,10" Status="{Binding IsSettingsUnsaved}"  Margin="0,0,0,0" Style="{DynamicResource BadgeDanger}">
+                   
+                
                 <Button Click="ButtonProfile_OnClick" CommandParameter="connection" hc:BorderElement.CornerRadius="7" Margin="0,5,5,5" Height="65" VerticalAlignment="Stretch" HorizontalAlignment="Right" Padding="0"  BorderBrush="Transparent" Style="{DynamicResource ButtonDefault}" >
                   
                     <Grid Margin="5">
@@ -379,18 +382,19 @@
                                                 <Button ToolTip="Create New Profile" Command="{Binding OpenProfileCreateCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource newfile}" Padding="6" Margin="5"/>
                                                 <Button ToolTip="Import Profile" Command="{Binding ImportProfileCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource import}" Padding="6" Margin="5"/>
                                                 <Button ToolTip="Export Profile" Command="{Binding ExportCurrentProfileCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource export}" Padding="6" Margin="5"/>
-                                               
-                                                <Button ToolTip="Save" Command="{Binding SaveCurrentProfileCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource save}" Padding="6" Margin="5"/>
+                                                    <hc:Badge  BadgeMargin="2" Status="{Binding IsSettingsUnsaved}"  Margin="0,0,0,0" Style="{DynamicResource BadgeDanger}">
+                                                        <Button ToolTip="Save" Command="{Binding SaveCurrentProfileCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource save}" Padding="6" Margin="5"/>
+                                                        </hc:Badge>
                                             </StackPanel>  
                                         </Grid>
                                         <hc:Divider Visibility="{Binding ElementName=Order,Path=Visibility}" LineStroke="{DynamicResource SecondaryRegionBrush}" Margin="5,5,5,5">
 
                                         </hc:Divider>
-                                        <ListBox  SelectedItem="{Binding CurrentSelectedProfile}"  SelectedIndex="{Binding CurrentDevice.ActivatedProfileIndex}" SelectionChanged="NewModeSelected"  
+                                        <ListBox  SelectedItem="{Binding CurrentSelectedProfile}"  SelectedIndex="{Binding CurrentDevice.ActivatedProfileIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectionChanged="NewModeSelected"  
                                                  ItemContainerStyle="{DynamicResource _listBoxGeneralModeSelectionStyle}"  
                                                  Background="Transparent"
                                                  BorderThickness="0"
-                                                 ItemsSource="{Binding AvailableProfiles}"
+                                                 ItemsSource="{Binding AvailableProfilesForCurrentDevice}"
                                                  Style="{DynamicResource StackPanelVerticalListBox}">
 
                                             <ListBox.ItemsPanel>
@@ -433,6 +437,7 @@
                     </Grid>
                   
                 </Button>
+                </hc:Badge>
             </Grid>
             <Grid Margin="0,0,50,0" Grid.Column="2">
                 <Grid.ColumnDefinitions>
@@ -657,8 +662,8 @@
                                         <Canvas HorizontalAlignment="Center" VerticalAlignment="Top" Name="PreviewCanvas"
                                
                                 Margin="0" 
-                                Width="{Binding CurrentOutput.OutputPixelWidth}" 
-                                Height="{Binding CurrentOutput.OutputPixelHeight}" >
+                                Width="{Binding CurrentOutput.OutputRectangle.Width,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" 
+                                Height="{Binding CurrentOutput.OutputRectangle.Height, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" >
                                         </Canvas>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
@@ -672,7 +677,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <Rectangle ToolTip="{Binding id}" Stroke="OrangeRed" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
+                                            <Rectangle ToolTip="{Binding id}" Stroke="OrangeRed" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="{Binding Rectangle.Height,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                                                 <Rectangle.Fill>
                                                     <SolidColorBrush Color="{Binding OnDemandColor}"  />
                                                 </Rectangle.Fill>

@@ -70,8 +70,8 @@ namespace adrilight.Util
 
                 case nameof(GeneralSettings.ShaderCanvasHeight):
                 case nameof(GeneralSettings.ShaderCanvasWidth):
-                case nameof(OutputSettings.OutputLocationX):
-                case nameof(OutputSettings.OutputLocationY):
+                //case nameof(OutputSettings.OutputLocationX):
+                //case nameof(OutputSettings.OutputLocationY):
                     //case nameof(GeneralSettings.Shaderparam1):
                     //case nameof(GeneralSettings.Shaderparam2):
                     //case nameof(GeneralSettings.Shaderparam3):
@@ -102,10 +102,10 @@ namespace adrilight.Util
                     //get bitmap image of each frame
                     var frameTime = Stopwatch.StartNew();
                     var newImage = _retryPolicy.Execute(() => GetShaderFrame(image));
-                    var width = OutputSettings.OutputPixelWidth;
-                    var height = OutputSettings.OutputPixelHeight;
-                    var x = OutputSettings.OutputLocationX;
-                    var y = OutputSettings.OutputLocationY;
+                    var width = OutputSettings.OutputRectangle.Width;
+                    var height = OutputSettings.OutputRectangle.Height;
+                    var x = OutputSettings.OutputRectangle.Left;
+                    var y = OutputSettings.OutputRectangle.Top;
                     var brightness = OutputSettings.OutputBrightness/100d;
                     var devicePowerVoltage = OutputSettings.OutputPowerVoltage;
                     var devicePowerMiliamps = OutputSettings.OutputPowerMiliamps;

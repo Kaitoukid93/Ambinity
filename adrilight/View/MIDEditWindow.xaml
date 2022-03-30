@@ -1,4 +1,4 @@
-﻿<hc:Window x:Class="adrilight.View.VIDEditWindow"
+﻿<hc:Window x:Class="adrilight.View.MIDEditWindow"
            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -12,7 +12,7 @@
            d:DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}"
            DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}" 
            Closing="PIDEditWindowClosed"
-           Title="Edit LEDs VID" 
+           Title="Edit LEDs MID" 
            Height="540" 
            Width="1000" 
           
@@ -192,11 +192,11 @@
                                     </Rectangle.Style>
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="MouseDown" >
-                                            <i:InvokeCommandAction Command="{Binding DataContext.SetSpotActiveCommand,RelativeSource={RelativeSource AncestorType={x:Type local:PIDEditWindow}}}" CommandParameter="{Binding .}" />
+                                            <i:InvokeCommandAction Command="{Binding DataContext.SetSpotActiveCommand,RelativeSource={RelativeSource AncestorType={x:Type local:MIDEditWindow}}}" CommandParameter="{Binding .}" />
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Rectangle>
-                                <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="5" Text="{Binding VID}"  IsHitTestVisible="False"/>
+                                <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="5" Text="{Binding MID}"  IsHitTestVisible="False"/>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

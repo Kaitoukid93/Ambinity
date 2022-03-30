@@ -28,11 +28,14 @@ namespace adrilight
         public static int height = 0;
         public static int heightL = 0;
         public static int heightR = 0;
+        private float[] lastSpectrumData;
+        private Color[] fftColors;
         public WASAPIPROC _process;
         public static byte lastvolume = 0;
         public static byte volume = 0;
         public static int lastheight = 0;
-
+        private float speed1 = 1.0F, speed2 = 0.20F, lightTime = 5.0F;
+        private float minHeight = 50.0F;
         public static bool bump = false;
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
@@ -45,12 +48,12 @@ namespace adrilight
 
 
             RainbowTicker = rainbowTicker ?? throw new ArgumentNullException(nameof(rainbowTicker));
-            MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
+            MainViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
 
 
             OutputSettings.PropertyChanged += PropertyChanged;
             GeneralSettings.PropertyChanged += PropertyChanged;
-            MainViewViewModel.PropertyChanged += PropertyChanged;
+            MainViewModel.PropertyChanged += PropertyChanged;
            
             BassNet.Registration("saorihara93@gmail.com", "2X2831021152222");
             _process = new WASAPIPROC(Process);
@@ -64,12 +67,13 @@ namespace adrilight
         //Dependency Injection//
         private IOutputSettings OutputSettings { get; }
 
-        private MainViewViewModel MainViewViewModel { get; }
+        private MainViewViewModel MainViewModel { get; }
         private IRainbowTicker RainbowTicker { get; }
         private IGeneralSettings GeneralSettings { get; }
          //private IDeviceSpotSet OutputSpotSet { get; }
 
         private Color[] colorBank = new Color[256];
+   
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -78,11 +82,12 @@ namespace adrilight
                switch (e.PropertyName)
             {
                 case nameof(OutputSettings.OutputIsEnabled):
-                case nameof(OutputSettings.OutputSelectedChasingPalette):
-                case nameof(MainViewViewModel.IsSplitLightingWindowOpen):
+                case nameof(OutputSettings.OutputSelectedMode):
+                case nameof(MainViewModel.IsVisualizerWindowOpen):
                     RefreshAudioState();
                     break;
                 case nameof(OutputSettings.OutputCurrentActivePalette):
+                case nameof(OutputSettings.IsInSpotEditWizard):
 
                     ColorPaletteChanged();
                     break;
@@ -99,7 +104,7 @@ namespace adrilight
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 2;
 
 
 
@@ -148,7 +153,7 @@ namespace adrilight
         private void RefreshAudioDevice()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 2;
             //var shouldBeRunning = DeviceSettings.TransferActive && DeviceSettings.SelectedEffect == 3;
             if (isRunning && shouldBeRunning)
             {
@@ -176,7 +181,7 @@ namespace adrilight
         private void ColorPaletteChanged()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled;
+           var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 2;
 
             if (isRunning && shouldBeRunning)
             {
@@ -209,30 +214,34 @@ namespace adrilight
 
             try
             {
+               
                 Color[] paletteSource;
                 paletteSource = OutputSettings.OutputCurrentActivePalette.Colors;
                 colorBank = GetColorGradientfromPalette(paletteSource).ToArray();
+                int musicMode = OutputSettings.OutputSelectedMusicMode;
                 
+                var outputPowerVoltage = OutputSettings.OutputPowerVoltage;
+                var outputPowerMiliamps = OutputSettings.OutputPowerMiliamps;
+                var numLED = OutputSettings.OutputLEDSetup.Spots.Length;
+                lastSpectrumData = new float[numLED];
+                fftColors = new Color[numLED];
                 int counter = 0;
-               
+                List<byte> spectrumdata = new List<byte>();
                 while (!token.IsCancellationRequested)
                 {
-                   
+
 
                     //audio capture section//
 
 
 
-                    int musicMode = OutputSettings.OutputSelectedMusicMode;
-                    bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen;
-                    var outputPowerVoltage = OutputSettings.OutputPowerVoltage;
-                    var outputPowerMiliamps = OutputSettings.OutputPowerMiliamps;
-                    var numLED = OutputSettings.OutputNumLED;
-                    var spectrumdata = GetCurrentFFT(numLED);
-                    if (spectrumdata == null) return;
-                    //if (isPreviewRunning)
-                        MainViewViewModel.VisualizerFFT = spectrumdata;
-                    var brightnessMap = SpectrumCreator(spectrumdata, 0, volumeLeft, volumeRight, musicMode, numLED);// get brightness map based on spectrum data
+                    bool isPreviewRunning = MainViewModel.IsVisualizerWindowOpen;
+                    bool isLightingControlPreviewRunning = MainViewModel.IsSplitLightingWindowOpen;
+                     GetCurrentFFTColorFrame(numLED, paletteSource);
+                    //if (spectrumdata == null) return;
+                    if (isPreviewRunning)
+                    MainViewModel.SetPreviewVisualizerFFT(lastSpectrumData, fftColors);
+                    var brightnessMap = SpectrumCreator(lastSpectrumData, 0, 1, 1, 0, numLED);// get brightness map based on spectrum data
 
                     lock (OutputSettings.OutputLEDSetup.Lock)
                     {
@@ -246,22 +255,24 @@ namespace adrilight
                         foreach (var spot in OutputSettings.OutputLEDSetup.Spots)
                         {
 
-                            
 
-                                position = (int)RainbowTicker.StartIndex + spot.VID;
-                                if (position >= colorBank.Length)
-                                    position = position - colorBank.Length; // run with VID
-                            
-                            
-                            var brightness = brightnessMap[spot.VID];
+
+                            position = (int)RainbowTicker.StartIndex + spot.VID;
+                            if (position >= colorBank.Length)
+                                position = position - colorBank.Length; // run with VID
+
+
+                            //var brightness = 0.5;/*brightnessMap[spot.VID];*/
                             var newColor = new OpenRGB.NET.Models.Color(colorBank[position].R, colorBank[position].G, colorBank[position].B);
-                            
-                            var outputColor = Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);
+                            var freq = spot.MID;
+                            if (freq >= brightnessMap.Length)
+                                freq = brightnessMap.Length - 1;
+                            var outputColor = Brightness.applyBrightness(newColor, brightnessMap[freq], numLED, outputPowerMiliamps, outputPowerVoltage);
                             ApplySmoothing(outputColor.R, outputColor.G, outputColor.B, out byte FinalR, out byte FinalG, out byte FinalB, spot.Red, spot.Green, spot.Blue);
-                            spot.SetColor(FinalR, FinalG, FinalB, true);
-                            
-                            
-                            
+                            spot.SetColor(FinalR, FinalG, FinalB, isLightingControlPreviewRunning);
+
+
+
 
                         }
 
@@ -324,13 +335,15 @@ namespace adrilight
 
             }
         }
-        public byte[] GetCurrentFFT( int numFreq)
+
+        public void GetCurrentFFTColorFrame( int numFreq , Color[] paletteSource)
         {
-            byte[] spectrumdata = new byte[numFreq];
+            var minheight = (float)OutputSettings.OutputMusicSensitivity;
+            List<byte> spectrumdata = new List<byte>();
             double senspercent = 0 / 100d;
             //audio capture section//
             int ret = BassWasapi.BASS_WASAPI_GetData(_fft, (int)BASSData.BASS_DATA_FFT2048);// get channel fft data
-            if (ret < -1) return null;
+            if (ret < -1) return;
             int x, y;
             int b0 = 0;
             //computes the spectrum data, the code is taken from a bass_wasapi sample.
@@ -347,23 +360,54 @@ namespace adrilight
                 y = (int)(Math.Sqrt(peak) * 3 * 250 - 4);
                 if (y > 255) y = 255;
                 if (y < 10) y = 0;
-                spectrumdata[x] = (byte)((spectrumdata[x] * 6 + y * 2 + 7) / 8);
+                spectrumdata.Add((byte)y);
+                //spectrumdata[x] = (byte)((spectrumdata[x] * 6 + y * 2 + 7) / 8);
 
-                spectrumdata[x] = (byte)((byte)(spectrumdata[x] * senspercent) + spectrumdata[x]);
+                //spectrumdata[x] = (byte)((byte)(spectrumdata[x] * senspercent) + spectrumdata[x]);
                 //Smoothing out the value (take 5/8 of old value and 3/8 of new value to make finnal value)
-                if (spectrumdata[x] > 255)
-                    spectrumdata[x] = 255;
-                if (spectrumdata[x] < 15)
-                    spectrumdata[x] = 0;
+             
 
             }
-
+           
             int level = BassWasapi.BASS_WASAPI_GetLevel(); // Get level (VU metter) for Old AMBINO Device (remove in the future)
             if (level == _lastlevel && level != 0) _hanctr++;
             volumeLeft = (volumeLeft * 6 + Utils.LowWord32(level) * 2) / 8;
             volumeRight = (volumeRight * 6 + Utils.HighWord32(level) * 2) / 8;
-            _lastlevel = level;   
-            return spectrumdata;
+            _lastlevel = level;
+
+            
+           
+            for (int i = 0; i < numFreq; i++)
+            {
+                if (spectrumdata[i] > lastSpectrumData[i])
+                {
+                    lastSpectrumData[i] += speed1 * (spectrumdata[i] - lastSpectrumData[i]);
+
+                    if (lastSpectrumData[i] >= minheight)
+                    {
+                        Color newClr = Blend(Color.FromRgb(255,0,0), Color.FromRgb(0, 255, 0), spectrumdata[i] - minheight);
+                        fftColors[i] = Blend(Colors.Black, newClr, 255);
+                        
+                    }
+                }
+
+                if (spectrumdata[i] < lastSpectrumData[i])
+                {
+                    lastSpectrumData[i] -= speed2 * (lastSpectrumData[i] - spectrumdata[i]);
+
+                    if (spectrumdata[i] + lightTime < lastSpectrumData[i] || lastSpectrumData[i] <= 0.1F)
+                    {
+                        Color newClr = Color.FromRgb(0,0,0);
+                        fftColors[i] = Blend(Colors.Black, newClr, 255);
+                        
+                    }
+                }
+
+               
+
+                
+            }
+            
         }
 
         public IList<string> _AvailableAudioDevice = new List<string>();
@@ -401,7 +445,7 @@ namespace adrilight
         }
 
 
-        public static double[] SpectrumCreator(byte[] fft, int sensitivity, double levelLeft, double levelRight, int musicMode, int numLED)//create brightnessmap based on input fft or volume
+        public static double[] SpectrumCreator(float[] fft, int sensitivity, double levelLeft, double levelRight, int musicMode, int numLED)//create brightnessmap based on input fft or volume
         {
 
             int counter = 0;
@@ -419,7 +463,7 @@ namespace adrilight
                 for (int i = 0; i < fft.Length; i++)
                 {
 
-                    brightnessMap[counter++] = fft[i] / 255.0;
+                    brightnessMap[counter++] = (double)fft[i] / 255.0;
 
                 }
 
@@ -596,7 +640,21 @@ namespace adrilight
 
         }
 
+        Color Blend(Color colorA, Color colorB, float a)
+        {
+            if (a > 255.0F) { a = 255.0F; }
+            float amount = 1.0F - (a / 255.0F);
 
+            float r = ((colorA.R * amount) + colorB.R * (1 - amount));
+            float g = ((colorA.G * amount) + colorB.G * (1 - amount));
+            float b = ((colorA.B * amount) + colorB.B * (1 - amount));
+
+            if (r < 0) { r = 0; }
+            if (g < 0) { g = 0; }
+            if (b < 0) { b = 0; }
+
+            return Color.FromRgb((byte)Math.Round(r), (byte)Math.Round(g), (byte)Math.Round(b));
+        }
         public static IEnumerable<Color> GetColorGradientfromPalette(Color[] colorCollection)
         {
             var colors = new List<Color>();

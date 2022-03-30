@@ -21,14 +21,14 @@ namespace adrilight.View
     /// <summary>
     /// Interaction logic for PaletteEditWindow.xaml
     /// </summary>
-    public partial class VIDEditWindow
+    public partial class MIDEditWindow
     {
         private bool isLeftMouseButtonDownOnWindow = false;
         private bool isDraggingSelectionRect = false;
         private Point origMouseDownPoint;
         private double _scale = 1;
         private static readonly double DragThreshold = 1;
-        public VIDEditWindow()
+        public MIDEditWindow()
         {
             InitializeComponent();
           
@@ -282,8 +282,7 @@ namespace adrilight.View
             {
                 if (AssemblyHelper.CreateInternalInstance($"View.{"IDSetupWindow"}") is System.Windows.Window window)
                 {
-
-                    ViewModel.SetIDMode = "VID";
+                    ViewModel.SetIDMode = "MID";
                     window.Owner = System.Windows.Application.Current.MainWindow;
                     window.ShowDialog();
 

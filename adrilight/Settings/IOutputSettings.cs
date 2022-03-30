@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using adrilight.Util;
 
+
 namespace adrilight
 {
     public interface IOutputSettings : INotifyPropertyChanged
@@ -20,10 +21,9 @@ namespace adrilight
         int OutputNumLED { get; set; }
         int OutputNumLEDX { get; set; }
         int OutputNumLEDY { get; set; }
-        int OutputLocationX { get; set; }
-        int OutputLocationY { get; set; }
-        int OutputPixelWidth { get; set; }
-        int OutputPixelHeight { get; set; }
+        bool OutputIsLoadingProfile { get; set; }
+        bool OutputIsBuildingLEDSetup { get; set; }
+        System.Drawing.Rectangle OutputRectangle { get; set; }
         string OutputUniqueID { get; set; }
         string OutputRGBLEDOrder { get; set; }
         bool OutputIsVisible { get; set; }
@@ -32,7 +32,7 @@ namespace adrilight
         int OutputPowerMiliamps { get; set; }
         byte OutputSaturationThreshold { get; set; }
         int OutputSmoothness { get; set; }
-
+        int OutputScreenCapturePositionIndex { get; set; }
         bool OutputUseLinearLighting { get; set; }
         bool OutputIsEnabled { get; set; }
         Color OutputAtmosphereStartColor { get; set; }
@@ -40,6 +40,7 @@ namespace adrilight
         string OutputAtmosphereMode { get; set; }
         //string SelectedEffect { get; set; }
         int OutputSelectedMusicMode { get; set; }
+        int OutputMusicSensitivity { get; set; }
         int OutputSelectedMusicPalette { get; set; }
         Color[] OutputSentryModeColorSource { get; set; }
         int OutputSelectedAudioDevice { get; set; }
@@ -48,7 +49,8 @@ namespace adrilight
         int OutputSelectedMode { get; set; }
         bool IsInSpotEditWizard { get; set; }
         string Geometry { get; set; }
-       
+        int OutputMusicVisualizerFreq { get; set; }
+
 
 
 
@@ -69,7 +71,7 @@ namespace adrilight
         int OutputScreenCaptureWB { get; set; }
         int OutputScreenCaptureWBRed { get; set; }
         int OutputScreenCaptureWBGreen { get; set; }
-        int OutputScreenCaptureWBlue { get; set; }
+        int OutputScreenCaptureWBBlue { get; set; }
         int OutputMusicDancingMode { get; set; }
         int OutputBreathingSpeed { get; set; }
 

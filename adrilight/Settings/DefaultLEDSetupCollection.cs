@@ -86,7 +86,7 @@ namespace adrilight.Settings
                 reorderedActiveSpots[counter++] = spot;
             }
 
-            ILEDSetup ledSetup = new LEDSetup(name, owner, type, description, reorderedActiveSpots, matrixWidth, matrixHeight, 0);
+            ILEDSetup ledSetup = new LEDSetup(name, owner, type, description, reorderedActiveSpots, matrixWidth, matrixHeight, 0,100,100);
 
 
             //if (availableLEDSetups != null)

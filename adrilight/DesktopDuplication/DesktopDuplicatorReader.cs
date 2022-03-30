@@ -26,7 +26,8 @@ namespace adrilight
             IDesktopFrame desktopFrame,
              ISecondDesktopFrame secondDesktopFrame,
              IThirdDesktopFrame thirdDesktopFrame,
-             IOutputSettings outputSettings
+             IOutputSettings outputSettings,
+             MainViewViewModel mainViewViewModel
             )
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
@@ -38,12 +39,13 @@ namespace adrilight
             OutputSettings = outputSettings ?? throw new ArgumentNullException(nameof(outputSettings));
             // GraphicAdapter = graphicAdapter;
             // Output = output;
-            //MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
+            MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
             // SettingsViewModel = settingsViewModel ?? throw new ArgumentNullException(nameof(settingsViewModel));
             _retryPolicy = Policy.Handle<Exception>().WaitAndRetryForever(ProvideDelayDuration);
 
             UserSettings.PropertyChanged += PropertyChanged;
             OutputSettings.PropertyChanged += PropertyChanged;
+            MainViewViewModel.PropertyChanged += PropertyChanged;
             // SettingsViewModel.PropertyChanged += PropertyChanged;
             RefreshCapturingState();
 
@@ -57,6 +59,10 @@ namespace adrilight
                 
                 case nameof(UserSettings.ShouldbeRunning):
                 case nameof(OutputSettings.OutputSelectedMode):
+                case nameof(UserSettings.IsProfileLoading):
+                case nameof(MainViewViewModel.IsSplitLightingWindowOpen):
+                    
+               
 
                     RefreshCapturingState();
                     break;
@@ -68,9 +74,9 @@ namespace adrilight
             }
         }
 
-        public bool IsRunning { get; private set; } = false;
+        //public bool IsRunning { get; private set; } = false;
         public bool NeededRefreshing { get; private set; } = false;
-        //private MainViewViewModel MainViewViewModel { get; }
+        private MainViewViewModel MainViewViewModel { get; }
         private CancellationTokenSource _cancellationTokenSource;
 
         private Thread _workerThread;
@@ -79,14 +85,14 @@ namespace adrilight
 
        public void RefreshCaptureSource()
         {
-            var isRunning = _cancellationTokenSource != null && IsRunning;
+            var isRunning = _cancellationTokenSource != null;
             var shouldBeRunning = UserSettings.ShouldbeRunning;
             //  var shouldBeRefreshing = NeededRefreshing;
             if (isRunning && shouldBeRunning)
             {
                 //start it
 
-                IsRunning = false;
+                //IsRunning = false;
                 _cancellationTokenSource.Cancel();
                 _cancellationTokenSource = null;
                 _log.Debug("starting the capturing");
@@ -102,8 +108,8 @@ namespace adrilight
         }
         public void RefreshCapturingState()
         {
-            var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 0;
+            var isRunning = _cancellationTokenSource != null;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 0 && UserSettings.IsProfileLoading == false;
             //  var shouldBeRefreshing = NeededRefreshing;
 
 
@@ -174,10 +180,10 @@ namespace adrilight
 
         public void Run(CancellationToken token)
         {
-            if (IsRunning) throw new Exception(nameof(DesktopDuplicatorReader) + " is already running!");
+            //if (IsRunning) throw new Exception(nameof(DesktopDuplicatorReader) + " is already running!");
 
-            IsRunning = true;
-            NeededRefreshing = false;
+            //IsRunning = true;
+            //NeededRefreshing = false;
             _log.Debug("Started Desktop Duplication Reader.");
             Bitmap image = null;
             BitmapData bitmapData = new BitmapData();
@@ -193,13 +199,14 @@ namespace adrilight
                     var frameTime = Stopwatch.StartNew();
                     var newImage = _retryPolicy.Execute(() => GetNextFrame(image));
                     TraceFrameDetails(newImage);
-                    var width = OutputSettings.OutputPixelWidth;
-                    var height = OutputSettings.OutputPixelHeight;
-                    var x = OutputSettings.OutputLocationX;
-                    var y = OutputSettings.OutputLocationY;
+                    var width = OutputSettings.OutputRectangle.Width;
+                    var height = OutputSettings.OutputRectangle.Height;
+                    var x = OutputSettings.OutputRectangle.Left;
+                    var y = OutputSettings.OutputRectangle.Top;
                     var brightness = OutputSettings.OutputBrightness/100d;
                     var devicePowerVoltage = OutputSettings.OutputPowerVoltage;
                     var devicePowerMiliamps = OutputSettings.OutputPowerMiliamps;
+                    bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen;
                     
 
                     if (newImage == null)
@@ -255,7 +262,7 @@ namespace adrilight
                                     ApplySmoothing(semifinalSpotColor.R, semifinalSpotColor.G, semifinalSpotColor.B
                                         , out byte RealfinalR, out byte RealfinalG, out byte RealfinalB,
                                      spot.Red, spot.Green, spot.Blue);
-                                    spot.SetColor(RealfinalR, RealfinalG, RealfinalB, true);
+                                    spot.SetColor(RealfinalR, RealfinalG, RealfinalB, isPreviewRunning);
 
                                 });
                         //}
@@ -281,7 +288,7 @@ namespace adrilight
                 image?.Dispose();
                 
                 _log.Debug("Stopped Desktop Duplication Reader.");
-                IsRunning = false;
+                //IsRunning = false;
                 GC.Collect();
             }
         }
@@ -342,9 +349,9 @@ namespace adrilight
             //"white" on wall was 66,68,77 without white balance
             //white balance
             //todo: introduce settings for white balance adjustments
-            r *= UserSettings.WhitebalanceRed / 100f;
-            g *= UserSettings.WhitebalanceGreen / 100f;
-            b *= UserSettings.WhitebalanceBlue / 100f;
+            r *= OutputSettings.OutputScreenCaptureWBRed / 100f;
+            g *= OutputSettings.OutputScreenCaptureWBGreen / 100f;
+            b *= OutputSettings.OutputScreenCaptureWBBlue / 100f;
 
             if (!useLinearLighting)
             {
@@ -364,7 +371,7 @@ namespace adrilight
         private void ApplySmoothing(float r, float g, float b, out byte semifinalR, out byte semifinalG, out byte semifinalB,
            byte lastColorR, byte lastColorG, byte lastColorB)
         {
-            int smoothingFactor = UserSettings.SmoothFactor;
+            int smoothingFactor = OutputSettings.OutputSmoothness;
            
 
             semifinalR = (byte)((r + smoothingFactor * lastColorR) / (smoothingFactor + 1));
@@ -423,13 +430,24 @@ namespace adrilight
                         DesktopImage = ReusableBitmap;
                         
                 }
-                else
+                else if (ReusableBitmap!=null  && ReusableBitmap.Width != DesktopFrame.FrameWidth && ReusableBitmap.Height != DesktopFrame.FrameHeight)
                 {
                         DesktopImage = new Bitmap(DesktopFrame.FrameWidth, DesktopFrame.FrameHeight, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
-                        if (OutputSettings.OutputPixelWidth+ OutputSettings.OutputLocationX > DesktopFrame.FrameWidth)
-                            OutputSettings.OutputPixelWidth = DesktopFrame.FrameWidth-OutputSettings.OutputLocationX;
-                        if (OutputSettings.OutputPixelHeight+ OutputSettings.OutputLocationY > DesktopFrame.FrameHeight)
-                            OutputSettings.OutputPixelHeight = DesktopFrame.FrameHeight- OutputSettings.OutputLocationY;
+                        //do the scale for current device position
+                        double scaleX = (double)DesktopFrame.FrameWidth / (double)ReusableBitmap.Width;
+                        double scaleY = (double)DesktopFrame.FrameHeight / (double)ReusableBitmap.Height;
+                        var x = (double)OutputSettings.OutputRectangle.X * scaleX;
+                        var y = (double)OutputSettings.OutputRectangle.Y * scaleX;
+                        var width = OutputSettings.OutputRectangle.Width * scaleX;
+                        var height = OutputSettings.OutputRectangle.Height * scaleY;
+
+                        OutputSettings.OutputRectangle = new Rectangle((int)x, (int)y, (int)width, (int)height);
+                        
+
+                        //if (OutputSettings.OutputRectangle.Width+ OutputSettings.OutputRectangle.Left > DesktopFrame.FrameWidth)
+                        //    OutputSettings.OutputRectangle.Width = DesktopFrame.FrameWidth-OutputSettings.OutputRectangle.Left;
+                        //if (OutputSettings.OutputRectangle.Height+ OutputSettings.OutputRectangle.Top > DesktopFrame.FrameHeight)
+                        //    OutputSettings.OutputRectangle.Height = DesktopFrame.FrameHeight- OutputSettings.OutputRectangle.Top;
 
                         //change deviceRectWidth and deviceRectHeight here, so we dont need notifypropertychanged on Display change resolution event,
                         // The SharpDXGI handle resolution change for us
@@ -442,8 +460,22 @@ namespace adrilight
                         //DeviceSettings.DeviceRectTop = (int)(DeviceSettings.DeviceRectTop * heightRatio);
 
                     }
-                
-                var DesktopImageBitmapData = DesktopImage.LockBits(new Rectangle(0, 0, DesktopFrame.FrameWidth, DesktopFrame.FrameHeight), ImageLockMode.WriteOnly, DesktopImage.PixelFormat);
+                    else //this is when app start
+                    {
+                        DesktopImage = new Bitmap(DesktopFrame.FrameWidth, DesktopFrame.FrameHeight, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                        var width = OutputSettings.OutputRectangle.Width;
+                        var height = OutputSettings.OutputRectangle.Height;
+                        if (OutputSettings.OutputRectangle.Width+ OutputSettings.OutputRectangle.Left > DesktopFrame.FrameWidth)
+                             width = DesktopFrame.FrameWidth-OutputSettings.OutputRectangle.Left;
+                        if (OutputSettings.OutputRectangle.Height+ OutputSettings.OutputRectangle.Top > DesktopFrame.FrameHeight)
+                            height = DesktopFrame.FrameHeight- OutputSettings.OutputRectangle.Top;
+                        var x = OutputSettings.OutputRectangle.Left;
+                        var y = OutputSettings.OutputRectangle.Top;
+                        OutputSettings.OutputRectangle = new Rectangle(x, y, width, height);
+
+                    }
+
+                    var DesktopImageBitmapData = DesktopImage.LockBits(new Rectangle(0, 0, DesktopFrame.FrameWidth, DesktopFrame.FrameHeight), ImageLockMode.WriteOnly, DesktopImage.PixelFormat);
                 IntPtr pixelAddress = DesktopImageBitmapData.Scan0;
                 
                     
