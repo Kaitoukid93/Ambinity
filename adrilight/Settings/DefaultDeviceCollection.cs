@@ -18,9 +18,9 @@ namespace adrilight.Settings
             IsVisible = true,
             IsEnabled = true,
             OutputPort = "Không có",
-            Geometry= "ambinobasic",
+            Geometry = "ambinobasic",
             IsTransferActive = true,
-            AvailableOutputs =   new OutputSettings[] {DefaulOutputCollection.AmbinoBasic(0,11,7)}
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 11, 7) }
 
         };
         public static DeviceSettings ambinoBasic27 = new DeviceSettings {
@@ -98,21 +98,21 @@ namespace adrilight.Settings
             AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoEdge(0, 40) }
 
         };
-         public static DeviceSettings ambinoEdge2m = new DeviceSettings {
-             DeviceName = "Ambino EDGE 1.2m",
-             DeviceSerial = "ABEDGE2.0",
-             DeviceType = "ABEDGE2.0",
-             Manufacturer = "Ambino Vietnam",
-             FirmwareVersion = "1.0.3",
-             ProductionDate = "2022",
-             IsVisible = true,
-             IsEnabled = true,
-             OutputPort = "Không có",
-             Geometry = "ambinoedge",
-             IsTransferActive = true,
-             AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoEdge(0, 80) }
+        public static DeviceSettings ambinoEdge2m = new DeviceSettings {
+            DeviceName = "Ambino EDGE 1.2m",
+            DeviceSerial = "ABEDGE2.0",
+            DeviceType = "ABEDGE2.0",
+            Manufacturer = "Ambino Vietnam",
+            FirmwareVersion = "1.0.3",
+            ProductionDate = "2022",
+            IsVisible = true,
+            IsEnabled = true,
+            OutputPort = "Không có",
+            Geometry = "ambinoedge",
+            IsTransferActive = true,
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoEdge(0, 80) }
 
-         };
+        };
         public static DeviceSettings ambinoFanHub = new DeviceSettings {
             DeviceName = "Ambino FanHub",
             DeviceSerial = "ABFANHUB",
@@ -136,9 +136,9 @@ namespace adrilight.Settings
                                                       DefaulOutputCollection.GenericRectangle("Fan9",8, 5,5),
                                                       DefaulOutputCollection.GenericRectangle("Fan10",9, 5,5)
             },
-            
-                                                      
-            
+
+
+
 
         };
         public static DeviceSettings ambinoHUBV2 = new DeviceSettings {
@@ -159,7 +159,7 @@ namespace adrilight.Settings
                                                       DefaulOutputCollection.AmbinoBasic(3, 11,7),
                                                       DefaulOutputCollection.AmbinoBasic(4, 11,7),
                                                       DefaulOutputCollection.GenericLEDStrip(5, 12)
-                                                     
+
             }
 
         };
@@ -178,7 +178,31 @@ namespace adrilight.Settings
             AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 64),
                                                       DefaulOutputCollection.GenericLEDStrip(1, 64),
                                                       DefaulOutputCollection.GenericLEDStrip(2, 64),
-                                                      DefaulOutputCollection.GenericLEDStrip(2, 64)
+                                                      DefaulOutputCollection.GenericLEDStrip(3, 64)
+
+
+
+            }
+
+        };
+        public static DeviceSettings ambinoRainPow = new DeviceSettings {
+            DeviceName = "Ambino RainPow",
+            DeviceSerial = "ABRP",
+            DeviceType = "ABRP",
+            Manufacturer = "Ambino Vietnam",
+            FirmwareVersion = "1.0.0",
+            ProductionDate = "2022",
+            IsVisible = true,
+            IsEnabled = true,
+            OutputPort = "Không có",
+            Geometry = "ambinohubv3",
+            IsTransferActive = true,
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 20),
+                                                      DefaulOutputCollection.GenericLEDStrip(1, 20),
+                                                      DefaulOutputCollection.GenericLEDStrip(2, 20),
+                                                      DefaulOutputCollection.GenericLEDStrip(3, 20),
+                                                      DefaulOutputCollection.GenericLEDStrip(4, 20),
+                                                      DefaulOutputCollection.GenericLEDStrip(5, 20)
 
 
 

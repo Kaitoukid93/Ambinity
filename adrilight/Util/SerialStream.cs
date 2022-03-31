@@ -233,8 +233,8 @@ namespace adrilight
                 
                 
                     
-                    byte lo = (byte)(((currentOutput.OutputNumLEDX - 1) * 2 + (currentOutput.OutputNumLEDY - 1) * 2) & 0xff);
-                    byte hi = (byte)((((currentOutput.OutputNumLEDX - 1) * 2 + (currentOutput.OutputNumLEDY - 1) * 2) >> 8) & 0xff);
+                    byte lo = (byte)(currentOutput.OutputLEDSetup.Spots.Length & 0xff);
+                    byte hi = (byte)((currentOutput.OutputLEDSetup.Spots.Length >> 8) & 0xff);
                     byte chk = (byte)(hi ^ lo ^ 0x55);
                     outputStream[counter++] = hi;
                     outputStream[counter++] = lo;
@@ -416,7 +416,7 @@ namespace adrilight
             {
                 try
                 {
-                    const int baudRate = 2000000;
+                    const int baudRate = 1000000;
                     string openedComPort = null;
 
 

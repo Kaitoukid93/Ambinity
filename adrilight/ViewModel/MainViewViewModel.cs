@@ -883,9 +883,18 @@ namespace adrilight.ViewModel
                                                  DefaultDeviceCollection.ambinoHUBV3
                 }
             };
+            IDeviceCatergory ambinoRainPow = new DeviceCatergory {
+                Description = "Ambino RainPow",
+                Name = "AMBINO RAINPOW",
+                Geometry = "generaldevice",
+                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoRainPow
+                                              
+                }
+            };
             AvailableDeviceCatergoryToAdd.Add(ambinoBasic);
             AvailableDeviceCatergoryToAdd.Add(ambinoEDGE);
             AvailableDeviceCatergoryToAdd.Add(ambinoHUB);
+            AvailableDeviceCatergoryToAdd.Add(ambinoRainPow);
 
             GeneralSettings.PropertyChanged += (s, e) =>
             {

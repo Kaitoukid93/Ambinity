@@ -110,7 +110,7 @@ namespace adrilight.Settings
                 OutputIsVisible = true,
                 OutputBrightness = 80,
                 OutputPowerVoltage = 5,
-                OutputPowerMiliamps = 900,
+                OutputPowerMiliamps = 200,
                 OutputSaturationThreshold = 10,
                 OutputUseLinearLighting = false,
                 OutputIsEnabled = true,
