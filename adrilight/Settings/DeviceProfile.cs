@@ -13,6 +13,7 @@ namespace adrilight.Settings
         public string Owner { get; set; }
         public string Description { get; set; }
         public string Geometry { get; set; }
+        public string ProfileUID { get; set; }
         public IOutputSettings[] OutputSettings { get; set; }
     }
 }

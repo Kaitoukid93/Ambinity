@@ -40,7 +40,7 @@
                 <hc:TabItem  Header="Single Number" hc:IconElement.Geometry="{StaticResource number}" hc:IconElement.Width="20" IsSelected="True">
                     <StackPanel Background="{DynamicResource RegionBrush}">
 
-                        <TextBox  x:Name="ID" MaxLength="100" Margin="10" hc:InfoElement.Placeholder="Ví dụ : Rainbow" hc:InfoElement.Title="INPUT A NUMBER" Style="{DynamicResource TextBoxExtend}" hc:InfoElement.Necessary="True" />
+                        <TextBox  x:Name="ID" MaxLength="100" Margin="10" hc:InfoElement.Placeholder="Ví dụ : 5" hc:InfoElement.Title="INPUT A NUMBER" Style="{DynamicResource TextBoxExtend}" hc:InfoElement.Necessary="True" />
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
@@ -67,19 +67,26 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
-                                <hc:NumericUpDown Margin="5" Value="{Binding RangeMinValue,Mode=TwoWay}">
+                                <!--<hc:NumericUpDown Margin="5" Minimum="{Binding IDMinValue}" Maximum="{Binding IDMaxValue}" Value="{Binding RangeMinValue,Mode=TwoWay}">
 
                                 </hc:NumericUpDown>
-                                <hc:NumericUpDown Margin="5" Grid.Column="2" Value="{Binding RangeMaxValue,Mode=TwoWay}">
+                                <hc:NumericUpDown Margin="5" Grid.Column="2" Minimum="{Binding IDMinValue}" Maximum="{Binding IDMaxValue}" Value="{Binding RangeMaxValue,Mode=TwoWay}">
 
-                                </hc:NumericUpDown>
+                                </hc:NumericUpDown>-->
 
-                                <hc:RangeSlider Margin="5" Grid.Column="1" x:Name="rangeSlider" Width="280"  ValueStart="{Binding RangeMinValue,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" ValueEnd="{Binding RangeMaxValue ,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Minimum="0" Maximum="1000">
+                                <hc:RangeSlider Margin="5" Grid.Column="1" 
+                                                x:Name="rangeSlider" Width="240"  
+                                                hc:TipElement.Visibility="Visible" 
+                                                hc:TipElement.Placement="Bottom" 
+                                                hc:TipElement.StringFormat="#0"
+                                                Maximum="{Binding IDMaxValue}"
+                                                ValueStart="{Binding RangeMinValue,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" 
+                                                ValueEnd="{Binding RangeMaxValue ,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
                                 </hc:RangeSlider>
                             </Grid>
                         </GroupBox>
                         
-                        <Grid>
+                        <Grid Margin="0,15,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="*"/>

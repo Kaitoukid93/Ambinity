@@ -1,10 +1,12 @@
-﻿using adrilight.Spots;
+﻿using adrilight.Settings;
+using adrilight.Spots;
 using adrilight.Util;
 using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -36,6 +38,7 @@ namespace adrilight
         private string _deviceConnectionGeometry = "connection";
         private int _baudrate = 1000000;
         private int _activatedProfileIndex = 0;
+        private string _deviceUID;
 
 
 
@@ -62,6 +65,24 @@ namespace adrilight
         public int SelectedOutput { get => _selectedOutput; set { Set(() => SelectedOutput, ref _selectedOutput, value); } }
         public string Geometry { get => _geometry; set { Set(() => Geometry, ref _geometry, value); } }
         public string DeviceDescription { get => _deviceDescription; set { Set(() => DeviceDescription, ref _deviceDescription, value); } }
+        public string DeviceUID { get => _deviceUID; set { Set(() => DeviceUID, ref _deviceUID, value); } }
         public string DeviceConnectionGeometry { get => _deviceConnectionGeometry; set { Set(() => DeviceConnectionGeometry, ref _deviceConnectionGeometry, value); } }
+        public void ActivateProfile(IDeviceProfile profile) 
+        {
+            for (var i = 0; i < AvailableOutputs.Length; i++)
+            {
+
+                foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
+                {
+                    property.SetValue(AvailableOutputs[i], property.GetValue(profile.OutputSettings[i], null), null);
+                }
+                //foreach (PropertyInfo property in CurrentDevice.AvailableOutputs[i].GetType().GetProperties())
+                //{
+                //property.SetValue(property);
+                //    // do something with the property
+                //}
+
+            }
+        }
     }
 }

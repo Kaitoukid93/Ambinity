@@ -23,6 +23,7 @@ namespace adrilight.Ninject
             Bind<ISecondDesktopFrame>().To<SecondDesktopFrame>().InSingletonScope();
             Bind<IThirdDesktopFrame>().To<ThirdDesktopFrame>().InSingletonScope();
             Bind<IRainbowTicker>().To<RainbowTicker>().InSingletonScope();
+            //Bind<IHotKeyManager>().To<HotKeyManager>().InSingletonScope();
 
             if (existedDevices != null)
             {

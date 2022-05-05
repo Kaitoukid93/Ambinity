@@ -8,6 +8,7 @@ namespace adrilight
         bool IsRunning { get; }
 
         void Run(CancellationToken token);
+        
     }
 
 

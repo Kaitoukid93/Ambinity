@@ -282,6 +282,7 @@ namespace adrilight.View
             {
                 if (AssemblyHelper.CreateInternalInstance($"View.{"IDSetupWindow"}") is System.Windows.Window window)
                 {
+                    
                     ViewModel.SetIDMode = "MID";
                     window.Owner = System.Windows.Application.Current.MainWindow;
                     window.ShowDialog();

@@ -156,6 +156,7 @@
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
     <PackageReference Include="NLog" Version="4.7.12" />
+    <PackageReference Include="NonInvasiveKeyboardHookLibrary" Version="2.1.0" />
     <PackageReference Include="SharpDX" Version="4.2.0" />
     <PackageReference Include="SharpVectors" Version="1.7.7" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
@@ -168,7 +169,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NAudio" Version="1.10.0" />
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.1.0" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Bass.Net" Version="1.0.0" />
@@ -262,7 +263,16 @@
     <Resource Include="Shaders\Thumbnail\Plasma.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\ActionEditWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\AddNewDeviceWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\ActionManagerWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\AutomationManagerWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\xIDEditWindow.xaml.cs">
@@ -333,7 +343,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="View\ActionEditWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\AddNewDeviceWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ActionManagerWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\AutomationManagerWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

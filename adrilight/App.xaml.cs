@@ -176,6 +176,7 @@ namespace adrilight
             var secondDesktopFrame = kernel.Get<ISecondDesktopFrame>();
             var thirdDesktopFrame = kernel.Get<IThirdDesktopFrame>();
             var rainbowTicker = kernel.Get<IRainbowTicker>();
+            //var hotKeyManager = kernel.Get<IHotKeyManager>();
             //kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
             //var openRGBStream = kernel.Get<IOpenRGBStream>();
             

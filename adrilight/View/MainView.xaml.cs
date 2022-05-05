@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -20,7 +23,7 @@ namespace adrilight.View
     /// </summary>
     public partial class MainView 
     {
-        
+       
         public MainView()
         {
             InitializeComponent();
@@ -37,6 +40,13 @@ namespace adrilight.View
 
 
         }
+     
+        //protected override void OnClosed(EventArgs e)
+        //{
+        //    _source.RemoveHook(HwndHook);
+        //    UnregisterHotKey(_windowHandle, HOTKEY_ID);
+        //    base.OnClosed(e);
+        //}
         protected override void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);

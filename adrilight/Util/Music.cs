@@ -225,7 +225,7 @@ namespace adrilight
                 var numLED = OutputSettings.OutputLEDSetup.Spots.Length;
                 lastSpectrumData = new float[numLED];
                 fftColors = new Color[numLED];
-                int counter = 0;
+                //int counter = 0;
                 List<byte> spectrumdata = new List<byte>();
                 while (!token.IsCancellationRequested)
                 {

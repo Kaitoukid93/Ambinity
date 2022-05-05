@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using adrilight.Util;
+using adrilight.Settings;
 
 namespace adrilight
 {
@@ -34,5 +35,9 @@ namespace adrilight
         string Geometry { get; set; }
         string DeviceConnectionGeometry { get; set; }
         int Baudrate { get; set; }
+        string DeviceUID { get; set; }
+
+        void ActivateProfile(IDeviceProfile profile);
+       
     }
 }
