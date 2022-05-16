@@ -186,7 +186,7 @@ namespace adrilight
             if (isRunning && shouldBeRunning)
             {
                 // rainbow is running and we need to change the color bank
-                colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette.Colors).ToArray();
+                colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette.Colors, MainViewModel.IDMaxValue).ToArray();
             }
 
         }
@@ -217,14 +217,14 @@ namespace adrilight
                
                 Color[] paletteSource;
                 paletteSource = OutputSettings.OutputCurrentActivePalette.Colors;
-                colorBank = GetColorGradientfromPalette(paletteSource).ToArray();
+                colorBank = GetColorGradientfromPalette(paletteSource,MainViewModel.IDMaxValue).ToArray();
                 int musicMode = OutputSettings.OutputSelectedMusicMode;
                 
                 var outputPowerVoltage = OutputSettings.OutputPowerVoltage;
                 var outputPowerMiliamps = OutputSettings.OutputPowerMiliamps;
                 var numLED = OutputSettings.OutputLEDSetup.Spots.Length;
-                lastSpectrumData = new float[numLED];
-                fftColors = new Color[numLED];
+                lastSpectrumData = new float[MainViewModel.IDMaxValue];
+                fftColors = new Color[MainViewModel.IDMaxValue];
                 //int counter = 0;
                 List<byte> spectrumdata = new List<byte>();
                 while (!token.IsCancellationRequested)
@@ -237,7 +237,7 @@ namespace adrilight
 
                     bool isPreviewRunning = MainViewModel.IsVisualizerWindowOpen;
                     bool isLightingControlPreviewRunning = MainViewModel.IsSplitLightingWindowOpen;
-                     GetCurrentFFTColorFrame(numLED, paletteSource);
+                     GetCurrentFFTColorFrame(MainViewModel.IDMaxValue);
                     //if (spectrumdata == null) return;
                     if (isPreviewRunning)
                     MainViewModel.SetPreviewVisualizerFFT(lastSpectrumData, fftColors);
@@ -258,8 +258,10 @@ namespace adrilight
 
 
                             position = (int)RainbowTicker.StartIndex + spot.VID;
+                            int n = 0;
                             if (position >= colorBank.Length)
-                                position = position - colorBank.Length; // run with VID
+                                n = position / colorBank.Length;
+                            position = position - n * colorBank.Length; // run with VID
 
 
                             //var brightness = 0.5;/*brightnessMap[spot.VID];*/
@@ -336,7 +338,7 @@ namespace adrilight
             }
         }
 
-        public void GetCurrentFFTColorFrame( int numFreq , Color[] paletteSource)
+        public void GetCurrentFFTColorFrame( int numFreq)
         {
             var minheight = (float)OutputSettings.OutputMusicSensitivity;
             List<byte> spectrumdata = new List<byte>();
@@ -655,12 +657,13 @@ namespace adrilight
 
             return Color.FromRgb((byte)Math.Round(r), (byte)Math.Round(g), (byte)Math.Round(b));
         }
-        public static IEnumerable<Color> GetColorGradientfromPalette(Color[] colorCollection)
+        public static IEnumerable<Color> GetColorGradientfromPalette(Color[] colorCollection,int totalColor)
         {
             var colors = new List<Color>();
+            var colorPerGap = totalColor / colorCollection.Length;
             for (int i = 0; i < colorCollection.Length - 1; i++)
             {
-                var gradient = GetColorGradient(colorCollection[i], colorCollection[i + 1], 32);
+                var gradient = GetColorGradient(colorCollection[i], colorCollection[i + 1], colorPerGap);
                 colors = colors.Concat(gradient).ToList();
             }
             return colors;

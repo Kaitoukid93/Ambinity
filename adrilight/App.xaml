@@ -20,7 +20,8 @@
                             <Border CornerRadius="4" Name="_Border"
                                 Padding="0"
                                 Margin="5"
-                                Background="Transparent"   
+                                Background="Transparent"
+                           
                                 BorderBrush="{DynamicResource DarkMaskBrush}"
                                 BorderThickness="0"
                                 SnapsToDevicePixels="true">

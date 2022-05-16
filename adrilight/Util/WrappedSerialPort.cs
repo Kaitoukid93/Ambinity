@@ -14,7 +14,7 @@ namespace adrilight.Util
             SerialPort = serialPort ?? throw new ArgumentNullException(nameof(serialPort));
         }
 
-        private SerialPort SerialPort { get; }
+        public SerialPort SerialPort { get; }
 
         public bool IsOpen => SerialPort.IsOpen;
 
@@ -25,6 +25,7 @@ namespace adrilight.Util
         public void Write(byte[] outputBuffer, int v, int streamLength) => SerialPort.Write(outputBuffer, v, streamLength);
         public void Print(string outputBuffer) => SerialPort.Write(outputBuffer);
         public void Read(byte[] inputBuffer, int v, int streamLength) => SerialPort.Read(inputBuffer, v, streamLength);
+        
 
         public int ReadByte()
 

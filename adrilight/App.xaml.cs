@@ -189,6 +189,7 @@ namespace adrilight
 
                     var iD = device.DeviceID.ToString();
                     var outputs = device.AvailableOutputs;
+                    var connectionType = device.DeviceConnectionType;
 
 
                     //if (!devicesetting.IsHUB)
@@ -217,9 +218,18 @@ namespace adrilight
                     //    {
                     //        if (devicesetting.ParrentLocation == 151293) // Ambino Device
                     //        {
+                    switch(connectionType)
+                    {
+                        case "wired":
+                            kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
 
-                    kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
+                            break;
+                        case "wireless":
+                            kernel.Bind<ISerialStream>().To<NetworkStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
 
+                            break;
+                    }
+                    
 
 
                     //}

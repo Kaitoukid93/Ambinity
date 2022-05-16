@@ -36,6 +36,12 @@ using ColorConverter = System.Windows.Media.ColorConverter;
 using adrilight.Settings;
 using System.Reflection;
 using NonInvasiveKeyboardHookLibrary;
+using static adrilight.View.AddNewDeviceWindow;
+using System.Management;
+using Microsoft.Win32;
+using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
+using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
+using System.Threading.Tasks;
 
 namespace adrilight.ViewModel
 {
@@ -463,10 +469,12 @@ namespace adrilight.ViewModel
         //VIDs commands//
         public ICommand ZerolAllCommand { get; set; }
         public ICommand OpenFFTPickerWindowCommand { get; set; }
+        public ICommand ScanSerialDeviceCommand { get; set; }
         public ICommand OpenActionsManagerWindowCommand { get; set; }
         public ICommand OpenActionsEditWindowCommand { get; set; }
         public ICommand OpenAutomationManagerWindowCommand { get; set; }
         public ICommand SaveCurrentSelectedAutomationCommand { get; set; }
+        public ICommand AddSelectedWLEDDevicesCommand { get; set; }
         public ICommand CoppyColorCodeCommand { get; set; }
         public ICommand DeleteSelectedSolidColorCommand { get; set; }
         public ICommand AddNewGradientCommand { get; set; }
@@ -542,7 +550,31 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-      
+        private ObservableCollection<WLEDDevice> _availableWLEDDevices;
+        public ObservableCollection<WLEDDevice> AvailableWLEDDevices {
+            get { return _availableWLEDDevices; }
+            set
+            {
+                if (_availableWLEDDevices == value) return;
+                _availableWLEDDevices = value;
+                RaisePropertyChanged();
+            }
+        }
+        private ObservableCollection<IDeviceSettings> _availableSerialDevices;
+        public ObservableCollection<IDeviceSettings> AvailableSerialDevices {
+            get { return _availableSerialDevices; }
+            set
+            {
+                if (_availableSerialDevices == value) return;
+                _availableSerialDevices = value;
+                RaisePropertyChanged();
+            }
+        }
+        private ObservableCollection<WLEDDevice> _selectedWLEDDevice;
+        public ObservableCollection<WLEDDevice> SelectedWLEDDevice {
+            get { return _selectedWLEDDevice; }
+            set { _selectedWLEDDevice = value; }
+        }
         private ObservableCollection<IDeviceProfile> _availableProfiles;
         public ObservableCollection<IDeviceProfile> AvailableProfiles {
             get { return _availableProfiles; }
@@ -1028,7 +1060,7 @@ namespace adrilight.ViewModel
             SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
             ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
             AvailableDevices = new ObservableCollection<IDeviceSettings>();
-            AvailableDeviceCatergoryToAdd = new ObservableCollection<IDeviceCatergory>();
+           
             Groups = new ObservableCollection<IGroupSettings>();
             DisplayCards = new ObservableCollection<IDeviceSettings>();
             //AddedDevice = cards.Length;
@@ -1050,6 +1082,7 @@ namespace adrilight.ViewModel
             //DesktopFrame.PropertyChanged += ShaderImageUpdate;
             //ShaderSpots = generalSpotSet.ShaderSpot;
             //ShaderBitmap = shaderEffect.MatrixBitmap;
+            
             foreach (IDeviceSettings device in devices)
             {
                 AvailableDevices.Add(device);
@@ -1067,53 +1100,14 @@ namespace adrilight.ViewModel
             //register hotkey from loaded automation//
             HotKeyManager.Instance.Start();
             Register();
+
+            //dummy device acts as add new button
             var addNewButton = new DeviceSettings {
                 IsDummy = true
             };
             AvailableDevices.Add(addNewButton);
 
-            IDeviceCatergory ambinoBasic = new DeviceCatergory {
-                Description = "Ambino Ambient Lighting Kit",
-                Name = "AMBINO BASIC",
-                Geometry = "ambinobasic",
-                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoBasic24,
-                                                 DefaultDeviceCollection.ambinoBasic27,
-                                                 DefaultDeviceCollection.ambinoBasic29,
-                                                 DefaultDeviceCollection.ambinoBasic32,
-                                                 DefaultDeviceCollection.ambinoBasic34
-
-                }
-            };
-            IDeviceCatergory ambinoEDGE = new DeviceCatergory {
-                Description = "Ambino Ambient Lighting Kit",
-                Name = "AMBINO EDGE",
-                Geometry = "ambinoedge",
-                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoEdge1m2,
-                                                 DefaultDeviceCollection.ambinoEdge2m
-
-                }
-            };
-            IDeviceCatergory ambinoHUB = new DeviceCatergory {
-                Description = "Ambino HUB Collection",
-                Name = "AMBINO HUB",
-                Geometry = "ambinohub",
-                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoHUBV2,
-                                                 DefaultDeviceCollection.ambinoFanHub,
-                                                 DefaultDeviceCollection.ambinoHUBV3
-                }
-            };
-            IDeviceCatergory ambinoRainPow = new DeviceCatergory {
-                Description = "Ambino RainPow",
-                Name = "AMBINO RAINPOW",
-                Geometry = "generaldevice",
-                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoRainPow
-
-                }
-            };
-            AvailableDeviceCatergoryToAdd.Add(ambinoBasic);
-            AvailableDeviceCatergoryToAdd.Add(ambinoEDGE);
-            AvailableDeviceCatergoryToAdd.Add(ambinoHUB);
-            AvailableDeviceCatergoryToAdd.Add(ambinoRainPow);
+            
 
             GeneralSettings.PropertyChanged += (s, e) =>
             {
@@ -1154,7 +1148,7 @@ namespace adrilight.ViewModel
         //    }
 
         //}
-
+   
         public void ShaderImageUpdate(byte[] frame, int frameWidth, int frameHeight)
         {
             //if (IsSplitLightingWindowOpen)
@@ -2450,6 +2444,17 @@ namespace adrilight.ViewModel
 
            }
             );
+            AddSelectedWLEDDevicesCommand = new RelayCommand<string>((p) =>
+            {
+                return p != null;
+            }, (p) =>
+            {
+                AddWLEDDevices();
+
+
+
+            }
+            );
             BackToPreviousAddDeviceWizardStateCommand = new RelayCommand<string>((p) =>
             {
                 return p != null;
@@ -2784,6 +2789,13 @@ namespace adrilight.ViewModel
             {
                 ShowAddNewWindow();
             });
+            ScanSerialDeviceCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                ScanSerialDevice(p);
+            });
             BackCommand = new RelayCommand<string>((p) =>
             {
                 return true;
@@ -2793,6 +2805,18 @@ namespace adrilight.ViewModel
 
 
             });
+        }
+
+        private async void ScanSerialDevice(string status)
+        {
+            ISerialDeviceDetection detector = new SerialDeviceDetection();
+            AvailableSerialDevices = new ObservableCollection<IDeviceSettings>();
+            var detectedDevices = await Task.Run(() => detector.DetectedSerialDevices());
+            foreach (var device in detectedDevices)
+            {
+                AvailableSerialDevices.Add(device);
+            }
+
         }
 
         private void OpenFFTPickerWindow()
@@ -3347,7 +3371,47 @@ namespace adrilight.ViewModel
             System.Windows.Forms.Application.Restart();
             Process.GetCurrentProcess().Kill();
         }
+        private void AddWLEDDevices()
+        {
+            if(AvailableWLEDDevices!=null)
+            {
+                foreach (var wLEDDevice in AvailableWLEDDevices)
+                {
+                    if (wLEDDevice.IsSelected)
+                    {
+                        IDeviceSettings convertedDevice = new DeviceSettings();
+                        convertedDevice.DeviceName = wLEDDevice.Name;
+                        convertedDevice.DeviceType = "WLED";
+                        convertedDevice.DeviceConnectionType = "wireless";
+                        convertedDevice.OutputPort = wLEDDevice.NetworkAddress;
+                        convertedDevice.DeviceDescription = "WLED Device using WARLS protocol";
+                        convertedDevice.DeviceID = AvailableDevices.Count + 1;
+                        convertedDevice.DeviceUID = Guid.NewGuid().ToString();
+                        convertedDevice.AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 64) };
+                        convertedDevice.Geometry = wLEDDevice.Geometry;
+                        AvailableDevices.Add(convertedDevice);
+                    }
 
+                }
+            }
+            if(AvailableSerialDevices!=null)
+            {
+                foreach(var serialDevice in AvailableSerialDevices)
+                {
+                    if(serialDevice.IsSelected)
+                    {
+                        serialDevice.DeviceID = AvailableDevices.Count + 1;
+                        AvailableDevices.Add(serialDevice);
+                    }
+                    
+                }
+            }
+           
+          
+            WriteDeviceInfoJson();
+            System.Windows.Forms.Application.Restart();
+            Process.GetCurrentProcess().Kill();
+        }
         private void RunTestSequence()
         {
 
@@ -3806,8 +3870,7 @@ namespace adrilight.ViewModel
 
         }
 
-
-
+       
 
         public void RefreshDevice()
         {
@@ -4461,6 +4524,56 @@ namespace adrilight.ViewModel
         }
         public async void ShowAddNewWindow()
         {
+
+            //Device Catergory to group type of device in the add new window, this could be moved to add new window open code
+            AvailableDeviceCatergoryToAdd = new ObservableCollection<IDeviceCatergory>();
+            IDeviceCatergory ambinoBasic = new DeviceCatergory {
+                Description = "Ambino Ambient Lighting Kit",
+                Name = "AMBINO BASIC",
+                Geometry = "ambinobasic",
+                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoBasic24,
+                                                 DefaultDeviceCollection.ambinoBasic27,
+                                                 DefaultDeviceCollection.ambinoBasic29,
+                                                 DefaultDeviceCollection.ambinoBasic32,
+                                                 DefaultDeviceCollection.ambinoBasic34
+
+                }
+            };
+            IDeviceCatergory ambinoEDGE = new DeviceCatergory {
+                Description = "Ambino Ambient Lighting Kit",
+                Name = "AMBINO EDGE",
+                Geometry = "ambinoedge",
+                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoEdge1m2,
+                                                 DefaultDeviceCollection.ambinoEdge2m
+
+                }
+            };
+            IDeviceCatergory ambinoHUB = new DeviceCatergory {
+                Description = "Ambino HUB Collection",
+                Name = "AMBINO HUB",
+                Geometry = "ambinohub",
+                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoHUBV2,
+                                                 DefaultDeviceCollection.ambinoFanHub,
+                                                 DefaultDeviceCollection.ambinoHUBV3
+                }
+            };
+            IDeviceCatergory ambinoRainPow = new DeviceCatergory {
+                Description = "Ambino RainPow",
+                Name = "AMBINO RAINPOW",
+                Geometry = "generaldevice",
+                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoRainPow
+
+                }
+            };
+
+            AvailableDeviceCatergoryToAdd.Add(ambinoBasic);
+            AvailableDeviceCatergoryToAdd.Add(ambinoEDGE);
+            AvailableDeviceCatergoryToAdd.Add(ambinoHUB);
+            AvailableDeviceCatergoryToAdd.Add(ambinoRainPow);
+
+          
+          
+
             if (AssemblyHelper.CreateInternalInstance($"View.{"AddNewDeviceWindow"}") is System.Windows.Window window)
             {
                 CurrentAddDeviceWizardState = 0;
@@ -4475,9 +4588,12 @@ namespace adrilight.ViewModel
 
 
         }
+   
+
+        
 
 
-
+      
 
 
         public async void ShowDeleteDialog()

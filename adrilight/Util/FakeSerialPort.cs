@@ -16,7 +16,7 @@ namespace adrilight.Util
         public FakeSerialPort() => _log.Warn("FakeSerialPort created!");
 
         public bool IsOpen { get; private set; }
-
+        public SerialPort SerialPort { get; }
         public void Open() => IsOpen = true;
         public void Close() => IsOpen = false;
 

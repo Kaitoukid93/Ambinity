@@ -39,6 +39,8 @@ namespace adrilight
         private int _baudrate = 1000000;
         private int _activatedProfileIndex = 0;
         private string _deviceUID;
+        private string _deviceConnectionType = "wired";
+        private bool _isSelected = false;
 
 
 
@@ -52,6 +54,7 @@ namespace adrilight
         public string ProductionDate { get => _productionDate; set { Set(() => ProductionDate, ref _productionDate, value); } }
         public bool IsVisible { get => _isVisible; set { Set(() => IsVisible, ref _isVisible, value); } }
         public bool IsEnabled { get => _isEnabled; set { Set(() => IsEnabled, ref _isEnabled, value); } }
+        public bool IsSelected { get => _isSelected; set { Set(() => IsSelected, ref _isSelected, value); } }
         public string OutputPort { get => _outputPort; set { Set(() => OutputPort, ref _outputPort, value); } }
         public bool IsTransferActive { get => _isTransferActive; set { Set(() => IsTransferActive, ref _isTransferActive, value); } }
         public bool IsDummy { get => _isDummy; set { Set(() => IsDummy, ref _isDummy, value); } }
@@ -67,6 +70,7 @@ namespace adrilight
         public string DeviceDescription { get => _deviceDescription; set { Set(() => DeviceDescription, ref _deviceDescription, value); } }
         public string DeviceUID { get => _deviceUID; set { Set(() => DeviceUID, ref _deviceUID, value); } }
         public string DeviceConnectionGeometry { get => _deviceConnectionGeometry; set { Set(() => DeviceConnectionGeometry, ref _deviceConnectionGeometry, value); } }
+        public string DeviceConnectionType { get => _deviceConnectionType; set { Set(() => DeviceConnectionType, ref _deviceConnectionType, value); } }
         public void ActivateProfile(IDeviceProfile profile) 
         {
             for (var i = 0; i < AvailableOutputs.Length; i++)

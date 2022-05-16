@@ -156,10 +156,13 @@ namespace adrilight
                         foreach (var spot in OutputSettings.OutputLEDSetup.Spots)
                         {
 
-                           
+                                //caculate the overlap 
+                                
                                 position = (int)RainbowTicker.StartIndex + spot.VID;
-                                if (position >= colorBank.Length)
-                                    position = position - colorBank.Length; // run with VID
+                                int n = 0;
+                                if(position>=colorBank.Length)
+                                n = position / colorBank.Length;
+                                position = position - n*colorBank.Length; // run with VID
                             
                             //else
                             //{
@@ -304,9 +307,9 @@ namespace adrilight
         public static IEnumerable<Color> GetColorGradientfromPalette(Color[] colorCollection)
         {
             var colors = new List<Color>();
-            for (int i = 0; i < colorCollection.Length - 1; i++)
+            for (int i = 0; i < colorCollection.Length-1; i++)
             {
-                var gradient = GetColorGradient(colorCollection[i], colorCollection[i + 1], 10);
+                var gradient = GetColorGradient(colorCollection[i], colorCollection[i + 1], 12);
                 colors = colors.Concat(gradient).ToList();
             }
             return colors;

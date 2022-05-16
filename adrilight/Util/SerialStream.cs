@@ -21,7 +21,8 @@ namespace adrilight
         {
             GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
             DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
-          // DeviceSpotSets = deviceSpotSets ?? throw new ArgumentNullException(nameof(deviceSpotSets));
+        
+            // DeviceSpotSets = deviceSpotSets ?? throw new ArgumentNullException(nameof(deviceSpotSets));
             DeviceSettings.PropertyChanged += UserSettings_PropertyChanged;
             RefreshTransferState();
 
@@ -32,6 +33,8 @@ namespace adrilight
         //Dependency Injection//
         private IDeviceSettings DeviceSettings { get; set; }
         private IGeneralSettings GeneralSettings { get; set; }
+        
+        
        // private IDeviceSpotSet[] DeviceSpotSets { get; set; }
         private bool CheckSerialPort(string serialport)
         {
@@ -51,10 +54,13 @@ namespace adrilight
                 }
                 var serialPorttest = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(serialport, TestbaudRate));
 
+                //Open the serial port
+
                 try
                 {
 
                     serialPorttest.Open();
+                   
 
                 }
 
@@ -90,6 +96,7 @@ namespace adrilight
 
 
         }
+      
         private void UserSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
