@@ -11,7 +11,7 @@ namespace ConsoleApp1
     {
         private static SerialPort _serialPort = new SerialPort();
         private static  object _syncRoot = new object();
-        private static byte[] requestCommand = { (byte)'d', (byte)'a', (byte)'r' };
+        private static byte[] requestCommand = { (byte)'d', (byte)'i', (byte)'r' };
         private static byte[] expectedValidHeader = { 15, 12, 93 };
         private static CancellationToken cancellationtoken;
 
@@ -52,7 +52,10 @@ namespace ConsoleApp1
                 return;
             }
             var response = await jobTask;
-            Console.WriteLine(response.ToString());
+
+            string hexString = BitConverter.ToString(response);
+            Console.WriteLine("ID: " + hexString);
+            
             // Process response.
         }
 
@@ -112,3 +115,4 @@ namespace ConsoleApp1
             
         }
     }
+
