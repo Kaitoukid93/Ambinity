@@ -17,23 +17,29 @@ namespace ConsoleApp1
 
         static void Main()
         {
-            Console.Write("Type something: ");
-            _serialPort = new SerialPort("COM6", 1000000);
-            _serialPort.DtrEnable = true;
-            _serialPort.ReadTimeout = 5000;
-            _serialPort.WriteTimeout = 1000;
-            _serialPort.Open();
-            
-           
-            ConsoleKeyInfo keyPress = Console.ReadKey(intercept: true);
-            while (keyPress.Key != ConsoleKey.Enter)
+            while(true)
             {
-                Console.Write(keyPress.KeyChar.ToString().ToUpper());
+                Console.Write("Type something: ");
+                _serialPort = new SerialPort("COM6", 1000000);
+                _serialPort.DtrEnable = true;
+                _serialPort.ReadTimeout = 5000;
+                _serialPort.WriteTimeout = 1000;
+                _serialPort.Open();
 
-                keyPress = Console.ReadKey(intercept: true);
+
+                ConsoleKeyInfo keyPress = Console.ReadKey(intercept: true);
+                while (keyPress.Key != ConsoleKey.Enter)
+                {
+                    Console.Write(keyPress.KeyChar.ToString().ToUpper());
+
+                    keyPress = Console.ReadKey(intercept: true);
+                }
+                Console.WriteLine();
+                OnClick(cancellationtoken).Wait();
             }
-            Console.WriteLine();
-            OnClick(cancellationtoken).Wait();
+
+
+          
         }
            
         
@@ -52,24 +58,29 @@ namespace ConsoleApp1
                 return;
             }
             var response = await jobTask;
+            Console.WriteLine("Name: " + response.Name);
+            Console.WriteLine("ID: " + response.ID);
+            Console.WriteLine("Firmware Version: " + response.FirmwareVersion);
 
-            string hexString = BitConverter.ToString(response);
-            Console.WriteLine("ID: " + hexString);
-            
+
             // Process response.
         }
 
-        static byte[] SomeCommand()
+        static Device SomeCommand()
         {
             // Assume serial port timeouts are set.
-            byte[] info = new byte[256];
+            byte[] id = new byte[256];
+            byte[] name = new byte[256];
+            byte[] fw = new byte[256];
             _serialPort.Write(requestCommand,0,3);
 
             int retryCount= 0;
             int offset = 0;
-            int infoLength = 0; // Expected response length of valid header
-            
-            while(offset<3)
+            int idLength = 0; // Expected response length of valid deviceID 
+            int nameLength = 0; // Expected response length of valid deviceName 
+            int fwLength = 0;
+            Device newDevice = new Device();
+            while (offset<3)
             {
 
             
@@ -96,23 +107,51 @@ namespace ConsoleApp1
             }
             if(offset==3) //3 bytes header are valid
             {
-              infoLength = (byte)_serialPort.ReadByte();
-                int count = infoLength;
-                 info = new byte[count];
+              idLength = (byte)_serialPort.ReadByte();
+                int count = idLength;
+                 id = new byte[count];
                 while (count > 0)
                 {
-                    var readCount = _serialPort.Read(info, 0, count);
+                    var readCount = _serialPort.Read(id, 0, count);
                     offset += readCount;
                     count -= readCount;
                 }
 
+
+                newDevice.ID = BitConverter.ToString(id).Replace('-', ' ');
             }
-            return info;
+            if (offset == 3+idLength) //3 bytes header are valid
+            {
+                nameLength = (byte)_serialPort.ReadByte();
+                int count = nameLength;
+                name = new byte[count];
+                while (count > 0)
+                {
+                    var readCount = _serialPort.Read(name, 0, count);
+                    offset += readCount;
+                    count -= readCount;
+                }
+                newDevice.Name = Encoding.ASCII.GetString(name, 0, name.Length);
+            }
+            if (offset == 3 + idLength + nameLength) //3 bytes header are valid
+            {
+                fwLength = (byte)_serialPort.ReadByte();
+                int count = fwLength;
+                fw = new byte[count];
+                while (count > 0)
+                {
+                    var readCount = _serialPort.Read(fw, 0, count);
+                    offset += readCount;
+                    count -= readCount;
+                }
+                newDevice.FirmwareVersion = Encoding.ASCII.GetString(fw, 0, fw.Length);
+            }
             _serialPort.Close();
             _serialPort.Dispose();
+            return newDevice;
+           
         }
             
             
         }
     }
-
