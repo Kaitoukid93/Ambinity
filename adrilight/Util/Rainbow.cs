@@ -81,7 +81,7 @@ namespace adrilight
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 1;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 1 && OutputSettings.IsInSpotEditWizard == false;
 
             if (isRunning && !shouldBeRunning)
             {
@@ -106,7 +106,7 @@ namespace adrilight
         private void ColorPaletteChanged()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 1;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 1 && OutputSettings.IsInSpotEditWizard == false;
             var isInEditWizard = OutputSettings.IsInSpotEditWizard;
 
             if (isRunning && shouldBeRunning)

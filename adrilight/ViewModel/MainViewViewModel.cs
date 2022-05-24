@@ -1629,7 +1629,8 @@ namespace adrilight.ViewModel
             get => _maxLEDCount;
             set
             {
-                Set(ref _maxLEDCount, value);
+                 _maxLEDCount = value;
+                RaisePropertyChanged(nameof(MaxLEDCount));
                 RaisePropertyChanged(nameof(IsNextable));
             }
         }
@@ -2467,6 +2468,7 @@ namespace adrilight.ViewModel
 
 
                     GrabActivatedSpot();
+                   
 
                 }
                 else if (CurrentLEDEditWizardState == 2)
@@ -2668,8 +2670,9 @@ namespace adrilight.ViewModel
 
                 if (p.OnDemandColor == Color.FromRgb(0, 0, 0))
                 {
-                    p.SetColor(100, 27, 0, true);
                     p.SetID(ActivatedSpots.Count() - MaxLEDCount--);
+                    ReorderActivatedSpot();
+                    p.SetColor(100, 27, 0, true);
                     p.SetIDVissible(true);
 
 
@@ -2679,8 +2682,10 @@ namespace adrilight.ViewModel
 
                 else
                 {
+                   
+                    p.SetID(1000);
+                    ReorderActivatedSpot();
                     p.SetColor(0, 0, 0, true);
-                    p.SetID(0);
                     p.SetIDVissible(false);
                     MaxLEDCount++;
                 }
@@ -2892,7 +2897,7 @@ namespace adrilight.ViewModel
 
 
 
-            AvailableSerialDevices = new ObservableCollection<IDeviceSettings>();
+             AvailableSerialDevices = new ObservableCollection<IDeviceSettings>();
             foreach (var device in newDevices)
             {
                 AvailableSerialDevices.Add(device);
@@ -3543,6 +3548,7 @@ namespace adrilight.ViewModel
         {
             BackupSpots.Clear();
             BackupSpots = ActivatedSpots.OrderBy(o => o.id).ToList();
+            CurrentOutput.OutputLEDSetup.Spots = BackupSpots.ToArray();
 
 
         }
@@ -3552,6 +3558,8 @@ namespace adrilight.ViewModel
             {
                 if (spot.IsActivated)
                 {
+                    MaxLEDCount++;
+                    spot.SetID(1000);
                     ActivatedSpots.Add(spot);
                     spot.SetStroke(0);
 
@@ -3559,7 +3567,7 @@ namespace adrilight.ViewModel
 
             }
 
-
+           
         }
 
         private void LaunchPIDEditWindow()
