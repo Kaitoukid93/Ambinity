@@ -15,14 +15,19 @@ namespace adrilight.Util
 {
     internal class SerialDeviceDetection : ISerialDeviceDetection
     {
-        System.Object SerialIncoming = new object();
+        
+        
+        private static byte[] requestCommand = { (byte)'d', (byte)'i', (byte)'r' };
+        private static byte[] expectedValidHeader = { 15, 12, 93 };
+        private static CancellationToken cancellationtoken;
+
         public SerialDeviceDetection()
         {
 
         }
 
-        private List<IDeviceSettings> _detectedSerialDevices;
-        public List<string> ScanSupportedDevices()
+        
+        public static List<string> ValidDevice()
         {
             List<string> names = ComPortNames("1209", "c550");
             List<string> devices = new List<string>();
@@ -49,131 +54,169 @@ namespace adrilight.Util
             return devices;
         }
 
-        public List<IDeviceSettings> DetectedSerialDevices()
-        {
-
-
-
-
-
-
-
-
-            var availableSerialDevices = ScanSupportedDevices();
-            _detectedSerialDevices = new List<IDeviceSettings>();
-            byte[] requestMessage = { (byte)'d', (byte)'i', (byte)'d' };
-            foreach (var device in availableSerialDevices)
-            {
-
-
-
-
-                try
-                {
-                    var _serialPort = new SerialPort();
-                    _serialPort.PortName = device;//Set your board COM
-                    _serialPort.BaudRate = 1000000;
-                    _serialPort.DtrEnable = true;
-                    _serialPort.ReadTimeout = 5000;
-                    _serialPort.WriteTimeout = 500;
-                    _serialPort.DataReceived += OnSerialDataReceived;
-                    _serialPort.Open();
-                    lock (SerialIncoming)//waits N seconds for a condition variable
-                    {
-                        int retryCount = 0;
-                        while (!Monitor.Wait(SerialIncoming, 2000))
-                        {//if timeout
-                            if (retryCount == 10)
-                            {
-
-                                break;
-                            }
-
-                            _serialPort.Write(requestMessage, 0, 3); //wait for respond
-                            retryCount++;
-
-                        }
-
-                    }
-
-                }
-
-                catch (Exception)
-                {
-                    Debug.WriteLine("Serial Port " + device + " access denied, added to Blacklist");
-                    lock (SerialIncoming)
-                    {
-                        Monitor.Pulse(SerialIncoming);
-                    }
-                }
-
-
-                }
         
 
-            return _detectedSerialDevices;
-                //Stop scanning for serial devices because no more device is available
+        //static async Task SearchingForDevice(CancellationToken cancellationToken)
+        //{
+        //    var jobTask = Task.Run(() => {
+        //        // Organize critical sections around logical serial port operations somehow.
+        //        lock (_syncRoot)
+        //        {
+        //            return RequestDeviceInformation();
+        //        }
+        //    });
+        //    if (jobTask != await Task.WhenAny(jobTask, Task.Delay(Timeout.Infinite, cancellationToken)))
+        //    {
+        //        // Timeout;
+        //        return;
+        //    }
+        //    var newDevices = await jobTask;
+        //    foreach(var device in newDevices)
+        //    {
+        //        Console.WriteLine("Name: " + device.DeviceName);
+        //        Console.WriteLine("ID: " + device.DeviceSerial);
+        //        Console.WriteLine("Firmware Version: " + device.FirmwareVersion);
+        //        Console.WriteLine();
+        //        Console.WriteLine();
+        //        Console.WriteLine();
+        //    }
+            
 
 
-        }
-    void OnSerialDataReceived(object sender, SerialDataReceivedEventArgs e)
-    {
-        lock (SerialIncoming)
-        {
-            Monitor.Pulse(SerialIncoming);
-        }
-        SerialPort serialPort = (SerialPort)sender;
-        string message = serialPort.ReadLine();
-        string[] info = message.Split('|');
-
-        //create new DeviceSettings based on data received
-        if (info[0] == "abn")//valid device
-        {
-            IDeviceSettings newDevice = new DeviceSettings();
-
-            switch (info[3])
+        //    // Process response.
+        //}
+        public List<IDeviceSettings> DetectedDevices {
+            get
             {
-                case "ABBASIC":// General Ambino Basic USB Device
-
-                    newDevice = DefaultDeviceCollection.ambinoBasic24;
-                    newDevice.DeviceType = "ABBASIC";
-                    newDevice.DeviceSerial = info[1];
-                    newDevice.DeviceName = info[2];
-                    newDevice.FirmwareVersion = info[4];
-                    //newDevice.AvailableOutputs[0].OutputPowerVoltage = Int32.Parse(info[6]);
-                    //newDevice.AvailableOutputs[0].OutputPowerMiliamps = Int32.Parse(info[7]);
-                    newDevice.OutputPort = serialPort.PortName;
-
-                    _detectedSerialDevices.Add(newDevice);
-
-
-
-                    break;
-                case "ABFANHUB":
-                    newDevice = DefaultDeviceCollection.ambinoFanHub;
-                    newDevice.DeviceType = "ABFANHUB";
-                    newDevice.DeviceSerial = info[1];
-                    newDevice.DeviceName = info[2];
-                    newDevice.FirmwareVersion = info[4];
-                    //foreach(var output in newDevice.AvailableOutputs)
-                    //{
-                    //    output.OutputPowerVoltage = Int32.Parse(info[6]);
-                    //    output.OutputPowerMiliamps = Int32.Parse(info[7]) / (newDevice.AvailableOutputs.Length);// split power for all outputs since the wiring is parallel
-                    //}
-                    newDevice.OutputPort = serialPort.PortName;
-                    _detectedSerialDevices.Add(newDevice);
-                    break;
+                return RequestDeviceInformation();
             }
+        }
+        static List<IDeviceSettings> RequestDeviceInformation()
+        {
+            // Assume serial port timeouts are set.
+            byte[] id = new byte[256];
+            byte[] name = new byte[256];
+            byte[] fw = new byte[256];
+            List<IDeviceSettings> newDevices = new List<IDeviceSettings>();
+            foreach(var device in ValidDevice())
+            {
+                bool isValid = true;
+               var _serialPort = new SerialPort(device,1000000);
+                _serialPort.DtrEnable = true;
+                _serialPort.ReadTimeout = 5000;
+                _serialPort.WriteTimeout = 1000;
+                try
+                {
+                    _serialPort.Open();
+                }
+                catch(UnauthorizedAccessException)
+                {
+                    continue;
+                }
+                
+                //write request info command
+                _serialPort.Write(requestCommand, 0, 3);
+                int retryCount = 0;
+                int offset = 0;
+                int idLength = 0; // Expected response length of valid deviceID 
+                int nameLength = 0; // Expected response length of valid deviceName 
+                int fwLength = 0;
+                IDeviceSettings newDevice = new DeviceSettings();
+                while (offset < 3)
+                {
 
 
+                    try
+                    {
+                        byte header = (byte)_serialPort.ReadByte();
+                        if (header == expectedValidHeader[offset])
+                        {
+                            offset++;
+                        }
+                    }
+                    catch (TimeoutException)// retry until received valid header
+                    {
+                        _serialPort.Write(requestCommand, 0, 3);
+                        retryCount++;
+                        if (retryCount == 3)
+                        {
+                            Console.WriteLine("timeout waiting for respond on serialport " + _serialPort.PortName);
+                            HandyControl.Controls.MessageBox.Show("Device at "+ _serialPort.PortName+ "is not responding, try adding it manually","Device is not responding", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            isValid = false;
+                            break;
+                        }
+                        Debug.WriteLine("no respond, retrying...");
+                    }
+
+
+                }
+                if (offset == 3) //3 bytes header are valid
+                {
+                    idLength = (byte)_serialPort.ReadByte();
+                    int count = idLength;
+                    id = new byte[count];
+                    while (count > 0)
+                    {
+                        var readCount = _serialPort.Read(id, 0, count);
+                        offset += readCount;
+                        count -= readCount;
+                    }
+
+
+                    newDevice.DeviceSerial = BitConverter.ToString(id).Replace('-', ' ');
+                }
+                if (offset == 3 + idLength) //3 bytes header are valid
+                {
+                    nameLength = (byte)_serialPort.ReadByte();
+                    int count = nameLength;
+                    name = new byte[count];
+                    while (count > 0)
+                    {
+                        var readCount = _serialPort.Read(name, 0, count);
+                        offset += readCount;
+                        count -= readCount;
+                    }
+                    newDevice.DeviceName = Encoding.ASCII.GetString(name, 0, name.Length);
+                    switch (newDevice.DeviceName)
+                    {
+                        case "Ambino Basic":// General Ambino Basic USB Device
+
+                            newDevice = DefaultDeviceCollection.ambinoBasic24;
+                            newDevice.DeviceType = "ABBASIC";
+                            newDevice.OutputPort = device;
+                            break;
+                        case "Ambino FanHub":
+                            newDevice = DefaultDeviceCollection.ambinoFanHub;
+                            newDevice.DeviceType = "ABFANHUB";
+                            newDevice.OutputPort = device;
+                            break;
+                    }
+
+                }
+                if (offset == 3 + idLength + nameLength) //3 bytes header are valid
+                {
+                    fwLength = (byte)_serialPort.ReadByte();
+                    int count = fwLength;
+                    fw = new byte[count];
+                    while (count > 0)
+                    {
+                        var readCount = _serialPort.Read(fw, 0, count);
+                        offset += readCount;
+                        count -= readCount;
+                    }
+                    newDevice.FirmwareVersion = Encoding.ASCII.GetString(fw, 0, fw.Length);
+                }
+                _serialPort.Close();
+                _serialPort.Dispose();
+                if(isValid)
+                newDevices.Add(newDevice);
+
+            }
+           
+            return newDevices;
 
         }
-
-
-        serialPort.Close();
-        serialPort.Dispose();
-    }
-    List<string> ComPortNames(String VID, String PID)
+        static List<string> ComPortNames(String VID, String PID)
     {
         String pattern = String.Format("^VID_{0}.PID_{1}", VID, PID);
         Regex _rx = new Regex(pattern, RegexOptions.IgnoreCase);

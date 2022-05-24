@@ -42,6 +42,7 @@ using Microsoft.Win32;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace adrilight.ViewModel
 {
@@ -470,6 +471,8 @@ namespace adrilight.ViewModel
         public ICommand ZerolAllCommand { get; set; }
         public ICommand OpenFFTPickerWindowCommand { get; set; }
         public ICommand ScanSerialDeviceCommand { get; set; }
+        public ICommand SaveAllAutomationCommand { get; set; }
+        public ICommand OpenAddNewAutomationCommand { get; set; }
         public ICommand OpenActionsManagerWindowCommand { get; set; }
         public ICommand OpenActionsEditWindowCommand { get; set; }
         public ICommand OpenAutomationManagerWindowCommand { get; set; }
@@ -477,6 +480,7 @@ namespace adrilight.ViewModel
         public ICommand AddSelectedWLEDDevicesCommand { get; set; }
         public ICommand CoppyColorCodeCommand { get; set; }
         public ICommand DeleteSelectedSolidColorCommand { get; set; }
+        public ICommand DeleteSelectedAutomationCommand { get; set; }
         public ICommand AddNewGradientCommand { get; set; }
         public ICommand ApplyCurrentOutputCapturingPositionCommand { get; set; }
         public ICommand LaunchWBAdjustWindowCommand { get; set; }
@@ -520,6 +524,7 @@ namespace adrilight.ViewModel
         public ICommand EditSelectedPaletteSaveConfirmCommand { get; set; }
         public ICommand DeleteSelectedPaletteCommand { get; set; }
         public ICommand CreateNewPaletteCommand { get; set; }
+        public ICommand CreateNewAutomationCommand { get; set; }
         public ICommand SetIncreamentCommand { get; set; }
         public ICommand SetIncreamentCommandfromZero { get; set; }
         public ICommand UserInputIncreamentCommand { get; set; }
@@ -1864,7 +1869,9 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-
+        /// <summary>
+        /// new Palette
+        /// </summary>
         private string _newPaletteName;
         public string NewPaletteName {
             get { return _newPaletteName; }
@@ -1889,6 +1896,21 @@ namespace adrilight.ViewModel
                 _newPaletteDescription = value;
             }
         }
+
+        /// <summary>
+        /// 
+        /// new Automation
+        /// </summary>
+        private string _newAutomationName;
+        public string NewAutomationName {
+            get { return _newAutomationName; }
+            set
+            {
+                _newAutomationName = value;
+            }
+        }
+      
+
         private int _rangeMinValue = 0;
         public int RangeMinValue {
             get { return _rangeMinValue; }
@@ -2057,6 +2079,20 @@ namespace adrilight.ViewModel
             {
                 OpenAddNewGradientWindow();
             });
+            OpenAddNewAutomationCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                OpenAddNewAutomationWindowCommand();
+            });
+            SaveAllAutomationCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                SaveAllAutomation();
+            });
             AddNewSolidColorCommand = new RelayCommand<string>((p) =>
                  {
                      return true;
@@ -2095,6 +2131,15 @@ namespace adrilight.ViewModel
                    {
                        CreateNewPalette();
                    });
+
+
+            CreateNewAutomationCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                CreateNewAutomation();
+            });
             SaveCurrentProfileCommand = new RelayCommand<string>((p) =>
             {
                 return true;
@@ -2177,6 +2222,15 @@ namespace adrilight.ViewModel
             {
                 DeleteSelectedPalette(p);
             });
+
+            DeleteSelectedAutomationCommand = new RelayCommand<IAutomationSettings>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                DeleteSelectedAutomation(p);
+            });
+
             SetIncreamentCommandfromZero = new RelayCommand<string>((p) =>
             {
                 return true;
@@ -2806,13 +2860,40 @@ namespace adrilight.ViewModel
 
             });
         }
-
+        private static object _syncRoot = new object();
+        private static CancellationToken cancellationtoken;
         private async void ScanSerialDevice(string status)
         {
             ISerialDeviceDetection detector = new SerialDeviceDetection();
+           
+            
+
+            var jobTask = Task.Run(() => {
+                // Organize critical sections around logical serial port operations somehow.
+                lock (_syncRoot)
+                {
+                    return detector.DetectedDevices;
+                }
+            });
+            if (jobTask != await Task.WhenAny(jobTask, Task.Delay(Timeout.Infinite, cancellationtoken)))
+            {
+                // Timeout;
+                return;
+            }
+            var newDevices = await jobTask;
+            foreach (var device in newDevices)
+            {
+                Debug.WriteLine("Name: " + device.DeviceName);
+                Debug.WriteLine("ID: " + device.DeviceSerial);
+                Debug.WriteLine("Firmware Version: " + device.FirmwareVersion);
+                Debug.WriteLine("---------------");
+             
+            }
+
+
+
             AvailableSerialDevices = new ObservableCollection<IDeviceSettings>();
-            var detectedDevices = await Task.Run(() => detector.DetectedSerialDevices());
-            foreach (var device in detectedDevices)
+            foreach (var device in newDevices)
             {
                 AvailableSerialDevices.Add(device);
             }
@@ -2851,6 +2932,7 @@ namespace adrilight.ViewModel
                 AvailableActionsforCurrentDevice = new ObservableCollection<string>();
                 AvailableActionsforCurrentDevice.Add("Activate Profile");
                 AvailableActionsforCurrentDevice.Add("Brightness Control");
+                AvailableActionsforCurrentDevice.Add("Do Nothing");
                 AvailableParametersforCurrentAction = new List<IActionParameter>();
                 AllAvailableParametersforCurrentAction = new List<IActionParameter>();
                 foreach (var profile in AvailableProfiles)
@@ -2890,7 +2972,15 @@ namespace adrilight.ViewModel
                 window.ShowDialog();
             }
         }
-
+        private void OpenAddNewAutomationWindowCommand()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"AddNewAutomationWindow"}") is System.Windows.Window window)
+            {
+               
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+            }
+        }
         private void LaunchWBAdjustWindow()
         {
             if (AssemblyHelper.CreateInternalInstance($"View.{"CustomWBWindow"}") is System.Windows.Window window)
@@ -2980,6 +3070,20 @@ namespace adrilight.ViewModel
             }
 
             CurrentSelectedAutomation.Name = AutomationNewName; 
+            WriteAutomationCollectionJson();
+            AvailableAutomations = new ObservableCollection<IAutomationSettings>();
+            foreach (var automation in LoadAutomationIfExist())
+            {
+                AvailableAutomations.Add(automation);
+            }
+            Unregister();
+            Register();
+
+        }
+        private void SaveAllAutomation()
+        {
+           
+            
             WriteAutomationCollectionJson();
             AvailableAutomations = new ObservableCollection<IAutomationSettings>();
             foreach (var automation in LoadAutomationIfExist())
@@ -3108,6 +3212,9 @@ namespace adrilight.ViewModel
                                         break;
                                 }
                                 break;
+                            case "Do Nothing":
+                              // Yeah?? do fking nothing here
+                                break;
                         }
                     }
                 }
@@ -3119,53 +3226,69 @@ namespace adrilight.ViewModel
         private void Register()
             {
             _identifiers = new List<Guid?>();
-            foreach(var automation in AvailableAutomations)
+            foreach(var automation in AvailableAutomations.Where(x => x.IsEnabled==true))
             {
                 var modifierkeys = new List<NonInvasiveKeyboardHookLibrary.ModifierKeys>();
-                foreach(var modifier in automation.Modifiers)
+                if(automation.Modifiers!=null)
                 {
-                    var modifierkey = modifier.ModifierKey;
-                    modifierkeys.Add(modifierkey);
+                    foreach (var modifier in automation.Modifiers)
+                    {
+                        var modifierkey = modifier.ModifierKey;
+                        modifierkeys.Add(modifierkey);
+
+                    }
+                }
+
+               
+               try
+                {
+                    Guid? _identifier = HotKeyManager.Instance.RegisterHotkey(modifierkeys.ToArray(), automation.Condition, () =>
+                    {
+                        foreach (var action in automation.Actions)
+                        {
+                            var targetDevice = AvailableDevices.Where(x => x.DeviceUID == action.TargetDeviceUID).FirstOrDefault();
+                            switch (action.ActionType)
+                            {
+                                case "Activate Profile":
+                                    var destinationProfile = AvailableProfiles.Where(x => x.ProfileUID == action.ActionParameter.Value).FirstOrDefault();
+                                    targetDevice.ActivateProfile(destinationProfile);
+                                    var targetDeviceAvailableProfile = ProfileFilter(targetDevice);
+                                    targetDevice.ActivatedProfileIndex = targetDeviceAvailableProfile.IndexOf(destinationProfile);
+                                    break;
+                                case "Brightness Control":
+                                    switch (action.ActionParameter.Value)
+                                    {
+                                        case "up":
+                                            foreach (var output in targetDevice.AvailableOutputs)//possible replace with method from IOutputSettings
+                                            {
+                                                if (output.OutputBrightness < 98)
+                                                    output.OutputBrightness += 2;
+                                            }
+                                            break;
+                                        case "down":
+                                            foreach (var output in targetDevice.AvailableOutputs)
+                                            {
+                                                if (output.OutputBrightness > 2)
+                                                    output.OutputBrightness -= 2;
+                                            }
+                                            break;
+                                    }
+                                    break;
+                            }
+                        }
+                        Debug.WriteLine(automation.Name + " excuted");
+                    });
+                    _identifiers.Add(_identifier);
+                }
+                catch(NonInvasiveKeyboardHookLibrary.HotkeyAlreadyRegisteredException ex)
+                {
+                    HandyControl.Controls.MessageBox.Show(automation.Name + " Hotkey is being used by another automation!!!", "HotKey Already Registered", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //disable automation
+                    automation.IsEnabled = false;
+                    WriteAutomationCollectionJson();
 
                 }
                
-                Guid? _identifier = HotKeyManager.Instance.RegisterHotkey(modifierkeys.ToArray(),automation.Condition, () =>
-                {
-                    foreach (var action in automation.Actions)
-                    {
-                        var targetDevice = AvailableDevices.Where(x => x.DeviceUID == action.TargetDeviceUID).FirstOrDefault();
-                        switch (action.ActionType)
-                        {
-                            case "Activate Profile":
-                                var destinationProfile = AvailableProfiles.Where(x => x.ProfileUID == action.ActionParameter.Value).FirstOrDefault();
-                                targetDevice.ActivateProfile(destinationProfile);
-                                var targetDeviceAvailableProfile = ProfileFilter(targetDevice);
-                                targetDevice.ActivatedProfileIndex = targetDeviceAvailableProfile.IndexOf(destinationProfile);
-                                break;
-                            case "Brightness Control":
-                                switch (action.ActionParameter.Value)
-                                {
-                                    case "up":
-                                        foreach (var output in targetDevice.AvailableOutputs)//possible replace with method from IOutputSettings
-                                        {
-                                            if (output.OutputBrightness < 98)
-                                                output.OutputBrightness += 2;
-                                        }
-                                        break;
-                                    case "down":
-                                        foreach (var output in targetDevice.AvailableOutputs)
-                                        {
-                                            if (output.OutputBrightness > 2)
-                                                output.OutputBrightness -= 2;
-                                        }
-                                        break;
-                                }
-                                break;
-                        }
-                    }
-                    Debug.WriteLine(automation.Name + " excuted");
-                });
-                _identifiers.Add(_identifier);
             }
                 
         }
@@ -3592,6 +3715,40 @@ namespace adrilight.ViewModel
             CurrentOutput.OutputSelectedChasingPalette = lastSelectedPaletteIndex;
 
         }
+
+        private void CreateNewAutomation()
+        {
+            
+            var name = NewAutomationName;
+            IAutomationSettings newAutomation = new AutomationSettings { Name = name};
+           
+            var doAbsolutelyNothing = new List<IActionSettings>(); // doing nothing to all devices
+            if (AvailableDevices.Count > 0 && AvailableProfiles.Count > 0)
+            {
+                foreach (var device in AvailableDevices.Where(x=>x.IsDummy==false))
+                {
+
+                    IActionSettings doNothing = new ActionSettings {
+                        ActionType = "Do Nothing",
+                        TargetDeviceUID = device.DeviceUID,
+                        TargetDeviceName = device.DeviceName,
+                        TargetDeviceType = device.DeviceType,
+                        ActionParameter = new ActionParameter { Name = "Do Nothing", Type = "donothing", Value = "none" },
+
+
+                    };
+
+                    doAbsolutelyNothing.Add(doNothing);
+                    
+                }
+
+            }
+
+            newAutomation.Actions = doAbsolutelyNothing;
+            AvailableAutomations.Add(newAutomation);
+            WriteAutomationCollectionJson();
+
+        }
         private void EditCurrentPalette(string param)
         {
             ////var name = NewPaletteName;
@@ -3605,6 +3762,11 @@ namespace adrilight.ViewModel
             //RaisePropertyChanged(nameof(CurrentActivePalette));
             //WritePaletteCollectionJson();
             OpenEditPaletteDialog(param);
+        }
+        private void DeleteSelectedAutomation(IAutomationSettings automation)
+        {
+            AvailableAutomations.Remove(automation);
+            WriteAutomationCollectionJson();
         }
         private void DeleteSelectedPalette(IColorPalette selectedpalette)
         {
@@ -4312,34 +4474,7 @@ namespace adrilight.ViewModel
         public List<IAutomationSettings> LoadAutomationIfExist()
         {
             var loadedAutomations = new List<IAutomationSettings>();
-            
-            //parameter for profile activation
-            //var profileActionparameters = new List<IActionParameter>();
-            //if(AvailableDevices.Count>0 && AvailableProfiles.Count>0)
-            //{
-            //    foreach (var profile in AvailableProfiles)
-            //    {
-            //        IActionParameter actionParameter = new ActionParameter {
-            //            Name = profile.Name,
-            //            Type = "Profile",
-            //            Value = profile.ProfileUID.ToString()
-            //        };
-            //        profileActionparameters.Add(actionParameter);
-            //    }
 
-            //}
-          
-            ////parameter for brightness control
-            //profileActionparameters.Add(new ActionParameter {
-            //    Name = "Brightness Up",
-            //    Type = "Brightness",
-            //    Value = "up"
-            //});
-            //profileActionparameters.Add(new ActionParameter {
-            //    Name = "Brightness Down",
-            //    Type = "Brightness",
-            //    Value = "down"
-            //});
             if (!File.Exists(JsonAutomationFileNameAndPath))
             {
                 var brightnessUpAllDevices = new List<IActionSettings>(); // load all profile 0 on the list apply to all devices

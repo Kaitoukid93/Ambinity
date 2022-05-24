@@ -274,6 +274,9 @@
     <Compile Update="View\ActionManagerWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\AddNewAutomationWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\AutomationManagerWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -354,6 +357,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\ActionManagerWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\AddNewAutomationWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

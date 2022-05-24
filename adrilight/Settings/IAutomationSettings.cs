@@ -23,6 +23,7 @@ namespace adrilight
 
         int Condition { get; set; }// this is the condition such as key stroke code 
         List<IModifiersType> Modifiers { get; set; }
+        bool IsEnabled { get; set; }
      
         
         

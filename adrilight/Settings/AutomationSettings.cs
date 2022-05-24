@@ -19,6 +19,7 @@ namespace adrilight
         private int _conditionTypeIndex; // this is the index that point to type of the action, could be timmer or hot key
 
         private int _condition;// this is the condition such as key stroke code 
+        private bool _isEnabled = true;
         
        
       
@@ -29,6 +30,6 @@ namespace adrilight
         public List<IModifiersType> Modifiers { get => _modifiers; set { Set(() => Modifiers, ref _modifiers, value); } }
         public int ConditionTypeIndex { get => _conditionTypeIndex; set { Set(() => ConditionTypeIndex, ref _conditionTypeIndex, value); } }
         public int Condition { get => _condition; set { Set(() => Condition, ref _condition, value); } }
-
+        public bool IsEnabled { get => _isEnabled; set { Set(() => IsEnabled, ref _isEnabled, value); } }
     }
 }

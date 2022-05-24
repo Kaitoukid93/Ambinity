@@ -14,7 +14,7 @@
            DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}" 
            
            x:Name="window"
-           Height="400" 
+           Height="420" 
            Width="800" 
            WindowStartupLocation="CenterOwner" 
            Left="0" Top="0">
@@ -22,35 +22,42 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-            <ResourceDictionary Source="ControlStyle.xaml">
-                <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
-                <converters:BrushToHexConverter x:Key="BrushToHexConverter" />
-                <BooleanToVisibilityConverter x:Key="boolToVisibilityConvert" />
-            </ResourceDictionary>
+                <ResourceDictionary Source="ControlStyle.xaml">
+                    <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+                    <converters:BrushToHexConverter x:Key="BrushToHexConverter" />
+                    <BooleanToVisibilityConverter x:Key="boolToVisibilityConvert" />
+                </ResourceDictionary>
 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
 
     <Grid Margin="5">
-        <StackPanel>
-            <TextBlock Text="Automation Manager" Style="{DynamicResource TextBlockLarge}">
-                
-            </TextBlock>
-            <Grid MinHeight="280">
-                <DataGrid  SelectedItem="{Binding CurrentSelectedAutomation}" ItemsSource="{Binding AvailableAutomations}" hc:DataGridAttach.CanUnselectAllWithBlankArea="True" HeadersVisibility="All" RowHeaderWidth="60" AutoGenerateColumns="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="11*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock HorizontalAlignment="Center" Text="Automation Manager" Style="{DynamicResource TextBlockLarge}">
+                </TextBlock>
+                <Button Command="{ Binding OpenAddNewAutomationCommand}" Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Add" Style="{DynamicResource ButtonDashedPrimary}" />
+            </Grid>
+
+            <Grid Grid.Row="1" Margin="5">
+                <DataGrid hc:DataGridAttach.ShowSelectAllButton="False" SelectedItem="{Binding CurrentSelectedAutomation}" ItemsSource="{Binding AvailableAutomations}" hc:DataGridAttach.CanUnselectAllWithBlankArea="False" HeadersVisibility="All" RowHeaderWidth="0" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
                                     Binding="{Binding Name}"
                                     Header="Name" />
-                    
-
-                  
-
-                    <DataGridTemplateColumn 
+                        <DataGridTemplateColumn 
                                         Header="HotKey">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
@@ -82,9 +89,17 @@
                                         </Grid>
                                     </Grid>
                                 </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Enable">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox Margin="5" IsChecked="{Binding IsEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataTemplate>
+
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Edit">
+                    <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
 
@@ -95,7 +110,7 @@
 
                                         </Grid.ColumnDefinitions>
                                         <Button  Command="{Binding Path=DataContext.OpenActionsManagerWindowCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" Grid.Column="0" Background="Transparent" hc:IconElement.Geometry="{DynamicResource edit}" Style="{DynamicResource ButtonBaseStyle}"/>
-                                        <Button Grid.Column="1" Background="Transparent" hc:IconElement.Geometry="{DynamicResource delete}" Style="{DynamicResource ButtonBaseStyle}"/>
+                                        <Button CommandParameter="{Binding .}" Command="{Binding Path=DataContext.DeleteSelectedAutomationCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" Grid.Column="1" Background="Transparent" hc:IconElement.Geometry="{DynamicResource delete}" Style="{DynamicResource ButtonBaseStyle}"/>
 
 
                                     </Grid>
@@ -104,27 +119,22 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!--<DataGridCheckBoxColumn d:DataContext="{d:DesignInstance viewModels:KeyboardShortcutViewModel}" 
-                                        Header="Is Active"
-                                        Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <DataGridTextColumn d:DataContext="{d:DesignInstance viewModels:KeyboardShortcutViewModel}" 
-                                    Header="Last Run Time"
-                                    Binding="{Binding LastRunTime}" />-->
-                </DataGrid.Columns>
-            </DataGrid>
+                       
+                    </DataGrid.Columns>
+                   
+                </DataGrid>
             </Grid>
-            <Grid>
+            <Grid Grid.Row="2" Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Click="Button_Click"  Margin="10" Style="{DynamicResource ButtonPrimary}" Grid.Column="2" Content="Done"/>
-                
+                <Button Click="Button_Click" Command="{Binding SaveAllAutomationCommand}"  Margin="10" Style="{DynamicResource ButtonPrimary}" Grid.Column="2" Content="Done"/>
+
             </Grid>
-            
-        </StackPanel>
+
+        
 
 
 

@@ -44,7 +44,7 @@
                         <TextBlock FontWeight="SemiBold" Text="ACTIONS"/>
                     </DataTemplate>
                 </GroupBox.HeaderTemplate>
-                <DataGrid  SelectedItem="{Binding CurrentSelectedAction}" ItemsSource="{Binding CurrentSelectedAutomation.Actions}" hc:DataGridAttach.CanUnselectAllWithBlankArea="True" HeadersVisibility="All" RowHeaderWidth="60" AutoGenerateColumns="False">
+                <DataGrid hc:DataGridAttach.ShowSelectAllButton="False"  SelectedItem="{Binding CurrentSelectedAction}" ItemsSource="{Binding CurrentSelectedAutomation.Actions}" hc:DataGridAttach.CanUnselectAllWithBlankArea="True" HeadersVisibility="All" RowHeaderWidth="0" AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn
                                     Binding="{Binding TargetDeviceName}"
