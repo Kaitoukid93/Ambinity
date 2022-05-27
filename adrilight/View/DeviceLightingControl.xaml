@@ -315,6 +315,7 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
@@ -337,16 +338,43 @@
               
                 <StackPanel Margin="10,5" Grid.Column="1">
                     <TextBlock HorizontalAlignment="Left" Margin="2" Style="{DynamicResource TextBlockTitle}" Text="{Binding CurrentDevice.DeviceName}" FontWeight="SemiBold"/>
-                    <TextBlock FontSize="13" HorizontalAlignment="Left" Margin="2" Style="{DynamicResource TextBlockDefault}" Text="{Binding CurrentDevice.DeviceDescription}" />
-                    <Button HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
+                    <!--<TextBlock FontSize="13" HorizontalAlignment="Left" Margin="2" Style="{DynamicResource TextBlockDefault}" Text="{Binding CurrentDevice.DeviceDescription}" />-->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Margin="0,0,10,0" FontSize="13" Style="{DynamicResource TextBlockDefault}" Text="{Binding CurrentDeviceOutputMode}"/>
+                        <Button Click="ChangeOutputMode" Grid.Column="1" HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
+                            <Button.Content>
+                                <TextBlock FontSize="13" Text="Change" Style="{DynamicResource TextBlockDefaultPrimary}"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                    <Button x:Name="ButtonRename" Click="RenameButtonClick" HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
                         <Button.Content>
                             <TextBlock FontSize="13" Text="Rename" Style="{DynamicResource TextBlockDefaultPrimary}"/>
                         </Button.Content>
                     </Button>
-                    
+                    <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=ButtonRename}" HorizontalOffset="30" x:Name="RenamePopup" VerticalOffset="0" StaysOpen="False">
+                        <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
+                            <Border Background="{DynamicResource SecondaryRegionBrush}" CornerRadius="7" Margin="0,2,15,15"  Effect="{DynamicResource EffectShadow3}">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBox x:Name="RenameTextBox" >
+                                        
+                                    </TextBox>
+
+                                    <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Click="ChangeCurrentDeviceName"   BorderBrush="Transparent"   Margin="5" Content="Rename" Style="{DynamicResource ButtonPrimary}"/>
+                                </StackPanel>
+
+                            </Border>
+                        </hc:TransitioningContentControl>
+
+                    </Popup>
+
                 </StackPanel>
             </Grid>
-            <Grid Margin="0,0,50,0" Grid.Column="1">
+            <Grid Margin="0,0,50,0" Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
@@ -439,7 +467,7 @@
                 </Button>
                 </hc:Badge>
             </Grid>
-            <Grid Margin="0,0,50,0" Grid.Column="2">
+            <Grid Margin="0,0,50,0" Grid.Column="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
@@ -477,7 +505,7 @@
                     </Grid>
                 </Button>
             </Grid>
-            <Grid Margin="0,0,100,0" Grid.Column="3">
+            <Grid Margin="0,0,100,0" Grid.Column="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
@@ -528,7 +556,7 @@
                     </Grid>
                 </Button>
             </Grid>
-            <Grid Grid.Column="4">
+            <Grid Grid.Column="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
@@ -595,18 +623,51 @@
                                                     <!--on off button-->
                                                     <Grid Grid.Column="2">
                                                         <StackPanel Orientation="Horizontal">
-                                                            <ToggleButton IsChecked="{Binding IsEnabled}" 
+                                                            <ToggleButton IsChecked="{Binding OutputIsEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                                                                       BorderThickness="0"  
-                                                                      Margin="0,0,18,0" 
+                                                                      Margin="0,0,10,0" 
                                                                       HorizontalAlignment="Right"
                                                                       VerticalAlignment="center"
                                                                       Grid.Row="0"
                                                                       Style="{StaticResource ToggleButtonSwitch}">
                                                             </ToggleButton>
+                                                        <Button x:Name="BrightnessButton" CommandParameter="{Binding .}" Command="{Binding Path=DataContext.ShowBrightnessAdjustmentPopupCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" BorderThickness="0" Background="{DynamicResource SecondaryRegionBrush}" Margin="0,0,10,0" hc:IconElement.Geometry="{DynamicResource brightness}" Style="{DynamicResource ButtonDefault}"></Button>
                                                         </StackPanel>
 
+                                                    <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=BrightnessButton}" HorizontalOffset="30" x:Name="BrightnessPopup" IsOpen="{Binding IsBrightnessPopupOpen}" VerticalOffset="0" StaysOpen="False">
+                                                        <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
+                                                            <Border Background="{DynamicResource RegionBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="7" Margin="0,2,15,15"  Effect="{DynamicResource EffectShadow3}">
+                                                                <StackPanel Orientation="Vertical">
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="auto"/>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                            
+                                                                            
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <Border Margin="8,0,0,0" Width="25" Height="25" Background="{DynamicResource DarkMaskBrush}" CornerRadius="4">
+                                                                            <TextBlock Style="{DynamicResource TextBlockDefault}" Text="{Binding OutputBrightness}">
+                                                                                
+                                                                            </TextBlock>
+                                                                        </Border>
+                                                                        <hc:PreviewSlider  Name="BrightnessSlider" Grid.Column="1" Value="{Binding OutputBrightness,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  MaxWidth="300" MinWidth="200" HorizontalAlignment="Left" Margin="10,10,10,10" Minimum="0" Maximum="100" TickFrequency="0.1">
+                                                                          
+                                                                        </hc:PreviewSlider>
 
-                                                    </Grid>
+                                                                        
+
+                                                                        
+                                                                    </Grid>
+                                                                   
+
+                                                                    
+                                                                </StackPanel>
+
+                                                            </Border>
+                                                        </hc:TransitioningContentControl>
+
+                                                    </Popup>
+                                                </Grid>
 
 
 
@@ -614,9 +675,16 @@
                                                     <!--name and info -->
                                                     <Grid Grid.Column="1">
                                                         <StackPanel>
-                                                            <TextBlock HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockSubTitle}" Text="{Binding OutputName}"/>
-                                                            <TextBlock  HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockDefaultSecLight}" Text="{Binding OutputType}"/>
-                                                        </StackPanel>
+                                                        <TextBlock HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockSubTitle}" Text="{Binding OutputName}"/>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Grid.Column="0" HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockDefaultSecLight}" Text="{Binding OutputType}"/>
+                                                            <TextBlock Grid.Column="1" HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockDefaultPrimary}" Text="{Binding OutputDescription}"/>
+                                                        </Grid>
+                                                    </StackPanel>
 
                                                     </Grid>
 

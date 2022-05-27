@@ -227,5 +227,26 @@ namespace adrilight.View
 
         private void NewModeSelected(object sender, SelectionChangedEventArgs e) => PopupMode.IsOpen = false;
 
+        private void ChangeOutputMode(object sender, RoutedEventArgs e)
+        {
+            ViewModel.CurrentDevice.IsUnionMode = !ViewModel.CurrentDevice.IsUnionMode;
+            
+        }
+
+        private void RenameButtonClick(object sender, RoutedEventArgs e)
+        {
+            RenamePopup.IsOpen = true;
+        }
+
+        private void ChangeCurrentDeviceName(object sender, RoutedEventArgs e)
+        {
+            ViewModel.CurrentDevice.DeviceName = RenameTextBox.Text;
+            RenamePopup.IsOpen = false;
+        }
+
+        private void BrightnessButton_OnClick(object sender, RoutedEventArgs e)
+        {
+           
+        }
     }
 }

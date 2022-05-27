@@ -79,9 +79,10 @@ namespace adrilight.View
             {
                 vm.IsSplitLightingWindowOpen = false;
                 vm.IsCanvasLightingWindowOpen = false;
+                vm.SaveCurrentProfile();
             }
         }
 
-
+        
     }
 }

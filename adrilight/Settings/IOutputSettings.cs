@@ -11,19 +11,28 @@ using adrilight.Util;
 
 namespace adrilight
 {
-    public interface IOutputSettings : INotifyPropertyChanged
+    public interface IOutputSettings : INotifyPropertyChanged 
     {
         //bool Autostart { get; set; }
-     
+
+       
+       
+       
         string OutputName { get; set; }
-        int OutputID { get; set; }
-        string OutputType { get; set; }
+        string OutputDescription { get; set; }
         int OutputNumLED { get; set; }
         int OutputNumLEDX { get; set; }
         int OutputNumLEDY { get; set; }
+        System.Drawing.Rectangle OutputRectangle { get; set; }
+        bool IsVissible { get; set; }
+
+      
+        int OutputID { get; set; }
+        string OutputType { get; set; }
         bool OutputIsLoadingProfile { get; set; }
         bool OutputIsBuildingLEDSetup { get; set; }
-        System.Drawing.Rectangle OutputRectangle { get; set; }
+
+        
         string OutputUniqueID { get; set; }
         string OutputRGBLEDOrder { get; set; }
         bool OutputIsVisible { get; set; }
@@ -34,7 +43,9 @@ namespace adrilight
         int OutputSmoothness { get; set; }
         int OutputScreenCapturePositionIndex { get; set; }
         bool OutputUseLinearLighting { get; set; }
+        bool OutputIsSystemSync { get; set; }
         bool OutputIsEnabled { get; set; }
+        bool IsBrightnessPopupOpen { get; set; }
         Color OutputAtmosphereStartColor { get; set; }
         Color OutputAtmosphereStopColor { get; set; }
         string OutputAtmosphereMode { get; set; }

@@ -10,6 +10,7 @@
          d:DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}"
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}" 
         Background="{DynamicResource RegionBrush}"
+        
        
         mc:Ignorable="d" Top="20"
         WindowStartupLocation="CenterScreen"
@@ -21,7 +22,7 @@
        
         
        AllowDrop="True" AllowsTransparency="False"
-       Title="Adrilight" Height="850" Width="1050"  MinHeight="480"  MinWidth="640" MouseLeftButtonDown="Window_MouseLeftButtonDown"  Closed="Window_Closed">
+       Title="Adrilight" Height="850" Width="1080"  MinHeight="480"  MinWidth="640" MouseLeftButtonDown="Window_MouseLeftButtonDown"  Closed="Window_Closed">
    
     <Window.Resources>
         <ResourceDictionary>

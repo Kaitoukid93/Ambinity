@@ -24,7 +24,7 @@ namespace adrilight
         int OffsetLed2 { get; set; }
         int OffsetLed3 { get; set; }
         string SelectedShader { get; set; }
-
+        
         int SpotHeight { get; set; }
 
         int SpotWidth { get; set; }
@@ -61,6 +61,7 @@ namespace adrilight
         bool StartMinimized { get; set; }
         int SelectedSystemPalette { get; set; }
         int SystemRainbowSpeed { get; set; }
+        int SystemRainbowMaxTick { get; set; }
 
 
     }

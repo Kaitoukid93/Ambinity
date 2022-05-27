@@ -79,7 +79,7 @@
                                                 hc:TipElement.Visibility="Visible" 
                                                 hc:TipElement.Placement="Bottom" 
                                                 hc:TipElement.StringFormat="#0"
-                                                Maximum="{Binding IDMaxValue}"
+                                                Maximum="{Binding GeneralSettings.SystemRainbowMaxTick}"
                                                 ValueStart="{Binding RangeMinValue,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" 
                                                 ValueEnd="{Binding RangeMaxValue ,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
                                 </hc:RangeSlider>

@@ -90,7 +90,21 @@
         </UserControl.Resources>
     <Grid>
         <StackPanel>
-           
+            <!--<Grid x:Name="Sync">
+                <GroupBox HorizontalAlignment="Left" VerticalContentAlignment="Center" hc:TitleElement.TitlePlacement="Left" hc:TitleElement.TitleWidth="120" Margin="15,5" Style="{DynamicResource GroupBoxOriginal}">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock FontWeight="SemiBold" Text="SYNC"/>
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
+                    <ToggleButton x:Name="sync" IsChecked="{Binding CurrentOutput.OutputIsSystemSync}" Style="{DynamicResource ToggleButtonSwitch}">
+                        
+                    </ToggleButton>
+                </GroupBox>
+
+
+
+            </Grid>-->
             <Grid x:Name="Mode">
                 <GroupBox HorizontalAlignment="Left" VerticalContentAlignment="Center" hc:TitleElement.TitlePlacement="Left" hc:TitleElement.TitleWidth="120" Margin="15,5" Style="{DynamicResource GroupBoxOriginal}">
                     <GroupBox.HeaderTemplate>
@@ -278,11 +292,30 @@
                                       Width="20" 
                                       Height="20" 
                                       Fill="{DynamicResource PrimaryTextBrush}"/>
-                        <hc:PreviewSlider Value="{Binding CurrentOutput.OutputPaletteSpeed}" Grid.Column="1" MaxWidth="300" MinWidth="200" HorizontalAlignment="Left" Margin="20,0,0,0" Minimum="0" Maximum="20" TickFrequency="0.1">
+                        <hc:PreviewSlider  Grid.Column="1" MaxWidth="300" MinWidth="200" HorizontalAlignment="Left" Margin="20,0,0,0" Minimum="0" Maximum="100" TickFrequency="0.1">
                             <hc:PreviewSlider.PreviewContent>
                                 <Label Style="{DynamicResource LabelBaseStyle}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
                             </hc:PreviewSlider.PreviewContent>
+                            <hc:PreviewSlider.Style>
+                                <Style TargetType="hc:PreviewSlider" BasedOn="{StaticResource PreviewSliderBaseStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=sync,Path=IsChecked}" Value="true">
+                                            <Setter Property="Value" Value="{Binding GeneralSettings.SystemRainbowSpeed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                               
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=sync,Path=IsChecked}" Value="false">
+                                            <Setter Property="Value" Value="{Binding CurrentOutput.OutputPaletteSpeed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </hc:PreviewSlider.Style>
                         </hc:PreviewSlider>
+                        <ToggleButton ToolTip="Đồng bộ với tốc độ của hệ thống" x:Name="sync" IsChecked="{Binding CurrentOutput.OutputIsSystemSync}" Style="{DynamicResource ToggleButtonSwitch}">
+
+                        </ToggleButton>
                     </StackPanel>
 
                 </GroupBox>

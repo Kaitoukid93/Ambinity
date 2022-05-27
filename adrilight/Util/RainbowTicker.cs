@@ -25,17 +25,17 @@ namespace adrilight
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public RainbowTicker( IDeviceSettings[] allDeviceSettings, IGeneralSettings generalSettings)
+        public RainbowTicker( IDeviceSettings[] allDeviceSettings, IGeneralSettings generalSettings, MainViewViewModel mainViewViewModel)
         {
             //DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
             AllDeviceSettings = allDeviceSettings ?? throw new ArgumentNullException(nameof(allDeviceSettings));
             GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
             //DeviceSpotSet = deviceSpotSet ?? throw new ArgumentNullException(nameof(deviceSpotSet));
             //AllDeviceSpotSet = allDeviceSpotSet ?? throw new ArgumentNullException(nameof(allDeviceSpotSet));
-           
-            
-          
-           GeneralSettings.PropertyChanged += PropertyChanged;
+            MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
+
+
+            GeneralSettings.PropertyChanged += PropertyChanged;
             
            
             RefreshColorState();
@@ -44,8 +44,9 @@ namespace adrilight
 
         }
         //Dependency Injection//
-       // private IDeviceSettings DeviceSettings { get; }
-       // private IDeviceSettings ParrentDevice { get; }
+        // private IDeviceSettings DeviceSettings { get; }
+        // private IDeviceSettings ParrentDevice { get; }
+        private MainViewViewModel MainViewViewModel { get; }
         private IDeviceSettings[] AllDeviceSettings { get; }
         private IDeviceSpotSet[] AllDeviceSpotSet { get; }
         private IGeneralSettings GeneralSettings { get; }
@@ -120,7 +121,8 @@ namespace adrilight
         public void Run(CancellationToken token)
 
         {
-            
+            var rainbowMaxTick = GeneralSettings.SystemRainbowMaxTick;
+          
 
             if (IsRunning) throw new Exception(" Rainbow Ticker is already running!");
 
@@ -137,7 +139,7 @@ namespace adrilight
                 {
                     double speed = GeneralSettings.SystemRainbowSpeed / 5d;
                     StartIndex += speed;
-                            if (StartIndex > 120)
+                            if (StartIndex > rainbowMaxTick)
                             {
                             StartIndex = 0;
                             }

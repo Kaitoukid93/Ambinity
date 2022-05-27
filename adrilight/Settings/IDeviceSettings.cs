@@ -38,7 +38,7 @@ namespace adrilight
         string DeviceUID { get; set; }
         string DeviceConnectionType { get; set; }
         bool IsSelected { get; set; }
-
+        bool IsUnionMode { get; set; }
         void ActivateProfile(IDeviceProfile profile);
        
     }

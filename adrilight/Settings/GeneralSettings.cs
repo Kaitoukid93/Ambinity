@@ -33,6 +33,7 @@ namespace adrilight
         private string _selectedShader = "Gooey";
         private int _selectedSystemPalette = 0;
         private int _systemRainbowSpeed = 5;
+        private int _systemRainbowMaxTick = 1024;
         private bool _isProfileLoading = false;
 
         private bool _startMinimized = false;
@@ -60,6 +61,7 @@ namespace adrilight
         public byte WhitebalanceRed { get => _whitebalanceRed; set { Set(() => WhitebalanceRed, ref _whitebalanceRed, value); } }
         public byte WhitebalanceGreen { get => _whitebalanceGreen; set { Set(() => WhitebalanceGreen, ref _whitebalanceGreen, value); } }
         public byte WhitebalanceBlue { get => _whitebalanceBlue; set { Set(() => WhitebalanceBlue, ref _whitebalanceBlue, value); } }
+        public int SystemRainbowMaxTick { get => _systemRainbowMaxTick; set { Set(() => SystemRainbowMaxTick, ref _systemRainbowMaxTick, value); } }
 
         private int _selectedDisplay = 0;
         private int _selectedAdapter = 0;

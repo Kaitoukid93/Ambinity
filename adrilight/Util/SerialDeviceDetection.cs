@@ -98,6 +98,8 @@ namespace adrilight.Util
             byte[] name = new byte[256];
             byte[] fw = new byte[256];
             List<IDeviceSettings> newDevices = new List<IDeviceSettings>();
+           
+           
             foreach(var device in ValidDevice())
             {
                 bool isValid = true;
