@@ -34,17 +34,26 @@ namespace adrilight.Ninject
                         var iD = device.DeviceID.ToString();
                        
                             Bind<IDeviceSettings>().ToConstant(device).Named(iD);
-                        foreach(var output in device.AvailableOutputs)
+
+
+                        
+
+                        foreach (var output in device.AvailableOutputs)
                         {
                             var outputID = iD+output.OutputID.ToString();
                             Bind<IOutputSettings>().ToConstant(output).Named(outputID);
+
+
+                           
                         }
                         
                         var unionOutput = device.UnionOutput;
+
                         if(unionOutput!=null)
                         {
                             var unionOutputID = iD + unionOutput.OutputID.ToString();
                             Bind<IOutputSettings>().ToConstant(unionOutput).Named(unionOutputID);
+                            
                         }
                         
 

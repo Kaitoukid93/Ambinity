@@ -21,8 +21,8 @@ namespace adrilight.Settings
             Geometry = "ambinobasic",
             IsUnionMode = true,
             IsTransferActive = true,
-            UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 11, 7, "LED Màn hình 24"),
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 11, 7, "LED Màn hình 24") }
+            UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 11, 7, "LED Màn hình 24",true),
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 11, 7, "LED Màn hình 24",false) }
 
         };
         public static DeviceSettings ambinoBasic27 = new DeviceSettings {
@@ -38,8 +38,8 @@ namespace adrilight.Settings
             Geometry = "ambinobasic",
             IsUnionMode = true,
             IsTransferActive = true,
-            UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 13, 7, "LED Màn hình 27"),
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 13, 7, "LED Màn hình 27") }
+            UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 13, 7, "LED Màn hình 27",true),
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 13, 7, "LED Màn hình 27",false) }
 
         };
         public static DeviceSettings ambinoBasic29 = new DeviceSettings {
@@ -55,8 +55,8 @@ namespace adrilight.Settings
             IsUnionMode = true,
             Geometry = "ambinobasic",
             IsTransferActive = true,
-            UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 14, 7, "LED Màn hình 29"),
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 14, 7, "LED Màn hình 29") }
+            UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 14, 7, "LED Màn hình 29",true),
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 14, 7, "LED Màn hình 29",false) }
 
         };
         public static DeviceSettings ambinoBasic32 = new DeviceSettings {
@@ -72,8 +72,8 @@ namespace adrilight.Settings
             IsUnionMode = true,
             Geometry = "ambinobasic",
             IsTransferActive = true,
-            UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 15, 8, "LED Màn hình 32"),
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 15, 8, "LED Màn hình 32") }
+            UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 15, 8, "LED Màn hình 32",true),
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 15, 8, "LED Màn hình 32",false) }
 
         };
         public static DeviceSettings ambinoBasic34 = new DeviceSettings {
@@ -89,8 +89,8 @@ namespace adrilight.Settings
             IsUnionMode = true,
             Geometry = "ambinobasic",
             IsTransferActive = true,
-            UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 17, 7, "LED Màn hình 34"),
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 17, 7, "LED Màn hình 34") }
+            UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 17, 7, "LED Màn hình 34",true),
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 17, 7, "LED Màn hình 34",false) }
 
         };
         public static DeviceSettings ambinoEdge1m2 = new DeviceSettings {
@@ -106,8 +106,8 @@ namespace adrilight.Settings
             Geometry = "ambinoedge",
             IsUnionMode = true,
             IsTransferActive = true,
-            UnionOutput = DefaulOutputCollection.AmbinoEdge(1, 24, "LED Cạnh Bàn",1),
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoEdge(0, 24, "LED Cạnh Bàn",1) }
+            UnionOutput = DefaulOutputCollection.AmbinoEdge(1, 24, "LED Cạnh Bàn",1,true),
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoEdge(0, 24, "LED Cạnh Bàn",1,false) }
 
         };
         public static DeviceSettings ambinoEdge2m = new DeviceSettings {
@@ -123,8 +123,8 @@ namespace adrilight.Settings
             Geometry = "ambinoedge",
             IsUnionMode = true,
             IsTransferActive = true,
-            UnionOutput = DefaulOutputCollection.AmbinoEdge(1, 20, "LED Cạnh Bàn",2),
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoEdge(0, 20, "LED Cạnh Bàn",2) }
+            UnionOutput = DefaulOutputCollection.AmbinoEdge(1, 20, "LED Cạnh Bàn",2,true),
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoEdge(0, 20, "LED Cạnh Bàn",2,false) }
 
         };
         public static DeviceSettings ambinoFanHub = new DeviceSettings {
@@ -139,17 +139,17 @@ namespace adrilight.Settings
             OutputPort = "Không có",
             Geometry = "ambinofanhub",
             IsTransferActive = true,
-            UnionOutput = DefaulOutputCollection.GenericFan("Uni-Fan", 10, 5, 5),
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericFan("Fan1",0, 5,5),
-                                                      DefaulOutputCollection.GenericFan("Fan2",1, 5,5),
-                                                      DefaulOutputCollection.GenericFan("Fan3",2, 5,5),
-                                                      DefaulOutputCollection.GenericFan("Fan4",3, 5,5),
-                                                      DefaulOutputCollection.GenericFan("Fan5",4, 5,5),
-                                                      DefaulOutputCollection.GenericFan("Fan6",5, 5,5),
-                                                      DefaulOutputCollection.GenericFan("Fan7",6, 5,5),
-                                                      DefaulOutputCollection.GenericFan("Fan8",7, 5,5),
-                                                      DefaulOutputCollection.GenericFan("Fan9",8, 5,5),
-                                                      DefaulOutputCollection.GenericFan("Fan10",9, 5,5)
+            UnionOutput = DefaulOutputCollection.GenericFan("Uni-Fan", 10, 5, 5,false),
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericFan("Fan1",0, 5,5,true),
+                                                      DefaulOutputCollection.GenericFan("Fan2",1, 5,5,true),
+                                                      DefaulOutputCollection.GenericFan("Fan3",2, 5,5,true),
+                                                      DefaulOutputCollection.GenericFan("Fan4",3, 5,5,true),
+                                                      DefaulOutputCollection.GenericFan("Fan5",4, 5,5,true),
+                                                      DefaulOutputCollection.GenericFan("Fan6",5, 5,5,true),
+                                                      DefaulOutputCollection.GenericFan("Fan7",6, 5,5,true),
+                                                      DefaulOutputCollection.GenericFan("Fan8",7, 5,5,true),
+                                                      DefaulOutputCollection.GenericFan("Fan9",8, 5,5,true),
+                                                      DefaulOutputCollection.GenericFan("Fan10",9, 5,5,true),
             },
 
 
@@ -168,13 +168,13 @@ namespace adrilight.Settings
             OutputPort = "Không có",
             Geometry = "ambinohub",
             IsTransferActive = true,
-            UnionOutput = DefaulOutputCollection.GenericLEDStrip(6, 16, "Uni-Strip", 4),
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 16,"Dải LED 1", 4),
-                                                      DefaulOutputCollection.GenericLEDStrip(1, 16, "Dải LED 2", 4),
-                                                      DefaulOutputCollection.AmbinoBasic(2, 11,7, "Màn 1"),
-                                                      DefaulOutputCollection.AmbinoBasic(3, 11,7, "Màn 2"),
-                                                      DefaulOutputCollection.AmbinoBasic(4, 11,7, "Màn 3"),
-                                                      DefaulOutputCollection.GenericLEDStrip(5, 16,"Cạnh Bàn", 1)
+            UnionOutput = DefaulOutputCollection.GenericLEDStrip(6, 16, "Uni-Strip", 4, false),
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 16,"Dải LED 1", 4,true),
+                                                      DefaulOutputCollection.GenericLEDStrip(1, 16, "Dải LED 2", 4,true),
+                                                      DefaulOutputCollection.AmbinoBasic(2, 11,7, "Màn 1",true),
+                                                      DefaulOutputCollection.AmbinoBasic(3, 11,7, "Màn 2",true),
+                                                      DefaulOutputCollection.AmbinoBasic(4, 11,7, "Màn 3",true),
+                                                      DefaulOutputCollection.GenericLEDStrip(5, 16,"Cạnh Bàn", 1,true)
 
             }
 
@@ -191,11 +191,11 @@ namespace adrilight.Settings
             OutputPort = "Không có",
             Geometry = "ambinohubv3",
             IsTransferActive = true,
-            UnionOutput = DefaulOutputCollection.GenericLEDStrip(4, 16, "Uni-Strip", 4),
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 16,"Dải LED 1", 4),
-                                                      DefaulOutputCollection.GenericLEDStrip(1, 16,"Dải LED 2", 4),
-                                                      DefaulOutputCollection.GenericLEDStrip(2, 16,"Dải LED 3", 4),
-                                                      DefaulOutputCollection.GenericLEDStrip(3, 16,"Dải LED 4", 4)
+            UnionOutput = DefaulOutputCollection.GenericLEDStrip(4, 16, "Uni-Strip", 4, false),
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 16,"Dải LED 1", 4,true),
+                                                      DefaulOutputCollection.GenericLEDStrip(1, 16,"Dải LED 2", 4,true),
+                                                      DefaulOutputCollection.GenericLEDStrip(2, 16,"Dải LED 3", 4,true),
+                                                      DefaulOutputCollection.GenericLEDStrip(3, 16,"Dải LED 4", 4,true)
 
 
 
@@ -214,13 +214,13 @@ namespace adrilight.Settings
             OutputPort = "Không có",
             Geometry = "ambinohubv3",
             IsTransferActive = true,
-            UnionOutput = DefaulOutputCollection.GenericLEDStrip(6, 20, "Uni-Strip",1),
-            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 20,"Dây LED 1",1),
-                                                      DefaulOutputCollection.GenericLEDStrip(1, 20,"Dây LED 2",1),
-                                                      DefaulOutputCollection.GenericLEDStrip(2, 20,"Dây LED 3",1),
-                                                      DefaulOutputCollection.GenericLEDStrip(3, 20,"Dây LED 4",1),
-                                                      DefaulOutputCollection.GenericLEDStrip(4, 20,"Dây LED 5",1),
-                                                      DefaulOutputCollection.GenericLEDStrip(5, 20,"Dây LED 6",1)
+            UnionOutput = DefaulOutputCollection.GenericLEDStrip(6, 20, "Uni-Strip",1, false),
+            AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 20,"Dây LED 1",1,true),
+                                                      DefaulOutputCollection.GenericLEDStrip(1, 20,"Dây LED 2",1,true),
+                                                      DefaulOutputCollection.GenericLEDStrip(2, 20,"Dây LED 3",1,true),
+                                                      DefaulOutputCollection.GenericLEDStrip(3, 20,"Dây LED 4",1,true),
+                                                      DefaulOutputCollection.GenericLEDStrip(4, 20,"Dây LED 5",1,true),
+                                                      DefaulOutputCollection.GenericLEDStrip(5, 20,"Dây LED 6",1,true)
 
 
 

@@ -60,7 +60,7 @@ namespace adrilight
                 case nameof(UserSettings.ShouldbeRunning):
                 case nameof(OutputSettings.OutputSelectedMode):
                 case nameof(UserSettings.IsProfileLoading):
-                case nameof(MainViewViewModel.IsSplitLightingWindowOpen):
+               
 
 
 
@@ -109,7 +109,7 @@ namespace adrilight
         public void RefreshCapturingState()
         {
             var isRunning = _cancellationTokenSource != null;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 0 && UserSettings.IsProfileLoading == false;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 0 && OutputSettings.IsInSpotEditWizard == false && OutputSettings.OutputIsLoadingProfile == false;
             //  var shouldBeRefreshing = NeededRefreshing;
 
 
@@ -221,9 +221,20 @@ namespace adrilight
                     //if (isPreviewRunning)
                     //{
                     //   MainViewViewModel.SetPreviewImage(image);
-
-
-                    image.LockBits(new Rectangle(x, y, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb, bitmapData);
+                    try
+                    {
+                        image.LockBits(new Rectangle(x, y, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb, bitmapData);
+                    }
+                       
+                    catch(System.ArgumentException)
+                    {
+                        //usually the rectangle is jumping out of the image due to new profile, we recreate the rectangle based on the scale
+                        // or simply dispose the image and let GetNextFrame handle the rectangle recreation
+                        image=null;
+                        continue;
+                    }
+                   
+                    
 
 
                     lock (OutputSettings.OutputLEDSetup.Lock)
@@ -431,7 +442,7 @@ namespace adrilight
                         DesktopImage = ReusableBitmap;
 
                     }
-                    else if (ReusableBitmap != null && ReusableBitmap.Width != CurrentFrame.FrameWidth || ReusableBitmap.Height != CurrentFrame.FrameHeight)
+                    else if (ReusableBitmap != null && (ReusableBitmap.Width != CurrentFrame.FrameWidth || ReusableBitmap.Height != CurrentFrame.FrameHeight))
                     {
                         DesktopImage = new Bitmap(CurrentFrame.FrameWidth, CurrentFrame.FrameHeight, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
                         //do the scale for current device position
@@ -451,7 +462,7 @@ namespace adrilight
                         DesktopImage = new Bitmap(CurrentFrame.FrameWidth, CurrentFrame.FrameHeight, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
                         var width = OutputSettings.OutputRectangleScaleWidth * CurrentFrame.FrameWidth;
                         var height = OutputSettings.OutputRectangleScaleHeight * CurrentFrame.FrameHeight;
-                        var x = OutputSettings.OutputRectangleScaleLeft*CurrentFrame.FrameWidth;
+                        var x = OutputSettings.OutputRectangleScaleLeft * CurrentFrame.FrameWidth;
                         var y = OutputSettings.OutputRectangleScaleTop * CurrentFrame.FrameHeight;
                         OutputSettings.OutputRectangle = new Rectangle((int)x, (int)y, (int)width, (int)height);
 

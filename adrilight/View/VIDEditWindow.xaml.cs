@@ -53,7 +53,7 @@ namespace adrilight.View
         {
             ViewModel.CurrentOutput.OutputLEDSetup.Spots = ViewModel.BackupSpots.ToArray();
             ViewModel.RaisePropertyChanged(nameof(ViewModel.CurrentOutput));
-            ViewModel.WriteDeviceInfoJson();
+            //ViewModel.WriteDeviceInfoJson();
             ViewModel.CurrentOutput.IsInSpotEditWizard = false;
             ViewModel.CurrentLEDEditWizardState = 0;
 

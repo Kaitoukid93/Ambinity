@@ -27,7 +27,21 @@ namespace adrilight
             Directory.CreateDirectory(JsonPath);
             File.WriteAllText(JsonFileNameAndPath, json);
         }
-        
+        public void SaveDeviceSettings(List<DeviceSettings> deviceSettings)
+        {
+            var devices = new List<DeviceSettings>();
+            foreach (var item in deviceSettings)
+            {
+                if (!item.IsDummy)
+                    devices.Add(item);
+            }
+
+            var json = JsonConvert.SerializeObject(devices, new JsonSerializerSettings() {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
+            Directory.CreateDirectory(JsonPath);
+            File.WriteAllText(JsonDeviceFileNameAndPath, json);
+        }
 
         public IGeneralSettings LoadIfExists()
         {
@@ -55,6 +69,8 @@ namespace adrilight
             var json = File.ReadAllText(JsonDeviceFileNameAndPath);
 
             var devices = JsonConvert.DeserializeObject<List<DeviceSettings>>(json, new JsonSerializerSettings() {TypeNameHandling = TypeNameHandling.Auto});
+            
+            
 
             return devices;
         }

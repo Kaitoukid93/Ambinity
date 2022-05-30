@@ -151,7 +151,7 @@
             <StackPanel HorizontalAlignment="Right" Grid.Column="2" Orientation="Horizontal">
 
                 <Button Click="Button_Click_Cancel" Margin="15" Content="Cancel"  Style="{DynamicResource ButtonPrimary}" Background="Transparent" />
-                <Button Click="Button_Click"  Command="{Binding ApplyCurrentOutputCapturingPositionCommand}" CommandParameter="apply" Margin="15" Content="Save and Apply"  Style="{DynamicResource ButtonPrimary}"/>
+                <Button Click="Button_Click"   CommandParameter="apply" Margin="15" Content="Save and Apply"  Style="{DynamicResource ButtonPrimary}"/>
             </StackPanel>
         </Grid>
             

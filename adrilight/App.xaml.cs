@@ -75,7 +75,7 @@ namespace adrilight
         {
 
 
-         
+
 
             _adrilightMutex = new Mutex(true, "adrilight2");
             if (!_adrilightMutex.WaitOne(TimeSpan.Zero, true))
@@ -86,7 +86,7 @@ namespace adrilight
                 Shutdown();
                 return;
             }
-            
+
             SetupDebugLogging();
             SetupLoggingForProcessWideEvents();
 
@@ -95,7 +95,7 @@ namespace adrilight
             _log.Debug($"adrilight {VersionNumber}: Main() started.");
             kernel = SetupDependencyInjection(false);
 
-            
+
 
             this.Resources["Locator"] = new ViewModelLocator(kernel);
 
@@ -107,9 +107,9 @@ namespace adrilight
 
             SetupNotifyIcon();
 
-           
 
-           // Current.MainWindow = kernel.Get<MainView>();
+
+            // Current.MainWindow = kernel.Get<MainView>();
             if (!GeneralSettings.StartMinimized)
             {
                 OpenSettingsWindow();
@@ -120,7 +120,7 @@ namespace adrilight
 
         protected override void OnExit(ExitEventArgs e)
         {
-            
+
 
             base.OnExit(e);
             _adrilightMutex?.Dispose();
@@ -137,8 +137,7 @@ namespace adrilight
         {
             const string ik = "65086b50-8c52-4b13-9b05-92fbe69c7a52";
             TelemetryConfiguration.Active.InstrumentationKey = ik;
-            var tc = new TelemetryClient
-            {
+            var tc = new TelemetryClient {
                 InstrumentationKey = ik
             };
 
@@ -168,7 +167,7 @@ namespace adrilight
             //var desktopDuplicationReader = kernel.Get<IDesktopDuplicatorReader>();
             //var desktopDuplicationReaderSecondary = kernel.Get<IDesktopDuplicatorReaderSecondary>();
             //var desktopDuplicationReaderThird = kernel.Get<IDesktopDuplicatorReaderThird>();
-          // var openRGBClient = kernel.Get<IOpenRGBClientDevice>();
+            // var openRGBClient = kernel.Get<IOpenRGBClientDevice>();
             var serialDeviceDetection = kernel.Get<ISerialDeviceDetection>();
             var shaderEffect = kernel.Get<IShaderEffect>();
             var context = kernel.Get<IContext>();
@@ -179,7 +178,7 @@ namespace adrilight
             //var hotKeyManager = kernel.Get<IHotKeyManager>();
             //kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
             //var openRGBStream = kernel.Get<IOpenRGBStream>();
-            
+
 
             //// tách riêng từng setting của từng device///
             if (existedDevice != null)
@@ -187,13 +186,17 @@ namespace adrilight
                 foreach (var device in existedDevice)
                 {
 
+                    
+                   
+
+
                     var iD = device.DeviceID.ToString();
                     var outputs = device.AvailableOutputs.ToList();
-                    if(device.UnionOutput!=null)
-                    outputs.Add(device.UnionOutput);
+                    if (device.UnionOutput != null)
+                        outputs.Add(device.UnionOutput);
                     var connectionType = device.DeviceConnectionType;
 
-                    switch(connectionType)
+                    switch (connectionType)
                     {
                         case "wired":
                             kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
@@ -207,6 +210,7 @@ namespace adrilight
 
                     foreach (var output in outputs)
                     {
+                        
                         var outputID = iD + output.OutputID.ToString();
                         //kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
                         kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
@@ -216,22 +220,22 @@ namespace adrilight
                         var spotset = kernel.Get<IDeviceSpotSet>(outputID);
                         var rainbow = kernel.Get<IRainbow>(outputID);
                         var screencapture = kernel.Get<IDesktopDuplicatorReader>(outputID);
-                        var  music = kernel.Get<IMusic>(outputID);
+                        var music = kernel.Get<IMusic>(outputID);
 
                     }
 
-                        var serialStream = kernel.Get<ISerialStream>(iD);
+                    var serialStream = kernel.Get<ISerialStream>(iD);
 
-                    }
-                            
-
+                }
 
 
-                    }
-  
+
+
+            }
+
             return kernel;
 
-            
+
         }
 
         private void SetupLoggingForProcessWideEvents()
@@ -240,12 +244,12 @@ namespace adrilight
     (sender, args) => ApplicationWideException(sender, args.ExceptionObject as Exception, "CurrentDomain.UnhandledException");
 
             DispatcherUnhandledException += (sender, args) => ApplicationWideException(sender, args.Exception, "DispatcherUnhandledException");
-            
-           // var desktopduplicators = kernel.GetAll<IDesktopDuplicatorReader>();
+
+            // var desktopduplicators = kernel.GetAll<IDesktopDuplicatorReader>();
             Exit += (s, e) =>
             {
                 var SerialStream = kernel.GetAll<ISerialStream>();
-                foreach ( var serialStream in SerialStream)
+                foreach (var serialStream in SerialStream)
                 {
                     serialStream.Stop();
                 }
@@ -253,7 +257,7 @@ namespace adrilight
                 _log.Debug("Application exit!");
             };
 
-           
+
 
             SystemEvents.PowerModeChanged += (s, e) =>
             {
@@ -341,7 +345,7 @@ namespace adrilight
             _log.Info($"DEBUG logging set up!");
         }
 
-        
+
         private IKernel kernel;
         MainView _mainForm;
         private void OpenSettingsWindow()
@@ -373,7 +377,7 @@ namespace adrilight
             var icon = new System.Drawing.Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("adrilight.zoe.ico"));
 
             var contextMenu = new ContextMenuStrip();
-            
+
 
             //var allDevices = kernel.GetAll<IDeviceSettings>();
             //foreach (var device in allDevices)
@@ -397,7 +401,7 @@ namespace adrilight
             //}
             //var SyncAll = new ToolStripMenuItem("Đồng bộ tất cả", null, (s, e) =>
             //{
-                
+
 
             //});
             //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Theo màn hình", null, (s, e) =>
@@ -460,8 +464,7 @@ namespace adrilight
 
             //This Commented due to Net5 incompatible
 
-            var notifyIcon = new System.Windows.Forms.NotifyIcon()
-            {
+            var notifyIcon = new System.Windows.Forms.NotifyIcon() {
                 Text = $"adrilight {VersionNumber}",
                 Icon = icon,
                 Visible = true,
@@ -473,14 +476,14 @@ namespace adrilight
 
             Exit += (s, e) => notifyIcon.Dispose();
         }
-        
+
 
         public static string VersionNumber { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 
         private IGeneralSettings GeneralSettings { get; set; }
-      
 
-            private void ApplicationWideException(object sender, Exception ex, string eventSource)
+
+        private void ApplicationWideException(object sender, Exception ex, string eventSource)
         {
             _log.Fatal(ex, $"ApplicationWideException from sender={sender}, adrilight version={VersionNumber}, eventSource={eventSource}");
 

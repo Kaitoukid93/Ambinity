@@ -12,7 +12,7 @@ namespace adrilight.Settings
 {
     internal class DefaulOutputCollection
     {
-        public static OutputSettings AmbinoBasic(int id,int numLEDX, int numLEDY, string name)
+        public static OutputSettings AmbinoBasic(int id,int numLEDX, int numLEDY, string name, bool isEnabled)
         {
 
             var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
@@ -31,7 +31,7 @@ namespace adrilight.Settings
                 OutputPowerMiliamps = 900,
                 OutputSaturationThreshold = 10,
                 OutputUseLinearLighting = false,
-                OutputIsEnabled = true,
+                OutputIsEnabled = isEnabled,
                 OutputAtmosphereStartColor = Color.FromRgb(255, 0, 0),
                 OutputAtmosphereStopColor = Color.FromRgb(255, 0, 0),
                 OutputAtmosphereMode = "Dirrect",
@@ -54,7 +54,7 @@ namespace adrilight.Settings
             return outputSettings;
             }
 
-        public static OutputSettings AmbinoEdge(int id, int numLED, string name, int ledPerSpot)
+        public static OutputSettings AmbinoEdge(int id, int numLED, string name, int ledPerSpot, bool isEnabled)
         {
 
             var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
@@ -73,7 +73,7 @@ namespace adrilight.Settings
                 OutputPowerMiliamps = 900,
                 OutputSaturationThreshold = 10,
                 OutputUseLinearLighting = false,
-                OutputIsEnabled = true,
+                OutputIsEnabled = isEnabled,
                 OutputAtmosphereStartColor = Color.FromRgb(255, 0, 0),
                 OutputAtmosphereStopColor = Color.FromRgb(255, 0, 0),
                 OutputAtmosphereMode = "Dirrect",
@@ -97,7 +97,7 @@ namespace adrilight.Settings
             return outputSettings;
         }
 
-        public static OutputSettings GenericLEDStrip(int id, int numLED, string name, int ledPerSpot)
+        public static OutputSettings GenericLEDStrip(int id, int numLED, string name, int ledPerSpot, bool isEnabled)
         {
 
             var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
@@ -116,7 +116,7 @@ namespace adrilight.Settings
                 OutputPowerMiliamps = 200,
                 OutputSaturationThreshold = 10,
                 OutputUseLinearLighting = false,
-                OutputIsEnabled = true,
+                OutputIsEnabled = isEnabled,
                 OutputAtmosphereStartColor = Color.FromRgb(255, 0, 0),
                 OutputAtmosphereStopColor = Color.FromRgb(255, 0, 0),
                 OutputAtmosphereMode = "Dirrect",
@@ -218,7 +218,7 @@ namespace adrilight.Settings
             };
             return outputSettings;
         }
-        public static OutputSettings GenericFan(string name, int id, int numLEDX, int numLEDY)
+        public static OutputSettings GenericFan(string name, int id, int numLEDX, int numLEDY,bool isEnabled)
         {
 
             var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
@@ -238,7 +238,7 @@ namespace adrilight.Settings
                 OutputPowerMiliamps = 900,
                 OutputSaturationThreshold = 10,
                 OutputUseLinearLighting = false,
-                OutputIsEnabled = true,
+                OutputIsEnabled = isEnabled,
                 OutputAtmosphereStartColor = Color.FromRgb(255, 0, 0),
                 OutputAtmosphereStopColor = Color.FromRgb(255, 0, 0),
                 OutputAtmosphereMode = "Dirrect",

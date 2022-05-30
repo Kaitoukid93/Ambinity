@@ -75,8 +75,8 @@ namespace adrilight
         private int _lEDPerLED = 1;
         private double _outputRectangleScaleWidth = 1; // how many percent that output rectangle width take from the image
         private double _outputRectangleScaleHeight = 1; // how many percent that output rectangle height take from the image
-        private double _outputRectangleScaleTop = 1;// how many percent that output rectangle top take from the image, represent Y
-        private double _outputRectangleScaleLeft = 1;// how many percent that output rectangle top take from the image, represent X
+        private double _outputRectangleScaleTop = 0;// how many percent that output rectangle top take from the image, represent Y
+        private double _outputRectangleScaleLeft = 0;// how many percent that output rectangle top take from the image, represent X
 
 
 
