@@ -186,12 +186,16 @@ namespace adrilight.View
                 AddManual.Content = "Auto scan";
                 autowired.Visibility = Visibility.Collapsed;
                 manualwired.Visibility = Visibility.Visible;
+                AddManuallyGrid.Visibility = Visibility.Visible;
+                AddAllButton.Visibility = Visibility.Collapsed;
             }
             else
             {
                 AddManual.Content = "Add manually";
                 autowired.Visibility = Visibility.Visible;
                 manualwired.Visibility = Visibility.Collapsed;
+                AddManuallyGrid.Visibility = Visibility.Collapsed;
+                AddAllButton.Visibility = Visibility.Visible;
             }
             
         }

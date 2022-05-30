@@ -29,7 +29,7 @@ namespace adrilight
         private bool _isTransferActive;
         private bool _isDummy = false;
         private IOutputSettings[] _availableOutput;
-        private IOutputSettings _availableUnionOutputs;
+        private IOutputSettings _unionOutput;
         private string _groupName = "Ambino Devices";
         private string _smallIcon = "";
         private string _bigIcon = "";
@@ -42,6 +42,7 @@ namespace adrilight
         private string _deviceConnectionType = "wired";
         private bool _isSelected = false;
         private bool _isUnionMode = false;
+        
 
 
 
@@ -61,7 +62,7 @@ namespace adrilight
         public bool IsTransferActive { get => _isTransferActive; set { Set(() => IsTransferActive, ref _isTransferActive, value); } }
         public bool IsDummy { get => _isDummy; set { Set(() => IsDummy, ref _isDummy, value); } }
         public IOutputSettings[] AvailableOutputs { get => _availableOutput; set { Set(() => AvailableOutputs, ref _availableOutput, value); } }
-        public IOutputSettings AvailableUnionOutputs { get => _availableUnionOutputs; set { Set(() => AvailableUnionOutputs, ref _availableUnionOutputs, value); } }
+        public IOutputSettings UnionOutput { get => _unionOutput; set { Set(() => UnionOutput, ref _unionOutput, value); } }
         public int Baudrate { get => _baudrate; set { Set(() => Baudrate, ref _baudrate, value); } }
         public int ActivatedProfileIndex { get => _activatedProfileIndex; set { Set(() => ActivatedProfileIndex, ref _activatedProfileIndex, value); } }
         public string GroupName { get => _groupName; set { Set(() => GroupName, ref _groupName, value); } }
@@ -88,6 +89,10 @@ namespace adrilight
                 //    // do something with the property
                 //}
 
+            }
+            foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
+            {
+                property.SetValue(UnionOutput, property.GetValue(profile.UnionOutput, null), null);
             }
         }
     }

@@ -39,6 +39,7 @@ namespace adrilight
             OutputSettings.PropertyChanged += PropertyChanged;
             GeneralSettings.PropertyChanged += PropertyChanged;
             MainViewViewModel.PropertyChanged += PropertyChanged;
+            inSync = OutputSettings.OutputIsSystemSync;
             RefreshColorState();
             _log.Info($"RainbowColor Created");
 
@@ -62,7 +63,7 @@ namespace adrilight
             {
                 case nameof(OutputSettings.OutputIsEnabled):
                 case nameof(OutputSettings.OutputSelectedMode):
-                case nameof(MainViewViewModel.IsSplitLightingWindowOpen):
+               
                 
                     RefreshColorState();
                     break;
@@ -141,7 +142,7 @@ namespace adrilight
 
 
 
-                var numLED = OutputSettings.OutputNumLED;
+                var numLED = OutputSettings.OutputLEDSetup.Spots.Length*OutputSettings.LEDPerSpot*OutputSettings.LEDPerLED;
                 var outputPowerVoltage = OutputSettings.OutputPowerVoltage;
                 var outputPowerMiliamps = OutputSettings.OutputPowerMiliamps;
                 var effectSpeed = OutputSettings.OutputPaletteSpeed;

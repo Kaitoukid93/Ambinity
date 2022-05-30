@@ -105,6 +105,10 @@ namespace adrilight
                 case nameof(DeviceSettings.OutputPort):
                     RefreshTransferState();
                     break;
+                case nameof(DeviceSettings.IsUnionMode):
+                    
+                    RefreshTransferState();
+                    break;
             }
         }
 
@@ -217,17 +221,17 @@ namespace adrilight
 
 
 
-        private (byte[] Buffer, int OutputLength) GetOutputStream( int output)
+        private (byte[] Buffer, int OutputLength) GetOutputStream( IOutputSettings output,byte id)
         {
             byte[] outputStream;
-            var currentOutput = DeviceSettings.AvailableOutputs[output];
-
+            var currentOutput = output;
+            var ledPerSpot = currentOutput.LEDPerSpot;
             int counter = _messagePreamble.Length;
             lock (currentOutput.OutputLEDSetup.Lock)
             {
                 const int colorsPerLed = 3;
                 int bufferLength = _messagePreamble.Length + 3 + 3
-                    + (currentOutput.OutputLEDSetup.Spots.Length * colorsPerLed);
+                    + (currentOutput.OutputLEDSetup.Spots.Length * colorsPerLed* ledPerSpot);
 
 
                 outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
@@ -246,7 +250,7 @@ namespace adrilight
                     outputStream[counter++] = hi;
                     outputStream[counter++] = lo;
                 outputStream[counter++] = chk;
-                outputStream[counter++] = (byte)output;
+                outputStream[counter++] = id;
                 outputStream[counter++] = 0;
                 outputStream[counter++] = 0;
                 var isEnabled = currentOutput.OutputIsEnabled;
@@ -262,34 +266,53 @@ namespace adrilight
                         switch (RGBOrder)
                         {
                             case "RGB": //RGB
-                                outputStream[counter++] = spot.Red; // blue
-                                outputStream[counter++] = spot.Green; // green
-                                outputStream[counter++] = spot.Blue; // red
+                                for (int i = 0;i<ledPerSpot;i++)
+                                {
+                                    outputStream[counter++] = spot.Red; // blue
+                                    outputStream[counter++] = spot.Green; // green
+                                    outputStream[counter++] = spot.Blue; // red
+                                }
+                                
                                 break;
                             case "GRB": //GRB
-                                outputStream[counter++] = spot.Green; // blue
-                                outputStream[counter++] = spot.Red; // green
-                                outputStream[counter++] = spot.Blue; // red
+                                for (int i = 0; i < ledPerSpot; i++)
+                                {
+                                    outputStream[counter++] = spot.Green; // blue
+                                    outputStream[counter++] = spot.Red; // green
+                                    outputStream[counter++] = spot.Blue; // red
+                                }
                                 break;
                             case "BRG": //BRG
-                                outputStream[counter++] = spot.Blue; // blue
-                                outputStream[counter++] = spot.Red; // green
-                                outputStream[counter++] = spot.Green; // red
+                                for (int i = 0; i < ledPerSpot; i++)
+                                {
+                                    outputStream[counter++] = spot.Blue; // blue
+                                    outputStream[counter++] = spot.Red; // green
+                                    outputStream[counter++] = spot.Green; // red
+                                }
                                 break;
                             case "BGR": //BGR
-                                outputStream[counter++] = spot.Blue; // blue
-                                outputStream[counter++] = spot.Green; // green
-                                outputStream[counter++] = spot.Red; // red
+                                for (int i = 0; i < ledPerSpot; i++)
+                                {
+                                    outputStream[counter++] = spot.Blue; // blue
+                                    outputStream[counter++] = spot.Green; // green
+                                    outputStream[counter++] = spot.Red; // red
+                                }
                                 break;
                             case "GBR"://GBR
-                                outputStream[counter++] = spot.Green; // blue
-                                outputStream[counter++] = spot.Blue; // green
-                                outputStream[counter++] = spot.Red; // red
+                                for (int i = 0; i < ledPerSpot; i++)
+                                {
+                                    outputStream[counter++] = spot.Green; // blue
+                                    outputStream[counter++] = spot.Blue; // green
+                                    outputStream[counter++] = spot.Red; // red
+                                }
                                 break;
                             case "RBG": //GBR
-                                outputStream[counter++] = spot.Red; // blue
-                                outputStream[counter++] = spot.Blue; // green
-                                outputStream[counter++] = spot.Green; // red
+                                for (int i = 0; i < ledPerSpot; i++)
+                                {
+                                    outputStream[counter++] = spot.Red; // blue
+                                    outputStream[counter++] = spot.Blue; // green
+                                    outputStream[counter++] = spot.Green; // red
+                                }
                                 break;
 
 
@@ -302,9 +325,12 @@ namespace adrilight
                     }
                     else
                     {
-                        outputStream[counter++] = 0; // blue
-                        outputStream[counter++] = 0; // green
-                        outputStream[counter++] = 0; // red
+                        for (int i = 0; i < ledPerSpot; i++)
+                        {
+                            outputStream[counter++] = 0; // blue
+                            outputStream[counter++] = 0; // green
+                            outputStream[counter++] = 0; // red
+                        }
                     }
 
 
@@ -417,6 +443,7 @@ namespace adrilight
 
             frameCounter = 0;
             blackFrameCounter = 0;
+            bool isUnion = DeviceSettings.IsUnionMode;
 
             //retry after exceptions...
             while (!cancellationToken.IsCancellationRequested)
@@ -442,27 +469,59 @@ namespace adrilight
 
                         }
                         //send frame data
-                        for(int i = 0; i < DeviceSettings.AvailableOutputs.Length; i++)
+                        if(isUnion)
                         {
-                            var (outputBuffer, streamLength) = GetOutputStream(i);
-                            serialPort.Write(outputBuffer, 0, streamLength);
-                            if (++frameCounter == 1024 && blackFrameCounter > 1000)
+                            
+                            for (int i=0; i<DeviceSettings.AvailableOutputs.Length;i++)
                             {
-                                //there is maybe something wrong here because most frames where black. report it once per run only
-                                var settingsJson = JsonConvert.SerializeObject(DeviceSettings, Formatting.None);
-                                _log.Info($"Sent {frameCounter} frames already. {blackFrameCounter} were completely black. Settings= {settingsJson}");
+                                var (outputBuffer, streamLength) = GetOutputStream(DeviceSettings.UnionOutput, (byte)i);
+                                serialPort.Write(outputBuffer, 0, streamLength);
+                                if (++frameCounter == 1024 && blackFrameCounter > 1000)
+                                {
+                                    //there is maybe something wrong here because most frames where black. report it once per run only
+                                    var settingsJson = JsonConvert.SerializeObject(DeviceSettings, Formatting.None);
+                                    _log.Info($"Sent {frameCounter} frames already. {blackFrameCounter} were completely black. Settings= {settingsJson}");
+                                }
+                                ArrayPool<byte>.Shared.Return(outputBuffer);
+
+                                //ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
+                                //receiving over serial takes it time as well and the arduino does both tasks in sequence
+                                //+1 ms extra safe zone
+                                var fastLedTime = ((streamLength - _messagePreamble.Length - _messagePostamble.Length) / 3.0 * 0.030d);
+                                var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
+                                var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
+
+                                Thread.Sleep(minTimespan);
                             }
-                            ArrayPool<byte>.Shared.Return(outputBuffer);
-
-                            //ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
-                            //receiving over serial takes it time as well and the arduino does both tasks in sequence
-                            //+1 ms extra safe zone
-                            var fastLedTime = ((streamLength - _messagePreamble.Length - _messagePostamble.Length) / 3.0 * 0.030d);
-                            var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
-                            var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
-
-                            Thread.Sleep(minTimespan);
                         }
+                        
+                        else
+                        {
+                            foreach (var output in DeviceSettings.AvailableOutputs)
+                            {
+                                var (outputBuffer, streamLength) = GetOutputStream(output, (byte)output.OutputID);
+                                serialPort.Write(outputBuffer, 0, streamLength);
+                                if (++frameCounter == 1024 && blackFrameCounter > 1000)
+                                {
+                                    //there is maybe something wrong here because most frames where black. report it once per run only
+                                    var settingsJson = JsonConvert.SerializeObject(DeviceSettings, Formatting.None);
+                                    _log.Info($"Sent {frameCounter} frames already. {blackFrameCounter} were completely black. Settings= {settingsJson}");
+                                }
+                                ArrayPool<byte>.Shared.Return(outputBuffer);
+
+                                //ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
+                                //receiving over serial takes it time as well and the arduino does both tasks in sequence
+                                //+1 ms extra safe zone
+                                var fastLedTime = ((streamLength - _messagePreamble.Length - _messagePostamble.Length) / 3.0 * 0.030d);
+                                var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
+                                var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
+
+                                Thread.Sleep(minTimespan);
+                            }
+                        }
+                        
+                            
+                        
                         
 
 

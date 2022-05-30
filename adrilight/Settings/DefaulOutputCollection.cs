@@ -12,17 +12,17 @@ namespace adrilight.Settings
 {
     internal class DefaulOutputCollection
     {
-        public static OutputSettings AmbinoBasic(int id,int numLEDX, int numLEDY)
+        public static OutputSettings AmbinoBasic(int id,int numLEDX, int numLEDY, string name)
         {
 
             var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
-                OutputName = "Ambino Basic",
+                OutputName = name,
                 OutputID = id,
                 OutputType = "Frame",
                 OutputNumLED = 100,
                 OutputNumLEDX = numLEDX,
                 OutputNumLEDY = numLEDY,
-                OutputRectangle = new System.Drawing.Rectangle(0,0, Screen.PrimaryScreen.Bounds.Width / 8, Screen.PrimaryScreen.Bounds.Height / 8),
+                OutputRectangle = new System.Drawing.Rectangle(0, 0, Screen.PrimaryScreen.Bounds.Width / 8, Screen.PrimaryScreen.Bounds.Height / 8),
                 OutputUniqueID = "",
                 OutputRGBLEDOrder = "GRB",
                 OutputIsVisible = true,
@@ -45,6 +45,7 @@ namespace adrilight.Settings
                 OutputPaletteBlendStep = 16,
                 OutputStaticColor = Color.FromRgb(0, 255, 0),
                 OutputBreathingSpeed = 10,
+                LEDPerLED = 2,
                 OutputCurrentActivePalette = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.rainbow),
                   OutputLEDSetup = BuildLEDSetup(numLEDX, numLEDY, "Frame", id, new System.Drawing.Rectangle(0, 0, Screen.PrimaryScreen.Bounds.Width / 8, Screen.PrimaryScreen.Bounds.Height / 8), "Frame")
                 // create ledsetup if neccesary
@@ -53,11 +54,11 @@ namespace adrilight.Settings
             return outputSettings;
             }
 
-        public static OutputSettings AmbinoEdge(int id, int numLED)
+        public static OutputSettings AmbinoEdge(int id, int numLED, string name, int ledPerSpot)
         {
 
             var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
-                OutputName = "Ambino EDGE",
+                OutputName = name,
                 OutputID = id,
                 OutputType = "Strip",
                 OutputNumLED = 100,
@@ -86,6 +87,8 @@ namespace adrilight.Settings
                 OutputPaletteBlendStep = 16,
                 OutputStaticColor = Color.FromRgb(0, 255, 0),
                 OutputBreathingSpeed = 10,
+                LEDPerSpot = ledPerSpot,
+                LEDPerLED = 2,
                 OutputCurrentActivePalette = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.rainbow),
                 OutputLEDSetup = BuildLEDSetup(numLED, 1, "Strip", id, new System.Drawing.Rectangle(0, 0, Screen.PrimaryScreen.Bounds.Width / 8, Screen.PrimaryScreen.Bounds.Width / (8 * numLED)), "Strip")
                 // create ledsetup if neccesary
@@ -94,11 +97,11 @@ namespace adrilight.Settings
             return outputSettings;
         }
 
-        public static OutputSettings GenericLEDStrip(int id, int numLED)
+        public static OutputSettings GenericLEDStrip(int id, int numLED, string name, int ledPerSpot)
         {
 
             var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
-                OutputName = "Generic LED Strip",
+                OutputName = name,
                 OutputID = id,
                 OutputType = "Strip",
                 OutputNumLED = 100,
@@ -127,6 +130,7 @@ namespace adrilight.Settings
                 OutputPaletteBlendStep = 16,
                 OutputStaticColor = Color.FromRgb(0, 255, 0),
                 OutputBreathingSpeed = 10,
+                LEDPerSpot = ledPerSpot,
                 OutputCurrentActivePalette = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.rainbow),
                 OutputLEDSetup = BuildLEDSetup(numLED, 1, "Strip", id, new System.Drawing.Rectangle(0, 0, Screen.PrimaryScreen.Bounds.Width / 8, Screen.PrimaryScreen.Bounds.Width / (8 * numLED)), "Strip")
                 // create ledsetup if neccesary
@@ -209,6 +213,47 @@ namespace adrilight.Settings
                 OutputBreathingSpeed = 10,
                 OutputCurrentActivePalette = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.rainbow),
                 OutputLEDSetup = BuildLEDSetup(numLEDX, numLEDY,"Frame", id, new System.Drawing.Rectangle(0, 0, Screen.PrimaryScreen.Bounds.Width / 8, Screen.PrimaryScreen.Bounds.Height / 8), "Frame")
+                // create ledsetup if neccesary
+
+            };
+            return outputSettings;
+        }
+        public static OutputSettings GenericFan(string name, int id, int numLEDX, int numLEDY)
+        {
+
+            var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
+                OutputName = name,
+                OutputID = id,
+                OutputType = "Frame",
+                OutputNumLED = 100,
+                OutputNumLEDX = numLEDX,
+                OutputNumLEDY = numLEDY,
+                OutputRectangle = new System.Drawing.Rectangle(0, 0, Screen.PrimaryScreen.Bounds.Width / 8, Screen.PrimaryScreen.Bounds.Height / 8),
+                OutputUniqueID = "",
+                OutputRGBLEDOrder = "GRB",
+                OutputIsVisible = true,
+                Geometry = "Fan",
+                OutputBrightness = 80,
+                OutputPowerVoltage = 5,
+                OutputPowerMiliamps = 900,
+                OutputSaturationThreshold = 10,
+                OutputUseLinearLighting = false,
+                OutputIsEnabled = true,
+                OutputAtmosphereStartColor = Color.FromRgb(255, 0, 0),
+                OutputAtmosphereStopColor = Color.FromRgb(255, 0, 0),
+                OutputAtmosphereMode = "Dirrect",
+                OutputSelectedMusicMode = 0,
+                OutputSelectedMusicPalette = 0,
+                OutputSelectedMode = 1,
+                OutputSelectedAudioDevice = 0,
+                OutputSelectedDisplay = 0,
+                OutputSelectedChasingPalette = 0,
+                OutputPaletteSpeed = 1,
+                OutputPaletteBlendStep = 16,
+                OutputStaticColor = Color.FromRgb(0, 255, 0),
+                OutputBreathingSpeed = 10,
+                OutputCurrentActivePalette = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.rainbow),
+                OutputLEDSetup = BuildLEDSetup(numLEDX, numLEDY, "Frame", id, new System.Drawing.Rectangle(0, 0, Screen.PrimaryScreen.Bounds.Width / 8, Screen.PrimaryScreen.Bounds.Height / 8), "Frame")
                 // create ledsetup if neccesary
 
             };

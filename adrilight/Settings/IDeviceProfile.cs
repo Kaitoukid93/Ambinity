@@ -15,6 +15,7 @@ namespace adrilight.Settings
         string Description { get; set; }
         string Geometry { get; set; }
         string ProfileUID { get; set; }
+        IOutputSettings UnionOutput { get; set; }
         IOutputSettings[] OutputSettings { get; set; }
     }
 }

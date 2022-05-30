@@ -349,7 +349,7 @@
 
         </Grid>
 
-        <Grid Grid.Row="2">
+        <Grid x:Name="AddManuallyGrid" Visibility="Collapsed" Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
@@ -366,9 +366,6 @@
                             </DataTrigger>
                             <DataTrigger Binding="{Binding CurrentAddDeviceWizardState}" Value="1">
                                 <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=grouptab,Path=SelectedIndex}" Value="1">
-                                <Setter Property="Command" Value="{Binding AddSelectedWLEDDevicesCommand}"/>
                             </DataTrigger>
                         </Style.Triggers>
                         
@@ -396,7 +393,7 @@
                     <Style TargetType="Button" BasedOn="{StaticResource ButtonPrimary}">
                         <Setter Property="Visibility" Value="Collapsed"></Setter>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding CurrentAddDeviceWizardState}" Value="2">
+                            <DataTrigger Binding="{Binding CurrentAddDeviceWizardState}" Value="0">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                           
@@ -420,7 +417,33 @@
                 </Button.Style>
             </Button>
             </Grid>
-  
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="AddAllButton"  Margin="10"  Grid.Column="2" Content="Add Selected" CommandParameter="AddSelected">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource ButtonPrimary}">
+                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                        <Setter Property="Command" Value="{Binding AddSelectedWLEDDevicesCommand}"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentAddDeviceWizardState}" Value="0">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+
+                    </Style>
+                </Button.Style>
+            </Button>
+        
+
+
+           
+         
+        </Grid>
+
 
 
 

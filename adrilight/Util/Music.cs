@@ -54,7 +54,8 @@ namespace adrilight
             OutputSettings.PropertyChanged += PropertyChanged;
             GeneralSettings.PropertyChanged += PropertyChanged;
             MainViewModel.PropertyChanged += PropertyChanged;
-           
+            inSync = OutputSettings.OutputIsSystemSync;
+
             BassNet.Registration("saorihara93@gmail.com", "2X2831021152222");
             _process = new WASAPIPROC(Process);
             _fft = new float[1024];
@@ -70,7 +71,8 @@ namespace adrilight
         private MainViewViewModel MainViewModel { get; }
         private IRainbowTicker RainbowTicker { get; }
         private IGeneralSettings GeneralSettings { get; }
-         //private IDeviceSpotSet OutputSpotSet { get; }
+        private bool inSync { get; set; }
+        //private IDeviceSpotSet OutputSpotSet { get; }
 
         private Color[] colorBank = new Color[256];
    
@@ -186,7 +188,8 @@ namespace adrilight
             if (isRunning && shouldBeRunning)
             {
                 // rainbow is running and we need to change the color bank
-                colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette.Colors, MainViewModel.IDMaxValue).ToArray();
+                colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette.Colors, GeneralSettings.SystemRainbowMaxTick).ToArray();
+                inSync = OutputSettings.OutputIsSystemSync;
             }
 
         }
@@ -215,14 +218,15 @@ namespace adrilight
             try
             {
                
-                Color[] paletteSource;
-                paletteSource = OutputSettings.OutputCurrentActivePalette.Colors;
-                colorBank = GetColorGradientfromPalette(paletteSource,MainViewModel.IDMaxValue).ToArray();
+               
+                var colorNum = GeneralSettings.SystemRainbowMaxTick;
+                Color[] paletteSource = OutputSettings.OutputCurrentActivePalette.Colors;
+                colorBank = GetColorGradientfromPalette(paletteSource, colorNum).ToArray();
                 int musicMode = OutputSettings.OutputSelectedMusicMode;
                 
                 var outputPowerVoltage = OutputSettings.OutputPowerVoltage;
                 var outputPowerMiliamps = OutputSettings.OutputPowerMiliamps;
-                var numLED = OutputSettings.OutputLEDSetup.Spots.Length;
+                var numLED = OutputSettings.OutputLEDSetup.Spots.Length * OutputSettings.LEDPerSpot * OutputSettings.LEDPerLED;
                 lastSpectrumData = new float[MainViewModel.IDMaxValue];
                 fftColors = new Color[MainViewModel.IDMaxValue];
                 //int counter = 0;
@@ -657,15 +661,18 @@ namespace adrilight
 
             return Color.FromRgb((byte)Math.Round(r), (byte)Math.Round(g), (byte)Math.Round(b));
         }
-        public static IEnumerable<Color> GetColorGradientfromPalette(Color[] colorCollection,int totalColor)
+        public static IEnumerable<Color> GetColorGradientfromPalette(Color[] colorCollection, int colorNum)
         {
             var colors = new List<Color>();
-            var colorPerGap = totalColor / colorCollection.Length;
+            int colorPerGap = colorNum / (colorCollection.Count() - 1);
+
             for (int i = 0; i < colorCollection.Length - 1; i++)
             {
                 var gradient = GetColorGradient(colorCollection[i], colorCollection[i + 1], colorPerGap);
                 colors = colors.Concat(gradient).ToList();
             }
+            int remainTick = colorNum - colors.Count();
+            colors = colors.Concat(colors.Take(remainTick).ToList()).ToList();
             return colors;
         }
         public static IEnumerable<Color> GetColorGradient(Color from, Color to, int totalNumberOfColors)

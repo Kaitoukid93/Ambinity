@@ -43,6 +43,7 @@ using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 using System.Threading.Tasks;
 using System.Threading;
+using adrilight.DesktopDuplication;
 
 namespace adrilight.ViewModel
 {
@@ -51,6 +52,7 @@ namespace adrilight.ViewModel
         private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adrilight\\");
 
         private string JsonDeviceFileNameAndPath => Path.Combine(JsonPath, "adrilight-deviceInfos.json");
+        private string JsonGeneralFileNameAndPath => Path.Combine(JsonPath, "adrilight-settings.json");
         private string JsonSolidColorFileNameAndPath => Path.Combine(JsonPath, "adrilight-solidColor.json");
         private string JsonDeviceProfileFileNameAndPath => Path.Combine(JsonPath, "adrilight-deviceProfiles.json");
         private string JsonAutomationFileNameAndPath => Path.Combine(JsonPath, "adrilight-automations.json");
@@ -128,7 +130,7 @@ namespace adrilight.ViewModel
             set
             {
                 _availableActionsforCurrentDevice = value;
-               
+
                 RaisePropertyChanged();
             }
         }
@@ -161,13 +163,13 @@ namespace adrilight.ViewModel
             set
             {
                 _selectedActionType = value;
-               
+
                 switch (value)
                 {
                     case "Activate Profile":
 
                         AvailableParametersforCurrentAction = AllAvailableParametersforCurrentAction.Where(x => x.Type == "profile").ToList();
-                        
+
                         break;
                     case "Brightness Control":
 
@@ -178,7 +180,7 @@ namespace adrilight.ViewModel
             }
         }
 
-        
+
         private VerticalMenuItem _selectedVerticalMenuItem;
         public VerticalMenuItem SelectedVerticalMenuItem {
             get { return _selectedVerticalMenuItem; }
@@ -345,18 +347,18 @@ namespace adrilight.ViewModel
                 //if (_currentOutput != null) _currentOutput.PropertyChanged += _currentDevice_PropertyChanged;
                 _currentOutput.PropertyChanged += (s, e) =>
                 {
-                    if(CurrentDevice.IsUnionMode)
-                    {
-                        PropertyInfo propertyInfo = CurrentOutput.GetType().GetProperty(e.PropertyName); 
-                        // refect current output changed value to other output in the devices
-                        foreach(var output in CurrentDevice.AvailableOutputs)
-                        {
-                            PropertyInfo targetProperty = output.GetType().GetProperty(e.PropertyName);
-                            if (Attribute.IsDefined(targetProperty, typeof(ReflectableAttribute)))
-                            targetProperty.SetValue(output,propertyInfo.GetValue(CurrentOutput));
-                        }
-                        
-                    }
+                    //if(CurrentDevice.IsUnionMode)
+                    //{
+                    //    PropertyInfo propertyInfo = CurrentOutput.GetType().GetProperty(e.PropertyName); 
+                    //    // refect current output changed value to other output in the devices
+                    //    foreach(var output in CurrentDevice.AvailableOutputs)
+                    //    {
+                    //        PropertyInfo targetProperty = output.GetType().GetProperty(e.PropertyName);
+                    //        if (Attribute.IsDefined(targetProperty, typeof(ReflectableAttribute)))
+                    //        targetProperty.SetValue(output,propertyInfo.GetValue(CurrentOutput));
+                    //    }
+
+                    //}
 
                     switch (e.PropertyName)
                     {
@@ -448,12 +450,12 @@ namespace adrilight.ViewModel
                             if (CurrentOutput.OutputPaletteChasingPosition == 0)
                             {
                                 //full range
-                                foreach(var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
                                 {
                                     spot.SetStroke(0.5);
                                 }
                                 SetIDMode = "VID";
-                                ProcessSelectedSpotsWithRange(0,1024);
+                                ProcessSelectedSpotsWithRange(0, 1024);
                                 foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
                                 {
                                     spot.SetStroke(0);
@@ -483,7 +485,7 @@ namespace adrilight.ViewModel
                 WriteDeviceInfoJson();
             }
             IsSettingsUnsaved = BadgeStatus.Processing;
-            
+
             //if (CurrentDevice.DeviceID == 151293)
             //{
 
@@ -1098,7 +1100,7 @@ namespace adrilight.ViewModel
             SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
             ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
             AvailableDevices = new ObservableCollection<IDeviceSettings>();
-           
+
             Groups = new ObservableCollection<IGroupSettings>();
             DisplayCards = new ObservableCollection<IDeviceSettings>();
             //AddedDevice = cards.Length;
@@ -1120,7 +1122,7 @@ namespace adrilight.ViewModel
             //DesktopFrame.PropertyChanged += ShaderImageUpdate;
             //ShaderSpots = generalSpotSet.ShaderSpot;
             //ShaderBitmap = shaderEffect.MatrixBitmap;
-            
+
             foreach (IDeviceSettings device in devices)
             {
                 AvailableDevices.Add(device);
@@ -1145,7 +1147,7 @@ namespace adrilight.ViewModel
             };
             AvailableDevices.Add(addNewButton);
 
-            
+
 
             GeneralSettings.PropertyChanged += (s, e) =>
             {
@@ -1169,6 +1171,7 @@ namespace adrilight.ViewModel
 
 
                 }
+                WriteGenralSettingsJson();
 
             };
 
@@ -1186,8 +1189,8 @@ namespace adrilight.ViewModel
         //    }
 
         //}
-   
-        public void ShaderImageUpdate(byte[] frame, int frameWidth, int frameHeight)
+
+        public void ShaderImageUpdate(ByteFrame frame)
         {
             //if (IsSplitLightingWindowOpen)
             //{
@@ -1223,15 +1226,15 @@ namespace adrilight.ViewModel
             Context.Invoke(() =>
             {
 
-                var CurrentFrame = frame;
-                if (CurrentFrame != null)
+                
+                if (frame != null)
                 {
-                    var MatrixBitmap = new WriteableBitmap(frameWidth, frameHeight, 96, 96, PixelFormats.Bgra32, null);
+                    var MatrixBitmap = new WriteableBitmap(frame.FrameWidth, frame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
                     MatrixBitmap.Lock();
                     IntPtr pixelAddress = MatrixBitmap.BackBuffer;
-                    Marshal.Copy(CurrentFrame, 0, pixelAddress, CurrentFrame.Length);
+                    Marshal.Copy(frame.Frame, 0, pixelAddress, frame.Frame.Length);
 
-                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, frameWidth, frameHeight));
+                    MatrixBitmap.AddDirtyRect(new Int32Rect(0, 0, frame.FrameWidth, frame.FrameHeight));
 
                     MatrixBitmap.Unlock();
                     ShaderBitmap = MatrixBitmap;
@@ -1662,7 +1665,7 @@ namespace adrilight.ViewModel
             get => _maxLEDCount;
             set
             {
-                 _maxLEDCount = value;
+                _maxLEDCount = value;
                 RaisePropertyChanged(nameof(MaxLEDCount));
                 RaisePropertyChanged(nameof(IsNextable));
             }
@@ -1778,7 +1781,7 @@ namespace adrilight.ViewModel
 
 
 
-        private BadgeStatus _isSettingsUnsaved= BadgeStatus.Dot;
+        private BadgeStatus _isSettingsUnsaved = BadgeStatus.Dot;
         public BadgeStatus IsSettingsUnsaved {
             get
             {
@@ -1813,7 +1816,7 @@ namespace adrilight.ViewModel
         public string AutomationNewName {
 
             get { return _automationNewName; }
-            set {  _automationNewName = value; RaisePropertyChanged(); }    
+            set { _automationNewName = value; RaisePropertyChanged(); }
         }
 
 
@@ -1943,7 +1946,7 @@ namespace adrilight.ViewModel
                 _newAutomationName = value;
             }
         }
-      
+
 
         private int _rangeMinValue = 0;
         public int RangeMinValue {
@@ -1969,24 +1972,26 @@ namespace adrilight.ViewModel
                 _rangeMaxValue = value;
             }
         }
-       
+
         public int IDMaxValue {
-            get {
-                int totalLEDNum=0;
-                foreach(var device in AvailableDevices)
+            get
+            {
+                int totalLEDNum = 0;
+                foreach (var device in AvailableDevices)
                 {
-                    if(!device.IsDummy)
+                    if (!device.IsDummy)
                     {
                         foreach (var output in device.AvailableOutputs)
                         {
                             totalLEDNum += output.OutputLEDSetup.Spots.Length;
                         }
                     }
-                  
+
                 }
-                
-                return totalLEDNum; }
-            
+
+                return totalLEDNum;
+            }
+
         }
         private string _currentDeviceOutputMode;
         public string CurrentDeviceOutputMode {
@@ -1995,56 +2000,57 @@ namespace adrilight.ViewModel
                 switch (CurrentDevice.IsUnionMode)
                 {
                     case true:
-                        foreach(var output in CurrentDevice.AvailableOutputs)
+                        foreach (var output in CurrentDevice.AvailableOutputs)
                         {
-                            if(output.OutputID ==0)
-                            {
-                                output.OutputDescription = "Master";
-                            }
-                            else
-                            {
-                                output.IsVissible = false;
-                            }
+                            output.OutputIsEnabled = false;
+
                         }
+                        CurrentOutput = CurrentDevice.UnionOutput;
+                        CurrentOutput.OutputIsEnabled = true;
                         return "Output Mode: Union";
 
                     case false:
                         foreach (var output in CurrentDevice.AvailableOutputs)
                         {
-                            if (output.OutputID == 0)
-                            {
-                                output.OutputDescription = "";
-                            }
-                            else
-                            {
-                                output.IsVissible = true;
-                            }
+                            output.OutputIsEnabled = true;
+
                         }
+                        CurrentOutput = CurrentDevice.AvailableOutputs[0];
+                        CurrentDevice.UnionOutput.OutputIsEnabled = false;
                         return "Output Mode: Independent";
 
                 }
             }
-                set{
-                    _currentDeviceOutputMode = value ;
-                if(CurrentDevice.IsUnionMode)
-                {
-             
-                    // refect current output changed value to other output in the devices
-                    foreach (var output in CurrentDevice.AvailableOutputs)
-                    {
-                        foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
-                        {
-                            property.SetValue(output, property.GetValue(CurrentOutput));
-                        }
-                        
-                        
-                    }
+            set
+            {
+                _currentDeviceOutputMode = value;
+                //if(CurrentDevice.IsUnionMode)
+                //{
 
-                    
-                    WriteDeviceProfileCollection();
-                }
-                    RaisePropertyChanged();
-                }
+                //    // refect current output changed value to other output in the devices
+                //    foreach (var output in CurrentDevice.AvailableOutputs)
+                //    {
+                //        foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
+                //        {
+                //            property.SetValue(output, property.GetValue(CurrentOutput));
+                //        }
+
+
+                //    }
+
+
+                //    WriteDeviceProfileCollection();
+                //}
+                RaisePropertyChanged();
+            }
+        }
+        private bool _outputModeChangeEnable;
+        public bool OutputModeChangeEnable {
+            get { return _outputModeChangeEnable; }
+            set
+            {
+                _outputModeChangeEnable = value;
+            }
         }
 
         private IGradientColorCard _currentSelectedGradient;
@@ -2568,7 +2574,7 @@ namespace adrilight.ViewModel
 
 
                     GrabActivatedSpot();
-                   
+
 
                 }
                 else if (CurrentLEDEditWizardState == 2)
@@ -2782,7 +2788,7 @@ namespace adrilight.ViewModel
 
                 else
                 {
-                   
+
                     p.SetID(1000);
                     ReorderActivatedSpot();
                     p.SetColor(0, 0, 0, true);
@@ -2790,7 +2796,7 @@ namespace adrilight.ViewModel
                     MaxLEDCount++;
                 }
 
-             
+
 
 
             });
@@ -2823,7 +2829,7 @@ namespace adrilight.ViewModel
             }, (p) =>
             {
 
-                ProcessSelectedSpotsWithRange(RangeMinValue,RangeMaxValue);
+                ProcessSelectedSpotsWithRange(RangeMinValue, RangeMaxValue);
 
             });
             SetPIDNeutral = new RelayCommand<string>((p) =>
@@ -2970,10 +2976,11 @@ namespace adrilight.ViewModel
         private async void ScanSerialDevice(string status)
         {
             ISerialDeviceDetection detector = new SerialDeviceDetection();
-           
-            
 
-            var jobTask = Task.Run(() => {
+
+
+            var jobTask = Task.Run(() =>
+            {
                 // Organize critical sections around logical serial port operations somehow.
                 lock (_syncRoot)
                 {
@@ -3007,11 +3014,11 @@ namespace adrilight.ViewModel
                     AvailableSerialDevices.Add(device);
                 }
             }
-            
 
 
 
-           
+
+
 
         }
 
@@ -3052,15 +3059,15 @@ namespace adrilight.ViewModel
                 AllAvailableParametersforCurrentAction = new List<IActionParameter>();
                 foreach (var profile in AvailableProfiles)
                 {
-                    if(profile.DeviceType==CurrentSelectedAction.TargetDeviceType)
+                    if (profile.DeviceType == CurrentSelectedAction.TargetDeviceType)
                     {
-                        AllAvailableParametersforCurrentAction.Add(new ActionParameter { Geometry = profile.Geometry,Name=profile.Name,Type="profile",Value=profile.ProfileUID });
+                        AllAvailableParametersforCurrentAction.Add(new ActionParameter { Geometry = profile.Geometry, Name = profile.Name, Type = "profile", Value = profile.ProfileUID });
                     }
                 }
 
 
-                ActionParameter brightnessUp = new ActionParameter { Name = "Brightness Up",Geometry= "brightness", Type = "brightness", Value = "up" };
-                ActionParameter brightnessDown = new ActionParameter { Name = "Brightness Down",Geometry="brightness", Type = "brightness", Value = "down" };
+                ActionParameter brightnessUp = new ActionParameter { Name = "Brightness Up", Geometry = "brightness", Type = "brightness", Value = "up" };
+                ActionParameter brightnessDown = new ActionParameter { Name = "Brightness Down", Geometry = "brightness", Type = "brightness", Value = "down" };
                 AllAvailableParametersforCurrentAction.Add(brightnessUp);
                 AllAvailableParametersforCurrentAction.Add(brightnessDown);
                 window.Owner = System.Windows.Application.Current.MainWindow;
@@ -3091,7 +3098,7 @@ namespace adrilight.ViewModel
         {
             if (AssemblyHelper.CreateInternalInstance($"View.{"AddNewAutomationWindow"}") is System.Windows.Window window)
             {
-               
+
                 window.Owner = System.Windows.Application.Current.MainWindow;
                 window.ShowDialog();
             }
@@ -3107,11 +3114,11 @@ namespace adrilight.ViewModel
         }
         private void ApplyCurrentOuputCapturingPosition()
         {
-            if (AdjustingRectangleTop + AdjustingRectangleHeight <= ShaderBitmap.Height && AdjustingRectangleLeft + AdjustingRectangleWidth <= ShaderBitmap.Width && AdjustingRectangleTop >= 0 && AdjustingRectangleLeft >= 0)
-            {
-                CurrentOutput.OutputRectangle = new Rectangle(AdjustingRectangleLeft, AdjustingRectangleTop, AdjustingRectangleWidth, AdjustingRectangleHeight);
-                RaisePropertyChanged(nameof(CurrentOutput.OutputRectangle));
-            }
+            CurrentOutput.OutputRectangleScaleHeight = AdjustingRectangleHeight / ShaderBitmap.PixelHeight;
+            CurrentOutput.OutputRectangleScaleWidth = AdjustingRectangleWidth / ShaderBitmap.PixelWidth;
+            CurrentOutput.OutputRectangleScaleLeft = AdjustingRectangleLeft / ShaderBitmap.PixelWidth;
+            CurrentOutput.OutputRectangleScaleTop = AdjustingRectangleTop / ShaderBitmap.PixelHeight;// these value is for setting new rectangle and it's position when parrents size is not stored( app startup)
+            CurrentOutput.SetRectangle(new Rectangle(AdjustingRectangleTop, AdjustingRectangleLeft, AdjustingRectangleWidth, AdjustingRectangleHeight));
 
         }
 
@@ -3149,47 +3156,62 @@ namespace adrilight.ViewModel
 
         public void SaveCurrentProfile()
         {
-            if(CurrentSelectedProfile!=null)
+            if (CurrentDevice.IsUnionMode)//save to union output only
             {
-                for (var i = 0; i < CurrentDevice.AvailableOutputs.Length; i++)
+                if (CurrentSelectedProfile != null)
                 {
+
                     foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
                     {
-                        property.SetValue(CurrentSelectedProfile.OutputSettings[i], property.GetValue(CurrentDevice.AvailableOutputs[i], null), null);
+                        CurrentSelectedProfile.UnionOutput = CurrentDevice.UnionOutput;
                     }
                 }
-                WriteDeviceProfileCollection();
-                AvailableProfiles.Clear();
-                foreach (var profile in LoadDeviceProfileIfExist())
-                {
-                    AvailableProfiles.Add(profile);
-                }
-                RaisePropertyChanged(nameof(AvailableProfiles));
-                Growl.Success("Profile saved successfully!");
-                IsSettingsUnsaved = BadgeStatus.Dot;
             }
-           
-            
+            else
+            {
+                if (CurrentSelectedProfile != null)
+                {
+                    foreach (var output in CurrentDevice.AvailableOutputs)
+                    {
+                        foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
+                        {
+                            CurrentSelectedProfile.OutputSettings[output.OutputID] = output;
+                        }
+                    }
+
+                }
+            }
+
+            WriteDeviceProfileCollection();
+            AvailableProfiles.Clear();
+            foreach (var profile in LoadDeviceProfileIfExist())
+            {
+                AvailableProfiles.Add(profile);
+            }
+            RaisePropertyChanged(nameof(AvailableProfiles));
+            Growl.Success("Profile saved successfully!");
+            IsSettingsUnsaved = BadgeStatus.Dot;
+
         }
         private void SaveCurrentSelectedAction()
         {
-         CurrentSelectedAction.ActionType=SelectedActionType.ToString();
+            CurrentSelectedAction.ActionType = SelectedActionType.ToString();
             CurrentSelectedAction.ActionParameter = SelectedParameter;
-            
-            
+
+
         }
         private void SaveCurrentSelectedAutomation()
         {
             CurrentSelectedAutomation.Modifiers = new List<IModifiersType>();
-            foreach(var modifier in AvailableModifiers)
+            foreach (var modifier in AvailableModifiers)
             {
-                if(modifier.IsChecked)
+                if (modifier.IsChecked)
                 {
                     CurrentSelectedAutomation.Modifiers.Add(modifier);
                 }
             }
 
-            CurrentSelectedAutomation.Name = AutomationNewName; 
+            CurrentSelectedAutomation.Name = AutomationNewName;
             WriteAutomationCollectionJson();
             AvailableAutomations = new ObservableCollection<IAutomationSettings>();
             foreach (var automation in LoadAutomationIfExist())
@@ -3202,8 +3224,8 @@ namespace adrilight.ViewModel
         }
         private void SaveAllAutomation()
         {
-           
-            
+
+
             WriteAutomationCollectionJson();
             AvailableAutomations = new ObservableCollection<IAutomationSettings>();
             foreach (var automation in LoadAutomationIfExist())
@@ -3297,12 +3319,12 @@ namespace adrilight.ViewModel
         }
         public void HotKeyDetected(string modifier, int keyCode)
         {
-            foreach(var automation in AvailableAutomations)
+            foreach (var automation in AvailableAutomations)
             {
-                if(automation.Condition == keyCode)
+                if (automation.Condition == keyCode)
                 //execute the action if valid
                 {
-                    foreach(var action in automation.Actions)
+                    foreach (var action in automation.Actions)
                     {
                         var targetDevice = AvailableDevices.Where(x => x.DeviceUID == action.TargetDeviceUID).FirstOrDefault();
                         switch (action.ActionType)
@@ -3314,26 +3336,26 @@ namespace adrilight.ViewModel
                                 targetDevice.ActivatedProfileIndex = targetDeviceAvailableProfile.IndexOf(destinationProfile);
                                 break;
                             case "Brightness Control":
-                                switch(action.ActionParameter.Value)
+                                switch (action.ActionParameter.Value)
                                 {
                                     case "up":
-                                        foreach(var output in targetDevice.AvailableOutputs)//possible replace with method from IOutputSettings
+                                        foreach (var output in targetDevice.AvailableOutputs)//possible replace with method from IOutputSettings
                                         {
-                                            if(output.OutputBrightness<98)
-                                            output.OutputBrightness+=2;
+                                            if (output.OutputBrightness < 98)
+                                                output.OutputBrightness += 2;
                                         }
                                         break;
                                     case "down":
                                         foreach (var output in targetDevice.AvailableOutputs)
                                         {
-                                            if(output.OutputBrightness>2)
-                                            output.OutputBrightness -= 2;
+                                            if (output.OutputBrightness > 2)
+                                                output.OutputBrightness -= 2;
                                         }
                                         break;
                                 }
                                 break;
                             case "Do Nothing":
-                              // Yeah?? do fking nothing here
+                                // Yeah?? do fking nothing here
                                 break;
                         }
                     }
@@ -3344,12 +3366,12 @@ namespace adrilight.ViewModel
         private List<Guid?> _identifiers;
 
         private void Register()
-            {
+        {
             _identifiers = new List<Guid?>();
-            foreach(var automation in AvailableAutomations.Where(x => x.IsEnabled==true))
+            foreach (var automation in AvailableAutomations.Where(x => x.IsEnabled == true))
             {
                 var modifierkeys = new List<NonInvasiveKeyboardHookLibrary.ModifierKeys>();
-                if(automation.Modifiers!=null)
+                if (automation.Modifiers != null)
                 {
                     foreach (var modifier in automation.Modifiers)
                     {
@@ -3359,8 +3381,8 @@ namespace adrilight.ViewModel
                     }
                 }
 
-               
-               try
+
+                try
                 {
                     Guid? _identifier = HotKeyManager.Instance.RegisterHotkey(modifierkeys.ToArray(), automation.Condition, () =>
                     {
@@ -3400,7 +3422,7 @@ namespace adrilight.ViewModel
                     });
                     _identifiers.Add(_identifier);
                 }
-                catch(NonInvasiveKeyboardHookLibrary.HotkeyAlreadyRegisteredException ex)
+                catch (NonInvasiveKeyboardHookLibrary.HotkeyAlreadyRegisteredException ex)
                 {
                     HandyControl.Controls.MessageBox.Show(automation.Name + " Hotkey is being used by another automation!!!", "HotKey Already Registered", MessageBoxButton.OK, MessageBoxImage.Error);
                     //disable automation
@@ -3408,21 +3430,21 @@ namespace adrilight.ViewModel
                     WriteAutomationCollectionJson();
 
                 }
-               
+
             }
-                
+
         }
 
         private void Unregister()
         {
-            foreach(var _identifier in _identifiers)
+            foreach (var _identifier in _identifiers)
             {
                 if (_identifier.HasValue)
                 {
                     HotKeyManager.Instance.UnregisterHotkey(_identifier.Value);
                 }
             }
-           
+
         }
 
         private void ImportCurrentOutputPID()
@@ -3532,7 +3554,7 @@ namespace adrilight.ViewModel
                 }
             }
 
-            
+
         }
 
         private void ProcessSelectedSpots(string userInput)
@@ -3619,7 +3641,7 @@ namespace adrilight.ViewModel
         }
         private void AddWLEDDevices()
         {
-            if(AvailableWLEDDevices!=null)
+            if (AvailableWLEDDevices != null)
             {
                 foreach (var wLEDDevice in AvailableWLEDDevices)
                 {
@@ -3633,27 +3655,28 @@ namespace adrilight.ViewModel
                         convertedDevice.DeviceDescription = "WLED Device using WARLS protocol";
                         convertedDevice.DeviceID = AvailableDevices.Count + 1;
                         convertedDevice.DeviceUID = Guid.NewGuid().ToString();
-                        convertedDevice.AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 64) };
+                        convertedDevice.IsUnionMode = true;
+                        convertedDevice.AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 64, "Dây LED",1) };
                         convertedDevice.Geometry = wLEDDevice.Geometry;
                         AvailableDevices.Add(convertedDevice);
                     }
 
                 }
             }
-            if(AvailableSerialDevices!=null)
+            if (AvailableSerialDevices != null)
             {
-                foreach(var serialDevice in AvailableSerialDevices)
+                foreach (var serialDevice in AvailableSerialDevices)
                 {
-                    if(serialDevice.IsSelected)
+                    if (serialDevice.IsSelected)
                     {
                         serialDevice.DeviceID = AvailableDevices.Count + 1;
                         AvailableDevices.Add(serialDevice);
                     }
-                    
+
                 }
             }
-           
-          
+
+
             WriteDeviceInfoJson();
             System.Windows.Forms.Application.Restart();
             Process.GetCurrentProcess().Kill();
@@ -3685,7 +3708,7 @@ namespace adrilight.ViewModel
 
             }
 
-           
+
         }
 
         private void LaunchPIDEditWindow()
@@ -3844,14 +3867,14 @@ namespace adrilight.ViewModel
 
         private void CreateNewAutomation()
         {
-            
+
             var name = NewAutomationName;
-            IAutomationSettings newAutomation = new AutomationSettings { Name = name};
-           
+            IAutomationSettings newAutomation = new AutomationSettings { Name = name };
+
             var doAbsolutelyNothing = new List<IActionSettings>(); // doing nothing to all devices
             if (AvailableDevices.Count > 0 && AvailableProfiles.Count > 0)
             {
-                foreach (var device in AvailableDevices.Where(x=>x.IsDummy==false))
+                foreach (var device in AvailableDevices.Where(x => x.IsDummy == false))
                 {
 
                     IActionSettings doNothing = new ActionSettings {
@@ -3865,7 +3888,7 @@ namespace adrilight.ViewModel
                     };
 
                     doAbsolutelyNothing.Add(doNothing);
-                    
+
                 }
 
             }
@@ -4158,7 +4181,7 @@ namespace adrilight.ViewModel
 
         }
 
-       
+
 
         public void RefreshDevice()
         {
@@ -4284,7 +4307,7 @@ namespace adrilight.ViewModel
                 2000000,
                 2500000,
             };
-        
+
             AvailableLayout = new ObservableCollection<string>
         {
            "Square, Ring, Rectangle",
@@ -4601,62 +4624,64 @@ namespace adrilight.ViewModel
         {
             var loadedAutomations = new List<IAutomationSettings>();
 
-            if (!File.Exists(JsonAutomationFileNameAndPath))
-            {
-                var brightnessUpAllDevices = new List<IActionSettings>(); // load all profile 0 on the list apply to all devices
-                var brightnessDownAllDevices = new List<IActionSettings>(); // load all profile 0 on the list apply to all devices
-                if (AvailableDevices.Count > 0 && AvailableProfiles.Count > 0)
-                {
-                    foreach (var device in AvailableDevices)
-                    {
-                        
-                        IActionSettings brightnessUp = new ActionSettings {
-                            ActionType = "Brightness Control",
-                            TargetDeviceUID = device.DeviceUID,
-                            TargetDeviceName = device.DeviceName,
-                            TargetDeviceType = device.DeviceType,
-                            ActionParameter = new ActionParameter { Name= "Brightness Up", Type="brightness",Value="up"  },
-                           
-                            
-                        };
-                        IActionSettings brightnessDown = new ActionSettings {
-                            ActionType = "Brightness Control",
-                            TargetDeviceUID = device.DeviceUID,
-                            TargetDeviceName = device.DeviceName,
-                            TargetDeviceType = device.DeviceType,
-                            ActionParameter = new ActionParameter { Name = "Brightness Down", Type = "brightness", Value = "down" },
-                           
+            //if (!File.Exists(JsonAutomationFileNameAndPath))
+            //{
+            //    var brightnessUpAllDevices = new List<IActionSettings>(); // load all profile 0 on the list apply to all devices
+            //    var brightnessDownAllDevices = new List<IActionSettings>(); // load all profile 0 on the list apply to all devices
+            //    if (AvailableDevices.Count > 0 && AvailableProfiles.Count > 0)
+            //    {
+            //        foreach (var device in AvailableDevices)
+            //        {
 
-                        };
-                        brightnessUpAllDevices.Add(brightnessUp);
-                        brightnessDownAllDevices.Add(brightnessDown);
-                    }
-                   
-                }
-
-                var BrightnessUpAllDevicesAutomation = new AutomationSettings {
-                    Name = "Brightness Up",
-                    Actions = brightnessUpAllDevices,
-                    ConditionTypeIndex = 0,//key stroke detection
-                    Modifiers = new List<IModifiersType> { new ModifiersType { Name ="CTRL", ModifierKey=NonInvasiveKeyboardHookLibrary.ModifierKeys.Control,IsChecked=true }, new ModifiersType { Name = "SHIFT", ModifierKey = NonInvasiveKeyboardHookLibrary.ModifierKeys.Shift, IsChecked = true } },
-                    Condition = 120// F9 
-
-                };
-                var BrightnessDownAllDevicesAutomation = new AutomationSettings {
-                    Name = "Brightness Down",
-                    Actions = brightnessDownAllDevices,
-                    Modifiers = new List<IModifiersType> { new ModifiersType { Name = "CTRL", ModifierKey = NonInvasiveKeyboardHookLibrary.ModifierKeys.Control, IsChecked = true }, new ModifiersType { Name = "SHIFT", ModifierKey = NonInvasiveKeyboardHookLibrary.ModifierKeys.Shift, IsChecked = true } },
-                    ConditionTypeIndex = 0,//key stroke detection
-                    Condition = 121// F10 
-
-                };
-                loadedAutomations.Add(BrightnessUpAllDevicesAutomation);
-                loadedAutomations.Add(BrightnessDownAllDevicesAutomation);
+            //            IActionSettings brightnessUp = new ActionSettings {
+            //                ActionType = "Brightness Control",
+            //                TargetDeviceUID = device.DeviceUID,
+            //                TargetDeviceName = device.DeviceName,
+            //                TargetDeviceType = device.DeviceType,
+            //                ActionParameter = new ActionParameter { Name= "Brightness Up", Type="brightness",Value="up"  },
 
 
+            //            };
+            //            IActionSettings brightnessDown = new ActionSettings {
+            //                ActionType = "Brightness Control",
+            //                TargetDeviceUID = device.DeviceUID,
+            //                TargetDeviceName = device.DeviceName,
+            //                TargetDeviceType = device.DeviceType,
+            //                ActionParameter = new ActionParameter { Name = "Brightness Down", Type = "brightness", Value = "down" },
 
-            }
-            else
+
+            //            };
+            //            brightnessUpAllDevices.Add(brightnessUp);
+            //            brightnessDownAllDevices.Add(brightnessDown);
+            //        }
+
+            //    }
+
+            //    var BrightnessUpAllDevicesAutomation = new AutomationSettings {
+            //        Name = "Brightness Up",
+            //        Actions = brightnessUpAllDevices,
+            //        ConditionTypeIndex = 0,//key stroke detection
+            //        Modifiers = new List<IModifiersType> { new ModifiersType { Name ="CTRL", ModifierKey=NonInvasiveKeyboardHookLibrary.ModifierKeys.Control,IsChecked=true }, new ModifiersType { Name = "SHIFT", ModifierKey = NonInvasiveKeyboardHookLibrary.ModifierKeys.Shift, IsChecked = true } },
+            //        Condition = 120// F9 
+
+            //    };
+            //    var BrightnessDownAllDevicesAutomation = new AutomationSettings {
+            //        Name = "Brightness Down",
+            //        Actions = brightnessDownAllDevices,
+            //        Modifiers = new List<IModifiersType> { new ModifiersType { Name = "CTRL", ModifierKey = NonInvasiveKeyboardHookLibrary.ModifierKeys.Control, IsChecked = true }, new ModifiersType { Name = "SHIFT", ModifierKey = NonInvasiveKeyboardHookLibrary.ModifierKeys.Shift, IsChecked = true } },
+            //        ConditionTypeIndex = 0,//key stroke detection
+            //        Condition = 121// F10 
+
+            //    };
+            //    loadedAutomations.Add(BrightnessUpAllDevicesAutomation);
+            //    loadedAutomations.Add(BrightnessDownAllDevicesAutomation);
+
+
+
+            //}
+            //else
+            //{
+            if (File.Exists(JsonAutomationFileNameAndPath))
             {
                 var json = File.ReadAllText(JsonAutomationFileNameAndPath);
 
@@ -4832,8 +4857,8 @@ namespace adrilight.ViewModel
             AvailableDeviceCatergoryToAdd.Add(ambinoHUB);
             AvailableDeviceCatergoryToAdd.Add(ambinoRainPow);
 
-          
-          
+
+
 
             if (AssemblyHelper.CreateInternalInstance($"View.{"AddNewDeviceWindow"}") is System.Windows.Window window)
             {
@@ -4849,12 +4874,12 @@ namespace adrilight.ViewModel
 
 
         }
-   
-
-        
 
 
-      
+
+
+
+
 
 
         public async void ShowDeleteDialog()
@@ -5023,6 +5048,18 @@ namespace adrilight.ViewModel
             });
             Directory.CreateDirectory(JsonPath);
             File.WriteAllText(JsonDeviceFileNameAndPath, json);
+
+        }
+        public void WriteGenralSettingsJson()
+        {
+
+
+
+            var json = JsonConvert.SerializeObject(GeneralSettings, new JsonSerializerSettings() {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
+            Directory.CreateDirectory(JsonPath);
+            File.WriteAllText(JsonGeneralFileNameAndPath, json);
 
         }
         public void WritePaletteCollectionJson()
@@ -5235,7 +5272,7 @@ namespace adrilight.ViewModel
 
             CurrentSpotSetVIDChanged();
         }
-        private ObservableCollection<IDeviceProfile>ProfileFilter(IDeviceSettings device)
+        private ObservableCollection<IDeviceProfile> ProfileFilter(IDeviceSettings device)
         {
             var filteredProfiles = new ObservableCollection<IDeviceProfile>();
             foreach (var profile in AvailableProfiles)
@@ -5253,83 +5290,34 @@ namespace adrilight.ViewModel
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == lighting);
             IsDashboardType = false;
             CurrentDevice = selectedDevice;
+            if (CurrentDevice.AvailableOutputs.Length > 1)
+            {
+                OutputModeChangeEnable = true;
+            }
+            else
+            {
+                OutputModeChangeEnable = false;
+            }
             AvailableProfilesForCurrentDevice = new ObservableCollection<IDeviceProfile>();
             AvailableProfilesForCurrentDevice = ProfileFilter(CurrentDevice);
-            if (CurrentDevice.SelectedOutput >= 0)
-                CurrentOutput = CurrentDevice.AvailableOutputs[CurrentDevice.SelectedOutput];
+            if (CurrentDevice.IsUnionMode)
+            {
+                CurrentOutput = CurrentDevice.UnionOutput;
+            }
             else
             {
                 CurrentDevice.SelectedOutput = 0;
                 CurrentOutput = CurrentDevice.AvailableOutputs[CurrentDevice.SelectedOutput];
             }
+
             CurrentLEDSetup = CurrentOutput.OutputLEDSetup;
             RaisePropertyChanged(nameof(CurrentDevice.SelectedOutput));
             IsSplitLightingWindowOpen = true;
             IsCanvasLightingWindowOpen = false;
-            //RaisePropertyChanged(() => CurrentDeviceSelectedEffect);
+
 
             WriteDeviceInfoJson();
-            //if (CurrentDevice.IsHUB)
-            //{
-            //    ParrentLocation = CurrentDevice.HUBID;
-            //    var childList = new List<IDeviceSettings>();
-            //    HUBOutputCollection = new ObservableCollection<IDeviceSettings>();
-            //    // HUBOutputCollection.Add(CurrentDevice);
-            //    DeviceLightingModeCollection = true;
 
-            //    //only HUB object has ability to sync it's child device
-            //    RaisePropertyChanged(() => DeviceLightingModeCollection);
-
-
-            //    foreach (var device in Cards)
-            //    {
-            //        if (device.ParrentLocation == CurrentDevice.HUBID)
-            //        {
-            //            childList.Add(device);
-            //            HUBOutputCollection.Add(device);
-            //        }
-
-            //    }
-
-            //    int counter = 0;
-            //    foreach (var child in childList)
-            //    {
-            //        if (child.IsNavigationSelected)
-            //        {
-            //            counter++;
-            //            CurrentDevice = child;
-            //        }
-
-            //    }
-            //    if (counter == 0)
-            //    {
-            //        CurrentDevice = childList[0];
-            //        CurrentDevice.IsNavigationSelected = true;
-            //    }
-
-
-
-
-            //}
-            //else
-            //{
-            //    if (CurrentDevice.ParrentLocation != 151293)
-            //    {
-            //        DeviceLightingModeCollection = false;
-            //        RaisePropertyChanged(() => DeviceLightingModeCollection);
-            //        //keep current HUBOutputCollection
-            //    }
-            //    else
-            //    {
-            //        if (HUBOutputCollection != null)
-            //            HUBOutputCollection.Clear();
-
-            //        DeviceLightingModeCollection = false;
-            //        RaisePropertyChanged(() => DeviceLightingModeCollection);
-            //        //Clear current HUBOutputCollection cuz this is a single output device
-            //    }
-
-            //}
             CurrentDevice.PropertyChanged += (s, e) =>
             {
                 switch (e.PropertyName)
@@ -5346,14 +5334,14 @@ namespace adrilight.ViewModel
                         }
 
                         break;
-                    case nameof(CurrentDevice):
+                    //case nameof(CurrentDevice):
 
-                        CurrentOutput = CurrentDevice.AvailableOutputs[0];
-                        CurrentDevice.SelectedOutput = 0;
-                        RaisePropertyChanged(nameof(CurrentOutput));
+                    //    CurrentOutput = CurrentDevice.AvailableOutputs[0];
+                    //    CurrentDevice.SelectedOutput = 0;
+                    //    RaisePropertyChanged(nameof(CurrentOutput));
 
 
-                        break;
+                    //    break;
 
                     case nameof(CurrentDevice.ActivatedProfileIndex):
                         RaisePropertyChanged(nameof(CurrentSelectedProfile));

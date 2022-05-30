@@ -71,9 +71,15 @@ namespace adrilight
         private int _outputMusicVisualizerFreq = 0;
         private bool _outputIsSystemSync = true;
         private bool _isBrightnessPopupOpen = false;
+        private int _lEDPerSpot = 1;
+        private int _lEDPerLED = 1;
+        private double _outputRectangleScaleWidth = 1; // how many percent that output rectangle width take from the image
+        private double _outputRectangleScaleHeight = 1; // how many percent that output rectangle height take from the image
+        private double _outputRectangleScaleTop = 1;// how many percent that output rectangle top take from the image, represent Y
+        private double _outputRectangleScaleLeft = 1;// how many percent that output rectangle top take from the image, represent X
 
 
-        
+
         public string OutputName  { get => _outputName; set { Set(() => OutputName, ref _outputName, value);}}
         public int OutputID { get => _outputID; set { Set(() => OutputID, ref _outputID, value); } }
         public string OutputType { get => _outputType; set { Set(() => OutputType, ref _outputType, value); } }
@@ -82,7 +88,9 @@ namespace adrilight
         public int OutputNumLED { get => _outputNumLED; set { Set(() => OutputNumLED, ref _outputNumLED, value); } }
         public int OutputNumLEDX { get => _outputNumLEDX; set { Set(() => OutputNumLEDX, ref _outputNumLEDX, value); } }
         public int OutputNumLEDY { get => _outputNumLEDY; set { Set(() => OutputNumLEDY, ref _outputNumLEDY, value); } }
-        
+        public int LEDPerSpot { get => _lEDPerSpot; set { Set(() => LEDPerSpot, ref _lEDPerSpot, value); } }
+        public int LEDPerLED { get => _lEDPerLED; set { Set(() => LEDPerLED, ref _lEDPerLED, value); } }
+
         public bool IsVissible { get => _isVissible; set { Set(() => IsVissible, ref _isVissible, value); } }
         public string OutputUniqueID { get => _outputUniqueID; set { Set(() => OutputUniqueID, ref _outputUniqueID, value); } }
         [Reflectable]
@@ -168,9 +176,18 @@ namespace adrilight
         [Reflectable]
 
         public System.Drawing.Rectangle OutputRectangle { get => _outputRectangle; set { Set(() => OutputRectangle, ref _outputRectangle, value); } }
+        public double OutputRectangleScaleWidth { get => _outputRectangleScaleWidth; set { Set(() => OutputRectangleScaleWidth, ref _outputRectangleScaleWidth, value); } } // how many percent that output rectangle width take from the image
+        public double OutputRectangleScaleHeight { get => _outputRectangleScaleHeight; set { Set(() => OutputRectangleScaleHeight, ref _outputRectangleScaleHeight, value); } }  // how many percent that output rectangle height take from the image
+        public double OutputRectangleScaleTop { get => _outputRectangleScaleTop; set { Set(() => OutputRectangleScaleTop, ref _outputRectangleScaleTop, value); } } // how many percent that output rectangle top take from the image, represent Y
+        public  double OutputRectangleScaleLeft { get => _outputRectangleScaleLeft; set { Set(() => OutputRectangleScaleLeft, ref _outputRectangleScaleLeft, value); } } // how many percent that output rectangle top take from the image, represent X
         public bool OutputIsLoadingProfile { get => _outputIsLoadingProfile; set { Set(() => OutputIsLoadingProfile, ref _outputIsLoadingProfile, value); } }
         public bool OutputIsBuildingLEDSetup { get => _outputIsBuildingLEDSetup; set { Set(() => OutputIsBuildingLEDSetup, ref _outputIsBuildingLEDSetup, value); } }
         [Reflectable]
         public  bool OutputIsSystemSync { get => _outputIsSystemSync; set { Set(() => OutputIsSystemSync, ref _outputIsSystemSync, value); } }
+        public void SetRectangle (System.Drawing.Rectangle rectangle)
+        {
+            OutputRectangle = rectangle;
+            RaisePropertyChanged(nameof(OutputRectangle));
+        }
     }
 }

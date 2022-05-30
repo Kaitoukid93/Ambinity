@@ -2,15 +2,15 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
+using adrilight.DesktopDuplication;
 
 namespace adrilight
 {
     public interface IThirdDesktopFrame : INotifyPropertyChanged
     {
-        byte[] Frame { get; set; }
+        ByteFrame Frame { get; set; }
         void Stop();
-        int FrameWidth { get; set; }
-        int FrameHeight { get; set; }
+  
         void RefreshCapturingState();
     }
 }

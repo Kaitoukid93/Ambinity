@@ -29,7 +29,7 @@ namespace adrilight
         bool IsTransferActive { get; set; }
         int ActivatedProfileIndex { get; set; }
         IOutputSettings[] AvailableOutputs { get; set; }
-        IOutputSettings AvailableUnionOutputs { get; set; }
+        IOutputSettings UnionOutput { get; set; }
         string GroupName { get; set; }
         int SelectedOutput { get; set; }
         string Geometry { get; set; }

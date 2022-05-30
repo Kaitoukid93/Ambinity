@@ -339,7 +339,7 @@
                 <StackPanel Margin="10,5" Grid.Column="1">
                     <TextBlock HorizontalAlignment="Left" Margin="2" Style="{DynamicResource TextBlockTitle}" Text="{Binding CurrentDevice.DeviceName}" FontWeight="SemiBold"/>
                     <!--<TextBlock FontSize="13" HorizontalAlignment="Left" Margin="2" Style="{DynamicResource TextBlockDefault}" Text="{Binding CurrentDevice.DeviceDescription}" />-->
-                    <Grid>
+                    <Grid Visibility="{Binding OutputModeChangeEnable,Converter={StaticResource boolToVisibilityConvert}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
@@ -577,9 +577,39 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
             <Border Margin="10" Padding="15,15,0,15"  Background="{DynamicResource DarkOpacityBrush}" CornerRadius="7">
-                <Grid VerticalAlignment="Top" x:Name="outputsCollectionGrid">
-              
-                    <hc:TransitioningContentControl Grid.Row="1">
+                <Grid>
+                    <Grid x:Name="UnionOutputGrid">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentDevice.IsUnionMode}" Value="true">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <local:UnionOutputControl  Margin="4">
+
+                        </local:UnionOutputControl>
+
+
+
+                    </Grid>
+
+                    <Grid VerticalAlignment="Top" x:Name="outputsCollectionGrid">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentDevice.IsUnionMode}" Value="false">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        
+                        <hc:TransitioningContentControl Grid.Row="1">
                             <ListBox Background="Transparent"  ScrollViewer.CanContentScroll="True"
                                                   ScrollViewer.VerticalScrollBarVisibility="Auto" 
                                                   ItemContainerStyle="{DynamicResource _ListBoxOutputsCollectionStyle}" 
@@ -631,43 +661,43 @@
                                                                       Grid.Row="0"
                                                                       Style="{StaticResource ToggleButtonSwitch}">
                                                             </ToggleButton>
-                                                        <Button x:Name="BrightnessButton" CommandParameter="{Binding .}" Command="{Binding Path=DataContext.ShowBrightnessAdjustmentPopupCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" BorderThickness="0" Background="{DynamicResource SecondaryRegionBrush}" Margin="0,0,10,0" hc:IconElement.Geometry="{DynamicResource brightness}" Style="{DynamicResource ButtonDefault}"></Button>
+                                                            <Button x:Name="BrightnessButton" CommandParameter="{Binding .}" Command="{Binding Path=DataContext.ShowBrightnessAdjustmentPopupCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" BorderThickness="0" Background="{DynamicResource SecondaryRegionBrush}" Margin="0,0,10,0" hc:IconElement.Geometry="{DynamicResource brightness}" Style="{DynamicResource ButtonDefault}"></Button>
                                                         </StackPanel>
 
-                                                    <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=BrightnessButton}" HorizontalOffset="30" x:Name="BrightnessPopup" IsOpen="{Binding IsBrightnessPopupOpen}" VerticalOffset="0" StaysOpen="False">
-                                                        <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
-                                                            <Border Background="{DynamicResource RegionBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="7" Margin="0,2,15,15"  Effect="{DynamicResource EffectShadow3}">
-                                                                <StackPanel Orientation="Vertical">
-                                                                    <Grid>
-                                                                        <Grid.ColumnDefinitions>
-                                                                            <ColumnDefinition Width="auto"/>
-                                                                            <ColumnDefinition Width="*"/>
-                                                                            
-                                                                            
-                                                                        </Grid.ColumnDefinitions>
-                                                                        <Border Margin="8,0,0,0" Width="25" Height="25" Background="{DynamicResource DarkMaskBrush}" CornerRadius="4">
-                                                                            <TextBlock Style="{DynamicResource TextBlockDefault}" Text="{Binding OutputBrightness}">
-                                                                                
-                                                                            </TextBlock>
-                                                                        </Border>
-                                                                        <hc:PreviewSlider  Name="BrightnessSlider" Grid.Column="1" Value="{Binding OutputBrightness,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  MaxWidth="300" MinWidth="200" HorizontalAlignment="Left" Margin="10,10,10,10" Minimum="0" Maximum="100" TickFrequency="0.1">
-                                                                          
-                                                                        </hc:PreviewSlider>
+                                                        <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=BrightnessButton}" HorizontalOffset="30" x:Name="BrightnessPopup" IsOpen="{Binding IsBrightnessPopupOpen}" VerticalOffset="0" StaysOpen="False">
+                                                            <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
+                                                                <Border Background="{DynamicResource RegionBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="7" Margin="0,2,15,15"  Effect="{DynamicResource EffectShadow3}">
+                                                                    <StackPanel Orientation="Vertical">
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="auto"/>
+                                                                                <ColumnDefinition Width="*"/>
 
-                                                                        
 
-                                                                        
-                                                                    </Grid>
-                                                                   
+                                                                            </Grid.ColumnDefinitions>
+                                                                            <Border Margin="8,0,0,0" Width="25" Height="25" Background="{DynamicResource DarkMaskBrush}" CornerRadius="4">
+                                                                                <TextBlock Style="{DynamicResource TextBlockDefault}" Text="{Binding OutputBrightness}">
 
-                                                                    
-                                                                </StackPanel>
+                                                                                </TextBlock>
+                                                                            </Border>
+                                                                            <Slider Style="{DynamicResource SliderBaseStyle}"  Name="BrightnessSlider" Grid.Column="1" Value="{Binding OutputBrightness}"  MaxWidth="300" MinWidth="200" HorizontalAlignment="Left" Margin="10,10,10,10" Minimum="0" Maximum="100" TickFrequency="0.1">
 
-                                                            </Border>
-                                                        </hc:TransitioningContentControl>
+                                                                            </Slider>
 
-                                                    </Popup>
-                                                </Grid>
+
+
+
+                                                                        </Grid>
+
+
+
+                                                                    </StackPanel>
+
+                                                                </Border>
+                                                            </hc:TransitioningContentControl>
+
+                                                        </Popup>
+                                                    </Grid>
 
 
 
@@ -675,16 +705,16 @@
                                                     <!--name and info -->
                                                     <Grid Grid.Column="1">
                                                         <StackPanel>
-                                                        <TextBlock HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockSubTitle}" Text="{Binding OutputName}"/>
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <TextBlock Grid.Column="0" HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockDefaultSecLight}" Text="{Binding OutputType}"/>
-                                                            <TextBlock Grid.Column="1" HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockDefaultPrimary}" Text="{Binding OutputDescription}"/>
-                                                        </Grid>
-                                                    </StackPanel>
+                                                            <TextBlock HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockSubTitle}" Text="{Binding OutputName}"/>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Grid.Column="0" HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockDefaultSecLight}" Text="{Binding OutputType}"/>
+                                                                <TextBlock Grid.Column="1" HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockDefaultPrimary}" Text="{Binding OutputDescription}"/>
+                                                            </Grid>
+                                                        </StackPanel>
 
                                                     </Grid>
 
@@ -710,9 +740,13 @@
 
                             </ListBox>
                         </hc:TransitioningContentControl>
-                     
+
 
                     </Grid>
+                </Grid>
+                
+                
+                
             </Border>
             <Border Padding="15" Margin="10" Grid.Column="1"  Background="{DynamicResource DarkOpacityBrush}" CornerRadius="7">
                 <Grid VerticalAlignment="Center" HorizontalAlignment="Center"  ClipToBounds="true" Grid.Column="1" x:Name="MotherGrid">

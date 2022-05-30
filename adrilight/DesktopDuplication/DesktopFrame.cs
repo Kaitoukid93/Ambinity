@@ -72,9 +72,8 @@ namespace adrilight
         private CancellationTokenSource _cancellationTokenSource;
 
         private Thread _workerThread;
-        public byte[] Frame { get; set; }
-        public int FrameHeight { get; set; }
-        public int FrameWidth { get; set; }
+        public ByteFrame Frame { get; set; }
+        
 
         public void RefreshCaptureSource()
         {
@@ -177,6 +176,7 @@ namespace adrilight
             NeededRefreshing = false;
             _log.Debug("Started Reading of First Desktop Frame.");
             Bitmap image = null;
+            Frame = new ByteFrame();
            
 
             try
@@ -215,18 +215,11 @@ namespace adrilight
 
                     // Copy the RGB values into the array.
                     System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
-                    Frame = rgbValues;
-                    FrameWidth = image.Width;
-                    FrameHeight = image.Height;
-                    //RaisePropertyChanged(nameof(Frame));
-                    //RaisePropertyChanged(nameof(FrameWidth));
-                    //RaisePropertyChanged(nameof(FrameHeight));
-                    // if(MainView.IsSettingsWindowOpen)
-                    // MainView.SetPreviewImage(DesktopFrame);
-
-                 
+                    Frame.Frame = rgbValues;
+                    Frame.FrameWidth = image.Width;
+                    Frame.FrameHeight = image.Height;  
                     if(isPreviewRunning)
-                        MainViewModel.ShaderImageUpdate(Frame, FrameWidth, FrameHeight);
+                        MainViewModel.ShaderImageUpdate(Frame);
 
 
 

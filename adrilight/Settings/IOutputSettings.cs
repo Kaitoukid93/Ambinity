@@ -24,6 +24,13 @@ namespace adrilight
         int OutputNumLEDX { get; set; }
         int OutputNumLEDY { get; set; }
         System.Drawing.Rectangle OutputRectangle { get; set; }
+        /// <summary>
+        /// output capture position rev 2.0, using scale only
+        /// </summary>
+        double OutputRectangleScaleWidth { get; set; } // how many percent that output rectangle width take from the image
+        double OutputRectangleScaleHeight{ get; set; } // how many percent that output rectangle height take from the image
+        double OutputRectangleScaleTop { get; set; }// how many percent that output rectangle top take from the image, represent Y
+        double OutputRectangleScaleLeft { get; set; }// how many percent that output rectangle top take from the image, represent X
         bool IsVissible { get; set; }
 
       
@@ -46,6 +53,8 @@ namespace adrilight
         bool OutputIsSystemSync { get; set; }
         bool OutputIsEnabled { get; set; }
         bool IsBrightnessPopupOpen { get; set; }
+        int LEDPerSpot { get; set; }
+        int LEDPerLED { get; set; }
         Color OutputAtmosphereStartColor { get; set; }
         Color OutputAtmosphereStopColor { get; set; }
         string OutputAtmosphereMode { get; set; }
@@ -92,6 +101,7 @@ namespace adrilight
  
         IColorPalette OutputCurrentActivePalette { get; set; }
         ILEDSetup OutputLEDSetup { get; set; }
+        void SetRectangle(System.Drawing.Rectangle rectangle);
         
 
     }
