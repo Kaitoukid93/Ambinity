@@ -169,11 +169,9 @@ namespace adrilight
             //var desktopDuplicationReaderThird = kernel.Get<IDesktopDuplicatorReaderThird>();
             // var openRGBClient = kernel.Get<IOpenRGBClientDevice>();
             var serialDeviceDetection = kernel.Get<ISerialDeviceDetection>();
-            var shaderEffect = kernel.Get<IShaderEffect>();
+            //var shaderEffect = kernel.Get<IShaderEffect>();
             var context = kernel.Get<IContext>();
-            var desktopFrame = kernel.Get<IDesktopFrame>();
-            var secondDesktopFrame = kernel.Get<ISecondDesktopFrame>();
-            var thirdDesktopFrame = kernel.Get<IThirdDesktopFrame>();
+            var desktopFrame = kernel.GetAll<IDesktopFrame>();
             var rainbowTicker = kernel.Get<IRainbowTicker>();
             //var hotKeyManager = kernel.Get<IHotKeyManager>();
             //kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();

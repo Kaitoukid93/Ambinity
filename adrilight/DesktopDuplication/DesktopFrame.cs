@@ -23,11 +23,11 @@ namespace adrilight
     {
         private readonly ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public DesktopFrame(IGeneralSettings userSettings, MainViewViewModel mainViewViewModel)
+        public DesktopFrame(IGeneralSettings userSettings, MainViewViewModel mainViewViewModel, int screen)
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
 
-
+            ScreenToCapture = screen;
 
             MainViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
             _retryPolicy = Policy.Handle<Exception>()
@@ -73,6 +73,7 @@ namespace adrilight
 
         private Thread _workerThread;
         public ByteFrame Frame { get; set; }
+        private int ScreenToCapture { get; set; }
         
 
         public void RefreshCaptureSource()
@@ -218,8 +219,8 @@ namespace adrilight
                     Frame.Frame = rgbValues;
                     Frame.FrameWidth = image.Width;
                     Frame.FrameHeight = image.Height;  
-                    if(isPreviewRunning)
-                        MainViewModel.ShaderImageUpdate(Frame);
+                    //if(isPreviewRunning)
+                    //    MainViewModel.ShaderImageUpdate(Frame);
 
 
 
@@ -302,13 +303,13 @@ namespace adrilight
         private Bitmap GetNextFrame(Bitmap reusableBitmap)
         {
 
-
+            
 
             if (_desktopDuplicator == null)
             {
                 try
                 {
-                    _desktopDuplicator = new DesktopDuplicator(0, 0);
+                    _desktopDuplicator = new DesktopDuplicator(0, ScreenToCapture);
                 }
                 catch (Exception ex)
                 {

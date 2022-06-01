@@ -51,6 +51,7 @@ namespace adrilight
         int OutputScreenCapturePositionIndex { get; set; }
         bool OutputUseLinearLighting { get; set; }
         bool OutputIsSystemSync { get; set; }
+        bool OutputIsPreviewRunning { get; set; }
         bool OutputIsEnabled { get; set; }
         bool IsBrightnessPopupOpen { get; set; }
         int LEDPerSpot { get; set; }

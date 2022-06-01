@@ -351,6 +351,19 @@
                             </Button.Content>
                         </Button>
                     </Grid>
+                    <Grid Visibility="{Binding OutputModeChangeEnable,Converter={StaticResource Boolean2VisibilityReConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Margin="0,0,10,0" FontSize="13" Style="{DynamicResource TextBlockDefault}" Text="Single Output Device"/>
+                        <Button Click="ChangeOutputMode" Grid.Column="1" HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
+                            <Button.Content>
+                                <TextBlock FontSize="13" Text="" Style="{DynamicResource TextBlockDefaultPrimary}"/>
+                            </Button.Content>
+                        </Button>
+                        
+                    </Grid>
                     <Button x:Name="ButtonRename" Click="RenameButtonClick" HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
                         <Button.Content>
                             <TextBlock FontSize="13" Text="Rename" Style="{DynamicResource TextBlockDefaultPrimary}"/>

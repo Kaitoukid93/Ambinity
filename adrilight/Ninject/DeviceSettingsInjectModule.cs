@@ -2,6 +2,7 @@
 using adrilight.Spots;
 using adrilight.Util;
 using Ninject.Modules;
+using System.Windows.Forms;
 
 namespace adrilight.Ninject
 {
@@ -19,9 +20,14 @@ namespace adrilight.Ninject
             Bind<IShaderEffect>().To<ShaderEffect>().InSingletonScope();
             Bind<IContext>().To<WpfContext>().InSingletonScope();
             //Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
-            Bind<IDesktopFrame>().To<DesktopFrame>().InSingletonScope();
-            Bind<ISecondDesktopFrame>().To<SecondDesktopFrame>().InSingletonScope();
-            Bind<IThirdDesktopFrame>().To<ThirdDesktopFrame>().InSingletonScope();
+            int index = 0;
+            foreach( var screen in Screen.AllScreens)
+            {
+                Bind<IDesktopFrame>().To<DesktopFrame>().InSingletonScope().WithConstructorArgument("screen",index++);
+            }
+            
+
+
             Bind<IRainbowTicker>().To<RainbowTicker>().InSingletonScope();
             //Bind<IHotKeyManager>().To<HotKeyManager>().InSingletonScope();
 

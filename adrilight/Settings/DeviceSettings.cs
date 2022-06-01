@@ -90,10 +90,14 @@ namespace adrilight
                 //}
 
             }
-            foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
+            if(profile.UnionOutput!=null)
             {
-                property.SetValue(UnionOutput, property.GetValue(profile.UnionOutput, null), null);
+                foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
+                {
+                    property.SetValue(UnionOutput, property.GetValue(profile.UnionOutput, null), null);
+                }
             }
+            
         }
     }
 }

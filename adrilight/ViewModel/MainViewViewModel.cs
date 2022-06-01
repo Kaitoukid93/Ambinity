@@ -56,6 +56,7 @@ namespace adrilight.ViewModel
         private string JsonSolidColorFileNameAndPath => Path.Combine(JsonPath, "adrilight-solidColor.json");
         private string JsonDeviceProfileFileNameAndPath => Path.Combine(JsonPath, "adrilight-deviceProfiles.json");
         private string JsonAutomationFileNameAndPath => Path.Combine(JsonPath, "adrilight-automations.json");
+        private string JsonOpenRGBDevicesFileNameAndPath => Path.Combine(JsonPath, "adrilight-openrgbdevices.json");
         private string JsonGroupFileNameAndPath => Path.Combine(JsonPath, "adrilight-groupInfos.json");
         private string JsonPaletteFileNameAndPath => Path.Combine(JsonPath, "adrilight-PaletteCollection.json");
 
@@ -329,9 +330,9 @@ namespace adrilight.ViewModel
             set
             {
                 if (_currentDevice == value) return;
-                
+
                 _currentDevice = value;
-               
+
                 RaisePropertyChanged();
 
             }
@@ -341,13 +342,16 @@ namespace adrilight.ViewModel
             get { return _currentOutput; }
             set
             {
+
                 _currentOutput = value;
-                
+
+
+                RaisePropertyChanged();
 
             }
         }
 
-     
+
         public ICommand ZerolAllCommand { get; set; }
         public ICommand ShowBrightnessAdjustmentPopupCommand { get; set; }
         public ICommand OpenFFTPickerWindowCommand { get; set; }
@@ -446,6 +450,16 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+        private ObservableCollection<Device> _availableOpenRGBDevices;
+        public ObservableCollection<Device> AvailableOpenRGBDevices {
+            get { return _availableOpenRGBDevices; }
+            set
+            {
+                if (_availableOpenRGBDevices == value) return;
+                _availableOpenRGBDevices = value;
+                RaisePropertyChanged();
+            }
+        }
         private ObservableCollection<IDeviceSettings> _availableSerialDevices;
         public ObservableCollection<IDeviceSettings> AvailableSerialDevices {
             get { return _availableSerialDevices; }
@@ -489,7 +503,7 @@ namespace adrilight.ViewModel
             get { return _availableProfilesForCurrentDevice; }
             set
             {
-                if (_availableProfilesForCurrentDevice == value) return;
+
                 _availableProfilesForCurrentDevice = value;
                 RaisePropertyChanged();
             }
@@ -502,7 +516,7 @@ namespace adrilight.ViewModel
                 if (value != null)
                 {
                     _currentSelectedProfile = value;
-                    LoadProfile();
+                    LoadProfile(_currentSelectedProfile);
                     RaisePropertyChanged();
                 }
 
@@ -921,30 +935,25 @@ namespace adrilight.ViewModel
         public ISerialDeviceDetection SerialDeviceDetection { get; set; }
         public static IShaderEffect ShaderEffect { get; set; }
         public IDesktopFrame DesktopFrame { get; set; }
-        public ISecondDesktopFrame SecondDesktopFrame { get; set; }
+
         public IThirdDesktopFrame ThirdDesktopFrame { get; set; }
         public int AddedDevice { get; }
 
         public MainViewViewModel(IContext context,
             IDeviceSettings[] devices,
-            //IGroupSettings[] groups,
-            //IDeviceSpotSet[] deviceSpotSets,
             IGeneralSettings generalSettings,
             //IOpenRGBStream openRGBStream,
             ISerialDeviceDetection serialDeviceDetection,
             ISerialStream[] serialStreams,
-            IShaderEffect shaderEffect,
-
-            ISecondDesktopFrame secondDesktopFrame,
-            IThirdDesktopFrame thirdDesktopFrame
+            IShaderEffect shaderEffect
            )
         {
 
             GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
             SerialStreams = serialStreams ?? throw new ArgumentNullException(nameof(serialStreams));
             //DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
-            SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
-            ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
+
+
             AvailableDevices = new ObservableCollection<IDeviceSettings>();
 
             Groups = new ObservableCollection<IGroupSettings>();
@@ -971,10 +980,10 @@ namespace adrilight.ViewModel
             var settingsManager = new UserSettingsManager();
             foreach (IDeviceSettings device in devices)
             {
-                
+
                 AvailableDevices.Add(device);
                 device.PropertyChanged += (_, __) => WriteDeviceInfoJson();
-                foreach(var output in device.AvailableOutputs)
+                foreach (var output in device.AvailableOutputs)
                 {
                     output.PropertyChanged += (_, __) => WriteDeviceInfoJson();
                 }
@@ -1079,7 +1088,7 @@ namespace adrilight.ViewModel
             Context.Invoke(() =>
             {
 
-                
+
                 if (frame != null)
                 {
                     var MatrixBitmap = new WriteableBitmap(frame.FrameWidth, frame.FrameHeight, 96, 96, PixelFormats.Bgra32, null);
@@ -1853,23 +1862,11 @@ namespace adrilight.ViewModel
                 switch (CurrentDevice.IsUnionMode)
                 {
                     case true:
-                        foreach (var output in CurrentDevice.AvailableOutputs)
-                        {
-                            output.OutputIsEnabled = false;
 
-                        }
-                        CurrentOutput = CurrentDevice.UnionOutput;
-                        CurrentOutput.OutputIsEnabled = true;
                         return "Output Mode: Union";
 
                     case false:
-                        foreach (var output in CurrentDevice.AvailableOutputs)
-                        {
-                            output.OutputIsEnabled = true;
 
-                        }
-                        CurrentOutput = CurrentDevice.AvailableOutputs[0];
-                        CurrentDevice.UnionOutput.OutputIsEnabled = false;
                         return "Output Mode: Independent";
 
                 }
@@ -1877,23 +1874,8 @@ namespace adrilight.ViewModel
             set
             {
                 _currentDeviceOutputMode = value;
-                //if(CurrentDevice.IsUnionMode)
-                //{
-
-                //    // refect current output changed value to other output in the devices
-                //    foreach (var output in CurrentDevice.AvailableOutputs)
-                //    {
-                //        foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
-                //        {
-                //            property.SetValue(output, property.GetValue(CurrentOutput));
-                //        }
 
 
-                //    }
-
-
-                //    WriteDeviceProfileCollection();
-                //}
                 RaisePropertyChanged();
             }
         }
@@ -2975,7 +2957,7 @@ namespace adrilight.ViewModel
             CurrentOutput.SetRectangle(new Rectangle(AdjustingRectangleLeft, AdjustingRectangleTop, AdjustingRectangleWidth, AdjustingRectangleHeight));
 
         }
-        
+
 
         private void ImportProfile()
         {
@@ -3016,10 +2998,8 @@ namespace adrilight.ViewModel
                 if (CurrentSelectedProfile != null)
                 {
 
-                    foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
-                    {
-                        CurrentSelectedProfile.UnionOutput = CurrentDevice.UnionOutput;
-                    }
+                    CurrentSelectedProfile.UnionOutput = CurrentDevice.UnionOutput;
+
                 }
             }
             else
@@ -3028,10 +3008,9 @@ namespace adrilight.ViewModel
                 {
                     foreach (var output in CurrentDevice.AvailableOutputs)
                     {
-                        foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
-                        {
-                            CurrentSelectedProfile.OutputSettings[output.OutputID] = output;
-                        }
+
+                        CurrentSelectedProfile.OutputSettings[output.OutputID] = output;
+
                     }
 
                 }
@@ -3044,6 +3023,9 @@ namespace adrilight.ViewModel
                 AvailableProfiles.Add(profile);
             }
             RaisePropertyChanged(nameof(AvailableProfiles));
+            AvailableProfilesForCurrentDevice.Clear();
+            AvailableProfilesForCurrentDevice = ProfileFilter(CurrentDevice);
+            RaisePropertyChanged(nameof(AvailableProfilesForCurrentDevice));
             Growl.Success("Profile saved successfully!");
             IsSettingsUnsaved = BadgeStatus.Dot;
 
@@ -3120,17 +3102,16 @@ namespace adrilight.ViewModel
             }
         }
 
-        private void LoadProfile() // change to currentDevice.LoadProfile
+        private void LoadProfile(IDeviceProfile profileToLoad) // change to currentDevice.LoadProfile
         {
             GeneralSettings.IsProfileLoading = true;
-            CurrentDevice.ActivateProfile(CurrentSelectedProfile);
+            CurrentDevice.ActivateProfile(profileToLoad);
 
             //WriteDeviceInfoJson();
 
             foreach (var output in CurrentDevice.AvailableOutputs)
             {
                 output.OutputIsBuildingLEDSetup = true;
-
 
             }
             GeneralSettings.IsProfileLoading = false;
@@ -3159,7 +3140,7 @@ namespace adrilight.ViewModel
             AvailableProfilesForCurrentDevice.Clear();
             AvailableProfilesForCurrentDevice = ProfileFilter(CurrentDevice);
             RaisePropertyChanged(nameof(AvailableProfiles));
-
+            RaisePropertyChanged(nameof(AvailableProfilesForCurrentDevice));
 
 
         }
@@ -3172,52 +3153,7 @@ namespace adrilight.ViewModel
                 window.ShowDialog();
             }
         }
-        public void HotKeyDetected(string modifier, int keyCode)
-        {
-            foreach (var automation in AvailableAutomations)
-            {
-                if (automation.Condition == keyCode)
-                //execute the action if valid
-                {
-                    foreach (var action in automation.Actions)
-                    {
-                        var targetDevice = AvailableDevices.Where(x => x.DeviceUID == action.TargetDeviceUID).FirstOrDefault();
-                        switch (action.ActionType)
-                        {
-                            case "Activate Profile":
-                                var destinationProfile = AvailableProfiles.Where(x => x.ProfileUID == action.ActionParameter.Value).FirstOrDefault();
-                                targetDevice.ActivateProfile(destinationProfile);
-                                var targetDeviceAvailableProfile = ProfileFilter(targetDevice);
-                                targetDevice.ActivatedProfileIndex = targetDeviceAvailableProfile.IndexOf(destinationProfile);
-                                break;
-                            case "Brightness Control":
-                                switch (action.ActionParameter.Value)
-                                {
-                                    case "up":
-                                        foreach (var output in targetDevice.AvailableOutputs)//possible replace with method from IOutputSettings
-                                        {
-                                            if (output.OutputBrightness < 98)
-                                                output.OutputBrightness += 2;
-                                        }
-                                        break;
-                                    case "down":
-                                        foreach (var output in targetDevice.AvailableOutputs)
-                                        {
-                                            if (output.OutputBrightness > 2)
-                                                output.OutputBrightness -= 2;
-                                        }
-                                        break;
-                                }
-                                break;
-                            case "Do Nothing":
-                                // Yeah?? do fking nothing here
-                                break;
-                        }
-                    }
-                }
-            }
-            // scan all available automation with hotkey setup and execconute the command
-        }
+
         private List<Guid?> _identifiers;
 
         private void Register()
@@ -3256,20 +3192,53 @@ namespace adrilight.ViewModel
                                     switch (action.ActionParameter.Value)
                                     {
                                         case "up":
-                                            foreach (var output in targetDevice.AvailableOutputs)//possible replace with method from IOutputSettings
+                                            if (targetDevice.IsUnionMode)
                                             {
-                                                if (output.OutputBrightness < 98)
-                                                    output.OutputBrightness += 2;
+
+                                                if (targetDevice.UnionOutput.OutputBrightness < 100)
+                                                    targetDevice.UnionOutput.OutputBrightness += 10;
+                                                if (targetDevice.UnionOutput.OutputBrightness > 100)
+                                                    targetDevice.UnionOutput.OutputBrightness = 100;
                                             }
+                                            else
+                                            {
+                                                foreach (var output in targetDevice.AvailableOutputs)//possible replace with method from IOutputSettings
+                                                {
+
+                                                    if (output.OutputBrightness < 100)
+                                                        output.OutputBrightness += 10;
+                                                    if (output.OutputBrightness > 100)
+                                                        output.OutputBrightness = 100;
+                                                }
+                                            }
+
                                             break;
                                         case "down":
-                                            foreach (var output in targetDevice.AvailableOutputs)
+                                            if (targetDevice.IsUnionMode)
                                             {
-                                                if (output.OutputBrightness > 2)
-                                                    output.OutputBrightness -= 2;
+
+                                                if (targetDevice.UnionOutput.OutputBrightness > 0)
+                                                    targetDevice.UnionOutput.OutputBrightness -= 10;
+                                                if (targetDevice.UnionOutput.OutputBrightness < 0)
+                                                    targetDevice.UnionOutput.OutputBrightness = 0;
                                             }
+                                            else
+                                            {
+                                                foreach (var output in targetDevice.AvailableOutputs)//possible replace with method from IOutputSettings
+                                                {
+
+                                                    if (output.OutputBrightness > 0)
+                                                        output.OutputBrightness -= 10;
+                                                    if (output.OutputBrightness < 0)
+                                                        output.OutputBrightness = 0;
+                                                }
+                                            }
+
                                             break;
                                     }
+                                    break;
+                                case "Do Nothing":
+                                    // Yeah?? do fking nothing here
                                     break;
                             }
                         }
@@ -3512,7 +3481,7 @@ namespace adrilight.ViewModel
                         convertedDevice.DeviceUID = Guid.NewGuid().ToString();
                         convertedDevice.IsUnionMode = true;
                         convertedDevice.UnionOutput = DefaulOutputCollection.GenericLEDStrip(0, 64, "Dây LED", 1, true);
-                        convertedDevice.AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 64, "Dây LED",1,false) };
+                        convertedDevice.AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 64, "Dây LED", 1, false) };
                         convertedDevice.Geometry = wLEDDevice.Geometry;
                         AvailableDevices.Add(convertedDevice);
                     }
@@ -3529,6 +3498,34 @@ namespace adrilight.ViewModel
                         AvailableDevices.Add(serialDevice);
                     }
 
+                }
+            }
+            if(AvailableOpenRGBDevices != null)
+            {
+                foreach(var openRGBDevice in AvailableOpenRGBDevices)
+                {
+                    IDeviceSettings convertedDevice = new DeviceSettings();
+                    convertedDevice.DeviceName = openRGBDevice.Name;
+                    convertedDevice.DeviceType = openRGBDevice.Type.ToString();
+                    convertedDevice.DeviceDescription = "Device Supported Throught Open RGB Client";
+                    convertedDevice.DeviceConnectionType = "OpenRGB";
+                    convertedDevice.DeviceID = AvailableDevices.Count + 1;
+                    convertedDevice.DeviceSerial = openRGBDevice.Serial;
+                    convertedDevice.DeviceUID = new Guid.ToString();
+                    convertedDevice.Geometry = openRGBDevice.Type.ToString();
+                    
+                    switch (openRGBDevice.Type)
+                    {
+                        case OpenRGB.NET.Enums.DeviceType.Keyboard:
+                            convertedDevice.UnionOutput = DefaulOutputCollection.GenericLEDMatrix(1, 20, 7,"Keyboard",1,true);
+                            convertedDevice.AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDMatrix(1, 20, 7, "Keyboard", 1, true) };
+                            break;
+                        default:
+                            convertedDevice.UnionOutput = DefaulOutputCollection.GenericLEDStrip()
+                            break;
+
+                    }
+                    
                 }
             }
 
@@ -4037,100 +4034,50 @@ namespace adrilight.ViewModel
 
         }
 
-
-
-        public void RefreshDevice()
+        private List<Device> LoadOpenRGBIfExist()
         {
-            //var detectedDevices = SerialDeviceDetection.RefreshDevice();
-            //var newdevices = new List<string>();
-            //OpenRGBStream.RefreshTransferState();//refresh device list
-            ////get a controer data (devices)
-            //if (OpenRGBStream.AmbinityClient != null)
-            //{
-            //    var openRGBdevices = OpenRGBStream.AmbinityClient.GetAllControllerData();
-            //    var detectedOpenRGBDevices = new List<Device>();
+            var existedOpenRGBDevices = new List<Device>();
+            if (File.Exists(JsonOpenRGBDevicesFileNameAndPath))
+            {
+                var json = File.ReadAllText(JsonOpenRGBDevicesFileNameAndPath);
 
-            //    var oldDeviceNum = Cards.Count;
-            //    if (OpenRGBStream.AmbinityClient != null)
-            //    {
-            //        foreach (var device in openRGBdevices)//add openrgb device to list
-            //        {
-            //            detectedOpenRGBDevices.Add(device);
-            //        }
+                var loadedOpenRGBDevices = JsonConvert.DeserializeObject<List<Device>>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
+                foreach (var device in existedOpenRGBDevices)
+                {
+                    existedOpenRGBDevices.Add(device);
+                }
+            }
+            return existedOpenRGBDevices;
+        }
 
-            //        foreach (var device in openRGBdevices)// check if device already exist
-            //        {
-            //            foreach (var item in Cards)
-            //            {
-            //                if (device.Location == item.DevicePort)
-            //                    detectedOpenRGBDevices.Remove(device);
-            //            }
-            //        }
-            //    }
-
-            //    if (detectedOpenRGBDevices.Count > 0)
-            //    {
-            //        var result = HandyControl.Controls.MessageBox.Show("Phát hiện " + detectedOpenRGBDevices.Count + " Thiết bị OpenRGB" + " Nhấn [Confirm] để add vào Dashboard", "OpenRGB Device", MessageBoxButton.OK, MessageBoxImage.Information);
-            //        if (result == MessageBoxResult.OK)//restart app
-            //        {
-            //            foreach (var device in openRGBdevices)//convert openRGB device to ambino Device
-            //            {
-
-            //                IDeviceSettings newDevice = new DeviceSettings();
-            //                newDevice.DeviceName = device.Name.ToString();
-            //                newDevice.DeviceType = device.Type.ToString();
-            //                newDevice.DevicePort = device.Location.ToString();
-            //                newDevice.DeviceID = Cards.Count + 1;
-            //                newDevice.DeviceSerial = device.Serial;
-            //                newDevice.NumLED = device.Colors.Length;
-            //                newDevice.SpotsX = newDevice.NumLED;
-            //                newDevice.SpotsY = 1;
-            //                switch (device.Type)
-            //                {
-            //                    case OpenRGB.NET.Enums.DeviceType.Mouse:
-            //                        newDevice.DeviceLayout = 1; //strip type
-            //                        break;
-            //                    case OpenRGB.NET.Enums.DeviceType.Keyboard:
-            //                        newDevice.DeviceLayout = 1; //strip type
-            //                        break;
-            //                    case OpenRGB.NET.Enums.DeviceType.Headset:
-            //                        newDevice.DeviceLayout = 1; //strip type
-            //                        break;
-            //                    case OpenRGB.NET.Enums.DeviceType.HeadsetStand:
-            //                        newDevice.DeviceLayout = 1; //strip type
-            //                        break;
-            //                    case OpenRGB.NET.Enums.DeviceType.Motherboard:
-            //                        newDevice.DeviceLayout = 1; //strip type
-            //                        break;
-            //                    case OpenRGB.NET.Enums.DeviceType.Dram:
-            //                        newDevice.DeviceLayout = 1; //strip type
-            //                        break;
-            //                    case OpenRGB.NET.Enums.DeviceType.Ledstrip:
-            //                        newDevice.DeviceLayout = 1; //strip type
-            //                        break;
-            //                    case OpenRGB.NET.Enums.DeviceType.Gpu:
-            //                        newDevice.DeviceLayout = 1; //strip type
-            //                        break;
-            //                    case OpenRGB.NET.Enums.DeviceType.Mousemat:
-            //                        newDevice.DeviceLayout = 1; //strip type
-            //                        break;
-            //                }
-
-            //                Cards.Add(newDevice);
-            //            }
-            //        }
-            //    }
-
-
-            //    if (oldDeviceNum != Cards.Count) //there are changes in device list, we simply restart the application to add process
-            //    {
-            //        WriteDeviceInfoJson();
-            //        Application.Restart();
-            //        Process.GetCurrentProcess().Kill();
-            //    }
-            //}
-
-
+        public void ScanOpenRGBDevices()
+        {
+           
+            OpenRGBStream.RefreshTransferState();//refresh device list
+            //get a controer data (devices)
+            if (OpenRGBStream.AmbinityClient != null)
+            {
+                var newOpenRGBDevices = OpenRGBStream.AmbinityClient.GetAllControllerData();
+                var detectedOpenRGBDevices = new List<Device>();
+                foreach (var device in newOpenRGBDevices)
+                {
+                    detectedOpenRGBDevices.Add(device);
+                }
+                //load history of openrgb device
+                foreach (var newDevice in newOpenRGBDevices)
+                {
+                    foreach (var oldDevice in LoadOpenRGBIfExist())
+                    {
+                        if (newDevice.Equals(oldDevice))
+                            detectedOpenRGBDevices.Remove(newDevice);
+                    }
+                }
+                foreach(var device in detectedOpenRGBDevices)
+                {
+                    AvailableOpenRGBDevices.Add(device);
+                }
+            }
+            WriteOpenRGBDeviceInfoJson();
         }
 
         public void ReadDataDevice()
@@ -4906,6 +4853,23 @@ namespace adrilight.ViewModel
             File.WriteAllText(JsonDeviceFileNameAndPath, json);
 
         }
+        public void WriteOpenRGBDeviceInfoJson()
+        {
+
+            var devices = new List<Device>();
+            foreach (var item in AvailableOpenRGBDevices)
+            {
+               
+                    devices.Add(item);
+            }
+
+            var json = JsonConvert.SerializeObject(devices, new JsonSerializerSettings() {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
+            Directory.CreateDirectory(JsonPath);
+            File.WriteAllText(JsonOpenRGBDevicesFileNameAndPath, json);
+
+        }
         public void WriteGenralSettingsJson()
         {
 
@@ -5140,6 +5104,17 @@ namespace adrilight.ViewModel
             }
             return filteredProfiles;
         }
+        private void SetRectangleFromScale(IOutputSettings target, double scaleX, double scaleY, double scaleWidth, double scaleHeight)
+        {
+            if (ShaderBitmap != null)
+            {
+                var top = scaleY * ShaderBitmap.Height;
+                var left = scaleX * ShaderBitmap.Width;
+                var width = scaleWidth * ShaderBitmap.Width;
+                var height = scaleHeight * ShaderBitmap.Height;
+                target.SetRectangle(new Rectangle((int)left, (int)top, (int)width, (int)height));
+            }
+        }
         public void GotoChild(IDeviceSettings selectedDevice)
         {
 
@@ -5203,31 +5178,50 @@ namespace adrilight.ViewModel
                         switch (CurrentOutput.OutputScreenCapturePositionIndex)
                         {
                             case 0://full screen
-
-                                CurrentOutput.OutputRectangle = new Rectangle(0, 0, (int)ShaderBitmap.Width, (int)ShaderBitmap.Height);
-
+                                CurrentOutput.OutputRectangleScaleHeight = 1;
+                                CurrentOutput.OutputRectangleScaleWidth = 1;
+                                CurrentOutput.OutputRectangleScaleLeft = 0;
+                                CurrentOutput.OutputRectangleScaleTop = 0;
                                 break;
                             case 1: // left
 
-                                CurrentOutput.OutputRectangle = new Rectangle(0, 0, (int)ShaderBitmap.Width / 2, (int)ShaderBitmap.Height);
+                                CurrentOutput.OutputRectangleScaleHeight = 1;
+                                CurrentOutput.OutputRectangleScaleWidth = 0.5;
+                                CurrentOutput.OutputRectangleScaleLeft = 0;
+                                CurrentOutput.OutputRectangleScaleTop = 0;
+                                CurrentOutput.SetRectangle(new Rectangle(0, 0, (int)ShaderBitmap.Width, (int)ShaderBitmap.Height));
 
                                 break;
-                            case 2: // left
+                            case 2: // right
 
-                                CurrentOutput.OutputRectangle = new Rectangle((int)ShaderBitmap.Width / 2, 0, (int)ShaderBitmap.Width / 2, (int)ShaderBitmap.Height);
+                                CurrentOutput.OutputRectangleScaleHeight = 1;
+                                CurrentOutput.OutputRectangleScaleWidth = 0.5;
+                                CurrentOutput.OutputRectangleScaleLeft = 0.5;
+                                CurrentOutput.OutputRectangleScaleTop = 0;
+                                CurrentOutput.SetRectangle(new Rectangle(0, 0, (int)ShaderBitmap.Width, (int)ShaderBitmap.Height));
 
                                 break;
                             case 3: // top
 
-                                CurrentOutput.OutputRectangle = new Rectangle(0, 0, (int)ShaderBitmap.Width, (int)ShaderBitmap.Height / 4);
+                                CurrentOutput.OutputRectangleScaleHeight = 0.5;
+                                CurrentOutput.OutputRectangleScaleWidth = 1;
+                                CurrentOutput.OutputRectangleScaleLeft = 0;
+                                CurrentOutput.OutputRectangleScaleTop = 0;
+                                CurrentOutput.SetRectangle(new Rectangle(0, 0, (int)ShaderBitmap.Width, (int)ShaderBitmap.Height));
 
                                 break;
                             case 4: // bottom
 
-                                CurrentOutput.OutputRectangle = new Rectangle(0, (int)ShaderBitmap.Height * 3 / 4, (int)ShaderBitmap.Width, (int)ShaderBitmap.Height / 4);
+                                CurrentOutput.OutputRectangleScaleHeight = 0.5;
+                                CurrentOutput.OutputRectangleScaleWidth = 1;
+                                CurrentOutput.OutputRectangleScaleLeft = 0;
+                                CurrentOutput.OutputRectangleScaleTop = 0.5;
+                                CurrentOutput.SetRectangle(new Rectangle(0, 0, (int)ShaderBitmap.Width, (int)ShaderBitmap.Height));
 
                                 break;
+
                         }
+                        SetRectangleFromScale(CurrentOutput, CurrentOutput.OutputRectangleScaleLeft, CurrentOutput.OutputRectangleScaleTop, CurrentOutput.OutputRectangleScaleWidth, CurrentOutput.OutputRectangleScaleHeight);
                         RaisePropertyChanged(nameof(CurrentOutput.OutputRectangle));
                         break;
                     case nameof(CurrentOutput.OutputMusicSensitivity):
@@ -5305,19 +5299,35 @@ namespace adrilight.ViewModel
                         }
 
                         break;
-                 
+
 
                     case nameof(CurrentDevice.ActivatedProfileIndex):
                         RaisePropertyChanged(nameof(CurrentSelectedProfile));
                         break;
                     case nameof(CurrentDevice.IsUnionMode):
-                        RaisePropertyChanged(nameof(CurrentDeviceOutputMode));
+                        switch (CurrentDevice.IsUnionMode)
+                        {
+                            case true:
+                                foreach (var output in CurrentDevice.AvailableOutputs)
+                                {
+                                    output.OutputIsEnabled = false;
+
+                                }
+                                CurrentOutput = CurrentDevice.UnionOutput;
+                                CurrentOutput.OutputIsEnabled = true;
+                                break;
+                            case false:
+                                foreach (var output in CurrentDevice.AvailableOutputs)
+                                {
+                                    output.OutputIsEnabled = true;
+
+                                }
+                                CurrentOutput = CurrentDevice.AvailableOutputs[0];
+                                CurrentDevice.UnionOutput.OutputIsEnabled = false;
+                                RaisePropertyChanged(nameof(CurrentDeviceOutputMode));
+                                break;
+                        }
                         break;
-
-
-
-
-
 
                 }
             };

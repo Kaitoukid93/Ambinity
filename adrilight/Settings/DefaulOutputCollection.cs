@@ -138,11 +138,11 @@ namespace adrilight.Settings
             };
             return outputSettings;
         }
-        public static OutputSettings GenericLEDMatrix(int id, int numLEDX,int numLEDY)
+        public static OutputSettings GenericLEDMatrix(int id, int numLEDX,int numLEDY, string name, int ledPerSpot, bool isEnabled)
         {
 
             var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
-                OutputName = "Generic LED Matrix",
+                OutputName = name,
                 OutputID = id,
                 OutputType = "Matrix",
                 OutputNumLED = 100,
@@ -157,7 +157,7 @@ namespace adrilight.Settings
                 OutputPowerMiliamps = 900,
                 OutputSaturationThreshold = 10,
                 OutputUseLinearLighting = false,
-                OutputIsEnabled = true,
+                OutputIsEnabled = isEnabled,
                 OutputAtmosphereStartColor = Color.FromRgb(255, 0, 0),
                 OutputAtmosphereStopColor = Color.FromRgb(255, 0, 0),
                 OutputAtmosphereMode = "Dirrect",
@@ -171,6 +171,7 @@ namespace adrilight.Settings
                 OutputPaletteBlendStep = 16,
                 OutputStaticColor = Color.FromRgb(0, 255, 0),
                 OutputBreathingSpeed = 10,
+                LEDPerSpot = ledPerSpot,
                 OutputCurrentActivePalette = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.rainbow),
                 OutputLEDSetup = BuildLEDSetup(numLEDX, numLEDY, "Matrix", id, new System.Drawing.Rectangle(0, 0, Screen.PrimaryScreen.Bounds.Width / 8, Screen.PrimaryScreen.Bounds.Height / 8), "Matrix")
                 // create ledsetup if neccesary

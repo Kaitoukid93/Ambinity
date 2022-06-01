@@ -77,6 +77,7 @@ namespace adrilight
         private double _outputRectangleScaleHeight = 1; // how many percent that output rectangle height take from the image
         private double _outputRectangleScaleTop = 0;// how many percent that output rectangle top take from the image, represent Y
         private double _outputRectangleScaleLeft = 0;// how many percent that output rectangle top take from the image, represent X
+        private bool _outputIsPreviewRunning = false;
 
 
 
@@ -92,6 +93,7 @@ namespace adrilight
         public int LEDPerLED { get => _lEDPerLED; set { Set(() => LEDPerLED, ref _lEDPerLED, value); } }
 
         public bool IsVissible { get => _isVissible; set { Set(() => IsVissible, ref _isVissible, value); } }
+        public bool OutputIsPreviewRunning { get => _outputIsPreviewRunning; set { Set(() => OutputIsPreviewRunning, ref _outputIsPreviewRunning, value); } }
         public string OutputUniqueID { get => _outputUniqueID; set { Set(() => OutputUniqueID, ref _outputUniqueID, value); } }
         [Reflectable]
         public string OutputRGBLEDOrder { get => _outputRGBLEDOrder; set { Set(() => OutputRGBLEDOrder, ref _outputRGBLEDOrder, value); } }

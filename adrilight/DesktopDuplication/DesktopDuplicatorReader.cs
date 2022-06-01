@@ -23,19 +23,16 @@ namespace adrilight
         private readonly ILogger _log = LogManager.GetCurrentClassLogger();
 
         public DesktopDuplicatorReader(IGeneralSettings userSettings,
-            IDesktopFrame desktopFrame,
-             ISecondDesktopFrame secondDesktopFrame,
-             IThirdDesktopFrame thirdDesktopFrame,
-             IOutputSettings outputSettings,
-             MainViewViewModel mainViewViewModel
+            IDesktopFrame[] desktopFrame,
+             MainViewViewModel mainViewViewModel,
+             IOutputSettings outputSettings
             )
         {
             UserSettings = userSettings ?? throw new ArgumentNullException(nameof(userSettings));
 
 
             DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
-            SecondDesktopFrame = secondDesktopFrame ?? throw new ArgumentNullException(nameof(secondDesktopFrame));
-            ThirdDesktopFrame = thirdDesktopFrame ?? throw new ArgumentNullException(nameof(thirdDesktopFrame));
+
             OutputSettings = outputSettings ?? throw new ArgumentNullException(nameof(outputSettings));
             // GraphicAdapter = graphicAdapter;
             // Output = output;
@@ -60,10 +57,7 @@ namespace adrilight
                 case nameof(UserSettings.ShouldbeRunning):
                 case nameof(OutputSettings.OutputSelectedMode):
                 case nameof(UserSettings.IsProfileLoading):
-               
-
-
-
+                case nameof(OutputSettings.OutputIsEnabled):
                     RefreshCapturingState();
                     break;
 
@@ -148,9 +142,8 @@ namespace adrilight
         private IGeneralSettings UserSettings { get; }
 
 
-        private IDesktopFrame DesktopFrame { get; }
-        private ISecondDesktopFrame SecondDesktopFrame { get; }
-        private IThirdDesktopFrame ThirdDesktopFrame { get; }
+        private IDesktopFrame[] DesktopFrame { get; }
+
         private IOutputSettings OutputSettings { get; }
 
 
@@ -196,8 +189,14 @@ namespace adrilight
 
                 while (!token.IsCancellationRequested)
                 {
+                    var currentOutput = MainViewViewModel.CurrentOutput;
+                    bool outputIsSelected = false;
+                    if (currentOutput != null && currentOutput.OutputID == OutputSettings.OutputID)
+                        outputIsSelected = true;
+                    bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen && outputIsSelected;
+
                     var frameTime = Stopwatch.StartNew();
-                    var newImage = _retryPolicy.Execute(() => GetNextFrame(image));
+                    var newImage = _retryPolicy.Execute(() => GetNextFrame(image, isPreviewRunning));
                     TraceFrameDetails(newImage);
                     var width = OutputSettings.OutputRectangle.Width;
                     var height = OutputSettings.OutputRectangle.Height;
@@ -206,7 +205,7 @@ namespace adrilight
                     var brightness = OutputSettings.OutputBrightness / 100d;
                     var devicePowerVoltage = OutputSettings.OutputPowerVoltage;
                     var devicePowerMiliamps = OutputSettings.OutputPowerMiliamps;
-                    bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen;
+
                     var numLED = OutputSettings.OutputLEDSetup.Spots.Length * OutputSettings.LEDPerSpot * OutputSettings.LEDPerLED;
 
 
@@ -217,24 +216,22 @@ namespace adrilight
                     }
                     image = newImage;
 
-                    //bool isPreviewRunning = SettingsViewModel.IsSettingsWindowOpen && SettingsViewModel.IsPreviewTabOpen;
-                    //if (isPreviewRunning)
-                    //{
-                    //   MainViewViewModel.SetPreviewImage(image);
+
+
                     try
                     {
                         image.LockBits(new Rectangle(x, y, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb, bitmapData);
                     }
-                       
-                    catch(System.ArgumentException)
+
+                    catch (System.ArgumentException)
                     {
                         //usually the rectangle is jumping out of the image due to new profile, we recreate the rectangle based on the scale
                         // or simply dispose the image and let GetNextFrame handle the rectangle recreation
-                        image=null;
+                        image = null;
                         continue;
                     }
-                   
-                    
+
+
 
 
                     lock (OutputSettings.OutputLEDSetup.Lock)
@@ -408,7 +405,7 @@ namespace adrilight
             return (byte)(256f * ((float)Math.Pow(factor, color / 256f) - 1f) / (factor - 1));
         }
 
-        private Bitmap GetNextFrame(Bitmap ReusableBitmap)
+        private Bitmap GetNextFrame(Bitmap ReusableBitmap, bool isPreviewRunning)
         {
 
 
@@ -418,17 +415,10 @@ namespace adrilight
             {
                 ByteFrame CurrentFrame = null;
                 Bitmap DesktopImage;
-                switch (OutputSettings.OutputSelectedDisplay)
+                CurrentFrame = DesktopFrame[OutputSettings.OutputSelectedDisplay].Frame;
+                if (isPreviewRunning)
                 {
-                    case 0:
-                        CurrentFrame = DesktopFrame.Frame;
-                        break;
-                    case 1:
-                        CurrentFrame = SecondDesktopFrame.Frame;
-                        break;
-                    case 2:
-                        CurrentFrame = ThirdDesktopFrame.Frame;
-                        break;
+                    MainViewViewModel.ShaderImageUpdate(CurrentFrame);
                 }
 
                 if (CurrentFrame.Frame == null)
