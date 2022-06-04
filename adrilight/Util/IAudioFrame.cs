@@ -9,6 +9,6 @@ namespace adrilight.Util
 {
     public interface IAudioFrame : INotifyPropertyChanged
     {
-        float[][] FFT { get; set; }
+        float[] FFT { get; set; }
     }
 }

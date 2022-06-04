@@ -150,7 +150,7 @@ namespace adrilight
                     bool isLightingControlPreviewRunning = MainViewModel.IsSplitLightingWindowOpen;
                     var fft = new float[32];
                     if (AudioFrames.FFT != null)
-                        fft = AudioFrames.FFT[OutputSettings.OutputSelectedAudioDevice];
+                        fft = AudioFrames.FFT;
                     var brightnessMap = SpectrumCreator(fft, 0, 1, 1, 0, 32);// get brightness map based on spectrum data
                     lock (OutputSettings.OutputLEDSetup.Lock)
                     {
@@ -168,8 +168,9 @@ namespace adrilight
                             var newColor = new OpenRGB.NET.Models.Color(colorBank[position].R, colorBank[position].G, colorBank[position].B);
                             var freq = spot.MID;
                             var actualFreq = 32 * ((double)freq / 1023d);
-
-                            var outputColor = Brightness.applyBrightness(newColor, brightnessMap[(int)actualFreq], numLED, outputPowerMiliamps, outputPowerVoltage);
+                            var brightnessCap = OutputSettings.OutputBrightness / 100d;
+                            var actualBrightness = brightnessMap[(int)actualFreq] * brightnessCap;
+                            var outputColor = Brightness.applyBrightness(newColor, actualBrightness, numLED, outputPowerMiliamps, outputPowerVoltage);
                             ApplySmoothing(outputColor.R, outputColor.G, outputColor.B, out byte FinalR, out byte FinalG, out byte FinalB, spot.Red, spot.Green, spot.Blue);
                             spot.SetColor(FinalR, FinalG, FinalB, isLightingControlPreviewRunning);
 

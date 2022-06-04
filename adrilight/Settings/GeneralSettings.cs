@@ -18,10 +18,11 @@ namespace adrilight
         private bool _isProfileLoading = false;
         private bool _startMinimized = false;
         private bool _notificationEnabled = true;
-        
-     
+        private int _selectedAudioDevice = 0;
 
-  
+
+
+        public int SelectedAudioDevice { get => _selectedAudioDevice; set { Set(() => SelectedAudioDevice, ref _selectedAudioDevice, value); } }
         public int SystemRainbowMaxTick { get => _systemRainbowMaxTick; set { Set(() => SystemRainbowMaxTick, ref _systemRainbowMaxTick, value); } }
         private int _limitFps = 100;
         public bool StartMinimized { get => _startMinimized; set { Set(() => StartMinimized, ref _startMinimized, value); } }

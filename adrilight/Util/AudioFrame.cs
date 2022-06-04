@@ -28,7 +28,7 @@ namespace adrilight
         public static int height = 0;
         public static int heightL = 0;
         public static int heightR = 0;
-        private float[][] lastSpectrumData;
+        private float[] lastSpectrumData;
         public WASAPIPROC _process;
         public static byte lastvolume = 0;
         public static byte volume = 0;
@@ -70,14 +70,15 @@ namespace adrilight
 
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
-        public float[][] FFT { get; set; }
+        public float[] FFT { get; set; }
 
         private void PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
 
-                case nameof(MainViewModel.IsSplitLightingWindowOpen):
+                case nameof(GeneralSettings.SelectedAudioDevice):
+
                     RefreshAudioState();
                     break;
 
@@ -105,26 +106,46 @@ namespace adrilight
                 //start it
                 _log.Debug("starting the Audio Frame");
                 Init();
-                //int deviceID = BassAudioDeviceID;
-                //Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATETHREADS, false);
-                foreach(var device in AvailableAudioDevice)
+                bool result = BassWasapi.BASS_WASAPI_Init(BassAudioDeviceID, 0, 0, BASSWASAPIInit.BASS_WASAPI_BUFFER, 1f, 0.05f, _process, IntPtr.Zero); // this is the function to init the device according to device index
+                if (!result)
                 {
-                    var array = device.Split(' ');  
-                    bool result = BassWasapi.BASS_WASAPI_Init(Convert.ToInt32(array[0]), 0, 0, BASSWASAPIInit.BASS_WASAPI_BUFFER, 1f, 0.05f, _process, IntPtr.Zero); // this is the function to init the device according to device index
-                    if (!result)
-                    {
-                        var error = Bass.BASS_ErrorGetCode();
-                        //MessageBox.Show(error.ToString());
-                    }
-                    else
-                    {
-                        //_initialized = true;
-                        //  Bassbox.IsEnabled = false;
-
-                    }
+                    var error = Bass.BASS_ErrorGetCode();
+                    //MessageBox.Show(error.ToString());
+                }
+                else
+                {
+                    //_initialized = true;
+                    //  Bassbox.IsEnabled = false;
 
                 }
-               
+                BassWasapi.BASS_WASAPI_Start();
+                //BassWasapi.BASS_WASAPI_Init(-3, 0, 0, BASSWASAPIInit.BASS_WASAPI_BUFFER, 1f, 0.05f, _process, IntPtr.Zero);
+                _cancellationTokenSource = new CancellationTokenSource();
+                var thread = new Thread(() => Run(_cancellationTokenSource.Token)) {
+                    IsBackground = true,
+                    Priority = ThreadPriority.BelowNormal,
+                    Name = "AudioFrame"
+                };
+                thread.Start();
+            }
+            else if (isRunning && shouldBeRunning) // something changed but not affects the running state
+            {
+                //start it
+                Free();
+                IsRunning = false;
+                Init();
+                bool result = BassWasapi.BASS_WASAPI_Init(BassAudioDeviceID, 0, 0, BASSWASAPIInit.BASS_WASAPI_BUFFER, 1f, 0.05f, _process, IntPtr.Zero); // this is the function to init the device according to device index
+                if (!result)
+                {
+                    var error = Bass.BASS_ErrorGetCode();
+                    //MessageBox.Show(error.ToString());
+                }
+                else
+                {
+                    //_initialized = true;
+                    //  Bassbox.IsEnabled = false;
+
+                }
                 BassWasapi.BASS_WASAPI_Start();
                 //BassWasapi.BASS_WASAPI_Init(-3, 0, 0, BASSWASAPIInit.BASS_WASAPI_BUFFER, 1f, 0.05f, _process, IntPtr.Zero);
                 _cancellationTokenSource = new CancellationTokenSource();
@@ -153,42 +174,18 @@ namespace adrilight
             IsRunning = true;
 
             _log.Debug("Started Audio Frame.");
-
+            FFT = new float[32]; // create 32 frequency
             //BassWasapi.BASS_WASAPI_SetDevice(BassAudioDeviceID);
-            int audioDevicecount = BassWasapi.BASS_WASAPI_GetDeviceCount();
-            int devCount = 0;
-            for (int i = 0; i < audioDevicecount; i++)
-            {
-                var device = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
-
-                if (device.IsEnabled && device.IsLoopback) // create AudioFrame for this device
-                {
-                    devCount++;
-                }
-
-            }
 
             try
-            {              
-                FFT = new float[devCount][];
-                lastSpectrumData = new float[devCount][];
-                for (int i = 0; i < devCount; i++)
-                {
-                    FFT[i] = new float[32];
-                    lastSpectrumData[i] = new float[32];
-                }
+            {
 
+                lastSpectrumData = new float[32];
                 while (!token.IsCancellationRequested)
                 {
-                    for(int i=0;i<devCount;i++)
-                    {
-                        var array = AvailableAudioDevice[i].Split(' ');
-                        bool result = BassWasapi.BASS_WASAPI_SetDevice(Convert.ToInt32(array[0]));
-                        var error = Bass.BASS_ErrorGetCode();
-                        GetCurrentFFTFrame(32,i);
-                        FFT = lastSpectrumData;
-                    }
-                    
+
+                    GetCurrentFFTFrame(32);
+                    FFT = lastSpectrumData;
                     Thread.Sleep(10); // take 100 sample per second
                 }
             }
@@ -218,7 +215,7 @@ namespace adrilight
         }
 
 
-        private float[][] GetCurrentFFTFrame(int numFreq,int index)
+        private float[] GetCurrentFFTFrame(int numFreq)
         {
             List<byte> spectrumdata = new List<byte>();
             int ret = BassWasapi.BASS_WASAPI_GetData(_fft, (int)BASSData.BASS_DATA_FFT2048);// get channel fft data
@@ -245,16 +242,16 @@ namespace adrilight
 
             for (int i = 0; i < numFreq; i++)
             {
-                if (spectrumdata[i] > lastSpectrumData[index][i])
+                if (spectrumdata[i] > lastSpectrumData[i])
                 {
-                    lastSpectrumData[index][i] += speed1 * (spectrumdata[i] - lastSpectrumData[index][i]);
+                    lastSpectrumData[i] += speed1 * (spectrumdata[i] - lastSpectrumData[i]);
 
 
                 }
 
-                if (spectrumdata[i] < lastSpectrumData[index][i])
+                if (spectrumdata[i] < lastSpectrumData[i])
                 {
-                    lastSpectrumData[index][i] -= speed2 * (lastSpectrumData[index][i] - spectrumdata[i]);
+                    lastSpectrumData[i] -= speed2 * (lastSpectrumData[i] - spectrumdata[i]);
 
 
                 }
@@ -270,7 +267,7 @@ namespace adrilight
             {
                 _AvailableAudioDevice.Clear();
                 int devicecount = BassWasapi.BASS_WASAPI_GetDeviceCount();
-                string[] devicelist = new string[devicecount];
+
                 for (int i = 0; i < devicecount; i++)
                 {
 
@@ -290,7 +287,17 @@ namespace adrilight
         }
 
 
-      
+        public int BassAudioDeviceID {
+            get
+            {
+                var currentDevice = AvailableAudioDevice.ElementAt(GeneralSettings.SelectedAudioDevice);
+
+                var array = currentDevice.Split(' ');
+                return Convert.ToInt32(array[0]);
+               
+            }
+        }
+
 
 
 

@@ -171,7 +171,7 @@
                 
                     <StackPanel Orientation="Horizontal">
                       
-                        <ComboBox hc:TitleElement.TitleWidth="125" hc:InfoElement.Title="AUDIO DEVICE" hc:InfoElement.TitlePlacement="Left"  Grid.Column="1" HorizontalAlignment="Right" Margin="10"  MinWidth="200" SelectedIndex="{Binding CurrentOutput.OutputSelectedAudioDevice}"  ItemsSource="{Binding AvailableAudioDevice}" hc:InfoElement.Necessary="True"  Style="{DynamicResource ComboBoxExtend}"/>
+                        <ComboBox hc:TitleElement.TitleWidth="125" hc:InfoElement.Title="AUDIO DEVICE" hc:InfoElement.TitlePlacement="Left"  Grid.Column="1" HorizontalAlignment="Right" Margin="10"  MinWidth="200" SelectedIndex="{Binding GeneralSettings.SelectedAudioDevice}"  ItemsSource="{Binding AvailableAudioDevice}" hc:InfoElement.Necessary="True"  Style="{DynamicResource ComboBoxExtend}"/>
                     <Path Stretch="Uniform" Margin="5" Data="{StaticResource speaker}" 
                                       Width="20" 
                                       Height="20" 
