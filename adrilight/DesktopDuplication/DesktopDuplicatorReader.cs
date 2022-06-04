@@ -54,17 +54,13 @@ namespace adrilight
             switch (e.PropertyName)
             {
 
-                case nameof(UserSettings.ShouldbeRunning):
+                
                 case nameof(OutputSettings.OutputSelectedMode):
-                case nameof(UserSettings.IsProfileLoading):
+                case nameof(OutputSettings.OutputIsLoadingProfile):
                 case nameof(OutputSettings.OutputIsEnabled):
                     RefreshCapturingState();
                     break;
 
-                case nameof(UserSettings.SelectedDisplay):
-                case nameof(UserSettings.SelectedAdapter):
-                    RefreshCaptureSource();
-                    break;
             }
         }
 
@@ -80,7 +76,7 @@ namespace adrilight
         public void RefreshCaptureSource()
         {
             var isRunning = _cancellationTokenSource != null;
-            var shouldBeRunning = UserSettings.ShouldbeRunning;
+            var shouldBeRunning = true;
             //  var shouldBeRefreshing = NeededRefreshing;
             if (isRunning && shouldBeRunning)
             {
@@ -191,7 +187,7 @@ namespace adrilight
                 {
                     var currentOutput = MainViewViewModel.CurrentOutput;
                     bool outputIsSelected = false;
-                    if (currentOutput != null && currentOutput.OutputID == OutputSettings.OutputID)
+                    if (currentOutput != null && currentOutput.OutputUniqueID == OutputSettings.OutputUniqueID)
                         outputIsSelected = true;
                     bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen && outputIsSelected;
 
@@ -236,7 +232,7 @@ namespace adrilight
 
                     lock (OutputSettings.OutputLEDSetup.Lock)
                     {
-                        var useLinearLighting = UserSettings.UseLinearLighting == 0;
+                        var useLinearLighting = OutputSettings.OutputUseLinearLighting;
 
                         //var imageRectangle = new Rectangle(0, 0, image.Width, image.Height);
 
@@ -263,7 +259,7 @@ namespace adrilight
 
                                 ApplyColorCorrections(sumR * countInverse, sumG * countInverse, sumB * countInverse
                                     , out byte finalR, out byte finalG, out byte finalB, useLinearLighting
-                                    , UserSettings.SaturationTreshold, spot.Red, spot.Green, spot.Blue);
+                                    , OutputSettings.OutputSaturationThreshold, spot.Red, spot.Green, spot.Blue);
 
                                 var spotColor = new OpenRGB.NET.Models.Color(finalR, finalG, finalB);
 
@@ -282,7 +278,7 @@ namespace adrilight
 
                     image.UnlockBits(bitmapData);
 
-                    int minFrameTimeInMs = 1000 / UserSettings.LimitFps;
+                    int minFrameTimeInMs = 1000 / 60;
                     var elapsedMs = (int)frameTime.ElapsedMilliseconds;
                     if (elapsedMs < minFrameTimeInMs)
                     {

@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using adrilight.ViewModel;
 
 namespace adrilight
 {
@@ -42,18 +43,21 @@ namespace adrilight
         private string _deviceConnectionType = "wired";
         private bool _isSelected = false;
         private bool _isUnionMode = false;
-        
+        private bool _isLoadingProfile = false;
+        private string _activatedProfileUID;
 
 
 
 
-        public int DeviceID { get =>_deviceID; set { Set(() => DeviceID, ref _deviceID, value); } }
+
+        public int DeviceID { get => _deviceID; set { Set(() => DeviceID, ref _deviceID, value); } }
         public string DeviceName { get => _deviceName; set { Set(() => DeviceName, ref _deviceName, value); } }
         public string DeviceSerial { get => _deviceSerial; set { Set(() => _deviceSerial, ref _deviceSerial, value); } }
         public string DeviceType { get => _deviceType; set { Set(() => _deviceType, ref _deviceType, value); } }
         public string Manufacturer { get => _manufacturer; set { Set(() => _manufacturer, ref _manufacturer, value); } }
         public string FirmwareVersion { get => _firmwareVersion; set { Set(() => FirmwareVersion, ref _firmwareVersion, value); } }
         public string ProductionDate { get => _productionDate; set { Set(() => ProductionDate, ref _productionDate, value); } }
+        public string ActivatedProfileUID { get => _activatedProfileUID; set { Set(() => ActivatedProfileUID, ref _activatedProfileUID, value); } }
         public bool IsVisible { get => _isVisible; set { Set(() => IsVisible, ref _isVisible, value); } }
         public bool IsEnabled { get => _isEnabled; set { Set(() => IsEnabled, ref _isEnabled, value); } }
         public bool IsUnionMode { get => _isUnionMode; set { Set(() => IsUnionMode, ref _isUnionMode, value); } }
@@ -74,30 +78,35 @@ namespace adrilight
         public string DeviceUID { get => _deviceUID; set { Set(() => DeviceUID, ref _deviceUID, value); } }
         public string DeviceConnectionGeometry { get => _deviceConnectionGeometry; set { Set(() => DeviceConnectionGeometry, ref _deviceConnectionGeometry, value); } }
         public string DeviceConnectionType { get => _deviceConnectionType; set { Set(() => DeviceConnectionType, ref _deviceConnectionType, value); } }
-        public void ActivateProfile(IDeviceProfile profile) 
+        public bool IsLoadingProfile { get => _isLoadingProfile; set { Set(() => IsLoadingProfile, ref _isLoadingProfile, value); } }
+        public void ActivateProfile(IDeviceProfile profile)
         {
+            ActivatedProfileUID = profile.ProfileUID;
             for (var i = 0; i < AvailableOutputs.Length; i++)
             {
+                AvailableOutputs[i].OutputIsLoadingProfile = true;
 
-                foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
+                    foreach (PropertyInfo property in AvailableOutputs[i].GetType().GetProperties())
                 {
-                    property.SetValue(AvailableOutputs[i], property.GetValue(profile.OutputSettings[i], null), null);
+                    
+                    if (Attribute.IsDefined(property, typeof(ReflectableAttribute)))
+                        property.SetValue(AvailableOutputs[i], property.GetValue(profile.OutputSettings[i], null), null);
                 }
-                //foreach (PropertyInfo property in CurrentDevice.AvailableOutputs[i].GetType().GetProperties())
-                //{
-                //property.SetValue(property);
-                //    // do something with the property
-                //}
-
+             
+                AvailableOutputs[i].OutputIsLoadingProfile = false;
             }
-            if(profile.UnionOutput!=null)
+            if (profile.UnionOutput != null)
             {
-                foreach (PropertyInfo property in typeof(IOutputSettings).GetProperties().Where(p => p.CanWrite))
+                UnionOutput.OutputIsLoadingProfile = true;
+                foreach (PropertyInfo property in UnionOutput.GetType().GetProperties())
                 {
-                    property.SetValue(UnionOutput, property.GetValue(profile.UnionOutput, null), null);
+                    if (Attribute.IsDefined(property, typeof(ReflectableAttribute)))
+                        property.SetValue(UnionOutput, property.GetValue(profile.UnionOutput, null), null);
                 }
+                UnionOutput.OutputIsLoadingProfile = false;
             }
-            
+
+
         }
     }
 }

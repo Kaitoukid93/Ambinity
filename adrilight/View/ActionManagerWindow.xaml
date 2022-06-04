@@ -33,12 +33,18 @@
     </Window.Resources>
 
     <Grid Margin="5">
-        <StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+            
             <TextBlock Text="Automation Editor" Style="{DynamicResource TextBlockLarge}">
                 
             </TextBlock>
-            <TextBox Text="{Binding AutomationNewName}" Margin="15"  hc:InfoElement.Title="NAME" Style="{DynamicResource TextBoxExtend}"  />
-            <GroupBox HorizontalAlignment="Left" VerticalContentAlignment="Center" hc:TitleElement.TitlePlacement="Top" hc:TitleElement.TitleWidth="120" Margin="15,5" Style="{DynamicResource GroupBoxOriginal}">
+            
+            <GroupBox Grid.Row="1" HorizontalAlignment="Left" VerticalContentAlignment="Center" hc:TitleElement.TitlePlacement="Top" hc:TitleElement.TitleWidth="120" Margin="15,5" Style="{DynamicResource GroupBoxOriginal}">
                 <GroupBox.HeaderTemplate>
                     <DataTemplate>
                         <TextBlock FontWeight="SemiBold" Text="ACTIONS"/>
@@ -52,9 +58,7 @@
                         <DataGridTemplateColumn Header="Action">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <!--<ComboBox SelectedIndex="{Binding ActionTypeIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" x:Name="action" ItemsSource="{Binding AvailableActions}" Style="{DynamicResource ComboBoxExtend}">
-                                    
-                                </ComboBox>-->
+
                                     <TextBlock Text="{Binding ActionType }" >
 
                                     </TextBlock>
@@ -123,7 +127,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
-            <Grid x:Name="keycombination">
+            <Grid Grid.Row="2" x:Name="keycombination">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
@@ -188,7 +192,7 @@
                 </Grid>
              
             </Grid>
-            <Grid >
+            <Grid Grid.Row="3" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
@@ -198,7 +202,7 @@
                 <Button Click="Button_Click" Background="Transparent" Margin="10" Style="{DynamicResource ButtonPrimary}" Grid.Column="1" Content="Cancel"/>
             </Grid>
             
-        </StackPanel>
+       
 
 
 

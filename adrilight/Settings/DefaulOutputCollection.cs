@@ -12,11 +12,12 @@ namespace adrilight.Settings
 {
     internal class DefaulOutputCollection
     {
-        public static OutputSettings AmbinoBasic(int id,int numLEDX, int numLEDY, string name, bool isEnabled)
+        public static OutputSettings AmbinoBasic(int id,int numLEDX, int numLEDY, string name, bool isEnabled,string geometry)
         {
 
             var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
                 OutputName = name,
+                Geometry = geometry,
                 OutputID = id,
                 OutputType = "Frame",
                 OutputNumLED = 100,
@@ -54,11 +55,12 @@ namespace adrilight.Settings
             return outputSettings;
             }
 
-        public static OutputSettings AmbinoEdge(int id, int numLED, string name, int ledPerSpot, bool isEnabled)
+        public static OutputSettings AmbinoEdge(int id, int numLED, string name, int ledPerSpot, bool isEnabled, string geometry)
         {
 
             var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
                 OutputName = name,
+                Geometry = geometry,
                 OutputID = id,
                 OutputType = "Strip",
                 OutputNumLED = 100,
@@ -97,12 +99,13 @@ namespace adrilight.Settings
             return outputSettings;
         }
 
-        public static OutputSettings GenericLEDStrip(int id, int numLED, string name, int ledPerSpot, bool isEnabled)
+        public static OutputSettings GenericLEDStrip(int id, int numLED, string name, int ledPerSpot, bool isEnabled, string geometry)
         {
 
             var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
                 OutputName = name,
                 OutputID = id,
+                Geometry = geometry,
                 OutputType = "Strip",
                 OutputNumLED = 100,
                 OutputNumLEDX = numLED,
@@ -138,11 +141,12 @@ namespace adrilight.Settings
             };
             return outputSettings;
         }
-        public static OutputSettings GenericLEDMatrix(int id, int numLEDX,int numLEDY, string name, int ledPerSpot, bool isEnabled)
+        public static OutputSettings GenericLEDMatrix(int id, int numLEDX,int numLEDY, string name, int ledPerSpot, bool isEnabled, string geometry)
         {
 
             var outputSettings = new OutputSettings { //24 inch led frame for Ambino Basic
                 OutputName = name,
+                Geometry = geometry,
                 OutputID = id,
                 OutputType = "Matrix",
                 OutputNumLED = 100,

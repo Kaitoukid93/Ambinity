@@ -68,8 +68,8 @@ namespace adrilight.Util
             switch (e.PropertyName)
             {
 
-                case nameof(GeneralSettings.ShaderCanvasHeight):
-                case nameof(GeneralSettings.ShaderCanvasWidth):
+                //case nameof(GeneralSettings.ShaderCanvasHeight):
+                //case nameof(GeneralSettings.ShaderCanvasWidth):
                 //case nameof(OutputSettings.OutputLocationX):
                 //case nameof(OutputSettings.OutputLocationY):
                     //case nameof(GeneralSettings.Shaderparam1):
@@ -125,7 +125,7 @@ namespace adrilight.Util
 
                     lock (OutputSettings.OutputLEDSetup.Lock)
                     {
-                       var useLinearLighting = GeneralSettings.UseLinearLighting == 0;
+                       var useLinearLighting = OutputSettings.OutputUseLinearLighting == 0;
 
           
 
@@ -144,7 +144,7 @@ namespace adrilight.Util
 
                             ApplyColorCorrections(sumR * countInverse, sumG * countInverse, sumB * countInverse
                                     , out byte finalR, out byte finalG, out byte finalB, useLinearLighting
-                                    , GeneralSettings.SaturationTreshold, spot.Red, spot.Green, spot.Blue);
+                                    , OutputSettings.OutputSaturationThreshold, spot.Red, spot.Green, spot.Blue);
 
                             var spotColor = new OpenRGB.NET.Models.Color(finalR, finalG, finalB);
 
@@ -235,7 +235,7 @@ namespace adrilight.Util
         private void ApplySmoothing(float r, float g, float b, out byte semifinalR, out byte semifinalG, out byte semifinalB,
         byte lastColorR, byte lastColorG, byte lastColorB)
         {
-            int smoothingFactor = GeneralSettings.SmoothFactor;
+            int smoothingFactor = 3;
 
 
             semifinalR = (byte)((r + smoothingFactor * lastColorR) / (smoothingFactor + 1));

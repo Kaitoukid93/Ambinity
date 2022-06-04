@@ -15,7 +15,7 @@
         <hc:TransitioningContentControl BorderBrush="{DynamicResource BorderBrush}" TransitionMode="Top2Bottom">
             <Border Background="{DynamicResource RegionBrush}" CornerRadius="7" Margin="0,2,15,15"  Effect="{DynamicResource EffectShadow3}">
                 <StackPanel Orientation="Vertical">
-                    <Button  HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding ImportPaletteCardFromFileCommand}" hc:IconElement.Geometry="{DynamicResource fromfile}" BorderBrush="Transparent" Margin="5"   Content="App Settings" Style="{DynamicResource ButtonDefault}"/>
+                    <Button  HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding OpenAppSettingsWindowCommand}" hc:IconElement.Geometry="{DynamicResource fromfile}" BorderBrush="Transparent" Margin="5"   Content="App Settings" Style="{DynamicResource ButtonDefault}"/>
 
                     <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding OpenAutomationManagerWindowCommand }" hc:IconElement.Geometry="{DynamicResource addpalette}" CommandParameter="createnew" BorderBrush="Transparent"   Margin="5" Content="Automation Settings" Style="{DynamicResource ButtonDefault}"/>
                 </StackPanel>

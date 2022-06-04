@@ -44,6 +44,7 @@ using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 using System.Threading.Tasks;
 using System.Threading;
 using adrilight.DesktopDuplication;
+using NotifyIcon = HandyControl.Controls.NotifyIcon;
 
 namespace adrilight.ViewModel
 {
@@ -273,43 +274,7 @@ namespace adrilight.ViewModel
 
             }
         }
-        //private Visibility _visibleTabControl;
-        //public Visibility VisibleTabControl {
-        //    get
-        //    {
-        //        if (CurrentDevice.IsHUB || CurrentDevice.ParrentLocation != 151293)
-        //        {
-        //            return Visibility.Visible;
-        //        }
-        //        else return Visibility.Collapsed;
 
-
-        //    }
-        //    set
-        //    {
-        //        _visibleTabControl = value;
-
-        //    }
-        //}
-
-        //private Visibility _dFUVisibility;
-        //public Visibility DFUVisibility {
-        //    get
-        //    {
-        //        if (CurrentDevice.ParrentLocation != 151293)
-        //        {
-        //            return Visibility.Collapsed;
-        //        }
-        //        else return Visibility.Visible;
-
-
-        //    }
-        //    set
-        //    {
-        //        _dFUVisibility = value;
-
-        //    }
-        //}
         private ViewModelBase _currentView;
 
         private ViewModelBase _detailView;
@@ -351,11 +316,15 @@ namespace adrilight.ViewModel
             }
         }
 
-
+        public ICommand ResetAppCommand { get; set; }
+        public ICommand OpenAppSettingsWindowCommand { get; set; }
         public ICommand ZerolAllCommand { get; set; }
         public ICommand ShowBrightnessAdjustmentPopupCommand { get; set; }
+        public ICommand LaunchDeleteSelectedDeviceWindowCommand { get; set; }
+        public ICommand DeleteSelectedDeviceCommand { get; set; }
         public ICommand OpenFFTPickerWindowCommand { get; set; }
         public ICommand ScanSerialDeviceCommand { get; set; }
+        public ICommand ScanOpenRGBDeviceCommand { get; set; }
         public ICommand SaveAllAutomationCommand { get; set; }
         public ICommand OpenAddNewAutomationCommand { get; set; }
         public ICommand OpenActionsManagerWindowCommand { get; set; }
@@ -516,7 +485,8 @@ namespace adrilight.ViewModel
                 if (value != null)
                 {
                     _currentSelectedProfile = value;
-                    LoadProfile(_currentSelectedProfile);
+                    if (_currentSelectedProfile.ProfileUID != CurrentDevice.ActivatedProfileUID)// change profile
+                        LoadProfile(_currentSelectedProfile);
                     RaisePropertyChanged();
                 }
 
@@ -602,6 +572,7 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+       
 
         private ObservableCollection<string> _availableEffects;
         public ObservableCollection<string> AvailableEffects {
@@ -933,64 +904,50 @@ namespace adrilight.ViewModel
         public ISerialStream[] SerialStreams { get; }
         public IOpenRGBStream OpenRGBStream { get; set; }
         public ISerialDeviceDetection SerialDeviceDetection { get; set; }
-        public static IShaderEffect ShaderEffect { get; set; }
-        public IDesktopFrame DesktopFrame { get; set; }
+        //public static IShaderEffect ShaderEffect { get; set; }
+    
 
-        public IThirdDesktopFrame ThirdDesktopFrame { get; set; }
-        public int AddedDevice { get; }
-
+        
+        private static ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
         public MainViewViewModel(IContext context,
             IDeviceSettings[] devices,
             IGeneralSettings generalSettings,
-            //IOpenRGBStream openRGBStream,
+            IOpenRGBStream openRGBStream,
             ISerialDeviceDetection serialDeviceDetection,
-            ISerialStream[] serialStreams,
-            IShaderEffect shaderEffect
+            ISerialStream[] serialStreams
+            //IShaderEffect shaderEffect
+           
            )
         {
-
+           
             GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
             SerialStreams = serialStreams ?? throw new ArgumentNullException(nameof(serialStreams));
-            //DesktopFrame = desktopFrame ?? throw new ArgumentNullException(nameof(desktopFrame));
-
-
             AvailableDevices = new ObservableCollection<IDeviceSettings>();
-
             Groups = new ObservableCollection<IGroupSettings>();
             DisplayCards = new ObservableCollection<IDeviceSettings>();
-            //AddedDevice = cards.Length;
             Context = context ?? throw new ArgumentNullException(nameof(context));
             SpotSets = new ObservableCollection<IDeviceSpotSet>();
-            //OpenRGBStream = openRGBStream ?? throw new ArgumentNullException(nameof(openRGBStream));
+            OpenRGBStream = openRGBStream ?? throw new ArgumentNullException(nameof(openRGBStream));
             SerialDeviceDetection = serialDeviceDetection ?? throw new ArgumentNullException(nameof(serialDeviceDetection));
-            ShaderEffect = shaderEffect ?? throw new ArgumentNullException();
+            //ShaderEffect = shaderEffect ?? throw new ArgumentNullException();
             var keyboardHookManager = new KeyboardHookManager();
-            AvailableModifiers = new ObservableCollection<IModifiersType> { new ModifiersType { Name = "CTRL", ModifierKey = NonInvasiveKeyboardHookLibrary.ModifierKeys.Control, IsChecked = false }, new ModifiersType { Name = "SHIFT", ModifierKey = NonInvasiveKeyboardHookLibrary.ModifierKeys.Shift, IsChecked = false }, new ModifiersType { Name = "ALT", ModifierKey = NonInvasiveKeyboardHookLibrary.ModifierKeys.Alt, IsChecked = false } };
-            //keyboardHookManager.Start();
-
-            //// Register virtual key code 0x60 = NumPad0
-            //keyboardHookManager.RegisterHotkey(0x78, () =>
-            //{
-            //    Debug.WriteLine("NumPad0 detected");
-            //});
-            //ShaderEffect.PropertyChanged += ShaderImageUpdate;
-            //DesktopFrame.PropertyChanged += ShaderImageUpdate;
-            //ShaderSpots = generalSpotSet.ShaderSpot;
-            //ShaderBitmap = shaderEffect.MatrixBitmap;
+            AvailableModifiers = new ObservableCollection<IModifiersType> { 
+                new ModifiersType { Name = "CTRL", ModifierKey = NonInvasiveKeyboardHookLibrary.ModifierKeys.Control, IsChecked = false }, 
+                new ModifiersType { Name = "SHIFT", ModifierKey = NonInvasiveKeyboardHookLibrary.ModifierKeys.Shift, IsChecked = false },
+                new ModifiersType { Name = "ALT", ModifierKey = NonInvasiveKeyboardHookLibrary.ModifierKeys.Alt, IsChecked = false } 
+            };     
             var settingsManager = new UserSettingsManager();
             foreach (IDeviceSettings device in devices)
             {
 
                 AvailableDevices.Add(device);
-                device.PropertyChanged += (_, __) => WriteDeviceInfoJson();
+                device.PropertyChanged +=  (_, __) =>  WriteDeviceInfoJson();
                 foreach (var output in device.AvailableOutputs)
                 {
-                    output.PropertyChanged += (_, __) => WriteDeviceInfoJson();
+                    output.PropertyChanged +=  (_, __) =>  WriteDeviceInfoJson();
                 }
-                device.UnionOutput.PropertyChanged += (_, __) => WriteDeviceInfoJson();
+                device.UnionOutput.PropertyChanged +=  (_, __) =>  WriteDeviceInfoJson();
 
-                //if (card.IsVissible)
-                //    DisplayCards.Add(card);
             }
             AvailableAutomations = new ObservableCollection<IAutomationSettings>();
             foreach (var automation in LoadAutomationIfExist())
@@ -1009,8 +966,6 @@ namespace adrilight.ViewModel
             };
             AvailableDevices.Add(addNewButton);
 
-
-
             GeneralSettings.PropertyChanged += (s, e) =>
             {
                 switch (e.PropertyName)
@@ -1028,29 +983,16 @@ namespace adrilight.ViewModel
                         break;
                     default:
                         break;
-
-
-
-
                 }
-                WriteGenralSettingsJson();
 
             };
+            //if (!GeneralSettings.StartMinimized)
+            //{
+            //    OpenSettingsWindow();
+            //}
 
         }
 
-        //public int CurrentDeviceSelectedEffect {
-        //    get => CurrentDevice.SelectedEffect;
-        //    set
-        //    {
-        //        CurrentDevice.SelectedEffect = value;
-        //        RaisePropertyChanged(() => DeviceRectX);
-        //        RaisePropertyChanged(() => DeviceRectY);
-        //        RaisePropertyChanged(() => DeviceRectWidth);
-        //        RaisePropertyChanged(() => DeviceRectHeight);
-        //    }
-
-        //}
 
         public void ShaderImageUpdate(ByteFrame frame)
         {
@@ -1674,12 +1616,7 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-        private string _automationNewName;
-        public string AutomationNewName {
-
-            get { return _automationNewName; }
-            set { _automationNewName = value; RaisePropertyChanged(); }
-        }
+       
 
 
         private string _newProfileName;
@@ -1977,12 +1914,12 @@ namespace adrilight.ViewModel
 
 
             ZerolAllCommand = new RelayCommand<string>((p) =>
-    {
-        return true;
-    }, (p) =>
-    {
-        ShowZeroingDialog();
-    });
+            {
+                return true;
+            }, (p) =>
+            {
+                ShowZeroingDialog();
+            });
             ChangeCurrentDeviceSelectedPalette = new RelayCommand<IColorPalette>((p) =>
             {
                 return true;
@@ -1990,13 +1927,20 @@ namespace adrilight.ViewModel
             {
                 //SetCurrentDeviceSelectedPalette(CurrentActivePalette);
             });
-
+          
             EditSelectedPaletteCommand = new RelayCommand<string>((p) =>
             {
                 return true;
             }, (p) =>
             {
                 EditCurrentPalette(p);
+            });
+            ResetAppCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                Reset();
             });
             LaunchPositionEditWindowCommand = new RelayCommand<string>((p) =>
             {
@@ -2019,6 +1963,13 @@ namespace adrilight.ViewModel
             }, (p) =>
             {
                 OpenAddNewAutomationWindowCommand();
+            });
+            OpenAppSettingsWindowCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                OpenAppSettingsWindow();
             });
             SaveAllAutomationCommand = new RelayCommand<string>((p) =>
             {
@@ -2079,7 +2030,7 @@ namespace adrilight.ViewModel
                 return true;
             }, (p) =>
             {
-                SaveCurrentProfile();
+                SaveCurrentProfile(CurrentDevice.ActivatedProfileUID);
             }
             );
             SaveCurrentSelectedActionCommand = new RelayCommand<string>((p) =>
@@ -2211,12 +2162,12 @@ namespace adrilight.ViewModel
             });
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault();
 
-            DeleteCommand = new RelayCommand<string>((p) =>
+            DeleteSelectedDeviceCommand = new RelayCommand<string>((p) =>
             {
                 return true;
             }, (p) =>
             {
-                ShowDeleteDialog();
+                DeleteSelectedDevice();
             });
             AdjustPositionCommand = new RelayCommand<string>((p) =>
             {
@@ -2284,6 +2235,14 @@ namespace adrilight.ViewModel
             {
 
                 LaunchPIDEditWindow();
+            });
+            LaunchDeleteSelectedDeviceWindowCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+
+                LaunchDeleteSelectedDeviceWindow();
             });
             OpenFFTPickerWindowCommand = new RelayCommand<string>((p) =>
             {
@@ -2358,14 +2317,7 @@ namespace adrilight.ViewModel
                 DeviceRectSavePosition();
             });
 
-            RefreshDeviceCommand = new RelayCommand<string>((p) =>
-            {
-                return true;
-            }, (p) =>
-            {
 
-                RefreshDevice();
-            });
             SelectCardCommand = new RelayCommand<IDeviceSettings>((p) =>
             {
                 return p != null;
@@ -2767,21 +2719,7 @@ namespace adrilight.ViewModel
 
 
             //});
-            SelectShaderCommand = new RelayCommand<ShaderCard>((p) =>
-            {
-                return p != null;
-            }, (p) =>
-            {
-                //if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
-                //{
-
-                //}
-                //change shader to selected
-                GeneralSettings.SelectedShader = p.Header.ToString();
-                RaisePropertyChanged(nameof(GeneralSettings.SelectedShader));
-
-            });
-
+           
             ShowAddNewCommand = new RelayCommand<IDeviceSettings>((p) =>
             {
                 return true;
@@ -2795,6 +2733,13 @@ namespace adrilight.ViewModel
             }, (p) =>
             {
                 ScanSerialDevice(p);
+            });
+            ScanOpenRGBDeviceCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                ScanOpenRGBDevices();
             });
             BackCommand = new RelayCommand<string>((p) =>
             {
@@ -2938,6 +2883,15 @@ namespace adrilight.ViewModel
                 window.ShowDialog();
             }
         }
+        private void OpenAppSettingsWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"AppSettingsWindow"}") is System.Windows.Window window)
+            {
+
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+            }
+        }
         private void LaunchWBAdjustWindow()
         {
             if (AssemblyHelper.CreateInternalInstance($"View.{"CustomWBWindow"}") is System.Windows.Window window)
@@ -2991,25 +2945,26 @@ namespace adrilight.ViewModel
             }
         }
 
-        public void SaveCurrentProfile()
+        public void SaveCurrentProfile(string profileUID)
         {
+            var currentProfile = AvailableProfiles.Where(p => p.ProfileUID == profileUID).FirstOrDefault();
             if (CurrentDevice.IsUnionMode)//save to union output only
             {
-                if (CurrentSelectedProfile != null)
+                if (currentProfile != null)
                 {
 
-                    CurrentSelectedProfile.UnionOutput = CurrentDevice.UnionOutput;
+                    currentProfile.UnionOutput = CurrentDevice.UnionOutput;
 
                 }
             }
             else
             {
-                if (CurrentSelectedProfile != null)
+                if (currentProfile != null)
                 {
                     foreach (var output in CurrentDevice.AvailableOutputs)
                     {
 
-                        CurrentSelectedProfile.OutputSettings[output.OutputID] = output;
+                        currentProfile.OutputSettings[output.OutputID] = output;
 
                     }
 
@@ -3048,7 +3003,7 @@ namespace adrilight.ViewModel
                 }
             }
 
-            CurrentSelectedAutomation.Name = AutomationNewName;
+            
             WriteAutomationCollectionJson();
             AvailableAutomations = new ObservableCollection<IAutomationSettings>();
             foreach (var automation in LoadAutomationIfExist())
@@ -3109,11 +3064,11 @@ namespace adrilight.ViewModel
 
             //WriteDeviceInfoJson();
 
-            foreach (var output in CurrentDevice.AvailableOutputs)
-            {
-                output.OutputIsBuildingLEDSetup = true;
+            //foreach (var output in CurrentDevice.AvailableOutputs)
+            //{
+            //    output.OutputIsBuildingLEDSetup = true;
 
-            }
+            //}
             GeneralSettings.IsProfileLoading = false;
         }
         private void CreateNewProfile()
@@ -3185,8 +3140,6 @@ namespace adrilight.ViewModel
                                 case "Activate Profile":
                                     var destinationProfile = AvailableProfiles.Where(x => x.ProfileUID == action.ActionParameter.Value).FirstOrDefault();
                                     targetDevice.ActivateProfile(destinationProfile);
-                                    var targetDeviceAvailableProfile = ProfileFilter(targetDevice);
-                                    targetDevice.ActivatedProfileIndex = targetDeviceAvailableProfile.IndexOf(destinationProfile);
                                     break;
                                 case "Brightness Control":
                                     switch (action.ActionParameter.Value)
@@ -3243,6 +3196,9 @@ namespace adrilight.ViewModel
                             }
                         }
                         Debug.WriteLine(automation.Name + " excuted");
+                        if(GeneralSettings.NotificationEnabled)
+                        SendNotification(automation.Name);
+
                     });
                     _identifiers.Add(_identifier);
                 }
@@ -3258,7 +3214,20 @@ namespace adrilight.ViewModel
             }
 
         }
+        MainView _mainForm;
+        private void MainForm_FormClosed(object sender, EventArgs e)
+        {
+            if (_mainForm == null) return;
 
+            //deregister to avoid memory leak
+            _mainForm.Closed -= MainForm_FormClosed;
+            _mainForm = null;
+        }
+     
+        private void SendNotification(string content)
+        {
+            NotifyIcon.ShowBalloonTip("Ambinity | Automation excuted", content, NotifyIconInfoType.Info, "Ambinity");
+        }
         private void Unregister()
         {
             foreach (var _identifier in _identifiers)
@@ -3454,12 +3423,12 @@ namespace adrilight.ViewModel
         }
 
 
-        private void AddDevice()
+        private void  AddDevice()
         {
             CurrentSelectedDeviceToAdd.DeviceID = AvailableDevices.Count + 1;
             CurrentSelectedDeviceToAdd.DeviceUID = Guid.NewGuid().ToString();
             AvailableDevices.Add(CurrentSelectedDeviceToAdd);
-            WriteDeviceInfoJson();
+             WriteDeviceInfoJson();
             System.Windows.Forms.Application.Restart();
             Process.GetCurrentProcess().Kill();
         }
@@ -3480,8 +3449,8 @@ namespace adrilight.ViewModel
                         convertedDevice.DeviceID = AvailableDevices.Count + 1;
                         convertedDevice.DeviceUID = Guid.NewGuid().ToString();
                         convertedDevice.IsUnionMode = true;
-                        convertedDevice.UnionOutput = DefaulOutputCollection.GenericLEDStrip(0, 64, "Dây LED", 1, true);
-                        convertedDevice.AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 64, "Dây LED", 1, false) };
+                        convertedDevice.UnionOutput = DefaulOutputCollection.GenericLEDStrip(0, 64, "Dây LED", 1, true, "ledstrip");
+                        convertedDevice.AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 64, "Dây LED", 1, false, "ledstrip") };
                         convertedDevice.Geometry = wLEDDevice.Geometry;
                         AvailableDevices.Add(convertedDevice);
                     }
@@ -3500,33 +3469,47 @@ namespace adrilight.ViewModel
 
                 }
             }
-            if(AvailableOpenRGBDevices != null)
+            if (AvailableOpenRGBDevices != null)
             {
-                foreach(var openRGBDevice in AvailableOpenRGBDevices)
+                foreach (var openRGBDevice in AvailableOpenRGBDevices)
                 {
                     IDeviceSettings convertedDevice = new DeviceSettings();
                     convertedDevice.DeviceName = openRGBDevice.Name;
                     convertedDevice.DeviceType = openRGBDevice.Type.ToString();
+                    convertedDevice.FirmwareVersion = openRGBDevice.Version;
+                    convertedDevice.OutputPort = OpenRGBStream.AmbinityClient.ToString();
                     convertedDevice.DeviceDescription = "Device Supported Throught Open RGB Client";
                     convertedDevice.DeviceConnectionType = "OpenRGB";
                     convertedDevice.DeviceID = AvailableDevices.Count + 1;
                     convertedDevice.DeviceSerial = openRGBDevice.Serial;
-                    convertedDevice.DeviceUID = new Guid.ToString();
+                    convertedDevice.DeviceUID = Guid.NewGuid().ToString();
                     convertedDevice.Geometry = openRGBDevice.Type.ToString();
-                    
-                    switch (openRGBDevice.Type)
+                    convertedDevice.DeviceConnectionGeometry = "orgb";
+                    convertedDevice.UnionOutput = DefaulOutputCollection.GenericLEDStrip(openRGBDevice.Zones.Length, 1, "Uni-Zone", 1, false, "ledstrip");
+                    convertedDevice.AvailableOutputs = new OutputSettings[openRGBDevice.Zones.Length];
+                    int zoneCount = 0;
+                    foreach (var zone in openRGBDevice.Zones)
                     {
-                        case OpenRGB.NET.Enums.DeviceType.Keyboard:
-                            convertedDevice.UnionOutput = DefaulOutputCollection.GenericLEDMatrix(1, 20, 7,"Keyboard",1,true);
-                            convertedDevice.AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDMatrix(1, 20, 7, "Keyboard", 1, true) };
-                            break;
-                        default:
-                            convertedDevice.UnionOutput = DefaulOutputCollection.GenericLEDStrip()
-                            break;
+
+                        switch (zone.Type)
+                        {
+                            case OpenRGB.NET.Enums.ZoneType.Single:
+                                convertedDevice.AvailableOutputs[zoneCount] = DefaulOutputCollection.GenericLEDStrip(zoneCount, 1, zone.Name, 1, true, "ledstrip");
+                                break;
+                            case OpenRGB.NET.Enums.ZoneType.Linear:
+                                convertedDevice.AvailableOutputs[zoneCount] = DefaulOutputCollection.GenericLEDStrip(zoneCount, (int)zone.LedCount, zone.Name, 1, true, "ledstrip");
+                                break;
+                            case OpenRGB.NET.Enums.ZoneType.Matrix:
+                                convertedDevice.AvailableOutputs[zoneCount] = DefaulOutputCollection.GenericLEDMatrix(zoneCount, (int)zone.MatrixMap.Width, (int)zone.MatrixMap.Height, zone.Name, 1, true, "matrix");
+                                break;
+                        }
+                        zoneCount++;
 
                     }
-                    
+                    AvailableDevices.Add(convertedDevice);
+
                 }
+
             }
 
 
@@ -3563,7 +3546,15 @@ namespace adrilight.ViewModel
 
 
         }
-
+        private void LaunchDeleteSelectedDeviceWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"DeleteSelectedDeviceWindow"}") is System.Windows.Window window)
+            {
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+            }
+        }
+        
         private void LaunchPIDEditWindow()
         {
             if (AssemblyHelper.CreateInternalInstance($"View.{"PIDEditWindow"}") is System.Windows.Window window)
@@ -3737,7 +3728,6 @@ namespace adrilight.ViewModel
                         TargetDeviceType = device.DeviceType,
                         ActionParameter = new ActionParameter { Name = "Do Nothing", Type = "donothing", Value = "none" },
 
-
                     };
 
                     doAbsolutelyNothing.Add(doNothing);
@@ -3753,17 +3743,14 @@ namespace adrilight.ViewModel
         }
         private void EditCurrentPalette(string param)
         {
-            ////var name = NewPaletteName;
-            ////var owner = NewPaletteOwner;
-            ////var description = NewPaletteDescription;
-            ////var colors = new System.Windows.Media.Color[16];
-            ////IColorPalette newpalette = new ColorPalette(name, owner, "RGBPalette16", description, colors);
-            //AvailablePallete.Add(newpalette);
-            //CurrentActivePalette = AvailablePallete.Last();
-            //RaisePropertyChanged(nameof(AvailablePallete));
-            //RaisePropertyChanged(nameof(CurrentActivePalette));
-            //WritePaletteCollectionJson();
+           
             OpenEditPaletteDialog(param);
+        }
+        private void Reset()
+        {
+            Directory.GetFiles(JsonPath).ToList().ForEach(File.Delete);
+            System.Windows.Forms.Application.Restart();
+            Process.GetCurrentProcess().Kill();
         }
         private void DeleteSelectedAutomation(IAutomationSettings automation)
         {
@@ -4042,7 +4029,7 @@ namespace adrilight.ViewModel
                 var json = File.ReadAllText(JsonOpenRGBDevicesFileNameAndPath);
 
                 var loadedOpenRGBDevices = JsonConvert.DeserializeObject<List<Device>>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
-                foreach (var device in existedOpenRGBDevices)
+                foreach (var device in loadedOpenRGBDevices)
                 {
                     existedOpenRGBDevices.Add(device);
                 }
@@ -4052,32 +4039,41 @@ namespace adrilight.ViewModel
 
         public void ScanOpenRGBDevices()
         {
-           
-            OpenRGBStream.RefreshTransferState();//refresh device list
-            //get a controer data (devices)
+            AvailableOpenRGBDevices = new ObservableCollection<Device>();
+
             if (OpenRGBStream.AmbinityClient != null)
             {
                 var newOpenRGBDevices = OpenRGBStream.AmbinityClient.GetAllControllerData();
-                var detectedOpenRGBDevices = new List<Device>();
-                foreach (var device in newOpenRGBDevices)
+                //var detectedOpenRGBDevices = new List<Device>();
+                //foreach (var device in newOpenRGBDevices)
+                //{
+                //    detectedOpenRGBDevices.Add(device);
+                //}
+                ////load history of openrgb device
+                //foreach (var newDevice in newOpenRGBDevices)
+                //{
+                //    foreach (var oldDevice in LoadOpenRGBIfExist())
+                //    {
+                //        if (newDevice.Equals(oldDevice))
+                //            detectedOpenRGBDevices.Remove(newDevice);
+                //    }
+                //}
+                int counter = 0;
+                foreach (var device in AvailableDevices)
                 {
-                    detectedOpenRGBDevices.Add(device);
-                }
-                //load history of openrgb device
-                foreach (var newDevice in newOpenRGBDevices)
-                {
-                    foreach (var oldDevice in LoadOpenRGBIfExist())
+                    if (device.DeviceConnectionType == "OpenRGB")
                     {
-                        if (newDevice.Equals(oldDevice))
-                            detectedOpenRGBDevices.Remove(newDevice);
+                        counter++;
                     }
                 }
-                foreach(var device in detectedOpenRGBDevices)
+                for (int i = counter; i < newOpenRGBDevices.Length; i++)
                 {
-                    AvailableOpenRGBDevices.Add(device);
+                    AvailableOpenRGBDevices.Add(newOpenRGBDevices[i]);
                 }
+
+
             }
-            WriteOpenRGBDeviceInfoJson();
+            //WriteOpenRGBDeviceInfoJson();
         }
 
         public void ReadDataDevice()
@@ -4685,27 +4681,12 @@ namespace adrilight.ViewModel
 
 
 
-        public async void ShowDeleteDialog()
+        private void  DeleteSelectedDevice()
         {
-            var view = new View.DeleteMessageDialog();
-            DeleteMessageDialogViewModel dialogViewModel = new DeleteMessageDialogViewModel(CurrentDevice);
-            view.DataContext = dialogViewModel;
-            bool addResult = false;
-            if (addResult)
-            {
-                DeleteCard(CurrentDevice);
-                int counter = 1;
-                foreach (var card in AvailableDevices)
-                {
-
-                    card.DeviceID = counter;
-                    counter++;
-
-                }
-                WriteDeviceInfoJson();
-                System.Windows.Forms.Application.Restart();
-                Process.GetCurrentProcess().Kill();
-            }
+            AvailableDevices.Remove(CurrentDevice);
+            WriteDeviceInfoJson();
+            System.Windows.Forms.Application.Restart();
+            Process.GetCurrentProcess().Kill();
 
 
         }
@@ -4836,7 +4817,7 @@ namespace adrilight.ViewModel
             SetMenuItemActiveStatus(menuItem.Text);
         }
 
-        public void WriteDeviceInfoJson()
+        public void  WriteDeviceInfoJson()
         {
 
             var devices = new List<IDeviceSettings>();
@@ -4849,8 +4830,27 @@ namespace adrilight.ViewModel
             var json = JsonConvert.SerializeObject(devices, new JsonSerializerSettings() {
                 TypeNameHandling = TypeNameHandling.Auto
             });
-            Directory.CreateDirectory(JsonPath);
-            File.WriteAllText(JsonDeviceFileNameAndPath, json);
+
+            // Set Status to Locked
+            _readWriteLock.EnterWriteLock();
+            try
+            {
+                // Append text to the file
+                using (StreamWriter sw = new StreamWriter(JsonDeviceFileNameAndPath))
+                {
+                    sw.Write(json);
+                    sw.Close();
+                }
+            }
+            finally
+            {
+                // Release lock
+                _readWriteLock.ExitWriteLock();
+            }
+            //Directory.CreateDirectory(JsonPath);
+            //await File.WriteAllTextAsync(JsonDeviceFileNameAndPath, json);
+
+
 
         }
         public void WriteOpenRGBDeviceInfoJson()
@@ -4859,8 +4859,8 @@ namespace adrilight.ViewModel
             var devices = new List<Device>();
             foreach (var item in AvailableOpenRGBDevices)
             {
-               
-                    devices.Add(item);
+
+                devices.Add(item);
             }
 
             var json = JsonConvert.SerializeObject(devices, new JsonSerializerSettings() {
@@ -5104,14 +5104,14 @@ namespace adrilight.ViewModel
             }
             return filteredProfiles;
         }
-        private void SetRectangleFromScale(IOutputSettings target, double scaleX, double scaleY, double scaleWidth, double scaleHeight)
+        private void SetRectangleFromScale(IOutputSettings target, double scaleX, double scaleY, double scaleWidth, double scaleHeight, int parrentWidth, int parrentHeight)
         {
             if (ShaderBitmap != null)
             {
-                var top = scaleY * ShaderBitmap.Height;
-                var left = scaleX * ShaderBitmap.Width;
-                var width = scaleWidth * ShaderBitmap.Width;
-                var height = scaleHeight * ShaderBitmap.Height;
+                var top = scaleY * parrentHeight;
+                var left = scaleX * parrentWidth;
+                var width = scaleWidth * parrentWidth;
+                var height = scaleHeight * parrentHeight;
                 target.SetRectangle(new Rectangle((int)left, (int)top, (int)width, (int)height));
             }
         }
@@ -5121,6 +5121,35 @@ namespace adrilight.ViewModel
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == lighting);
             IsDashboardType = false;
             CurrentDevice = selectedDevice;
+            foreach (var output in CurrentDevice.AvailableOutputs)
+            {
+                output.OutputUniqueID = CurrentDevice.DeviceID.ToString() + output.OutputID.ToString();
+            }
+            CurrentDevice.UnionOutput.OutputUniqueID = CurrentDevice.DeviceID.ToString() + CurrentDevice.UnionOutput.OutputID.ToString();
+            CurrentSelectedProfile = null;
+            if (CurrentDevice.ActivatedProfileUID != null)
+            {
+                CurrentSelectedProfile = AvailableProfiles.Where(p => p.ProfileUID == CurrentDevice.ActivatedProfileUID).FirstOrDefault();
+            }
+            if (CurrentSelectedProfile == null || CurrentDevice.ActivatedProfileUID == null)
+            {   //create new profile for this device
+                IDeviceProfile unsavedProfile = new DeviceProfile {
+                    Name = "Unsaved Profile",
+                    Geometry = "profile",
+                    Owner = "Auto Created",
+                    DeviceType = CurrentDevice.DeviceType,
+                    OutputSettings = CurrentDevice.AvailableOutputs,
+                    ProfileUID = Guid.NewGuid().ToString()
+                };
+                AvailableProfiles.Add(unsavedProfile);
+                WriteDeviceProfileCollection();
+                CurrentDevice.ActivateProfile(unsavedProfile);
+                CurrentSelectedProfile = unsavedProfile;
+            }
+
+
+
+
             if (CurrentDevice.AvailableOutputs.Length > 1)
             {
                 OutputModeChangeEnable = true;
@@ -5153,7 +5182,7 @@ namespace adrilight.ViewModel
             {
 
 
-                RaisePropertyChanged(CurrentDevice.DeviceName);
+
                 switch (e.PropertyName)
                 {
                     case nameof(CurrentOutput.OutputNumLEDX):
@@ -5189,7 +5218,7 @@ namespace adrilight.ViewModel
                                 CurrentOutput.OutputRectangleScaleWidth = 0.5;
                                 CurrentOutput.OutputRectangleScaleLeft = 0;
                                 CurrentOutput.OutputRectangleScaleTop = 0;
-                                CurrentOutput.SetRectangle(new Rectangle(0, 0, (int)ShaderBitmap.Width, (int)ShaderBitmap.Height));
+
 
                                 break;
                             case 2: // right
@@ -5198,7 +5227,7 @@ namespace adrilight.ViewModel
                                 CurrentOutput.OutputRectangleScaleWidth = 0.5;
                                 CurrentOutput.OutputRectangleScaleLeft = 0.5;
                                 CurrentOutput.OutputRectangleScaleTop = 0;
-                                CurrentOutput.SetRectangle(new Rectangle(0, 0, (int)ShaderBitmap.Width, (int)ShaderBitmap.Height));
+
 
                                 break;
                             case 3: // top
@@ -5207,7 +5236,7 @@ namespace adrilight.ViewModel
                                 CurrentOutput.OutputRectangleScaleWidth = 1;
                                 CurrentOutput.OutputRectangleScaleLeft = 0;
                                 CurrentOutput.OutputRectangleScaleTop = 0;
-                                CurrentOutput.SetRectangle(new Rectangle(0, 0, (int)ShaderBitmap.Width, (int)ShaderBitmap.Height));
+
 
                                 break;
                             case 4: // bottom
@@ -5216,12 +5245,12 @@ namespace adrilight.ViewModel
                                 CurrentOutput.OutputRectangleScaleWidth = 1;
                                 CurrentOutput.OutputRectangleScaleLeft = 0;
                                 CurrentOutput.OutputRectangleScaleTop = 0.5;
-                                CurrentOutput.SetRectangle(new Rectangle(0, 0, (int)ShaderBitmap.Width, (int)ShaderBitmap.Height));
+
 
                                 break;
 
                         }
-                        SetRectangleFromScale(CurrentOutput, CurrentOutput.OutputRectangleScaleLeft, CurrentOutput.OutputRectangleScaleTop, CurrentOutput.OutputRectangleScaleWidth, CurrentOutput.OutputRectangleScaleHeight);
+                        SetRectangleFromScale(CurrentOutput, CurrentOutput.OutputRectangleScaleLeft, CurrentOutput.OutputRectangleScaleTop, CurrentOutput.OutputRectangleScaleWidth, CurrentOutput.OutputRectangleScaleHeight, 240, 135);
                         RaisePropertyChanged(nameof(CurrentOutput.OutputRectangle));
                         break;
                     case nameof(CurrentOutput.OutputMusicSensitivity):
@@ -5301,9 +5330,7 @@ namespace adrilight.ViewModel
                         break;
 
 
-                    case nameof(CurrentDevice.ActivatedProfileIndex):
-                        RaisePropertyChanged(nameof(CurrentSelectedProfile));
-                        break;
+                    
                     case nameof(CurrentDevice.IsUnionMode):
                         switch (CurrentDevice.IsUnionMode)
                         {
@@ -5338,7 +5365,7 @@ namespace adrilight.ViewModel
         public void BackToDashboard()
         {
 
-            SaveCurrentProfile();
+            SaveCurrentProfile(CurrentDevice.ActivatedProfileUID);
             IsDashboardType = true;
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault();
             SetMenuItemActiveStatus(dashboard);

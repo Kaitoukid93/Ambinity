@@ -36,9 +36,12 @@ namespace adrilight
         string DeviceConnectionGeometry { get; set; }
         int Baudrate { get; set; }
         string DeviceUID { get; set; }
+        string ActivatedProfileUID { get; set; }
         string DeviceConnectionType { get; set; }
         bool IsSelected { get; set; }
         bool IsUnionMode { get; set; }
+        
+        bool IsLoadingProfile { get; set; }
         void ActivateProfile(IDeviceProfile profile);
        
     }

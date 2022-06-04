@@ -22,7 +22,7 @@
        
         
        AllowDrop="True" AllowsTransparency="False"
-       Title="Adrilight" Height="850" Width="1080"  MinHeight="480"  MinWidth="640" MouseLeftButtonDown="Window_MouseLeftButtonDown"  Closed="Window_Closed">
+       Title="Adrilight" Height="850" Width="1080"  MinHeight="480"  MinWidth="640" MouseLeftButtonDown="Window_MouseLeftButtonDown"  Closing="Window_Closing">
    
     <Window.Resources>
         <ResourceDictionary>
@@ -54,45 +54,12 @@
                             </Border>
                             <ControlTemplate.Triggers>
 
-
-                                <!--dashboard-->
-                                <!--<MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="True" />
-                                        <Condition Binding="{Binding Text}" Value="Dashboard"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDashboardActive}"></Setter>
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="False" />
-                                        <Condition Binding="{Binding Text}" Value="Dashboard"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDashboard}"></Setter>
-                                </MultiDataTrigger>-->
                                 <DataTrigger Binding="{Binding Text}" Value="Dashboard">
                                     <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDashboard}"></Setter>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Text}" Value="Dashboard">
                                     <Setter Property="ToolTip" TargetName="verticalMenuImage" Value="Dashboard"></Setter>
                                 </DataTrigger>
-                                
-                                <!--general-->
-                                <!--<MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="True" />
-                                        <Condition Binding="{Binding Text}" Value="General"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDashboardActive}"></Setter>
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="False" />
-                                        <Condition Binding="{Binding Text}" Value="General"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDashboard}"></Setter>
-                                </MultiDataTrigger>-->
-                                <!--Device settings-->
                                 <DataTrigger Binding="{Binding Text}" Value="Device Settings">
                                     <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDevice}"></Setter>
                                 </DataTrigger>
@@ -105,102 +72,14 @@
                                 <DataTrigger Binding="{Binding Text}" Value="Canvas Lighting">
                                     <Setter Property="ToolTip" TargetName="verticalMenuImage" Value="Canvas Lighting"></Setter>
                                 </DataTrigger>
-                                <!--<MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="True" />
-                                        <Condition Binding="{Binding Text}" Value="Device Settings"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDeviceActive}"></Setter>
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="False" />
-                                        <Condition Binding="{Binding Text}" Value="Device Settings"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDevice}"></Setter>
-                                </MultiDataTrigger>-->
-
-                                <!--Lighting-->
-                                <!--<MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="True" />
-                                        <Condition Binding="{Binding Text}" Value="Lighting"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDeviceActive}"></Setter>
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="False" />
-                                        <Condition Binding="{Binding Text}" Value="Lighting"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgDevice}"></Setter>
-                                </MultiDataTrigger>-->
-                                <!--App settings-->
+                             
                                 <DataTrigger Binding="{Binding Text}" Value="App Settings">
                                     <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgSetting}"></Setter>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Text}" Value="App Settings">
                                     <Setter Property="ToolTip" TargetName="verticalMenuImage" Value="Cài đặt App"></Setter>
                                 </DataTrigger>
-                                <!--<MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="True" />
-                                        <Condition Binding="{Binding Text}" Value="App Settings"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgSettingActive}"></Setter>
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="False" />
-                                        <Condition Binding="{Binding Text}" Value="App Settings"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgSetting}"></Setter>
-                                </MultiDataTrigger>-->
-                                <!--Preview-->
-                                <!--<MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="True" />
-                                        <Condition Binding="{Binding Text}" Value="Preview"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgSettingActive}"></Setter>
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="False" />
-                                        <Condition Binding="{Binding Text}" Value="Preview"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgSetting}"></Setter>
-                                </MultiDataTrigger>-->
-                                <!--FAQ-->
-                                <!--<MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="True" />
-                                        <Condition Binding="{Binding Text}" Value="FAQ"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgBoldQuestionActive}"></Setter>
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="False" />
-                                        <Condition Binding="{Binding Text}" Value="FAQ"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgBoldQuestion}"></Setter>
-                                </MultiDataTrigger>-->
-                                <!--Advance-->
-                                <!--<MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="True" />
-                                        <Condition Binding="{Binding Text}" Value="Advance"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgBoldQuestionActive}"></Setter>
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsActive}" Value="False" />
-                                        <Condition Binding="{Binding Text}" Value="Advance"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Source" TargetName="verticalMenuImage" Value="{StaticResource svgBoldQuestion}"></Setter>
-                                </MultiDataTrigger>-->
+                            
                                 <DataTrigger Binding="{Binding IsActive}" Value="True">
                                     <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"></Setter>
                                     <Setter Property="Foreground" Value="{DynamicResource RegionBrush}"></Setter>
@@ -269,16 +148,16 @@
                     <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="App Settings">
                         <Setter Property="ContentTemplate" Value="{StaticResource appSettingTemplate}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="Canvas Lighting">
+                    <!--<DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="Canvas Lighting">
                         <Setter Property="ContentTemplate" Value="{StaticResource canvasLightingTemplate}" />
-                    </DataTrigger>
+                    </DataTrigger>-->
                     <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="Lighting">
                         <Setter Property="ContentTemplate" Value="{StaticResource lightingTemplate}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="Group Lighting">
+                    <!--<DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="Group Lighting">
                         <Setter Property="ContentTemplate" Value="{StaticResource groupLightingTemplate}" />
-                    </DataTrigger>
-                    <!--  your other Status' here -->
+                    </DataTrigger>-->
+                     
                 </Style.Triggers>
             </Style>
         </ResourceDictionary>
@@ -290,35 +169,45 @@
 
             <Grid>
 
+                <hc:NotifyIcon Token="Ambinity"  Text="HandyControl" IsBlink="{Binding ContextMenuIsBlink}">
+                    <hc:NotifyIcon.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem  Click="OpenDashboard" Header="Dashboard">
+                                <MenuItem.Icon>
+                                    <Path   Data="{StaticResource dashboard}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                </MenuItem.Icon>
 
+                            </MenuItem>
+                            <MenuItem x:Name="ShortcutMenu" Tag="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Header="Shortcut">
+                                <!--<MenuItem.ItemTemplate>
+                                    <HierarchicalDataTemplate ItemsSource="{Binding PlacementTarget.Tag.AvailableAutomations,RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                                        <TextBlock Text="{Binding Name}"></TextBlock>
+                                    </HierarchicalDataTemplate>
+                                </MenuItem.ItemTemplate>-->
+                                <MenuItem.Icon>
+                                    <Path   Data="{StaticResource auto}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem  Command="hc:ControlCommands.ShutdownApp" Header="Exit">
+                                <MenuItem.Icon>
+                                    <Path   Data="{StaticResource exit}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </hc:NotifyIcon.ContextMenu>
+                    <hc:Interaction.Triggers>
+                        <hc:EventTrigger EventName="Click">
+                            <hc:EventToCommand Command="hc:ControlCommands.PushMainWindow2Top"/>
+                        </hc:EventTrigger>
+                    </hc:Interaction.Triggers>
+                </hc:NotifyIcon>
                 <Grid Margin="0" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <hc:TransitioningContentControl TransitionMode="Right2LeftWithFade">
-                        
-                    
-                    <StackPanel Visibility="Collapsed" Margin="0,0,0,0">
-
-                        <ItemsControl ItemsSource="{Binding MenuItems,UpdateSourceTrigger=PropertyChanged}"
-                                                IsTabStop="False"
-                                                BorderThickness="0">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Style="{StaticResource sideBtn}"  Command="{Binding DataContext.SelectMenuItem,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}" BorderBrush="#FFB9B9B9"></Button>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-
-                    </StackPanel>
-                    </hc:TransitioningContentControl>
+                
                     <Grid Visibility="Collapsed" >
 
 

@@ -202,13 +202,20 @@
     <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="DesktopDuplication\ISecondDesktopFrame.cs" />
+    <Compile Remove="DesktopDuplication\IThirdDesktopFrame.cs" />
+    <Compile Remove="DesktopDuplication\SecondDesktopFrame.cs" />
+    <Compile Remove="DesktopDuplication\ThirdDesktopFrame.cs" />
     <Compile Remove="Factories\IDeviceSettingsFactories.cs" />
     <Compile Remove="Ninject\UseFirstArgumentAsNameInstanceProvider.cs" />
     <Compile Remove="Settings\DefaultActionParameterCollections.cs" />
     <Compile Remove="Util\AdrilightUpdater.cs" />
-    <Compile Remove="Util\OpenRGBStream.cs" />
+    <Compile Remove="Util\IShaderEffect.cs" />
+    <Compile Remove="Util\IShaderReader.cs" />
     <Compile Remove="Util\SerialStreamFanHUB.cs" />
     <Compile Remove="Util\SerialStreamHUB.cs" />
+    <Compile Remove="Util\ShaderEffect.cs" />
+    <Compile Remove="Util\ShaderReader.cs" />
     <Compile Remove="ViewModel\AddDeviceViewModel.cs" />
     <Compile Remove="ViewModel\AdjustPositionViewModel.cs" />
     <Compile Remove="ViewModel\DashBoardViewModel.cs" />
@@ -279,7 +286,13 @@
     <Compile Update="View\AddNewAutomationWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\DeleteSelectedDeviceWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\AutomationManagerWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\AppSettingsWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\UnionOutputControl.xaml.cs">
@@ -369,7 +382,15 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="View\DeleteSelectedDeviceWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\AutomationManagerWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\AppSettingsWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

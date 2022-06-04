@@ -337,15 +337,32 @@
                 </Border>
               
                 <StackPanel Margin="10,5" Grid.Column="1">
-                    <TextBlock HorizontalAlignment="Left" Margin="2" Style="{DynamicResource TextBlockTitle}" Text="{Binding CurrentDevice.DeviceName}" FontWeight="SemiBold"/>
+                    <hc:RunningBlock 
+                                                Margin="5,10,10,0"
+                                                BorderThickness="0" 
+                                                Padding="0"  
+                                                Duration="0:0:9" 
+                                                Height="32" 
+                                                HorizontalAlignment="Left" 
+                                                AutoRun="True"  Width="150" 
+                                                Runaway="False" 
+                                                VerticalAlignment="Stretch" >
+                        <hc:RunningBlock.Content>
+                            <TextBlock  Text="{Binding CurrentDevice.DeviceName}" 
+                                                                FlowDirection="RightToLeft"
+                                                                Style="{DynamicResource TextBlockTitle}"
+                                                                />
+                        </hc:RunningBlock.Content>
+
+                    </hc:RunningBlock>
                     <!--<TextBlock FontSize="13" HorizontalAlignment="Left" Margin="2" Style="{DynamicResource TextBlockDefault}" Text="{Binding CurrentDevice.DeviceDescription}" />-->
                     <Grid Visibility="{Binding OutputModeChangeEnable,Converter={StaticResource boolToVisibilityConvert}}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Margin="0,0,10,0" FontSize="13" Style="{DynamicResource TextBlockDefault}" Text="{Binding CurrentDeviceOutputMode}"/>
-                        <Button Click="ChangeOutputMode" Grid.Column="1" HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
+                        <TextBlock HorizontalAlignment="Left" Margin="0,0,10,0" FontSize="13" Style="{DynamicResource TextBlockDefault}" Text="{Binding CurrentDeviceOutputMode}"/>
+                        <Button  Click="ChangeOutputMode" Grid.Column="1" HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
                             <Button.Content>
                                 <TextBlock FontSize="13" Text="Change" Style="{DynamicResource TextBlockDefaultPrimary}"/>
                             </Button.Content>
@@ -364,11 +381,23 @@
                         </Button>
                         
                     </Grid>
-                    <Button x:Name="ButtonRename" Click="RenameButtonClick" HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
-                        <Button.Content>
-                            <TextBlock FontSize="13" Text="Rename" Style="{DynamicResource TextBlockDefaultPrimary}"/>
-                        </Button.Content>
-                    </Button>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Margin="0,0,10,0" x:Name="ButtonRename" Click="RenameButtonClick" HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
+                            <Button.Content>
+                                <TextBlock FontSize="13" Text="Rename" Style="{DynamicResource TextBlockDefaultPrimary}"/>
+                            </Button.Content>
+                        </Button>
+                        <Button  Margin="10,0,10,0" Grid.Column="1" x:Name="ButtonRemove"  HorizontalAlignment="Left" Padding="0" Command="{Binding LaunchDeleteSelectedDeviceWindowCommand}"  Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
+                            <Button.Content>
+                                <TextBlock FontSize="13" Text="Remove" Style="{DynamicResource TextBlockDefaultDanger}"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                    
                     <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=ButtonRename}" HorizontalOffset="30" x:Name="RenamePopup" VerticalOffset="0" StaysOpen="False">
                         <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
                             <Border Background="{DynamicResource SecondaryRegionBrush}" CornerRadius="7" Margin="0,2,15,15"  Effect="{DynamicResource EffectShadow3}">
@@ -518,7 +547,7 @@
                     </Grid>
                 </Button>
             </Grid>
-            <Grid Margin="0,0,100,0" Grid.Column="4">
+            <Grid Margin="0,0,50,0" Grid.Column="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
@@ -546,11 +575,28 @@
                         
                         <Grid HorizontalAlignment="Left" Grid.Column="1">
                             <StackPanel HorizontalAlignment="Left">
-                                <TextBlock HorizontalAlignment="Left" Text="{Binding CurrentDevice.OutputPort}" Style="{DynamicResource TextBlockSubTitle}" FontWeight="SemiBold" Margin="5,2"/>
-                                <TextBlock Text="Connected" Style="{DynamicResource TextBlockDefaultPrimary}" Visibility="{Binding CurrentDevice.IsTransferActive,Converter={StaticResource boolToVisibilityConvert}}" Margin="5,2" HorizontalAlignment="Left"/>
-                                <TextBlock Text="Disconnected"  Margin="5,2" HorizontalAlignment="Left">
+                                <hc:RunningBlock 
+                                                Margin="5,0,5,0"
+                                                BorderThickness="0" 
+                                                Padding="0"  
+                                                Duration="0:0:9" 
+                                                Height="32" 
+                                                HorizontalAlignment="Left" 
+                                                AutoRun="True"  Width="150" 
+                                                Runaway="False" 
+                                                VerticalAlignment="Stretch" >
+                                    <hc:RunningBlock.Content>
+                                        <TextBlock  Text="{Binding CurrentDevice.OutputPort}" 
+                                                                FlowDirection="RightToLeft"
+                                                                 FontWeight="SemiBold"
+                                                                Style="{DynamicResource TextBlockSubTitle}"/>
+                                    </hc:RunningBlock.Content>
+
+                                </hc:RunningBlock>
+                                <TextBlock Text="Connected" Style="{DynamicResource TextBlockDefaultPrimary}" Visibility="{Binding CurrentDevice.IsTransferActive,Converter={StaticResource boolToVisibilityConvert}}" Margin="5,0" HorizontalAlignment="Left"/>
+                                <TextBlock Text="Disconnected"  Margin="5,0" HorizontalAlignment="Left">
                                     <TextBlock.Style>
-                                        <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockDefaultSecLight }">
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockDefaultDanger }">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding CurrentDevice.IsTransferActive}" Value="False">
@@ -792,7 +838,12 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <Rectangle ToolTip="{Binding id}" Stroke="OrangeRed" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="{Binding Rectangle.Height,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                            <Rectangle
+                                                ToolTip="{Binding id}" 
+                                                Stroke="OrangeRed" 
+                                                StrokeThickness="{Binding BorderThickness}" 
+                                                Width="{Binding Rectangle.Width,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                                Height="{Binding Rectangle.Height,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                                                 <Rectangle.Fill>
                                                     <SolidColorBrush Color="{Binding OnDemandColor}"  />
                                                 </Rectangle.Fill>

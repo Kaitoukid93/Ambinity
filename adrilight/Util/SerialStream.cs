@@ -17,25 +17,25 @@ namespace adrilight
     {
         private ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public SerialStream(IDeviceSettings deviceSettings ,IGeneralSettings generalSettings)
+        public SerialStream(IDeviceSettings deviceSettings, IGeneralSettings generalSettings)
         {
             GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
             DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
-        
+
             // DeviceSpotSets = deviceSpotSets ?? throw new ArgumentNullException(nameof(deviceSpotSets));
             DeviceSettings.PropertyChanged += UserSettings_PropertyChanged;
             RefreshTransferState();
 
             _log.Info($"SerialStream created.");
 
-            
+
         }
         //Dependency Injection//
         private IDeviceSettings DeviceSettings { get; set; }
         private IGeneralSettings GeneralSettings { get; set; }
-        
-        
-       // private IDeviceSpotSet[] DeviceSpotSets { get; set; }
+
+
+        // private IDeviceSpotSet[] DeviceSpotSets { get; set; }
         private bool CheckSerialPort(string serialport)
         {
             Stop();//stop current serial stream first to avoid access denied
@@ -47,7 +47,7 @@ namespace adrilight
             {
                 if (serialport == "Không có")
                 {
-                   // System.Windows.MessageBox.Show("Serial Port " + serialport + " is just for testing effects, not the real device, please note");
+                    // System.Windows.MessageBox.Show("Serial Port " + serialport + " is just for testing effects, not the real device, please note");
                     available = true;
                     return available;
 
@@ -60,7 +60,7 @@ namespace adrilight
                 {
 
                     serialPorttest.Open();
-                   
+
 
                 }
 
@@ -96,7 +96,7 @@ namespace adrilight
 
 
         }
-      
+
         private void UserSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -106,7 +106,7 @@ namespace adrilight
                     RefreshTransferState();
                     break;
                 case nameof(DeviceSettings.IsUnionMode):
-                    
+
                     RefreshTransferState();
                     break;
             }
@@ -201,19 +201,19 @@ namespace adrilight
 
         {
             //Open device at 1200 baudrate
-           
-                
-                Stop();
-            if(DeviceSettings.OutputPort!=null)
+
+
+            Stop();
+            if (DeviceSettings.OutputPort != null)
             {
                 var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.OutputPort, 1200));
                 serialPort.Open();
                 serialPort.Close();
-                
-            }
-               
 
-            
+            }
+
+
+
 
         }
 
@@ -221,7 +221,7 @@ namespace adrilight
 
 
 
-        private (byte[] Buffer, int OutputLength) GetOutputStream( IOutputSettings output,byte id)
+        private (byte[] Buffer, int OutputLength) GetOutputStream(IOutputSettings output, byte id)
         {
             byte[] outputStream;
             var currentOutput = output;
@@ -231,7 +231,7 @@ namespace adrilight
             {
                 const int colorsPerLed = 3;
                 int bufferLength = _messagePreamble.Length + 3 + 3
-                    + (currentOutput.OutputLEDSetup.Spots.Length * colorsPerLed* ledPerSpot);
+                    + (currentOutput.OutputLEDSetup.Spots.Length * colorsPerLed * ledPerSpot);
 
 
                 outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
@@ -241,38 +241,39 @@ namespace adrilight
 
 
 
-                
-                
-                    
-                    byte lo = (byte)(currentOutput.OutputLEDSetup.Spots.Length & 0xff);
-                    byte hi = (byte)((currentOutput.OutputLEDSetup.Spots.Length >> 8) & 0xff);
-                    byte chk = (byte)(hi ^ lo ^ 0x55);
-                    outputStream[counter++] = hi;
-                    outputStream[counter++] = lo;
+
+
+
+                byte lo = (byte)(currentOutput.OutputLEDSetup.Spots.Length & 0xff);
+                byte hi = (byte)((currentOutput.OutputLEDSetup.Spots.Length >> 8) & 0xff);
+                byte chk = (byte)(hi ^ lo ^ 0x55);
+                outputStream[counter++] = hi;
+                outputStream[counter++] = lo;
                 outputStream[counter++] = chk;
                 outputStream[counter++] = id;
                 outputStream[counter++] = 0;
                 outputStream[counter++] = 0;
                 var isEnabled = currentOutput.OutputIsEnabled;
+                var parrentIsEnabled = DeviceSettings.IsEnabled;
                 var allBlack = true;
                 //}
 
-               
-                    foreach (DeviceSpot spot in currentOutput.OutputLEDSetup.Spots)
-                    {
-                    if (isEnabled)
+
+                foreach (DeviceSpot spot in currentOutput.OutputLEDSetup.Spots)
+                {
+                    if (isEnabled && parrentIsEnabled)
                     {
                         var RGBOrder = currentOutput.OutputRGBLEDOrder;
                         switch (RGBOrder)
                         {
                             case "RGB": //RGB
-                                for (int i = 0;i<ledPerSpot;i++)
+                                for (int i = 0; i < ledPerSpot; i++)
                                 {
                                     outputStream[counter++] = spot.Red; // blue
                                     outputStream[counter++] = spot.Green; // green
                                     outputStream[counter++] = spot.Blue; // red
                                 }
-                                
+
                                 break;
                             case "GRB": //GRB
                                 for (int i = 0; i < ledPerSpot; i++)
@@ -334,10 +335,10 @@ namespace adrilight
                     }
 
 
-                    }
-                   
-                
-              
+                }
+
+
+
 
 
                 if (allBlack)
@@ -382,7 +383,7 @@ namespace adrilight
         //        byte chk = (byte)(hi ^ lo ^ 0x55);
         //        outputStream[counter++] = chk;
         //        var allBlack = true;
-       
+
 
         //        int snapshotCounter = 0;
         //        if(GeneralSettings.SentryMode==1)
@@ -413,7 +414,7 @@ namespace adrilight
 
         //            }
         //        }
-               
+
 
         //        if (allBlack)
         //        {
@@ -462,17 +463,17 @@ namespace adrilight
                         {
                             serialPort?.Close();
                             serialPort = DeviceSettings.OutputPort != "Không có" ? (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.OutputPort, baudRate)) : new FakeSerialPort();
-                           // serialPort.DisableDtr();
-                           // serialPort.DisableRts();
+                            // serialPort.DisableDtr();
+                            // serialPort.DisableRts();
                             serialPort.Open();
                             openedComPort = DeviceSettings.OutputPort;
 
                         }
                         //send frame data
-                        if(isUnion)
+                        if (isUnion)
                         {
-                            
-                            for (int i=0; i<DeviceSettings.AvailableOutputs.Length;i++)
+
+                            for (int i = 0; i < DeviceSettings.AvailableOutputs.Length; i++)
                             {
                                 var (outputBuffer, streamLength) = GetOutputStream(DeviceSettings.UnionOutput, (byte)i);
                                 serialPort.Write(outputBuffer, 0, streamLength);
@@ -494,7 +495,7 @@ namespace adrilight
                                 Thread.Sleep(minTimespan);
                             }
                         }
-                        
+
                         else
                         {
                             foreach (var output in DeviceSettings.AvailableOutputs)
@@ -519,10 +520,6 @@ namespace adrilight
                                 Thread.Sleep(minTimespan);
                             }
                         }
-                        
-                            
-                        
-                        
 
 
 
@@ -534,7 +531,11 @@ namespace adrilight
 
 
 
-                   
+
+
+
+
+
                     }
                 }
                 catch (OperationCanceledException)
@@ -550,14 +551,14 @@ namespace adrilight
 
                     _log.Debug(ex, "Exception catched.");
                     //to be safe, we reset the serial port
-                   var result= HandyControl.Controls.MessageBox.Show("USB của " + DeviceSettings.DeviceName + " Đã ngắt kết nối!!!. Kiểm tra lại kết nối sau đó nhấn [Confirm]", "Mất kết nối", MessageBoxButton.OKCancel,MessageBoxImage.Warning);
+                    var result = HandyControl.Controls.MessageBox.Show("USB của " + DeviceSettings.DeviceName + " Đã ngắt kết nối!!!. Kiểm tra lại kết nối sau đó nhấn [Confirm]", "Mất kết nối", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
 
-                    if(result== MessageBoxResult.OK)//restart app
+                    if (result == MessageBoxResult.OK)//restart app
                     {
                         System.Windows.Forms.Application.Restart();
                         Process.GetCurrentProcess().Kill();
                     }
-                    
+
 
                     if (serialPort != null && serialPort.IsOpen)
                     {

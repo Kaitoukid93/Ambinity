@@ -2,7 +2,9 @@
 using adrilight.Spots;
 using adrilight.Util;
 using Ninject.Modules;
+using System.Collections.Generic;
 using System.Windows.Forms;
+using Un4seen.BassWasapi;
 
 namespace adrilight.Ninject
 {
@@ -15,21 +17,21 @@ namespace adrilight.Ninject
             var existedDevices = settingsManager.LoadDeviceIfExists();
             var allgroupsettings = settingsManager.LoadGroupIfExisrs();
             Bind<IGeneralSettings>().ToConstant(generalSettings);
-            //Bind<IOpenRGBClientDevice>().To<OpenRGBClientDevice>().InSingletonScope();
+
             Bind<ISerialDeviceDetection>().To<SerialDeviceDetection>().InSingletonScope();
-            Bind<IShaderEffect>().To<ShaderEffect>().InSingletonScope();
+            Bind<IAudioFrame>().To<AudioFrame>().InSingletonScope();
             Bind<IContext>().To<WpfContext>().InSingletonScope();
-            //Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
+
             int index = 0;
             foreach( var screen in Screen.AllScreens)
             {
                 Bind<IDesktopFrame>().To<DesktopFrame>().InSingletonScope().WithConstructorArgument("screen",index++);
             }
-            
+          
 
 
             Bind<IRainbowTicker>().To<RainbowTicker>().InSingletonScope();
-            //Bind<IHotKeyManager>().To<HotKeyManager>().InSingletonScope();
+          
 
             if (existedDevices != null)
             {
@@ -89,5 +91,9 @@ namespace adrilight.Ninject
             }
 
         }
+
+       
+        }
     }
-}
+
+

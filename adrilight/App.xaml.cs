@@ -25,6 +25,8 @@ using System.Windows.Forms;
 using System.Windows.Controls;
 using GalaSoft.MvvmLight;
 using System.Threading;
+using Un4seen.BassWasapi;
+using Un4seen.Bass;
 
 namespace adrilight
 {
@@ -105,8 +107,14 @@ namespace adrilight
             GeneralSettings = kernel.Get<IGeneralSettings>();
             _telemetryClient = kernel.Get<TelemetryClient>();
 
-            SetupNotifyIcon();
+            //SetupNotifyIcon();
+           
 
+            
+
+            
+
+            
 
 
             // Current.MainWindow = kernel.Get<MainView>();
@@ -114,7 +122,7 @@ namespace adrilight
             {
                 OpenSettingsWindow();
             }
-
+            
             SetupTrackingForProcessWideEvents(_telemetryClient);
         }
 
@@ -150,13 +158,14 @@ namespace adrilight
             return tc;
         }
 
-
+       
 
         internal static IKernel SetupDependencyInjection(bool isInDesignMode)
         {
 
             var kernel = new StandardKernel(new DeviceSettingsInjectModule());
             kernel.Bind<MainViewViewModel>().ToSelf().InSingletonScope();
+            kernel.Bind<MainView>().ToSelf().InSingletonScope();
             //Load setting từ file Json//
             var settingsManager = new UserSettingsManager();
             var existedDevice = settingsManager.LoadDeviceIfExists();
@@ -172,12 +181,14 @@ namespace adrilight
             //var shaderEffect = kernel.Get<IShaderEffect>();
             var context = kernel.Get<IContext>();
             var desktopFrame = kernel.GetAll<IDesktopFrame>();
-            var rainbowTicker = kernel.Get<IRainbowTicker>();
+            
+            
             //var hotKeyManager = kernel.Get<IHotKeyManager>();
-            //kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
-            //var openRGBStream = kernel.Get<IOpenRGBStream>();
+            kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
+            var openRGBStream = kernel.Get<IOpenRGBStream>();
+            var rainbowTicker = kernel.Get<IRainbowTicker>();
 
-
+            var audioFrame = kernel.Get<IAudioFrame>();
             //// tách riêng từng setting của từng device///
             if (existedDevice != null)
             {
@@ -193,18 +204,23 @@ namespace adrilight
                     if (device.UnionOutput != null)
                         outputs.Add(device.UnionOutput);
                     var connectionType = device.DeviceConnectionType;
-
-                    switch (connectionType)
+                    if(connectionType!="OpenRGB")
                     {
-                        case "wired":
-                            kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
+                        switch (connectionType)
+                        {
+                            case "wired":
+                                kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
+                           
+                                break;
+                            case "wireless":
+                                kernel.Bind<ISerialStream>().To<NetworkStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
 
-                            break;
-                        case "wireless":
-                            kernel.Bind<ISerialStream>().To<NetworkStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
+                                break;
 
-                            break;
+                        }
+                        var serialStream = kernel.Get<ISerialStream>(iD);
                     }
+                   
 
                     foreach (var output in outputs)
                     {
@@ -222,7 +238,7 @@ namespace adrilight
 
                     }
 
-                    var serialStream = kernel.Get<ISerialStream>(iD);
+                    
 
                 }
 
@@ -345,29 +361,23 @@ namespace adrilight
 
 
         private IKernel kernel;
-        MainView _mainForm;
+        
         private void OpenSettingsWindow()
         {
-            if (_mainForm == null)
-            {
-                _mainForm = new MainView();
-                _mainForm.Closed += MainForm_FormClosed;
-                _mainForm.Show();
-            }
-            else
-            {
+            var _mainForm = kernel.Get<MainView>();
+           
                 //bring to front?
-                _mainForm.Focus();
-            }
+                _mainForm.Show();
+            
         }
-        private void MainForm_FormClosed(object sender, EventArgs e)
-        {
-            if (_mainForm == null) return;
+        //private void MainForm_FormClosed(object sender, EventArgs e)
+        //{
+        //    if (_mainForm == null) return;
 
-            //deregister to avoid memory leak
-            _mainForm.Closed -= MainForm_FormClosed;
-            _mainForm = null;
-        }
+        //    //deregister to avoid memory leak
+        //    _mainForm.Closed -= MainForm_FormClosed;
+        //    _mainForm = null;
+        //}
         private void SetupNotifyIcon()
 
         {

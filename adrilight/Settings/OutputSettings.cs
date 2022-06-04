@@ -157,6 +157,7 @@ namespace adrilight
         [Reflectable]
         public ILEDSetup OutputLEDSetup { get => _outputLEDSetup; set { Set(() => OutputLEDSetup, ref _outputLEDSetup, value); } }
         public bool IsInSpotEditWizard { get => _isInSpotEditWizard; set { Set(() => IsInSpotEditWizard, ref _isInSpotEditWizard, value); } }
+        [Reflectable]
         public string Geometry { get => _geometry; set { Set(() => Geometry, ref _geometry, value); } }
         [Reflectable]
         public int OutputSmoothness { get => _outputSmoothness; set { Set(() => OutputSmoothness, ref _outputSmoothness, value); } }
@@ -176,13 +177,19 @@ namespace adrilight
         [Reflectable]
         public int OutputScreenCapturePositionIndex { get => _outputScreenCapturePositionIndex; set { Set(() => OutputScreenCapturePositionIndex, ref _outputScreenCapturePositionIndex, value); } }
         [Reflectable]
-
         public System.Drawing.Rectangle OutputRectangle { get => _outputRectangle; set { Set(() => OutputRectangle, ref _outputRectangle, value); } }
+        [Reflectable]
         public double OutputRectangleScaleWidth { get => _outputRectangleScaleWidth; set { Set(() => OutputRectangleScaleWidth, ref _outputRectangleScaleWidth, value); } } // how many percent that output rectangle width take from the image
+        [Reflectable]
         public double OutputRectangleScaleHeight { get => _outputRectangleScaleHeight; set { Set(() => OutputRectangleScaleHeight, ref _outputRectangleScaleHeight, value); } }  // how many percent that output rectangle height take from the image
+        [Reflectable]
         public double OutputRectangleScaleTop { get => _outputRectangleScaleTop; set { Set(() => OutputRectangleScaleTop, ref _outputRectangleScaleTop, value); } } // how many percent that output rectangle top take from the image, represent Y
+        [Reflectable]
         public  double OutputRectangleScaleLeft { get => _outputRectangleScaleLeft; set { Set(() => OutputRectangleScaleLeft, ref _outputRectangleScaleLeft, value); } } // how many percent that output rectangle top take from the image, represent X
+
+
         public bool OutputIsLoadingProfile { get => _outputIsLoadingProfile; set { Set(() => OutputIsLoadingProfile, ref _outputIsLoadingProfile, value); } }
+        
         public bool OutputIsBuildingLEDSetup { get => _outputIsBuildingLEDSetup; set { Set(() => OutputIsBuildingLEDSetup, ref _outputIsBuildingLEDSetup, value); } }
         [Reflectable]
         public  bool OutputIsSystemSync { get => _outputIsSystemSync; set { Set(() => OutputIsSystemSync, ref _outputIsSystemSync, value); } }

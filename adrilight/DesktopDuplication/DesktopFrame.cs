@@ -48,16 +48,13 @@ namespace adrilight
             switch (e.PropertyName)
             {
 
-                case nameof(UserSettings.ShouldbeRunning):
+                
                 case nameof(MainViewModel.IsSplitLightingWindowOpen):
 
                     RefreshCapturingState();
                     break;
 
-                case nameof(UserSettings.SelectedDisplay):
-                case nameof(UserSettings.SelectedAdapter):
-                    RefreshCaptureSource();
-                    break;
+           
             }
         }
 
@@ -79,7 +76,7 @@ namespace adrilight
         public void RefreshCaptureSource()
         {
             var isRunning =  IsRunning;
-            var shouldBeRunning = UserSettings.ShouldbeRunning;
+            var shouldBeRunning = true;
             //  var shouldBeRefreshing = NeededRefreshing;
             if (isRunning && shouldBeRunning)
             {
@@ -105,7 +102,7 @@ namespace adrilight
         public void RefreshCapturingState()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = UserSettings.ShouldbeRunning;
+            var shouldBeRunning = true;
             //  var shouldBeRefreshing = NeededRefreshing;
 
 
@@ -225,7 +222,7 @@ namespace adrilight
 
 
                         image.UnlockBits(bitmapData);
-                    int minFrameTimeInMs = 1000 / UserSettings.LimitFps;
+                    int minFrameTimeInMs = 1000 / 60;
                     var elapsedMs = (int)frameTime.ElapsedMilliseconds;
                     if (elapsedMs < minFrameTimeInMs)
                     {

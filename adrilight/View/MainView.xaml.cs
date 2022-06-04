@@ -68,21 +68,28 @@ namespace adrilight.View
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            
-        }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            
             var vm = DataContext as MainViewViewModel;
             if (vm != null)
             {
                 vm.IsSplitLightingWindowOpen = false;
                 vm.IsCanvasLightingWindowOpen = false;
-                vm.SaveCurrentProfile();
+                if (vm.CurrentDevice != null)
+                    vm.SaveCurrentProfile(vm.CurrentDevice.ActivatedProfileUID);
             }
+            e.Cancel = true;
+            // Hide Window instead
+            this.Visibility = Visibility.Collapsed;
         }
 
-        
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            
+            
+        }
+
+        private void OpenDashboard(object sender, RoutedEventArgs e)
+        {
+            this.Visibility=Visibility.Visible; 
+        }
     }
 }
