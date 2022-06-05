@@ -110,7 +110,7 @@ namespace adrilight
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
             var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 1 && OutputSettings.IsInSpotEditWizard == false;
-            var isInEditWizard = OutputSettings.IsInSpotEditWizard;
+       
 
             if (isRunning && shouldBeRunning)
             {
@@ -156,7 +156,11 @@ namespace adrilight
               
                 while (!token.IsCancellationRequested)
                 {
-                    bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen;
+                    bool outputIsSelected = false;
+                    var currentOutput = MainViewViewModel.CurrentOutput;
+                    if (currentOutput != null && currentOutput.OutputUniqueID == OutputSettings.OutputUniqueID)
+                        outputIsSelected = true;
+                    bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen && outputIsSelected;
                     double speed = OutputSettings.OutputPaletteSpeed / 5d;
                     StartIndex += speed;
                     if (StartIndex > GeneralSettings.SystemRainbowMaxTick)

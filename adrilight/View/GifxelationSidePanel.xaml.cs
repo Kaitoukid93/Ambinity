@@ -18,15 +18,11 @@ namespace adrilight.View
     /// <summary>
     /// Interaction logic for ScreenCapturingControl.xaml
     /// </summary>
-    public partial class UnionOutputControl : UserControl
+    public partial class GifxelationSidePanel : UserControl
     {
-        public UnionOutputControl()
+        public GifxelationSidePanel()
         {
             InitializeComponent();
         }
-
-
-        private void ButtonAdd_OnClick(object sender, RoutedEventArgs e) => PopupAdd.IsOpen = true;
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HandyControl.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,23 +11,27 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace adrilight.View
 {
     /// <summary>
-    /// Interaction logic for ScreenCapturingControl.xaml
+    /// Interaction logic for PaletteEditWindow.xaml
     /// </summary>
-    public partial class UnionOutputControl : UserControl
+    public partial class FIDSetupWindow
     {
-        public UnionOutputControl()
+        public FIDSetupWindow()
         {
             InitializeComponent();
+            ID.Focus();
+           
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
 
-        private void ButtonAdd_OnClick(object sender, RoutedEventArgs e) => PopupAdd.IsOpen = true;
-
+      
     }
 }

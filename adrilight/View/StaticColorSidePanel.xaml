@@ -77,6 +77,20 @@
                         <Setter Property="ContextMenu">
                             <Setter.Value>
                                 <ContextMenu >
+                                    <MenuItem  Header="Set All Outputs"
+                                          Command="{Binding PlacementTarget.Tag.SetAllOutputSelectedSolidColorCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="setall"
+                                          >
+                                        <MenuItem.Icon>
+                                            <Path   Data="{StaticResource selected}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem  Header="Set All Devices"
+                                          Command="{Binding PlacementTarget.Tag.SetAllDeviceSelectedSolidColorCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="setall"
+                                          >
+                                        <MenuItem.Icon>
+                                            <Path   Data="{StaticResource setall}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
                                     <MenuItem  Header="Coppy code"
                                           Command="{Binding PlacementTarget.Tag.CoppyColorCodeCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="coppy"
                                           >
@@ -92,6 +106,92 @@
                                         </MenuItem.Icon>
                                     </MenuItem>
                                     
+                                </ContextMenu>
+
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="ContextMenuService.Placement" Value="Bottom">
+
+                        </Setter>
+                    </Style>
+                    <Style x:Key="_ListboxGradientColorCollectionStyle" TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border CornerRadius="4" Name="_Border"
+                                Padding="0"
+                                Margin="8"
+                                Background="{DynamicResource RegionBrush}"   
+                                BorderBrush="Transparent"
+                                BorderThickness="2"
+                                SnapsToDevicePixels="true">
+                                        <ContentPresenter />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                                <Condition Property="IsSelected" Value="True"/>
+                                            </MultiTrigger.Conditions>
+
+
+                                            <Setter Property="BorderBrush" TargetName="_Border" Value="{StaticResource PrimaryBrush}"/>
+                                            <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
+                                        </MultiTrigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                                <Condition Property="IsSelected" Value="True"/>
+                                            </MultiTrigger.Conditions>
+
+
+
+                                            <Setter Property="BorderBrush" TargetName="_Border" Value="{StaticResource PrimaryBrush}"/>
+                                        </MultiTrigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsMouseOver" Value="True"/>
+                                                <Condition Property="IsSelected" Value="False"/>
+                                            </MultiTrigger.Conditions>
+
+                                            <!--<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>-->
+
+                                            <!--<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryBrush}"/>-->
+                                            <Setter Property="Opacity" TargetName="_Border" Value="0.5"/>
+                                        </MultiTrigger>
+
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <!--<Setter Property="ToolTip" Value="{Binding DocName}"/>-->
+                        <Setter Property="Tag" Value="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}" />
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu >
+                                    <MenuItem  Header="Set All Outputs"
+                                          Command="{Binding PlacementTarget.Tag.SetAllOutputSelectedGradientColorCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="setall"
+                                          >
+                                        <MenuItem.Icon>
+                                            <Path   Data="{StaticResource selected}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem  Header="Set All Devices"
+                                          Command="{Binding PlacementTarget.Tag.SetAllDeviceSelectedGradientColorCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="setall"
+                                          >
+                                        <MenuItem.Icon>
+                                            <Path   Data="{StaticResource setall}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                   
+                                    <MenuItem  Header="Delete" CommandParameter="{Binding .}"
+                                          Command="{Binding PlacementTarget.Tag.DeleteSelectedGradientCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                          >
+                                        <MenuItem.Icon>
+                                            <Path   Data="{StaticResource delete}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+
                                 </ContextMenu>
 
                             </Setter.Value>
@@ -153,18 +253,23 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="15, 15, 15, 15"  Text="CHỌN MÀU"  FontWeight="SemiBold" VerticalAlignment="Center"  HorizontalAlignment="Left"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        
                     </Grid.ColumnDefinitions>
-                    
-                    <Button Command="{Binding AddNewSolidColorCommand}" Content="Add New" Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}" BorderThickness="0"  Width="100" Padding="0,0" Margin="15,15,15,15" HorizontalAlignment="Right" hc:IconElement.Width="20" hc:IconElement.Height="20"  hc:IconElement.Geometry="{DynamicResource addnew}">
+                    <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="15, 15, 15, 15"  Text="CHỌN MÀU"  FontWeight="SemiBold" VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                    <Grid HorizontalAlignment="Right" Margin="15" Grid.Row="1">
 
-                    </Button>
-                  
+
+                        <Button Command="{Binding AddNewSolidColorCommand}" Content="Add New" Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}" BorderThickness="0"  Width="100" Padding="0,0"  HorizontalAlignment="Right" hc:IconElement.Width="20" hc:IconElement.Height="20"  hc:IconElement.Geometry="{DynamicResource addnew}">
+
+                        </Button>
+
+                    </Grid>
                 </Grid>
+                
                 <Grid MaxHeight="300" Grid.Row="1">
                     <hc:TransitioningContentControl Grid.Row="1">
                         <ListBox Background="Transparent"  ScrollViewer.CanContentScroll="True"
@@ -201,7 +306,7 @@
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Collapsed"></Setter>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding CurrentOutput.OutputStaticColorMode}" Value="3">
+                            <DataTrigger Binding="{Binding CurrentOutput.OutputStaticColorMode}" Value="2">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -214,13 +319,13 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-                <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="10, 10, 10, 10"  Text="CHỌN GRADIENT" FontWeight="SemiBold"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                <TextBlock Style="{DynamicResource TextBlockDefault}" Grid.Row="0" Margin="15, 15, 15, 15"  Text="CHỌN GRADIENT" FontWeight="SemiBold"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                    <Button Command="{Binding AddNewGradientCommand}"  Content="Add New" Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}" BorderThickness="0"  Width="100" Padding="0,0" Margin="0,0,15,0" HorizontalAlignment="Right" hc:IconElement.Width="20" hc:IconElement.Height="20"  hc:IconElement.Geometry="{DynamicResource addnew}">
+                    <Button Command="{Binding AddNewGradientCommand}"  Content="Add New" Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}" BorderThickness="0"  Width="100" Padding="0,0" Margin="0,15,15,0" HorizontalAlignment="Right" hc:IconElement.Width="20" hc:IconElement.Height="20"  hc:IconElement.Geometry="{DynamicResource addnew}">
 
                     </Button>
                     <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="0" Name="PopupAdd" VerticalOffset="2" StaysOpen="False">
@@ -243,7 +348,7 @@
                     <hc:TransitioningContentControl Grid.Row="1">
                         <ListBox Background="Transparent"  ScrollViewer.CanContentScroll="True"
                                                   ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                                                  ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" 
+                                                  ItemContainerStyle="{DynamicResource _ListboxGradientColorCollectionStyle}" 
                                                   Height="180"
                                                   x:Name="AvailableMPalette"
                                                   Margin="0,10,0,10"

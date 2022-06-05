@@ -57,7 +57,7 @@
                                       Width="20" 
                                       Height="20" 
                                       Fill="{DynamicResource PrimaryTextBrush}"/>-->
-                    <ToggleButton  HorizontalAlignment="Right" IsChecked="{Binding CurrentDevice.IsTransferActive}" Style="{DynamicResource ToggleButtonSwitch}">
+                    <ToggleButton  HorizontalAlignment="Right" IsChecked="{Binding CurrentDevice.IsTransferActive}" Style="{DynamicResource ToggleButtonSwitchSmallerElipse}">
 
                     </ToggleButton>
 
@@ -84,7 +84,7 @@
                                       Width="20" 
                                       Height="20" 
                                       Fill="{DynamicResource PrimaryTextBrush}"/>-->
-                    <ToggleButton HorizontalAlignment="Right" IsChecked="{Binding CurrentOutput.OutputUseLinearLighting}" Style="{DynamicResource ToggleButtonSwitch}">
+                    <ToggleButton HorizontalAlignment="Right" IsChecked="{Binding CurrentOutput.OutputUseLinearLighting}" Style="{DynamicResource ToggleButtonSwitchSmallerElipse}">
                         
                     </ToggleButton>
 
@@ -111,10 +111,12 @@
                                       Width="20" 
                                       Height="20" 
                                       Fill="{DynamicResource PrimaryTextBrush}"/>-->
-                        <ComboBox ItemsSource="{Binding AvailableComPorts}" SelectedItem="{Binding CurrentDevice.OutputPort}" HorizontalAlignment="Right" Margin="0,0,0,0" Style="{DynamicResource ComboBoxExtend}">
-                            
-                        </ComboBox>
-                  
+                    <Grid  HorizontalAlignment="Right" Margin="0,0,10,0">
+                        <ItemsControl ItemsSource="{Binding AvailableComPorts}" Height="0" Margin="15,0"/>
+                        <ComboBox ItemContainerStyle="{DynamicResource _ComboboxItemStyle}"  HorizontalAlignment="Stretch"   SelectedItem="{Binding CurrentDevice.OutputPort}" ItemsSource="{Binding AvailableComPorts}"  Style="{DynamicResource ComboBoxBaseStyle}"/>
+                    </Grid>
+
+
 
                 </GroupBox>
                 <TextBlock Margin="5,0,0,0" HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Grid.Row="1" Text="Lựa chọn này chỉ áp dụng cho Ambino Device"/>
@@ -138,9 +140,10 @@
                                       Width="20" 
                                       Height="20" 
                                       Fill="{DynamicResource PrimaryTextBrush}"/>-->
-                    <ComboBox ItemsSource="{Binding AvailableBaudrates,Converter={StaticResource Int2StringConverter}}" SelectedValue="{Binding CurrentDevice.Baudrate}" HorizontalAlignment="Right" Margin="0,0,0,0" Style="{DynamicResource ComboBoxExtend}">
-
-                    </ComboBox>
+                    <Grid  HorizontalAlignment="Right" Margin="0,0,10,0">
+                        <ItemsControl ItemsSource="{Binding AvailableBaudrates}" Height="0" Margin="15,0"/>
+                        <ComboBox ItemContainerStyle="{DynamicResource _ComboboxItemStyle}"  HorizontalAlignment="Stretch"   SelectedItem="{Binding CurrentDevice.Baudrate}" ItemsSource="{Binding AvailableBaudrates}"  Style="{DynamicResource ComboBoxBaseStyle}"/>
+                    </Grid>
 
 
                 </GroupBox>

@@ -125,9 +125,9 @@
             <!--<DataTemplate x:Key="groupLightingTemplate">
                 <local:GroupLighting/>
             </DataTemplate>-->
-            <DataTemplate x:Key="deviceSettingTemplate">
-                <local:NewDeviceSettingsView/>
-            </DataTemplate>
+            <!--<DataTemplate x:Key="deviceSettingTemplate">
+                --><!--<local:NewDeviceSettingsView/>--><!--
+            </DataTemplate>-->
             <DataTemplate x:Key="appSettingTemplate">
                 <local:NewAppSettingsView/>
             </DataTemplate>
@@ -142,9 +142,9 @@
                     <DataTrigger Binding="{Binding ElementName=DashboardLeftMenu, Path=SelectedItem}" Value="Dashboard">
                         <Setter Property="ContentTemplate" Value="{StaticResource dashboardTemplate}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding ElementName=DashboardLeftMenu, Path=SelectedItem}" Value="Settings">
+                    <!--<DataTrigger Binding="{Binding ElementName=DashboardLeftMenu, Path=SelectedItem}" Value="Settings">
                         <Setter Property="ContentTemplate" Value="{StaticResource deviceSettingTemplate}" />
-                    </DataTrigger>
+                    </DataTrigger>-->
                     <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="App Settings">
                         <Setter Property="ContentTemplate" Value="{StaticResource appSettingTemplate}" />
                     </DataTrigger>

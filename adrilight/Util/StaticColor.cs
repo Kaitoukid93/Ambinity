@@ -21,10 +21,12 @@ namespace adrilight.Util
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
         
-        public StaticColor(IOutputSettings outputSettings)
+        public StaticColor(IOutputSettings outputSettings,IGeneralSettings generalSettings, MainViewViewModel mainViewViewModel, IRainbowTicker rainbowTicker)
         {
             OutputSettings = outputSettings ?? throw new ArgumentNullException(nameof(outputSettings));
-
+            MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
+            GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
+            RainbowTicker = rainbowTicker ?? throw new ArgumentNullException(nameof(rainbowTicker));
             //SettingsViewModel = settingsViewModel ?? throw new ArgumentNullException(nameof(settingsViewModel));
             //Remove SettingsViewmodel from construction because now we pass SpotSet Dirrectly to MainViewViewModel
             OutputSettings.PropertyChanged += PropertyChanged;
@@ -40,8 +42,12 @@ namespace adrilight.Util
             {
                 case nameof(OutputSettings.OutputIsEnabled):
                 case nameof(OutputSettings.OutputSelectedMode):
-                case nameof(OutputSettings.OutputBrightness):
+                
                     RefreshColorState();
+                    break;
+                case nameof(OutputSettings.OutputStaticColor):
+                case nameof(OutputSettings.OutputSelectedGradient):
+                    SolidColorChanged();
                     break;
 
             }
@@ -49,15 +55,16 @@ namespace adrilight.Util
 
         //DependencyInjection//
         private IOutputSettings OutputSettings { get; }
-     
-
-
+        private IGeneralSettings GeneralSettings { get; }
+        private IRainbowTicker RainbowTicker { get; }
+        private MainViewViewModel MainViewViewModel { get; }
+        private Color[] colorBank = new Color[1024];
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
         private void RefreshColorState()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 2;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 3 && OutputSettings.IsInSpotEditWizard == false;
             if (isRunning && !shouldBeRunning)
             {
                 //stop it!
@@ -80,8 +87,27 @@ namespace adrilight.Util
                 thread.Start();
             }
         }
+        private void SolidColorChanged()
+        {
+            var isRunning = _cancellationTokenSource != null && IsRunning;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 3 && OutputSettings.IsInSpotEditWizard == false;
 
-        
+
+            if (isRunning && shouldBeRunning)
+            {
+                // rainbow is running and we need to change the color bank
+                var startColor = OutputSettings.OutputSelectedGradient.StartColor;
+                var stopColor = OutputSettings.OutputSelectedGradient.StopColor;
+                var gradientPalette = new Color[] { startColor, stopColor };
+                colorBank = GetColorGradientfromPalette(gradientPalette, GeneralSettings.SystemRainbowMaxTick).ToArray();
+                
+                //if(isInEditWizard)
+                //    colorBank = GetColorGradientfromPalette(DefaultColorCollection.black).ToArray();
+            }
+
+        }
+
+
 
         public void Run(CancellationToken token)//static color creator
         {
@@ -97,11 +123,16 @@ namespace adrilight.Util
 
             try
             {
-                // BitmapData bitmapData = new BitmapData();
-                //  BitmapData bitmapData2 = new BitmapData();
-                //  int colorcount = 0;
 
 
+                
+                float gamma = 0.14f; // affects the width of peak (more or less darkness)
+                float beta = 0.5f; // shifts the gaussian to be symmetric
+                float ii = 0f;
+                var startColor = OutputSettings.OutputSelectedGradient.StartColor;
+                var stopColor = OutputSettings.OutputSelectedGradient.StopColor;
+                var gradientPalette = new Color[] { startColor, stopColor };
+                colorBank = GetColorGradientfromPalette(gradientPalette, GeneralSettings.SystemRainbowMaxTick).ToArray();
                 while (!token.IsCancellationRequested)
                 {
                     var numLED = OutputSettings.OutputLEDSetup.Spots.Length;
@@ -109,57 +140,67 @@ namespace adrilight.Util
                     var colorOutput = new OpenRGB.NET.Models.Color[numLED];
                     double peekBrightness = 0.0;
                     int breathingSpeed = OutputSettings.OutputBreathingSpeed;
-                    var devicePowerVoltage = OutputSettings.OutputPowerVoltage;
-                    var devicePowerMiliamps = OutputSettings.OutputPowerMiliamps;
+                    var outputPowerVoltage = OutputSettings.OutputPowerVoltage;
+                    var outputPowerMiliamps = OutputSettings.OutputPowerMiliamps;
+                    bool outputIsSelected = false;
+                    var currentOutput = MainViewViewModel.CurrentOutput;
+                  
+                    if (currentOutput != null && currentOutput.OutputUniqueID == OutputSettings.OutputUniqueID)
+                        outputIsSelected = true;
+                    bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen && outputIsSelected;
 
-
-                    bool isBreathing = OutputSettings.OutputStaticColorMode==1;
+                    
                     lock (OutputSettings.OutputLEDSetup.Lock)
                     {
-                        for (var i = 0; i < colorOutput.Count(); i++)
+                        switch(OutputSettings.OutputStaticColorMode)
                         {
-                            if (isBreathing)
-                            {
+                            case 0:
+                                foreach (var spot in OutputSettings.OutputLEDSetup.Spots)
+                                {
+                                    var brightness = OutputSettings.OutputBrightness / 100d;
+                                    var newColor = new OpenRGB.NET.Models.Color(currentStaticColor.R, currentStaticColor.G, currentStaticColor.B);
+                                    var outputColor = Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);
+                                    if (!OutputSettings.IsInSpotEditWizard)
+                                        spot.SetColor(outputColor.R, outputColor.G, outputColor.B, isPreviewRunning);
 
-                                Color colorPoint = Color.FromRgb(0, 0, 0);
-                                colorPoint = GetColorByOffset(GradientStaticColor(currentStaticColor, devicePowerMiliamps, devicePowerVoltage), point);
+                                }
+                                break;
+                            case 1:
+                               
+                                foreach (var spot in OutputSettings.OutputLEDSetup.Spots)
+                                {
+                                    float smoothness_pts = (float)OutputSettings.OutputBreathingSpeed;
+                                    double pwm_val = 255.0 * (Math.Exp(-(Math.Pow(((ii++ / smoothness_pts) - beta) / gamma, 2.0)) / 2.0));                                
+                                    if (ii > smoothness_pts)
+                                        ii = 0f;
+                                   
+                                    var brightness = pwm_val/255d;
+                                    var newColor = new OpenRGB.NET.Models.Color(currentStaticColor.R, currentStaticColor.G, currentStaticColor.B);
+                                    var outputColor = Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);
+                                    if (!OutputSettings.IsInSpotEditWizard)
+                                        spot.SetColor(outputColor.R, outputColor.G, outputColor.B, isPreviewRunning);
+                                }
+                                break;
+                            case 2:
 
-                                var newColor = new OpenRGB.NET.Models.Color(colorPoint.R, colorPoint.G, colorPoint.B);
+                                foreach (var spot in OutputSettings.OutputLEDSetup.Spots)
+                                {
+                                    var positon = spot.VID;
+                                    var brightness = OutputSettings.OutputBrightness / 100d;                                   
+                                    var newColor = new OpenRGB.NET.Models.Color(colorBank[positon].R, colorBank[positon].G, colorBank[positon].B);
+                                    var outputColor = Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);
+                                    if (!OutputSettings.IsInSpotEditWizard)
+                                        spot.SetColor(outputColor.R, outputColor.G, outputColor.B, isPreviewRunning);
+                                }
 
-                                colorOutput[i] = newColor;
-                            }
 
-
-
-
-                            else
-                            {
-                                peekBrightness = OutputSettings.OutputBrightness / 100.0;
-                                colorOutput[i] = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(currentStaticColor.R, currentStaticColor.G, currentStaticColor.B), peekBrightness, OutputSettings.OutputLEDSetup.Spots.Length, devicePowerMiliamps, devicePowerVoltage);
-                            }
+                                break;
                         }
-
-                        point += breathingSpeed;
-                        if (point > 5000)
-                        {
-                            point = 0;
-                        }
-
-                        int counter = 0;
-                        foreach (IDeviceSpot spot in OutputSettings.OutputLEDSetup.Spots)
-                        {
-
-                            spot.SetColor(colorOutput[counter].R, colorOutput[counter].G, colorOutput[counter].B, true);
-                            counter++;
-
-
-                        }
-
-                        
+                      
                     }
 
 
-                    Thread.Sleep(10);
+                    Thread.Sleep(5);
 
 
 
@@ -168,12 +209,6 @@ namespace adrilight.Util
                 //motion speed
 
             }
-
-
-
-
-
-
 
 
             catch (OperationCanceledException)
@@ -185,17 +220,7 @@ namespace adrilight.Util
             catch (Exception ex)
             {
                 _log.Debug(ex, "Exception catched.");
-                //to be safe, we reset the serial port
-                //if (currentStaticColor == null)
-                //{
-                //    for (int i = 0; i < numLED; i++) //fill all LED with default static color
-                //    {
-                //        paletteOutput[i] = defaultColor;
-                //    }
-
-
-
-                //allow the system some time to recover
+       
                 Thread.Sleep(500);
             }
             finally
@@ -208,52 +233,60 @@ namespace adrilight.Util
 
         }
 
-        public GradientStopCollection GradientStaticColor(Color staticColor, int powerSuplyMiliamps, int powersupplyVoltage)
+
+
+        public static IEnumerable<Color> GetColorGradient(Color from, Color to, int totalNumberOfColors)
         {
-            Color startColor = Color.FromRgb(0, 0, 0);
-            OpenRGB.NET.Models.Color staticColorHalf = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(staticColor.R, staticColor.G, staticColor.B), 0.5, OutputSettings.OutputLEDSetup.Spots.Length,powerSuplyMiliamps,powersupplyVoltage);
-            Color staticColorMiddle = Color.FromRgb(staticColorHalf.R, staticColorHalf.G, staticColorHalf.B);
-            OpenRGB.NET.Models.Color staticColorQuad = Brightness.applyBrightness(new OpenRGB.NET.Models.Color(staticColor.R, staticColor.G, staticColor.B), 0.25, OutputSettings.OutputLEDSetup.Spots.Length, powerSuplyMiliamps, powersupplyVoltage);
-            Color staticColorQuat = Color.FromRgb(staticColorQuad.R, staticColorQuad.G, staticColorQuad.B);
-
-            GradientStopCollection gradientPalette = new GradientStopCollection(2);
-            gradientPalette.Add(new GradientStop(staticColor, 0.000));
-            gradientPalette.Add(new GradientStop(staticColorMiddle, 0.250));
-            gradientPalette.Add(new GradientStop(staticColorQuat, 0.400));
-            gradientPalette.Add(new GradientStop(startColor, 0.500));
-            gradientPalette.Add(new GradientStop(staticColorQuat, 0.600));
-            gradientPalette.Add(new GradientStop(staticColorMiddle, 0.750));
-            gradientPalette.Add(new GradientStop(staticColor, 1.000));
-            //gradientPalette.Add(new GradientStop(startColor, 0.600));
-            //gradientPalette.Add(new GradientStop(staticColorMiddle, 0.800));
-            //gradientPalette.Add(new GradientStop(staticColor, 1.000));
-
-            return gradientPalette;
-        }
-
-        private static Color GetColorByOffset(GradientStopCollection collection, double position)
-        {
-            double offset = position / 5000.0;
-            GradientStop[] stops = collection.OrderBy(x => x.Offset).ToArray();
-            if (offset <= 0) return stops[0].Color;
-            if (offset >= 1) return stops[stops.Length - 1].Color;
-            GradientStop left = stops[0], right = null;
-            foreach (GradientStop stop in stops)
+            if (totalNumberOfColors < 2)
             {
-                if (stop.Offset >= offset)
-                {
-                    right = stop;
-                    break;
-                }
-                left = stop;
+                throw new ArgumentException("Gradient cannot have less than two colors.", nameof(totalNumberOfColors));
             }
-            Debug.Assert(right != null);
-            offset = Math.Round((offset - left.Offset) / (right.Offset - left.Offset), 2);
+            var colorList = new List<Color>();
+            double diffA = to.A - from.A;
+            double diffR = to.R - from.R;
+            double diffG = to.G - from.G;
+            double diffB = to.B - from.B;
 
-            byte r = (byte)((right.Color.R - left.Color.R) * offset + left.Color.R);
-            byte g = (byte)((right.Color.G - left.Color.G) * offset + left.Color.G);
-            byte b = (byte)((right.Color.B - left.Color.B) * offset + left.Color.B);
-            return Color.FromRgb(r, g, b);
+            var steps = totalNumberOfColors - 1;
+
+            var stepA = diffA / steps;
+            var stepR = diffR / steps;
+            var stepG = diffG / steps;
+            var stepB = diffB / steps;
+
+
+
+            for (var i = 1; i < steps; ++i)
+            {
+                colorList.Add(Color.FromArgb(
+                     (byte)(c(from.A, stepA)),
+                     (byte)(c(from.R, stepR)),
+                     (byte)(c(from.G, stepG)),
+                     (byte)(c(from.B, stepB))));
+
+                int c(int fromC, double stepC)
+                {
+                    return (int)Math.Round(fromC + stepC * i);
+                }
+            }
+            return colorList;
+
         }
+
+        public static IEnumerable<Color> GetColorGradientfromPalette(Color[] colorCollection, int colorNum)
+        {
+            var colors = new List<Color>();
+            int colorPerGap = colorNum / (colorCollection.Count() - 1);
+
+            for (int i = 0; i < colorCollection.Length - 1; i++)
+            {
+                var gradient = GetColorGradient(colorCollection[i], colorCollection[i + 1], colorPerGap);
+                colors = colors.Concat(gradient).ToList();
+            }
+            int remainTick = colorNum - colors.Count();
+            colors = colors.Concat(colors.Take(remainTick).ToList()).ToList();
+            return colors;
+        }
+
     }
 }

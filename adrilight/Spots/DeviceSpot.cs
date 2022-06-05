@@ -14,10 +14,10 @@ namespace adrilight.Spots
     sealed class DeviceSpot : ViewModelBase, IDisposable, IDeviceSpot
     {
 
-        public DeviceSpot(int x, int y,int top, int left, int width, int height,int displayTop, int displayLeft, int displayWidth, int displayHeight,int index,int positionIndex, int virtualIndex , int musicIndex, bool isActivated, bool isIDVissible)
+        public DeviceSpot(int x, int y,int top, int left, int width, int height,int index,int positionIndex, int virtualIndex , int musicIndex, int columnIndex, bool isActivated, bool isIDVissible)
         {
             Rectangle = new Rectangle(top, left, width, height);
-            DisplayRectangle = new Rectangle(displayTop, displayLeft, displayWidth, displayHeight);
+       
 
             RadiusX = 0;
             RadiusY = 0;
@@ -25,6 +25,7 @@ namespace adrilight.Spots
             id = index;
             VID = virtualIndex;
             MID = musicIndex;
+            CID = columnIndex;
             XIndex = x;
             YIndex = y;
             PID = positionIndex;
@@ -37,7 +38,6 @@ namespace adrilight.Spots
         }
 
         public Rectangle Rectangle { get;  set; }
-        public Rectangle DisplayRectangle { get; set; }
         public int id { get; set; }
 
         private bool _isFirst;
@@ -55,6 +55,7 @@ namespace adrilight.Spots
         public string ID { get; set; }
         public int VID { get; set; }
         public int PID { get; set; }
+        public int CID { get; set; }
         public int XIndex { get; set; }
         public int YIndex { get; set; }
         public bool IsActivated { get; set; }
@@ -122,9 +123,15 @@ namespace adrilight.Spots
         {
             id = ID;
 
-
-
             RaisePropertyChanged(nameof(id));
+
+
+        }
+        public void SetCID(int ID)
+        {
+            CID = ID;
+
+            RaisePropertyChanged(nameof(CID));
 
 
         }

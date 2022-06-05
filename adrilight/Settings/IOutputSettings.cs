@@ -35,11 +35,13 @@ namespace adrilight
 
       
         int OutputID { get; set; }
+        int VUOrientation { get; set; }
+        int VUMode { get; set; }
         string OutputType { get; set; }
         bool OutputIsLoadingProfile { get; set; }
         bool OutputIsBuildingLEDSetup { get; set; }
-
-        
+        int OutputGifSpeed { get; set; }
+        IGifCard OutputSelectedGif { get; set; }
         string OutputUniqueID { get; set; }
         string OutputRGBLEDOrder { get; set; }
         bool OutputIsVisible { get; set; }
@@ -79,6 +81,7 @@ namespace adrilight
 
         //rainbow settings//
         int OutputSelectedChasingPalette { get; set; }
+        int OutputSelectedGifIndex { get; set; }
         int OutputPaletteSpeed { get; set; }
         int OutputPaletteChasingPosition { get; set; }
         int OutputPaletteBlendStep { get; set; } // auto adjust step based on numLED
@@ -97,9 +100,9 @@ namespace adrilight
         int OutputBreathingSpeed { get; set; }
 
         //static color settings//
+        IGradientColorCard OutputSelectedGradient { get; set; }
 
 
- 
         IColorPalette OutputCurrentActivePalette { get; set; }
         ILEDSetup OutputLEDSetup { get; set; }
         void SetRectangle(System.Drawing.Rectangle rectangle);

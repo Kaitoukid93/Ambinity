@@ -80,6 +80,20 @@
                 <Setter Property="ContextMenu">
                     <Setter.Value>
                         <ContextMenu >
+                            <MenuItem  Header="Set All Output" CommandParameter="{Binding .}" 
+                                          Command="{Binding PlacementTarget.Tag.SetActivePaletteAllOutputsCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                          >
+                                <MenuItem.Icon>
+                                    <Path   Data="{StaticResource selected}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem  Header="Set All Device" CommandParameter="{Binding .}" 
+                                          Command="{Binding PlacementTarget.Tag.SetActivePaletteAllDevicesCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                          >
+                                <MenuItem.Icon>
+                                    <Path   Data="{StaticResource setall}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem  Header="Edit"
                                           Command="{Binding PlacementTarget.Tag.EditSelectedPaletteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="overwrite"
                                           >
@@ -101,6 +115,7 @@
                                     <Path   Data="{StaticResource delete}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
                                 </MenuItem.Icon>
                             </MenuItem>
+
                         </ContextMenu>
 
                     </Setter.Value>
@@ -109,8 +124,8 @@
 
                 </Setter>
             </Style>
-            </ResourceDictionary>
-        </UserControl.Resources>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -127,32 +142,54 @@
         </StackPanel>
         <Grid Grid.Row="1" >
 
-          
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Style="{DynamicResource TextBlockDefault}" FontWeight="SemiBold" Grid.Row="0" Margin="10, 10, 10, 10"  Text="CHỌN DẢI MÀU"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
-            <Grid>
-               
-                <Button  Content="Add New" Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}" BorderThickness="0"  Width="100" Padding="0,0" Margin="0,0,15,0" HorizontalAlignment="Right" hc:IconElement.Width="20" hc:IconElement.Height="20"  hc:IconElement.Geometry="{DynamicResource addnew}">
 
-                </Button>
-                <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="0" Name="PopupAdd" VerticalOffset="2" StaysOpen="False">
-                    <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
-                        <Border Background="{DynamicResource RegionBrush}" CornerRadius="7" Margin="0,2,15,15"  Effect="{DynamicResource EffectShadow3}">
-                            <StackPanel Orientation="Vertical">
-                                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding ImportPaletteCardFromFileCommand}" hc:IconElement.Geometry="{DynamicResource fromfile}" BorderBrush="Transparent" Margin="5"   Content="From File" Style="{DynamicResource ButtonDefault}"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid Margin="15,0" HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Path Margin="5" Data="{StaticResource colorpalette}" 
+          Width="30" 
+          Height="30" 
+          Fill="White"
+          Stretch="Uniform" />
+                    </Grid>
 
-                                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding EditSelectedPaletteCommand}" hc:IconElement.Geometry="{DynamicResource addpalette}" CommandParameter="createnew" BorderBrush="Transparent"   Margin="5" Content="Create New" Style="{DynamicResource ButtonDefault}"/>
-                            </StackPanel>
+                    <TextBlock Grid.Column="1" Style="{DynamicResource TextBlockDefault}" FontWeight="SemiBold" Grid.Row="0" Margin="10, 10, 10, 10"  Text="CHỌN DẢI MÀU"  VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                </Grid>
 
-                        </Border>
-                    </hc:TransitioningContentControl>
-                        
-                </Popup>
+                <Grid HorizontalAlignment="Right" Grid.Column="1">
+
+                    <Button  Content="Add New" Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}" BorderThickness="0"  Width="100" Padding="0,0" Margin="0,0,15,0" HorizontalAlignment="Right" hc:IconElement.Width="20" hc:IconElement.Height="20"  hc:IconElement.Geometry="{DynamicResource addnew}">
+
+                    </Button>
+                    <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="0" Name="PopupAdd" VerticalOffset="2" StaysOpen="False">
+                        <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
+                            <Border Background="{DynamicResource RegionBrush}" CornerRadius="7" Margin="0,2,15,15"  Effect="{DynamicResource EffectShadow3}">
+                                <StackPanel Orientation="Vertical">
+                                    <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding ImportPaletteCardFromFileCommand}" hc:IconElement.Geometry="{DynamicResource fromfile}" BorderBrush="Transparent" Margin="5"   Content="From File" Style="{DynamicResource ButtonDefault}"/>
+
+                                    <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding EditSelectedPaletteCommand}" hc:IconElement.Geometry="{DynamicResource addpalette}" CommandParameter="createnew" BorderBrush="Transparent"   Margin="5" Content="Create New" Style="{DynamicResource ButtonDefault}"/>
+                                </StackPanel>
+
+                            </Border>
+                        </hc:TransitioningContentControl>
+
+                    </Popup>
+                </Grid>
             </Grid>
+            
 
             <Grid MaxHeight="300" Grid.Row="1">
                 <hc:TransitioningContentControl >
@@ -208,19 +245,19 @@
                     </ListBox>
                 </hc:TransitioningContentControl>
             </Grid>
-            
-                           
-            </Grid>
 
 
-        
+        </Grid>
+
+
+
         <Grid Grid.Row="2">
-           
-             
-           
-            
+
+
+
+
         </Grid>
 
     </Grid>
-    
+
 </UserControl>

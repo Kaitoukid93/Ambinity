@@ -14,7 +14,7 @@ namespace adrilight
         private bool _isOpenRGBEnabled = false;
         private bool _autostart = true;
         private int _systemRainbowSpeed = 5;
-        private int _systemRainbowMaxTick = 1024;
+        private int _systemRainbowMaxTick = 1023;
         private bool _isProfileLoading = false;
         private bool _startMinimized = false;
         private bool _notificationEnabled = true;

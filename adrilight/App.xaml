@@ -5,6 +5,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:adrilight.ViewModel" />
+            
             <Style x:Key="MessageBoxCustom" TargetType="hc:MessageBox" BasedOn="{StaticResource {x:Type hc:MessageBox}}">
                 <Setter Property="NonClientAreaBackground" Value="#262e2f"/>
                 <Setter Property="OtherButtonHoverBackground" Value="#888580"/>
@@ -389,7 +390,7 @@
                 </Setter>
             </Style>
             <ResourceDictionary.MergedDictionaries>
-                <hc:ThemeResources RequestedTheme="Dark" AccentColor="LimeGreen"/>
+                <hc:ThemeResources RequestedTheme="Dark" AccentColor="BlueViolet"/>
 
                 <hc:Theme/>
                 

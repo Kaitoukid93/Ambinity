@@ -60,6 +60,7 @@ namespace adrilight
                 case nameof(OutputSettings.OutputIsEnabled):
                 case nameof(OutputSettings.OutputSelectedMode):
                 case nameof(MainViewModel.IsVisualizerWindowOpen):
+
                     RefreshAudioState();
                     break;
                 case nameof(OutputSettings.OutputCurrentActivePalette):
@@ -76,7 +77,7 @@ namespace adrilight
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 2;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 2 && OutputSettings.IsInSpotEditWizard == false;
 
 
             if (isRunning && !shouldBeRunning)
@@ -105,7 +106,7 @@ namespace adrilight
         private void ColorPaletteChanged()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 2;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 2 && OutputSettings.IsInSpotEditWizard == false;
 
             if (isRunning && shouldBeRunning)
             {
@@ -147,11 +148,15 @@ namespace adrilight
                 while (!token.IsCancellationRequested)
                 {
 
-                    bool isLightingControlPreviewRunning = MainViewModel.IsSplitLightingWindowOpen;
+                    bool outputIsSelected = false;
+                    var currentOutput = MainViewModel.CurrentOutput;
+                    if (currentOutput != null && currentOutput.OutputUniqueID == OutputSettings.OutputUniqueID)
+                        outputIsSelected = true;
+                    bool isPreviewRunning = MainViewModel.IsSplitLightingWindowOpen && outputIsSelected;
                     var fft = new float[32];
                     if (AudioFrames.FFT != null)
                         fft = AudioFrames.FFT;
-                    var brightnessMap = SpectrumCreator(fft, 0, 1, 1, 0, 32);// get brightness map based on spectrum data
+                    
                     lock (OutputSettings.OutputLEDSetup.Lock)
                     {
                         int position = 0;
@@ -163,20 +168,48 @@ namespace adrilight
                                 n = position / colorBank.Length;
                             position = position - n * colorBank.Length; // run with VID
 
-
+                            
                             //var brightness = 0.5;/*brightnessMap[spot.VID];*/
                             var newColor = new OpenRGB.NET.Models.Color(colorBank[position].R, colorBank[position].G, colorBank[position].B);
-                            var freq = spot.MID;
-                            var actualFreq = 32 * ((double)freq / 1023d);
-                            var brightnessCap = OutputSettings.OutputBrightness / 100d;
-                            var actualBrightness = brightnessMap[(int)actualFreq] * brightnessCap;
-                            var outputColor = Brightness.applyBrightness(newColor, actualBrightness, numLED, outputPowerMiliamps, outputPowerVoltage);
-                            ApplySmoothing(outputColor.R, outputColor.G, outputColor.B, out byte FinalR, out byte FinalG, out byte FinalB, spot.Red, spot.Green, spot.Blue);
-                            spot.SetColor(FinalR, FinalG, FinalB, isLightingControlPreviewRunning);
+                            switch(OutputSettings.OutputMusicDancingMode)
+                            {
+                                case 0: // equalizer mode
+                                    var brightnessMap = SpectrumCreator(fft, 0, 1, 1, 0, 32);// get brightness map based on spectrum data
+                                    var freq = spot.MID;
+                                    var actualFreq = 32 * ((double)freq / 1023d);
+                                    var brightnessCap = OutputSettings.OutputBrightness / 100d;
+                                    var actualBrightness = brightnessMap[(int)actualFreq] * brightnessCap;
+                                    var outputColor = Brightness.applyBrightness(newColor, actualBrightness, numLED, outputPowerMiliamps, outputPowerVoltage);
+                                    ApplySmoothing(outputColor.R, outputColor.G, outputColor.B, out byte FinalR, out byte FinalG, out byte FinalB, spot.Red, spot.Green, spot.Blue);
+                                    if (!OutputSettings.IsInSpotEditWizard)
+                                        spot.SetColor(FinalR, FinalG, FinalB, isPreviewRunning);
+                                    break;
+                                case 1:
+                                    var orientation = OutputSettings.VUOrientation;
+                                    var brightnessMapVU = SpectrumVUCreator(fft, 0, 0, orientation);
+                                    var column = spot.CID;
+                                    var actualVUBrightness = 0d;
+                                    switch (orientation)
+                                    {
+                                        case 0:
+                                             actualVUBrightness = brightnessMapVU[column][spot.XIndex] / 255d;
+                                            break;
+                                        case 1:
+                                             actualVUBrightness = brightnessMapVU[column][spot.YIndex] / 255d;
+                                            break;
+                                    }
+                                    
+                                    var outputColor1 = Brightness.applyBrightness(newColor, actualVUBrightness, numLED, outputPowerMiliamps, outputPowerVoltage);
+                                    ApplySmoothing(outputColor1.R, outputColor1.G, outputColor1.B, out byte FinalR1, out byte FinalG1, out byte FinalB1, spot.Red, spot.Green, spot.Blue);
+                                    if (!OutputSettings.IsInSpotEditWizard)
+                                        spot.SetColor(FinalR1, FinalG1, FinalB1, isPreviewRunning);
+                                    break;
+                            }
+                           
 
                         }
                     }
-                    Thread.Sleep(5);
+                    Thread.Sleep(10);
 
 
                 }
@@ -215,13 +248,13 @@ namespace adrilight
         {
             ;
 
-            semifinalR = (byte)((r + 3 * lastColorR) / (3 + 1));
-            semifinalG = (byte)((g + 3 * lastColorG) / (3 + 1));
-            semifinalB = (byte)((b + 3 * lastColorB) / (3 + 1));
+            semifinalR = (byte)((r + 7 * lastColorR) / (7 + 1));
+            semifinalG = (byte)((g + 7 * lastColorG) / (7 + 1));
+            semifinalB = (byte)((b + 7 * lastColorB) / (7 + 1));
         }
 
 
-        public static double[] SpectrumCreator(float[] fft, int sensitivity, double levelLeft, double levelRight, int musicMode, int numLED)//create brightnessmap based on input fft or volume
+        public double[] SpectrumCreator(float[] fft, int sensitivity, double levelLeft, double levelRight, int musicMode, int numLED)//create brightnessmap based on input fft or volume
         {
 
             int counter = 0;
@@ -230,22 +263,126 @@ namespace adrilight
             double[] brightnessMap = new double[numLED];
 
             //this function take the input as frequency and output the color but the brightness change as the frequency band's value
-            if (musicMode == 0)//equalizer mode, each block of LED is respond to 1 band of frequency spectrum
+            //equalizer mode, each block of LED is respond to 1 band of frequency spectrum
+
+
+            for (int i = 0; i < fft.Length; i++)
             {
 
-                for (int i = 0; i < fft.Length; i++)
-                {
-
-                    brightnessMap[counter++] = (double)fft[i] / 255.0;
-
-                }
+                brightnessMap[counter++] = (double)fft[i] / 255.0;
 
             }
+
+
+
 
             return brightnessMap;
 
         }
+        public double[][] SpectrumVUCreator(float[] fft, int sensitivity, int vuMode, int orientation)//create brightnessmap based on input fft or volume
+        {
 
+            double[][] brightnessMap = new double[fft.Length][];
+            int maxHeight=0;
+            switch(orientation)
+            {
+                case 0://horizontal
+                    maxHeight = OutputSettings.OutputNumLEDX;
+                    break;
+                case 1://vertical
+                    maxHeight = OutputSettings.OutputNumLEDY;
+                    break;
+            }
+
+
+            //this function take the input as frequency and output the color but the brightness change as the frequency band's value
+
+            //Vu Metter mode , each block of led represent level of a frequency band (CID)
+
+            switch (OutputSettings.VUMode)
+            {
+                case 0://normal VU
+                    for (var i = 0; i < fft.Length; i++)
+                    {
+                        //create column
+                        // get max position(could be X or Y base on settings)
+                        //create a column represent the level of current fft value,
+
+                        var height = fft[i] / 255f;
+                        var actualHeight = (int)(height * maxHeight);
+                        double[] brightnessColumn = new double[maxHeight];
+                        for (int j = 0; j < maxHeight; j++)
+                        {
+                            if (j < actualHeight)
+                                brightnessColumn[j] = 255;
+                            else
+                                brightnessColumn[j] = 0;
+
+                        }
+                        brightnessMap[i] = brightnessColumn;
+                    }
+
+                    break;
+                case 1://normal VU inverse
+                    for (var i = 0; i < fft.Length; i++)
+                    {
+                        //create column
+                        // get max position(could be X or Y base on settings)
+                        //create a column represent the level of current fft value,
+
+                        var height = fft[i] / 255f;
+                        var actualHeight = (int)(height * maxHeight);
+                        double[] brightnessColumn = new double[maxHeight];
+                        for (int j = 0; j < maxHeight; j++)
+                        {
+                            if (j < maxHeight-actualHeight)
+                                brightnessColumn[j] = 0;
+                            else
+                                brightnessColumn[j] = 255;
+
+                        }
+                        brightnessMap[i] = brightnessColumn;
+                    }
+
+                    break;
+                case 2://floating vu
+                    for (var i = 0; i < fft.Length; i++)
+                    {
+
+                        var height = fft[i] / 255f;
+                        var actualHeight = (int)(height * maxHeight);
+                        double[] brightnessColumn = new double[maxHeight];
+
+                        for (var j = 0; j < maxHeight / 2; j++)
+                        {
+                            if (Math.Abs(0 - j) <= actualHeight)
+                                brightnessColumn[j] = 0.0;
+                            else
+                                brightnessColumn[j] = 255.0;
+
+                        }
+
+
+                        for (var j = maxHeight / 2; j < maxHeight; j++)
+                        {
+                            if (Math.Abs(maxHeight / 2 - j) <= actualHeight)
+                                brightnessColumn[j] = 255.0;
+                            else
+                                brightnessColumn[j] = 0.0;
+
+                        }
+                        brightnessMap[i] = brightnessColumn;
+                    }
+
+                    break;
+            }
+
+
+
+
+            return brightnessMap;
+
+        }
 
         public static IEnumerable<Color> GetColorGradientfromPalette(Color[] colorCollection, int colorNum)
         {

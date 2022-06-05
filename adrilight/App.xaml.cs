@@ -231,10 +231,14 @@ namespace adrilight
                         kernel.Bind<IDeviceSpotSet>().To<DeviceSpotSet>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
                         kernel.Bind<IMusic>().To<Music>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
                         kernel.Bind<IDesktopDuplicatorReader>().To<DesktopDuplicatorReader>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
+                        kernel.Bind<IGifxelation>().To<Gifxelation>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
+                        kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
                         var spotset = kernel.Get<IDeviceSpotSet>(outputID);
                         var rainbow = kernel.Get<IRainbow>(outputID);
                         var screencapture = kernel.Get<IDesktopDuplicatorReader>(outputID);
                         var music = kernel.Get<IMusic>(outputID);
+                        var staticColor = kernel.Get<IStaticColor>(outputID);
+                        var gifxelation = kernel.Get<IGifxelation>(outputID);
 
                     }
 

@@ -53,7 +53,7 @@ namespace adrilight
         private int _outputScreenCaptureWB = 0;
         private int _outputMusicDancingMode = 0;
         private int _outputColorPaletteMode = 0;
-        private int _outputBreathingSpeed;
+        private int _outputBreathingSpeed = 20000;
         private IColorPalette _outputCurrentActivePalette;
         private ILEDSetup _outputLEDSetup;
         private bool _isInSpotEditWizard=false;
@@ -78,10 +78,21 @@ namespace adrilight
         private double _outputRectangleScaleTop = 0;// how many percent that output rectangle top take from the image, represent Y
         private double _outputRectangleScaleLeft = 0;// how many percent that output rectangle top take from the image, represent X
         private bool _outputIsPreviewRunning = false;
+        private int _vUOrientation = 0;
+        private int _vUMode = 0;
+        private IGifCard _outputSelectedGif = null;
+        private int _outputSelectedGifIndex = 0;
 
-
+        private int _outputGifSpeed = 20;
+        private IGradientColorCard _outputSelectedGradient = new GradientColorCard("default", "application", "unknown", "auto create", Color.FromRgb(255, 127, 0), Color.FromRgb(0, 127, 255));
 
         public string OutputName  { get => _outputName; set { Set(() => OutputName, ref _outputName, value);}}
+        [Reflectable]
+        public int VUOrientation { get => _vUOrientation; set { Set(() => VUOrientation, ref _vUOrientation, value); } }
+        [Reflectable]
+        public int OutputGifSpeed { get => _outputGifSpeed; set { Set(() => OutputGifSpeed, ref _outputGifSpeed, value); } }
+        [Reflectable]
+        public int VUMode { get => _vUMode; set { Set(() => VUMode, ref _vUMode, value); } }
         public int OutputID { get => _outputID; set { Set(() => OutputID, ref _outputID, value); } }
         public string OutputType { get => _outputType; set { Set(() => OutputType, ref _outputType, value); } }
         public string OutputDescription { get => _outputDescription; set { Set(() => OutputDescription, ref _outputDescription, value); } }
@@ -91,7 +102,12 @@ namespace adrilight
         public int OutputNumLEDY { get => _outputNumLEDY; set { Set(() => OutputNumLEDY, ref _outputNumLEDY, value); } }
         public int LEDPerSpot { get => _lEDPerSpot; set { Set(() => LEDPerSpot, ref _lEDPerSpot, value); } }
         public int LEDPerLED { get => _lEDPerLED; set { Set(() => LEDPerLED, ref _lEDPerLED, value); } }
-
+        [Reflectable]
+        public IGradientColorCard OutputSelectedGradient { get => _outputSelectedGradient; set { Set(() => OutputSelectedGradient, ref _outputSelectedGradient, value); } }
+        [Reflectable]
+        public int OutputSelectedGifIndex { get => _outputSelectedGifIndex; set { Set(() => OutputSelectedGifIndex, ref _outputSelectedGifIndex, value); } }
+        [Reflectable]
+        public IGifCard OutputSelectedGif { get => _outputSelectedGif; set { Set(() => OutputSelectedGif, ref _outputSelectedGif, value); } }
         public bool IsVissible { get => _isVissible; set { Set(() => IsVissible, ref _isVissible, value); } }
         public bool OutputIsPreviewRunning { get => _outputIsPreviewRunning; set { Set(() => OutputIsPreviewRunning, ref _outputIsPreviewRunning, value); } }
         public string OutputUniqueID { get => _outputUniqueID; set { Set(() => OutputUniqueID, ref _outputUniqueID, value); } }

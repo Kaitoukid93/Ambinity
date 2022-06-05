@@ -95,6 +95,7 @@ namespace adrilight
 
                         foreach (var device in devices)
                         {
+                            
                             _log.Info($"Device found : " + device.Name.ToString());
                         }
                         foreach (var device in AvailableDevices)
@@ -251,7 +252,11 @@ namespace adrilight
                                 {
                                     var outputColor = GetOutputStream(output);
                                     if (outputColor != null)
+                                    {
+                                        
                                         client.UpdateZone(index, output.OutputID, outputColor);
+                                    }
+                                        
                                     Thread.Sleep(10);
                                 }
                                 index++;

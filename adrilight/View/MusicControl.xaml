@@ -160,7 +160,7 @@
             <hc:Divider LineStroke="{DynamicResource RegionBrush}" Margin="20,10,20,10">
 
             </hc:Divider>
-            <Grid Margin="10,0,10,0" x:Name="Smoothness">
+            <Grid >
 
 
 
@@ -170,8 +170,20 @@
 
                 
                     <StackPanel Orientation="Horizontal">
-                      
-                        <ComboBox hc:TitleElement.TitleWidth="125" hc:InfoElement.Title="AUDIO DEVICE" hc:InfoElement.TitlePlacement="Left"  Grid.Column="1" HorizontalAlignment="Right" Margin="10"  MinWidth="200" SelectedIndex="{Binding GeneralSettings.SelectedAudioDevice}"  ItemsSource="{Binding AvailableAudioDevice}" hc:InfoElement.Necessary="True"  Style="{DynamicResource ComboBoxExtend}"/>
+                    <GroupBox HorizontalAlignment="Left" VerticalContentAlignment="Center" hc:TitleElement.TitlePlacement="Left" hc:TitleElement.TitleWidth="120" Margin="15,5" Style="{DynamicResource GroupBoxOriginal}">
+                        <GroupBox.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock FontWeight="SemiBold" Text="AUDIO DEVICE"/>
+                            </DataTemplate>
+                        </GroupBox.HeaderTemplate>
+                        <Grid HorizontalAlignment="Left" Margin="0,10,10,10">
+                            <ItemsControl ItemsSource="{Binding AvailableAudioDevice}" Height="0" Margin="15,0"/>
+                            <ComboBox ItemContainerStyle="{DynamicResource _ComboboxItemStyle}"   HorizontalAlignment="Stretch"   SelectedIndex="{Binding GeneralSettings.SelectedAudioDevice}"  ItemsSource="{Binding AvailableAudioDevice}"  Style="{DynamicResource ComboBoxBaseStyle}"/>
+                        </Grid>
+                       
+                         
+                        
+                    </GroupBox>
                     <Path Stretch="Uniform" Margin="5" Data="{StaticResource speaker}" 
                                       Width="20" 
                                       Height="20" 
@@ -337,7 +349,7 @@
                         <ListBox  x:Name="vumodeSelection"  
                              
                               ItemContainerStyle="{DynamicResource _listBoxModeSelectionStyle}"  
-                              
+                              SelectedIndex="{Binding CurrentOutput.VUMode}"
                               Background="Transparent"
                               BorderThickness="0"
                               Style="{DynamicResource WrapPanelHorizontalListBox}">
@@ -404,8 +416,10 @@
                     </Border>
 
                 </GroupBox>
-                
 
+                <Grid Margin="15,0,15,0" Grid.Column="1">
+                    <Button Command="{Binding LaunchCIDEditWindowCommand}" hc:IconElement.Geometry="{DynamicResource fft}" Content="Chọn tần số"/>
+                </Grid>
 
             </Grid>
             <hc:Divider LineStroke="{DynamicResource RegionBrush}" Margin="20,10,20,10">

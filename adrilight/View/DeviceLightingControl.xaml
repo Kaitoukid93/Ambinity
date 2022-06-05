@@ -582,7 +582,7 @@
                                                 Duration="0:0:9" 
                                                 Height="32" 
                                                 HorizontalAlignment="Left" 
-                                                AutoRun="True"  Width="150" 
+                                                AutoRun="True"  MaxWidth="100"
                                                 Runaway="False" 
                                                 VerticalAlignment="Stretch" >
                                     <hc:RunningBlock.Content>
@@ -718,7 +718,7 @@
                                                                       HorizontalAlignment="Right"
                                                                       VerticalAlignment="center"
                                                                       Grid.Row="0"
-                                                                      Style="{StaticResource ToggleButtonSwitch}">
+                                                                      Style="{StaticResource ToggleButtonSwitchSmallerElipse}">
                                                             </ToggleButton>
                                                             <Button x:Name="BrightnessButton" CommandParameter="{Binding .}" Command="{Binding Path=DataContext.ShowBrightnessAdjustmentPopupCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" BorderThickness="0" Background="{DynamicResource SecondaryRegionBrush}" Margin="0,0,10,0" hc:IconElement.Geometry="{DynamicResource brightness}" Style="{DynamicResource ButtonDefault}"></Button>
                                                         </StackPanel>
@@ -952,85 +952,7 @@
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
-                                                <!--<ListBoxItem>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Path Stretch="Uniform" Margin="5" Data="{StaticResource screencapture}" 
-                                                          Width="20" 
-                                                          Height="20" 
-                                                          Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                                                        <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="SCREEN CAPTURE" Style="{DynamicResource TextBlockDefault}"/>
-                                                    </Grid>
-                                                </ListBoxItem>
-                                                <ListBoxItem>
-                                                    <Grid>
-
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Path Stretch="Uniform" Margin="5" Data="{StaticResource colorpalette}" 
-                                                          Width="20" 
-                                                          Height="20" 
-                                                          Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                                                        <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"  Margin="5,0,5,0" Grid.Column="1" Text="COLOR PALETTE" Style="{DynamicResource TextBlockDefault}"/>
-                                                    </Grid>
-                                                </ListBoxItem>
-                                                <ListBoxItem>
-                                                    <Grid>
-
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Path Stretch="Uniform" Margin="5" Data="{StaticResource music}" 
-                                                          Width="20" 
-                                                          Height="20" 
-                                                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                                                        <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"  Margin="5,0,5,0" Grid.Column="1" Text="MUSIC REACTIVE" Style="{DynamicResource TextBlockDefault}"/>
-                                                    </Grid>
-                                                </ListBoxItem>
-                                                <ListBoxItem>
-                                                    <Grid>
-
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Path Stretch="Uniform" Margin="5" Data="{StaticResource static}" 
-                                                          Width="20" 
-                                                          Height="20" 
-                                                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                                                        <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"  Margin="5,0,5,0" Grid.Column="1" Text="STATIC COLOR" Style="{DynamicResource TextBlockDefault}"/>
-                                                    </Grid>
-                                                </ListBoxItem>
-                                                <ListBoxItem>
-                                                    <Grid>
-
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Path Stretch="Uniform" Margin="5" Data="{StaticResource canvas}" 
-                                                          Width="20" 
-                                                          Height="20" 
-                                                          Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                                                        <TextBlock Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="GIFXELATION" Style="{DynamicResource TextBlockDefault}"/>
-                                                    </Grid>
-                                                </ListBoxItem>-->
-
-
-
-
-                                                <!--<RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource fullscreen }" IsChecked="{Binding CurrentOutput.OutputScreenCapturePosition,Mode=TwoWay}"  Style="{DynamicResource RadioButtonIcon}" Content="Full Screen"/>
-                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{DynamicResource left }" IsChecked="{Binding IsLeftScreenRegionChecked,Mode=TwoWay}" Style="{DynamicResource RadioButtonIcon}" Content="Left"/>
-                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource right}" IsChecked="{Binding IsRightScreenRegionChecked,Mode=TwoWay}" Content="Right" />
-                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource up}" IsChecked="{Binding IsTopScreenRegionChecked,Mode=TwoWay}" Content="Top"/>
-                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" hc:IconElement.Geometry="{StaticResource down}" IsChecked="{Binding IsBottomScreenRegionChecked,Mode=TwoWay}" Content="Bottom"/>
-                    <RadioButton BorderBrush="{DynamicResource DarkMaskBrush}" IsChecked="{Binding IsCustomScreenRegionChecked,Mode=TwoWay}" hc:IconElement.Geometry="{StaticResource custom}" Content="Custom"/>-->
+                                           
                                             </ListBox>
                                         </Border>
                                     </hc:TransitioningContentControl>
@@ -1038,6 +960,18 @@
                                 </Popup>
                             </Grid>
                         </Border>
+                        <Grid Margin="20,0,5,0" HorizontalAlignment="Right" Grid.Column="1" >
+                            <StackPanel Orientation="Horizontal">
+                                <Button Command="{Binding SetAllOutputSelectedModeCommand}" Margin="10,0,10,0" hc:IconElement.Geometry="{DynamicResource selected}" Content="Set All Outputs">
+
+                                </Button>
+                                <Button Command="{Binding SetAllDeviceSelectedModeCommand}" Margin="10,0,10,0" hc:IconElement.Geometry="{DynamicResource setall}" Content="Set All Devices">
+
+                                </Button>
+                            </StackPanel>
+                           
+                        </Grid>
+                      
 
                     </Grid>
                     <Grid x:Name="ScreenCapture" >
@@ -1109,6 +1043,23 @@
                             <local:StaticColorControl Margin="4">
 
                             </local:StaticColorControl>
+                        </hc:TransitioningContentControl>
+                    </Grid>
+                    <Grid x:Name="GifxelationControl">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentOutput.OutputSelectedMode}" Value="4">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <hc:TransitioningContentControl>
+                            <local:GifxelationControl Margin="4">
+
+                            </local:GifxelationControl>
                         </hc:TransitioningContentControl>
                     </Grid>
 
@@ -1185,6 +1136,23 @@
                             <local:StaticColorSidePanel>
 
                             </local:StaticColorSidePanel>
+                        </hc:TransitioningContentControl>
+                    </Grid>
+                    <Grid x:Name="GifxelationSidePanel" Margin="1" >
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentOutput.OutputSelectedMode}" Value="4">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <hc:TransitioningContentControl>
+                            <local:GifxelationSidePanel>
+
+                            </local:GifxelationSidePanel>
                         </hc:TransitioningContentControl>
                     </Grid>
 

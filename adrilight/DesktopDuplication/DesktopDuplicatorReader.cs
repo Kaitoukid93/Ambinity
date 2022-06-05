@@ -58,6 +58,7 @@ namespace adrilight
                 case nameof(OutputSettings.OutputSelectedMode):
                 case nameof(OutputSettings.OutputIsLoadingProfile):
                 case nameof(OutputSettings.OutputIsEnabled):
+               
                     RefreshCapturingState();
                     break;
 
@@ -267,7 +268,8 @@ namespace adrilight
                                 ApplySmoothing(semifinalSpotColor.R, semifinalSpotColor.G, semifinalSpotColor.B
                                     , out byte RealfinalR, out byte RealfinalG, out byte RealfinalB,
                                  spot.Red, spot.Green, spot.Blue);
-                                spot.SetColor(RealfinalR, RealfinalG, RealfinalB, isPreviewRunning);
+                                if (!OutputSettings.IsInSpotEditWizard)
+                                    spot.SetColor(RealfinalR, RealfinalG, RealfinalB, isPreviewRunning);
 
                             });
                         //}

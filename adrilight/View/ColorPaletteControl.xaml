@@ -313,7 +313,7 @@
                                 </Style>
                             </hc:PreviewSlider.Style>
                         </hc:PreviewSlider>
-                        <ToggleButton ToolTip="Đồng bộ với tốc độ của hệ thống" x:Name="sync" IsChecked="{Binding CurrentOutput.OutputIsSystemSync}" Style="{DynamicResource ToggleButtonSwitch}">
+                        <ToggleButton ToolTip="Đồng bộ với tốc độ của hệ thống" x:Name="sync" IsChecked="{Binding CurrentOutput.OutputIsSystemSync}" Style="{DynamicResource ToggleButtonSwitchSmallerElipse}">
 
                         </ToggleButton>
                     </StackPanel>

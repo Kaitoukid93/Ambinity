@@ -129,6 +129,21 @@
     <None Update="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <EmbeddedResource Include="Gif\BitOcean.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gif\DigitalBlue.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gif\HexWave.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gif\Hypnotic.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gif\Plasma.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="zoe.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -227,8 +242,10 @@
     <Compile Remove="ViewModel\old\ViewModelLocator.cs" />
     <Compile Remove="View\AddDevice.xaml.cs" />
     <Compile Remove="View\CanvasLightingView.xaml.cs" />
+    <Compile Remove="View\DeleteMessageDialog.xaml.cs" />
     <Compile Remove="View\DeviceRectPositon.xaml.cs" />
     <Compile Remove="View\GroupLighting.xaml.cs" />
+    <Compile Remove="View\NewDeviceSettingsView.xaml.cs" />
     <Compile Remove="View\SplitLightView.xaml.cs" />
     <Compile Remove="View\UserIncreamentInput.xaml.cs" />
     <Compile Remove="View\UserNumberInput.xaml.cs" />
@@ -246,6 +263,13 @@
   <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
   <ItemGroup>
     <None Remove="App.config" />
+    <None Remove="Gif\BitOcean.gif" />
+    <None Remove="Gif\Blob.gif" />
+    <None Remove="Gif\DigitalBlue.gif" />
+    <None Remove="Gif\HexWave.gif" />
+    <None Remove="Gif\Hypnotic.gif" />
+    <None Remove="Gif\Plasma.gif" />
+    <None Remove="Gif\Rainbow.gif" />
     <None Remove="Resources\Image\lamp.svg" />
     <None Remove="Resources\Image\screen.png" />
     <None Remove="Shaders\Thumbnail\Gooey.png" />
@@ -256,8 +280,10 @@
   <ItemGroup>
     <Page Remove="View\AddDevice.xaml" />
     <Page Remove="View\CanvasLightingView.xaml" />
+    <Page Remove="View\DeleteMessageDialog.xaml" />
     <Page Remove="View\DeviceRectPositon.xaml" />
     <Page Remove="View\GroupLighting.xaml" />
+    <Page Remove="View\NewDeviceSettingsView.xaml" />
     <Page Remove="View\SplitLightView.xaml" />
     <Page Remove="View\UserIncreamentInput.xaml" />
     <Page Remove="View\UserNumberInput.xaml" />
@@ -266,6 +292,12 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Gif\Blob.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gif\Rainbow.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Resource Include="Resources\Image\lamp.svg" />
     <Resource Include="Resources\Image\screen.png" />
     <Resource Include="Shaders\Thumbnail\Gooey.png" />
@@ -293,6 +325,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\AppSettingsWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\CIDEditWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\FIDSetupWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\GifxelationSidePanel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\GifxelationControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\UnionOutputControl.xaml.cs">
@@ -391,6 +435,22 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\AppSettingsWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\CIDEditWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\FIDSetupWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\GifxelationSidePanel.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\GifxelationControl.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

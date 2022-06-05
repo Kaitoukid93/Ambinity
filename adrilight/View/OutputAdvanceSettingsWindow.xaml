@@ -86,7 +86,7 @@
                                       Width="20" 
                                       Height="20" 
                                       Fill="{DynamicResource PrimaryTextBrush}"/>-->
-                    <ToggleButton HorizontalAlignment="Right" IsChecked="{Binding CurrentOutput.OutputUseLinearLighting}" Style="{DynamicResource ToggleButtonSwitch}">
+                    <ToggleButton HorizontalAlignment="Right" IsChecked="{Binding CurrentOutput.OutputUseLinearLighting}" Style="{DynamicResource ToggleButtonSwitchSmallerElipse}">
                         
                     </ToggleButton>
 
@@ -108,15 +108,13 @@
                             <TextBlock FontWeight="SemiBold" Text="RGB ORDER"/>
                         </DataTemplate>
                     </GroupBox.HeaderTemplate>
-                   
-                        <!--<Path Stretch="Uniform" Margin="0" Data="{StaticResource vumetter}" 
-                                      Width="20" 
-                                      Height="20" 
-                                      Fill="{DynamicResource PrimaryTextBrush}"/>-->
-                        <ComboBox SelectedItem="{Binding CurrentOutput.OutputRGBLEDOrder}" HorizontalAlignment="Right" Margin="0,0,0,0" Style="{DynamicResource ComboBoxExtend}">
-                            
-                        </ComboBox>
-                  
+
+
+                    <Grid  HorizontalAlignment="Right" Margin="0,0,10,0">
+                        <ItemsControl ItemsSource="{Binding AvailableRGBOrders}" Height="0" Margin="15,0"/>
+                        <ComboBox ItemContainerStyle="{DynamicResource _ComboboxItemStyle}"  HorizontalAlignment="Stretch"   SelectedItem="{Binding CurrentOutput.OutputRGBLEDOrder}"  ItemsSource="{Binding AvailableRGBOrders}"  Style="{DynamicResource ComboBoxBaseStyle}"/>
+                    </Grid>
+
 
                 </GroupBox>
                 <TextBlock Margin="5,0,0,0" HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Grid.Row="1" Text="Một số loại LED có thứ tự RGB không theo chuẩn"/>
