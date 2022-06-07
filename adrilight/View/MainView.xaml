@@ -22,7 +22,7 @@
        
         
        AllowDrop="True" AllowsTransparency="False"
-       Title="Adrilight" Height="850" Width="1080"  MinHeight="480"  MinWidth="640" MouseLeftButtonDown="Window_MouseLeftButtonDown"  Closing="Window_Closing">
+        Height="850" Width="1080"  MinHeight="480"  MinWidth="640" MouseLeftButtonDown="Window_MouseLeftButtonDown"  Closing="Window_Closing">
    
     <Window.Resources>
         <ResourceDictionary>
@@ -128,9 +128,9 @@
             <!--<DataTemplate x:Key="deviceSettingTemplate">
                 --><!--<local:NewDeviceSettingsView/>--><!--
             </DataTemplate>-->
-            <DataTemplate x:Key="appSettingTemplate">
+            <!--<DataTemplate x:Key="appSettingTemplate">
                 <local:NewAppSettingsView/>
-            </DataTemplate>
+            </DataTemplate>-->
             <!--<DataTemplate x:Key="canvasLightingTemplate">
                 <local:CanvasLightingView/>
             </DataTemplate>-->
@@ -145,9 +145,9 @@
                     <!--<DataTrigger Binding="{Binding ElementName=DashboardLeftMenu, Path=SelectedItem}" Value="Settings">
                         <Setter Property="ContentTemplate" Value="{StaticResource deviceSettingTemplate}" />
                     </DataTrigger>-->
-                    <DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="App Settings">
+                    <!--<DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="App Settings">
                         <Setter Property="ContentTemplate" Value="{StaticResource appSettingTemplate}" />
-                    </DataTrigger>
+                    </DataTrigger>-->
                     <!--<DataTrigger Binding="{Binding Path=SelectedVerticalMenuItem.Text}" Value="Canvas Lighting">
                         <Setter Property="ContentTemplate" Value="{StaticResource canvasLightingTemplate}" />
                     </DataTrigger>-->
@@ -169,7 +169,7 @@
 
             <Grid>
 
-                <hc:NotifyIcon Token="Ambinity"  Text="HandyControl" IsBlink="{Binding ContextMenuIsBlink}">
+                <hc:NotifyIcon x:Name="noticon" Token="Ambinity"  Text="Ambinity" >
                     <hc:NotifyIcon.ContextMenu>
                         <ContextMenu>
                             <MenuItem  Click="OpenDashboard" Header="Dashboard">
@@ -244,11 +244,7 @@
                                         </ListBox.GroupStyle>
                                     </ListBox>
                                 </Grid>
-                                <hc:Interaction.Triggers>
-                                        <hc:EventTrigger EventName="SelectionChanged">
-                                            <hc:EventToCommand Command="{Binding SwitchDemoCmd}" PassEventArgsToCommand="True" />
-                                        </hc:EventTrigger>
-                                    </hc:Interaction.Triggers>
+                             
                                 
                             </DockPanel>
 

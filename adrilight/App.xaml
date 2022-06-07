@@ -358,7 +358,7 @@
                                         </Border.RenderTransform>
                                     </Border>
                                     <hc:SimplePanel Grid.Column="0" Margin="3,0">
-                                        <Border HorizontalAlignment="Left" CornerRadius="8" Name="thumb" Effect="{StaticResource EffectShadow2}" Background="{DynamicResource PrimaryTextBrush}" Width="16" Height="16" RenderTransformOrigin="0.5,0.5">
+                                        <Border HorizontalAlignment="Left" CornerRadius="8" Name="thumb" Effect="{StaticResource EffectShadow2}" Background="{DynamicResource TextIconBrush}" Width="16" Height="16" RenderTransformOrigin="0.5,0.5">
                                             <Border.RenderTransform>
                                                 <TransformGroup>
                                                     <TranslateTransform/>
@@ -390,11 +390,29 @@
                 </Setter>
             </Style>
             <ResourceDictionary.MergedDictionaries>
-                <hc:ThemeResources RequestedTheme="Dark" AccentColor="BlueViolet"/>
+                <hc:ThemeResources>
+                    <hc:ThemeResources.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Light" hc:ThemeDictionary.Key="Light">
 
+                            <!-- Put the resources you want to use in the Light theme Here -->
+
+                            <SolidColorBrush x:Key="DarkOpacityBrush" Color="#FFFCFCFC" />
+                            <SolidColorBrush x:Key="PrimaryTextBrush" Color="#FF212329" />
+                            <SolidColorBrush x:Key="SecondaryRegionBrush" Color="#FFE0E0E0" />
+                            <SolidColorBrush x:Key="DarkMaskBrush" Color="#FFDDDDDD" />
+                            <SolidColorBrush x:Key="RegionBrush" Color="#FFF4F4F4" />
+                        </ResourceDictionary>
+
+                        <ResourceDictionary x:Key="Dark" hc:ThemeDictionary.Key="Dark">
+
+                            <!-- Put the resources you want to use in the Dark theme Here -->
+
+                            <SolidColorBrush x:Key="DarkMaskBrush" Color="#FF222222" />
+                            <SolidColorBrush x:Key="RegionBrush" Color="#FF151515" />
+                        </ResourceDictionary>
+                    </hc:ThemeResources.ThemeDictionaries>
+                </hc:ThemeResources>
                 <hc:Theme/>
-                
-                
             </ResourceDictionary.MergedDictionaries>
            
 

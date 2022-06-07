@@ -27,6 +27,8 @@ using GalaSoft.MvvmLight;
 using System.Threading;
 using Un4seen.BassWasapi;
 using Un4seen.Bass;
+using System.Windows.Media;
+using HandyControl.Themes;
 
 namespace adrilight
 {
@@ -108,15 +110,21 @@ namespace adrilight
             _telemetryClient = kernel.Get<TelemetryClient>();
 
             //SetupNotifyIcon();
-           
 
+
+
+
+            if(GeneralSettings.ThemeIndex==1)
+            {
+                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
+            }
+            else
+            {
+                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
+            }
             
 
-            
-
-            
-
-
+            ThemeManager.Current.AccentColor = GeneralSettings.AccentColor;
             // Current.MainWindow = kernel.Get<MainView>();
             if (!GeneralSettings.StartMinimized)
             {

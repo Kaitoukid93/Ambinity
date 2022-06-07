@@ -32,7 +32,7 @@ namespace adrilight
         private int _outputPowerVoltage;
         private int _outputPowerMiliamps;
         private byte _outputSaturationThreshold;
-        private bool _outputUseLinearLighting;
+        private bool _outputUseLinearLighting =true;
         private bool _outputIsEnable;
         private Color _outputAtmosphereStartColor;
         private Color _outputAtmosphereStopColor;
@@ -180,7 +180,6 @@ namespace adrilight
         [Reflectable]
         public int OutputMusicVisualizerFreq { get => _outputMusicVisualizerFreq; set { Set(() => OutputMusicVisualizerFreq, ref _outputMusicVisualizerFreq, value); } }
         [Reflectable]
-
         public int OutputPaletteChasingPosition { get => _outputPaletteChasingPosition; set { Set(() => OutputPaletteChasingPosition, ref _outputPaletteChasingPosition, value); } }
         [Reflectable]
         public int OutputScreenCaptureWBRed { get => _outputScreenCaptureWBRed; set { Set(() => OutputScreenCaptureWBRed, ref _outputScreenCaptureWBRed, value); } }

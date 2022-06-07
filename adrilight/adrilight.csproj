@@ -245,6 +245,7 @@
     <Compile Remove="View\DeleteMessageDialog.xaml.cs" />
     <Compile Remove="View\DeviceRectPositon.xaml.cs" />
     <Compile Remove="View\GroupLighting.xaml.cs" />
+    <Compile Remove="View\NewAppSettingsView.xaml.cs" />
     <Compile Remove="View\NewDeviceSettingsView.xaml.cs" />
     <Compile Remove="View\SplitLightView.xaml.cs" />
     <Compile Remove="View\UserIncreamentInput.xaml.cs" />
@@ -283,6 +284,7 @@
     <Page Remove="View\DeleteMessageDialog.xaml" />
     <Page Remove="View\DeviceRectPositon.xaml" />
     <Page Remove="View\GroupLighting.xaml" />
+    <Page Remove="View\NewAppSettingsView.xaml" />
     <Page Remove="View\NewDeviceSettingsView.xaml" />
     <Page Remove="View\SplitLightView.xaml" />
     <Page Remove="View\UserIncreamentInput.xaml" />

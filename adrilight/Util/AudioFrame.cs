@@ -44,7 +44,7 @@ namespace adrilight
             GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
 
             MainViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
-            
+
 
 
             GeneralSettings.PropertyChanged += PropertyChanged;
@@ -62,7 +62,7 @@ namespace adrilight
         }
         //Dependency Injection//
 
-        
+
         private MainViewViewModel MainViewModel { get; }
 
         private IGeneralSettings GeneralSettings { get; }
@@ -290,11 +290,18 @@ namespace adrilight
         public int BassAudioDeviceID {
             get
             {
-                var currentDevice = AvailableAudioDevice.ElementAt(GeneralSettings.SelectedAudioDevice);
+                string currentDevice;
+                if (GeneralSettings.SelectedAudioDevice >= AvailableAudioDevice.Count())
+                {
+                    HandyControl.Controls.MessageBox.Show("Có sự thay đổ về đầu ra âm thanh, vui lòng chọn lại bên trong cài đặt", "Audio output changed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    currentDevice = AvailableAudioDevice.ElementAt(0);
+                }
+                else
+                    currentDevice = AvailableAudioDevice.ElementAt(GeneralSettings.SelectedAudioDevice);
 
                 var array = currentDevice.Split(' ');
                 return Convert.ToInt32(array[0]);
-               
+
             }
         }
 

@@ -20,14 +20,15 @@ using System.IO;
 using adrilight.DesktopDuplication;
 using Polly;
 using System.Runtime.InteropServices;
+using System.Windows;
 
 namespace adrilight
 {
     internal class Gifxelation : IGifxelation
     {
         private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adrilight\\");
-
-        private string testGifPath => Path.Combine(JsonPath, "test.gif");
+        private string JsonGifsFileNameAndPath => Path.Combine(JsonPath, "Gif");
+        private string testGifPath => Path.Combine(JsonGifsFileNameAndPath, "Rainbow.gif");
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
         public enum LoadState { None, Still, Gif };
@@ -129,20 +130,23 @@ namespace adrilight
 
             if (isRunning && shouldBeRunning)
             {
-                // rainbow is running and we need to change the color bank
-                if(OutputSettings.OutputSelectedGif==null)
+                if (OutputSettings.OutputSelectedGif == null)
                 //load test
                 {
-                    bool result=LoadGifFromDisk(testGifPath);
-                   
+                    LoadGifFromDisk(testGifPath);
+
                 }
                 else
                 {
                     bool result = LoadGifFromDisk(OutputSettings.OutputSelectedGif.Source);
+                    if (!result)
+                    {
+                        HandyControl.Controls.MessageBox.Show("Ảnh động được chọn cho " + OutputSettings.OutputName + " đã bị xóa, vui long chọn ảnh khác", "Gif is not available", MessageBoxButton.OK, MessageBoxImage.Error);
+                        LoadGifFromDisk(testGifPath);
+                    }
                 }
-               
 
-                
+
                 //if(isInEditWizard)
                 //    colorBank = GetColorGradientfromPalette(DefaultColorCollection.black).ToArray();
             }
@@ -168,12 +172,17 @@ namespace adrilight
             if (OutputSettings.OutputSelectedGif == null)
             //load test
             {
-                bool result = LoadGifFromDisk(testGifPath);
+                LoadGifFromDisk(testGifPath);
 
             }
             else
             {
                 bool result = LoadGifFromDisk(OutputSettings.OutputSelectedGif.Source);
+                if(!result)
+                {
+                    HandyControl.Controls.MessageBox.Show("Ảnh động được chọn cho " + OutputSettings.OutputName + " đã bị xóa, vui long chọn ảnh khác", "Gif is not available", MessageBoxButton.OK, MessageBoxImage.Error);
+                    LoadGifFromDisk(testGifPath);
+                }
             }
 
             Bitmap image = null;

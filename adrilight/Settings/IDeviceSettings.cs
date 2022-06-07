@@ -11,7 +11,7 @@ using adrilight.Settings;
 
 namespace adrilight
 {
-    public interface IDeviceSettings : INotifyPropertyChanged
+    public interface IDeviceSettings :  INotifyPropertyChanged
     {
       
         int DeviceID { get; set; }

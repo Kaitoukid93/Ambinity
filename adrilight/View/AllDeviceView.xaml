@@ -209,7 +209,7 @@
 
                 <ListView.ItemTemplate>
                     <DataTemplate >
-                        <Grid  IsEnabled="{Binding IsConnected,Mode=TwoWay}" 
+                        <Grid 
                               x:Name="dev" 
                               Visibility="{Binding IsVissible,Converter={StaticResource boolToVisibilityConvert}}"         
                               Width="230" 
@@ -223,7 +223,7 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
                                 CornerRadius="15" 
-                                Background="{DynamicResource DarkMaskBrush}">
+                                Background="{DynamicResource DarkOpacityBrush}">
                                 <!--<Border.Style>
                                     <Style TargetType="Border"  >
                                         <Setter Property="BorderBrush" Value="#FF898989"></Setter>
@@ -261,10 +261,9 @@
                                         BorderThickness="0"                                     
                                         Margin="0,0,0,0" 
                                         HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-
+                                        VerticalAlignment="Top"                                      
                                         Grid.Row="0"
-                                        Style="{StaticResource ToggleButtonSwitchSmallerElipse}">
+                                        Style="{DynamicResource ToggleButtonSwitchSmallerElipse}">
                                     </ToggleButton>
                                     <!--delete device button-->
                                     

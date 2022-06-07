@@ -120,8 +120,8 @@
                                 </Grid.RowDefinitions>
                                 <Grid>
                                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                        <Button Command="{Binding ScanSerialDeviceCommand}" CommandParameter="scan" x:Name="ScanButton" Click="ScanWiredDevice" Margin="10" Content="Scan now" Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Style="{DynamicResource ButtonBaseStyle}"/>
-                                        <Button  x:Name="AddManual" Click="AddManually" Margin="10" Content="Add manually" Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Style="{DynamicResource ButtonBaseStyle}"/>
+                                        <Button Command="{Binding ScanSerialDeviceCommand}" CommandParameter="scan" x:Name="ScanButton" Click="ScanWiredDevice" Margin="10" Content="Scan now" Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Style="{DynamicResource ButtonDefault}"/>
+                                        <Button  x:Name="AddManual" Click="AddManually" Margin="10" Content="Add manually" Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Style="{DynamicResource ButtonDefault}"/>
                                     </StackPanel>
                                     
                                 </Grid>
@@ -224,7 +224,7 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
                             <Grid>
-                                <Button x:Name="RefreshButton" Click="Refresh" Margin="10"  Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Style="{DynamicResource ButtonBaseStyle}"  Content="Refresh"/>
+                                <Button x:Name="RefreshButton" Click="Refresh" Margin="10"  Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Style="{DynamicResource ButtonDefault}"  Content="Refresh"/>
                             </Grid>
                             <Grid Grid.Row="1">
                                 <hc:LoadingLine Visibility="Collapsed" x:Name="LoadingLine" Margin="10"/>
@@ -284,7 +284,7 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
                             <Grid>
-                                <Button x:Name="ScanOpenRGBButton" Command="{Binding ScanOpenRGBDeviceCommand}" Margin="10"  Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Style="{DynamicResource ButtonBaseStyle}"  Content="Scan OpenRGB Devices"/>
+                                <Button x:Name="ScanOpenRGBButton" Command="{Binding ScanOpenRGBDeviceCommand}" Margin="10"  Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Style="{DynamicResource ButtonDefault}"  Content="Scan OpenRGB Devices"/>
                             </Grid>
                             <Grid Grid.Row="1">
                                 <hc:LoadingLine Visibility="Collapsed" x:Name="OpenRGBLoadingLine" Margin="10"/>

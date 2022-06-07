@@ -162,7 +162,7 @@
                         <Path Margin="5" Data="{StaticResource colorpalette}" 
           Width="30" 
           Height="30" 
-          Fill="White"
+          Fill="{DynamicResource PrimaryTextBrush}"
           Stretch="Uniform" />
                     </Grid>
 
@@ -171,12 +171,12 @@
 
                 <Grid HorizontalAlignment="Right" Grid.Column="1">
 
-                    <Button  Content="Add New" Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}" BorderThickness="0"  Width="100" Padding="0,0" Margin="0,0,15,0" HorizontalAlignment="Right" hc:IconElement.Width="20" hc:IconElement.Height="20"  hc:IconElement.Geometry="{DynamicResource addnew}">
+                    <Button  Content="Add New" Click="ButtonAdd_OnClick"  Style="{DynamicResource ButtonDefault}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Width="100" Padding="0,0" Margin="0,0,15,0" HorizontalAlignment="Right" hc:IconElement.Width="20" hc:IconElement.Height="20"  hc:IconElement.Geometry="{DynamicResource addnew}">
 
                     </Button>
                     <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="0" Name="PopupAdd" VerticalOffset="2" StaysOpen="False">
-                        <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
-                            <Border Background="{DynamicResource RegionBrush}" CornerRadius="7" Margin="0,2,15,15"  Effect="{DynamicResource EffectShadow3}">
+                        <hc:TransitioningContentControl  TransitionMode="Top2Bottom">
+                            <Border Background="{DynamicResource RegionBrush}" CornerRadius="7" Margin="0,2,15,15" BorderThickness="2"  BorderBrush="{DynamicResource BorderBrush}">
                                 <StackPanel Orientation="Vertical">
                                     <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding ImportPaletteCardFromFileCommand}" hc:IconElement.Geometry="{DynamicResource fromfile}" BorderBrush="Transparent" Margin="5"   Content="From File" Style="{DynamicResource ButtonDefault}"/>
 

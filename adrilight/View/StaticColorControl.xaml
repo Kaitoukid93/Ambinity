@@ -222,7 +222,7 @@
                                       Fill="{DynamicResource PrimaryTextBrush}"/>
                         <hc:PreviewSlider Grid.Column="1" MaxWidth="300" MinWidth="200" HorizontalAlignment="Left" Margin="20,0,0,0" Value="{Binding CurrentOutput.OutputBreathingSpeed}" Minimum="500" Maximum="100000">
                             <hc:PreviewSlider.PreviewContent>
-                                <Label Style="{DynamicResource LabelBaseStyle}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
+                                <Label Style="{DynamicResource LabelPrimary}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
                             </hc:PreviewSlider.PreviewContent>
                         </hc:PreviewSlider>
                     </StackPanel>

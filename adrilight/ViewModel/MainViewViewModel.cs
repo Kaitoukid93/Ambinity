@@ -47,6 +47,7 @@ using adrilight.DesktopDuplication;
 using NotifyIcon = HandyControl.Controls.NotifyIcon;
 using System.Drawing.Imaging;
 using ColorPalette = adrilight.Util.ColorPalette;
+using HandyControl.Themes;
 
 namespace adrilight.ViewModel
 {
@@ -516,14 +517,14 @@ namespace adrilight.ViewModel
         }
         private IDeviceProfile _currentSelectedProfile;
         public IDeviceProfile CurrentSelectedProfile {
-            get { return _currentSelectedProfile; }
+            get { return AvailableProfilesForCurrentDevice.Where(p=> p.ProfileUID== CurrentDevice.ActivatedProfileUID).FirstOrDefault(); }
             set
             {
                 if (value != null)
                 {
-                    _currentSelectedProfile = value;
-                    if (_currentSelectedProfile.ProfileUID != CurrentDevice.ActivatedProfileUID)// change profile
-                        LoadProfile(_currentSelectedProfile);
+                    //_currentSelectedProfile = value;
+                    if (value.ProfileUID != CurrentDevice.ActivatedProfileUID)// change profile
+                        LoadProfile(value);
                     RaisePropertyChanged();
                 }
 
@@ -1038,6 +1039,14 @@ namespace adrilight.ViewModel
             {
                 switch (e.PropertyName)
                 {
+                    case nameof(GeneralSettings.ThemeIndex):
+                        if(GeneralSettings.ThemeIndex==0)
+                            ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
+                        else
+                        {
+                            ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
+                        }
+                        break;
 
                     case nameof(GeneralSettings.Autostart):
                         if (GeneralSettings.Autostart)
@@ -2228,6 +2237,11 @@ namespace adrilight.ViewModel
                     case "gradientStop":
                         CurrentStopColor = CurrentPickedColor;
                         break;
+                    case "accent":
+                 
+                        ThemeManager.Current.AccentColor = new SolidColorBrush(CurrentPickedColor);
+                        GeneralSettings.AccentColor = new SolidColorBrush(CurrentPickedColor);
+                        break;
                 }
                 
             }
@@ -3230,39 +3244,10 @@ namespace adrilight.ViewModel
         public void SaveCurrentProfile(string profileUID)
         {
             var currentProfile = AvailableProfiles.Where(p => p.ProfileUID == profileUID).FirstOrDefault();
-            if (CurrentDevice.IsUnionMode)//save to union output only
-            {
-                if (currentProfile != null)
-                {
-
-                    currentProfile.UnionOutput = CurrentDevice.UnionOutput;
-
-                }
-            }
-            else
-            {
-                if (currentProfile != null)
-                {
-                    foreach (var output in CurrentDevice.AvailableOutputs)
-                    {
-
-                        currentProfile.OutputSettings[output.OutputID] = output;
-
-                    }
-
-                }
-            }
+            currentProfile.SaveProfile(CurrentDevice.UnionOutput, CurrentDevice.AvailableOutputs);
 
             WriteDeviceProfileCollection();
-            AvailableProfiles.Clear();
-            foreach (var profile in LoadDeviceProfileIfExist())
-            {
-                AvailableProfiles.Add(profile);
-            }
-            RaisePropertyChanged(nameof(AvailableProfiles));
-            AvailableProfilesForCurrentDevice.Clear();
-            AvailableProfilesForCurrentDevice = ProfileFilter(CurrentDevice);
-            RaisePropertyChanged(nameof(AvailableProfilesForCurrentDevice));
+
             //Growl.Success("Profile saved successfully!");
             IsSettingsUnsaved = BadgeStatus.Dot;
 
@@ -3362,9 +3347,9 @@ namespace adrilight.ViewModel
                 DeviceType = CurrentDevice.DeviceType,
                 Geometry = "profile",
                 ProfileUID = Guid.NewGuid().ToString(),
-                OutputSettings = CurrentDevice.AvailableOutputs
+                
             };
-
+            newprofile.SaveProfile(CurrentDevice.UnionOutput, CurrentDevice.AvailableOutputs);
             AvailableProfiles.Add(newprofile);
 
             WriteDeviceProfileCollection();
@@ -3417,6 +3402,14 @@ namespace adrilight.ViewModel
                         foreach (var action in automation.Actions)
                         {
                             var targetDevice = AvailableDevices.Where(x => x.DeviceUID == action.TargetDeviceUID).FirstOrDefault();
+                            if(targetDevice==null)
+                            {
+                                HandyControl.Controls.MessageBox.Show(automation.Name + " Không thể thiết lập automation, thiết bị đã bị xóa hoặc thay đổi UID!!!", "Device is not available", MessageBoxButton.OK, MessageBoxImage.Error);
+                                automation.Actions.Remove(action);
+                                WriteAutomationCollectionJson();
+                                return;
+
+                            }     
                             switch (action.ActionType)
                             {
                                 case "Activate Profile":
@@ -5650,10 +5643,12 @@ namespace adrilight.ViewModel
                 output.OutputUniqueID = CurrentDevice.DeviceID.ToString() + output.OutputID.ToString();
             }
             CurrentDevice.UnionOutput.OutputUniqueID = CurrentDevice.DeviceID.ToString() + CurrentDevice.UnionOutput.OutputID.ToString();
+            AvailableProfilesForCurrentDevice = new ObservableCollection<IDeviceProfile>();
+            AvailableProfilesForCurrentDevice = ProfileFilter(CurrentDevice);
             CurrentSelectedProfile = null;
             if (CurrentDevice.ActivatedProfileUID != null)
             {
-                CurrentSelectedProfile = AvailableProfiles.Where(p => p.ProfileUID == CurrentDevice.ActivatedProfileUID).FirstOrDefault();
+                CurrentSelectedProfile = AvailableProfilesForCurrentDevice.Where(p => p.ProfileUID == CurrentDevice.ActivatedProfileUID).FirstOrDefault();
             }
             if (CurrentSelectedProfile == null || CurrentDevice.ActivatedProfileUID == null)
             {   //create new profile for this device
@@ -5662,9 +5657,10 @@ namespace adrilight.ViewModel
                     Geometry = "profile",
                     Owner = "Auto Created",
                     DeviceType = CurrentDevice.DeviceType,
-                    OutputSettings = CurrentDevice.AvailableOutputs,
                     ProfileUID = Guid.NewGuid().ToString()
                 };
+                //get output data
+                unsavedProfile.SaveProfile(CurrentDevice.UnionOutput, CurrentDevice.AvailableOutputs);
                 AvailableProfiles.Add(unsavedProfile);
                 WriteDeviceProfileCollection();
                 CurrentDevice.ActivateProfile(unsavedProfile);
@@ -5682,8 +5678,7 @@ namespace adrilight.ViewModel
             {
                 OutputModeChangeEnable = false;
             }
-            AvailableProfilesForCurrentDevice = new ObservableCollection<IDeviceProfile>();
-            AvailableProfilesForCurrentDevice = ProfileFilter(CurrentDevice);
+       
             if (CurrentDevice.IsUnionMode)
             {
                 CurrentOutput = CurrentDevice.UnionOutput;

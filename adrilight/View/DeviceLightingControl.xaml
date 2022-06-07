@@ -338,7 +338,7 @@
               
                 <StackPanel Margin="10,5" Grid.Column="1">
                     <hc:RunningBlock 
-                                                Margin="5,10,10,0"
+                                                Margin="0,0,10,0"
                                                 BorderThickness="0" 
                                                 Padding="0"  
                                                 Duration="0:0:9" 
@@ -350,6 +350,7 @@
                         <hc:RunningBlock.Content>
                             <TextBlock  Text="{Binding CurrentDevice.DeviceName}" 
                                                                 FlowDirection="RightToLeft"
+                                                                FontWeight="SemiBold"
                                                                 Style="{DynamicResource TextBlockTitle}"
                                                                 />
                         </hc:RunningBlock.Content>
@@ -362,9 +363,9 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock HorizontalAlignment="Left" Margin="0,0,10,0" FontSize="13" Style="{DynamicResource TextBlockDefault}" Text="{Binding CurrentDeviceOutputMode}"/>
-                        <Button  Click="ChangeOutputMode" Grid.Column="1" HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
+                        <Button Height="20"  Click="ChangeOutputMode" Grid.Column="1" HorizontalAlignment="Left" Padding="0,0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
                             <Button.Content>
-                                <TextBlock FontSize="13" Text="Change" Style="{DynamicResource TextBlockDefaultPrimary}"/>
+                                <TextBlock Margin="0"  FontSize="13" Text="Change" Style="{DynamicResource TextBlockDefaultPrimary}"/>
                             </Button.Content>
                         </Button>
                     </Grid>
@@ -386,12 +387,12 @@
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <Button Margin="0,0,10,0" x:Name="ButtonRename" Click="RenameButtonClick" HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
+                        <Button Height="20" Margin="0,0,10,0" x:Name="ButtonRename" Click="RenameButtonClick" HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
                             <Button.Content>
                                 <TextBlock FontSize="13" Text="Rename" Style="{DynamicResource TextBlockDefaultPrimary}"/>
                             </Button.Content>
                         </Button>
-                        <Button  Margin="10,0,10,0" Grid.Column="1" x:Name="ButtonRemove"  HorizontalAlignment="Left" Padding="0" Command="{Binding LaunchDeleteSelectedDeviceWindowCommand}"  Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
+                        <Button Height="20"  Margin="10,0,10,0" Grid.Column="1" x:Name="ButtonRemove"  HorizontalAlignment="Left" Padding="0" Command="{Binding LaunchDeleteSelectedDeviceWindowCommand}"  Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
                             <Button.Content>
                                 <TextBlock FontSize="13" Text="Remove" Style="{DynamicResource TextBlockDefaultDanger}"/>
                             </Button.Content>
@@ -442,7 +443,7 @@
                         </Path>
 
                       
-                        <Popup Effect="{DynamicResource EffectShadow3}"  AllowsTransparency="True" Grid.Column="2" Grid.ColumnSpan="2" PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="15" Name="profile_selection" VerticalOffset="6" StaysOpen="False">
+                        <Popup Effect="{DynamicResource EffectShadow3}"  AllowsTransparency="True" Grid.Column="2" Grid.ColumnSpan="2"  HorizontalOffset="15" Name="profile_selection" VerticalOffset="6" StaysOpen="False">
                             <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
                                 <Border  Margin="15,0,15,15" Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
                                     <StackPanel>
@@ -460,7 +461,7 @@
                                         <hc:Divider Visibility="{Binding ElementName=Order,Path=Visibility}" LineStroke="{DynamicResource SecondaryRegionBrush}" Margin="5,5,5,5">
 
                                         </hc:Divider>
-                                        <ListBox  SelectedItem="{Binding CurrentSelectedProfile}"  SelectedIndex="{Binding CurrentDevice.ActivatedProfileIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectionChanged="NewModeSelected"  
+                                            <ListBox  SelectedItem="{Binding CurrentSelectedProfile}" IsSynchronizedWithCurrentItem="False"
                                                  ItemContainerStyle="{DynamicResource _listBoxGeneralModeSelectionStyle}"  
                                                  Background="Transparent"
                                                  BorderThickness="0"
@@ -580,7 +581,7 @@
                                                 BorderThickness="0" 
                                                 Padding="0"  
                                                 Duration="0:0:9" 
-                                                Height="32" 
+                                                
                                                 HorizontalAlignment="Left" 
                                                 AutoRun="True"  MaxWidth="100"
                                                 Runaway="False" 
@@ -593,8 +594,8 @@
                                     </hc:RunningBlock.Content>
 
                                 </hc:RunningBlock>
-                                <TextBlock Text="Connected" Style="{DynamicResource TextBlockDefaultPrimary}" Visibility="{Binding CurrentDevice.IsTransferActive,Converter={StaticResource boolToVisibilityConvert}}" Margin="5,0" HorizontalAlignment="Left"/>
-                                <TextBlock Text="Disconnected"  Margin="5,0" HorizontalAlignment="Left">
+                                <TextBlock Text="Connected" Style="{DynamicResource TextBlockDefaultPrimary}" Visibility="{Binding CurrentDevice.IsTransferActive,Converter={StaticResource boolToVisibilityConvert}}" Margin="5,5" HorizontalAlignment="Left"/>
+                                <TextBlock Text="Disconnected"  Margin="5,5" HorizontalAlignment="Left">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockDefaultDanger }">
                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -724,8 +725,8 @@
                                                         </StackPanel>
 
                                                         <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=BrightnessButton}" HorizontalOffset="30" x:Name="BrightnessPopup" IsOpen="{Binding IsBrightnessPopupOpen}" VerticalOffset="0" StaysOpen="False">
-                                                            <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
-                                                                <Border Background="{DynamicResource RegionBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="7" Margin="0,2,15,15"  Effect="{DynamicResource EffectShadow3}">
+                                                            <hc:TransitioningContentControl  TransitionMode="Top2Bottom">
+                                                                <Border  Background="{DynamicResource RegionBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="2" CornerRadius="7" Margin="0,2,15,15">
                                                                     <StackPanel Orientation="Vertical">
                                                                         <Grid>
                                                                             <Grid.ColumnDefinitions>
@@ -903,7 +904,8 @@
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border  CornerRadius="7" Background="{DynamicResource RegionBrush}" Grid.Column="0">
+                        <Button hc:BorderElement.CornerRadius="8" Height="auto"  Padding="0" Grid.Column="0" Click="ButtonMode_OnClick" BorderBrush="Transparent"  Style="{DynamicResource ButtonDefault}">
+                        <Border Margin="1"  CornerRadius="7" Background="{DynamicResource RegionBrush}" >
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto"/>
@@ -914,12 +916,12 @@
                                       Width="35" 
                                       Height="35" 
                                       Fill="{DynamicResource PrimaryBrush}"/>
-                                <TextBlock Style="{DynamicResource TextBlockTitleBold}" Margin="5,0,5,0" Grid.Column="1" Text="{Binding CurrentSelectedLightingMode.Name}" />
-                                <Button Click="ButtonMode_OnClick"  hc:IconElement.Width="15" hc:IconElement.Height="15" Margin="10" BorderBrush="Transparent" Grid.Column="2" hc:IconElement.Geometry="{StaticResource comboboxbutton}" Foreground="{DynamicResource SecondaryRegionBrush}" Style="{DynamicResource ButtonDefault}">
-
-                                </Button>
+                                <TextBlock Style="{DynamicResource TextBlockTitleBold}" Margin="5,0,10,0" Grid.Column="1" Text="{Binding CurrentSelectedLightingMode.Name}" />
                                 
-                                <Popup Effect="{DynamicResource EffectShadow3}"  AllowsTransparency="True" Grid.Column="2" Grid.ColumnSpan="2" PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="15" Name="PopupMode" VerticalOffset="6" StaysOpen="False">
+
+                                
+                                
+                                <Popup Effect="{DynamicResource EffectShadow3}"  AllowsTransparency="True" Grid.Column="2" Grid.ColumnSpan="2" HorizontalOffset="15" Name="PopupMode" VerticalOffset="6" StaysOpen="False">
                                     <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
                                         <Border  Margin="15,0,15,15" Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
                                             <ListBox SelectedItem="{Binding CurrentSelectedLightingMode}" SelectedIndex="{Binding CurrentOutput.OutputSelectedMode}" SelectionChanged="NewModeSelected"  x:Name="lightingmode_selection"  
@@ -960,6 +962,7 @@
                                 </Popup>
                             </Grid>
                         </Border>
+                        </Button>
                         <Grid Margin="20,0,5,0" HorizontalAlignment="Right" Grid.Column="1" >
                             <StackPanel Orientation="Horizontal">
                                 <Button Command="{Binding SetAllOutputSelectedModeCommand}" Margin="10,0,10,0" hc:IconElement.Geometry="{DynamicResource selected}" Content="Set All Outputs">

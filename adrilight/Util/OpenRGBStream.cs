@@ -34,6 +34,7 @@ namespace adrilight
                 if (device.DeviceConnectionType == "OpenRGB")
                     AvailableDevices.Add(device);
             }
+            if(AvailableDevices.Count > 0)
             RefreshTransferState();
 
 

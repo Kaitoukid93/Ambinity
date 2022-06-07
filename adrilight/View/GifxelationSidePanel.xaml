@@ -128,7 +128,7 @@
                 <Path Margin="5" Data="{StaticResource gifxelation}" 
           Width="30" 
           Height="30" 
-          Fill="White"
+          Fill="{DynamicResource PrimaryTextBrush}"
           Stretch="Uniform" />
                 <TextBlock  Margin="5,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Left" Text="Chọn Ảnh" Style="{DynamicResource TextBlockDefault}" FontWeight="SemiBold"/>
             </StackPanel>

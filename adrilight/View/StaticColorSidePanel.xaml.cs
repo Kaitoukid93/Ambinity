@@ -24,6 +24,9 @@ namespace adrilight.View
         {
             InitializeComponent();
         }
-        private void ButtonAdd_OnClick(object sender, RoutedEventArgs e) => PopupAdd.IsOpen = true;
+        private void ButtonAdd_OnClick(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

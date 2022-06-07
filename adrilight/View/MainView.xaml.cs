@@ -83,8 +83,8 @@ namespace adrilight.View
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            
-            
+           
+
         }
 
         private void OpenDashboard(object sender, RoutedEventArgs e)

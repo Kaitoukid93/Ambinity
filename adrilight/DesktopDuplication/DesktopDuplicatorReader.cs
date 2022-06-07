@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using adrilight.Resources;
 using adrilight.Util;
 using adrilight.Spots;
+using System.Windows;
 
 namespace adrilight
 {
@@ -413,7 +414,12 @@ namespace adrilight
             {
                 ByteFrame CurrentFrame = null;
                 Bitmap DesktopImage;
-                CurrentFrame = DesktopFrame[OutputSettings.OutputSelectedDisplay].Frame;
+                if(OutputSettings.OutputSelectedDisplay>= DesktopFrame.Length)
+                {
+                    HandyControl.Controls.MessageBox.Show( "màn hình không khả dụng","Sáng theo màn hình", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                CurrentFrame = DesktopFrame.FirstOrDefault().Frame;
+                OutputSettings.OutputSelectedDisplay = 0;
                 if (isPreviewRunning)
                 {
                     MainViewViewModel.ShaderImageUpdate(CurrentFrame);

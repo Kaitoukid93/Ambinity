@@ -21,6 +21,8 @@ namespace adrilight
         bool StartMinimized { get; set; }
         int SystemRainbowSpeed { get; set; }
         int SystemRainbowMaxTick { get; set; }
+        int ThemeIndex { get; set; }
+        Brush AccentColor { get; set; }
 
 
     }
