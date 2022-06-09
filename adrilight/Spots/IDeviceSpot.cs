@@ -9,7 +9,11 @@ namespace adrilight.Spots
         byte Green { get; }
         byte Blue { get; }
 
+        byte SentryRed { get; }
+        byte SentryGreen { get; }
+        byte SentryBlue { get; }
         Color OnDemandColor { get; }
+        Color SentryColor { get; }
         Rectangle Rectangle { get; set; }
         bool IsFirst { get; set; }
         int RadiusX { get; set; }
@@ -28,6 +32,7 @@ namespace adrilight.Spots
 
         void IndicateMissingValue();
         void SetColor(byte red, byte green, byte blue, bool raiseEvents);
+        void SetSentryColor(byte red, byte green, byte blue);
         void SetVID(int vid);
         void SetID(int id);
         void SetMID(int mid);

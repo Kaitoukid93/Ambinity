@@ -53,7 +53,7 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <Button Click="Button_Click" hc:IconElement.Geometry="{StaticResource delete}" Command="{Binding DeleteSelectedDeviceCommand}" Margin="10" Style="{DynamicResource ButtonDanger}" Grid.Column="2" Content="Delete"/>
-                <Button Click="Button_Click" Background="Transparent" Margin="10" Style="{DynamicResource ButtonPrimary}" Grid.Column="1" Content="Cancel"/>
+                <Button Foreground="{DynamicResource PrimaryTextBrush}" BorderThickness="0" Click="Button_Click" Background="Transparent" Margin="10" Style="{DynamicResource ButtonDefault}" Grid.Column="1" Content="Cancel"/>
             </Grid>
             
         </StackPanel>

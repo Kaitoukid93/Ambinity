@@ -49,6 +49,7 @@ namespace adrilight.Spots
         public bool IsIDVissible { get; set; }
 
         public Color OnDemandColor => Color.FromRgb(Red, Green, Blue);
+        public Color SentryColor => Color.FromRgb(SentryRed, SentryGreen, SentryBlue);
         public Color OnDemandColorTransparent => Color.FromArgb(255, Red, Green, Blue);
         public int RadiusX { get; set; }
         public int RadiusY { get;  set; }
@@ -60,7 +61,9 @@ namespace adrilight.Spots
         public int YIndex { get; set; }
         public bool IsActivated { get; set; }
         public double BorderThickness { get; set; }
-
+        public byte SentryRed { get; private set; }
+        public byte SentryGreen { get; private set; }
+        public byte SentryBlue { get; private set; }
 
         public byte Red { get; private set; }
         public byte Green { get; private set; }
@@ -78,6 +81,15 @@ namespace adrilight.Spots
                 RaisePropertyChanged(nameof(OnDemandColor));
                 RaisePropertyChanged(nameof(OnDemandColorTransparent));
             }
+        }
+        public void SetSentryColor(byte red, byte green, byte blue)
+        {
+            SentryRed = red;
+            SentryGreen = green;
+            SentryBlue = blue;
+           
+
+           
         }
         public void SetStroke(double strokeThickness)
         {

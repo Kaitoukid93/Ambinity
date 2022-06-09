@@ -54,6 +54,7 @@ namespace adrilight
         private int _outputMusicDancingMode = 0;
         private int _outputColorPaletteMode = 0;
         private int _outputBreathingSpeed = 20000;
+        private int _sleepMode = 0;
         private IColorPalette _outputCurrentActivePalette;
         private ILEDSetup _outputLEDSetup;
         private bool _isInSpotEditWizard=false;
@@ -93,6 +94,8 @@ namespace adrilight
         public int OutputGifSpeed { get => _outputGifSpeed; set { Set(() => OutputGifSpeed, ref _outputGifSpeed, value); } }
         [Reflectable]
         public int VUMode { get => _vUMode; set { Set(() => VUMode, ref _vUMode, value); } }
+        [Reflectable]
+        public int SleepMode { get => _sleepMode; set { Set(() => SleepMode, ref _sleepMode, value); } }
         public int OutputID { get => _outputID; set { Set(() => OutputID, ref _outputID, value); } }
         public string OutputType { get => _outputType; set { Set(() => OutputType, ref _outputType, value); } }
         public string OutputDescription { get => _outputDescription; set { Set(() => OutputDescription, ref _outputDescription, value); } }

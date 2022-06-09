@@ -185,7 +185,7 @@
                 <Button  Content="Add New" Click="ButtonAdd_OnClick" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"  Style="{DynamicResource ButtonDefault}"   Width="100" Padding="0,0" Margin="0,15,15,0" HorizontalAlignment="Right" hc:IconElement.Width="20" hc:IconElement.Height="20"  hc:IconElement.Geometry="{DynamicResource addnew}">
 
                 </Button>
-                <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=ButtonConfig}" HorizontalOffset="0" Name="PopupAdd" VerticalOffset="2" StaysOpen="False">
+                <Popup AllowsTransparency="True" HorizontalOffset="0" Name="PopupAdd" VerticalOffset="2" StaysOpen="False">
                     <hc:TransitioningContentControl TransitionMode="Top2Bottom">
                         <Border Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="2" BorderBrush="{DynamicResource BorderBrush}" Margin="0,2,15,15"  >
                             <StackPanel Orientation="Vertical">

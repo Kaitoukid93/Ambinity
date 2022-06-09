@@ -374,7 +374,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Margin="0,0,10,0" FontSize="13" Style="{DynamicResource TextBlockDefault}" Text="Single Output Device"/>
+                        <TextBlock HorizontalAlignment="Left" Margin="0,0,10,0" FontSize="13" Style="{DynamicResource TextBlockDefault}" Text="Single Output Device"/>
                         <Button Click="ChangeOutputMode" Grid.Column="1" HorizontalAlignment="Left" Padding="0"    Style="{DynamicResource ButtonDefault}" Background="Transparent" BorderBrush="Transparent">
                             <Button.Content>
                                 <TextBlock FontSize="13" Text="" Style="{DynamicResource TextBlockDefaultPrimary}"/>
@@ -458,7 +458,7 @@
                                                         </hc:Badge>
                                             </StackPanel>  
                                         </Grid>
-                                        <hc:Divider Visibility="{Binding ElementName=Order,Path=Visibility}" LineStroke="{DynamicResource SecondaryRegionBrush}" Margin="5,5,5,5">
+                                        <hc:Divider LineStroke="{DynamicResource SecondaryRegionBrush}" Margin="5,5,5,5">
 
                                         </hc:Divider>
                                             <ListBox  SelectedItem="{Binding CurrentSelectedProfile}" IsSynchronizedWithCurrentItem="False"
@@ -809,9 +809,21 @@
                 
             </Border>
             <Border Padding="15" Margin="10" Grid.Column="1"  Background="{DynamicResource DarkOpacityBrush}" CornerRadius="7">
-                <Grid VerticalAlignment="Center" HorizontalAlignment="Center"  ClipToBounds="true" Grid.Column="1" x:Name="MotherGrid">
+                <Grid>
+                  
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                
+                <Grid Grid.Column="1">
+                        <Button Command="{Binding SetCurrentLEDSetupSentryColorCommand }" ToolTip="Nhấn để đặt màu hiện tại làm màu khi tắt máy" Margin="0" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{DynamicResource ButtonDefault}" Content="Snap" hc:IconElement.Geometry="{DynamicResource sentry}" Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"/>
+                </Grid>
+                <Grid  Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"  ClipToBounds="true"  x:Name="MotherGrid">
+                   
+                   
                
-                    <Viewbox  HorizontalAlignment="Center" VerticalAlignment="Center"  Name="PreviewBox">
+                        <Viewbox  HorizontalAlignment="Center" VerticalAlignment="Center"  Name="PreviewBox">
 
                             <ItemsControl
                           Name="PreviewGird"  
@@ -874,18 +886,12 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </Viewbox>
-                        <Canvas
-                x:Name="dragSelectionCanvas"
-                Visibility="Collapsed">
-                            <Border  x:Name="dragSelectionBorder"
-                     BorderBrush="Blue"
-                     BorderThickness="2"
-                     Background="LightBlue"
-                     CornerRadius="1"
-                     Opacity="0.5"/>
-                        </Canvas>
+                   
+                  
+            
                     
                     </Grid>
+                </Grid>
               </Border>
                 </Grid>
        

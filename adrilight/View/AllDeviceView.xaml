@@ -211,7 +211,7 @@
                     <DataTemplate >
                         <Grid 
                               x:Name="dev" 
-                              Visibility="{Binding IsVissible,Converter={StaticResource boolToVisibilityConvert}}"         
+                                    
                               Width="230" 
                               Height="260" >
 
@@ -297,6 +297,7 @@
                                                 <hc:RunningBlock.Content>
                                                     <TextBlock  Text="{Binding DeviceName}" 
                                                                 FlowDirection="RightToLeft"
+                                                                FontWeight="SemiBold"
                                                                 Style="{DynamicResource TextBlockTitle}"
                                                                 />
                                                 </hc:RunningBlock.Content>

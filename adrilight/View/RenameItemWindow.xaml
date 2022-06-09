@@ -30,7 +30,7 @@
             <TextBlock Text="Rename" Style="{DynamicResource TextBlockLarge}">
                 
             </TextBlock>
-            <TextBox Text="{Binding NameToChange, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MaxLength="100" Margin="10" hc:InfoElement.Placeholder="Ví dụ : Rainbow" hc:InfoElement.Title="NAME" Style="{DynamicResource TextBoxExtend}" hc:InfoElement.Necessary="True" />
+            <TextBox Text="{Binding NameToChange, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MaxLength="100" Margin="10" hc:InfoElement.Placeholder="Ví dụ : LED Strip" hc:InfoElement.Title="NAME" Style="{DynamicResource TextBoxExtend}" hc:InfoElement.Necessary="True" />
 
             <Grid >
                 <Grid.ColumnDefinitions>

@@ -20,8 +20,8 @@
     </Grid.ColumnDefinitions>
     <Grid Grid.Column="0">
         <Path HorizontalAlignment="left"  Stretch="Uniform" Margin="0,5,0,0" Data="{StaticResource appicon}" 
-                                      Width="20" 
-                                      Height="20" 
+                                      Width="18" 
+                                      Height="18" 
                                       Fill="{DynamicResource PrimaryTextBrush}"/>
     </Grid>
    

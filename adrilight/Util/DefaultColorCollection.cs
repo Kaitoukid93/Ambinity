@@ -28,6 +28,24 @@ namespace adrilight.Util
              Color.FromRgb (232,0,255),
              Color.FromRgb (255,0,25)
         };
+        public static Color[] snap = {
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (0,0,0),
+             Color.FromRgb (20,20,20),
+             Color.FromRgb (20,20,20),
+             Color.FromRgb (40,40,40),
+             Color.FromRgb (60,60,60),
+             Color.FromRgb (80,80,80),
+             Color.FromRgb (100,100,100),
+             Color.FromRgb (120,120,120),
+             Color.FromRgb (100,100,100),
+             Color.FromRgb (80,80,80),
+             Color.FromRgb (60,60,60),
+             Color.FromRgb (40,40,40),
+             Color.FromRgb (20,20,20),
+             Color.FromRgb (10,10,10),
+             Color.FromRgb (0,0,0)
+        };
         public static Color[] party = {
              Color.FromRgb (88,53,148),
              Color.FromRgb (129,39,122),

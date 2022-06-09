@@ -47,7 +47,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Path   Fill="{DynamicResource WarningBrush}" Width="20" Height="20" Margin="10,10" Data="{StaticResource colorchanged}" Stretch="Uniform" />
-                            <TextBlock Margin="5" TextWrapping="Wrap" HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultWarning}" Grid.Column="1" Text="Số điền vào không được vượt quá tổng số LED của tất cả các thiết bị"/>
+                            <TextBlock Margin="5" TextWrapping="Wrap" HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultWarning}" Grid.Column="1" Text="Số điền vào không được vượt quá 1023"/>
                         </Grid>
 
                      

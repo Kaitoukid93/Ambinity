@@ -104,12 +104,10 @@ namespace adrilight
             this.Resources["Locator"] = new ViewModelLocator(kernel);
 
 
-            // DeviceSettings = kernel.Get<IDeviceSettings>();
-            // UserSettings = kernel.Get<IUserSettings>();
             GeneralSettings = kernel.Get<IGeneralSettings>();
             _telemetryClient = kernel.Get<TelemetryClient>();
 
-            //SetupNotifyIcon();
+        
 
 
 
@@ -126,11 +124,8 @@ namespace adrilight
 
             ThemeManager.Current.AccentColor = GeneralSettings.AccentColor;
             // Current.MainWindow = kernel.Get<MainView>();
-            if (!GeneralSettings.StartMinimized)
-            {
-                OpenSettingsWindow();
-            }
-            
+            OpenSettingsWindow(GeneralSettings.StartMinimized);
+
             SetupTrackingForProcessWideEvents(_telemetryClient);
         }
 
@@ -277,9 +272,10 @@ namespace adrilight
                 var SerialStream = kernel.GetAll<ISerialStream>();
                 foreach (var serialStream in SerialStream)
                 {
+                    serialStream.CurrentState = State.sleep;
+                    Thread.Sleep(1000); //wait for serialstream to finising sending
                     serialStream.Stop();
                 }
-
                 _log.Debug("Application exit!");
             };
 
@@ -314,6 +310,8 @@ namespace adrilight
                     var SerialStream = kernel.GetAll<ISerialStream>();
                     foreach (var serialStream in SerialStream)
                     {
+                        serialStream.CurrentState = State.sleep;
+                        Thread.Sleep(1000);
                         serialStream.Stop();
                     }
 
@@ -333,6 +331,9 @@ namespace adrilight
                 var SerialStream = kernel.GetAll<ISerialStream>();
                 foreach (var serialStream in SerialStream)
                 {
+                    
+                    serialStream.CurrentState = State.sleep;
+                    Thread.Sleep(1000);
                     serialStream.Stop();
                 }
                 _log.Debug("Stop the serial stream due to power down or log off condition!");
@@ -374,12 +375,22 @@ namespace adrilight
 
         private IKernel kernel;
         
-        private void OpenSettingsWindow()
+        private void OpenSettingsWindow(bool isMinimized)
         {
             var _mainForm = kernel.Get<MainView>();
            
                 //bring to front?
+                if(!isMinimized)
+            {
+                _mainForm.Visibility=Visibility.Visible;
                 _mainForm.Show();
+            }
+            else
+            {
+                //_mainForm.Visibility = Visibility.Collapsed;
+                
+            }
+            
             
         }
         //private void MainForm_FormClosed(object sender, EventArgs e)
@@ -390,112 +401,7 @@ namespace adrilight
         //    _mainForm.Closed -= MainForm_FormClosed;
         //    _mainForm = null;
         //}
-        private void SetupNotifyIcon()
-
-        {
-
-            var icon = new System.Drawing.Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("adrilight.zoe.ico"));
-
-            var contextMenu = new ContextMenuStrip();
-
-
-            //var allDevices = kernel.GetAll<IDeviceSettings>();
-            //foreach (var device in allDevices)
-            //{
-            //    if (!device.IsHUB && device.ParrentLocation == 151293)
-            //    {
-            //        var deviceMenu = new ToolStripMenuItem(device.DeviceName);
-
-            //        deviceMenu.DropDownItems.Add(new ToolStripMenuItem("Bật/Tắt LED",null, (s, e) =>
-            //        {
-            //            if (device.LEDOn)
-            //                device.LEDOn = false;
-            //            else
-            //                device.LEDOn = true;
-
-            //        }));
-            //        contextMenu.Items.Add(deviceMenu);
-            //    }
-
-
-            //}
-            //var SyncAll = new ToolStripMenuItem("Đồng bộ tất cả", null, (s, e) =>
-            //{
-
-
-            //});
-            //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Theo màn hình", null, (s, e) =>
-            //{
-            //    foreach (var device in allDevices)
-            //    {
-            //        device.SelectedEffect = 0;
-            //    }
-
-            //}));
-
-            //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Màu tĩnh",null, (s, e) =>
-            //        {
-            //            foreach (var device in allDevices)
-            //            {
-            //                device.SelectedEffect = 2;
-            //            }
-
-            //        }));
-            //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Dải màu", null, (s, e) =>
-            //{
-            //    foreach (var device in allDevices)
-            //    {
-            //        device.SelectedEffect = 1;
-            //    }
-
-            //}));
-            //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Theo Nhạc", null, (s, e) =>
-            //{
-            //    foreach (var device in allDevices)
-            //    {
-            //        device.SelectedEffect = 3;
-            //    }
-
-            //}));
-            //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Atmosphere", null, (s, e) =>
-            //{
-            //    foreach (var device in allDevices)
-            //    {
-            //        device.SelectedEffect = 4;
-            //    }
-
-            //}));
-            //SyncAll.DropDownItems.Add(new ToolStripMenuItem("Canvas Lighting", null, (s, e) =>
-            //{
-            //    foreach (var device in allDevices)
-            //    {
-            //        device.SelectedEffect = 5;
-            //    }
-
-            //}));
-            var dashboard = new ToolStripMenuItem("Dashboard", null, (s, e) => OpenSettingsWindow());
-            var exit = new ToolStripMenuItem("Thoát", null, (s, e) => Shutdown(0));
-            //contextMenu.Items.Add(SyncAll);
-            contextMenu.Items.Add(dashboard);
-            contextMenu.Items.Add(exit);
-            // contextMenu.Items.Add(new MenuItem("Dashboard", (s, e) => OpenNewUI()));
-            //  contextMenu.MenuItems.Add(new System.Windows.Forms.MenuItem("Cài đặt...", (s, e) => OpenSettingsWindow()));
-            //contextMenu.Items.Add(new MenuItem("Thoát", (s, e) => Shutdown(0)));
-
-            //This Commented due to Net5 incompatible
-
-            var notifyIcon = new System.Windows.Forms.NotifyIcon() {
-                Text = $"adrilight {VersionNumber}",
-                Icon = icon,
-                Visible = true,
-                ContextMenuStrip = contextMenu
-            };
-            //  notifyIcon.DoubleClick += (s, e) => { OpenSettingsWindow(); };
-            notifyIcon.DoubleClick += (s, e) => { OpenSettingsWindow(); };
-            notifyIcon.BalloonTipText = "Ứng dụng đã ẩn, double click để hiển thị cửa sổ";
-
-            Exit += (s, e) => notifyIcon.Dispose();
-        }
+        
 
 
         public static string VersionNumber { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);

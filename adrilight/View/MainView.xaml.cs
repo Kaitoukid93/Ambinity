@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +30,8 @@ namespace adrilight.View
             InitializeComponent();
             // ViewModel = new MainViewViewModel();
             // this.DataContext = ViewModel;
-
+            noticon.Init();
+       
             var view = DataContext as MainViewViewModel;
             if (view != null)
             {

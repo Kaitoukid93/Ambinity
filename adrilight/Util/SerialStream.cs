@@ -12,9 +12,13 @@ using adrilight.Spots;
 
 namespace adrilight
 {
+    
     internal sealed class
+
         SerialStream : IDisposable, ISerialStream
     {
+        
+
         private ILogger _log = LogManager.GetCurrentClassLogger();
 
         public SerialStream(IDeviceSettings deviceSettings, IGeneralSettings generalSettings)
@@ -25,7 +29,7 @@ namespace adrilight
             // DeviceSpotSets = deviceSpotSets ?? throw new ArgumentNullException(nameof(deviceSpotSets));
             DeviceSettings.PropertyChanged += UserSettings_PropertyChanged;
             RefreshTransferState();
-
+            
             _log.Info($"SerialStream created.");
 
 
@@ -33,7 +37,8 @@ namespace adrilight
         //Dependency Injection//
         private IDeviceSettings DeviceSettings { get; set; }
         private IGeneralSettings GeneralSettings { get; set; }
-
+       
+        public  State CurrentState { get; set; }
 
         // private IDeviceSpotSet[] DeviceSpotSets { get; set; }
         private bool CheckSerialPort(string serialport)
@@ -180,7 +185,7 @@ namespace adrilight
             WinApi.TimeBeginPeriod(1);
 
             // The call has failed
-
+            CurrentState = State.normal;
             _workerThread.Start(_cancellationTokenSource.Token);
         }
 
@@ -188,7 +193,6 @@ namespace adrilight
         {
             _log.Debug("Stop called.");
             if (_workerThread == null) return;
-
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = null;
             _workerThread?.Join();
@@ -257,85 +261,76 @@ namespace adrilight
                 var parrentIsEnabled = DeviceSettings.IsEnabled;
                 var allBlack = true;
                 //}
-
-
-                foreach (DeviceSpot spot in currentOutput.OutputLEDSetup.Spots)
-                {
-                    if (isEnabled && parrentIsEnabled)
-                    {
-                        var RGBOrder = currentOutput.OutputRGBLEDOrder;
-                        switch (RGBOrder)
+                switch(CurrentState)
+                { case State.normal: // get data from ledsetup
+                        foreach (DeviceSpot spot in currentOutput.OutputLEDSetup.Spots)
                         {
-                            case "RGB": //RGB
+                            if (isEnabled && parrentIsEnabled)
+                            {
+                                var RGBOrder = currentOutput.OutputRGBLEDOrder;
+                                var reOrderedColor = ReOrderSpotColor(RGBOrder, spot.Red,spot.Green,spot.Blue);
                                 for (int i = 0; i < ledPerSpot; i++)
-                                {
-                                    outputStream[counter++] = spot.Red; // blue
-                                    outputStream[counter++] = spot.Green; // green
-                                    outputStream[counter++] = spot.Blue; // red
-                                }
+                                        {
 
-                                break;
-                            case "GRB": //GRB
-                                for (int i = 0; i < ledPerSpot; i++)
-                                {
-                                    outputStream[counter++] = spot.Green; // blue
-                                    outputStream[counter++] = spot.Red; // green
-                                    outputStream[counter++] = spot.Blue; // red
-                                }
-                                break;
-                            case "BRG": //BRG
-                                for (int i = 0; i < ledPerSpot; i++)
-                                {
-                                    outputStream[counter++] = spot.Blue; // blue
-                                    outputStream[counter++] = spot.Red; // green
-                                    outputStream[counter++] = spot.Green; // red
-                                }
-                                break;
-                            case "BGR": //BGR
-                                for (int i = 0; i < ledPerSpot; i++)
-                                {
-                                    outputStream[counter++] = spot.Blue; // blue
-                                    outputStream[counter++] = spot.Green; // green
-                                    outputStream[counter++] = spot.Red; // red
-                                }
-                                break;
-                            case "GBR"://GBR
-                                for (int i = 0; i < ledPerSpot; i++)
-                                {
-                                    outputStream[counter++] = spot.Green; // blue
-                                    outputStream[counter++] = spot.Blue; // green
-                                    outputStream[counter++] = spot.Red; // red
-                                }
-                                break;
-                            case "RBG": //GBR
-                                for (int i = 0; i < ledPerSpot; i++)
-                                {
-                                    outputStream[counter++] = spot.Red; // blue
-                                    outputStream[counter++] = spot.Blue; // green
-                                    outputStream[counter++] = spot.Green; // red
-                                }
-                                break;
+                                            outputStream[counter++] = reOrderedColor[0]; // blue
+                                            outputStream[counter++] = reOrderedColor[1]; // green
+                                            outputStream[counter++] = reOrderedColor[2]; // red
+                                        }
 
+                                allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
+
+                            }
+                            else
+                            {
+                                for (int i = 0; i < ledPerSpot; i++)
+                                {
+                                    outputStream[counter++] = 0; // blue
+                                    outputStream[counter++] = 0; // green
+                                    outputStream[counter++] = 0; // red
+                                }
+                            }
 
 
                         }
-
-
-                        allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
-
-                    }
-                    else
-                    {
-                        for (int i = 0; i < ledPerSpot; i++)
+                        break;
+                    case State.sleep: // send black frame data
+                        foreach (DeviceSpot spot in currentOutput.OutputLEDSetup.Spots)
                         {
-                            outputStream[counter++] = 0; // blue
-                            outputStream[counter++] = 0; // green
-                            outputStream[counter++] = 0; // red
+                            switch(currentOutput.SleepMode)
+                            {
+                                case 0:
+                                    if (isEnabled && parrentIsEnabled)
+                                    {
+                                        for (int i = 0; i < ledPerSpot; i++)
+                                        {
+                                            outputStream[counter++] = 0; // blue
+                                            outputStream[counter++] = 0; // green
+                                            outputStream[counter++] = 0; // red
+                                        }
+                                    }
+                                    break;
+                                case 1:
+                                    if (isEnabled && parrentIsEnabled)
+                                    {
+                                        var RGBOrder = currentOutput.OutputRGBLEDOrder;
+                                        var reOrderedColor = ReOrderSpotColor(RGBOrder, spot.SentryRed,spot.SentryGreen,spot.SentryBlue);
+                                        for (int i = 0; i < ledPerSpot; i++)
+                                        {
+
+                                            outputStream[counter++] = reOrderedColor[0]; // blue
+                                            outputStream[counter++] = reOrderedColor[1]; // green
+                                            outputStream[counter++] = reOrderedColor[2]; // red
+                                        }
+                                    }
+                                    break;
+                            }
+                            
                         }
-                    }
-
-
+                        break;
+                   
                 }
+
+               
 
 
 
@@ -354,82 +349,45 @@ namespace adrilight
 
 
         }
-        //private (byte[] Buffer, int OutputLength) GetOutputStreamSleep()
-        //{
-        //    byte[] outputStream;
-
-        //    int counter = _messagePreamble.Length;
-        //    lock (DeviceSpotSet.Lock)
-        //    {
-        //        const int colorsPerLed = 3;
-        //        int bufferLength = _messagePreamble.Length + 3
-        //            + (DeviceSpotSet.LEDSetup.Spots.Length * colorsPerLed);
-
-
-        //        outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
-
-        //        Buffer.BlockCopy(_messagePreamble, 0, outputStream, 0, _messagePreamble.Length);
-
-
-
-
-        //        ///device param///
-        //        ///numleds/////đây là thiết bị dạng led màn hình có số led chiều dọc và chiều ngang, tổng số led sẽ là (dọc-1)*2+(ngang-1)*2///
-        //        //////2 byte ngay tiếp sau Preamable là để ghép lại thành 1 số 16bit (vì số led có thể lớn hơn 255 nhiều) vi điều khiển sẽ dựa vào số led này để biết cần đọc bao nhiêu byte nữa///
-        //        byte lo = (byte)(((DeviceSettings.SpotsX - 1) * 2 + (DeviceSettings.SpotsY - 1) * 2) & 0xff);
-        //        byte hi = (byte)((((DeviceSettings.SpotsX - 1) * 2 + (DeviceSettings.SpotsY - 1) * 2) >> 8) & 0xff);
-        //        outputStream[counter++] = hi;
-        //        outputStream[counter++] = lo;
-        //        byte chk = (byte)(hi ^ lo ^ 0x55);
-        //        outputStream[counter++] = chk;
-        //        var allBlack = true;
-
-
-        //        int snapshotCounter = 0;
-        //        if(GeneralSettings.SentryMode==1)
-        //        {
-        //            foreach (DeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
-        //            {
-
-        //                outputStream[counter++] = DeviceSettings.SnapShot[snapshotCounter++]; // blue
-        //                outputStream[counter++] = DeviceSettings.SnapShot[snapshotCounter++]; // green
-        //                outputStream[counter++] = DeviceSettings.SnapShot[snapshotCounter++]; // red
-
-        //                allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
-
-
-        //            }
-        //        }
-        //        else if(GeneralSettings.SentryMode==0)
-        //        {
-        //            foreach (DeviceSpot spot in DeviceSpotSet.LEDSetup.Spots)
-        //            {
-
-        //                outputStream[counter++] = 0; // blue
-        //                outputStream[counter++] = 0; // green
-        //                outputStream[counter++] = 0; // red
-
-        //                allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
-
-
-        //            }
-        //        }
-
-
-        //        if (allBlack)
-        //        {
-        //            blackFrameCounter++;
-        //        }
-
-        //        return (outputStream, bufferLength);
-        //    }
-
-
-
-
-
-        //}
-
+       
+       private byte[] ReOrderSpotColor(string order, byte r,byte g, byte b)
+        {
+            byte[] reOrderedColor = new byte[3];
+            switch (order)
+            {
+                case "RGB"://do nothing
+                    reOrderedColor[0] = r;
+                    reOrderedColor[1] = g;
+                    reOrderedColor[2] = b;
+                    break;
+                case "RBG"://do nothing
+                    reOrderedColor[0] = r;
+                    reOrderedColor[1] = b;
+                    reOrderedColor[2] = g;
+                    break;
+                case "BGR"://do nothing
+                    reOrderedColor[0] = b;
+                    reOrderedColor[1] = g;
+                    reOrderedColor[2] = r;
+                    break;
+                case "BRG"://do nothing
+                    reOrderedColor[0] = b;   
+                    reOrderedColor[1] = r;
+                    reOrderedColor[2] = g;
+                    break;
+                case "GRB"://do nothing
+                    reOrderedColor[0] = g;
+                    reOrderedColor[1] = r;
+                    reOrderedColor[2] = b;
+                    break;
+                case "GBR"://do nothing
+                    reOrderedColor[0] = g;
+                    reOrderedColor[1] = b;
+                    reOrderedColor[2] = r;
+                    break;
+            }
+            return reOrderedColor;
+        }
         private void DoWork(object tokenObject)
         {
             var cancellationToken = (CancellationToken)tokenObject;
@@ -575,19 +533,7 @@ namespace adrilight
                 {
                     if (serialPort != null && serialPort.IsOpen)
                     {
-                        //write last frame
-                        // Thread.Sleep(500);
-                        // serialPort.Close();
-                        //Thread.Sleep(500);
-                        // serialPort.Open();
-                        //var (outputBuffer, streamLength) = GetOutputStreamSleep();
-                        //serialPort.Write(outputBuffer, 0, streamLength);
-                        //serialPort.Write(outputBuffer, 0, streamLength);
-                        //serialPort.Write(outputBuffer, 0, streamLength);
-                        //serialPort.Write(outputBuffer, 0, streamLength);
-                        //serialPort.Write(outputBuffer, 0, streamLength);
-                        //serialPort.Write(outputBuffer, 0, streamLength);
-                        //_log.Debug("Last Frame Sent!");
+
 
                         serialPort.Close();
                         serialPort.Dispose();

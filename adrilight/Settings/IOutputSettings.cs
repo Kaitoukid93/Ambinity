@@ -98,7 +98,7 @@ namespace adrilight
         int OutputScreenCaptureWBBlue { get; set; }
         int OutputMusicDancingMode { get; set; }
         int OutputBreathingSpeed { get; set; }
-
+        int SleepMode { get; set; }
         //static color settings//
         IGradientColorCard OutputSelectedGradient { get; set; }
 

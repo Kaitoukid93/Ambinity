@@ -37,9 +37,17 @@
                     </DataTemplate>
                 </GroupBox.HeaderTemplate>
                 <StackPanel Orientation="Horizontal">
-                    <Border Margin="10,5,10,5" Background="Red" Width="20" Height="20" CornerRadius="4"/>
+                    <!--<Border Margin="10,5,5,5" BorderThickness="1" BorderBrush="Red"  Width="25" Height="25" CornerRadius="4">
+                        <Border.Background>
+                            <SolidColorBrush Color="Red" Opacity="0.2">
+                                
+                            </SolidColorBrush>
+                        </Border.Background>
+                    </Border>-->
                     <hc:PreviewSlider Margin="5" Width="260" HorizontalAlignment="Right" Minimum="0" Maximum="100" Value="{Binding CurrentOutput.OutputScreenCaptureWBRed}">
-
+                        <hc:PreviewSlider.PreviewContent>
+                            <Label Style="{StaticResource LabelPrimary}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
+                        </hc:PreviewSlider.PreviewContent>
                     </hc:PreviewSlider>
                 </StackPanel>
                
@@ -51,9 +59,17 @@
                     </DataTemplate>
                 </GroupBox.HeaderTemplate>
                 <StackPanel Orientation="Horizontal">
-                    <Border Margin="10,5,10,5" Background="Blue" Width="20" Height="20" CornerRadius="4"/>
-                    <hc:PreviewSlider Margin="5" Width="260" HorizontalAlignment="Right" Minimum="0" Maximum="100" Value="{Binding CurrentOutput.OutputScreenCaptureWBBlue}">
+                    <!--<Border Margin="10,5,5,5" BorderThickness="1" BorderBrush="Blue"  Width="25" Height="25" CornerRadius="4">
+                        <Border.Background>
+                            <SolidColorBrush Color="Blue" Opacity="0.2">
 
+                            </SolidColorBrush>
+                        </Border.Background>
+                    </Border>-->
+                    <hc:PreviewSlider Margin="5" Width="260" HorizontalAlignment="Right" Minimum="0" Maximum="100" Value="{Binding CurrentOutput.OutputScreenCaptureWBBlue}">
+                        <hc:PreviewSlider.PreviewContent>
+                            <Label Style="{StaticResource LabelPrimary}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
+                        </hc:PreviewSlider.PreviewContent>
                     </hc:PreviewSlider>
                 </StackPanel>
 
@@ -65,9 +81,18 @@
                     </DataTemplate>
                 </GroupBox.HeaderTemplate>
                 <StackPanel Orientation="Horizontal">
-                    <Border Margin="10,5,10,5" Background="Green" Width="20" Height="20" CornerRadius="4"/>
-                    <hc:PreviewSlider Margin="5" Width="260" HorizontalAlignment="Right" Minimum="0" Maximum="100" Value="{Binding CurrentOutput.OutputScreenCaptureWBGreen}">
+                    <!--<Border Margin="10,5,5,5" BorderThickness="1" BorderBrush="Green"  Width="25" Height="25" CornerRadius="4">
+                        <Border.Background>
+                            <SolidColorBrush Color="Green" Opacity="0.2">
 
+                            </SolidColorBrush>
+                        </Border.Background>
+                        <TextBlock Foreground="Green" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding CurrentOutput.OutputScreenCaptureWBGreen}"/>
+                    </Border>-->
+                    <hc:PreviewSlider Margin="5" Width="260" HorizontalAlignment="Right" Minimum="0" Maximum="100" Value="{Binding CurrentOutput.OutputScreenCaptureWBGreen}">
+                        <hc:PreviewSlider.PreviewContent>
+                            <Label Style="{StaticResource LabelPrimary}" Content="{Binding Path=(hc:PreviewSlider.PreviewPosition),RelativeSource={RelativeSource Self}}" ContentStringFormat="#0"/>
+                        </hc:PreviewSlider.PreviewContent>
                     </hc:PreviewSlider>
                 </StackPanel>
 

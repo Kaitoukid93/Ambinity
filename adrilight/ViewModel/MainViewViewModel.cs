@@ -341,6 +341,7 @@ namespace adrilight.ViewModel
         public ICommand ResetAppCommand { get; set; }
         public ICommand OpenAppSettingsWindowCommand { get; set; }
         public ICommand SetAllDeviceSelectedGradientColorCommand { get; set; }
+        public ICommand SetCurrentLEDSetupSentryColorCommand { get; set; }
         public ICommand DeleteSelectedGradientCommand { get; set; }
         public ICommand SetAllOutputSelectedGradientColorCommand { get; set; }
         public ICommand ZerolAllCommand { get; set; }
@@ -1886,17 +1887,14 @@ namespace adrilight.ViewModel
         public string CurrentDeviceOutputMode {
             get
             {
-                switch (CurrentDevice.IsUnionMode)
+                if(String.IsNullOrEmpty(_currentDeviceOutputMode))
                 {
-                    case true:
-
-                        return "Output Mode: Union";
-
-                    case false:
-
-                        return "Output Mode: Independent";
-
-                }
+                    if (CurrentDevice.IsUnionMode)
+                        return "Output Mode : Union";
+                    else
+                        return "Output Mode : Independent";
+                }    
+                return _currentDeviceOutputMode;
             }
             set
             {
@@ -2096,6 +2094,27 @@ namespace adrilight.ViewModel
                     device.UnionOutput.OutputSelectedGradient = CurrentOutput.OutputSelectedGradient;
 
                 }
+
+            });
+            SetCurrentLEDSetupSentryColorCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                foreach(var spot in CurrentOutput.OutputLEDSetup.Spots)
+                {
+                    spot.SetSentryColor(spot.Red, spot.Green, spot.Blue);
+                    foreach (var color in DefaultColorCollection.snap)
+                    {
+                        spot.SetColor(color.R, color.G, color.B, true);
+                        
+                    }
+
+
+                    
+                }
+                //show snap effect
+               
 
             });
             SetAllOutputSelectedSolidColorCommand = new RelayCommand<string>((p) =>
@@ -3377,7 +3396,7 @@ namespace adrilight.ViewModel
         }
 
         private List<Guid?> _identifiers;
-
+        private Guid? _identifier;
         private void Register()
         {
             _identifiers = new List<Guid?>();
@@ -3397,85 +3416,45 @@ namespace adrilight.ViewModel
 
                 try
                 {
-                    Guid? _identifier = HotKeyManager.Instance.RegisterHotkey(modifierkeys.ToArray(), automation.Condition, () =>
+                    
+                    switch (modifierkeys.Count)
                     {
-                        foreach (var action in automation.Actions)
-                        {
-                            var targetDevice = AvailableDevices.Where(x => x.DeviceUID == action.TargetDeviceUID).FirstOrDefault();
-                            if(targetDevice==null)
+                        case 0:
+                            this._identifier=  HotKeyManager.Instance.RegisterHotkey(automation.Condition, () =>
                             {
-                                HandyControl.Controls.MessageBox.Show(automation.Name + " Không thể thiết lập automation, thiết bị đã bị xóa hoặc thay đổi UID!!!", "Device is not available", MessageBoxButton.OK, MessageBoxImage.Error);
-                                automation.Actions.Remove(action);
-                                WriteAutomationCollectionJson();
-                                return;
+                                ExecuteAutomationActions(automation.Actions);
+                                Debug.WriteLine(automation.Name + " excuted");
+                                if (GeneralSettings.NotificationEnabled)
+                                    SendNotification(automation.Name);
 
-                            }     
-                            switch (action.ActionType)
+                            });
+                            _identifiers.Add(_identifier);
+                            break;
+                        case 1:
+                            this._identifier=HotKeyManager.Instance.RegisterHotkey(modifierkeys.First(), automation.Condition, () =>
                             {
-                                case "Activate Profile":
-                                    var destinationProfile = AvailableProfiles.Where(x => x.ProfileUID == action.ActionParameter.Value).FirstOrDefault();
-                                    targetDevice.ActivateProfile(destinationProfile);
-                                    break;
-                                case "Brightness Control":
-                                    switch (action.ActionParameter.Value)
-                                    {
-                                        case "up":
-                                            if (targetDevice.IsUnionMode)
-                                            {
+                                ExecuteAutomationActions(automation.Actions);
+                                Debug.WriteLine(automation.Name + " excuted");
+                                if (GeneralSettings.NotificationEnabled)
+                                    SendNotification(automation.Name);
 
-                                                if (targetDevice.UnionOutput.OutputBrightness < 100)
-                                                    targetDevice.UnionOutput.OutputBrightness += 10;
-                                                if (targetDevice.UnionOutput.OutputBrightness > 100)
-                                                    targetDevice.UnionOutput.OutputBrightness = 100;
-                                            }
-                                            else
-                                            {
-                                                foreach (var output in targetDevice.AvailableOutputs)//possible replace with method from IOutputSettings
-                                                {
+                            });
+                            _identifiers.Add(_identifier);
+                            break;
+                        default:
+                            this._identifier=HotKeyManager.Instance.RegisterHotkey(modifierkeys.ToArray(), automation.Condition, () =>
+                            {
+                                ExecuteAutomationActions(automation.Actions);
+                                Debug.WriteLine(automation.Name + " excuted");
+                                if (GeneralSettings.NotificationEnabled)
+                                    SendNotification(automation.Name);
+ 
+                            });
+                            _identifiers.Add(_identifier);
+                            break;
 
-                                                    if (output.OutputBrightness < 100)
-                                                        output.OutputBrightness += 10;
-                                                    if (output.OutputBrightness > 100)
-                                                        output.OutputBrightness = 100;
-                                                }
-                                            }
-
-                                            break;
-                                        case "down":
-                                            if (targetDevice.IsUnionMode)
-                                            {
-
-                                                if (targetDevice.UnionOutput.OutputBrightness > 0)
-                                                    targetDevice.UnionOutput.OutputBrightness -= 10;
-                                                if (targetDevice.UnionOutput.OutputBrightness < 0)
-                                                    targetDevice.UnionOutput.OutputBrightness = 0;
-                                            }
-                                            else
-                                            {
-                                                foreach (var output in targetDevice.AvailableOutputs)//possible replace with method from IOutputSettings
-                                                {
-
-                                                    if (output.OutputBrightness > 0)
-                                                        output.OutputBrightness -= 10;
-                                                    if (output.OutputBrightness < 0)
-                                                        output.OutputBrightness = 0;
-                                                }
-                                            }
-
-                                            break;
-                                    }
-                                    break;
-                                case "Do Nothing":
-                                    // Yeah?? do fking nothing here
-                                    break;
-                            }
-                        }
-                        Debug.WriteLine(automation.Name + " excuted");
-                        if (GeneralSettings.NotificationEnabled)
-                            SendNotification(automation.Name);
-
-                    });
-                    _identifiers.Add(_identifier);
+                    }    
+               
                 }
                 catch (NonInvasiveKeyboardHookLibrary.HotkeyAlreadyRegisteredException ex)
                 {
@@ -3489,6 +3468,81 @@ namespace adrilight.ViewModel
             }
 
         }
+     
+        private void ExecuteAutomationActions(List<IActionSettings> actions)
+        {
+            foreach (var action in actions)
+            {
+                var targetDevice = AvailableDevices.Where(x => x.DeviceUID == action.TargetDeviceUID).FirstOrDefault();
+                if (targetDevice == null)
+                {
+                    HandyControl.Controls.MessageBox.Show(action.TargetDeviceName + " Không thể thiết lập automation, thiết bị đã bị xóa hoặc thay đổi UID!!!", "Device is not available", MessageBoxButton.OK, MessageBoxImage.Error);
+                    actions.Remove(action);
+                    WriteAutomationCollectionJson();
+                    return;
+
+                }
+                switch (action.ActionType)
+                {
+                    case "Activate Profile":
+                        var destinationProfile = AvailableProfiles.Where(x => x.ProfileUID == action.ActionParameter.Value).FirstOrDefault();
+                        targetDevice.ActivateProfile(destinationProfile);
+                        break;
+                    case "Brightness Control":
+                        switch (action.ActionParameter.Value)
+                        {
+                            case "up":
+                                if (targetDevice.IsUnionMode)
+                                {
+
+                                    if (targetDevice.UnionOutput.OutputBrightness < 100)
+                                        targetDevice.UnionOutput.OutputBrightness += 10;
+                                    if (targetDevice.UnionOutput.OutputBrightness > 100)
+                                        targetDevice.UnionOutput.OutputBrightness = 100;
+                                }
+                                else
+                                {
+                                    foreach (var output in targetDevice.AvailableOutputs)//possible replace with method from IOutputSettings
+                                    {
+
+                                        if (output.OutputBrightness < 100)
+                                            output.OutputBrightness += 10;
+                                        if (output.OutputBrightness > 100)
+                                            output.OutputBrightness = 100;
+                                    }
+                                }
+
+                                break;
+                            case "down":
+                                if (targetDevice.IsUnionMode)
+                                {
+
+                                    if (targetDevice.UnionOutput.OutputBrightness > 0)
+                                        targetDevice.UnionOutput.OutputBrightness -= 10;
+                                    if (targetDevice.UnionOutput.OutputBrightness < 0)
+                                        targetDevice.UnionOutput.OutputBrightness = 0;
+                                }
+                                else
+                                {
+                                    foreach (var output in targetDevice.AvailableOutputs)//possible replace with method from IOutputSettings
+                                    {
+
+                                        if (output.OutputBrightness > 0)
+                                            output.OutputBrightness -= 10;
+                                        if (output.OutputBrightness < 0)
+                                            output.OutputBrightness = 0;
+                                    }
+                                }
+
+                                break;
+                        }
+                        break;
+                    case "Do Nothing":
+                        // Yeah?? do fking nothing here
+                        break;
+                }
+            }
+        }
         MainView _mainForm;
         private void MainForm_FormClosed(object sender, EventArgs e)
         {
@@ -3501,7 +3555,7 @@ namespace adrilight.ViewModel
 
         private void SendNotification(string content)
         {
-            NotifyIcon.ShowBalloonTip("Ambinity | Automation excuted", content, NotifyIconInfoType.Info, "Ambinity");
+            NotifyIcon.ShowBalloonTip("Ambinity | Automation excuted", content, NotifyIconInfoType.Info,"Ambinity");
         }
         private void Unregister()
         {
@@ -4712,12 +4766,17 @@ namespace adrilight.ViewModel
             {
                 //create default palette
                 var palettes = new List<IColorPalette>();
-                IColorPalette rainbow = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.rainbow);
-                IColorPalette police = new ColorPalette("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.police);
-                IColorPalette forest = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.forest);
-                IColorPalette aurora = new ColorPalette("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.aurora);
-                IColorPalette iceandfire = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Full Color Spectrum", DefaultColorCollection.iceandfire);
-                IColorPalette scarlet = new ColorPalette("Police", "Zooey", "RGBPalette16", "Police Car Light mimic", DefaultColorCollection.scarlet);
+                IColorPalette rainbow = new ColorPalette("Full Rainbow", "Zooey", "RGBPalette16", "Default Color Palette by Ambino", DefaultColorCollection.rainbow);
+                IColorPalette police = new ColorPalette("Police", "Zooey", "RGBPalette16", "Default Color Palette by Ambino", DefaultColorCollection.police);
+                IColorPalette forest = new ColorPalette("Forest", "Zooey", "RGBPalette16", "Default Color Palette by Ambino", DefaultColorCollection.forest);
+                IColorPalette aurora = new ColorPalette("Aurora", "Zooey", "RGBPalette16", "Default Color Palette by Ambino", DefaultColorCollection.aurora);
+                IColorPalette iceandfire = new ColorPalette("Ice and Fire", "Zooey", "RGBPalette16", "Default Color Palette by Ambino", DefaultColorCollection.iceandfire);
+                IColorPalette scarlet = new ColorPalette("Scarlet", "Zooey", "RGBPalette16", "Default Color Palette by Ambino", DefaultColorCollection.scarlet);
+                IColorPalette party = new ColorPalette("Party", "Zooey", "RGBPalette16", "Default Color Palette by Ambino", DefaultColorCollection.party);
+                IColorPalette cloud = new ColorPalette("Cloud", "Zooey", "RGBPalette16", "Default Color Palette by Ambino", DefaultColorCollection.cloud);
+                IColorPalette france = new ColorPalette("France", "Zooey", "RGBPalette16", "Default Color Palette by Ambino", DefaultColorCollection.france);
+                IColorPalette badtrip = new ColorPalette("Bad Trip", "Zooey", "RGBPalette16", "Default Color Palette by Ambino", DefaultColorCollection.badtrip);
+                IColorPalette lemon = new ColorPalette("Lemon", "Zooey", "RGBPalette16", "Default Color Palette by Ambino", DefaultColorCollection.lemon);
 
                 palettes.Add(rainbow);
                 palettes.Add(police);
@@ -4725,6 +4784,11 @@ namespace adrilight.ViewModel
                 palettes.Add(aurora);
                 palettes.Add(iceandfire);
                 palettes.Add(scarlet);
+                palettes.Add(party);
+                palettes.Add(cloud);
+                palettes.Add(france);
+                palettes.Add(badtrip);
+                palettes.Add(lemon);
 
 
 
@@ -5012,12 +5076,12 @@ namespace adrilight.ViewModel
             {
                 //create default palette
                 
-                IGradientColorCard a = new GradientColorCard("Default", "Zooey", "RGBGradient", "Full Color Spectrum", System.Windows.Media.Color.FromRgb(254, 141, 198), System.Windows.Media.Color.FromRgb(254, 209, 199));
-                IGradientColorCard b = new GradientColorCard("Default", "Zooey", "RGBGradient", "Police Car Light mimic", System.Windows.Media.Color.FromRgb(127, 0, 255), System.Windows.Media.Color.FromRgb(255, 0, 255));
-                IGradientColorCard c = new GradientColorCard("Default", "Zooey", "RGBGradient", "Full Color Spectrum", System.Windows.Media.Color.FromRgb(251, 176, 64), System.Windows.Media.Color.FromRgb(249, 237, 50));
-                IGradientColorCard d = new GradientColorCard("Default", "Zooey", "RGBGradient", "Police Car Light mimic", System.Windows.Media.Color.FromRgb(0, 161, 255), System.Windows.Media.Color.FromRgb(0, 255, 143));
-                IGradientColorCard e = new GradientColorCard("Default", "Zooey", "RGBGradient", "Full Color Spectrum", System.Windows.Media.Color.FromRgb(238, 42, 123), System.Windows.Media.Color.FromRgb(255, 125, 184));
-                IGradientColorCard f = new GradientColorCard("Default", "Zooey", "RGBGradient", "Police Car Light mimic", System.Windows.Media.Color.FromRgb(255, 0, 212), System.Windows.Media.Color.FromRgb(0, 221, 255));
+                IGradientColorCard a = new GradientColorCard("Pastel 1", "Zooey", "RGBGradient", "Default Gradient Color by Ambino", System.Windows.Media.Color.FromRgb(254, 141, 198), System.Windows.Media.Color.FromRgb(254, 209, 199));
+                IGradientColorCard b = new GradientColorCard("Pastel 2", "Zooey", "RGBGradient", "Default Gradient Color by Ambino", System.Windows.Media.Color.FromRgb(127, 0, 255), System.Windows.Media.Color.FromRgb(255, 0, 255));
+                IGradientColorCard c = new GradientColorCard("Pastel 3", "Zooey", "RGBGradient", "Default Gradient Color by Ambino", System.Windows.Media.Color.FromRgb(251, 176, 64), System.Windows.Media.Color.FromRgb(249, 237, 50));
+                IGradientColorCard d = new GradientColorCard("Pastel 4", "Zooey", "RGBGradient", "Default Gradient Color by Ambino", System.Windows.Media.Color.FromRgb(0, 161, 255), System.Windows.Media.Color.FromRgb(0, 255, 143));
+                IGradientColorCard e = new GradientColorCard("Pastel 5", "Zooey", "RGBGradient", "Default Gradient Color by Ambino", System.Windows.Media.Color.FromRgb(238, 42, 123), System.Windows.Media.Color.FromRgb(255, 125, 184));
+                IGradientColorCard f = new GradientColorCard("Pastel 6", "Zooey", "RGBGradient", "Default Gradient Color by Ambino", System.Windows.Media.Color.FromRgb(255, 0, 212), System.Windows.Media.Color.FromRgb(0, 221, 255));
 
                 gradientCards.Add(a);
                 gradientCards.Add(b);
@@ -5861,6 +5925,8 @@ namespace adrilight.ViewModel
                                 }
                                 CurrentOutput = CurrentDevice.UnionOutput;
                                 CurrentOutput.OutputIsEnabled = true;
+                                CurrentDeviceOutputMode = "Output Mode : Union";
+                                RaisePropertyChanged(() => CurrentDeviceOutputMode);
                                 break;
                             case false:
                                 foreach (var output in CurrentDevice.AvailableOutputs)
@@ -5870,7 +5936,8 @@ namespace adrilight.ViewModel
                                 }
                                 CurrentOutput = CurrentDevice.AvailableOutputs[0];
                                 CurrentDevice.UnionOutput.OutputIsEnabled = false;
-                                RaisePropertyChanged(nameof(CurrentDeviceOutputMode));
+                                CurrentDeviceOutputMode = "Output Mode : Independent";
+                                RaisePropertyChanged(() => CurrentDeviceOutputMode);
                                 break;
                         }
                         break;

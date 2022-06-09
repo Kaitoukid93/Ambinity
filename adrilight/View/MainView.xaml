@@ -22,7 +22,7 @@
        
         
        AllowDrop="True" AllowsTransparency="False"
-        Height="850" Width="1080"  MinHeight="480"  MinWidth="640" MouseLeftButtonDown="Window_MouseLeftButtonDown"  Closing="Window_Closing">
+        Height="850" Width="1500"  MinHeight="480"  MinWidth="640" MouseLeftButtonDown="Window_MouseLeftButtonDown"  Closing="Window_Closing">
    
     <Window.Resources>
         <ResourceDictionary>
@@ -169,7 +169,7 @@
 
             <Grid>
 
-                <hc:NotifyIcon x:Name="noticon" Token="Ambinity"  Text="Ambinity" >
+                <hc:NotifyIcon Click="OpenDashboard" x:Name="noticon" Token="Ambinity"  Text="Ambinity" >
                     <hc:NotifyIcon.ContextMenu>
                         <ContextMenu>
                             <MenuItem  Click="OpenDashboard" Header="Dashboard">
@@ -195,11 +195,7 @@
                             </MenuItem>
                         </ContextMenu>
                     </hc:NotifyIcon.ContextMenu>
-                    <hc:Interaction.Triggers>
-                        <hc:EventTrigger EventName="Click">
-                            <hc:EventToCommand Command="hc:ControlCommands.PushMainWindow2Top"/>
-                        </hc:EventTrigger>
-                    </hc:Interaction.Triggers>
+
                 </hc:NotifyIcon>
                 <Grid Margin="0" >
                     <Grid.ColumnDefinitions>
@@ -290,9 +286,9 @@
                                     </ListBox>
                                 </Grid>
                                 <hc:Interaction.Triggers>
-                                    <hc:EventTrigger EventName="SelectionChanged">
+                                    <!--<hc:EventTrigger EventName="SelectionChanged">
                                         <hc:EventToCommand Command="{Binding SwitchDemoCmd}" PassEventArgsToCommand="True" />
-                                    </hc:EventTrigger>
+                                    </hc:EventTrigger>-->
                                 </hc:Interaction.Triggers>
 
                             </DockPanel>
