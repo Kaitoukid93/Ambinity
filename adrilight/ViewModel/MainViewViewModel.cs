@@ -344,6 +344,7 @@ namespace adrilight.ViewModel
         public ICommand SetCurrentLEDSetupSentryColorCommand { get; set; }
         public ICommand DeleteSelectedGradientCommand { get; set; }
         public ICommand SetAllOutputSelectedGradientColorCommand { get; set; }
+        public ICommand UpdateCurrentSelectedDeviceFirmwareCommand { get; set; }
         public ICommand ZerolAllCommand { get; set; }
         public ICommand SetActivePaletteAllOutputsCommand { get; set; }
         public ICommand SetAllOutputSelectedModeCommand { get; set; }
@@ -2147,6 +2148,18 @@ namespace adrilight.ViewModel
 
 
             });
+            UpdateCurrentSelectedDeviceFirmwareCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+
+                RunWithRedirect("k");
+
+
+
+
+            });
             SetAllDeviceSelectedGifCommand = new RelayCommand<string>((p) =>
             {
                 return true;
@@ -3568,7 +3581,91 @@ namespace adrilight.ViewModel
             }
 
         }
+        private int _fwUploadPercent;
+        public int FwUploadPercent {
+            get { return _fwUploadPercent; }
+            set { _fwUploadPercent = value;
+                RaisePropertyChanged();
+            }
+        }
+        private bool _fwUploadPercentVissible=false;
+        public bool FwUploadPercentVissible {
+            get { return _fwUploadPercentVissible; }
+            set
+            {
+                _fwUploadPercentVissible = value;
+                RaisePropertyChanged();
+            }
+        }
+        private string _fwUploadOutputLog;
+        public string FwUploadOutputLog {
+            get { return _fwUploadOutputLog; }
+            set { _fwUploadOutputLog = value;
+                RaisePropertyChanged();
+            }
+        }
+        private void RunWithRedirect(string cmdargs)
+        {
+            FwUploadPercentVissible = true;
+            var startInfo = new System.Diagnostics.ProcessStartInfo {
+                WorkingDirectory = @"I:\win\",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                FileName = "cmd.exe",
+                Arguments = "/C vnproch55x test1.hex"
 
+            };
+            var proc = new Process() {
+                StartInfo = startInfo,
+                EnableRaisingEvents = true
+            };
+
+            // see below for output handler
+            proc.ErrorDataReceived += proc_DataReceived;
+            proc.OutputDataReceived += proc_DataReceived;
+
+            proc.Start();
+
+            proc.BeginErrorReadLine();
+            proc.BeginOutputReadLine();
+            proc.Exited += proc_FinishUploading;
+
+           // proc.WaitForExit();
+        }
+        private void proc_FinishUploading(object sender, System.EventArgs e)
+        {
+            //FwUploadPercent = 0;
+            ////clear loading bar
+            //FwUploadOutputLog = String.Empty;
+            ////clear text box
+            //percentCount = 0;
+        }
+        private int percentCount = 0;
+        void proc_DataReceived(object sender, DataReceivedEventArgs e)
+        {
+
+            if (e.Data != null)
+            {
+                if (e.Data.Contains("[2K"))//clear current line
+                {
+                    percentCount++;
+                     FwUploadPercent = percentCount * 100 / 308;
+
+                    //Dispatcher.BeginInvoke(new Action(() => Prog.Value = percent));
+                    //Dispatcher.BeginInvoke(new Action(() => Output.Text += (Environment.NewLine + percentCount)));
+                    //Dispatcher.BeginInvoke(new Action(() => Output.Text += (e.Data)));
+                }
+                else
+                {
+                    FwUploadOutputLog += Environment.NewLine + e.Data;
+
+                }
+
+            }
+
+        }
         private void ImportCurrentOutputPID()
         {
             OpenFileDialog Import = new OpenFileDialog();
@@ -3744,7 +3841,11 @@ namespace adrilight.ViewModel
         {
             if (AssemblyHelper.CreateInternalInstance($"View.{"DeviceFirmwareSettingsWindow"}") is System.Windows.Window window)
             {
-
+                //reset progress and log display
+                FwUploadPercentVissible = false;
+                percentCount = 0;
+                FwUploadPercent = 0;
+                FwUploadOutputLog = String.Empty;
                 window.Owner = System.Windows.Application.Current.MainWindow;
                 window.ShowDialog();
             }

@@ -10,9 +10,9 @@
            Background="{DynamicResource MainContentBackgroundBrush}"
            d:DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}"
            DataContext="{Binding Source={StaticResource Locator}, Path=MainViewViewModel}" 
-           ResizeMode="NoResize"
+           
             
-           Height="300" 
+           Height="500" 
            Width="400" 
            WindowStartupLocation="CenterOwner" 
            Left="0" Top="0">
@@ -35,9 +35,9 @@
     <Grid Margin="10,0,10,10">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock VerticalAlignment="Top" Margin="20,0,20,20" Text="Firmware Information" Style="{DynamicResource TextBlockLarge}">
+        <TextBlock  VerticalAlignment="Top" Margin="20,0,20,20" Text="Firmware Information" Style="{DynamicResource TextBlockLarge}">
 
         </TextBlock>
         <StackPanel Grid.Row="1">
@@ -45,11 +45,13 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <GroupBox   VerticalAlignment="Center" Margin="5" Style="{DynamicResource GroupBoxOriginal}" HorizontalAlignment="Stretch" hc:TitleElement.TitlePlacement="Left">
                     <GroupBox.HeaderTemplate>
                         <DataTemplate>
-                            <TextBlock FontWeight="SemiBold" Text="ENTER DFU"/>
+                            <TextBlock FontWeight="SemiBold" Text="FIRMWARE UPGRADE"/>
                         </DataTemplate>
                     </GroupBox.HeaderTemplate>
 
@@ -57,12 +59,14 @@
                                       Width="20" 
                                       Height="20" 
                                       Fill="{DynamicResource PrimaryTextBrush}"/>-->
-                    <Button HorizontalAlignment="Right" hc:IconElement.Geometry="{DynamicResource WarningGeometry}" Style="{DynamicResource ButtonDefault}"/>
+                    <Button Command="{Binding UpdateCurrentSelectedDeviceFirmwareCommand}" HorizontalAlignment="Right" hc:IconElement.Geometry="{DynamicResource motherboard}" Style="{DynamicResource ButtonDefault}"/>
 
 
 
                 </GroupBox>
-                <TextBlock Margin="5,0,0,0" HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Grid.Row="1" Text="Vào chế độ DFU để cập nhật phần mềm"/>
+                <TextBlock Margin="5,0,0,0" HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Grid.Row="1" Text="Cập nhật phần mềm bằng cách chọn file hoặc tự động kiểm tra"/>
+                <ProgressBar Visibility="{Binding FwUploadPercentVissible,Converter={StaticResource boolToVisibilityConvert}}" Value="{Binding FwUploadPercent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="5" Grid.Row="2"  Height="10" x:Name="Prog" Orientation="Horizontal"/>
+                <TextBox Visibility="{Binding FwUploadPercentVissible,Converter={StaticResource boolToVisibilityConvert}}" Text="{Binding FwUploadOutputLog,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" MaxHeight="250" TextWrapping="WrapWithOverflow" Grid.Row="3" Margin="1" x:Name="Output"></TextBox>
             </Grid>
             <hc:Divider  LineStroke="{DynamicResource SecondaryRegionBrush}" Margin="5,10,5,10">
 
