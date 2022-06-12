@@ -322,12 +322,12 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid>
-                                <Rectangle Stroke="OrangeRed" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
-                                    <Rectangle.Fill>
+                                <Border  BorderBrush="OrangeRed" BorderThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
+                                    <Border.Background>
                                         <SolidColorBrush Color="{Binding OnDemandColor}"  />
-                                    </Rectangle.Fill>
-                                    <Rectangle.Style>
-                                        <Style TargetType="{x:Type Rectangle}">
+                                    </Border.Background>
+                                    <Border.Style>
+                                        <Style TargetType="{x:Type Border}">
 
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
@@ -335,15 +335,23 @@
                                                 </Trigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </Rectangle.Style>
+                                    </Border.Style>
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="MouseDown" >
                                             <i:InvokeCommandAction Command="{Binding DataContext.SetSpotPIDCommand,RelativeSource={RelativeSource AncestorType={x:Type local:PIDEditWindow}}}" CommandParameter="{Binding .}" />
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
-                                </Rectangle>
+                                    <Viewbox IsHitTestVisible="False">
+
+                                        <Grid IsHitTestVisible="False">
+                                            <TextBlock Margin="1" Padding="2" Visibility="{Binding IsIDVissible,Converter={StaticResource boolToVisibilityConvert},Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="{Binding id}"  IsHitTestVisible="False"/>
+                                        </Grid>
+                                    </Viewbox>
+                                    
+                                    
+                                </Border>
                                 
-                                <TextBlock Visibility="{Binding IsIDVissible,Converter={StaticResource boolToVisibilityConvert},Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="5" Text="{Binding id}"  IsHitTestVisible="False"/>
+                               
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

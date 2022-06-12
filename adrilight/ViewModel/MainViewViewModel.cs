@@ -519,7 +519,7 @@ namespace adrilight.ViewModel
         }
         private IDeviceProfile _currentSelectedProfile;
         public IDeviceProfile CurrentSelectedProfile {
-            get { return AvailableProfilesForCurrentDevice.Where(p=> p.ProfileUID== CurrentDevice.ActivatedProfileUID).FirstOrDefault(); }
+            get { return AvailableProfilesForCurrentDevice.Where(p => p.ProfileUID == CurrentDevice.ActivatedProfileUID).FirstOrDefault(); }
             set
             {
                 if (value != null)
@@ -792,8 +792,8 @@ namespace adrilight.ViewModel
         }
 
 
-        public int CanvasWidth => CurrentOutput.OutputSelectedMode == 0 ? ShaderBitmap.PixelWidth : GifxelationBitmap.PixelWidth;
-        public int CanvasHeight => CurrentOutput.OutputSelectedMode == 0 ? ShaderBitmap.PixelHeight : GifxelationBitmap.PixelHeight;
+        public int CanvasWidth => CurrentOutput.OutputSelectedMode == 0 ? ShaderBitmap?.PixelWidth ?? 240 : GifxelationBitmap?.PixelWidth ?? 240;
+        public int CanvasHeight => CurrentOutput.OutputSelectedMode == 0 ? ShaderBitmap?.PixelHeight ?? 135 : GifxelationBitmap?.PixelHeight ?? 135;
 
         private int _parrentLocation;
         public int ParrentLocation {
@@ -1042,7 +1042,7 @@ namespace adrilight.ViewModel
                 switch (e.PropertyName)
                 {
                     case nameof(GeneralSettings.ThemeIndex):
-                        if(GeneralSettings.ThemeIndex==0)
+                        if (GeneralSettings.ThemeIndex == 0)
                             ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
                         else
                         {
@@ -1888,13 +1888,13 @@ namespace adrilight.ViewModel
         public string CurrentDeviceOutputMode {
             get
             {
-                if(String.IsNullOrEmpty(_currentDeviceOutputMode))
+                if (String.IsNullOrEmpty(_currentDeviceOutputMode))
                 {
                     if (CurrentDevice.IsUnionMode)
                         return "Output Mode : Union";
                     else
                         return "Output Mode : Independent";
-                }    
+                }
                 return _currentDeviceOutputMode;
             }
             set
@@ -1919,14 +1919,14 @@ namespace adrilight.ViewModel
             get { return _currentSelectedGradient; }
             set
             {
-                if(value!=null)
+                if (value != null)
                 {
                     _currentSelectedGradient = value;
                     CurrentOutput.OutputSelectedGradient = value;
                     RaisePropertyChanged();
 
                 }
-               
+
             }
         }
         private Color _currentStartColor;
@@ -2102,20 +2102,20 @@ namespace adrilight.ViewModel
                 return true;
             }, (p) =>
             {
-                foreach(var spot in CurrentOutput.OutputLEDSetup.Spots)
+                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
                 {
                     spot.SetSentryColor(spot.Red, spot.Green, spot.Blue);
                     foreach (var color in DefaultColorCollection.snap)
                     {
                         spot.SetColor(color.R, color.G, color.B, true);
-                        
+
                     }
 
 
-                    
+
                 }
                 //show snap effect
-               
+
 
             });
             SetAllOutputSelectedSolidColorCommand = new RelayCommand<string>((p) =>
@@ -2256,7 +2256,7 @@ namespace adrilight.ViewModel
                 return true;
             }, (p) =>
             {
-                switch(PickColorMode)
+                switch (PickColorMode)
                 {
                     case "solid":
                         AvailableSolidColors.Insert(0, CurrentPickedColor);
@@ -2270,12 +2270,12 @@ namespace adrilight.ViewModel
                         CurrentStopColor = CurrentPickedColor;
                         break;
                     case "accent":
-                 
+
                         ThemeManager.Current.AccentColor = new SolidColorBrush(CurrentPickedColor);
                         GeneralSettings.AccentColor = new SolidColorBrush(CurrentPickedColor);
                         break;
                 }
-                
+
             }
             );
             EditSelectedPaletteSaveConfirmCommand = new RelayCommand<string>((p) =>
@@ -3226,10 +3226,10 @@ namespace adrilight.ViewModel
         public void ApplyCurrentOuputCapturingPosition()
         {
 
-            CurrentOutput.OutputRectangleScaleHeight = (double)AdjustingRectangleHeight / (double)ShaderBitmap.PixelHeight;
-            CurrentOutput.OutputRectangleScaleWidth = (double)AdjustingRectangleWidth / (double)ShaderBitmap.PixelWidth;
-            CurrentOutput.OutputRectangleScaleLeft = (double)AdjustingRectangleLeft / (double)ShaderBitmap.PixelWidth;
-            CurrentOutput.OutputRectangleScaleTop = (double)AdjustingRectangleTop / (double)ShaderBitmap.PixelHeight;// these value is for setting new rectangle and it's position when parrents size is not stored( app startup)
+            CurrentOutput.OutputRectangleScaleHeight = (double)AdjustingRectangleHeight / (double)CanvasHeight;
+            CurrentOutput.OutputRectangleScaleWidth = (double)AdjustingRectangleWidth / (double)CanvasWidth;
+            CurrentOutput.OutputRectangleScaleLeft = (double)AdjustingRectangleLeft / (double)CanvasWidth;
+            CurrentOutput.OutputRectangleScaleTop = (double)AdjustingRectangleTop / (double)CanvasHeight;// these value is for setting new rectangle and it's position when parrents size is not stored( app startup)
             CurrentOutput.SetRectangle(new Rectangle(AdjustingRectangleLeft, AdjustingRectangleTop, AdjustingRectangleWidth, AdjustingRectangleHeight));
 
         }
@@ -3379,7 +3379,7 @@ namespace adrilight.ViewModel
                 DeviceType = CurrentDevice.DeviceType,
                 Geometry = "profile",
                 ProfileUID = Guid.NewGuid().ToString(),
-                
+
             };
             newprofile.SaveProfile(CurrentDevice.UnionOutput, CurrentDevice.AvailableOutputs);
             AvailableProfiles.Add(newprofile);
@@ -3429,11 +3429,11 @@ namespace adrilight.ViewModel
 
                 try
                 {
-                    
+
                     switch (modifierkeys.Count)
                     {
                         case 0:
-                            this._identifier=  HotKeyManager.Instance.RegisterHotkey(automation.Condition, () =>
+                            this._identifier = HotKeyManager.Instance.RegisterHotkey(automation.Condition, () =>
                             {
                                 ExecuteAutomationActions(automation.Actions);
                                 Debug.WriteLine(automation.Name + " excuted");
@@ -3444,7 +3444,7 @@ namespace adrilight.ViewModel
                             _identifiers.Add(_identifier);
                             break;
                         case 1:
-                            this._identifier=HotKeyManager.Instance.RegisterHotkey(modifierkeys.First(), automation.Condition, () =>
+                            this._identifier = HotKeyManager.Instance.RegisterHotkey(modifierkeys.First(), automation.Condition, () =>
                             {
                                 ExecuteAutomationActions(automation.Actions);
                                 Debug.WriteLine(automation.Name + " excuted");
@@ -3455,19 +3455,19 @@ namespace adrilight.ViewModel
                             _identifiers.Add(_identifier);
                             break;
                         default:
-                            this._identifier=HotKeyManager.Instance.RegisterHotkey(modifierkeys.ToArray(), automation.Condition, () =>
+                            this._identifier = HotKeyManager.Instance.RegisterHotkey(modifierkeys.ToArray(), automation.Condition, () =>
                             {
                                 ExecuteAutomationActions(automation.Actions);
                                 Debug.WriteLine(automation.Name + " excuted");
                                 if (GeneralSettings.NotificationEnabled)
                                     SendNotification(automation.Name);
- 
+
                             });
                             _identifiers.Add(_identifier);
                             break;
 
-                    }    
-               
+                    }
+
                 }
                 catch (NonInvasiveKeyboardHookLibrary.HotkeyAlreadyRegisteredException ex)
                 {
@@ -3481,7 +3481,7 @@ namespace adrilight.ViewModel
             }
 
         }
-     
+
         private void ExecuteAutomationActions(List<IActionSettings> actions)
         {
             foreach (var action in actions)
@@ -3568,7 +3568,7 @@ namespace adrilight.ViewModel
 
         private void SendNotification(string content)
         {
-            NotifyIcon.ShowBalloonTip("Ambinity | Automation excuted", content, NotifyIconInfoType.Info,"Ambinity");
+            NotifyIcon.ShowBalloonTip("Ambinity | Automation excuted", content, NotifyIconInfoType.Info, "Ambinity");
         }
         private void Unregister()
         {
@@ -3584,11 +3584,13 @@ namespace adrilight.ViewModel
         private int _fwUploadPercent;
         public int FwUploadPercent {
             get { return _fwUploadPercent; }
-            set { _fwUploadPercent = value;
+            set
+            {
+                _fwUploadPercent = value;
                 RaisePropertyChanged();
             }
         }
-        private bool _fwUploadPercentVissible=false;
+        private bool _fwUploadPercentVissible = false;
         public bool FwUploadPercentVissible {
             get { return _fwUploadPercentVissible; }
             set
@@ -3600,7 +3602,9 @@ namespace adrilight.ViewModel
         private string _fwUploadOutputLog;
         public string FwUploadOutputLog {
             get { return _fwUploadOutputLog; }
-            set { _fwUploadOutputLog = value;
+            set
+            {
+                _fwUploadOutputLog = value;
                 RaisePropertyChanged();
             }
         }
@@ -3632,7 +3636,7 @@ namespace adrilight.ViewModel
             proc.BeginOutputReadLine();
             proc.Exited += proc_FinishUploading;
 
-           // proc.WaitForExit();
+            // proc.WaitForExit();
         }
         private void proc_FinishUploading(object sender, System.EventArgs e)
         {
@@ -3651,7 +3655,7 @@ namespace adrilight.ViewModel
                 if (e.Data.Contains("[2K"))//clear current line
                 {
                     percentCount++;
-                     FwUploadPercent = percentCount * 100 / 308;
+                    FwUploadPercent = percentCount * 100 / 308;
 
                     //Dispatcher.BeginInvoke(new Action(() => Prog.Value = percent));
                     //Dispatcher.BeginInvoke(new Action(() => Output.Text += (Environment.NewLine + percentCount)));
@@ -5176,7 +5180,7 @@ namespace adrilight.ViewModel
             if (!File.Exists(JsonGradientFileNameAndPath))
             {
                 //create default palette
-                
+
                 IGradientColorCard a = new GradientColorCard("Pastel 1", "Zooey", "RGBGradient", "Default Gradient Color by Ambino", System.Windows.Media.Color.FromRgb(254, 141, 198), System.Windows.Media.Color.FromRgb(254, 209, 199));
                 IGradientColorCard b = new GradientColorCard("Pastel 2", "Zooey", "RGBGradient", "Default Gradient Color by Ambino", System.Windows.Media.Color.FromRgb(127, 0, 255), System.Windows.Media.Color.FromRgb(255, 0, 255));
                 IGradientColorCard c = new GradientColorCard("Pastel 3", "Zooey", "RGBGradient", "Default Gradient Color by Ambino", System.Windows.Media.Color.FromRgb(251, 176, 64), System.Windows.Media.Color.FromRgb(249, 237, 50));
@@ -5197,7 +5201,7 @@ namespace adrilight.ViewModel
             else
             {
                 var json = File.ReadAllText(JsonGradientFileNameAndPath);
-               
+
                 var existedGradient = JsonConvert.DeserializeObject<List<GradientColorCard>>(json);
                 foreach (var gradient in existedGradient)
                 {
@@ -5802,7 +5806,7 @@ namespace adrilight.ViewModel
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == lighting);
             IsDashboardType = false;
             CurrentDevice = selectedDevice;
-            
+
             foreach (var output in CurrentDevice.AvailableOutputs)
             {
                 output.OutputUniqueID = CurrentDevice.DeviceID.ToString() + output.OutputID.ToString();
@@ -5843,7 +5847,7 @@ namespace adrilight.ViewModel
             {
                 OutputModeChangeEnable = false;
             }
-       
+
             if (CurrentDevice.IsUnionMode)
             {
                 CurrentOutput = CurrentDevice.UnionOutput;

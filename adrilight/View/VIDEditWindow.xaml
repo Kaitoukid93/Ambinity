@@ -52,7 +52,9 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                --><!--<Setter Property="ToolTip" Value="{Binding DocName}"/>--><!--
+                -->
+            <!--<Setter Property="ToolTip" Value="{Binding DocName}"/>-->
+            <!--
                 <Setter Property="Tag" Value="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}" />
                 <Setter Property="ContextMenu">
                     <Setter.Value>
@@ -87,29 +89,29 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        
+
         <Grid Grid.Column="1" Grid.Row=" 2">
             <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="right">
-            
+
                 <Button Click="Canceled" Command="{Binding CancelEditWizardCommand}" CommandParameter="cancel"  Margin="10"  Content="Cancel" Background="Transparent" BorderBrush="Transparent">
                     <Button.Style>
                         <Style BasedOn="{StaticResource ButtonDefault}" TargetType="Button">
                             <Setter Property="Visibility" Value="Visible"></Setter>
-                         
+
                         </Style>
                     </Button.Style>
                 </Button>
-                
+
                 <Button Command="{Binding SaveNewUserEditLEDSetup}" CommandParameter="save"  Click="Confirmed" Margin="10"  Content="Done" >
                     <Button.Style>
                         <Style BasedOn="{StaticResource ButtonPrimary}" TargetType="Button">
                             <Setter Property="Visibility" Value="Visible"></Setter>
-                            
+
                         </Style>
                     </Button.Style>
                 </Button>
-             
-                
+
+
             </StackPanel>
         </Grid>
         <Grid  Margin="20,0,0,0" Grid.Row="1" Grid.Column="0">
@@ -123,19 +125,19 @@
                     </Style.Triggers>
                 </Style>
             </Grid.Style>-->
-           
-                <StackPanel>
+
+            <StackPanel>
 
                 <Button hc:IconElement.Geometry="{StaticResource fullspectrum}" Margin="15" HorizontalAlignment="Stretch"  Command="{Binding ResetCountCommand}"  Style="{DynamicResource ButtonDefault}" Content="Reset" CommandParameter="Reset"/>
                 <hc:Badge Status="Processing" Height="30" Margin="15" Style="{DynamicResource BadgeDanger}">
-                <Button hc:IconElement.Geometry="{StaticResource number}" Click="Button_Click"   Style="{DynamicResource ButtonDefault}" Content="Set ID" CommandParameter="Reset"/>
+                    <Button hc:IconElement.Geometry="{StaticResource number}" Click="Button_Click"   Style="{DynamicResource ButtonDefault}" Content="Set ID" CommandParameter="Reset"/>
                 </hc:Badge>
-                
+
 
             </StackPanel>
-            
-            
-            
+
+
+
         </Grid>
         <Grid MouseDown="Window_MouseDown" MouseUp="Window_MouseUp" MouseMove="Window_MouseMove" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"  ClipToBounds="true" Grid.Row="1" x:Name="MotherGrid">
             <!--<Grid.Style>
@@ -162,7 +164,7 @@
                                 Margin="0" 
                                 Width="{Binding CurrentOutput.OutputRectangle.Width}" 
                                 Height="{Binding CurrentOutput.OutputRectangle.Height}" >
-                               
+
                             </Canvas>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
@@ -175,29 +177,47 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <Rectangle ToolTip="{Binding id}" Stroke="{DynamicResource PrimaryBrush}" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
-                                    <Rectangle.Fill>
-                                        <SolidColorBrush Color="{Binding OnDemandColor}"  />
-                                    </Rectangle.Fill>
-                                    <Rectangle.Style>
-                                        <Style TargetType="{x:Type Rectangle}">
+                            <Border Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
+                                <Grid>
 
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Opacity"  Value="0.5"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Rectangle.Style>
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="MouseDown" >
-                                            <i:InvokeCommandAction Command="{Binding DataContext.SetSpotActiveCommand,RelativeSource={RelativeSource AncestorType={x:Type local:PIDEditWindow}}}" CommandParameter="{Binding .}" />
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </Rectangle>
-                                <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="5" Text="{Binding VID}"  IsHitTestVisible="False"/>
-                            </Grid>
+
+                          
+                                    <Viewbox>
+
+                                   
+                                        <Rectangle Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}" ToolTip="{Binding id}" Stroke="{DynamicResource PrimaryBrush}" StrokeThickness="{Binding BorderThickness}" >
+                                            <Rectangle.Fill>
+                                                <SolidColorBrush Color="{Binding OnDemandColor}"  />
+                                            </Rectangle.Fill>
+                                            <Rectangle.Style>
+                                                <Style TargetType="{x:Type Rectangle}">
+
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Opacity"  Value="0.5"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Rectangle.Style>
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="MouseDown" >
+                                                    <i:InvokeCommandAction Command="{Binding DataContext.SetSpotActiveCommand,RelativeSource={RelativeSource AncestorType={x:Type local:PIDEditWindow}}}" CommandParameter="{Binding .}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Rectangle>
+                                    </Viewbox>
+                                   
+                                        <Viewbox Margin="0">
+                                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock Margin="1" Padding="1"  HorizontalAlignment="Center" VerticalAlignment="Center"  Text="{Binding VID}"  IsHitTestVisible="False"/>
+                                        </Grid>
+                                           
+                                        </Viewbox>
+                                    
+                                  
+
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -227,9 +247,9 @@
             <Button Background="Transparent" Padding="0" BorderBrush="Transparent" Grid.Column="2" Margin="0" HorizontalAlignment="Left">
                 <TextBlock  TextWrapping="Wrap"  Style="{DynamicResource TextBlockDefaultPrimary}"  Text="Tìm hiểu thêm"/>
             </Button>
-            
+
         </Grid>
-       
-      
-        </Grid>
+
+
+    </Grid>
 </hc:Window>

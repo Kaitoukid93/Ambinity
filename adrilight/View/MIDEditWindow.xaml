@@ -175,29 +175,42 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
+                            <Border  Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
+                                
+                          
                             <Grid>
-                                <Rectangle ToolTip="{Binding id}" Stroke="{DynamicResource PrimaryBrush}" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
-                                    <Rectangle.Fill>
-                                        <SolidColorBrush Color="{Binding OnDemandColor}"  />
-                                    </Rectangle.Fill>
-                                    <Rectangle.Style>
-                                        <Style TargetType="{x:Type Rectangle}">
+                                <Viewbox>
+                                    <Grid>
+                                        <Rectangle ToolTip="{Binding id}" Stroke="{DynamicResource PrimaryBrush}" StrokeThickness="{Binding BorderThickness}" Width="{Binding Rectangle.Width}" Height="{Binding Rectangle.Height}">
+                                            <Rectangle.Fill>
+                                                <SolidColorBrush Color="{Binding OnDemandColor}"  />
+                                            </Rectangle.Fill>
+                                            <Rectangle.Style>
+                                                <Style TargetType="{x:Type Rectangle}">
 
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Opacity"  Value="0.5"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Rectangle.Style>
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="MouseDown" >
-                                            <i:InvokeCommandAction Command="{Binding DataContext.SetSpotActiveCommand,RelativeSource={RelativeSource AncestorType={x:Type local:MIDEditWindow}}}" CommandParameter="{Binding .}" />
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </Rectangle>
-                                <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="5" Text="{Binding MID}"  IsHitTestVisible="False"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Opacity"  Value="0.5"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Rectangle.Style>
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="MouseDown" >
+                                                    <i:InvokeCommandAction Command="{Binding DataContext.SetSpotActiveCommand,RelativeSource={RelativeSource AncestorType={x:Type local:MIDEditWindow}}}" CommandParameter="{Binding .}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Rectangle>
+                                    </Grid>
+                                </Viewbox>
+                                <Viewbox>
+                                    <Grid>
+                                        <TextBlock Margin="1" Padding="1" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="{Binding MID}"  IsHitTestVisible="False"/>
+                                    </Grid>
+                                </Viewbox>
+                               
                             </Grid>
+                            </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

@@ -34,7 +34,7 @@ namespace adrilight.View
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if(adjustingRect.Height + Canvas.GetTop(adjustingRect) >ViewModel.ShaderBitmap.Height || adjustingRect.Width + Canvas.GetLeft(adjustingRect) > ViewModel.ShaderBitmap.Width || Canvas.GetLeft(adjustingRect)<0 || Canvas.GetTop(adjustingRect) < 0)
+            if(adjustingRect.Height + Canvas.GetTop(adjustingRect) >ViewModel.CanvasHeight || adjustingRect.Width + Canvas.GetLeft(adjustingRect) > ViewModel.CanvasWidth || Canvas.GetLeft(adjustingRect)<0 || Canvas.GetTop(adjustingRect) < 0)
             {
                 HandyControl.Controls.MessageBox.Show("Position and Size is out of range, Please chose another position or small down the size", "Invalid Position", MessageBoxButton.OK, MessageBoxImage.Error);
             }
