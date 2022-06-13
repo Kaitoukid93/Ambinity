@@ -39,7 +39,7 @@ namespace adrilight.Ninject
                 {
                     foreach (var device in existedDevices)
                     {
-                        var iD = device.DeviceID.ToString();
+                        var iD = device.DeviceUID.ToString();
                        
                             Bind<IDeviceSettings>().ToConstant(device).Named(iD);
 

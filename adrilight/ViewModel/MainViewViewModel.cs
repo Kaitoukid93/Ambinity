@@ -3933,7 +3933,7 @@ namespace adrilight.ViewModel
                     convertedDevice.DeviceConnectionType = "OpenRGB";
                     convertedDevice.DeviceID = AvailableDevices.Count + 1;
                     convertedDevice.DeviceSerial = openRGBDevice.Serial;
-                    convertedDevice.DeviceUID = Guid.NewGuid().ToString();
+                    convertedDevice.DeviceUID = openRGBDevice.Name + openRGBDevice.Version + openRGBDevice.Location;
                     convertedDevice.Geometry = openRGBDevice.Type.ToString();
                     convertedDevice.DeviceConnectionGeometry = "orgb";
                     convertedDevice.UnionOutput = DefaulOutputCollection.GenericLEDStrip(openRGBDevice.Zones.Length, 1, "Uni-Zone", 1, false, "ledstrip");
@@ -4236,7 +4236,7 @@ namespace adrilight.ViewModel
         }
         private void Reset()
         {
-            Directory.GetFiles(JsonPath).ToList().ForEach(File.Delete);
+            Directory.Delete(JsonPath, true);
             System.Windows.Forms.Application.Restart();
             Process.GetCurrentProcess().Kill();
         }
@@ -4634,10 +4634,28 @@ namespace adrilight.ViewModel
         public void ScanOpenRGBDevices()
         {
             AvailableOpenRGBDevices = new ObservableCollection<Device>();
-
-            if (OpenRGBStream.AmbinityClient != null)
+          
+            OpenRGBStream.RefreshTransferState();
+            if (OpenRGBStream.AmbinityClient != null&& OpenRGBStream.AmbinityClient.Connected == true)
             {
-                var newOpenRGBDevices = OpenRGBStream.AmbinityClient.GetAllControllerData();
+                
+                var newOpenRGBDevices = OpenRGBStream.GetDevices;
+                int n = 0;
+                
+                foreach (var device in newOpenRGBDevices)
+                {
+                    AvailableOpenRGBDevices.Add(device);
+                }
+               //check if any devices is already in the dashboard
+               foreach(var device in newOpenRGBDevices)
+                {
+                    var deviceUID= device.Name + device.Version + device.Location;
+                    foreach(var existedDevice in AvailableDevices.Where(p=>p.DeviceConnectionType == "OpenRGB"))
+                    {
+                        if (deviceUID == existedDevice.DeviceUID)
+                            AvailableOpenRGBDevices.Remove(device);
+                    }
+                }
                 //var detectedOpenRGBDevices = new List<Device>();
                 //foreach (var device in newOpenRGBDevices)
                 //{
@@ -4652,20 +4670,25 @@ namespace adrilight.ViewModel
                 //            detectedOpenRGBDevices.Remove(newDevice);
                 //    }
                 //}
-                int counter = 0;
-                foreach (var device in AvailableDevices)
-                {
-                    if (device.DeviceConnectionType == "OpenRGB")
-                    {
-                        counter++;
-                    }
-                }
-                for (int i = counter; i < newOpenRGBDevices.Length; i++)
-                {
-                    AvailableOpenRGBDevices.Add(newOpenRGBDevices[i]);
-                }
+                ///this is old method to add device to the end of array, bad practice
+                //int counter = 0;
+                //foreach (var device in AvailableDevices)
+                //{
+                //    if (device.DeviceConnectionType == "OpenRGB")
+                //    {
+                //        counter++;
+                //    }
+                //}
+                //for (int i = counter; i < newOpenRGBDevices.Length; i++)
+                //{
+                //    AvailableOpenRGBDevices.Add(newOpenRGBDevices[i]);
+                //}
+                //compair UID to existed device UID, and add only add new UID
 
-
+            }
+            else
+            {
+                HandyControl.Controls.MessageBox.Show("Khởi động lại ứng dụng OpenRGB và Start Server");
             }
             //WriteOpenRGBDeviceInfoJson();
         }
@@ -5938,7 +5961,7 @@ namespace adrilight.ViewModel
                                 break;
 
                         }
-                        SetRectangleFromScale(CurrentOutput, CurrentOutput.OutputRectangleScaleLeft, CurrentOutput.OutputRectangleScaleTop, CurrentOutput.OutputRectangleScaleWidth, CurrentOutput.OutputRectangleScaleHeight, 240, 135);
+                        SetRectangleFromScale(CurrentOutput, CurrentOutput.OutputRectangleScaleLeft, CurrentOutput.OutputRectangleScaleTop, CurrentOutput.OutputRectangleScaleWidth, CurrentOutput.OutputRectangleScaleHeight, CanvasWidth, CanvasHeight);
                         RaisePropertyChanged(nameof(CurrentOutput.OutputRectangle));
                         break;
                     case nameof(CurrentOutput.OutputMusicSensitivity):

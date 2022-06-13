@@ -111,7 +111,7 @@ namespace adrilight
                         .OrderByDescending(fi => fi.LastWriteTimeUtc)
                         .FirstOrDefault();
 
-
+            HandleAutostart(generalSettings);
             return generalSettings;
         }
 

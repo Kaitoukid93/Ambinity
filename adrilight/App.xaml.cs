@@ -202,7 +202,7 @@ namespace adrilight
                    
 
 
-                    var iD = device.DeviceID.ToString();
+                    var iD = device.DeviceUID.ToString();
                     var outputs = device.AvailableOutputs.ToList();
                     if (device.UnionOutput != null)
                         outputs.Add(device.UnionOutput);
