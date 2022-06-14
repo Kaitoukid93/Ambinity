@@ -360,6 +360,7 @@ namespace adrilight.Settings
 
             return ledSetup;
         }
+        
         private static IDeviceSpot[] BuildMatrix(int rectwidth, int rectheight, int spotsX, int spotsY)
         {
             int spacing = 1;

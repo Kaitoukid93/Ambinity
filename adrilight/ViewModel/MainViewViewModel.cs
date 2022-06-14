@@ -331,7 +331,122 @@ namespace adrilight.ViewModel
             {
 
                 _currentOutput = value;
+                CurrentOutput.PropertyChanged += (s, e) =>
+                {
 
+
+
+                    switch (e.PropertyName)
+                    {
+                        case nameof(CurrentOutput.OutputScreenCapturePositionIndex):
+                            switch (CurrentOutput.OutputScreenCapturePositionIndex)
+                            {
+                                case 0://full screen
+                                    CurrentOutput.OutputRectangleScaleHeight = 1;
+                                    CurrentOutput.OutputRectangleScaleWidth = 1;
+                                    CurrentOutput.OutputRectangleScaleLeft = 0;
+                                    CurrentOutput.OutputRectangleScaleTop = 0;
+                                    break;
+                                case 1: // left
+
+                                    CurrentOutput.OutputRectangleScaleHeight = 1;
+                                    CurrentOutput.OutputRectangleScaleWidth = 0.5;
+                                    CurrentOutput.OutputRectangleScaleLeft = 0;
+                                    CurrentOutput.OutputRectangleScaleTop = 0;
+
+
+                                    break;
+                                case 2: // right
+
+                                    CurrentOutput.OutputRectangleScaleHeight = 1;
+                                    CurrentOutput.OutputRectangleScaleWidth = 0.5;
+                                    CurrentOutput.OutputRectangleScaleLeft = 0.5;
+                                    CurrentOutput.OutputRectangleScaleTop = 0;
+
+
+                                    break;
+                                case 3: // top
+
+                                    CurrentOutput.OutputRectangleScaleHeight = 0.5;
+                                    CurrentOutput.OutputRectangleScaleWidth = 1;
+                                    CurrentOutput.OutputRectangleScaleLeft = 0;
+                                    CurrentOutput.OutputRectangleScaleTop = 0;
+
+
+                                    break;
+                                case 4: // bottom
+
+                                    CurrentOutput.OutputRectangleScaleHeight = 0.5;
+                                    CurrentOutput.OutputRectangleScaleWidth = 1;
+                                    CurrentOutput.OutputRectangleScaleLeft = 0;
+                                    CurrentOutput.OutputRectangleScaleTop = 0.5;
+
+
+                                    break;
+
+                            }
+                            SetRectangleFromScale(CurrentOutput, CurrentOutput.OutputRectangleScaleLeft, CurrentOutput.OutputRectangleScaleTop, CurrentOutput.OutputRectangleScaleWidth, CurrentOutput.OutputRectangleScaleHeight, CanvasWidth, CanvasHeight);
+                            RaisePropertyChanged(nameof(CurrentOutput.OutputRectangle));
+                            break;
+                        case nameof(CurrentOutput.OutputMusicSensitivity):
+                            SensitivityThickness = new Thickness(0, 0, 0, CurrentOutput.OutputMusicSensitivity + 15);
+                            RaisePropertyChanged(nameof(SensitivityThickness));
+                            break;
+                        case nameof(CurrentOutput.OutputMusicVisualizerFreq):
+                            if (CurrentOutput.OutputMusicVisualizerFreq == 0) // bass configuration
+                            {
+
+                                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                {
+                                    spot.SetMID(20);
+                                }
+                            }
+                            else if (CurrentOutput.OutputMusicVisualizerFreq == 1)// mid configuration
+                            {
+                                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                {
+                                    spot.SetMID(100);
+                                }
+                            }
+                            else if (CurrentOutput.OutputMusicVisualizerFreq == 2)// treble configuration
+                            {
+                                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                {
+                                    spot.SetMID(500);
+                                }
+                            }
+                            else if (CurrentOutput.OutputMusicVisualizerFreq == 3)// Full range configuration
+                            {
+                                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                {
+                                    spot.SetMID(spot.id);
+                                }
+                            }
+                            RaisePropertyChanged(nameof(SensitivityThickness));
+                            break;
+                        case nameof(CurrentOutput.OutputPaletteChasingPosition):
+                            if (CurrentOutput.OutputPaletteChasingPosition == 0)
+                            {
+                                //full range
+                                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                {
+                                    spot.SetStroke(0.5);
+                                }
+                                SetIDMode = "VID";
+                                ProcessSelectedSpotsWithRange(0, 1023);
+                                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                {
+                                    spot.SetStroke(0);
+                                }
+
+                            }
+                            break;
+
+
+
+                    }
+                    //WriteDeviceInfoJson();
+                };
 
                 RaisePropertyChanged();
 
@@ -5889,139 +6004,7 @@ namespace adrilight.ViewModel
 
             //WriteDeviceInfoJson();
 
-            CurrentOutput.PropertyChanged += (s, e) =>
-            {
-
-
-
-                switch (e.PropertyName)
-                {
-                    case nameof(CurrentOutput.OutputNumLEDX):
-                    case nameof(CurrentOutput.OutputNumLEDY):
-                        if (CurrentOutput.OutputNumLEDX > CurrentOutput.OutputNumLEDY)
-                        {
-                            //CurrentOutput.OutputRectangle.Height = (int)ShaderBitmap.Width * CurrentOutput.OutputNumLEDY / CurrentOutput.OutputNumLEDX;
-                            //CurrentOutput.OutputRectangle.Width = (int)ShaderBitmap.Width;
-                        }
-
-                        else
-                        {
-                            //CurrentOutput.OutputRectangle.Width = (int)ShaderBitmap.Height * CurrentOutput.OutputNumLEDX / CurrentOutput.OutputNumLEDY;
-                            //CurrentOutput.OutputRectangle.Height = (int)ShaderBitmap.Height;
-                        }
-
-                        //RaisePropertyChanged(nameof(CurrentOutput.OutputPixelWidth));
-                        //RaisePropertyChanged(nameof(CurrentOutput.OutputPixelHeight));
-                        break;
-
-                    case nameof(CurrentOutput.OutputScreenCapturePositionIndex):
-                        switch (CurrentOutput.OutputScreenCapturePositionIndex)
-                        {
-                            case 0://full screen
-                                CurrentOutput.OutputRectangleScaleHeight = 1;
-                                CurrentOutput.OutputRectangleScaleWidth = 1;
-                                CurrentOutput.OutputRectangleScaleLeft = 0;
-                                CurrentOutput.OutputRectangleScaleTop = 0;
-                                break;
-                            case 1: // left
-
-                                CurrentOutput.OutputRectangleScaleHeight = 1;
-                                CurrentOutput.OutputRectangleScaleWidth = 0.5;
-                                CurrentOutput.OutputRectangleScaleLeft = 0;
-                                CurrentOutput.OutputRectangleScaleTop = 0;
-
-
-                                break;
-                            case 2: // right
-
-                                CurrentOutput.OutputRectangleScaleHeight = 1;
-                                CurrentOutput.OutputRectangleScaleWidth = 0.5;
-                                CurrentOutput.OutputRectangleScaleLeft = 0.5;
-                                CurrentOutput.OutputRectangleScaleTop = 0;
-
-
-                                break;
-                            case 3: // top
-
-                                CurrentOutput.OutputRectangleScaleHeight = 0.5;
-                                CurrentOutput.OutputRectangleScaleWidth = 1;
-                                CurrentOutput.OutputRectangleScaleLeft = 0;
-                                CurrentOutput.OutputRectangleScaleTop = 0;
-
-
-                                break;
-                            case 4: // bottom
-
-                                CurrentOutput.OutputRectangleScaleHeight = 0.5;
-                                CurrentOutput.OutputRectangleScaleWidth = 1;
-                                CurrentOutput.OutputRectangleScaleLeft = 0;
-                                CurrentOutput.OutputRectangleScaleTop = 0.5;
-
-
-                                break;
-
-                        }
-                        SetRectangleFromScale(CurrentOutput, CurrentOutput.OutputRectangleScaleLeft, CurrentOutput.OutputRectangleScaleTop, CurrentOutput.OutputRectangleScaleWidth, CurrentOutput.OutputRectangleScaleHeight, CanvasWidth, CanvasHeight);
-                        RaisePropertyChanged(nameof(CurrentOutput.OutputRectangle));
-                        break;
-                    case nameof(CurrentOutput.OutputMusicSensitivity):
-                        SensitivityThickness = new Thickness(0, 0, 0, CurrentOutput.OutputMusicSensitivity + 15);
-                        RaisePropertyChanged(nameof(SensitivityThickness));
-                        break;
-                    case nameof(CurrentOutput.OutputMusicVisualizerFreq):
-                        if (CurrentOutput.OutputMusicVisualizerFreq == 0) // bass configuration
-                        {
-                            foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
-                            {
-                                spot.SetMID(2);
-                            }
-                        }
-                        else if (CurrentOutput.OutputMusicVisualizerFreq == 1)// mid configuration
-                        {
-                            foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
-                            {
-                                spot.SetMID(10);
-                            }
-                        }
-                        else if (CurrentOutput.OutputMusicVisualizerFreq == 2)// treble configuration
-                        {
-                            foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
-                            {
-                                spot.SetMID(20);
-                            }
-                        }
-                        else if (CurrentOutput.OutputMusicVisualizerFreq == 3)// Full range configuration
-                        {
-                            foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
-                            {
-                                spot.SetMID(spot.id);
-                            }
-                        }
-                        RaisePropertyChanged(nameof(SensitivityThickness));
-                        break;
-                    case nameof(CurrentOutput.OutputPaletteChasingPosition):
-                        if (CurrentOutput.OutputPaletteChasingPosition == 0)
-                        {
-                            //full range
-                            foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
-                            {
-                                spot.SetStroke(0.5);
-                            }
-                            SetIDMode = "VID";
-                            ProcessSelectedSpotsWithRange(0, 1024);
-                            foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
-                            {
-                                spot.SetStroke(0);
-                            }
-
-                        }
-                        break;
-
-
-
-                }
-                //WriteDeviceInfoJson();
-            };
+            
 
             CurrentDevice.PropertyChanged += (s, e) =>
             {
