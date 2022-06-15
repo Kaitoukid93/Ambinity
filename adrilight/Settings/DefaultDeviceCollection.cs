@@ -1,13 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace adrilight.Settings
 {
+
     internal class DefaultDeviceCollection
     {
+        private static string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adrilight\\");
+        private static string JsonFWToolsFileNameAndPath => Path.Combine(JsonPath, "FWTools");
+        private static string FanHubFW => Path.Combine(JsonFWToolsFileNameAndPath, "ABFANHUB.hex");
+        private static string FanHubFWVersion => Path.Combine(JsonFWToolsFileNameAndPath, "ABFANHUB.json");
+        private static string ABBASICFW => Path.Combine(JsonFWToolsFileNameAndPath, "ABBASIC.hex");
+        private static string ABBASICFWVersion => Path.Combine(JsonFWToolsFileNameAndPath, "ABBASIC.json");
+        private static string ABEDGEFW => Path.Combine(JsonFWToolsFileNameAndPath, "ABEDGE.hex");
+        private static string ABEDGEFWVersion => Path.Combine(JsonFWToolsFileNameAndPath, "ABEDGE.json");
+        private static string ABRAINPOWFW => Path.Combine(JsonFWToolsFileNameAndPath, "ABRP.hex");
+        private static string ABRAINPOWFWVersion => Path.Combine(JsonFWToolsFileNameAndPath, "ABRP.json");
+        private static string ABHUBV3FW => Path.Combine(JsonFWToolsFileNameAndPath, "ABHUBV3.hex");
+        private static string ABHUBV3FWVersion => Path.Combine(JsonFWToolsFileNameAndPath, "ABHUBV3.json");
+        public static List<DeviceSettings> AvailableDefaultDevice()
+        {
+            return new List<DeviceSettings> { ambinoBasic24, ambinoBasic27, ambinoBasic29, ambinoBasic32, ambinoBasic34, ambinoEdge1m2, ambinoEdge2m, ambinoFanHub, ambinoHUBV3 };
+        }
+
         public static DeviceSettings ambinoBasic24 = new DeviceSettings {
             DeviceName = "Ambino Basic 24 inch",
             DeviceSerial = "ABBASIC24",
@@ -18,6 +37,8 @@ namespace adrilight.Settings
             IsVisible = true,
             IsEnabled = true,
             OutputPort = "Không có",
+            FwLocation = ABBASICFW,
+            RequiredFwVersion = ABBASICFWVersion,
             Geometry = "ambinobasic",
             DeviceUID = Guid.NewGuid().ToString(),
             IsUnionMode = true,
@@ -37,6 +58,8 @@ namespace adrilight.Settings
             IsVisible = true,
             IsEnabled = true,
             OutputPort = "Không có",
+            FwLocation = ABBASICFW,
+            RequiredFwVersion = ABBASICFWVersion,
             Geometry = "ambinobasic",
             IsUnionMode = true,
             IsTransferActive = true,
@@ -55,6 +78,8 @@ namespace adrilight.Settings
             IsVisible = true,
             IsEnabled = true,
             OutputPort = "Không có",
+            FwLocation = ABBASICFW,
+            RequiredFwVersion = ABBASICFWVersion,
             IsUnionMode = true,
             Geometry = "ambinobasic",
             IsTransferActive = true,
@@ -73,6 +98,8 @@ namespace adrilight.Settings
             IsVisible = true,
             IsEnabled = true,
             OutputPort = "Không có",
+            FwLocation = ABBASICFW,
+            RequiredFwVersion = ABBASICFWVersion,
             IsUnionMode = true,
             Geometry = "ambinobasic",
             IsTransferActive = true,
@@ -91,6 +118,8 @@ namespace adrilight.Settings
             IsVisible = true,
             IsEnabled = true,
             OutputPort = "Không có",
+            FwLocation = ABBASICFW,
+            RequiredFwVersion = ABBASICFWVersion,
             IsUnionMode = true,
             Geometry = "ambinobasic",
             IsTransferActive = true,
@@ -109,6 +138,8 @@ namespace adrilight.Settings
             IsVisible = true,
             IsEnabled = true,
             OutputPort = "Không có",
+            FwLocation = ABEDGEFW,
+            RequiredFwVersion = ABEDGEFWVersion,
             Geometry = "ambinoedge",
             IsUnionMode = true,
             IsTransferActive = true,
@@ -127,6 +158,8 @@ namespace adrilight.Settings
             DeviceUID = Guid.NewGuid().ToString(),
             IsEnabled = true,
             OutputPort = "Không có",
+            FwLocation = ABEDGEFW,
+            RequiredFwVersion = ABEDGEFWVersion,
             Geometry = "ambinoedge",
             IsUnionMode = true,
             IsTransferActive = true,
@@ -145,6 +178,8 @@ namespace adrilight.Settings
             DeviceUID = Guid.NewGuid().ToString(),
             IsEnabled = true,
             OutputPort = "Không có",
+            FwLocation = FanHubFW,
+            RequiredFwVersion = FanHubFWVersion,
             Geometry = "ambinofanhub",
             IsTransferActive = true,
             UnionOutput = DefaulOutputCollection.GenericFan("Uni-Fan", 10, 5, 5, false),
@@ -194,11 +229,13 @@ namespace adrilight.Settings
             DeviceType = "ABHUBV3",
             Manufacturer = "Ambino Vietnam",
             FirmwareVersion = "1.0.0",
-            ProductionDate = "2020",
+            ProductionDate = "2022",
             DeviceUID = Guid.NewGuid().ToString(),
             IsVisible = true,
             IsEnabled = true,
             OutputPort = "Không có",
+            FwLocation = ABHUBV3FW,
+            RequiredFwVersion = ABHUBV3FWVersion,
             Geometry = "ambinohubv3",
             IsTransferActive = true,
             UnionOutput = DefaulOutputCollection.GenericLEDStrip(4, 16, "Uni-Strip", 4, false, "ledstrip"),
@@ -223,6 +260,8 @@ namespace adrilight.Settings
             DeviceUID = Guid.NewGuid().ToString(),
             IsEnabled = true,
             OutputPort = "Không có",
+            FwLocation = ABRAINPOWFW,
+            RequiredFwVersion = ABRAINPOWFWVersion,
             Geometry = "ambinohubv3",
             IsTransferActive = true,
             UnionOutput = DefaulOutputCollection.GenericLEDStrip(6, 20, "Uni-Strip", 1, false, "ledstrip"),

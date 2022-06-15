@@ -11,6 +11,7 @@ using adrilight.Settings;
 
 namespace adrilight
 {
+    public enum State { sleep, dfu, normal };
     public interface IDeviceSettings :  INotifyPropertyChanged
     {
       
@@ -43,6 +44,9 @@ namespace adrilight
         
         bool IsLoadingProfile { get; set; }
         void ActivateProfile(IDeviceProfile profile);
-       
+        string FwLocation { get; set; }
+        string RequiredFwVersion { get; set; }
+        void RefreshFirmwareVersion();
+        State CurrentState { get; set; }
     }
 }

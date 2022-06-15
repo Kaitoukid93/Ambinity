@@ -11,6 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using adrilight.ViewModel;
+using System.IO.Ports;
+using System.Diagnostics;
+using System.Windows;
 
 namespace adrilight
 {
@@ -45,16 +48,21 @@ namespace adrilight
         private bool _isUnionMode = false;
         private bool _isLoadingProfile = false;
         private string _activatedProfileUID;
+        private string _fwLocation;
+        private State _currentState = State.normal;
+        private string _requiredFwVersion;
+        private static byte[] requestCommand = { (byte)'d', (byte)'i', (byte)'r' };
+        private static byte[] expectedValidHeader = { 15, 12, 93 };
 
 
-
-
-
+        public State CurrentState { get => _currentState; set { Set(() => CurrentState, ref _currentState, value); } }
+        public string RequiredFwVersion { get => _requiredFwVersion; set { Set(() => RequiredFwVersion, ref _requiredFwVersion, value); } }
         public int DeviceID { get => _deviceID; set { Set(() => DeviceID, ref _deviceID, value); } }
         public string DeviceName { get => _deviceName; set { Set(() => DeviceName, ref _deviceName, value); } }
-        public string DeviceSerial { get => _deviceSerial; set { Set(() => _deviceSerial, ref _deviceSerial, value); } }
-        public string DeviceType { get => _deviceType; set { Set(() => _deviceType, ref _deviceType, value); } }
-        public string Manufacturer { get => _manufacturer; set { Set(() => _manufacturer, ref _manufacturer, value); } }
+        public string FwLocation { get => _fwLocation; set { Set(() => FwLocation, ref _fwLocation, value); } }
+        public string DeviceSerial { get => _deviceSerial; set { Set(() => DeviceSerial, ref _deviceSerial, value); } }
+        public string DeviceType { get => _deviceType; set { Set(() => DeviceType, ref _deviceType, value); } }
+        public string Manufacturer { get => _manufacturer; set { Set(() => Manufacturer, ref _manufacturer, value); } }
         public string FirmwareVersion { get => _firmwareVersion; set { Set(() => FirmwareVersion, ref _firmwareVersion, value); } }
         public string ProductionDate { get => _productionDate; set { Set(() => ProductionDate, ref _productionDate, value); } }
         public string ActivatedProfileUID { get => _activatedProfileUID; set { Set(() => ActivatedProfileUID, ref _activatedProfileUID, value); } }
@@ -86,13 +94,13 @@ namespace adrilight
             {
                 AvailableOutputs[i].OutputIsLoadingProfile = true;
 
-                    foreach (PropertyInfo property in AvailableOutputs[i].GetType().GetProperties())
+                foreach (PropertyInfo property in AvailableOutputs[i].GetType().GetProperties())
                 {
-                    
+
                     if (Attribute.IsDefined(property, typeof(ReflectableAttribute)))
                         property.SetValue(AvailableOutputs[i], property.GetValue(profile.OutputSettings[i], null), null);
                 }
-             
+
                 AvailableOutputs[i].OutputIsLoadingProfile = false;
             }
             if (profile.UnionOutput != null)
@@ -108,5 +116,123 @@ namespace adrilight
 
 
         }
-    }
+
+
+        public void RefreshFirmwareVersion()
+        {
+
+            byte[] id = new byte[256];
+            byte[] name = new byte[256];
+            byte[] fw = new byte[256];
+
+            bool isValid = false;
+
+
+            IsTransferActive = false; // stop current serial stream attached to this device
+
+            var _serialPort = new SerialPort(OutputPort, 1000000);
+            _serialPort.DtrEnable = true;
+            _serialPort.ReadTimeout = 5000;
+            _serialPort.WriteTimeout = 1000;
+            try
+            {
+                _serialPort.Open();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return;
+            }
+
+            //write request info command
+            _serialPort.Write(requestCommand, 0, 3);
+            int retryCount = 0;
+            int offset = 0;
+            int idLength = 0; // Expected response length of valid deviceID 
+            int nameLength = 0; // Expected response length of valid deviceName 
+            int fwLength = 0;
+            IDeviceSettings newDevice = new DeviceSettings();
+            while (offset < 3)
+            {
+
+
+                try
+                {
+                    byte header = (byte)_serialPort.ReadByte();
+                    if (header == expectedValidHeader[offset])
+                    {
+                        offset++;
+                    }
+                }
+                catch (TimeoutException)// retry until received valid header
+                {
+                    _serialPort.Write(requestCommand, 0, 3);
+                    retryCount++;
+                    if (retryCount == 3)
+                    {
+                        Console.WriteLine("timeout waiting for respond on serialport " + _serialPort.PortName);
+                        HandyControl.Controls.MessageBox.Show("Device at " + _serialPort.PortName + "is not responding, try adding it manually", "Device is not responding", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        isValid = false;
+                        break;
+                    }
+                    Debug.WriteLine("no respond, retrying...");
+                }
+
+
+            }
+            if (offset == 3) //3 bytes header are valid
+            {
+                idLength = (byte)_serialPort.ReadByte();
+                int count = idLength;
+                id = new byte[count];
+                while (count > 0)
+                {
+                    var readCount = _serialPort.Read(id, 0, count);
+                    offset += readCount;
+                    count -= readCount;
+                }
+
+
+                DeviceSerial = BitConverter.ToString(id).Replace('-', ' ');
+                RaisePropertyChanged(nameof(DeviceSerial));
+            }
+            if (offset == 3 + idLength) //3 bytes header are valid
+            {
+                nameLength = (byte)_serialPort.ReadByte();
+                int count = nameLength;
+                name = new byte[count];
+                while (count > 0)
+                {
+                    var readCount = _serialPort.Read(name, 0, count);
+                    offset += readCount;
+                    count -= readCount;
+                }
+                DeviceName = Encoding.ASCII.GetString(name, 0, name.Length);
+                RaisePropertyChanged(nameof(DeviceName));
+                
+
+            }
+            if (offset == 3 + idLength + nameLength) //3 bytes header are valid
+            {
+                fwLength = (byte)_serialPort.ReadByte();
+                int count = fwLength;
+                fw = new byte[count];
+                while (count > 0)
+                {
+                    var readCount = _serialPort.Read(fw, 0, count);
+                    offset += readCount;
+                    count -= readCount;
+                }
+                FirmwareVersion = Encoding.ASCII.GetString(fw, 0, fw.Length);
+                RaisePropertyChanged(nameof(FirmwareVersion));
+            }
+            _serialPort.Close();
+            _serialPort.Dispose();
+            //if (isValid)
+            //    newDevices.Add(newDevice);
+            //reboot serialStream
+            IsTransferActive = true;
+            RaisePropertyChanged(nameof(IsTransferActive));
+        }
+    
+}
 }

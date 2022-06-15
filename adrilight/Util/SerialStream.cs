@@ -12,12 +12,12 @@ using adrilight.Spots;
 
 namespace adrilight
 {
-    
+
     internal sealed class
 
         SerialStream : IDisposable, ISerialStream
     {
-        
+
 
         private ILogger _log = LogManager.GetCurrentClassLogger();
 
@@ -28,6 +28,7 @@ namespace adrilight
 
             // DeviceSpotSets = deviceSpotSets ?? throw new ArgumentNullException(nameof(deviceSpotSets));
             DeviceSettings.PropertyChanged += UserSettings_PropertyChanged;
+            deviceSettings.CurrentState = State.normal;
             RefreshTransferState();
             
             _log.Info($"SerialStream created.");
@@ -37,8 +38,8 @@ namespace adrilight
         //Dependency Injection//
         private IDeviceSettings DeviceSettings { get; set; }
         private IGeneralSettings GeneralSettings { get; set; }
-       
-        public  State CurrentState { get; set; }
+
+
 
         // private IDeviceSpotSet[] DeviceSpotSets { get; set; }
         private bool CheckSerialPort(string serialport)
@@ -108,6 +109,7 @@ namespace adrilight
             {
                 case nameof(DeviceSettings.IsTransferActive):
                 case nameof(DeviceSettings.OutputPort):
+                case nameof(DeviceSettings.CurrentState):
                     RefreshTransferState();
                     break;
                 case nameof(DeviceSettings.IsUnionMode):
@@ -124,8 +126,12 @@ namespace adrilight
         private void RefreshTransferState()
         {
 
-            if (DeviceSettings.IsTransferActive)
+            if (DeviceSettings.IsTransferActive && DeviceSettings.CurrentState == State.normal) // normal scenario
             {
+                if (IsRunning)
+                {
+                    Stop(); // stop current running if worker thread is alive.
+                }
                 if (IsValid() && CheckSerialPort(DeviceSettings.OutputPort))
                 {
 
@@ -140,18 +146,27 @@ namespace adrilight
                 }
             }
 
-            else if (!DeviceSettings.IsTransferActive && IsRunning)
+            else if (!DeviceSettings.IsTransferActive && IsRunning) // user requesting for stop transfer state, this is due to changing comport or user intend to stop the serial stream.
             {
                 //stop it
                 _log.Debug("stopping the serial stream");
                 Stop();
             }
+            else if (DeviceSettings.IsTransferActive && DeviceSettings.CurrentState == State.sleep) // computer susped or app exit, this could be an event from sleep button ( not available at the moment)
+            {
+                // this is handled by GetOutputStream at the moment.
+                // change output stream to black or sentry.
+                // stop the serial stream.
+            }
+            else if (DeviceSettings.IsTransferActive && DeviceSettings.CurrentState == State.dfu) // this is only requested by dfu or fwupgrade button.
+            {
+                Stop();
+                DFU();
+            }
         }
 
         private readonly byte[] _messagePreamble = { (byte)'a', (byte)'b', (byte)'n' };
-        private readonly byte[] _messagePostamble = { 15, 12, 93 };
-        private readonly byte[] _messageZoeamble = { 15, 12, 93 };
-        private readonly byte[] _commandmessage = { 15, 12, 93 };
+        
 
 
 
@@ -161,14 +176,7 @@ namespace adrilight
 
         private int frameCounter;
         private int blackFrameCounter;
-        private int _iD;
-        //public int ID {
-        //    get { return DeviceSettings.DeviceID; }
-        //    set
-        //    {
-        //        _iD = value;
-        //    }
-        //}
+     
 
 
         public void Start()
@@ -185,7 +193,7 @@ namespace adrilight
             WinApi.TimeBeginPeriod(1);
 
             // The call has failed
-            CurrentState = State.normal;
+
             _workerThread.Start(_cancellationTokenSource.Token);
         }
 
@@ -207,11 +215,19 @@ namespace adrilight
             //Open device at 1200 baudrate
 
 
-            Stop();
+            
             if (DeviceSettings.OutputPort != null)
             {
                 var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.OutputPort, 1200));
-                serialPort.Open();
+                try
+                {
+                    serialPort.Open();
+                }
+                catch(Exception)
+                {
+                    // I don't know about this shit but we have to catch an empty exception because somehow SerialPort.Open() was called twice
+                }
+                Thread.Sleep(500);
                 serialPort.Close();
 
             }
@@ -261,21 +277,22 @@ namespace adrilight
                 var parrentIsEnabled = DeviceSettings.IsEnabled;
                 var allBlack = true;
                 //}
-                switch(CurrentState)
-                { case State.normal: // get data from ledsetup
+                switch (DeviceSettings.CurrentState)
+                {
+                    case State.normal: // get data from ledsetup
                         foreach (DeviceSpot spot in currentOutput.OutputLEDSetup.Spots)
                         {
                             if (isEnabled && parrentIsEnabled)
                             {
                                 var RGBOrder = currentOutput.OutputRGBLEDOrder;
-                                var reOrderedColor = ReOrderSpotColor(RGBOrder, spot.Red,spot.Green,spot.Blue);
+                                var reOrderedColor = ReOrderSpotColor(RGBOrder, spot.Red, spot.Green, spot.Blue);
                                 for (int i = 0; i < ledPerSpot; i++)
-                                        {
+                                {
 
-                                            outputStream[counter++] = reOrderedColor[0]; // blue
-                                            outputStream[counter++] = reOrderedColor[1]; // green
-                                            outputStream[counter++] = reOrderedColor[2]; // red
-                                        }
+                                    outputStream[counter++] = reOrderedColor[0]; // blue
+                                    outputStream[counter++] = reOrderedColor[1]; // green
+                                    outputStream[counter++] = reOrderedColor[2]; // red
+                                }
 
                                 allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
 
@@ -296,7 +313,7 @@ namespace adrilight
                     case State.sleep: // send black frame data
                         foreach (DeviceSpot spot in currentOutput.OutputLEDSetup.Spots)
                         {
-                            switch(currentOutput.SleepMode)
+                            switch (currentOutput.SleepMode)
                             {
                                 case 0:
                                     if (isEnabled && parrentIsEnabled)
@@ -313,7 +330,7 @@ namespace adrilight
                                     if (isEnabled && parrentIsEnabled)
                                     {
                                         var RGBOrder = currentOutput.OutputRGBLEDOrder;
-                                        var reOrderedColor = ReOrderSpotColor(RGBOrder, spot.SentryRed,spot.SentryGreen,spot.SentryBlue);
+                                        var reOrderedColor = ReOrderSpotColor(RGBOrder, spot.SentryRed, spot.SentryGreen, spot.SentryBlue);
                                         for (int i = 0; i < ledPerSpot; i++)
                                         {
 
@@ -324,13 +341,13 @@ namespace adrilight
                                     }
                                     break;
                             }
-                            
+
                         }
                         break;
-                   
+
                 }
 
-               
+
 
 
 
@@ -349,8 +366,8 @@ namespace adrilight
 
 
         }
-       
-       private byte[] ReOrderSpotColor(string order, byte r,byte g, byte b)
+
+        private byte[] ReOrderSpotColor(string order, byte r, byte g, byte b)
         {
             byte[] reOrderedColor = new byte[3];
             switch (order)
@@ -371,7 +388,7 @@ namespace adrilight
                     reOrderedColor[2] = r;
                     break;
                 case "BRG"://do nothing
-                    reOrderedColor[0] = b;   
+                    reOrderedColor[0] = b;
                     reOrderedColor[1] = r;
                     reOrderedColor[2] = g;
                     break;
@@ -446,7 +463,7 @@ namespace adrilight
                                 //ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
                                 //receiving over serial takes it time as well and the arduino does both tasks in sequence
                                 //+1 ms extra safe zone
-                                var fastLedTime = ((streamLength - _messagePreamble.Length - _messagePostamble.Length) / 3.0 * 0.030d);
+                                var fastLedTime = ((streamLength - _messagePreamble.Length) / 3.0 * 0.030d);
                                 var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
                                 var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
 
@@ -471,7 +488,7 @@ namespace adrilight
                                 //ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
                                 //receiving over serial takes it time as well and the arduino does both tasks in sequence
                                 //+1 ms extra safe zone
-                                var fastLedTime = ((streamLength - _messagePreamble.Length - _messagePostamble.Length) / 3.0 * 0.030d);
+                                var fastLedTime = ((streamLength - _messagePreamble.Length) / 3.0 * 0.030d);
                                 var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
                                 var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
 

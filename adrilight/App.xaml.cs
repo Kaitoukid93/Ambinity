@@ -107,12 +107,12 @@ namespace adrilight
             GeneralSettings = kernel.Get<IGeneralSettings>();
             _telemetryClient = kernel.Get<TelemetryClient>();
 
-        
 
 
 
 
-            if(GeneralSettings.ThemeIndex==1)
+
+            if (GeneralSettings.ThemeIndex == 1)
             {
                 ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
             }
@@ -120,7 +120,7 @@ namespace adrilight
             {
                 ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
             }
-            
+
 
             ThemeManager.Current.AccentColor = GeneralSettings.AccentColor;
             // Current.MainWindow = kernel.Get<MainView>();
@@ -161,7 +161,7 @@ namespace adrilight
             return tc;
         }
 
-       
+
 
         internal static IKernel SetupDependencyInjection(bool isInDesignMode)
         {
@@ -184,8 +184,8 @@ namespace adrilight
             //var shaderEffect = kernel.Get<IShaderEffect>();
             var context = kernel.Get<IContext>();
             var desktopFrame = kernel.GetAll<IDesktopFrame>();
-            
-            
+
+
             //var hotKeyManager = kernel.Get<IHotKeyManager>();
             kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
             var openRGBStream = kernel.Get<IOpenRGBStream>();
@@ -198,22 +198,22 @@ namespace adrilight
                 foreach (var device in existedDevice)
                 {
 
+
+
+
                     
-                   
-
-
                     var iD = device.DeviceUID.ToString();
                     var outputs = device.AvailableOutputs.ToList();
                     if (device.UnionOutput != null)
                         outputs.Add(device.UnionOutput);
                     var connectionType = device.DeviceConnectionType;
-                    if(connectionType!="OpenRGB")
+                    if (connectionType != "OpenRGB")
                     {
                         switch (connectionType)
                         {
                             case "wired":
                                 kernel.Bind<ISerialStream>().To<SerialStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
-                           
+
                                 break;
                             case "wireless":
                                 kernel.Bind<ISerialStream>().To<NetworkStream>().InSingletonScope().Named(iD).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(iD));
@@ -223,11 +223,11 @@ namespace adrilight
                         }
                         var serialStream = kernel.Get<ISerialStream>(iD);
                     }
-                   
+
 
                     foreach (var output in outputs)
                     {
-                        
+
                         var outputID = iD + output.OutputID.ToString();
                         //kernel.Bind<IStaticColor>().To<StaticColor>().InSingletonScope().Named(DeviceName).WithConstructorArgument("deviceSettings", kernel.Get<IDeviceSettings>(DeviceName)).WithConstructorArgument("deviceSpotSet", kernel.Get<IDeviceSpotSet>(DeviceName));
                         kernel.Bind<IRainbow>().To<Rainbow>().InSingletonScope().Named(outputID).WithConstructorArgument("outputSettings", kernel.Get<IOutputSettings>(outputID));
@@ -245,7 +245,7 @@ namespace adrilight
 
                     }
 
-                    
+
 
                 }
 
@@ -269,12 +269,12 @@ namespace adrilight
             // var desktopduplicators = kernel.GetAll<IDesktopDuplicatorReader>();
             Exit += (s, e) =>
             {
-                var SerialStream = kernel.GetAll<ISerialStream>();
-                foreach (var serialStream in SerialStream)
+                var devices = kernel.GetAll<IDeviceSettings>();
+                foreach (var device in devices)
                 {
-                    serialStream.CurrentState = State.sleep;
-                    Thread.Sleep(1000); //wait for serialstream to finising sending
-                    serialStream.Stop();
+                    device.CurrentState = State.sleep;
+                    /*Thread.Sleep(1000);*/ //wait for serialstream to finising sending
+                    //serialStream.Stop();
                 }
                 _log.Debug("Application exit!");
             };
@@ -287,10 +287,10 @@ namespace adrilight
                 if (e.Mode == PowerModes.Resume)
                 {
                     GC.Collect();
-                    var SerialStream = kernel.GetAll<ISerialStream>();
-                    foreach (var serialStream in SerialStream)
+                    var devices = kernel.GetAll<IDeviceSettings>();
+                    foreach (var device in devices)
                     {
-                        serialStream.Start();
+                        device.CurrentState = State.normal;
                     }
 
 
@@ -307,12 +307,12 @@ namespace adrilight
                 }
                 else if (e.Mode == PowerModes.Suspend)
                 {
-                    var SerialStream = kernel.GetAll<ISerialStream>();
-                    foreach (var serialStream in SerialStream)
+                    var devices = kernel.GetAll<IDeviceSettings>();
+                    foreach (var device in devices)
                     {
-                        serialStream.CurrentState = State.sleep;
-                        Thread.Sleep(1000);
-                        serialStream.Stop();
+                        device.CurrentState = State.sleep;
+                        //Thread.Sleep(1000);
+                        //serialStream.Stop();
                     }
 
 
@@ -328,13 +328,12 @@ namespace adrilight
             };
             SystemEvents.SessionEnding += (s, e) =>
             {
-                var SerialStream = kernel.GetAll<ISerialStream>();
-                foreach (var serialStream in SerialStream)
+                var devices = kernel.GetAll<IDeviceSettings>();
+                foreach (var device in devices)
                 {
-                    
-                    serialStream.CurrentState = State.sleep;
+                    device.CurrentState = State.sleep;
                     Thread.Sleep(1000);
-                    serialStream.Stop();
+                    //serialStream.Stop();
                 }
                 _log.Debug("Stop the serial stream due to power down or log off condition!");
             };
@@ -374,24 +373,24 @@ namespace adrilight
 
 
         private IKernel kernel;
-        
+
         private void OpenSettingsWindow(bool isMinimized)
         {
             var _mainForm = kernel.Get<MainView>();
-           
-                //bring to front?
-                if(!isMinimized)
+
+            //bring to front?
+            if (!isMinimized)
             {
-                _mainForm.Visibility=Visibility.Visible;
+                _mainForm.Visibility = Visibility.Visible;
                 _mainForm.Show();
             }
             else
             {
                 //_mainForm.Visibility = Visibility.Collapsed;
-                
+
             }
-            
-            
+
+
         }
         //private void MainForm_FormClosed(object sender, EventArgs e)
         //{
@@ -401,7 +400,7 @@ namespace adrilight
         //    _mainForm.Closed -= MainForm_FormClosed;
         //    _mainForm = null;
         //}
-        
+
 
 
         public static string VersionNumber { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);

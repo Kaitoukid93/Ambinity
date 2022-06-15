@@ -15,8 +15,8 @@ namespace adrilight.Util
 {
     internal class SerialDeviceDetection : ISerialDeviceDetection
     {
-        
-        
+
+
         private static byte[] requestCommand = { (byte)'d', (byte)'i', (byte)'r' };
         private static byte[] expectedValidHeader = { 15, 12, 93 };
         private static CancellationToken cancellationtoken;
@@ -26,17 +26,18 @@ namespace adrilight.Util
 
         }
 
-        
+
         public static List<string> ValidDevice()
         {
-            List<string> names = ComPortNames("1209", "c550");
+            List<string> CH55X = ComPortNames("1209", "c550");
+            List<string> CH340 = ComPortNames("1A86", "7522");
             List<string> devices = new List<string>();
-            if (names.Count > 0)
+            if (CH55X.Count > 0 || CH340.Count > 0)
             {
                 int counter = 0;
                 foreach (String s in SerialPort.GetPortNames())
                 {
-                    if (names.Contains(s))
+                    if (CH55X.Contains(s)||CH340.Contains(s))
                     {
                         counter++;
                         devices.Add(s);
@@ -54,7 +55,7 @@ namespace adrilight.Util
             return devices;
         }
 
-        
+
 
         //static async Task SearchingForDevice(CancellationToken cancellationToken)
         //{
@@ -80,7 +81,7 @@ namespace adrilight.Util
         //        Console.WriteLine();
         //        Console.WriteLine();
         //    }
-            
+
 
 
         //    // Process response.
@@ -98,12 +99,12 @@ namespace adrilight.Util
             byte[] name = new byte[256];
             byte[] fw = new byte[256];
             List<IDeviceSettings> newDevices = new List<IDeviceSettings>();
-           
-           
-            foreach(var device in ValidDevice())
+
+
+            foreach (var device in ValidDevice())
             {
                 bool isValid = true;
-               var _serialPort = new SerialPort(device,1000000);
+                var _serialPort = new SerialPort(device, 1000000);
                 _serialPort.DtrEnable = true;
                 _serialPort.ReadTimeout = 5000;
                 _serialPort.WriteTimeout = 1000;
@@ -111,11 +112,11 @@ namespace adrilight.Util
                 {
                     _serialPort.Open();
                 }
-                catch(UnauthorizedAccessException)
+                catch (UnauthorizedAccessException)
                 {
                     continue;
                 }
-                
+
                 //write request info command
                 _serialPort.Write(requestCommand, 0, 3);
                 int retryCount = 0;
@@ -143,7 +144,7 @@ namespace adrilight.Util
                         if (retryCount == 3)
                         {
                             Console.WriteLine("timeout waiting for respond on serialport " + _serialPort.PortName);
-                            HandyControl.Controls.MessageBox.Show("Device at "+ _serialPort.PortName+ "is not responding, try adding it manually","Device is not responding", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            HandyControl.Controls.MessageBox.Show("Device at " + _serialPort.PortName + "is not responding, try adding it manually", "Device is not responding", MessageBoxButton.OK, MessageBoxImage.Warning);
                             isValid = false;
                             break;
                         }
@@ -192,6 +193,11 @@ namespace adrilight.Util
                             newDevice.DeviceType = "ABFANHUB";
                             newDevice.OutputPort = device;
                             break;
+                        case "Ambino HubV2":
+                            newDevice = DefaultDeviceCollection.ambinoHUBV2;
+                            newDevice.DeviceType = "ABHUBV2";
+                            newDevice.OutputPort = device;
+                            break;
                     }
 
                 }
@@ -210,41 +216,41 @@ namespace adrilight.Util
                 }
                 _serialPort.Close();
                 _serialPort.Dispose();
-                if(isValid)
-                newDevices.Add(newDevice);
+                if (isValid)
+                    newDevices.Add(newDevice);
 
             }
-           
+
             return newDevices;
 
         }
         static List<string> ComPortNames(String VID, String PID)
-    {
-        String pattern = String.Format("^VID_{0}.PID_{1}", VID, PID);
-        Regex _rx = new Regex(pattern, RegexOptions.IgnoreCase);
-        List<string> comports = new List<string>();
-        RegistryKey rk1 = Registry.LocalMachine;
-        RegistryKey rk2 = rk1.OpenSubKey("SYSTEM\\CurrentControlSet\\Enum");
-        foreach (String s3 in rk2.GetSubKeyNames())
         {
-            RegistryKey rk3 = rk2.OpenSubKey(s3);
-            foreach (String s in rk3.GetSubKeyNames())
+            String pattern = String.Format("^VID_{0}.PID_{1}", VID, PID);
+            Regex _rx = new Regex(pattern, RegexOptions.IgnoreCase);
+            List<string> comports = new List<string>();
+            RegistryKey rk1 = Registry.LocalMachine;
+            RegistryKey rk2 = rk1.OpenSubKey("SYSTEM\\CurrentControlSet\\Enum");
+            foreach (String s3 in rk2.GetSubKeyNames())
             {
-                if (_rx.Match(s).Success)
+                RegistryKey rk3 = rk2.OpenSubKey(s3);
+                foreach (String s in rk3.GetSubKeyNames())
                 {
-                    RegistryKey rk4 = rk3.OpenSubKey(s);
-                    foreach (String s2 in rk4.GetSubKeyNames())
+                    if (_rx.Match(s).Success)
                     {
-                        RegistryKey rk5 = rk4.OpenSubKey(s2);
-                        RegistryKey rk6 = rk5.OpenSubKey("Device Parameters");
-                        comports.Add((string)rk6.GetValue("PortName"));
+                        RegistryKey rk4 = rk3.OpenSubKey(s);
+                        foreach (String s2 in rk4.GetSubKeyNames())
+                        {
+                            RegistryKey rk5 = rk4.OpenSubKey(s2);
+                            RegistryKey rk6 = rk5.OpenSubKey("Device Parameters");
+                            comports.Add((string)rk6.GetValue("PortName"));
+                        }
                     }
                 }
             }
+            return comports;
         }
-        return comports;
-    }
 
-}
+    }
 
 }

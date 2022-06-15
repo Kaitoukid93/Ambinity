@@ -62,6 +62,7 @@ namespace adrilight.ViewModel
         private string JsonAutomationFileNameAndPath => Path.Combine(JsonPath, "adrilight-automations.json");
         private string JsonOpenRGBDevicesFileNameAndPath => Path.Combine(JsonPath, "adrilight-openrgbdevices.json");
         private string JsonGifsFileNameAndPath => Path.Combine(JsonPath, "Gif");
+        private string JsonFWToolsFileNameAndPath => Path.Combine(JsonPath, "FWTools");
         private string JsonGifsCollectionFileNameAndPath => Path.Combine(JsonPath, "adrilight-gifCollection.json");
         private string JsonGroupFileNameAndPath => Path.Combine(JsonPath, "adrilight-groupInfos.json");
         private string JsonPaletteFileNameAndPath => Path.Combine(JsonPath, "adrilight-PaletteCollection.json");
@@ -1180,10 +1181,7 @@ namespace adrilight.ViewModel
                 }
 
             };
-            //if (!GeneralSettings.StartMinimized)
-            //{
-            //    OpenSettingsWindow();
-            //}
+            CreateFWToolsFolderAndFiles();
 
         }
 
@@ -2269,7 +2267,7 @@ namespace adrilight.ViewModel
             }, (p) =>
             {
 
-                RunWithRedirect("k");
+                UpgradeIfAvailable(CurrentDevice);
 
 
 
@@ -3723,35 +3721,70 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
-        private void RunWithRedirect(string cmdargs)
+        private void UpgradeIfAvailable(IDeviceSettings device)
         {
-            FwUploadPercentVissible = true;
-            var startInfo = new System.Diagnostics.ProcessStartInfo {
-                WorkingDirectory = @"I:\win\",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                FileName = "cmd.exe",
-                Arguments = "/C vnproch55x test1.hex"
 
-            };
-            var proc = new Process() {
-                StartInfo = startInfo,
-                EnableRaisingEvents = true
-            };
+            // set device to DFU first,
+            // CurrentDevice.State = State.DFU;
 
-            // see below for output handler
-            proc.ErrorDataReceived += proc_DataReceived;
-            proc.OutputDataReceived += proc_DataReceived;
+            // CurrentDevice.TransferActive = false;
+            // switch deviceProcessorType
+            // case ch55x
+            // Check if there is new version come with this app
+            // Coppy corresponding firmware file for current device to firmware folder
+            // get the file path
+            // upload with CMD.exe
+            
+            
+            var json = File.ReadAllText(device.RequiredFwVersion);
+            var requiredFwVersion = JsonConvert.DeserializeObject<string>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
+            if (device.FirmwareVersion!= requiredFwVersion)
+            {
+                //coppy hex file to FWTools folder 
+                device.CurrentState = State.dfu;
+                CopyResource("adrilight.DeviceFirmware.FanHUB.hex", device.FwLocation);
 
-            proc.Start();
+                FwUploadPercentVissible = true;
+                var startInfo = new System.Diagnostics.ProcessStartInfo {
+                    WorkingDirectory = JsonFWToolsFileNameAndPath,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    FileName = "cmd.exe",
+                    Arguments = "/C vnproch55x " + device.FwLocation
 
-            proc.BeginErrorReadLine();
-            proc.BeginOutputReadLine();
-            proc.Exited += proc_FinishUploading;
+                };
+                var proc = new Process() {
+                    StartInfo = startInfo,
+                    EnableRaisingEvents = true
+                };
+
+                // see below for output handler
+                proc.ErrorDataReceived += proc_DataReceived;
+                proc.OutputDataReceived += proc_DataReceived;
+
+                proc.Start();
+
+                proc.BeginErrorReadLine();
+                proc.BeginOutputReadLine();
+                proc.Exited += proc_FinishUploading;
+            }
+            else
+            {
+                HandyControl.Controls.MessageBox.Show("Không có phiên bản mới cho thiết bị này", "Firmware uploading", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+           
 
             // proc.WaitForExit();
+
+            //case STM32
+            // show log textbox
+            //Enter HUBV2 DFU Mode
+            // Done, Please use FlyMCU to upload Hex Firmware File and Reconnect to the device
+
+
+
         }
         private void proc_FinishUploading(object sender, System.EventArgs e)
         {
@@ -3760,7 +3793,38 @@ namespace adrilight.ViewModel
             //FwUploadOutputLog = String.Empty;
             ////clear text box
             //percentCount = 0;
+            Thread.Sleep(500);
+            CurrentDevice.CurrentState = State.normal;
+            if (FwUploadOutputLog.Split('\n').Last() == "Found no CH55x USB")
+            {
+                HandyControl.Controls.MessageBox.Show("Update firmware không thành công, Không tìm thấy thiết bị ở trạng thái DFU", "Firmware uploading", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                // check for current device actual firmware version
+                CurrentDevice.RefreshFirmwareVersion();
+                HandyControl.Controls.MessageBox.Show("Update firmware thành công - Phiên bản : " + CurrentDevice.FirmwareVersion, "Firmware uploading", MessageBoxButton.OK, MessageBoxImage.Information);
+                
+            }
+           
+
+
         }
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
         private int percentCount = 0;
         void proc_DataReceived(object sender, DataReceivedEventArgs e)
         {
@@ -4627,6 +4691,59 @@ namespace adrilight.ViewModel
 
         }
 
+        private void CreateFWToolsFolderAndFiles()
+        {
+            if(!Directory.Exists(JsonFWToolsFileNameAndPath))
+            {
+                Directory.CreateDirectory(JsonFWToolsFileNameAndPath);
+                CopyResource("adrilight.Tools.FWTools.busybox.exe", Path.Combine(JsonFWToolsFileNameAndPath, "busybox.exe"));
+                CopyResource("adrilight.Tools.FWTools.CH375DLL.dll", Path.Combine(JsonFWToolsFileNameAndPath, "CH375DLL.dll"));
+                CopyResource("adrilight.Tools.FWTools.libgcc_s_sjlj-1.dll", Path.Combine(JsonFWToolsFileNameAndPath, "libgcc_s_sjlj-1.dll"));
+                CopyResource("adrilight.Tools.FWTools.libusb-1.0.dll", Path.Combine(JsonFWToolsFileNameAndPath, "libusb-1.0.dll"));
+                CopyResource("adrilight.Tools.FWTools.libusbK.dll", Path.Combine(JsonFWToolsFileNameAndPath, "libusbK.dll"));
+                CopyResource("adrilight.Tools.FWTools.vnproch55x.exe", Path.Combine(JsonFWToolsFileNameAndPath, "vnproch55x.exe"));
+                //required fw version
+                
+            }
+            CreateRequiredFwVersionJson();
+
+        }
+
+        private void CreateRequiredFwVersionJson()
+        {
+            foreach(var device in DefaultDeviceCollection.AvailableDefaultDevice())
+            {
+                string requiredFwVersion = "1.0.0";
+                switch (device.DeviceType)
+                {
+                    case "ABBASIC24":
+                    case "ABBASIC27":
+                    case "ABBASIC29":
+                    case "ABBASIC32":
+                    case "ABBASIC34":
+                        requiredFwVersion = "1.0.5";
+                        break;
+                    case "ABEDGE1.2":
+                    case "ABEDGE2.0":
+                        requiredFwVersion = "1.0.2";
+                        break;
+                    case "ABFANHUB":
+                        requiredFwVersion = "1.0.2";
+                        break;
+                    case "ABHUBV3":
+                        requiredFwVersion = "1.0.1";
+                        break;
+                    case "ABRP":
+                        requiredFwVersion = "1.0.1";
+                        break;
+                }
+                
+                var requiredFwVersionjson = JsonConvert.SerializeObject(requiredFwVersion, Formatting.Indented);
+                File.WriteAllText(device.RequiredFwVersion, requiredFwVersionjson);
+
+            }
+
+        }
 
         private List<IGifCard> LoadGifIfExist()
         {

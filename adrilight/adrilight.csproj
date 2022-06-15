@@ -144,6 +144,24 @@
     <EmbeddedResource Include="Gif\Plasma.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FWTools\busybox.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FWTools\CH375DLL.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FWTools\libgcc_s_sjlj-1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FWTools\libusb-1.0.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FWTools\libusbK.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FWTools\vnproch55x.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="zoe.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -264,6 +282,7 @@
   <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
   <ItemGroup>
     <None Remove="App.config" />
+    <None Remove="DeviceFirmware\FanHUB.hex" />
     <None Remove="Gif\BitOcean.gif" />
     <None Remove="Gif\Blob.gif" />
     <None Remove="Gif\DigitalBlue.gif" />
@@ -277,6 +296,12 @@
     <None Remove="Shaders\Thumbnail\MetaBalls.png" />
     <None Remove="Shaders\Thumbnail\PixelRainbow.png" />
     <None Remove="Shaders\Thumbnail\Plasma.png" />
+    <None Remove="Tools\FWTools\busybox.exe" />
+    <None Remove="Tools\FWTools\CH375DLL.dll" />
+    <None Remove="Tools\FWTools\libgcc_s_sjlj-1.dll" />
+    <None Remove="Tools\FWTools\libusb-1.0.dll" />
+    <None Remove="Tools\FWTools\libusbK.dll" />
+    <None Remove="Tools\FWTools\vnproch55x.exe" />
   </ItemGroup>
   <ItemGroup>
     <Page Remove="View\AddDevice.xaml" />
@@ -298,6 +323,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Gif\Rainbow.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DeviceFirmware\FanHUB.hex">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <Resource Include="Resources\Image\lamp.svg" />
