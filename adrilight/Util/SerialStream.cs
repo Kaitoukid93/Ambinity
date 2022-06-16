@@ -215,22 +215,51 @@ namespace adrilight
             //Open device at 1200 baudrate
 
 
-            
-            if (DeviceSettings.OutputPort != null)
+            if(DeviceSettings.DeviceType == "ABHUBV2")
             {
-                var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.OutputPort, 1200));
+                DeviceSettings.IsTransferActive = false;
+                var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.OutputPort, 1000000));
                 try
                 {
                     serialPort.Open();
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     // I don't know about this shit but we have to catch an empty exception because somehow SerialPort.Open() was called twice
                 }
                 Thread.Sleep(500);
-                serialPort.Close();
+                try
+                {
+                    serialPort.Write(new byte[3] { (byte)'f', (byte)'u', (byte)'g' }, 0, 3);
+                }
+                catch(Exception)
+                {
+                    // I don't know about this shit but we have to catch an empty exception because somehow SerialPort.Write() was called twice
+                }
 
+
+                Thread.Sleep(1000);          
+                serialPort.Close();
             }
+            else
+            {
+                if (DeviceSettings.OutputPort != null)
+                {
+                    var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.OutputPort, 1200));
+                    try
+                    {
+                        serialPort.Open();
+                    }
+                    catch (Exception)
+                    {
+                        // I don't know about this shit but we have to catch an empty exception because somehow SerialPort.Open() was called twice
+                    }
+                    Thread.Sleep(500);
+                    serialPort.Close();
+
+                }
+            }
+           
 
 
 

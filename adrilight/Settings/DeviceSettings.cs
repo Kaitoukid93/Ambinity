@@ -26,12 +26,14 @@ namespace adrilight
         private string _manufacturer;
         private string _deviceDescription;
         private string _firmwareVersion;
+        private string _hardwareVersion = "unknown";
         private string _productionDate;
         private bool _isVisible;
         private bool _isEnabled;
         private string _outputPort;
         private bool _isTransferActive;
         private bool _isDummy = false;
+        private bool _isLoading = false;
         private IOutputSettings[] _availableOutput;
         private IOutputSettings _unionOutput;
         private string _groupName = "Ambino Devices";
@@ -64,11 +66,13 @@ namespace adrilight
         public string DeviceType { get => _deviceType; set { Set(() => DeviceType, ref _deviceType, value); } }
         public string Manufacturer { get => _manufacturer; set { Set(() => Manufacturer, ref _manufacturer, value); } }
         public string FirmwareVersion { get => _firmwareVersion; set { Set(() => FirmwareVersion, ref _firmwareVersion, value); } }
+        public string HardwareVersion { get => _hardwareVersion; set { Set(() => HardwareVersion, ref _hardwareVersion, value); } }
         public string ProductionDate { get => _productionDate; set { Set(() => ProductionDate, ref _productionDate, value); } }
         public string ActivatedProfileUID { get => _activatedProfileUID; set { Set(() => ActivatedProfileUID, ref _activatedProfileUID, value); } }
         public bool IsVisible { get => _isVisible; set { Set(() => IsVisible, ref _isVisible, value); } }
         public bool IsEnabled { get => _isEnabled; set { Set(() => IsEnabled, ref _isEnabled, value); } }
         public bool IsUnionMode { get => _isUnionMode; set { Set(() => IsUnionMode, ref _isUnionMode, value); } }
+        public bool IsLoading { get => _isLoading; set { Set(() => IsLoading, ref _isLoading, value); } }
         public bool IsSelected { get => _isSelected; set { Set(() => IsSelected, ref _isSelected, value); } }
         public string OutputPort { get => _outputPort; set { Set(() => OutputPort, ref _outputPort, value); } }
         public bool IsTransferActive { get => _isTransferActive; set { Set(() => IsTransferActive, ref _isTransferActive, value); } }

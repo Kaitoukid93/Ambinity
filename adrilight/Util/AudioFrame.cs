@@ -291,16 +291,25 @@ namespace adrilight
             get
             {
                 string currentDevice;
-                if (GeneralSettings.SelectedAudioDevice >= AvailableAudioDevice.Count())
+                if(AvailableAudioDevice.Count>=1)
                 {
-                    HandyControl.Controls.MessageBox.Show("Có sự thay đổ về đầu ra âm thanh, vui lòng chọn lại bên trong cài đặt", "Audio output changed", MessageBoxButton.OK, MessageBoxImage.Error);
-                    currentDevice = AvailableAudioDevice.ElementAt(0);
+                    if (GeneralSettings.SelectedAudioDevice >= AvailableAudioDevice.Count())
+                    {
+                        HandyControl.Controls.MessageBox.Show("Có sự thay đổ về đầu ra âm thanh, vui lòng chọn lại bên trong cài đặt", "Audio output changed", MessageBoxButton.OK, MessageBoxImage.Error);
+                        currentDevice = AvailableAudioDevice.ElementAt(0);
+                    }
+                    else
+                        currentDevice = AvailableAudioDevice.ElementAt(GeneralSettings.SelectedAudioDevice);
+
+                    var array = currentDevice.Split(' ');
+                    return Convert.ToInt32(array[0]);
+
                 }
                 else
-                    currentDevice = AvailableAudioDevice.ElementAt(GeneralSettings.SelectedAudioDevice);
-
-                var array = currentDevice.Split(' ');
-                return Convert.ToInt32(array[0]);
+                {
+                    HandyControl.Controls.MessageBox.Show("Không có thiết bị âm thanh nào khả dụng, tính năng nháy theo nhạc sẽ không hoạt động", "No Available Audio Output", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return -1;
+                }
 
             }
         }

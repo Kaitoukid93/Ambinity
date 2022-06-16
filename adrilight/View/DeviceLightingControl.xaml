@@ -515,7 +515,21 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Command="{Binding OpenDeviceFirmwareSettingsWindowCommand}" CommandParameter="connection" hc:BorderElement.CornerRadius="7" Margin="0,5,5,5" Height="65" VerticalAlignment="Stretch" HorizontalAlignment="Right" Padding="0"  BorderBrush="Transparent" Style="{DynamicResource ButtonDefault}" >
+               
+                <Button Command="{Binding OpenDeviceFirmwareSettingsWindowCommand}" CommandParameter="connection" hc:BorderElement.CornerRadius="7" Margin="0,5,5,5" Height="65" VerticalAlignment="Stretch" HorizontalAlignment="Right" Padding="0"  BorderBrush="Transparent">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource ButtonDefault}">
+                            <Setter Property="IsEnabled" Value="True"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentDevice.DeviceConnectionType}" Value="OpenRGB">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding CurrentDevice.DeviceConnectionType}" Value="wireless">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                     <Grid Margin="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
@@ -539,7 +553,15 @@
                         <Grid HorizontalAlignment="Left" Grid.Column="1">
                             <StackPanel HorizontalAlignment="Left">
                                 <TextBlock HorizontalAlignment="Left" Text="{Binding CurrentDevice.DeviceType}" Style="{DynamicResource TextBlockSubTitle}" FontWeight="SemiBold" Margin="5,2"/>
-                                <TextBlock Text="{Binding CurrentDevice.FirmwareVersion}" Style="{DynamicResource TextBlockDefaultPrimary}"  Margin="5,2" HorizontalAlignment="Left"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding CurrentDevice.FirmwareVersion}" Style="{DynamicResource TextBlockDefaultPrimary}"  Margin="5,2" HorizontalAlignment="Left"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding CurrentDevice.HardwareVersion}" Style="{DynamicResource TextBlockDefaultPrimary}"  Margin="5,2" HorizontalAlignment="Left"/>
+                                </Grid>
+                               
                               
 
 
@@ -553,7 +575,20 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Command="{Binding OpenDeviceConnectionSettingsWindowCommand}" CommandParameter="connection" hc:BorderElement.CornerRadius="7" Margin="0,5,5,5" Height="65" VerticalAlignment="Stretch" HorizontalAlignment="Right" Padding="0"  BorderBrush="Transparent" Style="{DynamicResource ButtonDefault}" >
+                <Button Command="{Binding OpenDeviceConnectionSettingsWindowCommand}" CommandParameter="connection" hc:BorderElement.CornerRadius="7" Margin="0,5,5,5" Height="65" VerticalAlignment="Stretch" HorizontalAlignment="Right" Padding="0"  BorderBrush="Transparent">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource ButtonDefault}">
+                            <Setter Property="IsEnabled" Value="True"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentDevice.DeviceConnectionType}" Value="OpenRGB">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding CurrentDevice.DeviceConnectionType}" Value="wireless">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                     <Grid Margin="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>

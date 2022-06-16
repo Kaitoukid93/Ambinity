@@ -129,6 +129,21 @@
     <None Update="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <EmbeddedResource Include="DeviceFirmware\ABR1e.hex">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DeviceFirmware\ABR1p.hex">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DeviceFirmware\ABR2p.hex">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DeviceFirmware\AER1e.hex">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DeviceFirmware\AFR1g.hex">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Gif\BitOcean.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -282,7 +297,11 @@
   <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
   <ItemGroup>
     <None Remove="App.config" />
-    <None Remove="DeviceFirmware\FanHUB.hex" />
+    <None Remove="DeviceFirmware\ABR1e.hex" />
+    <None Remove="DeviceFirmware\ABR1p.hex" />
+    <None Remove="DeviceFirmware\ABR2p.hex" />
+    <None Remove="DeviceFirmware\AER1e.hex" />
+    <None Remove="DeviceFirmware\AFR1g.hex" />
     <None Remove="Gif\BitOcean.gif" />
     <None Remove="Gif\Blob.gif" />
     <None Remove="Gif\DigitalBlue.gif" />
@@ -325,9 +344,6 @@
     <EmbeddedResource Include="Gif\Rainbow.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="DeviceFirmware\FanHUB.hex">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <Resource Include="Resources\Image\lamp.svg" />
     <Resource Include="Resources\Image\screen.png" />
     <Resource Include="Shaders\Thumbnail\Gooey.png" />
@@ -336,6 +352,9 @@
     <Resource Include="Shaders\Thumbnail\Plasma.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\FirmwareSelectionWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\ActionEditWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -440,6 +459,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="View\FirmwareSelectionWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\ActionEditWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

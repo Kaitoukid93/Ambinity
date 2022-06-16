@@ -19,6 +19,7 @@ namespace adrilight.Util
 
         private static byte[] requestCommand = { (byte)'d', (byte)'i', (byte)'r' };
         private static byte[] expectedValidHeader = { 15, 12, 93 };
+        private static byte[] unexpectedValidHeader = { (byte)'A', (byte)'b', (byte)'n' };
         private static CancellationToken cancellationtoken;
 
         public SerialDeviceDetection()
@@ -95,9 +96,10 @@ namespace adrilight.Util
         static List<IDeviceSettings> RequestDeviceInformation()
         {
             // Assume serial port timeouts are set.
-            byte[] id = new byte[256];
-            byte[] name = new byte[256];
-            byte[] fw = new byte[256];
+            byte[] id;
+            byte[] name;
+            byte[] fw ;
+            byte[] hw ;
             List<IDeviceSettings> newDevices = new List<IDeviceSettings>();
 
 
@@ -124,6 +126,7 @@ namespace adrilight.Util
                 int idLength = 0; // Expected response length of valid deviceID 
                 int nameLength = 0; // Expected response length of valid deviceName 
                 int fwLength = 0;
+                int hwLength = 0;
                 IDeviceSettings newDevice = new DeviceSettings();
                 while (offset < 3)
                 {
@@ -135,6 +138,17 @@ namespace adrilight.Util
                         if (header == expectedValidHeader[offset])
                         {
                             offset++;
+                        }
+                        else if (header == unexpectedValidHeader[offset])
+                        {
+                            offset++;
+                            if(offset ==3)
+                            {
+                                Console.WriteLine("Old Ambino Device at" + _serialPort.PortName);
+                                HandyControl.Controls.MessageBox.Show("Thiết bị ở " + _serialPort.PortName + " đang chạy firmware cũ, vui lòng thêm thủ công sau đó cập nhật firmware", "Old Device detected", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                isValid = false;
+                                break;
+                            }
                         }
                     }
                     catch (TimeoutException)// retry until received valid header
@@ -183,9 +197,23 @@ namespace adrilight.Util
                     switch (newDevice.DeviceName)
                     {
                         case "Ambino Basic":// General Ambino Basic USB Device
-
                             newDevice = DefaultDeviceCollection.ambinoBasic24;
-                            newDevice.DeviceType = "ABBASIC";
+                            newDevice.DeviceType = "ABBASIC24";
+                            newDevice.OutputPort = device;
+                            break;
+                        case "Ambino Basic-PWLED":// General Ambino Basic USB Device
+                            newDevice = DefaultDeviceCollection.ambinoBasicPWLED;
+                            newDevice.DeviceType = "ABBASIC-PWLED";
+                            newDevice.OutputPort = device;
+                            break;
+                        case "Ambino EDGE":// General Ambino Basic USB Device
+                            newDevice = DefaultDeviceCollection.ambinoEdge1m2;
+                            newDevice.DeviceType = "ABEDGE1.2";
+                            newDevice.OutputPort = device;
+                            break;
+                        case "Ambino EDGE-PWLED":// General Ambino Basic USB Device
+                            newDevice = DefaultDeviceCollection.ambinoEdge1m2;
+                            newDevice.DeviceType = "ABEDGE-PWLED";
                             newDevice.OutputPort = device;
                             break;
                         case "Ambino FanHub":
@@ -213,6 +241,27 @@ namespace adrilight.Util
                         count -= readCount;
                     }
                     newDevice.FirmwareVersion = Encoding.ASCII.GetString(fw, 0, fw.Length);
+                }
+                if (offset == 3 + idLength + nameLength+ fwLength) //3 bytes header are valid
+                {
+                    try
+                    {
+                        hwLength = (byte)_serialPort.ReadByte();
+                        int count = hwLength;
+                        hw = new byte[count];
+                        while (count > 0)
+                        {
+                            var readCount = _serialPort.Read(hw, 0, count);
+                            offset += readCount;
+                            count -= readCount;
+                        }
+                        newDevice.HardwareVersion = Encoding.ASCII.GetString(hw, 0, hw.Length);
+                    }
+                    catch(TimeoutException)
+                    {
+                        newDevice.HardwareVersion = "unknown";
+                    }
+                   
                 }
                 _serialPort.Close();
                 _serialPort.Dispose();
@@ -254,3 +303,20 @@ namespace adrilight.Util
     }
 
 }
+//+-------------------------------------------------+--------+----+----+-------+
+//| Ambino Basic CH552P without PowerLED Support    | CH552P | 32 | 14 | ABR1p |
+//+-------------------------------------------------+--------+----+----+-------+
+//| Ambino Basic CH552E Without PowerLED Support    | CH552E | 15 | 17 | ABR1e |
+//+-------------------------------------------------+--------+----+----+-------+
+//| Ambino EDGE CH552E Without PowerLED Support     | CH552E | 15 | 17 | AER1e |
+//+-------------------------------------------------+--------+----+----+-------+
+//| Ambino Basic CH552P(rev2) With PowerLED Support | CH552P |    |    | ABR2p |
+//+-------------------------------------------------+--------+----+----+-------+
+//| Ambino EDGE CH552P (rev2) With PowerLED Support | CH552P |    |    | AER2p |
+//+-------------------------------------------------+--------+----+----+-------+
+//| Ambino FanHUB CH552G rev1                       | CH552G |    |    | AFR1g |
+//+-------------------------------------------------+--------+----+----+-------+
+//| Ambino HUBV3 CH552G rev1                        | CH552G |    |    | AHR1g |
+//+-------------------------------------------------+--------+----+----+-------+
+//| Ambino RainPow CH552P rev1                      | CH552P |    |    | ARR1p |
+//+-------------------------------------------------+--------+----+----+-------+

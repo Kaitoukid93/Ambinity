@@ -255,8 +255,14 @@
                                         <RowDefinition Height="*"/>
                                         
                                     </Grid.RowDefinitions>
-                                    <!--on off button-->
-                                    <ToggleButton 
+                                    <!--on off button and loading-->
+                                    <Grid VerticalAlignment="Top" HorizontalAlignment="Right">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <hc:LoadingCircle Visibility="{Binding IsLoading, Converter={StaticResource boolToVisibilityConvert},Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="24" Height="24" Margin="10,0"/>
+                                        <ToggleButton Grid.Column="1"
                                         IsChecked="{Binding IsEnabled}" 
                                         BorderThickness="0"                                     
                                         Margin="0,0,0,0" 
@@ -264,7 +270,9 @@
                                         VerticalAlignment="Top"                                      
                                         Grid.Row="0"
                                         Style="{DynamicResource ToggleButtonSwitchSmallerElipse}">
-                                    </ToggleButton>
+                                        </ToggleButton>
+                                    </Grid>
+                                   
                                     <!--delete device button-->
                                     
                                     <!--Icon-->

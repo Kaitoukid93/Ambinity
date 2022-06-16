@@ -154,9 +154,10 @@
                                             <Grid  HorizontalAlignment="Stretch"  Margin="5">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="auto"/>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
                                                 <Path HorizontalAlignment="Left" Stretch="Uniform" Margin="5" Data="{Binding DeviceConnectionGeometry,Converter={converters:StaticResourceConverter}}" 
@@ -166,7 +167,8 @@
                                                 <TextBlock HorizontalAlignment="Left" Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="{Binding DeviceName}" Style="{DynamicResource TextBlockDefault}"/>
                                                 <TextBlock HorizontalAlignment="Left" Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="2" Text="{Binding DeviceSerial}" Style="{DynamicResource TextBlockDefault}"/>
                                                 <TextBlock HorizontalAlignment="Left" Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="3" Text="{Binding FirmwareVersion}" Style="{DynamicResource TextBlockDefault}"/>
-                                                <TextBlock HorizontalAlignment="Left" Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="4" Text="{Binding OutputPort}" Style="{DynamicResource TextBlockDefault}"/>
+                                                <TextBlock HorizontalAlignment="Left" Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="4" Text="{Binding HardwareVersion}" Style="{DynamicResource TextBlockDefault}"/>
+                                                <TextBlock HorizontalAlignment="Left" Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="5" Text="{Binding OutputPort}" Style="{DynamicResource TextBlockDefault}"/>
                                             </Grid>
 
                                         </DataTemplate>

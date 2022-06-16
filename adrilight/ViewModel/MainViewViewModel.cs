@@ -63,6 +63,7 @@ namespace adrilight.ViewModel
         private string JsonOpenRGBDevicesFileNameAndPath => Path.Combine(JsonPath, "adrilight-openrgbdevices.json");
         private string JsonGifsFileNameAndPath => Path.Combine(JsonPath, "Gif");
         private string JsonFWToolsFileNameAndPath => Path.Combine(JsonPath, "FWTools");
+        private string JsonFWToolsFWListFileNameAndPath => Path.Combine(JsonPath, "adrilight-fwlist.json");
         private string JsonGifsCollectionFileNameAndPath => Path.Combine(JsonPath, "adrilight-gifCollection.json");
         private string JsonGroupFileNameAndPath => Path.Combine(JsonPath, "adrilight-groupInfos.json");
         private string JsonPaletteFileNameAndPath => Path.Combine(JsonPath, "adrilight-PaletteCollection.json");
@@ -170,6 +171,19 @@ namespace adrilight.ViewModel
             set
             {
                 _currentSelectedAction = value;
+            }
+        }
+        private IDeviceFirmware _currentSelectedFirmware;
+        public IDeviceFirmware CurrentSelectedFirmware {
+            get
+            {
+                return _currentSelectedFirmware;
+            }
+
+            set
+            {
+                _currentSelectedFirmware = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -457,6 +471,7 @@ namespace adrilight.ViewModel
         public ICommand ResetAppCommand { get; set; }
         public ICommand OpenAppSettingsWindowCommand { get; set; }
         public ICommand SetAllDeviceSelectedGradientColorCommand { get; set; }
+        public ICommand SelecFirmwareForCurrentDeviceCommand { get; set; }
         public ICommand SetCurrentLEDSetupSentryColorCommand { get; set; }
         public ICommand DeleteSelectedGradientCommand { get; set; }
         public ICommand SetAllOutputSelectedGradientColorCommand { get; set; }
@@ -611,6 +626,18 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+        private ObservableCollection<IDeviceFirmware> _availableFirmwareForCurrentDevice;
+        public ObservableCollection<IDeviceFirmware> AvailableFirmwareForCurrentDevice {
+            get { return _availableFirmwareForCurrentDevice; }
+            set
+            {
+                if (_availableFirmwareForCurrentDevice == value) return;
+                _availableFirmwareForCurrentDevice = value;
+
+                RaisePropertyChanged();
+            }
+        }
+
 
         private ObservableCollection<IAutomationSettings> _availableAutomations;
         public ObservableCollection<IAutomationSettings> AvailableAutomations {
@@ -2210,6 +2237,18 @@ namespace adrilight.ViewModel
                 }
 
             });
+
+            SelecFirmwareForCurrentDeviceCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                //set device hardware version with one selected in the list
+                CurrentDevice.HardwareVersion = CurrentSelectedFirmware.TargetHardware;
+                // lauch firmware upgrade
+                UpgradeIfAvailable(CurrentDevice);
+
+            });
             SetCurrentLEDSetupSentryColorCommand = new RelayCommand<string>((p) =>
             {
                 return true;
@@ -3712,6 +3751,15 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+        private bool _reloadDeviceLoadingVissible = false;
+        public bool ReloadDeviceLoadingVissible {
+            get { return _reloadDeviceLoadingVissible; }
+            set
+            {
+                _reloadDeviceLoadingVissible = value;
+                RaisePropertyChanged();
+            }
+        }
         private string _fwUploadOutputLog;
         public string FwUploadOutputLog {
             get { return _fwUploadOutputLog; }
@@ -3734,54 +3782,104 @@ namespace adrilight.ViewModel
             // Coppy corresponding firmware file for current device to firmware folder
             // get the file path
             // upload with CMD.exe
-            
-            
-            var json = File.ReadAllText(device.RequiredFwVersion);
-            var requiredFwVersion = JsonConvert.DeserializeObject<string>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
-            if (device.FirmwareVersion!= requiredFwVersion)
+            if (device.DeviceType == "ABHUBV2")
             {
-                //coppy hex file to FWTools folder 
-                device.CurrentState = State.dfu;
-                CopyResource("adrilight.DeviceFirmware.FanHUB.hex", device.FwLocation);
+                MessageBoxResult result = HandyControl.Controls.MessageBox.Show("HUBV2 cần sử dụng FlyMCU để nạp firmware, nhấn [OK] để vào chế độ DFU", "External Software Required", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    device.CurrentState = State.dfu;
 
-                FwUploadPercentVissible = true;
-                var startInfo = new System.Diagnostics.ProcessStartInfo {
-                    WorkingDirectory = JsonFWToolsFileNameAndPath,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    FileName = "cmd.exe",
-                    Arguments = "/C vnproch55x " + device.FwLocation
-
-                };
-                var proc = new Process() {
-                    StartInfo = startInfo,
-                    EnableRaisingEvents = true
-                };
-
-                // see below for output handler
-                proc.ErrorDataReceived += proc_DataReceived;
-                proc.OutputDataReceived += proc_DataReceived;
-
-                proc.Start();
-
-                proc.BeginErrorReadLine();
-                proc.BeginOutputReadLine();
-                proc.Exited += proc_FinishUploading;
+                    Thread.Sleep(5000);
+                    device.CurrentState = State.normal;
+                    HandyControl.Controls.MessageBox.Show("Đã gửi thông tin đến Device, mở FlyMCU để tiếp tục nạp firmware sau đó bật lại kết nối", "DFU", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
             else
             {
-                HandyControl.Controls.MessageBox.Show("Không có phiên bản mới cho thiết bị này", "Firmware uploading", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (device.HardwareVersion == "unknown") // old firmware or not supported
+                {
+                    // show message box : unknown hardware version, please update firmware manually by chosing one of these firmware file in the list below
+                    MessageBoxResult result = HandyControl.Controls.MessageBox.Show("Thiết bị đang ở firmware cũ hoặc phần cứng không hỗ trợ! bạn có muốn chọn firmware để cập nhật không?", "Unknown hardware version", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        //grab available firmware for current device type
+                        var json = File.ReadAllText(JsonFWToolsFWListFileNameAndPath);
+                        var availableFirmware = JsonConvert.DeserializeObject<List<DeviceFirmware>>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
+                        AvailableFirmwareForCurrentDevice = new ObservableCollection<IDeviceFirmware>();
+                        foreach (var firmware in availableFirmware)
+                        {
+                            if (firmware.TargetDeviceType == device.DeviceType)
+                                AvailableFirmwareForCurrentDevice.Add(firmware);
+                        }
+
+                        // show list selected firmware
+                        OpenFirmwareSelectionWindow();
+
+                    }
+
+
+
+                }
+                else
+                {
+                    // regconize this device, find the compatible firmware
+                    var json = File.ReadAllText(JsonFWToolsFWListFileNameAndPath);
+                    var requiredFwVersion = JsonConvert.DeserializeObject<List<DeviceFirmware>>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
+
+                    var currentDeviceFirmwareInfo = requiredFwVersion.Where(p => p.TargetHardware == device.HardwareVersion).FirstOrDefault();
+                    if (device.FirmwareVersion != currentDeviceFirmwareInfo.Version)
+                    {
+                        //coppy hex file to FWTools folder 
+                        var fwOutputLocation = Path.Combine(JsonFWToolsFileNameAndPath, currentDeviceFirmwareInfo.Name);
+                        try
+                        {
+                            CopyResource(currentDeviceFirmwareInfo.ResourceName, fwOutputLocation);
+                        }
+                        catch (ArgumentException)
+                        {
+                            //show messagebox no firmware found for this device
+                            return;
+                        }
+
+                        //put device in dfu state
+                        device.CurrentState = State.dfu;
+                        FwUploadPercentVissible = true;
+                        var startInfo = new System.Diagnostics.ProcessStartInfo {
+                            WorkingDirectory = JsonFWToolsFileNameAndPath,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            CreateNoWindow = true,
+                            UseShellExecute = false,
+                            FileName = "cmd.exe",
+                            Arguments = "/C vnproch55x " + fwOutputLocation
+
+                        };
+                        var proc = new Process() {
+                            StartInfo = startInfo,
+                            EnableRaisingEvents = true
+                        };
+
+                        // see below for output handler
+                        proc.ErrorDataReceived += proc_DataReceived;
+                        proc.OutputDataReceived += proc_DataReceived;
+
+                        proc.Start();
+
+                        proc.BeginErrorReadLine();
+                        proc.BeginOutputReadLine();
+                        proc.Exited += proc_FinishUploading;
+                    }
+                    else
+                    {
+                        HandyControl.Controls.MessageBox.Show("Không có phiên bản mới cho thiết bị này", "Firmware uploading", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
             }
-           
 
-            // proc.WaitForExit();
 
-            //case STM32
-            // show log textbox
-            //Enter HUBV2 DFU Mode
-            // Done, Please use FlyMCU to upload Hex Firmware File and Reconnect to the device
+
+
+
 
 
 
@@ -3793,7 +3891,9 @@ namespace adrilight.ViewModel
             //FwUploadOutputLog = String.Empty;
             ////clear text box
             //percentCount = 0;
-            Thread.Sleep(500);
+            ReloadDeviceLoadingVissible = true;
+
+            Thread.Sleep(5000);
             CurrentDevice.CurrentState = State.normal;
             if (FwUploadOutputLog.Split('\n').Last() == "Found no CH55x USB")
             {
@@ -3803,16 +3903,22 @@ namespace adrilight.ViewModel
             {
                 // check for current device actual firmware version
                 CurrentDevice.RefreshFirmwareVersion();
+                // reset loading bar 
+                percentCount = 0;
+                FwUploadPercent = 0;
+                FwUploadPercentVissible = false;
+                FwUploadOutputLog = string.Empty;
+
                 HandyControl.Controls.MessageBox.Show("Update firmware thành công - Phiên bản : " + CurrentDevice.FirmwareVersion, "Firmware uploading", MessageBoxButton.OK, MessageBoxImage.Information);
-                
+                ReloadDeviceLoadingVissible = false;
             }
-           
+
 
 
         }
 
 
-        
+
 
 
 
@@ -4010,7 +4116,16 @@ namespace adrilight.ViewModel
             RaisePropertyChanged(nameof(CurrentOutput.OutputLEDSetup));
 
         }
+        private void OpenFirmwareSelectionWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"FirmwareSelectionWindow"}") is System.Windows.Window window)
+            {
 
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+            }
+
+        }
         private void OpenDeviceConnectionSettingsWindow()
         {
             if (AssemblyHelper.CreateInternalInstance($"View.{"DeviceConnectionSettingsWindow"}") is System.Windows.Window window)
@@ -4693,7 +4808,7 @@ namespace adrilight.ViewModel
 
         private void CreateFWToolsFolderAndFiles()
         {
-            if(!Directory.Exists(JsonFWToolsFileNameAndPath))
+            if (!Directory.Exists(JsonFWToolsFileNameAndPath))
             {
                 Directory.CreateDirectory(JsonFWToolsFileNameAndPath);
                 CopyResource("adrilight.Tools.FWTools.busybox.exe", Path.Combine(JsonFWToolsFileNameAndPath, "busybox.exe"));
@@ -4703,7 +4818,7 @@ namespace adrilight.ViewModel
                 CopyResource("adrilight.Tools.FWTools.libusbK.dll", Path.Combine(JsonFWToolsFileNameAndPath, "libusbK.dll"));
                 CopyResource("adrilight.Tools.FWTools.vnproch55x.exe", Path.Combine(JsonFWToolsFileNameAndPath, "vnproch55x.exe"));
                 //required fw version
-                
+
             }
             CreateRequiredFwVersionJson();
 
@@ -4711,38 +4826,133 @@ namespace adrilight.ViewModel
 
         private void CreateRequiredFwVersionJson()
         {
-            foreach(var device in DefaultDeviceCollection.AvailableDefaultDevice())
-            {
-                string requiredFwVersion = "1.0.0";
-                switch (device.DeviceType)
-                {
-                    case "ABBASIC24":
-                    case "ABBASIC27":
-                    case "ABBASIC29":
-                    case "ABBASIC32":
-                    case "ABBASIC34":
-                        requiredFwVersion = "1.0.5";
-                        break;
-                    case "ABEDGE1.2":
-                    case "ABEDGE2.0":
-                        requiredFwVersion = "1.0.2";
-                        break;
-                    case "ABFANHUB":
-                        requiredFwVersion = "1.0.2";
-                        break;
-                    case "ABHUBV3":
-                        requiredFwVersion = "1.0.1";
-                        break;
-                    case "ABRP":
-                        requiredFwVersion = "1.0.1";
-                        break;
-                }
-                
-                var requiredFwVersionjson = JsonConvert.SerializeObject(requiredFwVersion, Formatting.Indented);
-                File.WriteAllText(device.RequiredFwVersion, requiredFwVersionjson);
+            IDeviceFirmware ABR1p = new DeviceFirmware() {
+                Name = "ABR1p.hex",
+                Version = "1.0.5",
+                TargetHardware = "ABR1p",
+                TargetDeviceType = "ABBASIC",
+                Geometry = "binary",
+                ResourceName = "adrilight.DeviceFirmware.ABR1p.hex"
+            };
+            IDeviceFirmware ABR1e = new DeviceFirmware() {
+                Name = "ABR1e.hex",
+                Version = "1.0.5",
+                TargetHardware = "ABR1e",
+                TargetDeviceType = "ABBASIC",
+                Geometry = "binary",
+                ResourceName = "adrilight.DeviceFirmware.ABR1e.hex"
+            };
+            IDeviceFirmware AER1e = new DeviceFirmware() {
+                Name = "AER1e.hex",
+                Version = "1.0.3",
+                TargetHardware = "AER1e",
+                TargetDeviceType = "ABEDGE",
+                Geometry = "binary",
+                ResourceName = "adrilight.DeviceFirmware.AER1e.hex"
+            };
+            IDeviceFirmware ABR2p = new DeviceFirmware() {
+                Name = "ABR2p.hex",
+                Version = "1.0.5",
+                TargetHardware = "ABR2p",
+                TargetDeviceType = "ABBASIC",
+                Geometry = "binary",
+                ResourceName = "adrilight.DeviceFirmware.ABR2p.hex"
+            };
+            IDeviceFirmware AER2p = new DeviceFirmware() {
+                Name = "AER2p.hex",
+                Version = "1.0.3",
+                TargetHardware = "AER2p",
+                TargetDeviceType = "ABEDGE",
+                Geometry = "binary",
+                ResourceName = "adrilight.DeviceFirmware.AER2p.hex"
+            };
+            IDeviceFirmware AFR1g = new DeviceFirmware() {
+                Name = "AFR1g.hex",
+                Version = "1.0.2",
+                TargetHardware = "AFR1g",
+                TargetDeviceType = "ABFANHUB",
+                Geometry = "binary",
+                ResourceName = "adrilight.DeviceFirmware.AFR1g.hex"
+            };
+            IDeviceFirmware AHR1g = new DeviceFirmware() {
+                Name = "AHR1g.hex",
+                Version = "1.0.1",
+                TargetHardware = "AHR1g",
+                TargetDeviceType = "ABHUBV3",
+                Geometry = "binary",
+                ResourceName = "adrilight.DeviceFirmware.AHR1g.hex"
+            };
+            IDeviceFirmware ARR1p = new DeviceFirmware() {
+                Name = "ARR1p.hex",
+                Version = "1.0.1",
+                TargetHardware = "ARR1p",
+                TargetDeviceType = "ABRP",
+                Geometry = "binary",
+                ResourceName = "adrilight.DeviceFirmware.ARR1p.hex"
+            };
+            var firmwareList = new List<IDeviceFirmware>();
+            firmwareList.Add(ABR1p);
+            firmwareList.Add(ABR2p);
+            firmwareList.Add(ABR1e);
+            firmwareList.Add(AER1e);
+            firmwareList.Add(AER2p);
+            firmwareList.Add(AFR1g);
+            firmwareList.Add(AHR1g);
+            firmwareList.Add(ARR1p);
+            //+-------------------------------------------------+--------+----+----+-------+
+            //| Ambino Basic CH552P without PowerLED Support    | CH552P | 32 | 14 | ABR1p |
+            //+-------------------------------------------------+--------+----+----+-------+
+            //| Ambino Basic CH552E Without PowerLED Support    | CH552E | 15 | 17 | ABR1e |
+            //+-------------------------------------------------+--------+----+----+-------+
+            //| Ambino EDGE CH552E Without PowerLED Support     | CH552E | 15 | 17 | AER1e |
+            //+-------------------------------------------------+--------+----+----+-------+
+            //| Ambino Basic CH552P(rev2) With PowerLED Support | CH552P |    |    | ABR2p |
+            //+-------------------------------------------------+--------+----+----+-------+
+            //| Ambino EDGE CH552P (rev2) With PowerLED Support | CH552P |    |    | AER2p |
+            //+-------------------------------------------------+--------+----+----+-------+
+            //| Ambino FanHUB CH552G rev1                       | CH552G |    |    | AFR1g |
+            //+-------------------------------------------------+--------+----+----+-------+
+            //| Ambino HUBV3 CH552G rev1                        | CH552G |    |    | AHR1g |
+            //+-------------------------------------------------+--------+----+----+-------+
+            //| Ambino RainPow CH552P rev1                      | CH552P |    |    | ARR1p |
+            //+-------------------------------------------------+--------+----+----+-------+
+            //foreach(var device in DefaultDeviceCollection.AvailableDefaultDevice())
+            //{
+            //    string requiredFwVersion = "1.0.0";
+            //    switch (device.HardwareVersion)
+            //    {
 
-            }
+            //        case "ABR1p":
+            //            requiredFwVersion = "1.0.5";
+            //            break;
+            //        case "ABR2p":
+            //            requiredFwVersion = "1.0.5";
+            //            break;
+            //        case "ABR1e":
+            //            requiredFwVersion = "1.0.5";
+            //            break;
+            //        case "AER1e":
+            //            requiredFwVersion = "1.0.3";
+            //            break;
+            //        case "AER2p":
+            //            requiredFwVersion = "1.0.3";
+            //            break;
+            //        case "AFR1g":
+            //            requiredFwVersion = "1.0.2";
+            //            break;
+            //        case "AHR1g":
+            //            requiredFwVersion = "1.0.1";
+            //            break;
+            //        case "ARR1p":
+            //            requiredFwVersion = "1.0.1";
+            //            break;
+            //    }
 
+
+
+            //}
+            var requiredFwVersionjson = JsonConvert.SerializeObject(firmwareList, Formatting.Indented);
+            File.WriteAllText(JsonFWToolsFWListFileNameAndPath, requiredFwVersionjson);
         }
 
         private List<IGifCard> LoadGifIfExist()
@@ -4866,23 +5076,23 @@ namespace adrilight.ViewModel
         public void ScanOpenRGBDevices()
         {
             AvailableOpenRGBDevices = new ObservableCollection<Device>();
-          
+
             OpenRGBStream.RefreshTransferState();
-            if (OpenRGBStream.AmbinityClient != null&& OpenRGBStream.AmbinityClient.Connected == true)
+            if (OpenRGBStream.AmbinityClient != null && OpenRGBStream.AmbinityClient.Connected == true)
             {
-                
+
                 var newOpenRGBDevices = OpenRGBStream.GetDevices;
                 int n = 0;
-                
+
                 foreach (var device in newOpenRGBDevices)
                 {
                     AvailableOpenRGBDevices.Add(device);
                 }
-               //check if any devices is already in the dashboard
-               foreach(var device in newOpenRGBDevices)
+                //check if any devices is already in the dashboard
+                foreach (var device in newOpenRGBDevices)
                 {
-                    var deviceUID= device.Name + device.Version + device.Location;
-                    foreach(var existedDevice in AvailableDevices.Where(p=>p.DeviceConnectionType == "OpenRGB"))
+                    var deviceUID = device.Name + device.Version + device.Location;
+                    foreach (var existedDevice in AvailableDevices.Where(p => p.DeviceConnectionType == "OpenRGB"))
                     {
                         if (deviceUID == existedDevice.DeviceUID)
                             AvailableOpenRGBDevices.Remove(device);
@@ -6057,7 +6267,7 @@ namespace adrilight.ViewModel
         }
         public void GotoChild(IDeviceSettings selectedDevice)
         {
-
+            //SetMenuItemActiveStatus(lighting);
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == lighting);
             IsDashboardType = false;
             CurrentDevice = selectedDevice;
@@ -6121,7 +6331,7 @@ namespace adrilight.ViewModel
 
             //WriteDeviceInfoJson();
 
-            
+
 
             CurrentDevice.PropertyChanged += (s, e) =>
             {
@@ -6174,7 +6384,8 @@ namespace adrilight.ViewModel
             };
 
 
-            SetMenuItemActiveStatus(lighting);
+
+
         }
         public void BackToDashboard()
         {
@@ -6182,7 +6393,8 @@ namespace adrilight.ViewModel
             SaveCurrentProfile(CurrentDevice.ActivatedProfileUID);
             IsDashboardType = true;
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault();
-            SetMenuItemActiveStatus(dashboard);
+            CurrentDevice.IsLoading = false;
+            //SetMenuItemActiveStatus(dashboard);
         }
         public void BackToDashboardAndDelete(IDeviceSettings device)
         {

@@ -59,7 +59,15 @@
                                       Width="20" 
                                       Height="20" 
                                       Fill="{DynamicResource PrimaryTextBrush}"/>-->
-                    <Button Command="{Binding UpdateCurrentSelectedDeviceFirmwareCommand}" HorizontalAlignment="Right" hc:IconElement.Geometry="{DynamicResource motherboard}" Style="{DynamicResource ButtonDefault}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <hc:LoadingCircle Visibility="{Binding ReloadDeviceLoadingVissible,Converter ={StaticResource boolToVisibilityConvert}}" HorizontalAlignment="Right" Margin=" 10,0" Width="25" Height="25" />
+                        <Button Grid.Column="1" Command="{Binding UpdateCurrentSelectedDeviceFirmwareCommand}" HorizontalAlignment="Right" hc:IconElement.Geometry="{DynamicResource motherboard}" Style="{DynamicResource ButtonDefault}"/>
+                    </Grid>
+                    
 
 
 
