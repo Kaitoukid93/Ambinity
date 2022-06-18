@@ -93,6 +93,29 @@
                     <hc:Divider  LineStroke="{DynamicResource SecondaryRegionBrush}" Margin="5,10,5,10">
 
                     </hc:Divider>
+                    <Grid Name="KeyboardShortcutEnable">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <GroupBox   VerticalAlignment="Center"   hc:TitleElement.TitleWidth="150" Header="SPEED" Margin="5" Style="{DynamicResource GroupBoxOriginal}" HorizontalAlignment="Stretch" hc:TitleElement.TitlePlacement="Left">
+                            <GroupBox.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock FontWeight="SemiBold" Text="ENABLE HOTKEY"/>
+                                </DataTemplate>
+                            </GroupBox.HeaderTemplate>
+
+                            <ToggleButton HorizontalAlignment="Right" IsChecked="{Binding GeneralSettings.HotkeyEnable}" Style="{DynamicResource ToggleButtonSwitchSmallerElipse}">
+
+                            </ToggleButton>
+
+
+                        </GroupBox>
+                        <TextBlock Margin="5,0,0,0" HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultSecLight}" Grid.Row="1" Text="Tắt tùy chọn này nếu bạn gặp vấn đề với bộ gõ và HotKey"/>
+                    </Grid>
+                    <hc:Divider  LineStroke="{DynamicResource SecondaryRegionBrush}" Margin="5,10,5,10">
+
+                    </hc:Divider>
                     <Grid Name="OpenRGBEnable">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>

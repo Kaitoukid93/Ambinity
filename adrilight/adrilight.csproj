@@ -352,6 +352,9 @@
     <Resource Include="Shaders\Thumbnail\Plasma.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\AboutAppWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\FirmwareSelectionWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -459,6 +462,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="View\AboutAppWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\FirmwareSelectionWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

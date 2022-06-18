@@ -30,9 +30,10 @@
         <hc:TransitioningContentControl BorderBrush="{DynamicResource BorderBrush}" TransitionMode="Top2Bottom">
             <Border BorderThickness="2" BorderBrush="{DynamicResource BorderBrush}" Background="{DynamicResource RegionBrush}" CornerRadius="7" Margin="0,2,15,15">
                 <StackPanel Orientation="Vertical">
-                    <Button  HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding OpenAppSettingsWindowCommand}" hc:IconElement.Geometry="{DynamicResource fromfile}" BorderBrush="Transparent" Margin="5"   Content="App Settings" Style="{DynamicResource ButtonDefault}"/>
+                    <Button  HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding OpenAppSettingsWindowCommand}" hc:IconElement.Geometry="{DynamicResource appsettings}" BorderBrush="Transparent" Margin="5"   Content="App Settings" Style="{DynamicResource ButtonDefault}"/>
 
-                    <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding OpenAutomationManagerWindowCommand }" hc:IconElement.Geometry="{DynamicResource addpalette}" CommandParameter="createnew" BorderBrush="Transparent"   Margin="5" Content="Automation Settings" Style="{DynamicResource ButtonDefault}"/>
+                    <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding OpenAutomationManagerWindowCommand }" hc:IconElement.Geometry="{DynamicResource auto}" CommandParameter="automation" BorderBrush="Transparent"   Margin="5" Content="Automation Settings" Style="{DynamicResource ButtonDefault}"/>
+                    <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding OpenAboutWindowCommand }" hc:IconElement.Geometry="{DynamicResource info}" CommandParameter="about" BorderBrush="Transparent"   Margin="5" Content="About" Style="{DynamicResource ButtonDefault}"/>
                 </StackPanel>
 
             </Border>

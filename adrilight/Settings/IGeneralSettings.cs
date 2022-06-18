@@ -19,6 +19,7 @@ namespace adrilight
         bool IsOpenRGBEnabled { get; set; }    
         bool IsProfileLoading { get; set; }
         bool StartMinimized { get; set; }
+        bool HotkeyEnable { get; set; }
         int SystemRainbowSpeed { get; set; }
         int SystemRainbowMaxTick { get; set; }
         int ThemeIndex { get; set; }

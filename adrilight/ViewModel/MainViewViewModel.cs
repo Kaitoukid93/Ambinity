@@ -469,6 +469,7 @@ namespace adrilight.ViewModel
         }
 
         public ICommand ResetAppCommand { get; set; }
+        public ICommand OpenAboutWindowCommand { get; set; }
         public ICommand OpenAppSettingsWindowCommand { get; set; }
         public ICommand SetAllDeviceSelectedGradientColorCommand { get; set; }
         public ICommand SelecFirmwareForCurrentDeviceCommand { get; set; }
@@ -1171,8 +1172,12 @@ namespace adrilight.ViewModel
             WriteAutomationCollectionJson();
 
             //register hotkey from loaded automation//
-            HotKeyManager.Instance.Start();
-            Register();
+            if (GeneralSettings.HotkeyEnable)
+            {
+                HotKeyManager.Instance.Start();
+                Register();
+            }
+
 
             //dummy device acts as add new button
             var addNewButton = new DeviceSettings {
@@ -2352,6 +2357,13 @@ namespace adrilight.ViewModel
             {
                 Reset();
             });
+            OpenAboutWindowCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                OpenAboutWindow();
+            });
             LaunchPositionEditWindowCommand = new RelayCommand<string>((p) =>
             {
                 return true;
@@ -3461,8 +3473,11 @@ namespace adrilight.ViewModel
             {
                 AvailableAutomations.Add(automation);
             }
-            Unregister();
-            Register();
+            if (GeneralSettings.HotkeyEnable)
+            {
+                Unregister();
+                Register();
+            }
 
         }
         private void SaveAllAutomation()
@@ -3475,9 +3490,11 @@ namespace adrilight.ViewModel
             {
                 AvailableAutomations.Add(automation);
             }
-            Unregister();
-            Register();
-
+            if (GeneralSettings.HotkeyEnable)
+            {
+                Unregister();
+                Register();
+            }
         }
         private void ExportCurrentProfile()
         {
@@ -3559,12 +3576,13 @@ namespace adrilight.ViewModel
                 window.ShowDialog();
             }
         }
-
+        private static KeyboardHookManager _hook;
+        private static KeyboardHookManager Hook => _hook ?? (_hook = new KeyboardHookManager());
         private List<Guid?> _identifiers;
         private Guid? _identifier;
         private void Register()
         {
-            _identifiers = new List<Guid?>();
+            //_identifiers = new List<Guid?>();
             foreach (var automation in AvailableAutomations.Where(x => x.IsEnabled == true))
             {
                 var modifierkeys = new List<NonInvasiveKeyboardHookLibrary.ModifierKeys>();
@@ -3581,11 +3599,12 @@ namespace adrilight.ViewModel
 
                 try
                 {
+                    Hook.Start();
 
                     switch (modifierkeys.Count)
                     {
                         case 0:
-                            this._identifier = HotKeyManager.Instance.RegisterHotkey(automation.Condition, () =>
+                            Hook.RegisterHotkey(automation.Condition, () =>
                             {
                                 ExecuteAutomationActions(automation.Actions);
                                 Debug.WriteLine(automation.Name + " excuted");
@@ -3593,10 +3612,10 @@ namespace adrilight.ViewModel
                                     SendNotification(automation.Name);
 
                             });
-                            _identifiers.Add(_identifier);
+                            //_identifiers.Add(_identifier);
                             break;
                         case 1:
-                            this._identifier = HotKeyManager.Instance.RegisterHotkey(modifierkeys.First(), automation.Condition, () =>
+                            Hook.RegisterHotkey(modifierkeys.First(), automation.Condition, () =>
                             {
                                 ExecuteAutomationActions(automation.Actions);
                                 Debug.WriteLine(automation.Name + " excuted");
@@ -3604,10 +3623,10 @@ namespace adrilight.ViewModel
                                     SendNotification(automation.Name);
 
                             });
-                            _identifiers.Add(_identifier);
+                            //_identifiers.Add(_identifier);
                             break;
                         default:
-                            this._identifier = HotKeyManager.Instance.RegisterHotkey(modifierkeys.ToArray(), automation.Condition, () =>
+                            Hook.RegisterHotkey(modifierkeys.ToArray(), automation.Condition, () =>
                             {
                                 ExecuteAutomationActions(automation.Actions);
                                 Debug.WriteLine(automation.Name + " excuted");
@@ -3615,7 +3634,7 @@ namespace adrilight.ViewModel
                                     SendNotification(automation.Name);
 
                             });
-                            _identifiers.Add(_identifier);
+                            //_identifiers.Add(_identifier);
                             break;
 
                     }
@@ -3724,13 +3743,10 @@ namespace adrilight.ViewModel
         }
         private void Unregister()
         {
-            foreach (var _identifier in _identifiers)
-            {
-                if (_identifier.HasValue)
-                {
-                    HotKeyManager.Instance.UnregisterHotkey(_identifier.Value);
-                }
-            }
+
+            Hook.UnregisterAll();
+
+
 
         }
         private int _fwUploadPercent;
@@ -3763,6 +3779,7 @@ namespace adrilight.ViewModel
         private string _fwUploadOutputLog;
         public string FwUploadOutputLog {
             get { return _fwUploadOutputLog; }
+
             set
             {
                 _fwUploadOutputLog = value;
@@ -4392,6 +4409,15 @@ namespace adrilight.ViewModel
 
             }
         }
+        private void OpenAboutWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"AboutAppWindow"}") is System.Windows.Window window)
+            {
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+
+            }
+        }
 
         private void ExportCurrentSelectedPaletteToFile(IColorPalette palette)
         {
@@ -4530,7 +4556,25 @@ namespace adrilight.ViewModel
         }
         private void Reset()
         {
-            Directory.Delete(JsonPath, true);
+            //disable all device
+         if(File.Exists(JsonDeviceFileNameAndPath))
+            {
+                File.Delete(JsonDeviceFileNameAndPath);
+
+            }
+         if(File.Exists(JsonDeviceProfileFileNameAndPath))
+            {
+                File.Delete(JsonDeviceProfileFileNameAndPath);
+            }
+         if(File.Exists(JsonGeneralFileNameAndPath))
+            {
+                File.Delete(JsonGeneralFileNameAndPath);
+            }
+        
+            
+            
+
+            
             System.Windows.Forms.Application.Restart();
             Process.GetCurrentProcess().Kill();
         }
@@ -6256,7 +6300,7 @@ namespace adrilight.ViewModel
         }
         private void SetRectangleFromScale(IOutputSettings target, double scaleX, double scaleY, double scaleWidth, double scaleHeight, int parrentWidth, int parrentHeight)
         {
-            if (ShaderBitmap != null)
+            if (ShaderBitmap != null || GifxelationBitmap != null)
             {
                 var top = scaleY * parrentHeight;
                 var left = scaleX * parrentWidth;

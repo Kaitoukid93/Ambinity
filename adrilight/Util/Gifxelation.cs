@@ -412,11 +412,14 @@ namespace adrilight
 
                         }
                         imageToLoad.Dispose();
+                        fs.Close();
                         GC.Collect();
-
+                        
                         return true;
                     }
+                    
                 }
+               
             }
             catch (Exception)
             {
