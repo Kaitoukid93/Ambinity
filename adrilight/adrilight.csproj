@@ -144,6 +144,12 @@
     <EmbeddedResource Include="DeviceFirmware\AFR1g.hex">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="DeviceFirmware\AHR1g.hex">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DeviceFirmware\ARR1p.hex">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Gif\BitOcean.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -160,6 +166,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\FWTools\busybox.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FWTools\CH372DRV.EXE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\FWTools\CH375DLL.dll">
@@ -302,6 +311,8 @@
     <None Remove="DeviceFirmware\ABR2p.hex" />
     <None Remove="DeviceFirmware\AER1e.hex" />
     <None Remove="DeviceFirmware\AFR1g.hex" />
+    <None Remove="DeviceFirmware\AHR1g.hex" />
+    <None Remove="DeviceFirmware\ARR1p.hex" />
     <None Remove="Gif\BitOcean.gif" />
     <None Remove="Gif\Blob.gif" />
     <None Remove="Gif\DigitalBlue.gif" />
@@ -316,6 +327,7 @@
     <None Remove="Shaders\Thumbnail\PixelRainbow.png" />
     <None Remove="Shaders\Thumbnail\Plasma.png" />
     <None Remove="Tools\FWTools\busybox.exe" />
+    <None Remove="Tools\FWTools\CH372DRV.EXE" />
     <None Remove="Tools\FWTools\CH375DLL.dll" />
     <None Remove="Tools\FWTools\libgcc_s_sjlj-1.dll" />
     <None Remove="Tools\FWTools\libusb-1.0.dll" />
@@ -355,6 +367,9 @@
     <Compile Update="View\AboutAppWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\SizeSelectionWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\FirmwareSelectionWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -389,6 +404,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\GifxelationControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\ExpandedOutputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\UnionOutputControl.xaml.cs">
@@ -466,6 +484,10 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="View\SizeSelectionWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\FirmwareSelectionWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
@@ -511,6 +533,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\GifxelationControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ExpandedOutputControl.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

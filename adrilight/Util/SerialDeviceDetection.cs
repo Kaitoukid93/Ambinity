@@ -105,6 +105,7 @@ namespace adrilight.Util
 
             foreach (var device in ValidDevice())
             {
+
                 bool isValid = true;
                 var _serialPort = new SerialPort(device, 1000000);
                 _serialPort.DtrEnable = true;
@@ -114,7 +115,7 @@ namespace adrilight.Util
                 {
                     _serialPort.Open();
                 }
-                catch (UnauthorizedAccessException)
+                catch (Exception)
                 {
                     continue;
                 }
@@ -194,36 +195,49 @@ namespace adrilight.Util
                         count -= readCount;
                     }
                     newDevice.DeviceName = Encoding.ASCII.GetString(name, 0, name.Length);
+                    var availableDefaultDevice = new DefaultDeviceCollection();
                     switch (newDevice.DeviceName)
                     {
                         case "Ambino Basic":// General Ambino Basic USB Device
-                            newDevice = DefaultDeviceCollection.ambinoBasic24;
-                            newDevice.DeviceType = "ABBASIC24";
+                            newDevice = availableDefaultDevice.ambinoBasic24;
+                            newDevice.DeviceName = "Ambino Basic";
+                            newDevice.DeviceType = "ABBASIC";
+                            newDevice.DeviceConnectionType = "wired";
                             newDevice.OutputPort = device;
-                            break;
-                        case "Ambino Basic-PWLED":// General Ambino Basic USB Device
-                            newDevice = DefaultDeviceCollection.ambinoBasicPWLED;
-                            newDevice.DeviceType = "ABBASIC-PWLED";
-                            newDevice.OutputPort = device;
-                            break;
+                            newDevice.IsSizeNeedUserDefine = true;
+                            newDevice.UnionOutput = null;
+                            break;                      
                         case "Ambino EDGE":// General Ambino Basic USB Device
-                            newDevice = DefaultDeviceCollection.ambinoEdge1m2;
-                            newDevice.DeviceType = "ABEDGE1.2";
+                            newDevice = availableDefaultDevice.ambinoEdge1m2;
+                            newDevice.DeviceName = "Ambino EDGE";
+                            newDevice.DeviceConnectionType = "wired";
+                            newDevice.DeviceType = "ABEDGE";
                             newDevice.OutputPort = device;
-                            break;
-                        case "Ambino EDGE-PWLED":// General Ambino Basic USB Device
-                            newDevice = DefaultDeviceCollection.ambinoEdge1m2;
-                            newDevice.DeviceType = "ABEDGE-PWLED";
-                            newDevice.OutputPort = device;
+                            newDevice.IsSizeNeedUserDefine = true;
+                            newDevice.UnionOutput = null;
                             break;
                         case "Ambino FanHub":
-                            newDevice = DefaultDeviceCollection.ambinoFanHub;
+                            newDevice = availableDefaultDevice.ambinoFanHub;
                             newDevice.DeviceType = "ABFANHUB";
+                            newDevice.DeviceConnectionType = "wired";
                             newDevice.OutputPort = device;
                             break;
                         case "Ambino HubV2":
-                            newDevice = DefaultDeviceCollection.ambinoHUBV2;
+                            newDevice = availableDefaultDevice.ambinoHUBV2;
                             newDevice.DeviceType = "ABHUBV2";
+                            newDevice.DeviceConnectionType = "wired";
+                            newDevice.OutputPort = device;
+                            break;
+                        case "Ambino HubV3":
+                            newDevice = availableDefaultDevice.ambinoHUBV3;
+                            newDevice.DeviceType = "ABHUBV3";
+                            newDevice.DeviceConnectionType = "wired";
+                            newDevice.OutputPort = device;
+                            break;
+                        case "Ambino RainPow":
+                            newDevice = availableDefaultDevice.ambinoRainPow;
+                            newDevice.DeviceType = "ABRP";
+                            newDevice.DeviceConnectionType = "wired";
                             newDevice.OutputPort = device;
                             break;
                     }

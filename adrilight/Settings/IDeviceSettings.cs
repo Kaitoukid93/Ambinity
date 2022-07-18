@@ -11,7 +11,7 @@ using adrilight.Settings;
 
 namespace adrilight
 {
-    public enum State { sleep, dfu, normal };
+    public enum State { sleep, dfu, speed, normal };
     public interface IDeviceSettings :  INotifyPropertyChanged
     {
       
@@ -43,12 +43,18 @@ namespace adrilight
         string DeviceConnectionType { get; set; }
         bool IsSelected { get; set; }
         bool IsUnionMode { get; set; }
-        
+        bool IsSizeNeedUserDefine { get; set; }
         bool IsLoadingProfile { get; set; }
+        int DeviceSpeed { get; set; }
+        string DeviceActualSpeed { get; set; }
         void ActivateProfile(IDeviceProfile profile);
+        int SpeedMode { get; set; }
+        bool IsLoadingSpeed { get; set; }
         string FwLocation { get; set; }
         string RequiredFwVersion { get; set; }
         void RefreshFirmwareVersion();
+        void DeviceLocator(Color color);
+        void RefreshDeviceActualSpeedAsync();
         State CurrentState { get; set; }
     }
 }

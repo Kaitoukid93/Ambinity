@@ -21,11 +21,11 @@ namespace adrilight
 {
     internal class RainbowTicker : IRainbowTicker
     {
-       
+
 
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
-        public RainbowTicker( IDeviceSettings[] allDeviceSettings, IGeneralSettings generalSettings, MainViewViewModel mainViewViewModel)
+        public RainbowTicker(IDeviceSettings[] allDeviceSettings, IGeneralSettings generalSettings, MainViewViewModel mainViewViewModel)
         {
             //DeviceSettings = deviceSettings ?? throw new ArgumentNullException(nameof(deviceSettings));
             AllDeviceSettings = allDeviceSettings ?? throw new ArgumentNullException(nameof(allDeviceSettings));
@@ -36,8 +36,8 @@ namespace adrilight
 
 
             GeneralSettings.PropertyChanged += PropertyChanged;
-            
-           
+
+
             RefreshColorState();
 
             _log.Info($"RainbowColor Created");
@@ -51,15 +51,20 @@ namespace adrilight
         private IDeviceSpotSet[] AllDeviceSpotSet { get; }
         private IGeneralSettings GeneralSettings { get; }
         private IDeviceSpotSet DeviceSpotSet { get; }
-        private double _startIndex;
-     
-        public double StartIndex {
-            get {  return _startIndex; }    
-            set {  _startIndex = value; }
+        private double _rainbowStartIndex;
+        private double _musicStartIndex;
+
+        public double RainbowStartIndex {
+            get { return _rainbowStartIndex; }
+            set { _rainbowStartIndex = value; }
+        }
+        public double MusicStartIndex {
+            get { return _musicStartIndex; }
+            set { _musicStartIndex = value; }
         }
 
-      
-           
+
+
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -68,8 +73,8 @@ namespace adrilight
             switch (e.PropertyName)
             {
                 case nameof(GeneralSettings.SystemRainbowSpeed):
-               
-                
+
+
 
                     RefreshColorState();
                     break;
@@ -84,15 +89,15 @@ namespace adrilight
         //            break;
         //    }
         //}
-        
+
         private void RefreshColorState()
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning; // Check if sync mode is enabled
-          
-                 var shouldBeRunning = true;
-          
-            
+
+            var shouldBeRunning = true;
+
+
             if (isRunning && !shouldBeRunning)
             {
                 //stop it!
@@ -117,12 +122,13 @@ namespace adrilight
 
 
 
-       
+
         public void Run(CancellationToken token)
 
         {
             var rainbowMaxTick = GeneralSettings.SystemRainbowMaxTick;
-          
+            var musicMaxTick = GeneralSettings.SystemMusicMaxTick;
+
 
             if (IsRunning) throw new Exception(" Rainbow Ticker is already running!");
 
@@ -133,18 +139,23 @@ namespace adrilight
 
             try
             {
-                
+
 
                 while (!token.IsCancellationRequested)
                 {
-                    double speed = GeneralSettings.SystemRainbowSpeed / 5d;
-                    StartIndex += speed;
-                            if (StartIndex > rainbowMaxTick)
-                            {
-                            StartIndex = 0;
-                            }
-
-                    Thread.Sleep(10); 
+                    double rainbowSpeed = GeneralSettings.SystemRainbowSpeed / 5d;
+                    RainbowStartIndex += rainbowSpeed;
+                    if (RainbowStartIndex > rainbowMaxTick)
+                    {
+                        RainbowStartIndex = 0;
+                    }
+                    double musicSpeed = GeneralSettings.SystemMusicSpeed / 5d;
+                    MusicStartIndex += musicSpeed;
+                    if (MusicStartIndex > musicMaxTick)
+                    {
+                        MusicStartIndex = 0;
+                    }
+                    Thread.Sleep(10);
 
                 }
             }
@@ -152,7 +163,7 @@ namespace adrilight
             {
                 _log.Debug("OperationCanceledException catched. returning.");
 
-      
+
             }
             catch (Exception ex)
             {

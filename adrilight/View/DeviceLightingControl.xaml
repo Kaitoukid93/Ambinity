@@ -39,7 +39,7 @@
                                     <ContentPresenter HorizontalAlignment="Left" Width="15" Height="15"  Content="{TemplateBinding Icon}" Margin="5,5" />
                                     <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" Content="{TemplateBinding Header}" Margin="5,5" />
                                 </Grid>
-                               
+
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsHighlighted" Value="True">
@@ -65,7 +65,7 @@
           Value="true" />
                 <Setter Property="HasDropShadow"
           Value="True" />
-               
+
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ContextMenu}">
@@ -91,8 +91,8 @@
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
-                    
-                    
+
+
                 </Setter>
             </Style>
             <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">
@@ -143,9 +143,9 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBoxItem">
-                            <Border CornerRadius="7" Name="_Border"
+                            <Border CornerRadius="4" Name="_Border"
                                 Padding="0"
-                                Margin="0,0,15,15"
+                                Margin="5,5,5,5"
                                 Background="{DynamicResource RegionBrush}"   
                                 BorderBrush="Transparent"
                                 BorderThickness="3"
@@ -198,8 +198,8 @@
                                 <MenuItem.Icon>
                                     <Path   Data="{StaticResource ledsetup}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
                                 </MenuItem.Icon>
-                                
-                                
+
+
                             </MenuItem>
                             <MenuItem Command="{Binding PlacementTarget.Tag.ImportPIDCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"  Header="Import LED Setup" >
                                 <MenuItem.Icon>
@@ -216,7 +216,7 @@
                                     <Path   Data="{StaticResource editname}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
                                 </MenuItem.Icon>
                             </MenuItem>
-                           
+
                             <MenuItem CommandParameter="advance" Command="{Binding PlacementTarget.Tag.OpenAdvanceSettingWindowCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Header="Advance Settings" >
                                 <MenuItem.Icon>
                                     <Path   Data="{StaticResource advancesettings}" Fill="{DynamicResource PrimaryTextBrush}" Stretch="Uniform"/>
@@ -322,8 +322,8 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            
-            
+
+
             <Grid Grid.Column="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -335,7 +335,7 @@
                     </Border.Background>
                     <Path Margin="10" Data="{Binding CurrentDevice.Geometry, Converter={converters:StaticResourceConverter}}" Width="70" Height="70" Fill="{DynamicResource PrimaryBrush}" Stretch="Uniform" />
                 </Border>
-              
+
                 <StackPanel Margin="10,5" Grid.Column="1">
                     <hc:RunningBlock 
                                                 Margin="0,0,10,0"
@@ -380,7 +380,7 @@
                                 <TextBlock FontSize="13" Text="" Style="{DynamicResource TextBlockDefaultPrimary}"/>
                             </Button.Content>
                         </Button>
-                        
+
                     </Grid>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -398,13 +398,13 @@
                             </Button.Content>
                         </Button>
                     </Grid>
-                    
+
                     <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=ButtonRename}" HorizontalOffset="30" x:Name="RenamePopup" VerticalOffset="0" StaysOpen="False">
                         <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
                             <Border Background="{DynamicResource SecondaryRegionBrush}" CornerRadius="7" Margin="0,2,15,15"  Effect="{DynamicResource EffectShadow3}">
                                 <StackPanel Orientation="Vertical">
                                     <TextBox x:Name="RenameTextBox" >
-                                        
+
                                     </TextBox>
 
                                     <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Click="ChangeCurrentDeviceName"   BorderBrush="Transparent"   Margin="5" Content="Rename" Style="{DynamicResource ButtonPrimary}"/>
@@ -423,44 +423,44 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <hc:Badge  BadgeMargin="8,17,0,10" Status="{Binding IsSettingsUnsaved}"  Margin="0,0,0,0" Style="{DynamicResource BadgeDanger}">
-                   
-                
-                <Button Click="ButtonProfile_OnClick" CommandParameter="connection" hc:BorderElement.CornerRadius="7" Margin="0,5,5,5" Height="65" VerticalAlignment="Stretch" HorizontalAlignment="Right" Padding="0"  BorderBrush="Transparent" Style="{DynamicResource ButtonDefault}" >
-                  
-                    <Grid Margin="5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Path Width="30" Height="30" Margin="5,10" Data="{StaticResource profile}" Stretch="Uniform" >
-                            <Path.Style>
-                                <Style TargetType="Path">
-                                    <Setter Property="Fill" Value="{DynamicResource PrimaryBrush}"/>
-                                </Style>
-                            </Path.Style>
 
-                        </Path>
 
-                      
-                        <Popup Effect="{DynamicResource EffectShadow3}"  AllowsTransparency="True" Grid.Column="2" Grid.ColumnSpan="2"  HorizontalOffset="15" Name="profile_selection" VerticalOffset="6" StaysOpen="False">
-                            <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
-                                <Border  Margin="15,0,15,15" Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
-                                    <StackPanel>
-                                
-                                        <Grid  >
-                                            <StackPanel Orientation="Horizontal">
-                                                <Button ToolTip="Create New Profile" Command="{Binding OpenProfileCreateCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource newfile}" Padding="6" Margin="5"/>
-                                                <Button ToolTip="Import Profile" Command="{Binding ImportProfileCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource import}" Padding="6" Margin="5"/>
-                                                <Button ToolTip="Export Profile" Command="{Binding ExportCurrentProfileCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource export}" Padding="6" Margin="5"/>
+                    <Button Click="ButtonProfile_OnClick" CommandParameter="connection" hc:BorderElement.CornerRadius="7" Margin="0,5,5,5" Height="65" VerticalAlignment="Stretch" HorizontalAlignment="Right" Padding="0"  BorderBrush="Transparent" Style="{DynamicResource ButtonDefault}" >
+
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Path Width="30" Height="30" Margin="5,10" Data="{StaticResource profile}" Stretch="Uniform" >
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Fill" Value="{DynamicResource PrimaryBrush}"/>
+                                    </Style>
+                                </Path.Style>
+
+                            </Path>
+
+
+                            <Popup Effect="{DynamicResource EffectShadow3}"  AllowsTransparency="True" Grid.Column="2" Grid.ColumnSpan="2"  HorizontalOffset="15" Name="profile_selection" VerticalOffset="6" StaysOpen="False">
+                                <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
+                                    <Border  Margin="15,0,15,15" Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
+                                        <StackPanel>
+
+                                            <Grid  >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button ToolTip="Create New Profile" Command="{Binding OpenProfileCreateCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource newfile}" Padding="6" Margin="5"/>
+                                                    <Button ToolTip="Import Profile" Command="{Binding ImportProfileCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource import}" Padding="6" Margin="5"/>
+                                                    <Button ToolTip="Export Profile" Command="{Binding ExportCurrentProfileCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource export}" Padding="6" Margin="5"/>
                                                     <hc:Badge  BadgeMargin="2" Status="{Binding IsSettingsUnsaved}"  Margin="0,0,0,0" Style="{DynamicResource BadgeDanger}">
                                                         <Button ToolTip="Save" Command="{Binding SaveCurrentProfileCommand}" hc:IconElement.Width="15" hc:IconElement.Height="15" Style="{DynamicResource ButtonDefault}" BorderBrush="Transparent" hc:IconElement.Geometry="{StaticResource save}" Padding="6" Margin="5"/>
-                                                        </hc:Badge>
-                                            </StackPanel>  
-                                        </Grid>
-                                        <hc:Divider LineStroke="{DynamicResource SecondaryRegionBrush}" Margin="5,5,5,5">
+                                                    </hc:Badge>
+                                                </StackPanel>
+                                            </Grid>
+                                            <hc:Divider LineStroke="{DynamicResource SecondaryRegionBrush}" Margin="5,5,5,5">
 
-                                        </hc:Divider>
+                                            </hc:Divider>
                                             <ListBox  SelectedItem="{Binding CurrentSelectedProfile}" IsSynchronizedWithCurrentItem="False"
                                                  ItemContainerStyle="{DynamicResource _listBoxGeneralModeSelectionStyle}"  
                                                  Background="Transparent"
@@ -468,46 +468,46 @@
                                                  ItemsSource="{Binding AvailableProfilesForCurrentDevice}"
                                                  Style="{DynamicResource StackPanelVerticalListBox}">
 
-                                            <ListBox.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <StackPanel>
+                                                <ListBox.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel>
 
-                                                    </StackPanel>
-                                                </ItemsPanelTemplate>
-                                            </ListBox.ItemsPanel>
-                                            <ListBox.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Grid Margin="5">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Path HorizontalAlignment="Left" Stretch="Uniform" Margin="5" Data="{Binding Geometry,Converter={converters:StaticResourceConverter}}" 
+                                                        </StackPanel>
+                                                    </ItemsPanelTemplate>
+                                                </ListBox.ItemsPanel>
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Margin="5">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="auto"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Path HorizontalAlignment="Left" Stretch="Uniform" Margin="5" Data="{Binding Geometry,Converter={converters:StaticResourceConverter}}" 
                                                           Width="20" 
                                                           Height="20" 
                                                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                                                        <TextBlock HorizontalAlignment="Left" Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="{Binding Name}" Style="{DynamicResource TextBlockDefault}"/>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
+                                                            <TextBlock HorizontalAlignment="Left" Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="{Binding Name}" Style="{DynamicResource TextBlockDefault}"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
 
-                                        </ListBox>
-                                    </StackPanel>
-                                    
-                                </Border>
-                            </hc:TransitioningContentControl>
+                                            </ListBox>
+                                        </StackPanel>
 
-                        </Popup>
-                    
-                    <Grid HorizontalAlignment="Left" Grid.Column="1">
-                            <StackPanel HorizontalAlignment="Left">
-                                <TextBlock HorizontalAlignment="Left" Text="{Binding CurrentSelectedProfile.Name,Mode=TwoWay}" Style="{DynamicResource TextBlockSubTitle}" FontWeight="SemiBold" Margin="5,2"/>
-                                <TextBlock Text="{Binding CurrentSelectedProfile.Owner, Mode=TwoWay}" Style="{DynamicResource TextBlockDefaultPrimary}"  Margin="5,2" HorizontalAlignment="Left"/>
-                            </StackPanel>
+                                    </Border>
+                                </hc:TransitioningContentControl>
+
+                            </Popup>
+
+                            <Grid HorizontalAlignment="Left" Grid.Column="1">
+                                <StackPanel HorizontalAlignment="Left">
+                                    <TextBlock HorizontalAlignment="Left" Text="{Binding CurrentSelectedProfile.Name,Mode=TwoWay}" Style="{DynamicResource TextBlockSubTitle}" FontWeight="SemiBold" Margin="5,2"/>
+                                    <TextBlock Text="{Binding CurrentSelectedProfile.Owner, Mode=TwoWay}" Style="{DynamicResource TextBlockDefaultPrimary}"  Margin="5,2" HorizontalAlignment="Left"/>
+                                </StackPanel>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                  
-                </Button>
+
+                    </Button>
                 </hc:Badge>
             </Grid>
             <Grid Margin="0,0,50,0" Grid.Column="3">
@@ -515,7 +515,7 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-               
+
                 <Button Command="{Binding OpenDeviceFirmwareSettingsWindowCommand}" CommandParameter="connection" hc:BorderElement.CornerRadius="7" Margin="0,5,5,5" Height="65" VerticalAlignment="Stretch" HorizontalAlignment="Right" Padding="0"  BorderBrush="Transparent">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource ButtonDefault}">
@@ -561,8 +561,8 @@
                                     <TextBlock Text="{Binding CurrentDevice.FirmwareVersion}" Style="{DynamicResource TextBlockDefaultPrimary}"  Margin="5,2" HorizontalAlignment="Left"/>
                                     <TextBlock Grid.Column="1" Text="{Binding CurrentDevice.HardwareVersion}" Style="{DynamicResource TextBlockDefaultPrimary}"  Margin="5,2" HorizontalAlignment="Left"/>
                                 </Grid>
-                               
-                              
+
+
 
 
                             </StackPanel>
@@ -606,9 +606,9 @@
 
                                 </Style>
                             </Path.Style>
-                        
+
                         </Path>
-                        
+
                         <Grid HorizontalAlignment="Left" Grid.Column="1">
                             <StackPanel HorizontalAlignment="Left">
                                 <hc:RunningBlock 
@@ -641,11 +641,11 @@
                                             </Style.Triggers>
 
                                         </Style>
-                                       
+
                                     </TextBlock.Style>
                                 </TextBlock>
-                                
-                               
+
+
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -658,19 +658,19 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel VerticalAlignment="Center">
                     <Button Command="{Binding BackCommand}" Width="32" Height="32" Margin="10,10,10,10"  VerticalAlignment="Center" BorderThickness="2" HorizontalAlignment="Right" hc:IconElement.Geometry="{StaticResource esc}" Style="{DynamicResource ButtonIconCircular}" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                   
+
                 </StackPanel>
-               
+
             </Grid>
         </Grid>
-           
 
-        <Grid  Grid.Row="1"  ClipToBounds="true" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+
+        <Grid Height="auto" Grid.Row="1"  ClipToBounds="true" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             <Border Margin="10" Padding="15,15,0,15"  Background="{DynamicResource DarkOpacityBrush}" CornerRadius="7">
                 <Grid>
                     <Grid x:Name="UnionOutputGrid">
@@ -703,161 +703,258 @@
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
-                        
-                        <hc:TransitioningContentControl Grid.Row="1">
-                            <ListBox Background="Transparent"  ScrollViewer.CanContentScroll="True"
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <hc:TransitioningContentControl>
+                            <Border CornerRadius="4" Background="Transparent" Margin="0">
+                                <ListBox  x:Name="outputList" Background="Transparent"  ScrollViewer.CanContentScroll="True"
                                                   ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                                                  ItemContainerStyle="{DynamicResource _ListBoxOutputsCollectionStyle}" 
+                                                 
                                                   
-                                                  x:Name="AvailableMPalette"
-                                                  
+
                                                   BorderThickness="0"   
                                                   SelectedIndex="{Binding CurrentDevice.SelectedOutput}"
                                                   Style="{DynamicResource WrapPanelVerticalListBox}" 
                                                   ItemsPanel="{DynamicResource WrapPanelVerticalItemsPanelTemplate}" 
                                                   ItemsSource="{Binding CurrentDevice.AvailableOutputs}">
 
-                                <ListBox.ItemTemplate >
-                                    <DataTemplate >
-                                        <Grid IsEnabled="{Binding IsConnected,Mode=TwoWay}" 
-                                               x:Name="output" 
-                                               Visibility="{Binding IsVissible,Converter={StaticResource boolToVisibilityConvert}}"         
-                                               Width="255" 
-                                               Height="57" >
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource _ListBoxOutputsCollectionStyle}">
+                                            <Setter Property="IsSelected" Value="{Binding OutputIsSelected}"/>
 
-                                            <!--<Button Visibility="{Binding IsDummy,Converter={StaticResource boolToVisibilityConvert}}" Command="{Binding Path=DataContext.ShowAddNewCommand, ElementName=itm}" hc:BorderElement.CornerRadius="30" Width="230" Height="260" Margin="0" hc:IconElement.Geometry="{DynamicResource AddGeometry}" hc:IconElement.Height="50" hc:IconElement.Width="50" Style="{DynamicResource ButtonDashedPrimary}">
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate >
+
+                                            <Grid>
+                                                <Grid 
+                                               x:Name="output"        
+                                               Width="100" 
+                                               Height="57">
+
+                                                    <!--<Button Visibility="{Binding IsDummy,Converter={StaticResource boolToVisibilityConvert}}" Command="{Binding Path=DataContext.ShowAddNewCommand, ElementName=itm}" hc:BorderElement.CornerRadius="30" Width="230" Height="260" Margin="0" hc:IconElement.Geometry="{DynamicResource AddGeometry}" hc:IconElement.Height="50" hc:IconElement.Width="50" Style="{DynamicResource ButtonDashedPrimary}">
 
                                             </Button>-->
 
-                                            <Border
+                                                    <Border
                                                 HorizontalAlignment="Stretch"
                                                 VerticalAlignment="Stretch"
                                                 CornerRadius="7" 
                                                 Background="{DynamicResource RegionBrush}">
 
 
-                                                <Grid Margin="5">
+                                                        <Grid Margin="5">
 
 
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="auto"/>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="auto"/>
+                                                                <ColumnDefinition Width="*"/>
 
-                                                    </Grid.ColumnDefinitions>
-                                                    <!--on off button-->
-                                                    <Grid Grid.Column="2">
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <ToggleButton IsChecked="{Binding OutputIsEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+
+                                                            </Grid.ColumnDefinitions>
+                                                            <!--on off button-->
+                                                            <!--<Grid x:Name="outputGrid" Grid.Column="2">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Border Margin="10,0" Height="32" Width="32" VerticalAlignment="Center" HorizontalAlignment="Left"  Grid.Column="1"  BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="4">
+                                                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockDefault}" Text="{Binding Path=DataContext.CurrentDevice.DeviceActualSpeed, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                                                                </Border>
+                                                                <ToggleButton IsChecked="{Binding OutputIsEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                                                                       BorderThickness="0"  
                                                                       Margin="0,0,10,0" 
                                                                       HorizontalAlignment="Right"
                                                                       VerticalAlignment="center"
                                                                       Grid.Row="0"
                                                                       Style="{StaticResource ToggleButtonSwitchSmallerElipse}">
-                                                            </ToggleButton>
-                                                            <Button x:Name="BrightnessButton" CommandParameter="{Binding .}" Command="{Binding Path=DataContext.ShowBrightnessAdjustmentPopupCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" BorderThickness="0" Background="{DynamicResource SecondaryRegionBrush}" Margin="0,0,10,0" hc:IconElement.Geometry="{DynamicResource brightness}" Style="{DynamicResource ButtonDefault}"></Button>
-                                                        </StackPanel>
+                                                                </ToggleButton>
+                                                                <Button x:Name="BrightnessButton" CommandParameter="{Binding .}" Command="{Binding Path=DataContext.ShowBrightnessAdjustmentPopupCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" BorderThickness="0" Background="{DynamicResource SecondaryRegionBrush}" Margin="0,0,10,0" hc:IconElement.Geometry="{DynamicResource brightness}" Style="{DynamicResource ButtonDefault}"></Button>
+                                                            </StackPanel>
 
-                                                        <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=BrightnessButton}" HorizontalOffset="30" x:Name="BrightnessPopup" IsOpen="{Binding IsBrightnessPopupOpen}" VerticalOffset="0" StaysOpen="False">
-                                                            <hc:TransitioningContentControl  TransitionMode="Top2Bottom">
-                                                                <Border  Background="{DynamicResource RegionBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="2" CornerRadius="7" Margin="0,2,15,15">
-                                                                    <StackPanel Orientation="Vertical">
-                                                                        <Grid>
-                                                                            <Grid.ColumnDefinitions>
-                                                                                <ColumnDefinition Width="auto"/>
-                                                                                <ColumnDefinition Width="*"/>
-
-
-                                                                            </Grid.ColumnDefinitions>
-                                                                            <Border Margin="8,0,0,0" Width="25" Height="25" Background="{DynamicResource DarkMaskBrush}" CornerRadius="4">
-                                                                                <TextBlock Style="{DynamicResource TextBlockDefault}" Text="{Binding OutputBrightness}">
-
-                                                                                </TextBlock>
-                                                                            </Border>
-                                                                            <Slider Style="{DynamicResource SliderBaseStyle}"  Name="BrightnessSlider" Grid.Column="1" Value="{Binding OutputBrightness}"  MaxWidth="300" MinWidth="200" HorizontalAlignment="Left" Margin="10,10,10,10" Minimum="0" Maximum="100" TickFrequency="0.1">
-
-                                                                            </Slider>
+                                                            <Popup AllowsTransparency="True"  PlacementTarget="{Binding ElementName=BrightnessButton}" HorizontalAlignment="Center" HorizontalOffset="16" x:Name="BrightnessPopup" IsOpen="{Binding IsBrightnessPopupOpen}" VerticalOffset="0" StaysOpen="False">
+                                                                <hc:TransitioningContentControl  TransitionMode="Top2Bottom">
+                                                                    <Border  Background="{DynamicResource RegionBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="2" CornerRadius="7" Margin="0,2,15,15">
+                                                                        <StackPanel Orientation="Vertical">
+                                                                            <Grid>
+                                                                                <Grid.ColumnDefinitions>
+                                                                                    <ColumnDefinition Width="auto"/>
+                                                                                    <ColumnDefinition Width="*"/>
+                                                                                    <ColumnDefinition Width="auto"/>
+                                                                                    <ColumnDefinition Width="auto"/>
 
 
 
+                                                                                </Grid.ColumnDefinitions>
+                                                                                <Border HorizontalAlignment="Left" Grid.Column="2" Margin="0,0,10,0" Width="25" Height="25" Background="{DynamicResource DarkMaskBrush}" CornerRadius="4">
+                                                                                    <TextBlock Style="{DynamicResource TextBlockDefault}" Text="{Binding OutputBrightness}">
 
-                                                                        </Grid>
+                                                                                    </TextBlock>
+                                                                                </Border>
+                                                                                <Slider Style="{DynamicResource SliderBaseStyle}"  Name="BrightnessSlider" Grid.Column="1" Value="{Binding OutputBrightness}"  MaxWidth="300" MinWidth="200" HorizontalAlignment="Left" Margin="10,10,10,10" Minimum="0" Maximum="100" TickFrequency="0.1">
+
+                                                                                </Slider>
+
+                                                                                <Path Grid.Column="0" Width="20" Height="20" Margin="8,0,0,0" Data="{StaticResource brightness}" Stretch="Uniform" >
+                                                                                    <Path.Style>
+                                                                                        <Style TargetType="Path">
+                                                                                            <Setter Property="Fill" Value="{DynamicResource PrimaryBrush}"/>
+                                                                                        </Style>
+                                                                                    </Path.Style>
+
+                                                                                </Path>
+                                                                                <Grid Grid.Column="3">
+                                                                                    <Grid.Style>
+                                                                                        <Style TargetType="Grid">
+                                                                                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                                                                            <Style.Triggers>
+                                                                                                <DataTrigger Binding="{Binding Path=DataContext.CurrentDevice.DeviceType, RelativeSource={RelativeSource AncestorType=ListBox}}" Value="ABFANHUB">
+                                                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                                                </DataTrigger>
+                                                                                            </Style.Triggers>
+                                                                                        </Style>
+                                                                                    </Grid.Style>
+                                                                                    <Button Visibility="Hidden" Padding="5,2"  Margin="5,0,7,0"  Width="auto" Height="25"  x:Name="DummyButton" CommandParameter="speed" Command="{Binding Path=DataContext.SendCurrentDeviceSpeedCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" BorderThickness="0" Background="{DynamicResource SecondaryRegionBrush}"   Content="Apply" Style="{DynamicResource ButtonDefault}"></Button>
+                                                                                </Grid>
+
+
+                                                                            </Grid>
+                                                                            <Grid>
+                                                                                <Grid.Style>
+                                                                                    <Style TargetType="Grid">
+                                                                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                                                                        <Style.Triggers>
+                                                                                            <DataTrigger Binding="{Binding Path=DataContext.CurrentDevice.DeviceType, RelativeSource={RelativeSource AncestorType=ListBox}}" Value="ABFANHUB">
+                                                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                                            </DataTrigger>
+                                                                                        </Style.Triggers>
+                                                                                    </Style>
+                                                                                </Grid.Style>
+                                                                                <Grid.ColumnDefinitions>
+                                                                                    <ColumnDefinition Width="auto"/>
+                                                                                    <ColumnDefinition Width="*"/>
+                                                                                    <ColumnDefinition Width="auto"/>
+                                                                                    <ColumnDefinition Width="auto"/>
+
+
+                                                                                </Grid.ColumnDefinitions>
+                                                                                <Border HorizontalAlignment="Left" Grid.Column="2" Margin="0,0,10,0" Width="25" Height="25" Background="{DynamicResource DarkMaskBrush}" CornerRadius="4">
+                                                                                    <TextBlock Style="{DynamicResource TextBlockDefault}" Text="{Binding Path=DataContext.CurrentDevice.DeviceSpeed, RelativeSource={RelativeSource AncestorType=ListBox}}">
+
+                                                                                    </TextBlock>
+                                                                                </Border>
+                                                                                <Slider Style="{DynamicResource SliderBaseStyle}"  Name="SpeedSlider" Grid.Column="1" Value="{Binding Path=DataContext.CurrentDevice.DeviceSpeed, RelativeSource={RelativeSource AncestorType=ListBox}}"  MaxWidth="300" MinWidth="200" HorizontalAlignment="Left" Margin="10,10,10,10" Minimum="0" Maximum="100" TickFrequency="0.1">
+
+                                                                                </Slider>
+
+                                                                                <Path Grid.Column="0" Width="20" Height="20" Margin="8,0,0,0" Data="{StaticResource fanspeed}" Stretch="Uniform" >
+                                                                                    <Path.Style>
+                                                                                        <Style TargetType="Path">
+                                                                                            <Setter Property="Fill" Value="{DynamicResource PrimaryBrush}"/>
+                                                                                        </Style>
+                                                                                    </Path.Style>
+
+                                                                                </Path>
+                                                                                <Button Padding="5,2" Grid.Column="3" Margin="5,0,7,0"  Width="auto" Height="25"  x:Name="ApplyButton" CommandParameter="speed" Command="{Binding Path=DataContext.SendCurrentDeviceSpeedCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" BorderThickness="0" Background="{DynamicResource SecondaryRegionBrush}"   Content="Apply" Style="{DynamicResource ButtonDefault}"></Button>
+
+                                                                            </Grid>
 
 
 
-                                                                    </StackPanel>
+                                                                        </StackPanel>
 
-                                                                </Border>
-                                                            </hc:TransitioningContentControl>
+                                                                    </Border>
+                                                                </hc:TransitioningContentControl>
 
-                                                        </Popup>
-                                                    </Grid>
-
-
+                                                            </Popup>
+                                                        </Grid>-->
 
 
-                                                    <!--name and info -->
-                                                    <Grid Grid.Column="1">
-                                                        <StackPanel>
-                                                            <TextBlock HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockSubTitle}" Text="{Binding OutputName}"/>
-                                                            <Grid>
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="*"/>
-                                                                    <ColumnDefinition Width="auto"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <TextBlock Grid.Column="0" HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockDefaultSecLight}" Text="{Binding OutputType}"/>
-                                                                <TextBlock Grid.Column="1" HorizontalAlignment="Left"  Margin="5,0,5,0"   Style="{DynamicResource TextBlockDefaultPrimary}" Text="{Binding OutputDescription}"/>
+
+
+                                                            <!--name and info -->
+                                                            <Grid Margin="5,0,0,0" Grid.Column="1">
+
+                                                                <hc:RunningBlock 
+                                                Margin="0,0,0,0"
+                                                BorderThickness="0" 
+                                                Padding="0"  
+                                                Duration="0:0:9" 
+                                                Height="32" 
+                                                HorizontalAlignment="Left" 
+                                                AutoRun="True"  Width="50" 
+                                                Runaway="False" 
+                                                VerticalAlignment="Stretch" >
+                                                                    <hc:RunningBlock.Content>
+                                                                        <TextBlock  Text="{Binding OutputName}" 
+                                                                FlowDirection="RightToLeft"
+                                                                FontWeight="SemiBold"
+                                                                Style="{DynamicResource TextBlockSubTitle}"
+                                                                />
+                                                                    </hc:RunningBlock.Content>
+
+                                                                </hc:RunningBlock>
+
+
                                                             </Grid>
-                                                        </StackPanel>
 
-                                                    </Grid>
+                                                            <!--Icon-->
 
-                                                    <!--Icon-->
-                                                    <Border HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" Height="50" CornerRadius="6" >
-                                                        <!--<Border.Background>
+                                                            <!--<Border.Background>
                                                             <SolidColorBrush Color ="{Binding Color, Source={StaticResource PrimaryBrush}}" Opacity="0.1"/>
                                                         </Border.Background>-->
-                                                        <Path Margin="5" Data="{Binding Geometry, Converter={converters:StaticResourceConverter}}" Width="32" Height="32" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
+                                                            <Path Margin="5" Data="{Binding Geometry, Converter={converters:StaticResourceConverter}}" Width="25" Height="25" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" />
+
+
+
+                                                            <!--device information-->
+
+                                                            <!--Big icon-->
+
+
+                                                        </Grid>
                                                     </Border>
-
-
-                                                    <!--device information-->
-
-                                                    <!--Big icon-->
-
-
                                                 </Grid>
-                                            </Border>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
 
-                            </ListBox>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+
+                                </ListBox>
+                            </Border>
+
                         </hc:TransitioningContentControl>
+                        <Grid Grid.Column="1"  Visibility="{Binding OutputIsSelected,Converter={StaticResource Boolean2VisibilityConverter}}">
+                            <Grid >
+                                <local:UnionOutputControl Margin="15,10,10,10">
+
+                                </local:UnionOutputControl>
+                            </Grid>
+                        </Grid>
 
 
                     </Grid>
                 </Grid>
-                
-                
-                
+
+
+
             </Border>
             <Border Padding="15" Margin="10" Grid.Column="1"  Background="{DynamicResource DarkOpacityBrush}" CornerRadius="7">
                 <Grid>
-                  
+
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                
-                <Grid Grid.Column="1">
+
+                    <Grid Grid.Column="1">
                         <Button Command="{Binding SetCurrentLEDSetupSentryColorCommand }" ToolTip="Nhấn để đặt màu hiện tại làm màu khi tắt máy" Margin="0" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{DynamicResource ButtonDefault}" Content="Snap" hc:IconElement.Geometry="{DynamicResource sentry}" Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"/>
-                </Grid>
-                <Grid  Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"  ClipToBounds="true"  x:Name="MotherGrid">
-                   
-                   
-               
+                    </Grid>
+                    <Grid  Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"  ClipToBounds="true"  x:Name="MotherGrid">
+
+
+
                         <Viewbox  HorizontalAlignment="Center" VerticalAlignment="Center"  Name="PreviewBox">
 
                             <ItemsControl
@@ -889,6 +986,7 @@
                                             <Rectangle
                                                 ToolTip="{Binding id}" 
                                                 Stroke="OrangeRed" 
+                                               
                                                 StrokeThickness="{Binding BorderThickness}" 
                                                 Width="{Binding Rectangle.Width,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                                                 Height="{Binding Rectangle.Height,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
@@ -900,7 +998,8 @@
 
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Opacity"  Value="0.3"/>
+                                                                <Setter Property="Opacity"  Value="0.5"/>
+
                                                             </Trigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -921,15 +1020,15 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </Viewbox>
-                   
-                  
-            
-                    
+
+
+
+
                     </Grid>
                 </Grid>
-              </Border>
-                </Grid>
-       
+            </Border>
+        </Grid>
+
         <Grid x:Name="DaughterGrid" Grid.Row="2" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
@@ -946,63 +1045,63 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Button hc:BorderElement.CornerRadius="8" Height="auto"  Padding="0" Grid.Column="0" Click="ButtonMode_OnClick" BorderBrush="Transparent"  Style="{DynamicResource ButtonDefault}">
-                        <Border Margin="1"  CornerRadius="7" Background="{DynamicResource RegionBrush}" >
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Path Stretch="Uniform" Margin="10" Data="{Binding CurrentSelectedLightingMode.Geometry,Converter={converters:StaticResourceConverter}}" 
+                            <Border Margin="1"  CornerRadius="7" Background="{DynamicResource RegionBrush}" >
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Path Stretch="Uniform" Margin="10" Data="{Binding CurrentSelectedLightingMode.Geometry,Converter={converters:StaticResourceConverter}}" 
                                       Width="35" 
                                       Height="35" 
                                       Fill="{DynamicResource PrimaryBrush}"/>
-                                <TextBlock Style="{DynamicResource TextBlockTitleBold}" Margin="5,0,10,0" Grid.Column="1" Text="{Binding CurrentSelectedLightingMode.Name}" />
-                                
+                                    <TextBlock Style="{DynamicResource TextBlockTitleBold}" Margin="5,0,10,0" Grid.Column="1" Text="{Binding CurrentSelectedLightingMode.Name}" />
 
-                                
-                                
-                                <Popup Effect="{DynamicResource EffectShadow3}"  AllowsTransparency="True" Grid.Column="2" Grid.ColumnSpan="2" HorizontalOffset="15" Name="PopupMode" VerticalOffset="6" StaysOpen="False">
-                                    <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
-                                        <Border  Margin="15,0,15,15" Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
-                                            <ListBox SelectedItem="{Binding CurrentSelectedLightingMode}" SelectedIndex="{Binding CurrentOutput.OutputSelectedMode}" SelectionChanged="NewModeSelected"  x:Name="lightingmode_selection"  
+
+
+
+                                    <Popup Effect="{DynamicResource EffectShadow3}"  AllowsTransparency="True" Grid.Column="2" Grid.ColumnSpan="2" HorizontalOffset="15" Name="PopupMode" VerticalOffset="6" StaysOpen="False">
+                                        <hc:TransitioningContentControl Effect="{DynamicResource EffectShadow3}" TransitionMode="Top2Bottom">
+                                            <Border  Margin="15,0,15,15" Background="{DynamicResource RegionBrush}" CornerRadius="7" BorderThickness="1">
+                                                <ListBox SelectedItem="{Binding CurrentSelectedLightingMode}" SelectedIndex="{Binding CurrentOutput.OutputSelectedMode}" SelectionChanged="NewModeSelected"  x:Name="lightingmode_selection"  
                                                  ItemContainerStyle="{DynamicResource _listBoxGeneralModeSelectionStyle}"  
                                                  Background="Transparent"
                                                  BorderThickness="0"
                                                  ItemsSource="{Binding AvailableLightingMode}"
                                                  Style="{DynamicResource StackPanelVerticalListBox}">
 
-                                                <ListBox.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <StackPanel>
+                                                    <ListBox.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <StackPanel>
 
-                                                        </StackPanel>
-                                                    </ItemsPanelTemplate>
-                                                </ListBox.ItemsPanel>
+                                                            </StackPanel>
+                                                        </ItemsPanelTemplate>
+                                                    </ListBox.ItemsPanel>
 
                                                     <ListBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Grid Margin="5">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="auto"/>
-                                                                <ColumnDefinition Width="*"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <Path HorizontalAlignment="Left" Stretch="Uniform" Margin="5" Data="{Binding Geometry,Converter={converters:StaticResourceConverter}}" 
+                                                        <DataTemplate>
+                                                            <Grid Margin="5">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="auto"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Path HorizontalAlignment="Left" Stretch="Uniform" Margin="5" Data="{Binding Geometry,Converter={converters:StaticResourceConverter}}" 
                                                           Width="20" 
                                                           Height="20" 
                                                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                                                            <TextBlock HorizontalAlignment="Left" Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="{Binding Name}" Style="{DynamicResource TextBlockDefault}"/>
-                                                        </Grid>
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
-                                           
-                                            </ListBox>
-                                        </Border>
-                                    </hc:TransitioningContentControl>
-                                   
-                                </Popup>
-                            </Grid>
-                        </Border>
+                                                                <TextBlock HorizontalAlignment="Left" Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Margin="5,0,5,0" Grid.Column="1" Text="{Binding Name}" Style="{DynamicResource TextBlockDefault}"/>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+
+                                                </ListBox>
+                                            </Border>
+                                        </hc:TransitioningContentControl>
+
+                                    </Popup>
+                                </Grid>
+                            </Border>
                         </Button>
                         <Grid Margin="20,0,5,0" HorizontalAlignment="Right" Grid.Column="1" >
                             <StackPanel Orientation="Horizontal">
@@ -1013,9 +1112,9 @@
 
                                 </Button>
                             </StackPanel>
-                           
+
                         </Grid>
-                      
+
 
                     </Grid>
                     <Grid x:Name="ScreenCapture" >

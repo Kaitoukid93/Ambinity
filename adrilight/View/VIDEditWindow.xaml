@@ -199,11 +199,7 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </Rectangle.Style>
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="MouseDown" >
-                                                    <i:InvokeCommandAction Command="{Binding DataContext.SetSpotActiveCommand,RelativeSource={RelativeSource AncestorType={x:Type local:PIDEditWindow}}}" CommandParameter="{Binding .}" />
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
+                                           
                                         </Rectangle>
                                     </Viewbox>
                                    

@@ -161,7 +161,18 @@ namespace adrilight
             else if (DeviceSettings.IsTransferActive && DeviceSettings.CurrentState == State.dfu) // this is only requested by dfu or fwupgrade button.
             {
                 Stop();
+                Thread.Sleep(1000);
                 DFU();
+            }
+            else if (DeviceSettings.IsTransferActive && DeviceSettings.CurrentState == State.speed) // this is only requested by dfu or fwupgrade button.
+            {
+                DeviceSettings.IsLoadingSpeed = true;
+                Stop();
+                Thread.Sleep(500);
+                SetSpeed();
+                Thread.Sleep(500);
+                DeviceSettings.CurrentState = State.normal;
+                DeviceSettings.RefreshDeviceActualSpeedAsync();
             }
         }
 
@@ -208,7 +219,49 @@ namespace adrilight
         }
 
         public bool IsRunning => _workerThread != null && _workerThread.IsAlive;
+        public void SetSpeed()
+        {
+            if (DeviceSettings.OutputPort != null)
+            {
+                var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.OutputPort, 1000000));
+                try
+                {
+                    serialPort.Open();
+                }
+                catch (Exception)
+                {
+                    // I don't know about this shit but we have to catch an empty exception because somehow SerialPort.Open() was called twice
+                }
+                try
+                {
+                    serialPort.Write(new byte[19] { (byte)'s', (byte)'p', (byte)'d',
+                        0,//Hi
+                        0,//Lo
+                        0,//Chk
+                        (byte)DeviceSettings.SpeedMode,//HD1
+                        0,//HD2
+                        0,//HD3
+                       (byte)DeviceSettings.DeviceSpeed,//Fan1 speed
+                       (byte)DeviceSettings.DeviceSpeed,//Fan2 speed
+                       (byte)DeviceSettings.DeviceSpeed,//Fan3 speed
+                       (byte)DeviceSettings.DeviceSpeed,//Fan4 speed
+                       (byte)DeviceSettings.DeviceSpeed,//Fan5 speed
+                       (byte)DeviceSettings.DeviceSpeed,//Fan6 speed
+                       (byte)DeviceSettings.DeviceSpeed,//Fan7 speed
+                       (byte)DeviceSettings.DeviceSpeed,//Fan8 speed
+                       (byte)DeviceSettings.DeviceSpeed,//Fan9 speed
+                       (byte)DeviceSettings.DeviceSpeed//Fan10 speed
 
+                    }, 0, 19);
+                }
+                catch (Exception)
+                {
+                    // I don't know about this shit but we have to catch an empty exception because somehow SerialPort.Write() was called twice
+                }
+                serialPort.Close();
+
+            }
+        }
         public void DFU()
 
         {
@@ -254,7 +307,7 @@ namespace adrilight
                     {
                         // I don't know about this shit but we have to catch an empty exception because somehow SerialPort.Open() was called twice
                     }
-                    Thread.Sleep(500);
+                    Thread.Sleep(1000);
                     serialPort.Close();
 
                 }
@@ -293,8 +346,8 @@ namespace adrilight
 
 
 
-                byte lo = (byte)(currentOutput.OutputLEDSetup.Spots.Length & 0xff);
-                byte hi = (byte)((currentOutput.OutputLEDSetup.Spots.Length >> 8) & 0xff);
+                byte lo = (byte)((currentOutput.OutputLEDSetup.Spots.Length * ledPerSpot) & 0xff);
+                byte hi = (byte)(((currentOutput.OutputLEDSetup.Spots.Length * ledPerSpot) >> 8) & 0xff);
                 byte chk = (byte)(hi ^ lo ^ 0x55);
                 outputStream[counter++] = hi;
                 outputStream[counter++] = lo;
@@ -328,11 +381,14 @@ namespace adrilight
                             }
                             else
                             {
+                                spot.IndicateMissingValue();
+                                var RGBOrder = currentOutput.OutputRGBLEDOrder;
+                                var reOrderedColor = ReOrderSpotColor(RGBOrder, spot.Red, spot.Green, spot.Blue);
                                 for (int i = 0; i < ledPerSpot; i++)
                                 {
-                                    outputStream[counter++] = 0; // blue
-                                    outputStream[counter++] = 0; // green
-                                    outputStream[counter++] = 0; // red
+                                    outputStream[counter++] = reOrderedColor[0]; // blue
+                                    outputStream[counter++] = reOrderedColor[1]; // green
+                                    outputStream[counter++] = reOrderedColor[2]; // red
                                 }
                             }
 
@@ -342,11 +398,13 @@ namespace adrilight
                     case State.sleep: // send black frame data
                         foreach (DeviceSpot spot in currentOutput.OutputLEDSetup.Spots)
                         {
+                            
                             switch (currentOutput.SleepMode)
                             {
                                 case 0:
                                     if (isEnabled && parrentIsEnabled)
                                     {
+
                                         for (int i = 0; i < ledPerSpot; i++)
                                         {
                                             outputStream[counter++] = 0; // blue

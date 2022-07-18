@@ -8,7 +8,8 @@ namespace adrilight
         bool IsRunning { get; }
 
         void Run(CancellationToken token);
-        double StartIndex { get; }
+        double RainbowStartIndex { get; }
+        double MusicStartIndex { get; }
     }
 
 

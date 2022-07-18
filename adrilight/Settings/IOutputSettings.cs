@@ -99,6 +99,7 @@ namespace adrilight
         int OutputMusicDancingMode { get; set; }
         int OutputBreathingSpeed { get; set; }
         int SleepMode { get; set; }
+        bool OutputIsSelected { get; set; }
         //static color settings//
         IGradientColorCard OutputSelectedGradient { get; set; }
 

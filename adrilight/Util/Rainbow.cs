@@ -115,7 +115,7 @@ namespace adrilight
             if (isRunning && shouldBeRunning)
             {
                 // rainbow is running and we need to change the color bank
-                colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette.Colors, GeneralSettings.SystemRainbowMaxTick).ToArray();
+                colorBank = GetColorGradientfromPaletteWithFixedColorPerGap(OutputSettings.OutputCurrentActivePalette.Colors, 18).ToArray();
                 inSync = OutputSettings.OutputIsSystemSync;
                 //if(isInEditWizard)
                 //    colorBank = GetColorGradientfromPalette(DefaultColorCollection.black).ToArray();
@@ -149,7 +149,7 @@ namespace adrilight
                 var frequency = OutputSettings.OutputPaletteBlendStep;
                 var colorNum = GeneralSettings.SystemRainbowMaxTick;
                 Color[] paletteSource = OutputSettings.OutputCurrentActivePalette.Colors;
-                colorBank = GetColorGradientfromPalette(paletteSource,colorNum).ToArray();
+                colorBank = GetColorGradientfromPaletteWithFixedColorPerGap(paletteSource,18).ToArray();
                 double StartIndex=0d;
                 int OutputStartIndex = 0;
                 
@@ -169,7 +169,7 @@ namespace adrilight
                     }
                     if(inSync)
                     {
-                        OutputStartIndex = (int)RainbowTicker.StartIndex;
+                        OutputStartIndex = (int)RainbowTicker.RainbowStartIndex;
                     }
                     else
                     {
@@ -187,16 +187,18 @@ namespace adrilight
                                 
                                 position = OutputStartIndex + spot.VID;
                                 int n = 0;
-                                if(position>=colorBank.Length)
-                                n = position / colorBank.Length;
-                                position -= n*colorBank.Length; // run with VID
-                            
-                         
+                            if (position >= colorBank.Length)
+                                //position = Math.Abs(colorBank.Length - position);
+                            n = position / colorBank.Length;
+                            position -= n * colorBank.Length; // run with VID
+
+
                             var brightness = OutputSettings.OutputBrightness / 100d;
                             var newColor = new OpenRGB.NET.Models.Color(colorBank[position].R, colorBank[position].G, colorBank[position].B);
-                            var outputColor=Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);    
-                            if(!OutputSettings.IsInSpotEditWizard)
-                            spot.SetColor(outputColor.R, outputColor.G, outputColor.B, isPreviewRunning);
+                            var outputColor=Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);
+                            ApplySmoothing(outputColor.R, outputColor.G, outputColor.B, out byte FinalR, out byte FinalG, out byte FinalB, spot.Red, spot.Green, spot.Blue);
+                            if (!OutputSettings.IsInSpotEditWizard)
+                            spot.SetColor(FinalR, FinalG, FinalB, isPreviewRunning);
 
                         }
 
@@ -233,7 +235,15 @@ namespace adrilight
 
 
 
+        private void ApplySmoothing(float r, float g, float b, out byte semifinalR, out byte semifinalG, out byte semifinalB,
+      byte lastColorR, byte lastColorG, byte lastColorB)
+        {
+            ;
 
+            semifinalR = (byte)((r + 7 * lastColorR) / (7 + 1));
+            semifinalG = (byte)((g + 7 * lastColorG) / (7 + 1));
+            semifinalB = (byte)((b + 7 * lastColorB) / (7 + 1));
+        }
 
 
         [Obsolete]
@@ -338,248 +348,25 @@ namespace adrilight
             int remainTick = colorNum - colors.Count();
             colors = colors.Concat(colors.Take(remainTick).ToList()).ToList();
             return colors;
+
+
+            // new update, create free amount of color????
         }
+        public static IEnumerable<Color> GetColorGradientfromPaletteWithFixedColorPerGap(Color[] colorCollection, int colorPerGap)
+        {
+            var colors = new List<Color>();
+            
 
-        // predefined color palette
-        public static Color[] rainbow = {
-             Color.FromRgb (255,0,25),
-             Color.FromRgb (255,172,0),
-             Color.FromRgb (255,172,0),
-             Color.FromRgb (186,255,0),
-             Color.FromRgb (186,255,0),
-             Color.FromRgb (0,255,51),
-             Color.FromRgb (0,255,51),
-             Color.FromRgb (0,255,245),
-             Color.FromRgb (0,255,245),
-             Color.FromRgb (0,102,255),
-             Color.FromRgb (0,102,255),
-             Color.FromRgb (92,0,255),
-             Color.FromRgb (92,0,255),
-             Color.FromRgb (232,0,255),
-             Color.FromRgb (232,0,255),
-             Color.FromRgb (255,0,25)
-        };
-        public static Color[] party = {
-             Color.FromRgb (88,53,148),
-             Color.FromRgb (129,39,122),
-             Color.FromRgb (181,30,78),
-             Color.FromRgb (228,30,38),
-             Color.FromRgb (0,255,0),
-             Color.FromRgb (183,74,38),
-             Color.FromRgb (170,121,43),
-             Color.FromRgb (169,171,54),
-             Color.FromRgb (170,87,38),
-             Color.FromRgb (220,39,38),
-             Color.FromRgb (237,28,36),
-             Color.FromRgb (194,31,65),
-             Color.FromRgb (140,36,114),
-             Color.FromRgb (96,45,144),
-             Color.FromRgb (67,70,157),
-             Color.FromRgb (88,53,148)
+            for (int i = 0; i < colorCollection.Length -1; i++)
+            {
+                var gradient = GetColorGradient(colorCollection[i], colorCollection[i + 1], colorPerGap);
+                colors = colors.Concat(gradient).ToList();
+            }
+            var lastGradient = GetColorGradient(colorCollection[15], colorCollection[0], colorPerGap);
+            colors = colors.Concat(lastGradient).ToList();
+            return colors;
 
-        };
-        public static Color[] cloud = {
-             Color.FromRgb (0,152,255),
-             Color.FromRgb (0,104,255),
-             Color.FromRgb (0,62,216),
-             Color.FromRgb (4,54,178),
-             Color.FromRgb (0,43,150),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (220,245,255),
-             Color.FromRgb (202,243,255),
-             Color.FromRgb (123,224,255),
-             Color.FromRgb (16,170,255),
-             Color.FromRgb (0,152,255)
-
-    };
-
-        public static Color[] forest = {
-             Color.FromRgb (134,255,64),
-             Color.FromRgb (53,214,0),
-             Color.FromRgb (0,165,39),
-             Color.FromRgb (3,114,50),
-             Color.FromRgb (1,96,40),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (232,255,220),
-             Color.FromRgb (209,255,184),
-             Color.FromRgb (181,255,133),
-             Color.FromRgb (170,255,80),
-             Color.FromRgb (134,255,64)
-
-    };
-
-        public static Color[] sunset = {
-             Color.FromRgb (244,126,32),
-             Color.FromRgb (239,76,35),
-             Color.FromRgb (237,52,36),
-             Color.FromRgb (236,30,36),
-             Color.FromRgb (169,30,34),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (246,235,15),
-             Color.FromRgb (255,206,3),
-             Color.FromRgb (252,181,20),
-             Color.FromRgb (247,150,29),
-             Color.FromRgb (244,126,32)
-
-    };
-        public static Color[] scarlet = {
-             Color.FromRgb (236,34,143),
-             Color.FromRgb (236,24,94),
-             Color.FromRgb (236,30,36),
-             Color.FromRgb (203,32,39),
-             Color.FromRgb (146,26,29),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (193,111,172),
-             Color.FromRgb (194,86,159),
-             Color.FromRgb (214,93,161),
-             Color.FromRgb (202,75,154),
-             Color.FromRgb (236,34,143)
-
-    };
-        public static Color[] aurora = {
-             Color.FromRgb (0,255,133),
-             Color.FromRgb (0,249,255),
-             Color.FromRgb (0,146,255),
-             Color.FromRgb (0,104,255),
-             Color.FromRgb (0,73,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (187,255,0),
-             Color.FromRgb (137,255,0),
-             Color.FromRgb (100,255,0),
-             Color.FromRgb (94,255,0),
-             Color.FromRgb (0,255,133)
-
-    };
-        public static Color[] france = {
-             Color.FromRgb (255,0,19),
-             Color.FromRgb (255,0,19),
-             Color.FromRgb (255,0,19),
-             Color.FromRgb (0,92,255),
-             Color.FromRgb (0,92,255),
-             Color.FromRgb (0,92,255),
-             Color.FromRgb (0,92,255),
-             Color.FromRgb (0,92,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,255,255),
-             Color.FromRgb (255,0,19),
-             Color.FromRgb (255,0,19),
-             Color.FromRgb (255,0,19)
-
-    };
-        public static Color[] lemon = {
-             Color.FromRgb (206,255,0),
-             Color.FromRgb (144,255,0),
-             Color.FromRgb (112,255,0),
-             Color.FromRgb (19,255,0),
-             Color.FromRgb (0,255,78),
-             Color.FromRgb (246,235,15),
-             Color.FromRgb (206,255,0),
-             Color.FromRgb (144,255,0),
-             Color.FromRgb (19,255,0),
-             Color.FromRgb (0,255,78),
-             Color.FromRgb (246,235,15),
-             Color.FromRgb (246,235,15),
-             Color.FromRgb (255,206,3),
-             Color.FromRgb (255,255,0),
-             Color.FromRgb (231,255,0),
-             Color.FromRgb (206,255,0)
-
-    };
-
-        public static Color[] badtrip = {
-             Color.FromRgb (34,34,242),
-             Color.FromRgb (36,142,237),
-             Color.FromRgb (0,189,255),
-             Color.FromRgb (0,231,255),
-             Color.FromRgb (0,255,242),
-             Color.FromRgb (174,0,255),
-             Color.FromRgb (99,0,255),
-             Color.FromRgb (34,34,242),
-             Color.FromRgb (34,34,242),
-             Color.FromRgb (36,142,237),
-             Color.FromRgb (0,189,255),
-             Color.FromRgb (0,189,255),
-             Color.FromRgb (0,255,242),
-             Color.FromRgb (174,0,255),
-             Color.FromRgb (99,0,255),
-             Color.FromRgb (34,34,242)
-
-    };
-        public static Color[] police = {
-             Color.FromRgb (18,0,255),
-             Color.FromRgb (18,0,255),
-             Color.FromRgb (0,0,0),
-             Color.FromRgb (0,0,0),
-             Color.FromRgb (0,0,0),
-             Color.FromRgb (0,0,0),
-             Color.FromRgb (255,0,37),
-             Color.FromRgb (255,0,37),
-             Color.FromRgb (255,0,37),
-             Color.FromRgb (255,0,37),
-             Color.FromRgb (0,0,0),
-             Color.FromRgb (0,0,0),
-             Color.FromRgb (0,0,0),
-             Color.FromRgb (0,0,0),
-             Color.FromRgb (18,0,255),
-             Color.FromRgb (18,0,255)
-
-    };
-        public static Color[] iceandfire = {
-             Color.FromRgb (0,255,224),
-             Color.FromRgb (0,255,224),
-             Color.FromRgb (141,255,249),
-             Color.FromRgb (141,255,249),
-             Color.FromRgb (255,176,0),
-             Color.FromRgb (255,176,0),
-             Color.FromRgb (255,109,0),
-             Color.FromRgb (255,109,0),
-             Color.FromRgb (255,109,0),
-             Color.FromRgb (255,109,0),
-             Color.FromRgb (255,176,0),
-             Color.FromRgb (255,176,0),
-             Color.FromRgb (141,255,249),
-             Color.FromRgb (141,255,249),
-             Color.FromRgb (0,255,224),
-             Color.FromRgb (0,255,224)
-
-    };
-
-        //Custom color by color picker value
-        public Color[] custom = new Color[16];
-        //public void GetCustomColor()
-        //{
-        //    custom = DeviceSettings.CustomZone;
-
-
-        //}
+        }
 
 
     }

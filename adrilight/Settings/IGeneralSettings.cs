@@ -20,10 +20,13 @@ namespace adrilight
         bool IsProfileLoading { get; set; }
         bool StartMinimized { get; set; }
         bool HotkeyEnable { get; set; }
+        bool DriverRequested { get; set; }
         int SystemRainbowSpeed { get; set; }
         int SystemRainbowMaxTick { get; set; }
         int ThemeIndex { get; set; }
         Brush AccentColor { get; set; }
+        int SystemMusicSpeed { get; set; } 
+        int SystemMusicMaxTick { get; set; }
 
 
     }

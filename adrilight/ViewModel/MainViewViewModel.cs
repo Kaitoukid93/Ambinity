@@ -434,27 +434,77 @@ namespace adrilight.ViewModel
                             {
                                 foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
                                 {
-                                    spot.SetMID(spot.id);
+                                    var mid = (spot.id * 1024 / CurrentOutput.OutputLEDSetup.Spots.Length);
+                                    spot.SetMID(mid);
                                 }
                             }
                             RaisePropertyChanged(nameof(SensitivityThickness));
                             break;
                         case nameof(CurrentOutput.OutputPaletteChasingPosition):
-                            if (CurrentOutput.OutputPaletteChasingPosition == 0)
+                            switch(CurrentOutput.OutputPaletteChasingPosition)
                             {
-                                //full range
-                                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
-                                {
-                                    spot.SetStroke(0.5);
-                                }
-                                SetIDMode = "VID";
-                                ProcessSelectedSpotsWithRange(0, 1023);
-                                foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
-                                {
-                                    spot.SetStroke(0);
-                                }
-
+                                case 0:
+                                    foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                    {
+                                        spot.SetStroke(0.5);
+                                    }
+                                    SetIDMode = "VID";
+                                    ProcessSelectedSpotsWithRange(0, 64);
+                                    foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                    {
+                                        spot.SetStroke(0);
+                                    }
+                                    break;
+                                case 1:
+                                    foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                    {
+                                        spot.SetStroke(0.5);
+                                    }
+                                    SetIDMode = "VID";
+                                    ProcessSelectedSpotsWithRange(0, 128);
+                                    foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                    {
+                                        spot.SetStroke(0);
+                                    }
+                                    break;
+                                case 2:
+                                    foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                    {
+                                        spot.SetStroke(0.5);
+                                    }
+                                    SetIDMode = "VID";
+                                    ProcessSelectedSpotsWithRange(0, 256);
+                                    foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                    {
+                                        spot.SetStroke(0);
+                                    }
+                                    break;
+                                case 3:
+                                    foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                    {
+                                        spot.SetStroke(0.5);
+                                    }
+                                    SetIDMode = "VID";
+                                    ProcessSelectedSpotsWithRange(0, 512);
+                                    foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                    {
+                                        spot.SetStroke(0);
+                                    }
+                                    break;
+                                case 4:
+                                    foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                    {
+                                        spot.SetStroke(0.5);
+                                    }
+                                    SetIDMode = "VID";
+                                    ProcessSelectedSpotsWithRange(0, 1024);
+                                    foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
+                                    {
+                                        spot.SetStroke(0);
+                                    }
+                                    break;
                             }
+                           
                             break;
 
 
@@ -487,6 +537,7 @@ namespace adrilight.ViewModel
         public ICommand SetAllDeviceSelectedGifCommand { get; set; }
         public ICommand SetActivePaletteAllDevicesCommand { get; set; }
         public ICommand ShowBrightnessAdjustmentPopupCommand { get; set; }
+        public ICommand SendCurrentDeviceSpeedCommand { get; set; }
         public ICommand LaunchDeleteSelectedDeviceWindowCommand { get; set; }
         public ICommand DeleteSelectedDeviceCommand { get; set; }
         public ICommand OpenFFTPickerWindowCommand { get; set; }
@@ -608,6 +659,16 @@ namespace adrilight.ViewModel
             {
                 if (_availableSerialDevices == value) return;
                 _availableSerialDevices = value;
+                RaisePropertyChanged();
+            }
+        }
+        private List<IOutputSettings> _availableOutputForSelectedDevice;
+        public List<IOutputSettings> AvailableOutputForSelectedDevice {
+            get { return DefaulOutputCollection.AvailableDefaultOutputs; }
+            set
+            {
+                if (_availableOutputForSelectedDevice == value) return;
+                _availableOutputForSelectedDevice = value;
                 RaisePropertyChanged();
             }
         }
@@ -1835,8 +1896,21 @@ namespace adrilight.ViewModel
                 RaisePropertyChanged();
             }
         }
+        public bool _isSpeedSettingUnsetted = false;
+        public bool IsSpeedSettingUnsetted {
+            get
+            {
+                return _isSpeedSettingUnsetted;
+            }
 
+            set
+            {
+                _isSpeedSettingUnsetted = value;
 
+                RaisePropertyChanged();
+            }
+        }
+      
 
         private string _nameToChange;
         public string NameToChange {
@@ -2729,6 +2803,21 @@ namespace adrilight.ViewModel
 
                 p.IsBrightnessPopupOpen = true;
             });
+            SendCurrentDeviceSpeedCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                if(CurrentDevice.IsTransferActive)
+                {
+                    
+                    CurrentDevice.CurrentState = State.speed;
+                    IsSpeedSettingUnsetted = false;
+                }
+                
+
+                
+            });
             OpenActionsManagerWindowCommand = new RelayCommand<string>((p) =>
             {
                 return true;
@@ -2798,11 +2887,11 @@ namespace adrilight.ViewModel
             SelectCardCommand = new RelayCommand<IDeviceSettings>((p) =>
             {
                 return p != null;
-            }, (p) =>
+            }, async (p) =>
             {
                 if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
                 {
-                    this.GotoChild(p);
+                    await Task.Run(() => GotoChild(p));
                 }
             });
             SelectGroupCommand = new RelayCommand<IGroupSettings>((p) =>
@@ -3238,12 +3327,12 @@ namespace adrilight.ViewModel
             });
         }
         private static object _syncRoot = new object();
-        private static CancellationToken cancellationtoken;
+
         private async void ScanSerialDevice(string status)
         {
             ISerialDeviceDetection detector = new SerialDeviceDetection();
-
-
+            var tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.Token;
 
             var jobTask = Task.Run(() =>
             {
@@ -3253,7 +3342,7 @@ namespace adrilight.ViewModel
                     return detector.DetectedDevices;
                 }
             });
-            if (jobTask != await Task.WhenAny(jobTask, Task.Delay(Timeout.Infinite, cancellationtoken)))
+            if (jobTask != await Task.WhenAny(jobTask, Task.Delay(Timeout.Infinite, token)))
             {
                 // Timeout;
                 return;
@@ -3279,6 +3368,7 @@ namespace adrilight.ViewModel
                 {
                     AvailableSerialDevices.Add(device);
                 }
+                tokenSource.Cancel();
             }
 
 
@@ -3858,33 +3948,50 @@ namespace adrilight.ViewModel
                             return;
                         }
 
-                        //put device in dfu state
-                        device.CurrentState = State.dfu;
-                        FwUploadPercentVissible = true;
-                        var startInfo = new System.Diagnostics.ProcessStartInfo {
-                            WorkingDirectory = JsonFWToolsFileNameAndPath,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
-                            CreateNoWindow = true,
-                            UseShellExecute = false,
-                            FileName = "cmd.exe",
-                            Arguments = "/C vnproch55x " + fwOutputLocation
+                        //check if specific driver for CH375 is instaled on this computer
+                        if (GeneralSettings.DriverRequested)
+                        {
+                            //coppy resource
+                            CopyResource("adrilight.Tools.FWTools.CH372DRV.EXE", Path.Combine(JsonFWToolsFileNameAndPath, "CH372DRV.EXE"));
+                            //launch driver installer
+                            System.Diagnostics.Process.Start(Path.Combine(JsonFWToolsFileNameAndPath, "CH372DRV.EXE"));
+                            GeneralSettings.DriverRequested = false;
+                            return;
+                        }
+                        else
+                        {
+                            //put device in dfu state
+                            device.CurrentState = State.dfu;
+                            // wait for device to enter dfu
+                            Thread.Sleep(1000);
+                            FwUploadPercentVissible = true;
+                            var startInfo = new System.Diagnostics.ProcessStartInfo {
+                                WorkingDirectory = JsonFWToolsFileNameAndPath,
+                                RedirectStandardOutput = true,
+                                RedirectStandardError = true,
+                                CreateNoWindow = true,
+                                UseShellExecute = false,
+                                FileName = "cmd.exe",
+                                Arguments = "/C vnproch55x " + fwOutputLocation
 
-                        };
-                        var proc = new Process() {
-                            StartInfo = startInfo,
-                            EnableRaisingEvents = true
-                        };
+                            };
+                            var proc = new Process() {
+                                StartInfo = startInfo,
+                                EnableRaisingEvents = true
+                            };
 
-                        // see below for output handler
-                        proc.ErrorDataReceived += proc_DataReceived;
-                        proc.OutputDataReceived += proc_DataReceived;
+                            // see below for output handler
+                            proc.ErrorDataReceived += proc_DataReceived;
+                            proc.OutputDataReceived += proc_DataReceived;
 
-                        proc.Start();
+                            proc.Start();
 
-                        proc.BeginErrorReadLine();
-                        proc.BeginOutputReadLine();
-                        proc.Exited += proc_FinishUploading;
+                            proc.BeginErrorReadLine();
+                            proc.BeginOutputReadLine();
+                            proc.Exited += proc_FinishUploading;
+                        }
+
+
                     }
                     else
                     {
@@ -3912,8 +4019,14 @@ namespace adrilight.ViewModel
 
             Thread.Sleep(5000);
             CurrentDevice.CurrentState = State.normal;
+
             if (FwUploadOutputLog.Split('\n').Last() == "Found no CH55x USB")
             {
+                //there is a chance of missing driver so first we install CH375 driver first
+                //execute CH375 driver
+
+                //try to restart uploading by resetting the state
+
                 HandyControl.Controls.MessageBox.Show("Update firmware không thành công, Không tìm thấy thiết bị ở trạng thái DFU", "Firmware uploading", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
@@ -3929,8 +4042,6 @@ namespace adrilight.ViewModel
                 HandyControl.Controls.MessageBox.Show("Update firmware thành công - Phiên bản : " + CurrentDevice.FirmwareVersion, "Firmware uploading", MessageBoxButton.OK, MessageBoxImage.Information);
                 ReloadDeviceLoadingVissible = false;
             }
-
-
 
         }
 
@@ -4094,7 +4205,10 @@ namespace adrilight.ViewModel
 
                         if (spot.BorderThickness != 0)//spots is selected
                         {
-                            spot.SetVID(Int32.Parse(userInput));
+                            int mIDToSet = Int32.Parse(userInput);
+                            if (mIDToSet > 1023)
+                                mIDToSet = 0;
+                            spot.SetVID(mIDToSet);
                         }
 
 
@@ -4107,7 +4221,10 @@ namespace adrilight.ViewModel
 
                         if (spot.BorderThickness != 0)//spots is selected
                         {
-                            spot.SetMID(Int32.Parse(userInput));
+                            int mIDToSet = Int32.Parse(userInput);
+                            if (mIDToSet > 1023)
+                                mIDToSet = 0;
+                            spot.SetMID(mIDToSet);
                         }
 
 
@@ -4117,10 +4234,12 @@ namespace adrilight.ViewModel
                 case "CID":
                     foreach (var spot in CurrentOutput.OutputLEDSetup.Spots)
                     {
-
+                        int mIDToSet = Int32.Parse(userInput);
+                        if (mIDToSet > 32)
+                            mIDToSet = 0;
                         if (spot.BorderThickness != 0)//spots is selected
                         {
-                            spot.SetCID(Int32.Parse(userInput));
+                            spot.SetCID(mIDToSet);
                         }
 
 
@@ -4184,7 +4303,16 @@ namespace adrilight.ViewModel
             }
         }
 
+        private void launchSizeSelectionWindow()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"SizeSelectionWindow"}") is System.Windows.Window window)
+            {
 
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+
+            }
+        }
         private void AddDevice()
         {
             CurrentSelectedDeviceToAdd.DeviceID = AvailableDevices.Count + 1;
@@ -4218,23 +4346,48 @@ namespace adrilight.ViewModel
                     }
 
                 }
+              
             }
             if (AvailableSerialDevices != null)
             {
+                int count = 0;
                 foreach (var serialDevice in AvailableSerialDevices)
                 {
-                    if (serialDevice.IsSelected)
+                    if (serialDevice.IsSelected && serialDevice.UnionOutput != null)
                     {
                         serialDevice.DeviceID = AvailableDevices.Count + 1;
+                        //AvailableDevices.Add(serialDevice);
+                        count++;
+                        //AvailableSerialDevices.Remove(serialDevice);
+                    }
+                    else if (serialDevice.IsSelected && serialDevice.UnionOutput == null) // this apply to multiple size devices that need to ask user to chose size
+                    {
+                        //show message box to require user to select size first
+                        HandyControl.Controls.MessageBox.Show("Vui lòng chọn kích thước", "No Device Size Defined", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                }
+                if (count > 0)
+                {
+                    foreach (var serialDevice in AvailableSerialDevices)
+                    {
                         AvailableDevices.Add(serialDevice);
                     }
 
+                   
+                }
+                else
+                {
+                    HandyControl.Controls.MessageBox.Show("Vui lòng chọn thiết bị để thêm", "No Device Selected", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
             }
             if (AvailableOpenRGBDevices != null)
             {
                 foreach (var openRGBDevice in AvailableOpenRGBDevices)
                 {
+                    
                     IDeviceSettings convertedDevice = new DeviceSettings();
                     convertedDevice.DeviceName = openRGBDevice.Name;
                     convertedDevice.DeviceType = openRGBDevice.Type.ToString();
@@ -4271,13 +4424,13 @@ namespace adrilight.ViewModel
                     AvailableDevices.Add(convertedDevice);
 
                 }
-
+               
             }
-
 
             WriteDeviceInfoJson();
             System.Windows.Forms.Application.Restart();
             Process.GetCurrentProcess().Kill();
+
         }
         private void RunTestSequence()
         {
@@ -4557,24 +4710,24 @@ namespace adrilight.ViewModel
         private void Reset()
         {
             //disable all device
-         if(File.Exists(JsonDeviceFileNameAndPath))
+            if (File.Exists(JsonDeviceFileNameAndPath))
             {
                 File.Delete(JsonDeviceFileNameAndPath);
 
             }
-         if(File.Exists(JsonDeviceProfileFileNameAndPath))
+            if (File.Exists(JsonDeviceProfileFileNameAndPath))
             {
                 File.Delete(JsonDeviceProfileFileNameAndPath);
             }
-         if(File.Exists(JsonGeneralFileNameAndPath))
+            if (File.Exists(JsonGeneralFileNameAndPath))
             {
                 File.Delete(JsonGeneralFileNameAndPath);
             }
-        
-            
-            
 
-            
+
+
+
+
             System.Windows.Forms.Application.Restart();
             Process.GetCurrentProcess().Kill();
         }
@@ -4912,7 +5065,7 @@ namespace adrilight.ViewModel
             };
             IDeviceFirmware AFR1g = new DeviceFirmware() {
                 Name = "AFR1g.hex",
-                Version = "1.0.2",
+                Version = "1.0.3",
                 TargetHardware = "AFR1g",
                 TargetDeviceType = "ABFANHUB",
                 Geometry = "binary",
@@ -4928,7 +5081,7 @@ namespace adrilight.ViewModel
             };
             IDeviceFirmware ARR1p = new DeviceFirmware() {
                 Name = "ARR1p.hex",
-                Version = "1.0.1",
+                Version = "1.0.2",
                 TargetHardware = "ARR1p",
                 TargetDeviceType = "ABRP",
                 Geometry = "binary",
@@ -5428,6 +5581,7 @@ namespace adrilight.ViewModel
         }
         public List<IDeviceProfile> LoadDeviceProfileIfExist()
         {
+            var availableDefaultDevice = new DefaultDeviceCollection();
             var loadedProfiles = new List<IDeviceProfile>();
             if (!File.Exists(JsonDeviceProfileFileNameAndPath))
             {
@@ -5438,7 +5592,7 @@ namespace adrilight.ViewModel
                     Geometry = "profile",
                     DeviceType = "ABFANHUB",
                     Description = "Default Profile for Ambino Fan HUB",
-                    OutputSettings = DefaultDeviceCollection.ambinoFanHub.AvailableOutputs
+                    OutputSettings = availableDefaultDevice.ambinoFanHub.AvailableOutputs
 
                 };
                 var defaultAmbinobasic24 = new DeviceProfile {
@@ -5448,7 +5602,7 @@ namespace adrilight.ViewModel
                     Geometry = "profile",
                     DeviceType = "ABBASIC24",
                     Description = "Default Profile for Ambino Basic",
-                    OutputSettings = DefaultDeviceCollection.ambinoBasic24.AvailableOutputs
+                    OutputSettings = availableDefaultDevice.ambinoBasic24.AvailableOutputs
 
                 };
                 var defaultAmbinobasic27 = new DeviceProfile {
@@ -5458,7 +5612,7 @@ namespace adrilight.ViewModel
                     Geometry = "profile",
                     DeviceType = "ABBASIC27",
                     Description = "Default Profile for Ambino Basic",
-                    OutputSettings = DefaultDeviceCollection.ambinoBasic27.AvailableOutputs
+                    OutputSettings = availableDefaultDevice.ambinoBasic27.AvailableOutputs
 
                 };
                 var defaultAmbinobasic29 = new DeviceProfile {
@@ -5468,7 +5622,7 @@ namespace adrilight.ViewModel
                     Geometry = "profile",
                     DeviceType = "ABBASIC29",
                     Description = "Default Profile for Ambino Basic",
-                    OutputSettings = DefaultDeviceCollection.ambinoBasic29.AvailableOutputs
+                    OutputSettings = availableDefaultDevice.ambinoBasic29.AvailableOutputs
 
                 };
                 var defaultAmbinobasic32 = new DeviceProfile {
@@ -5478,7 +5632,7 @@ namespace adrilight.ViewModel
                     Geometry = "profile",
                     DeviceType = "ABBASIC32",
                     Description = "Default Profile for Ambino Basic",
-                    OutputSettings = DefaultDeviceCollection.ambinoBasic32.AvailableOutputs
+                    OutputSettings = availableDefaultDevice.ambinoBasic32.AvailableOutputs
 
                 };
                 var defaultAmbinobasic34 = new DeviceProfile {
@@ -5488,7 +5642,7 @@ namespace adrilight.ViewModel
                     Geometry = "profile",
                     DeviceType = "ABBASIC34",
                     Description = "Default Profile for Ambino Basic",
-                    OutputSettings = DefaultDeviceCollection.ambinoBasic34.AvailableOutputs
+                    OutputSettings = availableDefaultDevice.ambinoBasic34.AvailableOutputs
 
                 };
                 var defaultAmbinoedge1m2 = new DeviceProfile {
@@ -5498,7 +5652,7 @@ namespace adrilight.ViewModel
                     Geometry = "profile",
                     DeviceType = "ABEDGE1.2",
                     Description = "Default Profile for Ambino EDGE",
-                    OutputSettings = DefaultDeviceCollection.ambinoEdge1m2.AvailableOutputs
+                    OutputSettings = availableDefaultDevice.ambinoEdge1m2.AvailableOutputs
 
                 };
                 var defaultAmbinoedge2m = new DeviceProfile {
@@ -5508,7 +5662,7 @@ namespace adrilight.ViewModel
                     Geometry = "profile",
                     DeviceType = "ABEDGE2.0",
                     Description = "Default Profile for Ambino EDGE",
-                    OutputSettings = DefaultDeviceCollection.ambinoEdge2m.AvailableOutputs
+                    OutputSettings = availableDefaultDevice.ambinoEdge2m.AvailableOutputs
 
                 };
                 loadedProfiles.Add(defaultFanHubProfile);
@@ -5739,16 +5893,17 @@ namespace adrilight.ViewModel
         {
 
             //Device Catergory to group type of device in the add new window, this could be moved to add new window open code
+            var availableDefaultDevice = new DefaultDeviceCollection();
             AvailableDeviceCatergoryToAdd = new ObservableCollection<IDeviceCatergory>();
             IDeviceCatergory ambinoBasic = new DeviceCatergory {
                 Description = "Ambino Ambient Lighting Kit",
                 Name = "AMBINO BASIC",
                 Geometry = "ambinobasic",
-                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoBasic24,
-                                                 DefaultDeviceCollection.ambinoBasic27,
-                                                 DefaultDeviceCollection.ambinoBasic29,
-                                                 DefaultDeviceCollection.ambinoBasic32,
-                                                 DefaultDeviceCollection.ambinoBasic34
+                Devices = new DeviceSettings[] { availableDefaultDevice.ambinoBasic24,
+                                                 availableDefaultDevice.ambinoBasic27,
+                                                 availableDefaultDevice.ambinoBasic29,
+                                                 availableDefaultDevice.ambinoBasic32,
+                                                 availableDefaultDevice.ambinoBasic34
 
                 }
             };
@@ -5756,8 +5911,8 @@ namespace adrilight.ViewModel
                 Description = "Ambino Ambient Lighting Kit",
                 Name = "AMBINO EDGE",
                 Geometry = "ambinoedge",
-                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoEdge1m2,
-                                                 DefaultDeviceCollection.ambinoEdge2m
+                Devices = new DeviceSettings[] { availableDefaultDevice.ambinoEdge1m2,
+                                                 availableDefaultDevice.ambinoEdge2m
 
                 }
             };
@@ -5765,16 +5920,16 @@ namespace adrilight.ViewModel
                 Description = "Ambino HUB Collection",
                 Name = "AMBINO HUB",
                 Geometry = "ambinohub",
-                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoHUBV2,
-                                                 DefaultDeviceCollection.ambinoFanHub,
-                                                 DefaultDeviceCollection.ambinoHUBV3
+                Devices = new DeviceSettings[] { availableDefaultDevice.ambinoHUBV2,
+                                                 availableDefaultDevice.ambinoFanHub,
+                                                 availableDefaultDevice.ambinoHUBV3
                 }
             };
             IDeviceCatergory ambinoRainPow = new DeviceCatergory {
                 Description = "Ambino RainPow",
                 Name = "AMBINO RAINPOW",
                 Geometry = "generaldevice",
-                Devices = new DeviceSettings[] { DefaultDeviceCollection.ambinoRainPow
+                Devices = new DeviceSettings[] { availableDefaultDevice.ambinoRainPow
 
                 }
             };
@@ -6394,7 +6549,13 @@ namespace adrilight.ViewModel
 
                         break;
 
-
+                    case nameof(CurrentDevice.DeviceSpeed):
+                        IsSpeedSettingUnsetted = true;
+                        break;
+                    case nameof(CurrentDevice.SpeedMode):
+                        //send speed mode command
+                        CurrentDevice.CurrentState = State.speed;
+                        break;
 
                     case nameof(CurrentDevice.IsUnionMode):
                         switch (CurrentDevice.IsUnionMode)

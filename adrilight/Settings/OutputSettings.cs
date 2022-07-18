@@ -33,6 +33,7 @@ namespace adrilight
         private int _outputPowerMiliamps;
         private byte _outputSaturationThreshold;
         private bool _outputUseLinearLighting =true;
+        private bool _outputIsSelected = false;
         private bool _outputIsEnable;
         private Color _outputAtmosphereStartColor;
         private Color _outputAtmosphereStopColor;
@@ -112,6 +113,7 @@ namespace adrilight
         [Reflectable]
         public IGifCard OutputSelectedGif { get => _outputSelectedGif; set { Set(() => OutputSelectedGif, ref _outputSelectedGif, value); } }
         public bool IsVissible { get => _isVissible; set { Set(() => IsVissible, ref _isVissible, value); } }
+        public bool OutputIsSelected { get => _outputIsSelected; set { Set(() => OutputIsSelected, ref _outputIsSelected, value); } }
         public bool OutputIsPreviewRunning { get => _outputIsPreviewRunning; set { Set(() => OutputIsPreviewRunning, ref _outputIsPreviewRunning, value); } }
         public string OutputUniqueID { get => _outputUniqueID; set { Set(() => OutputUniqueID, ref _outputUniqueID, value); } }
         [Reflectable]

@@ -177,8 +177,9 @@ namespace adrilight.Util
                                     var brightness = pwm_val/255d;
                                     var newColor = new OpenRGB.NET.Models.Color(currentStaticColor.R, currentStaticColor.G, currentStaticColor.B);
                                     var outputColor = Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);
+                                    ApplySmoothing(outputColor.R, outputColor.G, outputColor.B, out byte FinalR, out byte FinalG, out byte FinalB, spot.Red, spot.Green, spot.Blue);
                                     if (!OutputSettings.IsInSpotEditWizard)
-                                        spot.SetColor(outputColor.R, outputColor.G, outputColor.B, isPreviewRunning);
+                                        spot.SetColor(FinalR, FinalG, FinalB, isPreviewRunning);
                                 }
                                 break;
                             case 2:
@@ -234,6 +235,15 @@ namespace adrilight.Util
         }
 
 
+        private void ApplySmoothing(float r, float g, float b, out byte semifinalR, out byte semifinalG, out byte semifinalB,
+  byte lastColorR, byte lastColorG, byte lastColorB)
+        {
+            ;
+
+            semifinalR = (byte)((r + 7 * lastColorR) / (7 + 1));
+            semifinalG = (byte)((g + 7 * lastColorG) / (7 + 1));
+            semifinalB = (byte)((b + 7 * lastColorB) / (7 + 1));
+        }
 
         public static IEnumerable<Color> GetColorGradient(Color from, Color to, int totalNumberOfColors)
         {

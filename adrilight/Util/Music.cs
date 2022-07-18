@@ -111,7 +111,7 @@ namespace adrilight
             if (isRunning && shouldBeRunning)
             {
                 // rainbow is running and we need to change the color bank
-                colorBank = GetColorGradientfromPalette(OutputSettings.OutputCurrentActivePalette.Colors, GeneralSettings.SystemRainbowMaxTick).ToArray();
+                colorBank = GetColorGradientfromPaletteWithFixedColorPerGap(OutputSettings.OutputCurrentActivePalette.Colors, 18).ToArray();
                 inSync = OutputSettings.OutputIsSystemSync;
             }
 
@@ -138,7 +138,7 @@ namespace adrilight
 
                 var colorNum = GeneralSettings.SystemRainbowMaxTick;
                 Color[] paletteSource = OutputSettings.OutputCurrentActivePalette.Colors;
-                colorBank = GetColorGradientfromPalette(paletteSource, colorNum).ToArray();
+                colorBank = GetColorGradientfromPaletteWithFixedColorPerGap(paletteSource, 18).ToArray();
                 int musicMode = OutputSettings.OutputSelectedMusicMode;
                 var outputPowerVoltage = OutputSettings.OutputPowerVoltage;
                 var outputPowerMiliamps = OutputSettings.OutputPowerMiliamps;
@@ -162,7 +162,7 @@ namespace adrilight
                         int position = 0;
                         foreach (var spot in OutputSettings.OutputLEDSetup.Spots)
                         {
-                            position = (int)RainbowTicker.StartIndex + spot.MID;
+                            position = (int)RainbowTicker.MusicStartIndex + spot.VID;
                             int n = 0;
                             if (position >= colorBank.Length)
                                 n = position / colorBank.Length;
@@ -398,6 +398,22 @@ namespace adrilight
             colors = colors.Concat(colors.Take(remainTick).ToList()).ToList();
             return colors;
         }
+        public static IEnumerable<Color> GetColorGradientfromPaletteWithFixedColorPerGap(Color[] colorCollection, int colorPerGap)
+        {
+            var colors = new List<Color>();
+
+
+            for (int i = 0; i < colorCollection.Length - 1; i++)
+            {
+                var gradient = GetColorGradient(colorCollection[i], colorCollection[i + 1], colorPerGap);
+                colors = colors.Concat(gradient).ToList();
+            }
+            var lastGradient = GetColorGradient(colorCollection[15], colorCollection[0], colorPerGap);
+            colors = colors.Concat(lastGradient).ToList();
+            return colors;
+
+        }
+
         public static IEnumerable<Color> GetColorGradient(Color from, Color to, int totalNumberOfColors)
         {
             if (totalNumberOfColors < 2)
