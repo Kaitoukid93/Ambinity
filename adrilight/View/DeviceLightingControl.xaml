@@ -717,7 +717,7 @@
 
                         <hc:TransitioningContentControl>
                             <Border CornerRadius="4" Background="Transparent" Margin="0">
-                                <ListBox  x:Name="outputList" Background="Transparent"  ScrollViewer.CanContentScroll="True"
+                                <ListBox Visibility="{Binding OutputModeChangeEnable,Converter={StaticResource boolToVisibilityConvert}}"  x:Name="outputList" Background="Transparent"  ScrollViewer.CanContentScroll="True"
                                                   ScrollViewer.VerticalScrollBarVisibility="Auto" 
                                                  
                                                   

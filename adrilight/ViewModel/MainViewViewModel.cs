@@ -650,7 +650,7 @@ namespace adrilight.ViewModel
         public ICommand SetIncreamentCommand { get; set; }
         public ICommand SetIncreamentCommandfromZero { get; set; }
         public ICommand UserInputIncreamentCommand { get; set; }
-       
+
         public ICommand ImportEffectCommand { get; set; }
         public ICommand ChangeCurrentDeviceSelectedPalette { get; set; }
         public ICommand SelectMenuItem { get; set; }
@@ -2834,7 +2834,7 @@ namespace adrilight.ViewModel
             {
                 ShowIncreamentDataDialog();
             });
-           
+
             ImportEffectCommand = new RelayCommand<string>((p) =>
             {
                 return true;
@@ -3372,7 +3372,7 @@ namespace adrilight.ViewModel
                     }
                     else
                         CountVID = 0;
-                    
+
                 }
 
                 //p.SetIDVissible(true);
@@ -3465,7 +3465,7 @@ namespace adrilight.ViewModel
                     break;
                 case "ResetVID":
                     Count = 0;
-                    foreach(var output in CurrentDevice.AvailableOutputs)
+                    foreach (var output in CurrentDevice.AvailableOutputs)
                     {
                         foreach (var spot in output.OutputLEDSetup.Spots)
                         {
@@ -3474,7 +3474,7 @@ namespace adrilight.ViewModel
                             spot.IsEnabled = false;
                         }
                     }
-                    
+
                     break;
             }
 
@@ -3952,11 +3952,14 @@ namespace adrilight.ViewModel
             Export.RestoreDirectory = true;
             //init new effect
             var listLEDSetup = new List<ILEDSetup>();
-            foreach(var output in CurrentDevice.AvailableOutputs)
+
+            foreach (var output in CurrentDevice.AvailableOutputs)
             {
                 listLEDSetup.Add(output.OutputLEDSetup);
             }
-            
+
+
+
 
             IAmbinoColorEffect effect = new AmbinoColorEffect {
                 Name = NewEffectName,
@@ -3965,7 +3968,7 @@ namespace adrilight.ViewModel
                 Description = _newEffectDescription,
                 EffectVersion = "1.0.0",
                 OutputLEDSetup = listLEDSetup.ToArray(),
-             
+
             };
 
             var coloreffectjson = JsonConvert.SerializeObject(effect, new JsonSerializerSettings() {
@@ -4753,7 +4756,7 @@ namespace adrilight.ViewModel
 
             }
         }
-       
+
         private void ApplySpotImportData()
         {
             int count = 0;
@@ -5077,12 +5080,12 @@ namespace adrilight.ViewModel
         {
             if (AssemblyHelper.CreateInternalInstance($"View.{"PositionEditWindow"}") is System.Windows.Window window)
             {
-                GreyBitmap = new WriteableBitmap(CanvasWidth,CanvasHeight,96,96,PixelFormats.Bgr32,null);
+                GreyBitmap = new WriteableBitmap(CanvasWidth, CanvasHeight, 96, 96, PixelFormats.Bgr32, null);
 
-              
-             
 
-                 
+
+
+
                 AdjustingRectangleWidth = CurrentOutput.OutputRectangle.Width;
                 AdjustingRectangleHeight = CurrentOutput.OutputRectangle.Height;
                 AdjustingRectangleLeft = CurrentOutput.OutputRectangle.Left;
@@ -6797,7 +6800,7 @@ namespace adrilight.ViewModel
 
         }
         private IAmbinoColorEffect currentImportedEffect { get; set; }
-        
+
         public void ImportEffect()
         {
             OpenFileDialog Import = new OpenFileDialog();
@@ -6816,7 +6819,7 @@ namespace adrilight.ViewModel
             {
 
 
-               
+
 
 
                 try
@@ -6824,9 +6827,9 @@ namespace adrilight.ViewModel
                     var json = File.ReadAllText(Import.FileName);
 
                     currentImportedEffect = JsonConvert.DeserializeObject<AmbinoColorEffect>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
-                    
+
                     //open outputdataimportselection window
-                    if(currentImportedEffect.TargetType==CurrentDevice.DeviceType)
+                    if (currentImportedEffect.TargetType == CurrentDevice.DeviceType)
                     {
                         OpenOutputDataImportSelection();
                     }
@@ -6834,7 +6837,7 @@ namespace adrilight.ViewModel
                     {
                         HandyControl.Controls.MessageBox.Show("Hiệu ứng vừa chọn không dành cho thiết bị này", "LEDSetup Import", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                   
+
 
 
                 }
@@ -6843,13 +6846,14 @@ namespace adrilight.ViewModel
                     HandyControl.Controls.MessageBox.Show("Corrupted effect data File!!!");
                 }
 
-            
+
 
             }
         }
-        public void ApplyOutputImportData() {
+        public void ApplyOutputImportData()
+        {
             int count = 0;
-            
+
             for (var i = 0; i < currentImportedEffect.OutputLEDSetup.Length; i++)
             {
                 foreach (var spot in currentImportedEffect.OutputLEDSetup[i].Spots)
@@ -6861,12 +6865,12 @@ namespace adrilight.ViewModel
                     }
                     else
                     {
-                        if(CurrentDevice.AvailableOutputs[i].OutputIsSelected)
+                        if (CurrentDevice.AvailableOutputs[i].OutputIsSelected)
                         {
-                            targerSpot.SetVID(spot.VID);   
+                            targerSpot.SetVID(spot.VID);
                             targerSpot.IsEnabled = spot.IsEnabled;
                         }
-                      
+
                     }
                 }
             }
@@ -7074,7 +7078,19 @@ namespace adrilight.ViewModel
 
             if (CurrentDevice.IsUnionMode)
             {
-                CurrentOutput = CurrentDevice.UnionOutput;
+                if (CurrentDevice.AvailableOutputs.Length == 1)
+                {
+                    CurrentDevice.IsUnionMode = false;
+                    CurrentDevice.SelectedOutput = 0;
+                    CurrentOutput = CurrentDevice.AvailableOutputs[CurrentDevice.SelectedOutput];
+                    CurrentOutput.OutputIsEnabled = true;
+                }
+                else
+                {
+                    CurrentOutput = CurrentDevice.UnionOutput;
+
+                }
+
             }
             else
             {
