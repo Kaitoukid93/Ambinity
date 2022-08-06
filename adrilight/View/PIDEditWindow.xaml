@@ -169,7 +169,7 @@
                     </StackPanel>
                 </Border>
                 <hc:Badge HorizontalAlignment="Stretch" Value="{Binding Count}" BadgeMargin="0,-14,-10,0" Height="30" Margin="10,20,10,20" Style="{DynamicResource BadgePrimary}">
-                    <Button HorizontalAlignment="Stretch"  Command="{Binding ResetCountCommand}"  Style="{DynamicResource ButtonDefault}" Content="Reset" CommandParameter="Reset"/>
+                    <Button HorizontalAlignment="Stretch"  Command="{Binding ResetCountCommand}"  Style="{DynamicResource ButtonDefault}" Content="Reset" CommandParameter="ResetPID"/>
                 </hc:Badge>
             </StackPanel>
             

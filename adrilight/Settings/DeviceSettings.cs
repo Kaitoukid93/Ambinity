@@ -64,8 +64,9 @@ namespace adrilight
         private int _speedMode = 0;
         private string _deviceActualSpeed = "n/a";
         private bool _isLoadingSpeed = false;
+        private System.Drawing.Rectangle _deviceBoundRectangle;
 
-
+        public System.Drawing.Rectangle DeviceBoundRectangle { get => _deviceBoundRectangle; set { Set(() => DeviceBoundRectangle, ref _deviceBoundRectangle, value); } }
         public State CurrentState { get => _currentState; set { Set(() => CurrentState, ref _currentState, value); } }
         public string RequiredFwVersion { get => _requiredFwVersion; set { Set(() => RequiredFwVersion, ref _requiredFwVersion, value); } }
         public int DeviceID { get => _deviceID; set { Set(() => DeviceID, ref _deviceID, value); } }
@@ -485,6 +486,11 @@ namespace adrilight
             RaisePropertyChanged(nameof(IsTransferActive));
             DeviceActualSpeed = speed[0].ToString();
             RaisePropertyChanged(nameof(DeviceActualSpeed));
+        }
+        public void SetRectangle(System.Drawing.Rectangle rectangle)
+        {
+            DeviceBoundRectangle = rectangle;
+            RaisePropertyChanged(nameof(DeviceBoundRectangle));
         }
     }
 }

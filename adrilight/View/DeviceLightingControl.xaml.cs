@@ -248,5 +248,14 @@ namespace adrilight.View
         {
            
         }
+
+        private void outputList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //if (ViewModel.CurrentDevice.AvailableOutputs[ViewModel.CurrentDevice.SelectedOutput] != null)
+            //{
+            //    outputList.UpdateLayout();
+            //    outputList.ScrollIntoView(ViewModel.CurrentDevice.AvailableOutputs[ViewModel.CurrentDevice.SelectedOutput]);
+            //}
+        }
     }
 }

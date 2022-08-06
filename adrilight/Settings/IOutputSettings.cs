@@ -24,6 +24,7 @@ namespace adrilight
         int OutputNumLEDX { get; set; }
         int OutputNumLEDY { get; set; }
         System.Drawing.Rectangle OutputRectangle { get; set; }
+        System.Drawing.Rectangle PreviewRectangle { get; set; }
         /// <summary>
         /// output capture position rev 2.0, using scale only
         /// </summary>
@@ -73,6 +74,8 @@ namespace adrilight
         bool IsInSpotEditWizard { get; set; }
         string Geometry { get; set; }
         int OutputMusicVisualizerFreq { get; set; }
+     
+     
 
 
 
@@ -107,7 +110,7 @@ namespace adrilight
         IColorPalette OutputCurrentActivePalette { get; set; }
         ILEDSetup OutputLEDSetup { get; set; }
         void SetRectangle(System.Drawing.Rectangle rectangle);
-        
+        void SetPreviewRectangle(System.Drawing.Rectangle rectangle);
 
     }
 }

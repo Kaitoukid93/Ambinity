@@ -144,10 +144,10 @@ namespace adrilight
                 while (!token.IsCancellationRequested)
                 {
                     double rainbowSpeed = GeneralSettings.SystemRainbowSpeed / 5d;
-                    RainbowStartIndex += rainbowSpeed;
-                    if (RainbowStartIndex > rainbowMaxTick)
+                    RainbowStartIndex -= rainbowSpeed;
+                    if (RainbowStartIndex < 0)
                     {
-                        RainbowStartIndex = 0;
+                        RainbowStartIndex = rainbowMaxTick;
                     }
                     double musicSpeed = GeneralSettings.SystemMusicSpeed / 5d;
                     MusicStartIndex += musicSpeed;

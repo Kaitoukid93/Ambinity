@@ -160,7 +160,7 @@ namespace adrilight
                     var currentOutput = MainViewViewModel.CurrentOutput;
                     if (currentOutput != null && currentOutput.OutputUniqueID == OutputSettings.OutputUniqueID)
                         outputIsSelected = true;
-                    bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen && outputIsSelected;
+                    bool isPreviewRunning = MainViewViewModel.IsSplitLightingWindowOpen;
                     double speed = OutputSettings.OutputPaletteSpeed / 5d;
                     StartIndex += speed;
                     if (StartIndex > GeneralSettings.SystemRainbowMaxTick)
@@ -198,7 +198,15 @@ namespace adrilight
                             var outputColor=Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);
                             ApplySmoothing(outputColor.R, outputColor.G, outputColor.B, out byte FinalR, out byte FinalG, out byte FinalB, spot.Red, spot.Green, spot.Blue);
                             if (!OutputSettings.IsInSpotEditWizard)
-                            spot.SetColor(FinalR, FinalG, FinalB, isPreviewRunning);
+                            {
+                                if(spot.IsEnabled)
+                                spot.SetColor(FinalR, FinalG, FinalB, isPreviewRunning);
+                                else
+                                {
+                                    spot.SetColor(0, 0, 0, isPreviewRunning);
+                                }
+                            }
+                            
 
                         }
 

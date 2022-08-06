@@ -208,7 +208,9 @@
     <PackageReference Include="ComputeSharp" Version="2.0.0-alpha.5" />
     <PackageReference Include="CSCore" Version="1.2.1.2" />
     <PackageReference Include="Expression.Blend.Sdk" Version="1.0.2" />
+    <PackageReference Include="gong-wpf-dragdrop" Version="3.1.1" />
     <PackageReference Include="HandyControls" Version="3.3.11" />
+    <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
@@ -364,7 +366,25 @@
     <Resource Include="Shaders\Thumbnail\Plasma.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\ExportNewColorEffectWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\OutputDataImportSelection.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\SpotDataSelection.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\SpotMapViewWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\ComputerHardwareInformationWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\AboutAppWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\HardwareCard.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\SizeSelectionWindow.xaml.cs">
@@ -407,6 +427,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\ExpandedOutputControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\MotherboardCard.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\UnionOutputControl.xaml.cs">
@@ -480,7 +503,31 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="View\ExportNewColorEffectWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\OutputDataImportSelection.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\SpotDataSelection.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\SpotMapViewWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ComputerHardwareInformationWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\AboutAppWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\HardwareCard.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
@@ -537,6 +584,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\ExpandedOutputControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\MotherboardCard.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

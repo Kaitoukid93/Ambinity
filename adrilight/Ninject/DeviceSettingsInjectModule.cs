@@ -20,6 +20,7 @@ namespace adrilight.Ninject
 
             Bind<ISerialDeviceDetection>().To<SerialDeviceDetection>().InSingletonScope();
             Bind<IAudioFrame>().To<AudioFrame>().InSingletonScope();
+            Bind<IHWMonitor>().To<HWMonitor>().InSingletonScope();
             Bind<IContext>().To<WpfContext>().InSingletonScope();
 
             int index = 0;

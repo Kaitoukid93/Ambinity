@@ -33,6 +33,7 @@
                     <Button  HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding OpenAppSettingsWindowCommand}" hc:IconElement.Geometry="{DynamicResource appsettings}" BorderBrush="Transparent" Margin="5"   Content="App Settings" Style="{DynamicResource ButtonDefault}"/>
 
                     <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding OpenAutomationManagerWindowCommand }" hc:IconElement.Geometry="{DynamicResource auto}" CommandParameter="automation" BorderBrush="Transparent"   Margin="5" Content="Automation Settings" Style="{DynamicResource ButtonDefault}"/>
+                    <!--<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding OpenHardwareMonitorWindowCommand }" hc:IconElement.Geometry="{DynamicResource motherboard}" CommandParameter="HWMonitor" BorderBrush="Transparent"   Margin="5" Content="About This Computer" Style="{DynamicResource ButtonDefault}"/>-->
                     <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Command="{Binding OpenAboutWindowCommand }" hc:IconElement.Geometry="{DynamicResource info}" CommandParameter="about" BorderBrush="Transparent"   Margin="5" Content="About" Style="{DynamicResource ButtonDefault}"/>
                 </StackPanel>
 

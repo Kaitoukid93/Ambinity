@@ -67,6 +67,7 @@ namespace adrilight
         private int _outputScreenCaptureWBBlue=100;
         private int _outputScreenCapturePositionIndex = 0;
         private System.Drawing.Rectangle _outputRectangle;
+        private System.Drawing.Rectangle _previewRectangle;
         private bool _outputIsLoadingProfile = false;
         private bool _outputIsBuildingLEDSetup = false;
         private int _outputMusicSensitivity = 10;
@@ -84,6 +85,9 @@ namespace adrilight
         private int _vUMode = 0;
         private IGifCard _outputSelectedGif = null;
         private int _outputSelectedGifIndex = 0;
+        private int _outputGridRow = 0;
+        private int _outputGridColumn = 0;
+        
 
         private int _outputGifSpeed = 20;
         private IGradientColorCard _outputSelectedGradient = new GradientColorCard("default", "application", "unknown", "auto create", Color.FromRgb(255, 127, 0), Color.FromRgb(0, 127, 255));
@@ -140,6 +144,11 @@ namespace adrilight
         public int OutputSelectedMusicMode { get => _outputSelectedMusicMode; set { Set(() => OutputSelectedMusicMode, ref _outputSelectedMusicMode, value); } }
         [Reflectable]
         public int OutputSelectedMode { get => _outputSelectedMode; set { Set(() => OutputSelectedMode, ref _outputSelectedMode, value); } }
+      
+
+       
+    
+        
         [Reflectable]
         public int OutputSelectedMusicPalette { get => _outputSelectedMusicPalette; set { Set(() => OutputSelectedMusicPalette, ref _outputSelectedMusicPalette, value); } }
         [Reflectable]
@@ -206,7 +215,7 @@ namespace adrilight
         public double OutputRectangleScaleTop { get => _outputRectangleScaleTop; set { Set(() => OutputRectangleScaleTop, ref _outputRectangleScaleTop, value); } } // how many percent that output rectangle top take from the image, represent Y
         [Reflectable]
         public  double OutputRectangleScaleLeft { get => _outputRectangleScaleLeft; set { Set(() => OutputRectangleScaleLeft, ref _outputRectangleScaleLeft, value); } } // how many percent that output rectangle top take from the image, represent X
-
+        public System.Drawing.Rectangle PreviewRectangle { get => _previewRectangle; set { Set(() => PreviewRectangle, ref _previewRectangle, value); } }
 
         public bool OutputIsLoadingProfile { get => _outputIsLoadingProfile; set { Set(() => OutputIsLoadingProfile, ref _outputIsLoadingProfile, value); } }
         
@@ -217,6 +226,11 @@ namespace adrilight
         {
             OutputRectangle = rectangle;
             RaisePropertyChanged(nameof(OutputRectangle));
+        }
+        public void SetPreviewRectangle(System.Drawing.Rectangle rectangle)
+        {
+            PreviewRectangle = rectangle;
+            RaisePropertyChanged(nameof(PreviewRectangle));
         }
     }
 }

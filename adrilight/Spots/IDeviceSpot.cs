@@ -12,6 +12,7 @@ namespace adrilight.Spots
         byte SentryRed { get; }
         byte SentryGreen { get; }
         byte SentryBlue { get; }
+        bool IsEnabled { get; set; }
         Color OnDemandColor { get; }
         Color SentryColor { get; }
         Rectangle Rectangle { get; set; }

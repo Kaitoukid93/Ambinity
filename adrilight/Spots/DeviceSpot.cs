@@ -55,6 +55,7 @@ namespace adrilight.Spots
         public int RadiusY { get;  set; }
         public string ID { get; set; }
         public int VID { get; set; }
+        public bool IsEnabled { get; set; } = true;
         public int PID { get; set; }
         public int CID { get; set; }
         public int XIndex { get; set; }

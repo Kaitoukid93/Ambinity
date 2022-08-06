@@ -26,7 +26,7 @@ namespace adrilight.View
         {
             InitializeComponent();
         }
-        private MainViewViewModel ViewModel {
+        public MainViewViewModel ViewModel {
             get
             {
                 return (MainViewViewModel)this.DataContext;
@@ -34,7 +34,7 @@ namespace adrilight.View
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if(adjustingRect.Height + Canvas.GetTop(adjustingRect) >ViewModel.CanvasHeight || adjustingRect.Width + Canvas.GetLeft(adjustingRect) > ViewModel.CanvasWidth || Canvas.GetLeft(adjustingRect)<0 || Canvas.GetTop(adjustingRect) < 0)
+            if (adjustingRect.Height + Canvas.GetTop(adjustingRect) > ViewModel.CanvasHeight || adjustingRect.Width + Canvas.GetLeft(adjustingRect) > ViewModel.CanvasWidth || Canvas.GetLeft(adjustingRect) < 0 || Canvas.GetTop(adjustingRect) < 0)
             {
                 HandyControl.Controls.MessageBox.Show("Position and Size is out of range, Please chose another position or small down the size", "Invalid Position", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -43,16 +43,31 @@ namespace adrilight.View
                 ViewModel.ApplyCurrentOuputCapturingPosition();
                 this.Close();
             }
-            
+
         }
         private void Button_Click_Cancel(object sender, RoutedEventArgs e)
         {
             this.Close();
+
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (adjustingRect.Height + Canvas.GetTop(adjustingRect) > ViewModel.CanvasHeight || adjustingRect.Width + Canvas.GetLeft(adjustingRect) > ViewModel.CanvasWidth || Canvas.GetLeft(adjustingRect) < 0 || Canvas.GetTop(adjustingRect) < 0)
+            {
+                HandyControl.Controls.MessageBox.Show("Position and Size is out of range, Please chose another position or small down the size", "Invalid Position", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                ViewModel.ApplyCurrentOuputCapturingPosition();
+                
+            }
         }
     }
 
     public class ResizeThumb : Thumb
     {
+
         public ResizeThumb()
         {
             DragDelta += new DragDeltaEventHandler(this.ResizeThumb_DragDelta);
@@ -62,6 +77,7 @@ namespace adrilight.View
         {
             Control designerItem = this.DataContext as Control;
 
+
             if (designerItem != null)
             {
                 double deltaVertical, deltaHorizontal;
@@ -69,8 +85,16 @@ namespace adrilight.View
                 switch (VerticalAlignment)
                 {
                     case VerticalAlignment.Bottom:
-                        deltaVertical = Math.Min(-e.VerticalChange, designerItem.ActualHeight - designerItem.MinHeight);
+                        deltaVertical = Math.Min(-e.VerticalChange,designerItem.ActualHeight - designerItem.MinHeight);
+                      
                         designerItem.Height -= deltaVertical;
+                        
+
+
+
+
+
+
                         break;
                     case VerticalAlignment.Top:
                         deltaVertical = Math.Min(e.VerticalChange, designerItem.ActualHeight - designerItem.MinHeight);
@@ -89,8 +113,13 @@ namespace adrilight.View
                         designerItem.Width -= deltaHorizontal;
                         break;
                     case HorizontalAlignment.Right:
-                        deltaHorizontal = Math.Min(-e.HorizontalChange, designerItem.ActualWidth - designerItem.MinWidth);
+                        deltaHorizontal = Math.Min(-e.HorizontalChange,designerItem.ActualHeight - designerItem.MinHeight);
+                     
                         designerItem.Width -= deltaHorizontal;
+                    
+
+
+
                         break;
                     default:
                         break;

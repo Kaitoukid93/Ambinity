@@ -42,10 +42,15 @@ namespace adrilight.View
       
         private void Confirmed(object sender, EventArgs e)
         {
-            foreach (var spot in ViewModel.CurrentOutput.OutputLEDSetup.Spots)
+            foreach(var output in ViewModel.CurrentDevice.AvailableOutputs)
             {
-                spot.SetStroke(0);
+                foreach (var spot in output.OutputLEDSetup.Spots)
+                {
+                    spot.SetStroke(0);
+                }
+
             }
+            
             this.Close();
 
         }
@@ -80,72 +85,84 @@ namespace adrilight.View
         }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left)
+            if(enabledrag.IsChecked==true)
             {
-                isLeftMouseButtonDownOnWindow = true;
-                origMouseDownPoint = e.GetPosition(PreviewGird);
+                if (e.ChangedButton == MouseButton.Left)
+                {
+                    isLeftMouseButtonDownOnWindow = true;
+                    origMouseDownPoint = e.GetPosition(PreviewGird);
 
-                PreviewGird.CaptureMouse();
+                    PreviewGird.CaptureMouse();
 
-                e.Handled = true;
+                    e.Handled = true;
+                }
             }
+          
+
+         
         }
         private void Window_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left)
+            if (enabledrag.IsChecked == true)
             {
-                if (isDraggingSelectionRect)
+                if (e.ChangedButton == MouseButton.Left)
                 {
-                    //
-                    // Drag selection has ended, apply the 'selection rectangle'.
-                    //
+                    if (isDraggingSelectionRect)
+                    {
+                        //
+                        // Drag selection has ended, apply the 'selection rectangle'.
+                        //
 
-                    isDraggingSelectionRect = false;
-                    ApplyDragSelectionRect();
+                        isDraggingSelectionRect = false;
+                        ApplyDragSelectionRect();
 
-                    e.Handled = true;
+                        e.Handled = true;
+                    }
+
+                    if (isLeftMouseButtonDownOnWindow)
+                    {
+                        isLeftMouseButtonDownOnWindow = false;
+                        PreviewGird.ReleaseMouseCapture();
+
+                        e.Handled = true;
+                    }
+
+
                 }
-
-                if (isLeftMouseButtonDownOnWindow)
-                {
-                    isLeftMouseButtonDownOnWindow = false;
-                    PreviewGird.ReleaseMouseCapture();
-
-                    e.Handled = true;
-                }
-               
-
             }
+          
         }
       
        
                
     private void Window_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isDraggingSelectionRect)
+            if (enabledrag.IsChecked == true)
             {
-                //
-                // Drag selection is in progress.
-                //
+                if (isDraggingSelectionRect)
+                {
+                    //
+                    // Drag selection is in progress.
+                    //
 
-                Point curMouseDownPoint = e.GetPosition(PreviewGird);
-                UpdateDragSelectionRect(origMouseDownPoint, curMouseDownPoint);
+                    Point curMouseDownPoint = e.GetPosition(PreviewGird);
+                    UpdateDragSelectionRect(origMouseDownPoint, curMouseDownPoint);
 
-                e.Handled = true;
-            }
-            else if (isLeftMouseButtonDownOnWindow)
-            {
-                //
-                // The user is left-dragging the mouse,
-                // but don't initiate drag selection until
-                // they have dragged past the threshold value.
-                //
-                Point curMouseDownPoint = e.GetPosition(PreviewGird);
-                var dragDelta = curMouseDownPoint - origMouseDownPoint;
-                double dragDistance = Math.Abs(dragDelta.Length);
-                //if (dragDistance > DragThreshold)
-                //{
-                //    //
+                    e.Handled = true;
+                }
+                else if (isLeftMouseButtonDownOnWindow)
+                {
+                    //
+                    // The user is left-dragging the mouse,
+                    // but don't initiate drag selection until
+                    // they have dragged past the threshold value.
+                    //
+                    Point curMouseDownPoint = e.GetPosition(PreviewGird);
+                    var dragDelta = curMouseDownPoint - origMouseDownPoint;
+                    double dragDistance = Math.Abs(dragDelta.Length);
+                    //if (dragDistance > DragThreshold)
+                    //{
+                    //    //
                     // When the mouse has been dragged more than the threshold value commence drag selection.
                     //
                     isDraggingSelectionRect = true;
@@ -157,10 +174,12 @@ namespace adrilight.View
 
 
                     InitDragSelectionRect(origMouseDownPoint, curMouseDownPoint);
-                //}
+                    //}
 
-                e.Handled = true;
+                    e.Handled = true;
+                }
             }
+            
         }
         private void InitDragSelectionRect(Point pt1, Point pt2)
         {

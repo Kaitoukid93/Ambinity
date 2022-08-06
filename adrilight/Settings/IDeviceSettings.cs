@@ -56,5 +56,7 @@ namespace adrilight
         void DeviceLocator(Color color);
         void RefreshDeviceActualSpeedAsync();
         State CurrentState { get; set; }
+       System.Drawing.Rectangle DeviceBoundRectangle { get; set; }
+        void SetRectangle(System.Drawing.Rectangle rectangle);
     }
 }
