@@ -59,7 +59,7 @@ namespace adrilight
                 case nameof(OutputSettings.OutputSelectedMode):
                 case nameof(OutputSettings.OutputIsLoadingProfile):
                 case nameof(OutputSettings.OutputIsEnabled):
-               
+                case nameof(OutputSettings.OutputParrentIsEnable):
                     RefreshCapturingState();
                     break;
 
@@ -101,7 +101,7 @@ namespace adrilight
         public void RefreshCapturingState()
         {
             var isRunning = _cancellationTokenSource != null;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 0 && OutputSettings.IsInSpotEditWizard == false && OutputSettings.OutputIsLoadingProfile == false;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputParrentIsEnable && OutputSettings.OutputSelectedMode == 0 && OutputSettings.IsInSpotEditWizard == false && OutputSettings.OutputIsLoadingProfile == false;
             //  var shouldBeRefreshing = NeededRefreshing;
 
 

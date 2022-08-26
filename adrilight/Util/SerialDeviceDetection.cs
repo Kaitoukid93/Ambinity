@@ -205,7 +205,7 @@ namespace adrilight.Util
                             newDevice.DeviceConnectionType = "wired";
                             newDevice.OutputPort = device;
                             newDevice.IsSizeNeedUserDefine = true;
-                            newDevice.UnionOutput = null;
+                            
                             break;                      
                         case "Ambino EDGE":// General Ambino Basic USB Device
                             newDevice = availableDefaultDevice.ambinoEdge1m2;
@@ -214,7 +214,7 @@ namespace adrilight.Util
                             newDevice.DeviceType = "ABEDGE";
                             newDevice.OutputPort = device;
                             newDevice.IsSizeNeedUserDefine = true;
-                            newDevice.UnionOutput = null;
+                           
                             break;
                         case "Ambino FanHub":
                             newDevice = availableDefaultDevice.ambinoFanHub;

@@ -188,7 +188,7 @@
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
                                                     </ItemsControl>
-                                                    <ComboBox Visibility="{Binding IsSizeNeedUserDefine,Converter={StaticResource boolToVisibilityConvert}}" SelectedItem="{Binding UnionOutput}" ItemsSource="{Binding DataContext.AvailableOutputForSelectedDevice, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" hc:InfoElement.Placeholder="Chọn kích thước" ItemContainerStyle="{DynamicResource _ComboboxItemStyle}"  HorizontalAlignment="Stretch" Style="{DynamicResource ComboBoxExtend}">
+                                                    <ComboBox Visibility="{Binding IsSizeNeedUserDefine,Converter={StaticResource boolToVisibilityConvert}}" SelectedItem="{Binding AvailableOutputs[0]}" ItemsSource="{Binding DataContext.AvailableOutputForSelectedDevice, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" hc:InfoElement.Placeholder="Chọn kích thước" ItemContainerStyle="{DynamicResource _ComboboxItemStyle}"  HorizontalAlignment="Stretch" Style="{DynamicResource ComboBoxExtend}">
                                                         <ComboBox.ItemTemplate>
                                                             <DataTemplate>
                                                                 <Grid>

@@ -27,6 +27,7 @@ namespace adrilight
         Brush AccentColor { get; set; }
         int SystemMusicSpeed { get; set; } 
         int SystemMusicMaxTick { get; set; }
+        int BreathingSpeed { get; set; }
 
 
     }

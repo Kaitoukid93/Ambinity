@@ -158,7 +158,7 @@ namespace adrilight.Spots
         }
 
         private DateTime? _lastMissingValueIndication;
-        private readonly double _dimToBlackIntervalInMs = TimeSpan.FromMilliseconds(1000).TotalMilliseconds;
+        private readonly double _dimToBlackIntervalInMs = TimeSpan.FromMilliseconds(900).TotalMilliseconds;
 
         private float _dimR, _dimG, _dimB;
 

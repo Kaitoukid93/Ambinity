@@ -47,10 +47,10 @@ namespace adrilight.Settings
                     RequiredFwVersion = ABBASICFWVersion,
                     Geometry = "ambinobasic",
                     DeviceUID = Guid.NewGuid().ToString(),
-                    IsUnionMode = true,
+                    IsUnionMode = false,
                     IsTransferActive = true,
-                    UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 11, 7, "LED Màn hình 24", true, "24inch"),
-                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 11, 7, "LED Màn hình 24", false, "24inch") }
+                    UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 11, 7, "LED Màn hình 24", false, "24inch"),
+                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 11, 7, "LED Màn hình 24", true, "24inch") }
                 };
             }
        
@@ -74,10 +74,10 @@ namespace adrilight.Settings
                     FwLocation = ABBASICFW,
                     RequiredFwVersion = ABBASICFWVersion,
                     Geometry = "ambinobasic",
-                    IsUnionMode = true,
+                    IsUnionMode = false,
                     IsTransferActive = true,
-                    UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 13, 7, "LED Màn hình 27", true, "27inch"),
-                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 13, 7, "LED Màn hình 27", false, "27inch") }
+                    UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 13, 7, "LED Màn hình 27", false, "27inch"),
+                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 13, 7, "LED Màn hình 27", true, "27inch") }
                 };
 
                 }
@@ -101,10 +101,10 @@ namespace adrilight.Settings
                     FwLocation = ABBASICPWLEDFW,
                     RequiredFwVersion = ABBASICPWLEDFWVersion,
                     Geometry = "ambinobasic",
-                    IsUnionMode = true,
+                    IsUnionMode = false,
                     IsTransferActive = true,
-                    UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 13, 7, "LED Màn hình 27", true, "27inch"),
-                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 13, 7, "LED Màn hình 27", false, "27inch") }
+                    UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 13, 7, "LED Màn hình 27", false, "27inch"),
+                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 13, 7, "LED Màn hình 27", true, "27inch") }
                 };
                 }
          
@@ -127,11 +127,11 @@ namespace adrilight.Settings
                     OutputPort = "Không có",
                     FwLocation = ABBASICFW,
                     RequiredFwVersion = ABBASICFWVersion,
-                    IsUnionMode = true,
+                    IsUnionMode = false,
                     Geometry = "ambinobasic",
                     IsTransferActive = true,
-                    UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 14, 7, "LED Màn hình 29", true, "29inch"),
-                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 14, 7, "LED Màn hình 29", false, "29inch") }
+                    UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 14, 7, "LED Màn hình 29", false, "29inch"),
+                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 14, 7, "LED Màn hình 29", true, "29inch") }
                 };
                 }
         } 
@@ -154,11 +154,11 @@ namespace adrilight.Settings
                     OutputPort = "Không có",
                     FwLocation = ABBASICFW,
                     RequiredFwVersion = ABBASICFWVersion,
-                    IsUnionMode = true,
+                    IsUnionMode = false,
                     Geometry = "ambinobasic",
                     IsTransferActive = true,
-                    UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 15, 8, "LED Màn hình 32", true, "32inch"),
-                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 15, 8, "LED Màn hình 32", false, "32inch") }
+                    UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 15, 8, "LED Màn hình 32", false, "32inch"),
+                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 15, 8, "LED Màn hình 32", true, "32inch") }
 
                 };
             }
@@ -180,11 +180,11 @@ namespace adrilight.Settings
                     OutputPort = "Không có",
                     FwLocation = ABBASICFW,
                     RequiredFwVersion = ABBASICFWVersion,
-                    IsUnionMode = true,
+                    IsUnionMode = false,
                     Geometry = "ambinobasic",
                     IsTransferActive = true,
-                    UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 17, 7, "LED Màn hình 34", true, "34inch"),
-                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 17, 7, "LED Màn hình 34", false, "34inch") }
+                    UnionOutput = DefaulOutputCollection.AmbinoBasic(1, 17, 7, "LED Màn hình 34", false, "34inch"),
+                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoBasic(0, 17, 7, "LED Màn hình 34", true, "34inch") }
 
                 };
             }
@@ -207,10 +207,10 @@ namespace adrilight.Settings
                     FwLocation = ABEDGEFW,
                     RequiredFwVersion = ABEDGEFWVersion,
                     Geometry = "ambinoedge",
-                    IsUnionMode = true,
+                    IsUnionMode = false,
                     IsTransferActive = true,
-                    UnionOutput = DefaulOutputCollection.AmbinoEdge(1, 24, "LED Cạnh Bàn", 1, true, "ledstrip"),
-                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoEdge(0, 24, "LED Cạnh Bàn", 1, false, "ledstrip") }
+                    UnionOutput = DefaulOutputCollection.AmbinoEdge(1, 24, "LED Cạnh Bàn", 1, false, "ledstrip"),
+                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoEdge(0, 24, "LED Cạnh Bàn", 1, true, "ledstrip") }
 
                 };
 
@@ -234,10 +234,10 @@ namespace adrilight.Settings
                     FwLocation = ABEDGEFW,
                     RequiredFwVersion = ABEDGEFWVersion,
                     Geometry = "ambinoedge",
-                    IsUnionMode = true,
+                    IsUnionMode = false,
                     IsTransferActive = true,
-                    UnionOutput = DefaulOutputCollection.AmbinoEdge(1, 20, "LED Cạnh Bàn", 2, true, "ledstrip"),
-                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoEdge(0, 20, "LED Cạnh Bàn", 2, false, "ledstrip") }
+                    UnionOutput = DefaulOutputCollection.AmbinoEdge(1, 20, "LED Cạnh Bàn", 2, false, "ledstrip"),
+                    AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.AmbinoEdge(0, 20, "LED Cạnh Bàn", 2, true, "ledstrip") }
 
                 };
             }

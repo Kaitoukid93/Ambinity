@@ -16,6 +16,7 @@ namespace adrilight
         private int _systemRainbowSpeed = 10;
         private int _systemRainbowMaxTick = 1023;
         private int _systemMusicMaxTick = 1023;
+        private int _breathingSpeed = 20000;
         private bool _isProfileLoading = false;
         private bool _startMinimized = false;
         private bool _notificationEnabled = true;
@@ -30,6 +31,7 @@ namespace adrilight
         public int SelectedAudioDevice { get => _selectedAudioDevice; set { Set(() => SelectedAudioDevice, ref _selectedAudioDevice, value); } }
         public int ThemeIndex { get => _themeIndex; set { Set(() => ThemeIndex, ref _themeIndex, value); } }
         public int SystemRainbowMaxTick { get => _systemRainbowMaxTick; set { Set(() => SystemRainbowMaxTick, ref _systemRainbowMaxTick, value); } }
+        public int BreathingSpeed { get => _breathingSpeed; set { Set(() => BreathingSpeed, ref _breathingSpeed, value); } }
         public int SystemMusicMaxTick { get => _systemMusicMaxTick; set { Set(() => SystemMusicMaxTick, ref _systemMusicMaxTick, value); } }
         private int _limitFps = 100;
         public bool StartMinimized { get => _startMinimized; set { Set(() => StartMinimized, ref _startMinimized, value); } }

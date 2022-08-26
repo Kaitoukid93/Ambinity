@@ -105,7 +105,7 @@ namespace adrilight
         bool OutputIsSelected { get; set; }
         //static color settings//
         IGradientColorCard OutputSelectedGradient { get; set; }
-
+         bool OutputParrentIsEnable { get; set; }
 
         IColorPalette OutputCurrentActivePalette { get; set; }
         ILEDSetup OutputLEDSetup { get; set; }

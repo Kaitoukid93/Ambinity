@@ -129,16 +129,16 @@
     <None Update="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <EmbeddedResource Include="DeviceFirmware\ABR1e.hex">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="DeviceFirmware\ABR1p.hex">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="DeviceFirmware\ABR2p.hex">
+    <EmbeddedResource Include="DeviceFirmware\ABR2e.hex">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="DeviceFirmware\AER1e.hex">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DeviceFirmware\AER2e.hex">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="DeviceFirmware\AFR1g.hex">
@@ -308,10 +308,10 @@
   <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
   <ItemGroup>
     <None Remove="App.config" />
-    <None Remove="DeviceFirmware\ABR1e.hex" />
     <None Remove="DeviceFirmware\ABR1p.hex" />
-    <None Remove="DeviceFirmware\ABR2p.hex" />
+    <None Remove="DeviceFirmware\ABR2e.hex" />
     <None Remove="DeviceFirmware\AER1e.hex" />
+    <None Remove="DeviceFirmware\AER2e.hex" />
     <None Remove="DeviceFirmware\AFR1g.hex" />
     <None Remove="DeviceFirmware\AHR1g.hex" />
     <None Remove="DeviceFirmware\ARR1p.hex" />

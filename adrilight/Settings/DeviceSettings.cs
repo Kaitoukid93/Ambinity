@@ -80,7 +80,7 @@ namespace adrilight
         public string ProductionDate { get => _productionDate; set { Set(() => ProductionDate, ref _productionDate, value); } }
         public string ActivatedProfileUID { get => _activatedProfileUID; set { Set(() => ActivatedProfileUID, ref _activatedProfileUID, value); } }
         public bool IsVisible { get => _isVisible; set { Set(() => IsVisible, ref _isVisible, value); } }
-        public bool IsEnabled { get => _isEnabled; set { Set(() => IsEnabled, ref _isEnabled, value); } }
+        public bool IsEnabled { get => _isEnabled; set { Set(() => IsEnabled, ref _isEnabled, value); DeviceEnableChanged(); } }
         public bool IsUnionMode { get => _isUnionMode; set { Set(() => IsUnionMode, ref _isUnionMode, value); } }
         public bool IsLoading { get => _isLoading; set { Set(() => IsLoading, ref _isLoading, value); } }
         public bool IsSelected { get => _isSelected; set { Set(() => IsSelected, ref _isSelected, value); if (value) DeviceLocator(GetCurrentAccentColor()); else DeviceLocator(Color.FromRgb(0, 0, 0));  } }
@@ -106,6 +106,30 @@ namespace adrilight
         public string DeviceConnectionType { get => _deviceConnectionType; set { Set(() => DeviceConnectionType, ref _deviceConnectionType, value); } }
         public bool IsLoadingProfile { get => _isLoadingProfile; set { Set(() => IsLoadingProfile, ref _isLoadingProfile, value); } }
         public bool IsSizeNeedUserDefine { get => _isSizeNeedUserDefine; set { Set(() => IsSizeNeedUserDefine, ref _isSizeNeedUserDefine, value); } }
+        private void DeviceEnableChanged()
+        {
+            
+            if(UnionOutput!=null)
+               UnionOutput.OutputIsEnabled = IsEnabled;
+           if(AvailableOutputs!=null)
+            {
+
+                if (AvailableOutputs.Length == 1)
+                {
+                    AvailableOutputs[0].OutputIsEnabled = IsEnabled;
+                }
+                else
+                {
+                    foreach (var output in AvailableOutputs)
+                    {
+                        output.OutputParrentIsEnable = IsEnabled;
+
+                    }
+                }
+            }
+            
+           
+        }
         public void ActivateProfile(IDeviceProfile profile)
         {
             ActivatedProfileUID = profile.ProfileUID;
@@ -329,7 +353,7 @@ namespace adrilight
                     if (retryCount == 3)
                     {
                         Console.WriteLine("timeout waiting for respond on serialport " + _serialPort.PortName);
-                        HandyControl.Controls.MessageBox.Show("Device at " + _serialPort.PortName + "is not responding, try adding it manually", "Device is not responding", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        HandyControl.Controls.MessageBox.Show("Thiết bị ở " + _serialPort.PortName + "Không có thông tin về Firmware, vui lòng liên hệ Ambino trước khi cập nhật firmware thủ công", "Device is not responding", MessageBoxButton.OK, MessageBoxImage.Warning);
                         isValid = false;
                         break;
                     }

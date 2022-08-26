@@ -535,6 +535,11 @@ namespace adrilight.ViewModel
                         case nameof(CurrentOutput.OutputIsEnabled):
                             if (CurrentDevice.IsUnionMode)
                                 CurrentDevice.IsEnabled = CurrentOutput.OutputIsEnabled;
+                            else
+                            {
+                                if (CurrentDevice.AvailableOutputs.Length == 1)
+                                    CurrentDevice.IsEnabled = CurrentOutput.OutputIsEnabled;
+                            }
                             break;
 
 
@@ -4330,69 +4335,94 @@ namespace adrilight.ViewModel
                     var requiredFwVersion = JsonConvert.DeserializeObject<List<DeviceFirmware>>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
 
                     var currentDeviceFirmwareInfo = requiredFwVersion.Where(p => p.TargetHardware == device.HardwareVersion).FirstOrDefault();
-                    if (device.FirmwareVersion != currentDeviceFirmwareInfo.Version)
+                    if(currentDeviceFirmwareInfo == null)
                     {
-                        //coppy hex file to FWTools folder 
-                        var fwOutputLocation = Path.Combine(JsonFWToolsFileNameAndPath, currentDeviceFirmwareInfo.Name);
-                        try
+                        //not supported hardware
+
+                        var result = HandyControl.Controls.MessageBox.Show("Phần cứng không còn được hỗ trợ hoặc không nhận ra: " + device.HardwareVersion + " Bạn có muốn chọn phần cứng được hỗ trợ?", "Firmware uploading", MessageBoxButton.YesNo, MessageBoxImage.Error);
+                        if(result == MessageBoxResult.Yes)
                         {
-                            CopyResource(currentDeviceFirmwareInfo.ResourceName, fwOutputLocation);
+                            var fwjson = File.ReadAllText(JsonFWToolsFWListFileNameAndPath);
+                            var availableFirmware = JsonConvert.DeserializeObject<List<DeviceFirmware>>(fwjson, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
+                            AvailableFirmwareForCurrentDevice = new ObservableCollection<IDeviceFirmware>();
+                            foreach (var firmware in availableFirmware)
+                            {
+                                if (firmware.TargetDeviceType == device.DeviceType)
+                                    AvailableFirmwareForCurrentDevice.Add(firmware);
+                            }
+
+                            // show list selected firmware
+                            OpenFirmwareSelectionWindow();
                         }
-                        catch (ArgumentException)
-                        {
-                            //show messagebox no firmware found for this device
-                            return;
-                        }
-
-                        //check if specific driver for CH375 is instaled on this computer
-                        if (GeneralSettings.DriverRequested)
-                        {
-                            //coppy resource
-                            CopyResource("adrilight.Tools.FWTools.CH372DRV.EXE", Path.Combine(JsonFWToolsFileNameAndPath, "CH372DRV.EXE"));
-                            //launch driver installer
-                            System.Diagnostics.Process.Start(Path.Combine(JsonFWToolsFileNameAndPath, "CH372DRV.EXE"));
-                            GeneralSettings.DriverRequested = false;
-                            return;
-                        }
-                        else
-                        {
-                            //put device in dfu state
-                            device.CurrentState = State.dfu;
-                            // wait for device to enter dfu
-                            Thread.Sleep(1000);
-                            FwUploadPercentVissible = true;
-                            var startInfo = new System.Diagnostics.ProcessStartInfo {
-                                WorkingDirectory = JsonFWToolsFileNameAndPath,
-                                RedirectStandardOutput = true,
-                                RedirectStandardError = true,
-                                CreateNoWindow = true,
-                                UseShellExecute = false,
-                                FileName = "cmd.exe",
-                                Arguments = "/C vnproch55x " + fwOutputLocation
-
-                            };
-                            var proc = new Process() {
-                                StartInfo = startInfo,
-                                EnableRaisingEvents = true
-                            };
-
-                            // see below for output handler
-                            proc.ErrorDataReceived += proc_DataReceived;
-                            proc.OutputDataReceived += proc_DataReceived;
-
-                            proc.Start();
-
-                            proc.BeginErrorReadLine();
-                            proc.BeginOutputReadLine();
-                            proc.Exited += proc_FinishUploading;
-                        }
-
-
+                        
                     }
                     else
                     {
-                        HandyControl.Controls.MessageBox.Show("Không có phiên bản mới cho thiết bị này", "Firmware uploading", MessageBoxButton.OK, MessageBoxImage.Information);
+                        if (device.FirmwareVersion != currentDeviceFirmwareInfo.Version)
+                        {
+                            //coppy hex file to FWTools folder 
+                            var fwOutputLocation = Path.Combine(JsonFWToolsFileNameAndPath, currentDeviceFirmwareInfo.Name);
+                            try
+                            {
+                                CopyResource(currentDeviceFirmwareInfo.ResourceName, fwOutputLocation);
+                            }
+                            catch (ArgumentException)
+                            {
+                                //show messagebox no firmware found for this device
+                                return;
+                            }
+
+                            //check if specific driver for CH375 is instaled on this computer
+                            if (GeneralSettings.DriverRequested)
+                            {
+                                //coppy resource
+                                CopyResource("adrilight.Tools.FWTools.CH372DRV.EXE", Path.Combine(JsonFWToolsFileNameAndPath, "CH372DRV.EXE"));
+                                //launch driver installer
+                                System.Diagnostics.Process.Start(Path.Combine(JsonFWToolsFileNameAndPath, "CH372DRV.EXE"));
+                                GeneralSettings.DriverRequested = false;
+                                return;
+                            }
+                            else
+                            {
+                                //put device in dfu state
+                                device.CurrentState = State.dfu;
+                                // wait for device to enter dfu
+                                Thread.Sleep(1000);
+                                FwUploadPercentVissible = true;
+                                var startInfo = new System.Diagnostics.ProcessStartInfo {
+                                    WorkingDirectory = JsonFWToolsFileNameAndPath,
+                                    RedirectStandardOutput = true,
+                                    RedirectStandardError = true,
+                                    CreateNoWindow = true,
+                                    UseShellExecute = false,
+                                    FileName = "cmd.exe",
+                                    Arguments = "/C vnproch55x " + fwOutputLocation
+
+                                };
+                                var proc = new Process() {
+                                    StartInfo = startInfo,
+                                    EnableRaisingEvents = true
+                                };
+
+                                // see below for output handler
+                                proc.ErrorDataReceived += proc_DataReceived;
+                                proc.OutputDataReceived += proc_DataReceived;
+
+                                proc.Start();
+
+                                proc.BeginErrorReadLine();
+                                proc.BeginOutputReadLine();
+                                proc.Exited += proc_FinishUploading;
+                            }
+
+
+                        }
+                        else
+                        {
+                            HandyControl.Controls.MessageBox.Show("Không có phiên bản mới cho thiết bị này", "Firmware uploading", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
                     }
+                   
                 }
             }
 
@@ -4863,38 +4893,43 @@ namespace adrilight.ViewModel
             }
             if (AvailableSerialDevices != null)
             {
-                int count = 0;
-                foreach (var serialDevice in AvailableSerialDevices)
-                {
-                    if (serialDevice.IsSelected && serialDevice.UnionOutput != null)
-                    {
-                        serialDevice.DeviceID = AvailableDevices.Count + 1;
-                        //AvailableDevices.Add(serialDevice);
-                        count++;
-                        //AvailableSerialDevices.Remove(serialDevice);
-                    }
-                    else if (serialDevice.IsSelected && serialDevice.UnionOutput == null) // this apply to multiple size devices that need to ask user to chose size
-                    {
-                        //show message box to require user to select size first
-                        HandyControl.Controls.MessageBox.Show("Vui lòng chọn kích thước", "No Device Size Defined", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
+                
+                //foreach (var serialDevice in AvailableSerialDevices)
+                //{
+                //    if (serialDevice.IsSelected && serialDevice.AvailableOutputs[0] != null)
+                //    {
+                        
+                //        serialDevice.UnionOutput = DefaulOutputCollection.AvailableDefaultOutputs[5];
+                //        serialDevice.UnionOutput.OutputID = 1;
+                //        serialDevice.UnionOutput.OutputIsEnabled = false;
+                //        //AvailableDevices.Add(serialDevice);
+                //        count++;
+                //        //AvailableSerialDevices.Remove(serialDevice);
+                //    }
+                //    else if (serialDevice.IsSelected && serialDevice.AvailableOutputs[0] == null) // this apply to multiple size devices that need to ask user to chose size
+                //    {
+                //        //show message box to require user to select size first
+                //        HandyControl.Controls.MessageBox.Show("Vui lòng chọn kích thước", "No Device Size Defined", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //        return;
+                //    }
 
-                }
-                if (count > 0)
-                {
+                //}
+                
                     foreach (var serialDevice in AvailableSerialDevices)
                     {
+                    if(serialDevice.IsSelected)
+                    {
                         AvailableDevices.Add(serialDevice);
+                    } 
                     }
 
 
-                }
-                else
-                {
-                    HandyControl.Controls.MessageBox.Show("Vui lòng chọn thiết bị để thêm", "No Device Selected", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
+                
+                //else
+                //{
+                //    HandyControl.Controls.MessageBox.Show("Vui lòng chọn thiết bị để thêm", "No Device Selected", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //    return;
+                //}
             }
             if (AvailableOpenRGBDevices != null)
             {
@@ -5568,44 +5603,61 @@ namespace adrilight.ViewModel
         {
             IDeviceFirmware ABR1p = new DeviceFirmware() {
                 Name = "ABR1p.hex",
-                Version = "1.0.5",
+                Version = "1.0.6",
                 TargetHardware = "ABR1p",
                 TargetDeviceType = "ABBASIC",
                 Geometry = "binary",
                 ResourceName = "adrilight.DeviceFirmware.ABR1p.hex"
             };
-            IDeviceFirmware ABR1e = new DeviceFirmware() {
-                Name = "ABR1e.hex",
-                Version = "1.0.5",
-                TargetHardware = "ABR1e",
+            //IDeviceFirmware ABR1e = new DeviceFirmware() {
+            //    Name = "ABR1e.hex",
+            //    Version = "1.0.5",
+            //    TargetHardware = "ABR1e",
+            //    TargetDeviceType = "ABBASIC",
+            //    Geometry = "binary",
+            //    ResourceName = "adrilight.DeviceFirmware.ABR1e.hex"
+            //};
+           
+            //IDeviceFirmware ABR2p = new DeviceFirmware() {
+            //    Name = "ABR2p.hex",
+            //    Version = "1.0.5",
+            //    TargetHardware = "ABR2p",
+            //    TargetDeviceType = "ABBASIC",
+            //    Geometry = "binary",
+            //    ResourceName = "adrilight.DeviceFirmware.ABR2p.hex"
+            //};
+            IDeviceFirmware ABR2e = new DeviceFirmware() {
+                Name = "ABR2e.hex",
+                Version = "1.0.6",
+                TargetHardware = "ABR2e",
                 TargetDeviceType = "ABBASIC",
                 Geometry = "binary",
-                ResourceName = "adrilight.DeviceFirmware.ABR1e.hex"
+                ResourceName = "adrilight.DeviceFirmware.ABR2e.hex"
             };
             IDeviceFirmware AER1e = new DeviceFirmware() {
                 Name = "AER1e.hex",
-                Version = "1.0.3",
+                Version = "1.0.4",
                 TargetHardware = "AER1e",
                 TargetDeviceType = "ABEDGE",
                 Geometry = "binary",
                 ResourceName = "adrilight.DeviceFirmware.AER1e.hex"
             };
-            IDeviceFirmware ABR2p = new DeviceFirmware() {
-                Name = "ABR2p.hex",
-                Version = "1.0.5",
-                TargetHardware = "ABR2p",
-                TargetDeviceType = "ABBASIC",
-                Geometry = "binary",
-                ResourceName = "adrilight.DeviceFirmware.ABR2p.hex"
-            };
-            IDeviceFirmware AER2p = new DeviceFirmware() {
-                Name = "AER2p.hex",
-                Version = "1.0.3",
-                TargetHardware = "AER2p",
-                TargetDeviceType = "ABEDGE",
-                Geometry = "binary",
-                ResourceName = "adrilight.DeviceFirmware.AER2p.hex"
-            };
+             IDeviceFirmware AER2e = new DeviceFirmware() {
+                 Name = "AER2e.hex",
+                 Version = "1.0.4",
+                 TargetHardware = "AER2e",
+                 TargetDeviceType = "ABEDGE",
+                 Geometry = "binary",
+                 ResourceName = "adrilight.DeviceFirmware.AER2e.hex"
+             };
+            //IDeviceFirmware AER2p = new DeviceFirmware() {
+            //    Name = "AER2p.hex",
+            //    Version = "1.0.3",
+            //    TargetHardware = "AER2p",
+            //    TargetDeviceType = "ABEDGE",
+            //    Geometry = "binary",
+            //    ResourceName = "adrilight.DeviceFirmware.AER2p.hex"
+            //};
             IDeviceFirmware AFR1g = new DeviceFirmware() {
                 Name = "AFR1g.hex",
                 Version = "1.0.3",
@@ -5632,10 +5684,11 @@ namespace adrilight.ViewModel
             };
             var firmwareList = new List<IDeviceFirmware>();
             firmwareList.Add(ABR1p);
-            firmwareList.Add(ABR2p);
-            firmwareList.Add(ABR1e);
+            //firmwareList.Add(ABR2p);
+            //firmwareList.Add(ABR1e);
+            firmwareList.Add(ABR2e);
             firmwareList.Add(AER1e);
-            firmwareList.Add(AER2p);
+            firmwareList.Add(AER2e);
             firmwareList.Add(AFR1g);
             firmwareList.Add(AHR1g);
             firmwareList.Add(ARR1p);
@@ -5643,6 +5696,8 @@ namespace adrilight.ViewModel
             //| Ambino Basic CH552P without PowerLED Support    | CH552P | 32 | 14 | ABR1p |
             //+-------------------------------------------------+--------+----+----+-------+
             //| Ambino Basic CH552E Without PowerLED Support    | CH552E | 15 | 17 | ABR1e |
+            //+-------------------------------------------------+--------+----+----+-------+
+            //| Ambino Basic CH552E(rev2) With PowerLED Support | CH552e | 14 | 15 | ARR2e |
             //+-------------------------------------------------+--------+----+----+-------+
             //| Ambino EDGE CH552E Without PowerLED Support     | CH552E | 15 | 17 | AER1e |
             //+-------------------------------------------------+--------+----+----+-------+
@@ -5655,7 +5710,8 @@ namespace adrilight.ViewModel
             //| Ambino HUBV3 CH552G rev1                        | CH552G |    |    | AHR1g |
             //+-------------------------------------------------+--------+----+----+-------+
             //| Ambino RainPow CH552P rev1                      | CH552P |    |    | ARR1p |
-            //+-------------------------------------------------+--------+----+----+-------+
+            //+-------------------------------------------------+--------+----+----+-------+     
+
             //foreach(var device in DefaultDeviceCollection.AvailableDefaultDevice())
             //{
             //    string requiredFwVersion = "1.0.0";
@@ -7124,14 +7180,11 @@ namespace adrilight.ViewModel
                         }
 
                         break;
-
+                        
                     case nameof(CurrentDevice.DeviceSpeed):
                         IsSpeedSettingUnsetted = true;
                         break;
-                    case nameof(CurrentDevice.IsEnabled):
-                        if (CurrentDevice.IsUnionMode)
-                            CurrentDevice.UnionOutput.OutputIsEnabled = CurrentDevice.IsEnabled;
-                        break;
+                    
                     case nameof(CurrentDevice.SpeedMode):
                         //send speed mode command
                         CurrentDevice.CurrentState = State.speed;

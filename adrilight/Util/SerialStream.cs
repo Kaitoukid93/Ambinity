@@ -298,17 +298,24 @@ namespace adrilight
             {
                 if (DeviceSettings.OutputPort != null)
                 {
-                    var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.OutputPort, 1200));
+                    
+                    var _serialPort = new SerialPort(DeviceSettings.OutputPort, 1200);
+                    _serialPort.DtrEnable = true;
+                    _serialPort.ReadTimeout = 5000;
+                    _serialPort.WriteTimeout = 1000;
                     try
                     {
-                        serialPort.Open();
+                        if(!_serialPort.IsOpen)
+                        _serialPort.Open();
                     }
                     catch (Exception)
                     {
-                        // I don't know about this shit but we have to catch an empty exception because somehow SerialPort.Open() was called twice
+                        //
                     }
+                   
                     Thread.Sleep(1000);
-                    serialPort.Close();
+                    if(_serialPort.IsOpen)
+                    _serialPort.Close();
 
                 }
             }
@@ -362,10 +369,17 @@ namespace adrilight
                 switch (DeviceSettings.CurrentState)
                 {
                     case State.normal: // get data from ledsetup
+                        if (!DeviceSettings.IsEnabled||!output.OutputIsEnabled)
+                        {
+                            
+                                output.OutputLEDSetup.IndicateMissingValues();
+                            
+                        }
+
+
                         foreach (DeviceSpot spot in currentOutput.OutputLEDSetup.Spots)
                         {
-                            if (isEnabled && parrentIsEnabled)
-                            {
+                           
                                 var RGBOrder = currentOutput.OutputRGBLEDOrder;
                                 var reOrderedColor = ReOrderSpotColor(RGBOrder, spot.Red, spot.Green, spot.Blue);
                                 for (int i = 0; i < ledPerSpot; i++)
@@ -378,19 +392,8 @@ namespace adrilight
 
                                 allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
 
-                            }
-                            else
-                            {
-                                spot.IndicateMissingValue();
-                                var RGBOrder = currentOutput.OutputRGBLEDOrder;
-                                var reOrderedColor = ReOrderSpotColor(RGBOrder, spot.Red, spot.Green, spot.Blue);
-                                for (int i = 0; i < ledPerSpot; i++)
-                                {
-                                    outputStream[counter++] = reOrderedColor[0]; // blue
-                                    outputStream[counter++] = reOrderedColor[1]; // green
-                                    outputStream[counter++] = reOrderedColor[2]; // red
-                                }
-                            }
+                            
+                      
 
 
                         }
@@ -531,10 +534,11 @@ namespace adrilight
                             openedComPort = DeviceSettings.OutputPort;
 
                         }
+                       
                         //send frame data
                         if (isUnion)
                         {
-
+                           
                             for (int i = 0; i < DeviceSettings.AvailableOutputs.Length; i++)
                             {
                                 var (outputBuffer, streamLength) = GetOutputStream(DeviceSettings.UnionOutput, (byte)i);
@@ -562,6 +566,7 @@ namespace adrilight
                         {
                             foreach (var output in DeviceSettings.AvailableOutputs)
                             {
+                                 
                                 var (outputBuffer, streamLength) = GetOutputStream(output, (byte)output.OutputID);
                                 serialPort.Write(outputBuffer, 0, streamLength);
                                 if (++frameCounter == 1024 && blackFrameCounter > 1000)

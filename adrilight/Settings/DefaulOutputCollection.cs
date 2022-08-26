@@ -15,13 +15,13 @@ namespace adrilight.Settings
         public static List<IOutputSettings> AvailableDefaultOutputs {
             get
             {
-                return new List<IOutputSettings> { AmbinoBasic(1, 11, 7, "LED Màn hình 24", true, "24inch"),
-                                                   AmbinoBasic(1, 13, 7, "LED Màn hình 27", true, "27inch"),
-                                                   AmbinoBasic(1, 14, 7, "LED Màn hình 29", true, "29inch"),
-                                                   AmbinoBasic(1, 15, 8, "LED Màn hình 32", true, "32inch"),
-                                                   AmbinoBasic(1, 17, 7, "LED Màn hình 34", true, "34inch"),
-                                                   AmbinoEdge(1, 24, "LED Cạnh Bàn 1m2", 1, false, "ledstrip"),
-                                                   AmbinoEdge(1, 20, "LED Cạnh Bàn 2m", 2, false, "ledstrip")
+                return new List<IOutputSettings> { AmbinoBasic(0, 11, 7, "LED Màn hình 24", true, "24inch"),
+                                                   AmbinoBasic(0, 13, 7, "LED Màn hình 27", true, "27inch"),
+                                                   AmbinoBasic(0, 14, 7, "LED Màn hình 29", true, "29inch"),
+                                                   AmbinoBasic(0, 15, 8, "LED Màn hình 32", true, "32inch"),
+                                                   AmbinoBasic(0, 17, 7, "LED Màn hình 34", true, "34inch"),
+                                                   AmbinoEdge(0, 24, "LED Cạnh Bàn 1m2", 1, true, "ledstrip"),
+                                                   AmbinoEdge(0, 20, "LED Cạnh Bàn 2m", 2, true, "ledstrip")
         };
             }
         }
@@ -338,6 +338,7 @@ namespace adrilight.Settings
                     {
                         if (spot.YIndex == 0)
                             spot.IsActivated = true;
+                        
                         reorderedSpots.Add(spot);
                     }
                     break;
@@ -351,6 +352,7 @@ namespace adrilight.Settings
 
             foreach (var spot in reorderedSpots)
             {
+                spot.SetVID(spot.VID * (256 / reorderedSpots.Count()));
                 reorderedActiveSpots[counter++] = spot;
             }
 

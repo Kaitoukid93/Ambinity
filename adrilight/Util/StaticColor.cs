@@ -42,7 +42,7 @@ namespace adrilight.Util
             {
                 case nameof(OutputSettings.OutputIsEnabled):
                 case nameof(OutputSettings.OutputSelectedMode):
-                
+                case nameof(OutputSettings.OutputParrentIsEnable):
                     RefreshColorState();
                     break;
                 case nameof(OutputSettings.OutputStaticColor):
@@ -58,13 +58,13 @@ namespace adrilight.Util
         private IGeneralSettings GeneralSettings { get; }
         private IRainbowTicker RainbowTicker { get; }
         private MainViewViewModel MainViewViewModel { get; }
-        private Color[] colorBank = new Color[1024];
+        private Color[] colorBank = new Color[256];
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
         private void RefreshColorState()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 3 && OutputSettings.IsInSpotEditWizard == false;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputParrentIsEnable && OutputSettings.OutputSelectedMode == 3 && OutputSettings.IsInSpotEditWizard == false;
             if (isRunning && !shouldBeRunning)
             {
                 //stop it!
@@ -90,7 +90,7 @@ namespace adrilight.Util
         private void SolidColorChanged()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 3 && OutputSettings.IsInSpotEditWizard == false;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputParrentIsEnable && OutputSettings.OutputSelectedMode == 3 && OutputSettings.IsInSpotEditWizard == false;
 
 
             if (isRunning && shouldBeRunning)
@@ -99,7 +99,7 @@ namespace adrilight.Util
                 var startColor = OutputSettings.OutputSelectedGradient.StartColor;
                 var stopColor = OutputSettings.OutputSelectedGradient.StopColor;
                 var gradientPalette = new Color[] { startColor, stopColor };
-                colorBank = GetColorGradientfromPalette(gradientPalette, GeneralSettings.SystemRainbowMaxTick).ToArray();
+                colorBank = GetColorGradientfromPalette(gradientPalette, 256).ToArray();
                 
                 //if(isInEditWizard)
                 //    colorBank = GetColorGradientfromPalette(DefaultColorCollection.black).ToArray();
@@ -132,7 +132,7 @@ namespace adrilight.Util
                 var startColor = OutputSettings.OutputSelectedGradient.StartColor;
                 var stopColor = OutputSettings.OutputSelectedGradient.StopColor;
                 var gradientPalette = new Color[] { startColor, stopColor };
-                colorBank = GetColorGradientfromPalette(gradientPalette, GeneralSettings.SystemRainbowMaxTick).ToArray();
+                colorBank = GetColorGradientfromPalette(gradientPalette, 256).ToArray();
                 while (!token.IsCancellationRequested)
                 {
                     var numLED = OutputSettings.OutputLEDSetup.Spots.Length;
@@ -166,17 +166,28 @@ namespace adrilight.Util
                                 }
                                 break;
                             case 1:
-                               
-                                foreach (var spot in OutputSettings.OutputLEDSetup.Spots)
+
+                                var breathingbrightness = 1.0d;
+                                if (OutputSettings.OutputIsSystemSync)
+                                {
+                                    breathingbrightness = RainbowTicker.BreathingBrightnessValue;
+
+                                }
+                                else
                                 {
                                     float smoothness_pts = (float)OutputSettings.OutputBreathingSpeed;
-                                    double pwm_val = 255.0 * (Math.Exp(-(Math.Pow(((ii++ / smoothness_pts) - beta) / gamma, 2.0)) / 2.0));                                
+                                    double pwm_val = 255.0 * (Math.Exp(-(Math.Pow(((ii++ / smoothness_pts) - beta) / gamma, 2.0)) / 2.0));
                                     if (ii > smoothness_pts)
                                         ii = 0f;
+
+                                    breathingbrightness = pwm_val / 255d;
+                                }
+                                foreach (var spot in OutputSettings.OutputLEDSetup.Spots)
+                                {
+                                  
                                    
-                                    var brightness = pwm_val/255d;
                                     var newColor = new OpenRGB.NET.Models.Color(currentStaticColor.R, currentStaticColor.G, currentStaticColor.B);
-                                    var outputColor = Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);
+                                    var outputColor = Brightness.applyBrightness(newColor, breathingbrightness, numLED, outputPowerMiliamps, outputPowerVoltage);
                                     ApplySmoothing(outputColor.R, outputColor.G, outputColor.B, out byte FinalR, out byte FinalG, out byte FinalB, spot.Red, spot.Green, spot.Blue);
                                     if (!OutputSettings.IsInSpotEditWizard)
                                         spot.SetColor(FinalR, FinalG, FinalB, isPreviewRunning);
@@ -186,9 +197,15 @@ namespace adrilight.Util
 
                                 foreach (var spot in OutputSettings.OutputLEDSetup.Spots)
                                 {
-                                    var positon = spot.VID;
+                                    var position = spot.VID;
+                                    
+                                    int n = 0;
+                                    if (position >= colorBank.Length)
+                                        //position = Math.Abs(colorBank.Length - position);
+                                        n = position / colorBank.Length;
+                                    position -= n * colorBank.Length; // run with VID
                                     var brightness = OutputSettings.OutputBrightness / 100d;                                   
-                                    var newColor = new OpenRGB.NET.Models.Color(colorBank[positon].R, colorBank[positon].G, colorBank[positon].B);
+                                    var newColor = new OpenRGB.NET.Models.Color(colorBank[position].R, colorBank[position].G, colorBank[position].B);
                                     var outputColor = Brightness.applyBrightness(newColor, brightness, numLED, outputPowerMiliamps, outputPowerVoltage);
                                     if (!OutputSettings.IsInSpotEditWizard)
                                         spot.SetColor(outputColor.R, outputColor.G, outputColor.B, isPreviewRunning);

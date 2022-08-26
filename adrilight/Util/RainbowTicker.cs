@@ -53,6 +53,7 @@ namespace adrilight
         private IDeviceSpotSet DeviceSpotSet { get; }
         private double _rainbowStartIndex;
         private double _musicStartIndex;
+        private double _breathingBrightnessValue;
 
         public double RainbowStartIndex {
             get { return _rainbowStartIndex; }
@@ -63,7 +64,10 @@ namespace adrilight
             set { _musicStartIndex = value; }
         }
 
-
+        public double BreathingBrightnessValue {
+            get { return _breathingBrightnessValue; }
+            set { _breathingBrightnessValue = value; }
+        }
 
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
@@ -141,8 +145,13 @@ namespace adrilight
             {
 
 
+                float gamma = 0.14f; // affects the width of peak (more or less darkness)
+                float beta = 0.5f; // shifts the gaussian to be symmetric
+                float ii = 0f;
                 while (!token.IsCancellationRequested)
                 {
+
+                    //rainbow and music ticker//
                     double rainbowSpeed = GeneralSettings.SystemRainbowSpeed / 5d;
                     RainbowStartIndex -= rainbowSpeed;
                     if (RainbowStartIndex < 0)
@@ -155,7 +164,15 @@ namespace adrilight
                     {
                         MusicStartIndex = 0;
                     }
-                    Thread.Sleep(10);
+
+                    //static breathing ticker
+                    float smoothness_pts = (float)GeneralSettings.BreathingSpeed;
+                    double pwm_val = 255.0 * (Math.Exp(-(Math.Pow(((ii++ / smoothness_pts) - beta) / gamma, 2.0)) / 2.0));
+                    if (ii > smoothness_pts)
+                        ii = 0f;
+
+                     BreathingBrightnessValue = pwm_val / 255d;
+                    Thread.Sleep(5);
 
                 }
             }

@@ -257,7 +257,9 @@
 
                                                     <Viewbox Margin="0">
                                                         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <TextBlock Margin="1" Padding="1"  HorizontalAlignment="Center" VerticalAlignment="Center"  Text="{Binding VID}"  IsHitTestVisible="False"/>
+                                                            <TextBlock Margin="1" Padding="1"  HorizontalAlignment="Center" VerticalAlignment="Center"  Text="{Binding VID}"  IsHitTestVisible="False">
+                                                        
+                                                            </TextBlock>
                                                         </Grid>
 
                                                     </Viewbox>
@@ -385,10 +387,10 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <Path   Fill="{DynamicResource WarningBrush}" Width="20" Height="20" Margin="10,10" Data="{StaticResource colorchanged}" Stretch="Uniform" />
-            <TextBlock Margin="5" TextWrapping="Wrap" HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultWarning}" Grid.Column="1" Text="Nhấn Ctrl hoặc chuột trái để vẽ vào 1 ô bất kỳ. Nhấn Shift rồi trỏ vào 1 ô bất kỳ để xóa. Để đặt lại về ban đầu, chọn Reset."/>
+            <Path   Fill="{DynamicResource PrimaryBrush}" Width="20" Height="20" Margin="10,10" Data="{StaticResource colorchanged}" Stretch="Uniform" />
+            <TextBlock Margin="5" TextWrapping="Wrap" HorizontalAlignment="Left" Style="{DynamicResource TextBlockDefaultPrimary}" Grid.Column="1" Text="Nhấn Ctrl hoặc chuột trái để vẽ vào 1 ô bất kỳ. Nhấn Shift rồi trỏ vào 1 ô bất kỳ để xóa. Để đặt lại về ban đầu, chọn Reset."/>
             <Button Background="Transparent" Padding="0" BorderBrush="Transparent" Grid.Column="2" Margin="0" HorizontalAlignment="Left">
-                <TextBlock  TextWrapping="Wrap"  Style="{DynamicResource TextBlockDefaultPrimary}"  Text="Tìm hiểu thêm"/>
+                <TextBlock  TextWrapping="Wrap"  Style="{DynamicResource TextBlockDefaultInfo}"  Text="Tìm hiểu thêm"/>
             </Button>
 
         </Grid>

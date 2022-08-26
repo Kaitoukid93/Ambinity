@@ -44,7 +44,13 @@ namespace adrilight
         public object Lock { get; } = new object();
         public int SetupID { get; set; }    // to match with device ID
 
-
+        public void IndicateMissingValues()
+        {
+            foreach (var spot in Spots)
+            {
+                spot.IndicateMissingValue();
+            }
+        }
 
     }
 

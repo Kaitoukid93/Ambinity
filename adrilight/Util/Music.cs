@@ -60,7 +60,7 @@ namespace adrilight
                 case nameof(OutputSettings.OutputIsEnabled):
                 case nameof(OutputSettings.OutputSelectedMode):
                 case nameof(MainViewModel.IsVisualizerWindowOpen):
-
+                case nameof(OutputSettings.OutputParrentIsEnable):
                     RefreshAudioState();
                     break;
                 case nameof(OutputSettings.OutputCurrentActivePalette):
@@ -77,7 +77,7 @@ namespace adrilight
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 2 && OutputSettings.IsInSpotEditWizard == false;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputParrentIsEnable && OutputSettings.OutputSelectedMode == 2 && OutputSettings.IsInSpotEditWizard == false;
 
 
             if (isRunning && !shouldBeRunning)
@@ -106,7 +106,7 @@ namespace adrilight
         private void ColorPaletteChanged()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 2 && OutputSettings.IsInSpotEditWizard == false;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputParrentIsEnable && OutputSettings.OutputSelectedMode == 2 && OutputSettings.IsInSpotEditWizard == false;
 
             if (isRunning && shouldBeRunning)
             {

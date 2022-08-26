@@ -35,6 +35,7 @@ namespace adrilight
         private bool _outputUseLinearLighting =true;
         private bool _outputIsSelected = false;
         private bool _outputIsEnable;
+        private bool _outputParrentIsEnable = true;
         private Color _outputAtmosphereStartColor;
         private Color _outputAtmosphereStopColor;
         private string _outputAtmosphereMode;
@@ -61,7 +62,7 @@ namespace adrilight
         private bool _isInSpotEditWizard=false;
         private string _geometry = "generaldevice";
         private int _outputSmoothness = 2;
-        private int _outputPaletteChasingPosition;
+        private int _outputPaletteChasingPosition = 2;
         private int _outputScreenCaptureWBRed=100;
         private int _outputScreenCaptureWBGreen=100;
         private int _outputScreenCaptureWBBlue=100;
@@ -133,6 +134,7 @@ namespace adrilight
         public bool OutputUseLinearLighting { get => _outputUseLinearLighting; set { Set(() => OutputUseLinearLighting, ref _outputUseLinearLighting, value); } }
         [Reflectable]
         public bool OutputIsEnabled { get => _outputIsEnable; set { Set(() => OutputIsEnabled, ref _outputIsEnable, value); } }
+        public bool OutputParrentIsEnable { get => _outputParrentIsEnable; set { Set(() => OutputParrentIsEnable, ref _outputParrentIsEnable, value); } }
         [Reflectable]
         public Color OutputAtmosphereStartColor { get => _outputAtmosphereStartColor; set { Set(() => OutputAtmosphereStartColor, ref _outputAtmosphereStartColor, value); } }
         [Reflectable]

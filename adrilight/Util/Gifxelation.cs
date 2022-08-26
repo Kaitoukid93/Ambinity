@@ -78,7 +78,7 @@ namespace adrilight
             {
                 case nameof(OutputSettings.OutputIsEnabled):
                 case nameof(OutputSettings.OutputSelectedMode):
-
+                case nameof(OutputSettings.OutputParrentIsEnable):
 
                     RefreshColorState();
                     break;
@@ -100,7 +100,7 @@ namespace adrilight
         {
 
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 4 && OutputSettings.IsInSpotEditWizard == false;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputParrentIsEnable && OutputSettings.OutputSelectedMode == 4 && OutputSettings.IsInSpotEditWizard == false;
 
             if (isRunning && !shouldBeRunning)
             {
@@ -125,7 +125,7 @@ namespace adrilight
         private void ColorPaletteChanged()
         {
             var isRunning = _cancellationTokenSource != null && IsRunning;
-            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputSelectedMode == 4 && OutputSettings.IsInSpotEditWizard == false;
+            var shouldBeRunning = OutputSettings.OutputIsEnabled && OutputSettings.OutputParrentIsEnable && OutputSettings.OutputSelectedMode == 4 && OutputSettings.IsInSpotEditWizard == false;
 
 
             if (isRunning && shouldBeRunning)
