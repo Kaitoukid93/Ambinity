@@ -580,7 +580,11 @@ namespace adrilight
                                 //ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
                                 //receiving over serial takes it time as well and the arduino does both tasks in sequence
                                 //+1 ms extra safe zone
-                                var fastLedTime = ((streamLength - _messagePreamble.Length) / 3.0 * 0.030d);
+                                double fastLedTime;
+                                if (DeviceSettings.DeviceType == "ABHUBV2")
+                                     fastLedTime = ((192) / 3.0 * 0.030d);
+                                else
+                                    fastLedTime = ((streamLength - _messagePreamble.Length) / 3.0 * 0.030d);
                                 var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
                                 var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
 
