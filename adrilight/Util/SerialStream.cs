@@ -30,7 +30,7 @@ namespace adrilight
             DeviceSettings.PropertyChanged += UserSettings_PropertyChanged;
             deviceSettings.CurrentState = State.normal;
             RefreshTransferState();
-            
+
             _log.Info($"SerialStream created.");
 
 
@@ -169,15 +169,13 @@ namespace adrilight
                 DeviceSettings.IsLoadingSpeed = true;
                 Stop();
                 Thread.Sleep(500);
-                SetSpeed();
-                Thread.Sleep(500);
                 DeviceSettings.CurrentState = State.normal;
                 DeviceSettings.RefreshDeviceActualSpeedAsync();
             }
         }
 
         private readonly byte[] _messagePreamble = { (byte)'a', (byte)'b', (byte)'n' };
-        
+
 
 
 
@@ -187,7 +185,7 @@ namespace adrilight
 
         private int frameCounter;
         private int blackFrameCounter;
-     
+
 
 
         public void Start()
@@ -268,7 +266,7 @@ namespace adrilight
             //Open device at 1200 baudrate
 
 
-            if(DeviceSettings.DeviceType == "ABHUBV2")
+            if (DeviceSettings.DeviceType == "ABHUBV2")
             {
                 DeviceSettings.IsTransferActive = false;
                 var serialPort = (ISerialPortWrapper)new WrappedSerialPort(new SerialPort(DeviceSettings.OutputPort, 1000000));
@@ -285,41 +283,41 @@ namespace adrilight
                 {
                     serialPort.Write(new byte[3] { (byte)'f', (byte)'u', (byte)'g' }, 0, 3);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     // I don't know about this shit but we have to catch an empty exception because somehow SerialPort.Write() was called twice
                 }
 
 
-                Thread.Sleep(1000);          
+                Thread.Sleep(1000);
                 serialPort.Close();
             }
             else
             {
                 if (DeviceSettings.OutputPort != null)
                 {
-                    
+
                     var _serialPort = new SerialPort(DeviceSettings.OutputPort, 1200);
                     _serialPort.DtrEnable = true;
                     _serialPort.ReadTimeout = 5000;
                     _serialPort.WriteTimeout = 1000;
                     try
                     {
-                        if(!_serialPort.IsOpen)
-                        _serialPort.Open();
+                        if (!_serialPort.IsOpen)
+                            _serialPort.Open();
                     }
                     catch (Exception)
                     {
                         //
                     }
-                   
+
                     Thread.Sleep(1000);
-                    if(_serialPort.IsOpen)
-                    _serialPort.Close();
+                    if (_serialPort.IsOpen)
+                        _serialPort.Close();
 
                 }
             }
-           
+
 
 
 
@@ -360,7 +358,7 @@ namespace adrilight
                 outputStream[counter++] = lo;
                 outputStream[counter++] = chk;
                 outputStream[counter++] = id;
-                outputStream[counter++] = 0;
+                outputStream[counter++] = (byte)DeviceSettings.DeviceSpeed;
                 outputStream[counter++] = 0;
                 var isEnabled = currentOutput.OutputIsEnabled;
                 var parrentIsEnabled = DeviceSettings.IsEnabled;
@@ -369,31 +367,31 @@ namespace adrilight
                 switch (DeviceSettings.CurrentState)
                 {
                     case State.normal: // get data from ledsetup
-                        if (!DeviceSettings.IsEnabled||!output.OutputIsEnabled)
+                        if (!DeviceSettings.IsEnabled || !output.OutputIsEnabled)
                         {
-                            
-                                output.OutputLEDSetup.IndicateMissingValues();
-                            
+
+                            output.OutputLEDSetup.IndicateMissingValues();
+
                         }
 
 
                         foreach (DeviceSpot spot in currentOutput.OutputLEDSetup.Spots)
                         {
-                           
-                                var RGBOrder = currentOutput.OutputRGBLEDOrder;
-                                var reOrderedColor = ReOrderSpotColor(RGBOrder, spot.Red, spot.Green, spot.Blue);
-                                for (int i = 0; i < ledPerSpot; i++)
-                                {
 
-                                    outputStream[counter++] = reOrderedColor[0]; // blue
-                                    outputStream[counter++] = reOrderedColor[1]; // green
-                                    outputStream[counter++] = reOrderedColor[2]; // red
-                                }
+                            var RGBOrder = currentOutput.OutputRGBLEDOrder;
+                            var reOrderedColor = ReOrderSpotColor(RGBOrder, spot.Red, spot.Green, spot.Blue);
+                            for (int i = 0; i < ledPerSpot; i++)
+                            {
 
-                                allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
+                                outputStream[counter++] = reOrderedColor[0]; // blue
+                                outputStream[counter++] = reOrderedColor[1]; // green
+                                outputStream[counter++] = reOrderedColor[2]; // red
+                            }
 
-                            
-                      
+                            allBlack = allBlack && spot.Red == 0 && spot.Green == 0 && spot.Blue == 0;
+
+
+
 
 
                         }
@@ -401,7 +399,7 @@ namespace adrilight
                     case State.sleep: // send black frame data
                         foreach (DeviceSpot spot in currentOutput.OutputLEDSetup.Spots)
                         {
-                            
+
                             switch (currentOutput.SleepMode)
                             {
                                 case 0:
@@ -534,11 +532,11 @@ namespace adrilight
                             openedComPort = DeviceSettings.OutputPort;
 
                         }
-                       
+
                         //send frame data
                         if (isUnion)
                         {
-                           
+
                             for (int i = 0; i < DeviceSettings.AvailableOutputs.Length; i++)
                             {
                                 var (outputBuffer, streamLength) = GetOutputStream(DeviceSettings.UnionOutput, (byte)i);
@@ -554,9 +552,18 @@ namespace adrilight
                                 //ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
                                 //receiving over serial takes it time as well and the arduino does both tasks in sequence
                                 //+1 ms extra safe zone
-                                var fastLedTime = ((streamLength - _messagePreamble.Length) / 3.0 * 0.030d);
+                                double fastLedTime;
+                                if (DeviceSettings.DeviceType == "ABHUBV2")
+                                    fastLedTime = ((192) / 3.0 * 0.030d);
+                                else
+                                    fastLedTime = ((streamLength - _messagePreamble.Length) / 3.0 * 0.030d);
                                 var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
-                                var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
+                                var fanSpeedSettingTime = 0;
+                                if (DeviceSettings.DeviceType == "ABFANHUB")
+                                    if (i == 2) // this is the output that share the same dataline with Tx to little core on fanhub
+                                        fanSpeedSettingTime = 2; //so we need to increase sleep time to prevent package skipping
+
+                                var minTimespan = (int)(fastLedTime + serialTransferTime) + 1 + fanSpeedSettingTime;
 
                                 Thread.Sleep(minTimespan);
                             }
@@ -566,7 +573,7 @@ namespace adrilight
                         {
                             foreach (var output in DeviceSettings.AvailableOutputs)
                             {
-                                 
+
                                 var (outputBuffer, streamLength) = GetOutputStream(output, (byte)output.OutputID);
                                 serialPort.Write(outputBuffer, 0, streamLength);
                                 if (++frameCounter == 1024 && blackFrameCounter > 1000)
@@ -582,11 +589,15 @@ namespace adrilight
                                 //+1 ms extra safe zone
                                 double fastLedTime;
                                 if (DeviceSettings.DeviceType == "ABHUBV2")
-                                     fastLedTime = ((192) / 3.0 * 0.030d);
+                                    fastLedTime = ((192) / 3.0 * 0.030d);
                                 else
                                     fastLedTime = ((streamLength - _messagePreamble.Length) / 3.0 * 0.030d);
                                 var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
-                                var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
+                                var fanSpeedSettingTime = 0;
+                                if (DeviceSettings.DeviceType == "ABFANHUB")
+                                    if (output.OutputID == 2) // this is the output that share the same dataline with Tx to little core on fanhub
+                                        fanSpeedSettingTime = 2; //so we need to increase sleep time to prevent package skipping
+                                var minTimespan = (int)(fastLedTime + serialTransferTime) + 1 + fanSpeedSettingTime;
 
                                 Thread.Sleep(minTimespan);
                             }

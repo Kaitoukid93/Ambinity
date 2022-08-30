@@ -370,9 +370,9 @@
                                                 <TextBlock Style="{DynamicResource TextBlockDefault}"  Text="{Binding Path=DataContext.CurrentDevice.DeviceSpeed, RelativeSource={RelativeSource AncestorType=local:UnionOutputControl}}"/>
 
                                             </Border>
-                                            <Button Grid.Column="2" Margin="5,0,10,0"  Width="auto" Height="32"  x:Name="ApplyButton" CommandParameter="speed" Command="{Binding Path=DataContext.SendCurrentDeviceSpeedCommand, RelativeSource={RelativeSource AncestorType=local:UnionOutputControl}}" BorderThickness="0" Background="{DynamicResource SecondaryRegionBrush}"   Content="Apply" Style="{DynamicResource ButtonDefault}"></Button>
+                                            <Button Grid.Column="2" Margin="5,0,10,0"  Width="auto" Height="32"  x:Name="ApplyButton" CommandParameter="speed" Command="{Binding Path=DataContext.SendCurrentDeviceSpeedCommand, RelativeSource={RelativeSource AncestorType=local:UnionOutputControl}}" BorderThickness="0" Background="{DynamicResource SecondaryRegionBrush}"   Content="Check" Style="{DynamicResource ButtonDefault}"></Button>
                                             <hc:Badge Visibility="{Binding Path=DataContext.IsSpeedSettingUnsetted, RelativeSource={RelativeSource AncestorType=local:UnionOutputControl},Converter={StaticResource boolToVisibilityConvert}}" Grid.Column="2"  BadgeMargin="-5" Status="Processing"  Margin="5,0,10,0" Style="{DynamicResource BadgeDanger}">
-                                                <Button  Width="auto" Height="32"  x:Name="DummyButton" CommandParameter="speed" Command="{Binding Path=DataContext.SendCurrentDeviceSpeedCommand, RelativeSource={RelativeSource AncestorType=local:UnionOutputControl}}" BorderThickness="0" Background="Transparent"   Content="Apply" Style="{DynamicResource ButtonDefault}"></Button>
+                                                <Button  Width="auto" Height="32"  x:Name="DummyButton" CommandParameter="speed" Command="{Binding Path=DataContext.SendCurrentDeviceSpeedCommand, RelativeSource={RelativeSource AncestorType=local:UnionOutputControl}}" BorderThickness="0" Background="Transparent" ToolTip="Kiểm tra tốc độ thực tế"  Content="Check" Style="{DynamicResource ButtonDefault}"></Button>
                                             </hc:Badge>
 
 
