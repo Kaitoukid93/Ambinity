@@ -4882,7 +4882,7 @@ namespace adrilight.ViewModel
                         convertedDevice.DeviceID = AvailableDevices.Count + 1;
                         convertedDevice.DeviceUID = Guid.NewGuid().ToString();
                         convertedDevice.IsUnionMode = true;
-                        convertedDevice.UnionOutput = DefaulOutputCollection.GenericLEDStrip(0, 64, "Dây LED", 1, true, "ledstrip");
+                        convertedDevice.UnionOutput = DefaulOutputCollection.GenericLEDStrip(1, 64, "Dây LED", 1, true, "ledstrip");
                         convertedDevice.AvailableOutputs = new OutputSettings[] { DefaulOutputCollection.GenericLEDStrip(0, 64, "Dây LED", 1, false, "ledstrip") };
                         convertedDevice.Geometry = wLEDDevice.Geometry;
                         AvailableDevices.Add(convertedDevice);

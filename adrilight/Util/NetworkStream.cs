@@ -367,7 +367,7 @@ namespace adrilight
                             var serialTransferTime = outputBuffer.Length * 10 * 1000 / baudRate;
                             var minTimespan = (int)(fastLedTime + serialTransferTime) + 1;
 
-                            Thread.Sleep(minTimespan);
+                            Thread.Sleep(10);
                         }
                         
 
