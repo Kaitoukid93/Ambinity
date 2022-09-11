@@ -3864,13 +3864,31 @@ namespace adrilight.ViewModel
                 var json = File.ReadAllText(Import.FileName);
 
                 var existedprofile = JsonConvert.DeserializeObject<DeviceProfile>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
+
                 //ignore existed UID for posibility of conflicting with old UID
-                existedprofile.ProfileUID = Guid.NewGuid().ToString();
-                AvailableProfiles.Add(existedprofile);
-                RaisePropertyChanged(nameof(AvailableProfiles));
-                WriteDeviceProfileCollection();
-                AvailableProfilesForCurrentDevice.Clear();
-                AvailableProfilesForCurrentDevice = ProfileFilter(CurrentDevice);
+                if(existedprofile!=null)
+                {
+                    try
+                    {
+                        existedprofile.ProfileUID = Guid.NewGuid().ToString();
+                        AvailableProfiles.Add(existedprofile);
+                        RaisePropertyChanged(nameof(AvailableProfiles));
+                        WriteDeviceProfileCollection();
+                        AvailableProfilesForCurrentDevice.Clear();
+                        AvailableProfilesForCurrentDevice = ProfileFilter(CurrentDevice);
+                    }
+                    catch(Exception ex)
+                    {
+                        HandyControl.Controls.MessageBox.Show("Profile Corrupted or incompatible!!", "File Corrupted", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else
+                {
+                    HandyControl.Controls.MessageBox.Show("Profile Corrupted", "File Corrupted", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                    
+
+               
 
             }
         }
