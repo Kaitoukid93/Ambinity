@@ -417,9 +417,14 @@ namespace adrilight
                 if(OutputSettings.OutputSelectedDisplay>= DesktopFrame.Length)
                 {
                     HandyControl.Controls.MessageBox.Show( "màn hình không khả dụng","Sáng theo màn hình", MessageBoxButton.OK, MessageBoxImage.Error);
+                    CurrentFrame = DesktopFrame.FirstOrDefault().Frame;
+                    OutputSettings.OutputSelectedDisplay = 0;
                 }
-                CurrentFrame = DesktopFrame.FirstOrDefault().Frame;
-                OutputSettings.OutputSelectedDisplay = 0;
+                else
+                {
+                    CurrentFrame = DesktopFrame[OutputSettings.OutputSelectedDisplay].Frame;
+                }
+               
                 if (isPreviewRunning)
                 {
                     MainViewViewModel.ShaderImageUpdate(CurrentFrame);
