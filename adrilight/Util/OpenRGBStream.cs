@@ -92,14 +92,26 @@ namespace adrilight
 
                     if (AmbinityClient != null)
                     {
-
+                        
                         var devices = AmbinityClient.GetAllControllerData();
                         int index = 0;
                         ReorderedDevices = new DeviceSettings[devices.Length];
                         foreach (var device in devices)
                         {
+
+                            for(var i = 0;i<device.Modes.Length;i++)
+                            {
+
+                                Debug.WriteLine(device.Modes[i].Name.ToString());
+                                if(device.Modes[i].Name=="Direct")
+                                {
+                                    AmbinityClient.SetMode(index,i);
+                                }
+                            }
+                                
                             
                             _log.Info($"Device found : " + device.Name.ToString() + "At index: " + index);
+                             
                             var deviceUID = device.Name + device.Version + device.Location;
                             foreach(var convertedDevice in AvailableDevices)
                             {
@@ -264,8 +276,7 @@ namespace adrilight
         {
             var cancellationToken = (CancellationToken)tokenObject;
 
-            while (!cancellationToken.IsCancellationRequested)
-            {
+            
                 try
                 {
                     var client = AmbinityClient;
@@ -292,23 +303,28 @@ namespace adrilight
                             //}
                             for(int i=0;i<ReorderedDevices.Length;i++)
                             {
-                                if (ReorderedDevices[i]!=null)
+                                if (ReorderedDevices[i]!=null && ReorderedDevices[i].IsEnabled)
                                 {
+                                var deviceColors = new List<OpenRGB.NET.Models.Color>();
                                     foreach (var output in ReorderedDevices[i].AvailableOutputs)
                                     {
                                         var outputColor = GetOutputStream(output);
                                         if (outputColor != null)
                                         {
+                                        foreach (var color in outputColor)
+                                            deviceColors.Add(color);
 
-                                            client.UpdateZone(i, output.OutputID, outputColor);
+                                            
                                         }
 
-                                        Thread.Sleep(10);
+                                        
                                     }
-                                }
+                               
+                                client.UpdateLeds(i, deviceColors.ToArray());
+                            }
                               
                             }
-
+                            Thread.Sleep(17);
 
                         }
                     }
@@ -348,7 +364,7 @@ namespace adrilight
 
 
 
-            }
+            
         }
 
 
