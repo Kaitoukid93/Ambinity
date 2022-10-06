@@ -49,6 +49,9 @@ using System.Drawing.Imaging;
 using ColorPalette = adrilight.Util.ColorPalette;
 using HandyControl.Themes;
 using MoreLinq;
+using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
 
 namespace adrilight.ViewModel
 {
@@ -552,6 +555,7 @@ namespace adrilight.ViewModel
             }
         }
         public ICommand ExportCurrentColorEffectCommand { get; set; }
+        public ICommand OpenFanSpeedPlotWindowsCommand { get; set; }
         public ICommand OpenExportNewColorEffectCommand { get; set; }
         public ICommand ResetAppCommand { get; set; }
         public ICommand ResetDefaultAspectRatioCommand { get; set; }
@@ -1042,6 +1046,16 @@ namespace adrilight.ViewModel
 
             }
         }
+        private SeriesCollection _fanControlView;
+        public SeriesCollection FanControlView {
+            get => _fanControlView;
+            set
+            {
+                _fanControlView = value;
+                RaisePropertyChanged();
+
+            }
+        }
         public WriteableBitmap _gifxelationBitmap;
         public WriteableBitmap GifxelationBitmap {
             get => _gifxelationBitmap;
@@ -1304,6 +1318,7 @@ namespace adrilight.ViewModel
 
             }
 
+            
 
             AvailableAutomations = new ObservableCollection<IAutomationSettings>();
             foreach (var automation in LoadAutomationIfExist())
@@ -1386,6 +1401,7 @@ namespace adrilight.ViewModel
 
             });
         }
+
         public void ShaderImageUpdate(ByteFrame frame)
         {
 
@@ -2744,6 +2760,14 @@ namespace adrilight.ViewModel
                 OpenExportNewEffectWindow();
             }
           );
+            OpenFanSpeedPlotWindowsCommand = new RelayCommand<string>((p) =>
+            {
+                return true;
+            }, (p) =>
+            {
+                OpenFanSpeedPlotWindows();
+            }
+          );
             ImportProfileCommand = new RelayCommand<string>((p) =>
             {
                 return true;
@@ -3866,7 +3890,7 @@ namespace adrilight.ViewModel
                 var existedprofile = JsonConvert.DeserializeObject<DeviceProfile>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
 
                 //ignore existed UID for posibility of conflicting with old UID
-                if(existedprofile!=null)
+                if (existedprofile != null)
                 {
                     try
                     {
@@ -3877,7 +3901,7 @@ namespace adrilight.ViewModel
                         AvailableProfilesForCurrentDevice.Clear();
                         AvailableProfilesForCurrentDevice = ProfileFilter(CurrentDevice);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         HandyControl.Controls.MessageBox.Show("Profile Corrupted or incompatible!!", "File Corrupted", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
@@ -3886,9 +3910,9 @@ namespace adrilight.ViewModel
                 {
                     HandyControl.Controls.MessageBox.Show("Profile Corrupted", "File Corrupted", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                    
 
-               
+
+
 
             }
         }
@@ -4353,12 +4377,12 @@ namespace adrilight.ViewModel
                     var requiredFwVersion = JsonConvert.DeserializeObject<List<DeviceFirmware>>(json, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
 
                     var currentDeviceFirmwareInfo = requiredFwVersion.Where(p => p.TargetHardware == device.HardwareVersion).FirstOrDefault();
-                    if(currentDeviceFirmwareInfo == null)
+                    if (currentDeviceFirmwareInfo == null)
                     {
                         //not supported hardware
 
                         var result = HandyControl.Controls.MessageBox.Show("Phần cứng không còn được hỗ trợ hoặc không nhận ra: " + device.HardwareVersion + " Bạn có muốn chọn phần cứng được hỗ trợ?", "Firmware uploading", MessageBoxButton.YesNo, MessageBoxImage.Error);
-                        if(result == MessageBoxResult.Yes)
+                        if (result == MessageBoxResult.Yes)
                         {
                             var fwjson = File.ReadAllText(JsonFWToolsFWListFileNameAndPath);
                             var availableFirmware = JsonConvert.DeserializeObject<List<DeviceFirmware>>(fwjson, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
@@ -4372,7 +4396,7 @@ namespace adrilight.ViewModel
                             // show list selected firmware
                             OpenFirmwareSelectionWindow();
                         }
-                        
+
                     }
                     else
                     {
@@ -4440,7 +4464,7 @@ namespace adrilight.ViewModel
                             HandyControl.Controls.MessageBox.Show("Không có phiên bản mới cho thiết bị này", "Firmware uploading", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                     }
-                   
+
                 }
             }
 
@@ -4911,12 +4935,12 @@ namespace adrilight.ViewModel
             }
             if (AvailableSerialDevices != null)
             {
-                
+
                 //foreach (var serialDevice in AvailableSerialDevices)
                 //{
                 //    if (serialDevice.IsSelected && serialDevice.AvailableOutputs[0] != null)
                 //    {
-                        
+
                 //        serialDevice.UnionOutput = DefaulOutputCollection.AvailableDefaultOutputs[5];
                 //        serialDevice.UnionOutput.OutputID = 1;
                 //        serialDevice.UnionOutput.OutputIsEnabled = false;
@@ -4932,17 +4956,17 @@ namespace adrilight.ViewModel
                 //    }
 
                 //}
-                
-                    foreach (var serialDevice in AvailableSerialDevices)
-                    {
-                    if(serialDevice.IsSelected)
+
+                foreach (var serialDevice in AvailableSerialDevices)
+                {
+                    if (serialDevice.IsSelected)
                     {
                         AvailableDevices.Add(serialDevice);
-                    } 
                     }
+                }
 
 
-                
+
                 //else
                 //{
                 //    HandyControl.Controls.MessageBox.Show("Vui lòng chọn thiết bị để thêm", "No Device Selected", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -5495,6 +5519,16 @@ namespace adrilight.ViewModel
 
             }
         }
+        public void OpenFanSpeedPlotWindows()
+        {
+            if (AssemblyHelper.CreateInternalInstance($"View.{"FanSpeedPlotWindow"}") is System.Windows.Window window)
+            {
+
+                window.Owner = System.Windows.Application.Current.MainWindow;
+                window.ShowDialog();
+
+            }
+        }
         //public void SetCurrentDeviceSelectedPalette(IColorPaletteCard palette)
         //{
         //    if (palette != null)
@@ -5567,6 +5601,7 @@ namespace adrilight.ViewModel
 
 
         }
+    
         public void DFU()
         {
             foreach (var serialStream in SerialStreams)
@@ -5635,7 +5670,7 @@ namespace adrilight.ViewModel
             //    Geometry = "binary",
             //    ResourceName = "adrilight.DeviceFirmware.ABR1e.hex"
             //};
-           
+
             //IDeviceFirmware ABR2p = new DeviceFirmware() {
             //    Name = "ABR2p.hex",
             //    Version = "1.0.5",
@@ -5660,14 +5695,14 @@ namespace adrilight.ViewModel
                 Geometry = "binary",
                 ResourceName = "adrilight.DeviceFirmware.AER1e.hex"
             };
-             IDeviceFirmware AER2e = new DeviceFirmware() {
-                 Name = "AER2e.hex",
-                 Version = "1.0.4",
-                 TargetHardware = "AER2e",
-                 TargetDeviceType = "ABEDGE",
-                 Geometry = "binary",
-                 ResourceName = "adrilight.DeviceFirmware.AER2e.hex"
-             };
+            IDeviceFirmware AER2e = new DeviceFirmware() {
+                Name = "AER2e.hex",
+                Version = "1.0.4",
+                TargetHardware = "AER2e",
+                TargetDeviceType = "ABEDGE",
+                Geometry = "binary",
+                ResourceName = "adrilight.DeviceFirmware.AER2e.hex"
+            };
             //IDeviceFirmware AER2p = new DeviceFirmware() {
             //    Name = "AER2p.hex",
             //    Version = "1.0.3",
@@ -7105,6 +7140,7 @@ namespace adrilight.ViewModel
         public void GotoChild(IDeviceSettings selectedDevice)
         {
             //SetMenuItemActiveStatus(lighting);
+           
             SelectedVerticalMenuItem = MenuItems.FirstOrDefault(t => t.Text == lighting);
             IsDashboardType = false;
             CurrentDevice = selectedDevice;
@@ -7198,16 +7234,17 @@ namespace adrilight.ViewModel
                         }
 
                         break;
-                        
+
                     case nameof(CurrentDevice.DeviceSpeed):
                         IsSpeedSettingUnsetted = true;
                         break;
-                    
-                    case nameof(CurrentDevice.SpeedMode):
-                        //send speed mode command
-                        CurrentDevice.CurrentState = State.speed;
-                        break;
 
+                
+                    case nameof(CurrentDevice.IsTransferActive):
+                        {
+                            CurrentDevice.IsLoadingSpeed = false;
+                        }
+                        break;
                     case nameof(CurrentDevice.IsUnionMode):
                         switch (CurrentDevice.IsUnionMode)
                         {

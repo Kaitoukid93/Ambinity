@@ -72,7 +72,7 @@
   <PropertyGroup>
     <SignManifests>false</SignManifests>
     <ApplicationIcon>zoe.ico</ApplicationIcon>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationManifest>app1.manifest</ApplicationManifest>
     <MinimumPlatformVersion>7.0</MinimumPlatformVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
@@ -211,6 +211,8 @@
     <PackageReference Include="gong-wpf-dragdrop" Version="3.1.1" />
     <PackageReference Include="HandyControls" Version="3.3.11" />
     <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.0" />
+    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
@@ -308,6 +310,7 @@
   <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
   <ItemGroup>
     <None Remove="App.config" />
+    <None Remove="app1.manifest" />
     <None Remove="DeviceFirmware\ABR1p.hex" />
     <None Remove="DeviceFirmware\ABR2e.hex" />
     <None Remove="DeviceFirmware\AER1e.hex" />
@@ -366,6 +369,9 @@
     <Resource Include="Shaders\Thumbnail\Plasma.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\FanSpeedPlotWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\ExportNewColorEffectWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -503,6 +509,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="View\FanSpeedPlotWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\ExportNewColorEffectWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

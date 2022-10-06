@@ -13,8 +13,7 @@
         
        
         mc:Ignorable="d" Top="20"
-        WindowStartupLocation="CenterScreen"
-        
+        WindowStartupLocation="CenterScreen"            
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal" 
@@ -22,7 +21,7 @@
        
         
        AllowDrop="True" AllowsTransparency="False"
-        Height="960" Width="1500"  MinHeight="480"  MinWidth="640" MouseLeftButtonDown="Window_MouseLeftButtonDown"  Closing="Window_Closing">
+         MinHeight="480"  MinWidth="640" MouseLeftButtonDown="Window_MouseLeftButtonDown"  Closing="Window_Closing">
    
     <Window.Resources>
         <ResourceDictionary>

@@ -190,7 +190,7 @@ namespace adrilight
             kernel.Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
             var openRGBStream = kernel.Get<IOpenRGBStream>();
             var rainbowTicker = kernel.Get<IRainbowTicker>();
-            //var hwMonitor = kernel.Get<IHWMonitor>();
+            var hwMonitor = kernel.Get<IHWMonitor>();
 
             var audioFrame = kernel.Get<IAudioFrame>();
             //// tách riêng từng setting của từng device///

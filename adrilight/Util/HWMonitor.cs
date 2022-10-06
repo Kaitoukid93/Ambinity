@@ -14,6 +14,11 @@ using adrilight.Spots;
 using LibreHardwareMonitor.Hardware;
 using GalaSoft.MvvmLight;
 using System.Collections.ObjectModel;
+using MathNet.Numerics.Statistics;
+using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
+using System.Windows;
 
 namespace adrilight.Util
 {
@@ -24,18 +29,20 @@ namespace adrilight.Util
         private readonly NLog.ILogger _log = LogManager.GetCurrentClassLogger();
 
 
-        public HWMonitor(IGeneralSettings generalSettings, MainViewViewModel mainViewViewModel)
+        public HWMonitor(IGeneralSettings generalSettings, MainViewViewModel mainViewViewModel, IDeviceSettings[] availableDevices)
         {
 
             MainViewViewModel = mainViewViewModel ?? throw new ArgumentNullException(nameof(mainViewViewModel));
             GeneralSettings = generalSettings ?? throw new ArgumentNullException(nameof(generalSettings));
-
+            AvailableDevices = availableDevices ?? throw new ArgumentNullException(nameof(availableDevices));
             RefreshHWState();
             _log.Info($"Hardware Monitor Created");
 
         }
         IComputer thisComputer { get; set; }
+        IDeviceSettings[] AvailableDevices { get; set; }
         public int AutoFanSpeed { get; set; }
+        private double oldSpeed = 200d;
         LibreHardwareMonitor.Hardware.Computer computer { get; set; }
         private void PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -60,7 +67,7 @@ namespace adrilight.Util
 
         private MainViewViewModel MainViewViewModel { get; }
         private Computer displayHWInfo { get; set; }
-
+        private double _lastLecture;
         public bool IsRunning { get; private set; } = false;
         private CancellationTokenSource _cancellationTokenSource;
         private void RefreshHWState()
@@ -113,8 +120,12 @@ namespace adrilight.Util
                 thisComputer.MotherBoard = new List<IHardware>(); // init mb list
                 thisComputer.Ram = new List<IHardware>(); // init mb list
                 thisComputer.GraphicCard = new List<IHardware>(); // init mb list
+                var fanControlSensors = new List<ISensor>();
+               
+                computer.Accept(updateVisitor);
                 foreach (var hardware in computer.Hardware)
                 {
+
                     if (hardware.HardwareType == HardwareType.Cpu)
                         thisComputer.Processor.Add(hardware);
                     if (hardware.HardwareType == HardwareType.Motherboard)
@@ -124,19 +135,64 @@ namespace adrilight.Util
                     if (hardware.HardwareType == HardwareType.GpuNvidia || hardware.HardwareType == HardwareType.GpuAmd)
                         thisComputer.GraphicCard.Add(hardware);
                 }
+                //add all fancontrol sensor to the list
+
+                if (thisComputer.MotherBoard.Count > 0)// check if we get any motherboard
+                {
+                    if (thisComputer.MotherBoard[0].SubHardware.Length > 0) // check if any subhardware in motherboard
+                    {
+                        foreach (var sensor in thisComputer.MotherBoard[0].SubHardware[0].Sensors)
+                        {
+                            if (sensor.SensorType == SensorType.Control)
+                            {
+                                fanControlSensors.Add(sensor);
+                            }
+                        }
+                    }
+                }
+            
 
                 while (!token.IsCancellationRequested)
                 {
 
-                    //get median fan value
+                    //get median fan control speed value
+                    List<double> speeds = new List<double>();
+                    foreach (var sensor in fanControlSensors)
+                    {
+                        speeds.Add((double)sensor.Value);
+                    }
+                    var medianSpeed = speeds.Median();
+                    if(MainViewViewModel.IsSplitLightingWindowOpen)
+                    {
+                        MainViewViewModel.FanControlView[0].Values.Add(new ObservableValue(medianSpeed));
+                        MainViewViewModel.FanControlView[0].Values.RemoveAt(0);
 
+                    }
 
                     // decide if it's necessary to update to the fan
-                    //formular is if the fan speed changed more than 10% compare to last fan speed, apply the change
+                    //formular is if the fan speed changed more than 5% compare to last fan speed, apply the change
+
+                    //it's time to tell the fan to update the speed
+                    foreach (var device in AvailableDevices.Where(x => x.DeviceType == "ABFANHUB"))
+                    {
+
+                        if (Math.Abs((int)(medianSpeed*255/100)- device.DeviceSpeed) > 15)
+                        {
+
+                            if (device.SpeedMode == 1)
+                            {
+                                device.DeviceSpeed = ((int)medianSpeed * 255) / 100;
+                            }
+
+                        }
+
+
+                    }
 
                     computer.Accept(updateVisitor);
 
-                 
+
+
                     Thread.Sleep(1000);
                 }
                 // update every second
@@ -175,7 +231,8 @@ namespace adrilight.Util
             }
 
         }
-
+       
+      
         public void Init()
         {
             computer = new LibreHardwareMonitor.Hardware.Computer {

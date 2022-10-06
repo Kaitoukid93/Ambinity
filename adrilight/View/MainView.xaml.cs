@@ -17,6 +17,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using adrilight.ViewModel;
+using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
 namespace adrilight.View
 {
     /// <summary>
@@ -30,11 +33,42 @@ namespace adrilight.View
             InitializeComponent();
             // ViewModel = new MainViewViewModel();
             // this.DataContext = ViewModel;
+            this.Height = SystemParameters.PrimaryScreenHeight * 0.9;
+            this.Width = SystemParameters.PrimaryScreenWidth * 0.8;
             noticon.Init();
        
             var view = DataContext as MainViewViewModel;
             if (view != null)
             {
+                view.FanControlView = new SeriesCollection
+           {
+                new LineSeries
+                {
+                    AreaLimit = -10,
+                    Values = new ChartValues<ObservableValue>
+                    {
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80),
+                        new ObservableValue(80)
+
+                }
+                }
+            };
                 view.IsCanvasLightingWindowOpen = true;
                 view.IsSplitLightingWindowOpen = true;
                 //view.IsSplitLightingWindowOpen = true;

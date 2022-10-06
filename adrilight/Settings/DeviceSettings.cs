@@ -61,7 +61,7 @@ namespace adrilight
         private static byte[] expectedValidHeader = { 15, 12, 93 };
         private bool _isSizeNeedUserDefine = false;
         private int _deviceSpeed = 200; //only apply for fan hub devices
-        private int _speedMode = 0;
+        private int _speedMode = 1;
         private string _deviceActualSpeed = "n/a";
         private bool _isLoadingSpeed = false;
         private System.Drawing.Rectangle _deviceBoundRectangle;
