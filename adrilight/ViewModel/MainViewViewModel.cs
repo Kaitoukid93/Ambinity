@@ -1364,6 +1364,19 @@ namespace adrilight.ViewModel
                             StartUpManager.RemoveApplicationFromCurrentUserStartup();
                         }
                         break;
+                    case nameof(GeneralSettings.HotkeyEnable):
+                        if(GeneralSettings.HotkeyEnable)
+                        {
+                              HotKeyManager.Instance.Start();
+                                Register();
+                            
+                        }
+                        else
+                        {
+                            HotKeyManager.Instance.Stop();
+                            Unregister();
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -5583,8 +5596,7 @@ namespace adrilight.ViewModel
             //}
 
             //WriteDeviceInfoJson();
-        }
-
+        } 
         public void DeviceRectSavePosition()
         {
             //save current device rect position to json database
@@ -5719,6 +5731,14 @@ namespace adrilight.ViewModel
                 Geometry = "binary",
                 ResourceName = "adrilight.DeviceFirmware.AFR1g.hex"
             };
+            IDeviceFirmware AFR2g = new DeviceFirmware() {
+                Name = "AFR2g.hex",
+                Version = "1.0.4",
+                TargetHardware = "AFR2g",
+                TargetDeviceType = "ABFANHUB",
+                Geometry = "binary",
+                ResourceName = "adrilight.DeviceFirmware.AFR2g.hex"
+            };
             IDeviceFirmware AHR1g = new DeviceFirmware() {
                 Name = "AHR1g.hex",
                 Version = "1.0.1",
@@ -5745,6 +5765,7 @@ namespace adrilight.ViewModel
             firmwareList.Add(AFR1g);
             firmwareList.Add(AHR1g);
             firmwareList.Add(ARR1p);
+            firmwareList.Add(AFR2g);
             //+-------------------------------------------------+--------+----+----+-------+
             //| Ambino Basic CH552P without PowerLED Support    | CH552P | 32 | 14 | ABR1p |
             //+-------------------------------------------------+--------+----+----+-------+
@@ -5759,6 +5780,8 @@ namespace adrilight.ViewModel
             //| Ambino EDGE CH552P (rev2) With PowerLED Support | CH552P |    |    | AER2p |
             //+-------------------------------------------------+--------+----+----+-------+
             //| Ambino FanHUB CH552G rev1                       | CH552G |    |    | AFR1g |
+            //+-------------------------------------------------+--------+----+----+-------+
+            //| Ambino FanHUB CH552G rev2                       | CH552G |    |    | AFR2g |
             //+-------------------------------------------------+--------+----+----+-------+
             //| Ambino HUBV3 CH552G rev1                        | CH552G |    |    | AHR1g |
             //+-------------------------------------------------+--------+----+----+-------+

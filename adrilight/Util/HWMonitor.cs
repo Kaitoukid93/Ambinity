@@ -121,7 +121,7 @@ namespace adrilight.Util
                 thisComputer.Ram = new List<IHardware>(); // init mb list
                 thisComputer.GraphicCard = new List<IHardware>(); // init mb list
                 var fanControlSensors = new List<ISensor>();
-               
+
                 computer.Accept(updateVisitor);
                 foreach (var hardware in computer.Hardware)
                 {
@@ -148,21 +148,50 @@ namespace adrilight.Util
                                 fanControlSensors.Add(sensor);
                             }
                         }
+
+                    }
+                    else
+                    {
+                        HandyControl.Controls.MessageBox.Show("Không đọc được thông tin Fan Controller , thử khởi chạy lại ứng dụng với quyền Admin", "Fan Controller not found", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
-            
+                else
+                {
+                    //there is no fking mainboard here, could be LHM's fault or some shit happened
+                    // just tell ya
+                    HandyControl.Controls.MessageBox.Show("Không đọc được thông tin Motherboard , thử khởi chạy lại ứng dụng với quyền Admin", "Motherboard not found", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
 
+                if (fanControlSensors.Count <= 0)
+                {
+                    HandyControl.Controls.MessageBox.Show("Fan sẽ chạy với tốc độ mặc định hoặc điều chỉnh bằng tay", "Fan Controller sensor not found", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    foreach (var device in AvailableDevices.Where(x => x.DeviceType == "ABFANHUB"))
+                    {
+
+                        device.DeviceSpeed = 200;
+
+                    }
+                }
+                
                 while (!token.IsCancellationRequested)
                 {
 
                     //get median fan control speed value
                     List<double> speeds = new List<double>();
-                    foreach (var sensor in fanControlSensors)
+                    if(fanControlSensors.Count > 0)
                     {
-                        speeds.Add((double)sensor.Value);
+                        foreach (var sensor in fanControlSensors)
+                        {
+                            speeds.Add((double)sensor.Value);
+                        }
                     }
+                    else
+                    {
+                        speeds.Add(80d);
+                    }
+                    
                     var medianSpeed = speeds.Median();
-                    if(MainViewViewModel.IsSplitLightingWindowOpen)
+                    if (MainViewViewModel.IsSplitLightingWindowOpen)
                     {
                         MainViewViewModel.FanControlView[0].Values.Add(new ObservableValue(medianSpeed));
                         MainViewViewModel.FanControlView[0].Values.RemoveAt(0);
@@ -176,11 +205,12 @@ namespace adrilight.Util
                     foreach (var device in AvailableDevices.Where(x => x.DeviceType == "ABFANHUB"))
                     {
 
-                        if (Math.Abs((int)(medianSpeed*255/100)- device.DeviceSpeed) > 15)
+                        if (Math.Abs((int)(medianSpeed * 255 / 100) - device.DeviceSpeed) > 15)
                         {
 
                             if (device.SpeedMode == 1)
                             {
+                                
                                 device.DeviceSpeed = ((int)medianSpeed * 255) / 100;
                             }
 
@@ -231,8 +261,8 @@ namespace adrilight.Util
             }
 
         }
-       
-      
+
+
         public void Init()
         {
             computer = new LibreHardwareMonitor.Hardware.Computer {
