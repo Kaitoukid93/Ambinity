@@ -141,25 +141,26 @@ namespace adrilight
                     try
                     {
                         Directory.CreateDirectory(ORGBExeFileNameAndPath);
+
                         CopyResource("adrilight.OpenRGB.OpenRGB.zip", Path.Combine(ORGBExeFileNameAndPath, "OpenRGB.zip"));
 
                         //then extract
 
-                        // Open an existing zip file for reading
-                          ZipStorer zip = ZipStorer.Open(Path.Combine(ORGBExeFileNameAndPath, "OpenRGB.zip"), FileAccess.Read);
+                        //// Open an existing zip file for reading
+                        //  ZipStorer zip = ZipStorer.Open(Path.Combine(ORGBExeFileNameAndPath, "OpenRGB.zip"), FileAccess.Read);
 
-                        //  // Read the central directory collection
-                         List<ZipStorer.ZipFileEntry> dir = zip.ReadCentralDir();
+                        ////  // Read the central directory collection
+                        // List<ZipStorer.ZipFileEntry> dir = zip.ReadCentralDir();
 
 
-                          foreach (ZipStorer.ZipFileEntry entry in dir)
-                         {
-                        //     //extract every single file
-                               zip.ExtractFile(entry, Path.Combine(ORGBExeFileNameAndPath,entry.FilenameInZip));
-                                 break;
+                        //  foreach (ZipStorer.ZipFileEntry entry in dir)
+                        // {
+                        ////     //extract every single file
+                        //       zip.ExtractFile(entry, Path.Combine(ORGBExeFileNameAndPath,entry.FilenameInZip));
+                        //         break;
 
-                         }
-                         zip.Close();
+                        // }
+                        // zip.Close();
 
 
 
@@ -485,6 +486,7 @@ namespace adrilight
         public void Dispose()
         {
             Dispose(true);
+            ORGBProcess.Kill();
             GC.SuppressFinalize(this);
         }
 
