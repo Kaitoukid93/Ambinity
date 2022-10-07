@@ -13,6 +13,7 @@ namespace adrilight
         void RefreshTransferState();
         OpenRGB.NET.Models.Device[] GetDevices { get; }
         OpenRGBClient AmbinityClient { get; set; }
+        System.Diagnostics.Process ORGBProcess { get; set; }
 
 
     }

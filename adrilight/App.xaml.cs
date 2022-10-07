@@ -280,6 +280,8 @@ namespace adrilight
                 }
                 //dispose hwmonitor to prevent file lock
                 hwMonitor.Dispose();
+                var orgb = kernel.GetAll<IOpenRGBStream>().FirstOrDefault();
+                orgb.ORGBProcess.Kill();
                 _log.Debug("Application exit!");
             };
 

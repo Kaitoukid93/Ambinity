@@ -12,6 +12,7 @@ namespace adrilight
     {
         // private bool _autostart = true;
         private bool _isOpenRGBEnabled = false;
+        private bool _openRGBConfigRequested = true;
         private bool _autostart = true;
         private int _systemRainbowSpeed = 10;
         private int _systemRainbowMaxTick = 1023;
@@ -40,6 +41,7 @@ namespace adrilight
         public Brush AccentColor { get => _accentColor; set { Set(() => AccentColor, ref _accentColor, value); } }
         public bool IsOpenRGBEnabled { get => _isOpenRGBEnabled; set { Set(() => IsOpenRGBEnabled, ref _isOpenRGBEnabled, value); } }
         public bool DriverRequested { get => _driverRequested; set { Set(() => DriverRequested, ref _driverRequested, value); } }
+        public bool OpenRGBConfigRequested { get => _openRGBConfigRequested; set { Set(() => OpenRGBConfigRequested, ref _openRGBConfigRequested, value); } }
         public bool NotificationEnabled { get => _notificationEnabled; set { Set(() => NotificationEnabled, ref _notificationEnabled, value); } }
         public int LimitFps { get => _limitFps; set { Set(() => LimitFps, ref _limitFps, value); }  }
         public int SystemRainbowSpeed { get => _systemRainbowSpeed; set { Set(() => SystemRainbowSpeed, ref _systemRainbowSpeed, value); } }

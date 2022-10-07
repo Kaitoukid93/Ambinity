@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Security.Principal;
+using System.Windows;
 
 public class StartUpManager
 {
@@ -9,37 +10,69 @@ public class StartUpManager
 
     public static void AddApplicationToCurrentUserStartup()
     {
-        using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+        try
         {
-            var location = System.Reflection.Assembly.GetEntryAssembly().Location;
-            string folder = Path.GetDirectoryName(location);
-            key.SetValue(ApplicationName, folder + "\\" + "adrilight.exe");
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            {
+                var location = System.Reflection.Assembly.GetEntryAssembly().Location;
+                string folder = Path.GetDirectoryName(location);
+                key.SetValue(ApplicationName, folder + "\\" + "adrilight.exe");
+            }
         }
+        catch(Exception ex)
+        {
+            HandyControl.Controls.MessageBox.Show(" Không có quyền tự khởi động, app sẽ không khởi động cùng windows!!", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+       
     }
 
     public static void AddApplicationToAllUserStartup()
     {
-        using (RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+        try
         {
-            var location = System.Reflection.Assembly.GetEntryAssembly().Location;
-            string folder = Path.GetDirectoryName(location);
-            key.SetValue(ApplicationName, folder + "\\" + "adrilight.exe");
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            {
+                var location = System.Reflection.Assembly.GetEntryAssembly().Location;
+                string folder = Path.GetDirectoryName(location);
+                key.SetValue(ApplicationName, folder + "\\" + "adrilight.exe");
+            }
         }
+        catch (Exception ex)
+        {
+            HandyControl.Controls.MessageBox.Show(" Không có quyền tự khởi động, app sẽ không khởi động cùng windows!!", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+
     }
 
     public static void RemoveApplicationFromCurrentUserStartup()
     {
-        using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+        try
         {
-            key.DeleteValue(ApplicationName, false);
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            {
+                key.DeleteValue(ApplicationName, false);
+            }
         }
+        catch (Exception ex)
+        {
+            HandyControl.Controls.MessageBox.Show(" Không có quyền tự khởi động, app sẽ không khởi động cùng windows!!", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
     }
 
     public static void RemoveApplicationFromAllUserStartup()
     {
-        using (RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+        try
         {
-            key.DeleteValue(ApplicationName, false);
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            {
+                key.DeleteValue(ApplicationName, false);
+            }
+        }
+        catch (Exception ex)
+        {
+            HandyControl.Controls.MessageBox.Show(" Không có quyền tự khởi động, app sẽ không khởi động cùng windows!!", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 

@@ -168,6 +168,12 @@
     <EmbeddedResource Include="Gif\Plasma.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="OpenRGB\OpenRGB.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OpenRGB\OpenRGB.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\FWTools\busybox.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -264,6 +270,7 @@
     <PackageReference Include="Tmds.MDns" Version="0.7.1" />
     <PackageReference Include="WindowsDisplayAPI" Version="1.3.0.13" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
+    <PackageReference Include="ZipStorer" Version="3.8.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="DesktopDuplication\ISecondDesktopFrame.cs" />
@@ -319,7 +326,7 @@
     <None Remove="DeviceFirmware\AER1e.hex" />
     <None Remove="DeviceFirmware\AER2e.hex" />
     <None Remove="DeviceFirmware\AFR1g.hex" />
-    <None Remove="DeviceFirmware\AFR2g.hex" />
+    <None Remove="DeviceFirmware\AFR2G.hex" />
     <None Remove="DeviceFirmware\AHR1g.hex" />
     <None Remove="DeviceFirmware\ARR1p.hex" />
     <None Remove="Gif\BitOcean.gif" />
@@ -329,6 +336,8 @@
     <None Remove="Gif\Hypnotic.gif" />
     <None Remove="Gif\Plasma.gif" />
     <None Remove="Gif\Rainbow.gif" />
+    <None Remove="OpenRGB\OpenRGB.json" />
+    <None Remove="OpenRGB\OpenRGB.zip" />
     <None Remove="Resources\Image\lamp.svg" />
     <None Remove="Resources\Image\screen.png" />
     <None Remove="Shaders\Thumbnail\Gooey.png" />

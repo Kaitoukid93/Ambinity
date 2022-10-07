@@ -658,10 +658,18 @@ namespace adrilight
                     if (serialPort != null && serialPort.IsOpen)
                     {
 
-
-                        serialPort.Close();
-                        serialPort.Dispose();
-                        _log.Debug("SerialPort Disposed!");
+                        try
+                        {
+                            serialPort.Close();
+                            serialPort.Dispose();
+                            _log.Debug("SerialPort Disposed!");
+                        }
+                        catch(Exception ex)
+                        {
+                            HandyControl.Controls.MessageBox.Show("USB của " + DeviceSettings.DeviceName + " kết nối không ổn định!!!", "Mất kết nối", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                        }
+                        
+                       
                     }
 
 
