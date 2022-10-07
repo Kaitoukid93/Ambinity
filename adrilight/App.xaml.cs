@@ -271,12 +271,15 @@ namespace adrilight
             Exit += (s, e) =>
             {
                 var devices = kernel.GetAll<IDeviceSettings>();
+                var hwMonitor = kernel.GetAll<IHWMonitor>().FirstOrDefault();
                 foreach (var device in devices)
                 {
                     device.CurrentState = State.sleep;
                     /*Thread.Sleep(1000);*/ //wait for serialstream to finising sending
                     //serialStream.Stop();
                 }
+                //dispose hwmonitor to prevent file lock
+                hwMonitor.Dispose();
                 _log.Debug("Application exit!");
             };
 

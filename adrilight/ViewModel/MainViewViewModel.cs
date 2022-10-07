@@ -5733,7 +5733,7 @@ namespace adrilight.ViewModel
             };
             IDeviceFirmware AFR2g = new DeviceFirmware() {
                 Name = "AFR2g.hex",
-                Version = "1.0.4",
+                Version = "1.0.5",
                 TargetHardware = "AFR2g",
                 TargetDeviceType = "ABFANHUB",
                 Geometry = "binary",

@@ -41,9 +41,9 @@ namespace adrilight.Util
         }
         IComputer thisComputer { get; set; }
         IDeviceSettings[] AvailableDevices { get; set; }
-        public int AutoFanSpeed { get; set; }
-        private double oldSpeed = 200d;
-        LibreHardwareMonitor.Hardware.Computer computer { get; set; }
+       
+       
+        private LibreHardwareMonitor.Hardware.Computer computer { get; set; }
         private void PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             //switch (e.PropertyName)
