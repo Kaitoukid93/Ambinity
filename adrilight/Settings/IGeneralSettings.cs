@@ -15,7 +15,7 @@ namespace adrilight
         bool Autostart { get; set; }
         bool NotificationEnabled { get; set; }
         int SelectedAudioDevice { get; set; }
-       
+       bool OpenRGBConfigRequested { get; set; }
 
         
         bool IsOpenRGBEnabled { get; set; }    

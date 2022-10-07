@@ -12,6 +12,9 @@ using adrilight.Spots;
 using OpenRGB.NET;
 using System.Collections.Generic;
 using Polly;
+using System.IO;
+using System.Reflection;
+using System.IO.Compression;
 
 namespace adrilight
 {
@@ -19,7 +22,11 @@ namespace adrilight
         OpenRGBStream : IDisposable, IOpenRGBStream
     {
         private ILogger _log = LogManager.GetCurrentClassLogger();
+        private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adrilight\\");
+        private string ORGBJsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OpenRGB\\");
+        private string ORGBExeFileNameAndPath => Path.Combine(JsonPath, "ORGB");
 
+        
         public OpenRGBStream(IDeviceSettings[] deviceSettings, IGeneralSettings generalSettings)
         {
             GeneralSettings = generalSettings ?? throw new ArgumentException(nameof(generalSettings));
@@ -82,7 +89,92 @@ namespace adrilight
             }
             if (!IsInitialized && GeneralSettings.IsOpenRGBEnabled) // Only run OpenRGB Stream if User enable OpenRGB Utilities in General Settings
             {
+                //check if openRGB folder is created
 
+                if(Directory.Exists(ORGBJsonPath))
+                {
+                    //if openRGB is created, check if the config file is properly configurated
+                    // or just overwrite it for the first time
+                    // check if this is first time the app run after install
+                    if (GeneralSettings.OpenRGBConfigRequested)
+                    {
+                         
+                        try
+                        {
+                            CopyResource("adrilight.OpenRGB.OpenRGB.json", Path.Combine(ORGBJsonPath, "OpenRGB.json"));
+
+                            //after this there is no need to config openRGB anymore, we turn this property off
+                            GeneralSettings.OpenRGBConfigRequested = false;
+                            //until user request to reconfig OpenRGB
+                        }
+                        catch (ArgumentException)
+                        {
+                            //show messagebox no firmware found for this device
+                            return;
+                        }
+                    }
+                    // if any error occur, require user to exit open rgb
+                }
+                else
+                {
+                    //if not
+                    // try to manually start openRGB if folder is not created 
+                    // first coppy the config file
+                    // second start openrgb.exe manually
+                    // wait for it to start
+                    // then connect
+                }
+
+                //check if OpenRGB is existed in adrilight folder
+                if(Directory.Exists(ORGBExeFileNameAndPath))
+                {
+                    // now start open rgb
+                    System.Diagnostics.Process.Start(Path.Combine(ORGBExeFileNameAndPath, "OpenRGB.exe"), "--server --startminimized --gui");
+                }
+                else
+                {
+                    //coppy ORGB from resource // this action using ZipStorer
+                    try
+                    {
+                        Directory.CreateDirectory(ORGBExeFileNameAndPath);
+                        CopyResource("adrilight.OpenRGB.OpenRGB.zip", Path.Combine(ORGBExeFileNameAndPath, "OpenRGB.zip"));
+
+                        //then extract
+
+                        // Open an existing zip file for reading
+                        ZipStorer zip = ZipStorer.Open(Path.Combine(ORGBExeFileNameAndPath, "OpenRGB.zip"), FileAccess.Read);
+                        
+                        // Read the central directory collection
+                        List<ZipStorer.ZipFileEntry> dir = zip.ReadCentralDir();
+
+                    
+                        foreach (ZipStorer.ZipFileEntry entry in dir)
+                        {
+                           //extract every single file
+                                zip.ExtractFile(entry, Path.Combine(ORGBExeFileNameAndPath,entry.FilenameInZip));
+                                break;
+                            
+                        }
+                        zip.Close();
+
+
+
+
+
+
+
+
+
+
+                    }
+                    catch (ArgumentException)
+                    {
+                        //show messagebox no firmware found for this device
+                        return;
+                    }
+                }
+
+               
                 try
                 {
                     if (AmbinityClient != null)
@@ -170,7 +262,21 @@ namespace adrilight
 
 
         }
-
+        private void CopyResource(string resourceName, string file)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using (Stream resource = assembly.GetManifestResourceStream(resourceName))
+            {
+                if (resource == null)
+                {
+                    throw new ArgumentException("No such resource", "resourceName");
+                }
+                using (Stream output = File.OpenWrite(file))
+                {
+                    resource.CopyTo(output);
+                }
+            }
+        }
 
         public OpenRGB.NET.Models.Device[] GetDevices {
             get
