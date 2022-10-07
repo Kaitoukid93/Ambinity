@@ -277,6 +277,8 @@ namespace adrilight
                     /*Thread.Sleep(1000);*/ //wait for serialstream to finising sending
                     //serialStream.Stop();
                 }
+                var orgb = kernel.GetAll<IOpenRGBStream>().FirstOrDefault();
+                orgb.ORGBProcess.Kill();
                 _log.Debug("Application exit!");
             };
 

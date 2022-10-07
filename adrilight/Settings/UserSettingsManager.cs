@@ -53,7 +53,7 @@ namespace adrilight
                 var generalSettings = JsonConvert.DeserializeObject<GeneralSettings>(json);
                 generalSettings.PropertyChanged += (_, __) => SaveSettings(generalSettings);
 
-                HandleAutostart(generalSettings);
+               HandleAutostart(generalSettings);
                 return generalSettings;
             }
            catch(JsonReaderException)

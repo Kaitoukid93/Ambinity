@@ -55,7 +55,11 @@ namespace adrilight
         private IDeviceSpotSet[] DeviceSpotSet { get; set; }
         private IDeviceSettings[] ReorderedDevices { get; set; }
         private List<IDeviceSettings> AvailableDevices { get; set; }
-
+        private System.Diagnostics.Process _oRGBProcess;
+        public  System.Diagnostics.Process ORGBProcess {
+            get { return _oRGBProcess; }
+            set { _oRGBProcess = value;}
+        }
         public bool IsInitialized { get; set; }
         private OpenRGBClient _ambinityClient;
         public OpenRGBClient AmbinityClient {
@@ -89,47 +93,47 @@ namespace adrilight
             }
             if (!IsInitialized && GeneralSettings.IsOpenRGBEnabled) // Only run OpenRGB Stream if User enable OpenRGB Utilities in General Settings
             {
-                //check if openRGB folder is created
+               // check if openRGB folder is created
 
-                if(Directory.Exists(ORGBJsonPath))
-                {
-                    //if openRGB is created, check if the config file is properly configurated
-                    // or just overwrite it for the first time
-                    // check if this is first time the app run after install
-                    if (GeneralSettings.OpenRGBConfigRequested)
-                    {
-                         
-                        try
-                        {
-                            CopyResource("adrilight.OpenRGB.OpenRGB.json", Path.Combine(ORGBJsonPath, "OpenRGB.json"));
 
-                            //after this there is no need to config openRGB anymore, we turn this property off
-                            GeneralSettings.OpenRGBConfigRequested = false;
-                            //until user request to reconfig OpenRGB
-                        }
-                        catch (ArgumentException)
-                        {
-                            //show messagebox no firmware found for this device
-                            return;
-                        }
-                    }
-                    // if any error occur, require user to exit open rgb
-                }
-                else
-                {
-                    //if not
-                    // try to manually start openRGB if folder is not created 
-                    // first coppy the config file
-                    // second start openrgb.exe manually
-                    // wait for it to start
-                    // then connect
-                }
+                //if (Directory.Exists(ORGBJsonPath))
+                //{
+                //    //if openRGB is created, check if the config file is properly configurated
+                //    // or just overwrite it for the first time
+                //    // check if this is first time the app run after install
+                //    if (GeneralSettings.OpenRGBConfigRequested)
+                //    {
+
+                //        try
+                //        {
+                //            CopyResource("adrilight.OpenRGB.OpenRGB.json", Path.Combine(ORGBJsonPath, "OpenRGB.json"));
+
+                //            //after this there is no need to config openRGB anymore, we turn this property off
+                //            GeneralSettings.OpenRGBConfigRequested = false;
+                //            //until user request to reconfig OpenRGB
+                //        }
+                //        catch (ArgumentException)
+                //        {
+                //            //show messagebox no firmware found for this device
+                //            return;
+                //        }
+                //    }
+                //    // if any error occur, require user to exit open rgb
+                //}
+                //else
+                //{
+                //    //create OpenRGB Config directory
+                //    Directory.CreateDirectory(ORGBJsonPath);
+                //    //coppy config file
+
+                //}
 
                 //check if OpenRGB is existed in adrilight folder
-                if(Directory.Exists(ORGBExeFileNameAndPath))
+                if (Directory.Exists(ORGBExeFileNameAndPath))
                 {
                     // now start open rgb
-                    System.Diagnostics.Process.Start(Path.Combine(ORGBExeFileNameAndPath, "OpenRGB.exe"), "--server --startminimized --gui");
+                    ORGBProcess = System.Diagnostics.Process.Start(Path.Combine(ORGBExeFileNameAndPath, "OpenRGB.exe"), "--server --startminimized --gui");
+                    
                 }
                 else
                 {
@@ -142,20 +146,20 @@ namespace adrilight
                         //then extract
 
                         // Open an existing zip file for reading
-                        ZipStorer zip = ZipStorer.Open(Path.Combine(ORGBExeFileNameAndPath, "OpenRGB.zip"), FileAccess.Read);
-                        
-                        // Read the central directory collection
-                        List<ZipStorer.ZipFileEntry> dir = zip.ReadCentralDir();
+                          ZipStorer zip = ZipStorer.Open(Path.Combine(ORGBExeFileNameAndPath, "OpenRGB.zip"), FileAccess.Read);
 
-                    
-                        foreach (ZipStorer.ZipFileEntry entry in dir)
-                        {
-                           //extract every single file
-                                zip.ExtractFile(entry, Path.Combine(ORGBExeFileNameAndPath,entry.FilenameInZip));
-                                break;
-                            
-                        }
-                        zip.Close();
+                        //  // Read the central directory collection
+                         List<ZipStorer.ZipFileEntry> dir = zip.ReadCentralDir();
+
+
+                          foreach (ZipStorer.ZipFileEntry entry in dir)
+                         {
+                        //     //extract every single file
+                               zip.ExtractFile(entry, Path.Combine(ORGBExeFileNameAndPath,entry.FilenameInZip));
+                                 break;
+
+                         }
+                         zip.Close();
 
 
 
@@ -174,9 +178,9 @@ namespace adrilight
                     }
                 }
 
-               
+
                 try
-                {
+                        {
                     if (AmbinityClient != null)
                         AmbinityClient.Dispose();
                     var attempt = 0;
@@ -184,7 +188,8 @@ namespace adrilight
 
                     if (AmbinityClient != null)
                     {
-                        
+                        //wait orgb finish scanning
+                        Thread.Sleep(2000);
                         var devices = AmbinityClient.GetAllControllerData();
                         int index = 0;
                         ReorderedDevices = new DeviceSettings[devices.Length];
