@@ -272,6 +272,7 @@ namespace adrilight
             {
                 var devices = kernel.GetAll<IDeviceSettings>();
                 var hwMonitor = kernel.GetAll<IHWMonitor>().FirstOrDefault();
+                var orgb = kernel.GetAll<IOpenRGBStream>().FirstOrDefault();
                 foreach (var device in devices)
                 {
                     device.CurrentState = State.sleep;
@@ -280,7 +281,7 @@ namespace adrilight
                 }
                 //dispose hwmonitor to prevent file lock
                 hwMonitor.Dispose();
-                
+                orgb.Dispose();
                 
                 _log.Debug("Application exit!");
             };

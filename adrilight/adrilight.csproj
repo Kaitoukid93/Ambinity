@@ -72,7 +72,7 @@
   <PropertyGroup>
     <SignManifests>false</SignManifests>
     <ApplicationIcon>zoe.ico</ApplicationIcon>
-    <ApplicationManifest>app1.manifest</ApplicationManifest>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
     <MinimumPlatformVersion>7.0</MinimumPlatformVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
