@@ -2687,7 +2687,7 @@ namespace adrilight.ViewModel
                     case "accent":
 
                         ThemeManager.Current.AccentColor = new SolidColorBrush(CurrentPickedColor);
-                        GeneralSettings.AccentColor = new SolidColorBrush(CurrentPickedColor);
+                        GeneralSettings.AccentColor = CurrentPickedColor;
                         break;
                 }
 

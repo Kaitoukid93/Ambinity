@@ -26,7 +26,7 @@ namespace adrilight
         int SystemRainbowSpeed { get; set; }
         int SystemRainbowMaxTick { get; set; }
         int ThemeIndex { get; set; }
-        Brush AccentColor { get; set; }
+        Color AccentColor { get; set; }
         int SystemMusicSpeed { get; set; } 
         int SystemMusicMaxTick { get; set; }
         int BreathingSpeed { get; set; }

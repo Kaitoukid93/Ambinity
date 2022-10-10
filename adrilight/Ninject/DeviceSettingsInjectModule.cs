@@ -1,6 +1,8 @@
 ﻿using adrilight.Resources;
 using adrilight.Spots;
 using adrilight.Util;
+using adrilight.View;
+using adrilight.ViewModel;
 using Ninject.Modules;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -15,9 +17,10 @@ namespace adrilight.Ninject
             var settingsManager = new UserSettingsManager();
             var generalSettings = settingsManager.LoadIfExists() ?? settingsManager.MigrateOrDefault();
             var existedDevices = settingsManager.LoadDeviceIfExists();
-            var allgroupsettings = settingsManager.LoadGroupIfExisrs();
             Bind<IGeneralSettings>().ToConstant(generalSettings);
-
+            Bind<MainViewViewModel>().ToSelf().InSingletonScope();
+            Bind<MainView>().ToSelf().InSingletonScope();
+            Bind<IOpenRGBStream>().To<OpenRGBStream>().InSingletonScope();
             Bind<ISerialDeviceDetection>().To<SerialDeviceDetection>().InSingletonScope();
             Bind<IAudioFrame>().To<AudioFrame>().InSingletonScope();
             Bind<IHWMonitor>().To<HWMonitor>().InSingletonScope();
@@ -64,23 +67,6 @@ namespace adrilight.Ninject
                         }
                         
 
-                    }
-                }
-            }
-            else
-            {
-                // require user to add device then restart the app
-            }
-
-            if (allgroupsettings != null)
-            {
-                if (allgroupsettings.Count > 0)
-                {
-                    foreach (var groupsettings in allgroupsettings)
-                    {
-                        var groupID = groupsettings.GroupID.ToString();
-
-                        Bind<IGroupSettings>().ToConstant(groupsettings).Named(groupID);
                     }
                 }
             }

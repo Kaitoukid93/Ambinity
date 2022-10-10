@@ -161,17 +161,9 @@ namespace adrilight
         }
         private Color GetCurrentAccentColor()
         {
-            if(ThemeManager.Current.AccentColor!=null)
-            {
-                SolidColorBrush accentColor = (SolidColorBrush)ThemeManager.Current.AccentColor;
-                return accentColor.Color;
-            }
-            else
-            {
-                return Color.FromRgb(0, 0, 0);
-            }
-            
-             
+          
+                return Color.FromRgb(127, 0, 0);
+     
         }
         public void DeviceLocator(Color color) // this function send color signal to device to locate new device added
         {

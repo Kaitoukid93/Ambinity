@@ -16,6 +16,7 @@ using System.IO;
 using System.Reflection;
 using System.IO.Compression;
 using OpenRGB.NET.Models;
+using System.Threading.Tasks;
 
 namespace adrilight
 {
@@ -44,7 +45,13 @@ namespace adrilight
             }
             //if (AvailableDevices.Count > 0) // add more condition about 1st time installing when no device found
             //the logic is, scan for serial device first, if hubV3 found, only then start openRGB 
+           
                 RefreshTransferState();
+
+                // Do things here.
+                // NOTE: You may need to invoke this to your main thread depending on what you're doing
+        
+            
 
 
             _log.Info($"SerialStream created.");
@@ -187,7 +194,7 @@ namespace adrilight
                     if (AmbinityClient != null)
                         AmbinityClient.Dispose();
                     var attempt = 0;
-                    _retryPolicy.Execute(() => RefreshOpenRGBDeviceState()); _log.Info($"Attempt {++attempt}"); ;
+                    _retryPolicy.Execute(() =>  RefreshOpenRGBDeviceState()); _log.Info($"Attempt {++attempt}");
 
 
 
@@ -262,17 +269,23 @@ namespace adrilight
 
             // kill current openRGB process first
             // need to stop the stream first
+            //Stop();
+            //ORGBProcess.Kill();
+            //IsInitialized = false;
+            ////wait a bit
+            //Thread.Sleep(1000);
             Stop();
-            ORGBProcess.Kill();
-            IsInitialized = false;
-            //wait a bit
-            Thread.Sleep(1000);
             var AvailableOpenRGBDevices = new List<Device>();
-            RefreshTransferState();
+            if (AmbinityClient != null)
+                AmbinityClient.Dispose();
+            AmbinityClient = new OpenRGBClient("127.0.0.1", 6742, name: "Ambinity", autoconnect: true, timeout: 1000);
+            //RefreshTransferState();
+            Start();
             if (AmbinityClient != null && AmbinityClient.Connected == true)
             {
 
                 var newOpenRGBDevices = AmbinityClient.GetAllControllerData();
+                
 
 
                 foreach (var device in newOpenRGBDevices)
@@ -348,6 +361,7 @@ namespace adrilight
                             else
                             {
                                 // this is new device from ORGB, prompt asking user to add or not?
+                                
                             }
 
                         }

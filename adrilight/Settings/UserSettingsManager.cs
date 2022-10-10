@@ -74,16 +74,7 @@ namespace adrilight
 
             return devices;
         }
-        public List<GroupSettings> LoadGroupIfExisrs()
-        {
-            if (!File.Exists(JsonGroupFileNameAndPath)) return null;
-
-            var json = File.ReadAllText(JsonGroupFileNameAndPath);
-
-            var groups = JsonConvert.DeserializeObject<List<GroupSettings>>(json);
-
-            return groups;
-        }
+     
 
         private static void HandleAutostart(GeneralSettings settings)
         {

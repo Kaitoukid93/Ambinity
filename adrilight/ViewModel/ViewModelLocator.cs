@@ -26,14 +26,14 @@ namespace adrilight.ViewModel
     {
         private readonly IKernel kernel;
 
-        public ViewModelLocator()
-        {
-            if (!ViewModelBase.IsInDesignModeStatic)
-                throw new InvalidOperationException("the parameter-less constructor of ViewModelLocator is expected to only ever be called in design time!");
+        //public async ViewModelLocator()
+        //{
+        //    if (!ViewModelBase.IsInDesignModeStatic)
+        //        throw new InvalidOperationException("the parameter-less constructor of ViewModelLocator is expected to only ever be called in design time!");
 
-            this.kernel = App.SetupDependencyInjection(true);
+        //    this.kernel = await App.SetupDependencyInjection(true);
 
-        }
+        //}
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>

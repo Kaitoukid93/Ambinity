@@ -22,7 +22,7 @@ namespace adrilight
         private bool _startMinimized = false;
         private bool _notificationEnabled = true;
         private int _selectedAudioDevice = 0;
-        private Brush _accentColor = Brushes.BlueViolet;
+        private Color _accentColor = Color.FromArgb(255,138,43,226);
 
         private int _themeIndex = 0;
         private bool _hotkeyEnable = true;
@@ -38,7 +38,7 @@ namespace adrilight
         public bool StartMinimized { get => _startMinimized; set { Set(() => StartMinimized, ref _startMinimized, value); } }
         public bool HotkeyEnable { get => _hotkeyEnable; set { Set(() => HotkeyEnable, ref _hotkeyEnable, value); } }
         public bool Autostart { get => _autostart; set { Set(() => Autostart, ref _autostart, value); } }
-        public Brush AccentColor { get => _accentColor; set { Set(() => AccentColor, ref _accentColor, value); } }
+        public Color AccentColor { get => _accentColor; set { Set(() => AccentColor, ref _accentColor, value); } }
         public bool IsOpenRGBEnabled { get => _isOpenRGBEnabled; set { Set(() => IsOpenRGBEnabled, ref _isOpenRGBEnabled, value); } }
         public bool DriverRequested { get => _driverRequested; set { Set(() => DriverRequested, ref _driverRequested, value); } }
         public bool OpenRGBConfigRequested { get => _openRGBConfigRequested; set { Set(() => OpenRGBConfigRequested, ref _openRGBConfigRequested, value); } }
