@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="deviceControl:DeviceControlViewModel"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:deviceControl="clr-namespace:Ambinity.Views.Screens.DeviceControl"
+             x:Class="Ambinity.Views.Screens.DeviceControl.DeviceControlView">
+    <UserControl.Resources>
+        <ui:SymbolIconSource x:Key="VolumeIcon" Symbol="Volume" />
+        <ui:SymbolIconSource x:Key="GoIcon" Symbol="ChevronRight" />
+        <ui:SymbolIconSource x:Key="GoExternalIcon" Symbol="Link" />
+        <ui:SymbolIconSource x:Key="Map" Symbol="Globe" />
+    </UserControl.Resources>
+    <StackPanel Margin="10">
+        <TextBlock Text="{Binding Device.Name}"></TextBlock> 
+        <TextBlock Text="{Binding Device.Address}"></TextBlock>
+        <Button Content="Back" Command="{Binding BackToDashBoardCommand}"></Button>
+        <ui:FAComboBox IsEditable="False" IsTextSearchEnabled="True">
+            <ui:FAComboBoxItem Content="Item 1" />
+            <ui:FAComboBoxItem Content="Item 2" />
+            <ui:FAComboBoxItem Content="Different Name" />
+            <ui:FAComboBoxItem Content="ComboBoxItem4" />
+            <ui:FAComboBoxItem Content="Item 5" />
+        </ui:FAComboBox>
+        <Border HorizontalAlignment="Left"
+                Margin="10"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource ButtonBorderBrush}"
+                CornerRadius="7">
+            <ListBox ItemsSource="{Binding AvailableControlModes}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"></WrapPanel>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="0">
+                            <TextBlock Margin="0,2,0,0" Text="{Binding}"/>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+        <ui:SettingsExpander Header="Sound"
+                             IconSource="{StaticResource VolumeIcon}"
+                             Description="Volume levels, output, input, sound devices"
+                             IsClickEnabled="True"
+                             ActionIconSource="{StaticResource GoIcon}" />
+        <ui:SettingsExpander Header="Choose a device for speaking or recording"
+                             IconSource="Microphone"
+                             Description="Apps might have their own settings"
+                             Name="SettingsExpander3">
+
+            <ui:SettingsExpanderItem Content="Headset"
+                                     Description="Device Name" />
+            <ui:SettingsExpanderItem Content="This one has footer content"
+                                     Description="Device Name">
+                <ui:SettingsExpanderItem.Footer>
+                    <Button Content="Add new device" />
+                </ui:SettingsExpanderItem.Footer>
+            </ui:SettingsExpanderItem>
+        </ui:SettingsExpander>
+        <ui:SettingsExpander Margin="10" Header="Adjust Capturing Region"
+                             IconSource="{StaticResource Map}"
+                             Description="Launch Capturing Region Editor"
+                             ActionIconSource="{StaticResource GoExternalIcon}"
+                             IsClickEnabled="True" />
+        <ToggleSwitch IsChecked="{Binding GeneralSettingsManager.Settings.AutoStart}"></ToggleSwitch>
+        <ProgressBar Margin="10" Value="50" Width="200" IsIndeterminate="False"></ProgressBar>
+        <Slider Margin="10" Width="200" Value="50"></Slider>
+    </StackPanel>
+    
+</UserControl>
