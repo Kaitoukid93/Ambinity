@@ -10,6 +10,7 @@
 
 	<ItemGroup>
 		<AvaloniaResource Include="Assets\**" />
+		<AvaloniaResource Remove="obj\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -50,6 +51,23 @@
 	  <AdditionalFiles Include="Views\Screens\Dashboard\DashboardDeviceView.axaml" />
 	  <AdditionalFiles Include="Views\Screens\Dashboard\DashboardView.axaml" />
 	  <AdditionalFiles Include="Views\Screens\DeviceControl\DeviceControlView.axaml" />
+	  <AdditionalFiles Remove="obj\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AvaloniaXaml Remove="obj\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="obj\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Remove="obj\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="obj\**" />
 	</ItemGroup>
 	
 </Project>

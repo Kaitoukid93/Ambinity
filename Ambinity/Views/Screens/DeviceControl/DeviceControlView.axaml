@@ -63,7 +63,7 @@
                 </ui:SettingsExpanderItem.Footer>
             </ui:SettingsExpanderItem>
         </ui:SettingsExpander>
-        <ui:SettingsExpander Header="Adjust Capturing Region"
+        <ui:SettingsExpander Margin="10" Header="Adjust Capturing Region"
                              IconSource="{StaticResource Map}"
                              Description="Launch Capturing Region Editor"
                              ActionIconSource="{StaticResource GoExternalIcon}"
