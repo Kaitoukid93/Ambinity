@@ -2,10 +2,13 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
+using Ambinity.Views.Screens.CaptureEngine;
 using Ambinity.Views.Screens.Dashboard;
 using AmbinityCore.DataBase;
 using AmbinityCore.Models;
 using AmbinityCore.Models.Device;
+using Avalonia;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 
@@ -63,6 +66,8 @@ public class DeviceControlViewModel : ViewModelBase
     private void CommandSetup()
     {
         BackToDashBoardCommand = new RelayCommand(BackToDashBoard);
+        OpenScreenCaptureSettingsCommand = new RelayCommand(OpenScreenCaptureSettings);
+
     }
 
     private void BackToDashBoard()
@@ -70,6 +75,17 @@ public class DeviceControlViewModel : ViewModelBase
         var vm = Ioc.Default.GetRequiredService<DashboardViewModel>();
         vm.Init();
         _rootNavigationStores.CurrentViewModel = vm;
+    }
+
+    private void OpenScreenCaptureSettings()
+    {
+        var factory = new PageFactory();
+        var vm = Ioc.Default.GetRequiredService<ScreenCapturingViewModel>();
+        var screencaptureview = factory.GetPageFromObject(vm);
+        var wd = new CaptureEngineWindow();
+        wd.content.Content = screencaptureview;
+        wd.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        wd.Show();
     }
 
     public void Init(object device)
@@ -89,6 +105,7 @@ public class DeviceControlViewModel : ViewModelBase
     #region Commands
 
     public ICommand BackToDashBoardCommand { get; set; }
+    public ICommand OpenScreenCaptureSettingsCommand { get; set; }
 
     #endregion
 }

@@ -1,7 +1,9 @@
 using Ambinity.Stores;
 using Ambinity.Views;
+using Ambinity.Views.Screens.CaptureEngine;
 using Ambinity.Views.Screens.Dashboard;
 using Ambinity.Views.Screens.DeviceControl;
+using AmbinityCore.CaptureEngines;
 using AmbinityCore.DataBase;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -37,6 +39,8 @@ namespace Ambinity
                     .AddSingleton<DashboardViewModel>()
                     .AddSingleton<GeneralSettingsManager>()
                     .AddSingleton<RootNavigationStores>()
+                    .AddSingleton<DesktopCapturingEngine>()
+                    .AddSingleton<ScreenCapturingViewModel>()
                     .BuildServiceProvider());
         }
         public override void OnFrameworkInitializationCompleted()

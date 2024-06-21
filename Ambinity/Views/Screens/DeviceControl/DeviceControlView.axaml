@@ -66,6 +66,7 @@
                 <ui:SettingsExpander Header="Adjust Capturing Region"
                                      IconSource="{StaticResource Map}"
                                      Description="Launch Capturing Region Editor"
+                                     Command="{Binding OpenScreenCaptureSettingsCommand}"
                                      ActionIconSource="{StaticResource GoExternalIcon}"
                                      IsClickEnabled="True" />
                 <ToggleSwitch IsChecked="{Binding GeneralSettingsManager.Settings.AutoStart}"></ToggleSwitch>
