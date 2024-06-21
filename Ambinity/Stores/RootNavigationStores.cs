@@ -3,9 +3,9 @@ using Ambinity.ViewModels;
 
 namespace Ambinity.Stores;
 
-public class NavigationStores
+public class RootNavigationStores
 {
-    public event Action CurrentViewModelChanged;
+    public event Action<ViewModelBase> CurrentViewModelChanged;
     private ViewModelBase _currentViewModel;
 
     public ViewModelBase CurrentViewModel
@@ -23,6 +23,6 @@ public class NavigationStores
 
     private void OnCurrentViewModelChanged()
     {
-        CurrentViewModelChanged?.Invoke();
+        CurrentViewModelChanged?.Invoke(CurrentViewModel);
     }
 }

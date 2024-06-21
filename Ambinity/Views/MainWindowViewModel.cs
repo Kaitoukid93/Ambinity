@@ -8,44 +8,38 @@ namespace Ambinity.Views
     {
         #region Construct
 
-        public MainWindowViewModel(NavigationStores navigationStores)
+        public MainWindowViewModel(RootNavigationStores rootNavigationStores)
         {
-            _navigationStores = navigationStores;
-            _navigationStores.CurrentViewModelChanged += OnCurrentViewModelChanged;
+            _rootNavigationStores = rootNavigationStores;
             CommandSetup();
         }
-  
+
         #endregion
+
         #region Events
-        
-        private void OnCurrentViewModelChanged()
-        {
-            OnPropertyChanged(nameof(CurrentViewModel));
-        }
 
         #endregion
 
         #region Properties
 
-        private readonly NavigationStores _navigationStores;
-        public ViewModelBase CurrentViewModel => _navigationStores.CurrentViewModel;
-
+        private readonly RootNavigationStores _rootNavigationStores;
+        public ViewModelBase CurrentViewModel => _rootNavigationStores.CurrentViewModel;
 
         #endregion
+
         #region Methods
 
         private void CommandSetup()
         {
         }
+
         #endregion
+
         #region Command
 
-        
-
         #endregion
-        
-        #region Events
 
+        #region Events
 
         #endregion
 

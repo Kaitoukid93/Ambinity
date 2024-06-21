@@ -1,13 +1,11 @@
-
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Ambinity.Commands;
-using Ambinity.Services;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
 using Ambinity.Views.Screens.DeviceControl;
 using AmbinityCore.Models.Device;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Ambinity.Views.Screens.Dashboard;
 
@@ -15,25 +13,20 @@ public class DashboardViewModel : ViewModelBase
 {
     #region Construct
 
-    public DashboardViewModel(NavigationStores navigationStores)
+    public DashboardViewModel(RootNavigationStores rootNavigationStores)
     {
-        _navigationStores = navigationStores;
-        Devices = new ObservableCollection<DashboardDeviceViewModel>();
-        for (int i = 0; i < 5; i++)
-        {
-            Devices.Add(CreateDummyDevice(i));
-        }
+        _rootNavigationStores = rootNavigationStores;
     }
 
     #region Events
 
-    private readonly NavigationStores _navigationStores;
+    private readonly RootNavigationStores _rootNavigationStores;
+
     private void OnDeviceClicked(DashboardDeviceViewModel device)
     {
-        var vm = Ioc.Default.GetRequiredService<DeviceControlViewModel>();
-        vm.Init(device.Device);
-        GotoDeviceControlCommand.Execute(null);
+        GotoDeviceControlCommand.Execute(device);
     }
+
     #endregion
 
     #endregion
@@ -47,19 +40,31 @@ public class DashboardViewModel : ViewModelBase
 
     #region Methods
 
-    public override void Init()
+    public override void Init(object parameter = null)
     {
         //load available devices
         //setup commands
+        Devices = new ObservableCollection<DashboardDeviceViewModel>();
+        for (int i = 0; i < 5; i++)
+        {
+            Devices.Add(CreateDummyDevice(i));
+        }
+
         CommandSetup();
     }
-    
+
     private void CommandSetup()
     {
-        var vm = Ioc.Default.GetRequiredService<DeviceControlViewModel>();
-        GotoDeviceControlCommand = new NavigateCommand<DeviceControlViewModel>(
-            new NavigationService<DeviceControlViewModel>(_navigationStores,vm));
+        GotoDeviceControlCommand = new RelayCommand<DashboardDeviceViewModel>(GoToDeviceControl);
     }
+
+    private void GoToDeviceControl(DashboardDeviceViewModel device)
+    {
+        var vm = Ioc.Default.GetRequiredService<DeviceControlViewModel>();
+        vm.Init(device.Device);
+        _rootNavigationStores.CurrentViewModel = vm;
+    }
+
     private DashboardDeviceViewModel CreateDummyDevice(int port)
     {
         var device = new Device();

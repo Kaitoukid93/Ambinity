@@ -1,7 +1,5 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Ambinity.Commands;
-using Ambinity.Services;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
 using Ambinity.Views.Screens.Dashboard;
@@ -9,6 +7,7 @@ using AmbinityCore.DataBase;
 using AmbinityCore.Models;
 using AmbinityCore.Models.Device;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Ambinity.Views.Screens.DeviceControl;
 
@@ -16,9 +15,10 @@ public class DeviceControlViewModel : ViewModelBase
 {
     #region Construct
 
-    public DeviceControlViewModel(NavigationStores navigationStores,GeneralSettingsManager generalSettingsManager)
+    public DeviceControlViewModel(RootNavigationStores rootNavigationStores,
+        GeneralSettingsManager generalSettingsManager)
     {
-        _navigationStores = navigationStores;
+        _rootNavigationStores = rootNavigationStores;
         GeneralSettingsManager = generalSettingsManager;
     }
 
@@ -29,10 +29,11 @@ public class DeviceControlViewModel : ViewModelBase
     #endregion
 
     #region Properties
-    
+
     private IDevice _device;
-    private NavigationStores _navigationStores;
+    private RootNavigationStores _rootNavigationStores;
     public ObservableCollection<string> AvailableControlModes { get; set; }
+
     public IDevice Device
     {
         get { return _device; }
@@ -44,6 +45,7 @@ public class DeviceControlViewModel : ViewModelBase
     }
 
     private GeneralSettingsManager _generalSettingsManager;
+
     public GeneralSettingsManager GeneralSettingsManager
     {
         get { return _generalSettingsManager; }
@@ -53,27 +55,33 @@ public class DeviceControlViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
     #endregion
 
     #region Methods
 
     private void CommandSetup()
     {
-        var vm = Ioc.Default.GetRequiredService<DashboardViewModel>();
-        BackToDashBoardCommand = new NavigateCommand<DashboardViewModel>(
-            new NavigationService<DashboardViewModel>(_navigationStores,vm));
+        BackToDashBoardCommand = new RelayCommand(BackToDashBoard);
     }
-    public void Init(IDevice device)
+
+    private void BackToDashBoard()
+    {
+        var vm = Ioc.Default.GetRequiredService<DashboardViewModel>();
+        vm.Init();
+        _rootNavigationStores.CurrentViewModel = vm;
+    }
+
+    public void Init(object device)
     {
         AvailableControlModes = new ObservableCollection<string>()
         {
-            "Zoe",
-            "123",
-            "456",
-            "The Quick Brown Fox"
+            "VU Metter",
+            "Brightness",
+            "Dance"
         };
         CommandSetup();
-        Device = device;
+        Device = device as IDevice;
     }
 
     #endregion

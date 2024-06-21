@@ -2,40 +2,32 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Background="Transparent"
+        TransparencyLevelHint="Mica"
+        ExtendClientAreaToDecorationsHint="True"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Ambinity.Views.MainWindow"
         x:DataType="views:MainWindowViewModel"
-        xmlns:i="clr-namespace:Avalonia.Interactivity"
-        xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions"
-        xmlns:ui="using:FluentAvalonia.UI.Controls"
-        xmlns:paz="clr-namespace:Avalonia.Controls.PanAndZoom;assembly=Avalonia.Controls.PanAndZoom"
-        xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
         xmlns:views="clr-namespace:Ambinity.Views"
         xmlns:dashboard="clr-namespace:Ambinity.Views.Screens.Dashboard"
         xmlns:devicecontrol="clr-namespace:Ambinity.Views.Screens.DeviceControl"
-        Background="Transparent"
         xmlns:nonclientarea="clr-namespace:Ambinity.Views.NonClientArea"
-        TransparencyLevelHint="Mica"
-        ExtendClientAreaToDecorationsHint="True"
+        xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+        xmlns:ambinity="clr-namespace:Ambinity"
         Icon="/Assets/avalonia-logo.ico"
         Title="Ambinity">
-    <Panel>
+    
         <Grid RowDefinitions="Auto,*">
             <Grid ColumnDefinitions="Auto,Auto,*,*">
                 <nonclientarea:NonClientAreaContent></nonclientarea:NonClientAreaContent>
             </Grid>
-            <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}">
-                <ContentControl.Resources>
-                    <DataTemplate x:Key="123" x:DataType="{x:Type dashboard:DashboardViewModel}">
-                        <dashboard:DashboardView></dashboard:DashboardView>
-                    </DataTemplate>
-                    <DataTemplate x:Key="456" x:DataType="{x:Type devicecontrol:DeviceControlViewModel}">
-                        <devicecontrol:DeviceControlView></devicecontrol:DeviceControlView>
-                    </DataTemplate>
-                </ContentControl.Resources>
-            </ContentControl>
+            <ui:Frame Grid.Row="1" Name="RootFrame" IsNavigationStackEnabled="False" CacheSize="0">
+                <ui:Frame.NavigationPageFactory>
+                    <ambinity:PageFactory/>
+                </ui:Frame.NavigationPageFactory>
+            </ui:Frame>
         </Grid>
-    </Panel>
+    
     
 
 </Window>

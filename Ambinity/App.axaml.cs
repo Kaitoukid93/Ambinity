@@ -11,13 +11,14 @@ using Avalonia.Markup.Xaml;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
-
+using HotAvalonia;
 namespace Ambinity
 {
     public partial class App : Application
     {
         public override void Initialize()
         {
+            this.EnableHotReload(); // Ensure this line **precedes** `AvaloniaXamlLoader.Load(this);`
             AvaloniaXamlLoader.Load(this);
         }
 
@@ -35,7 +36,7 @@ namespace Ambinity
                     .AddSingleton<DeviceControlViewModel>()
                     .AddSingleton<DashboardViewModel>()
                     .AddSingleton<GeneralSettingsManager>()
-                    .AddSingleton<NavigationStores>()
+                    .AddSingleton<RootNavigationStores>()
                     .BuildServiceProvider());
         }
         public override void OnFrameworkInitializationCompleted()
@@ -44,18 +45,17 @@ namespace Ambinity
             ConfigureIoc();
             // load general settings
             _generalSettingsManager = Ioc.Default.GetRequiredService<GeneralSettingsManager>();
-            var navigationStore = Ioc.Default.GetRequiredService<NavigationStores>();
-            navigationStore.CurrentViewModel = Ioc.Default.GetRequiredService<DashboardViewModel>();
-            var vm = Ioc.Default.GetRequiredService<MainWindowViewModel>();
-            vm.CurrentViewModel.Init();
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = vm,
+                    DataContext = Ioc.Default.GetRequiredService<MainWindowViewModel>()
                 };
             }
-
+            var navigationStore = Ioc.Default.GetRequiredService<RootNavigationStores>();
+            var dashboardViewModel = Ioc.Default.GetRequiredService<DashboardViewModel>();
+            dashboardViewModel.Init();
+            navigationStore.CurrentViewModel = dashboardViewModel;
             base.OnFrameworkInitializationCompleted();
         }
     }

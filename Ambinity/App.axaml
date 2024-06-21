@@ -3,7 +3,7 @@
              x:Class="Ambinity.App"
              xmlns:local="using:Ambinity"
              xmlns:sty="using:FluentAvalonia.Styling"
-             RequestedThemeVariant="Dark">
+             RequestedThemeVariant="Default">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
     <Application.Styles>
         <sty:FluentAvaloniaTheme CustomAccentColor="LimeGreen" />
@@ -18,6 +18,4 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
-
-
 </Application>

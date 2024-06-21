@@ -14,6 +14,8 @@
         <entry key="Ambinity/Views/MainWindow.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/NonClientArea/NonClientAreaContent.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/NonClientAreaContent/NonClientAreaContent.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/Dashboard/DashboardDeviceView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/Dashboard/DashboardView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceControl/DeviceControlView.axaml" value="Ambinity/Ambinity.csproj" />
       </map>
     </option>
