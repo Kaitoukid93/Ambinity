@@ -20,12 +20,12 @@ public class ScreenCapturingViewModel : ViewModelBase
         Init();
     }
 
-    private DesktopCapturingEngine _capturingEngine;
+    private readonly DesktopCapturingEngine _capturingEngine;
     private ObservableCollection<ScreenPreviewViewModel> _availableScreen;
 
     public ObservableCollection<ScreenPreviewViewModel> AvailableScreen
     {
-        get { return _availableScreen; }
+        get => _availableScreen;
         set
         {
             _availableScreen = value;
@@ -33,17 +33,18 @@ public class ScreenCapturingViewModel : ViewModelBase
         }
     }
 
-    public void Init()
+    private void Init()
     {
-        AvailableScreen = new ObservableCollection<ScreenPreviewViewModel>();
-        for (int i = 0; i < _capturingEngine.AvailableDesktop.Count; i++)
+        _capturingEngine.ServiceRequired++;
+        _capturingEngine.RefreshCapturingState();
+        AvailableScreen = [];
+        foreach (var t in _capturingEngine.AvailableDesktop)
         {
             var view = new ScreenPreview();
-            var vm = new ScreenPreviewViewModel(view.DisplayPreviewImage, _capturingEngine.AvailableDesktop[i]);
+            var vm = new ScreenPreviewViewModel(t);
             view.DataContext = vm;
             AvailableScreen.Add(vm);
         }
-
         _capturingEngine.ScreenUpdated += OnScreenUpdate;
     }
 
@@ -51,5 +52,10 @@ public class ScreenCapturingViewModel : ViewModelBase
     {
         AvailableScreen[index].Update();
     }
-    
+
+    public override void Dispose()
+    {
+        _capturingEngine.ServiceRequired--;
+        _capturingEngine.RefreshCapturingState();
+    }
 }

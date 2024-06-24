@@ -7,13 +7,18 @@
              x:DataType="captureEngines:ScreenCapturingViewModel"
              x:Class="Ambinity.Views.Screens.CaptureEngine.ScreenCapturingView">
     <Panel>
-        <ItemsControl ItemsSource="{Binding AvailableScreen}">
-         <ItemsControl.ItemTemplate>
-             <DataTemplate>
-               <captureEngines:ScreenPreview></captureEngines:ScreenPreview>
-             </DataTemplate>
-         </ItemsControl.ItemTemplate>
+        <ItemsControl HorizontalAlignment="Center" VerticalAlignment="Center" ItemsSource="{Binding AvailableScreen}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                        <captureEngines:ScreenPreview></captureEngines:ScreenPreview>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="1" Margin="-5 0" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
         </ItemsControl>
-        
+
     </Panel>
 </UserControl>

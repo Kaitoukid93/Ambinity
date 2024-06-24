@@ -85,6 +85,7 @@ public class DeviceControlViewModel : ViewModelBase
         var wd = new CaptureEngineWindow();
         wd.content.Content = screencaptureview;
         wd.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        wd.Closed += (sender, args) => vm.Dispose();
         wd.Show();
     }
 

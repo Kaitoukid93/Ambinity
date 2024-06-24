@@ -12,6 +12,10 @@ namespace AmbinityCore.CaptureEngines;
 
 public class DesktopCapturingEngine : ICaptureEngine
 {
+    /// <summary>
+    /// this class contains long-running task to get all display available and return
+    /// as ICaptureZone (both full screen)
+    /// </summary>
     public event Action<ICaptureZone, int> ScreenUpdated;
 
     public DesktopCapturingEngine(GeneralSettingsManager generalSettings)
@@ -48,67 +52,62 @@ public class DesktopCapturingEngine : ICaptureEngine
     public ByteFrame Frame { get; set; }
     private CancellationTokenSource _cancellationTokenSource;
     public object Lock { get; } = new object();
-    private int _serviceRequired;
 
-    public int ServiceRequired
-    {
-        get { return _serviceRequired; }
-        set
-        {
-            if ((_serviceRequired == 0 && value == 1) || (_serviceRequired == 1 && value == 0))
-            {
-                _serviceRequired = value;
-                RefreshCapturingState();
-            }
-
-            _serviceRequired = value;
-        }
-    }
+    public int ServiceRequired { get; set; }
 
     #endregion
 
     public void RefreshCapturingState()
     {
         var isRunning = _state != RunningState.Canceling;
-        var shouldBeRunning = true;
-        _captureService = new DX11ScreenCaptureService();
-        IEnumerable<GraphicsCard> graphicsCards = _captureService.GetGraphicsCards();
+        var shouldBeRunning = ServiceRequired > 0;
+        _captureService ??= new DX11ScreenCaptureService();
 
-        IEnumerable<Display> displays = _captureService.GetDisplays(graphicsCards.First());
-        //create separate thread for each display
-        AvailableDesktop = new List<ICaptureZone>();
-
-        if (isRunning && !shouldBeRunning)
+        switch (isRunning)
         {
-            //stop it!
-            Log.Information("DesktopFrameWGC is disabled,waiting for instruction");
-            var index = 0;
-            _captureService?.Dispose();
-            _state = RunningState.Waiting;
-        }
-        // this is start sign
-        else if (!isRunning && shouldBeRunning)
-        {
-            _workerThreads = new List<Thread>();
-            _cancellationTokenSource = new CancellationTokenSource();
-            Log.Information("starting WCG");
-            var index = 0;
-            foreach (var display in displays)
+            case true when !shouldBeRunning:
             {
-                IScreenCapture screenCapture = _captureService.GetScreenCapture(display);
-                ICaptureZone fullscreen = screenCapture.RegisterCaptureZone(0, 0, screenCapture.Display.Width,
-                    screenCapture.Display.Height, downscaleLevel: 3);
-                AvailableDesktop.Add(fullscreen);
-                var workerThread =
-                    new Thread(() => Run(screenCapture, index, fullscreen, _cancellationTokenSource.Token))
-                    {
-                        IsBackground = true,
-                        Priority = ThreadPriority.BelowNormal,
-                        Name = "ScreenCapture .Net" + display.DeviceName
-                    };
+                //send loop to waiting state
+                Log.Information("DesktopFrameWGC is disabled,waiting for instruction");
+                _state = RunningState.Waiting;
+                break;
+            }
+            // re-create new instance
+            case false when shouldBeRunning:
+            {
+                var graphicsCards = _captureService.GetGraphicsCards();
+                var displays = _captureService.GetDisplays(graphicsCards.First());
+                //create separate thread for each display
+                AvailableDesktop = [];
+                _workerThreads = [];
+                _cancellationTokenSource = new CancellationTokenSource();
+                Log.Information("starting WCG");
+                var index = 0;
+                foreach (var display in displays)
+                {
+                    var screenCapture = _captureService.GetScreenCapture(display);
+                    var fullscreen = screenCapture.RegisterCaptureZone(0, 0, screenCapture.Display.Width,
+                        screenCapture.Display.Height, downscaleLevel: 3);
+                    AvailableDesktop.Add(fullscreen);
+                    var workerThread =
+                        new Thread(() => Run(screenCapture, index++, fullscreen, _cancellationTokenSource.Token))
+                        {
+                            IsBackground = true,
+                            Priority = ThreadPriority.BelowNormal,
+                            Name = "ScreenCapture .Net" + display.DeviceName
+                        };
+                    _state = RunningState.Capturing;
+                    workerThread.Start();
+                    _workerThreads.Add(workerThread);
+                }
+
+                break;
+            }
+            //simply just enable the loop
+            case true when shouldBeRunning:
+            {
                 _state = RunningState.Capturing;
-                workerThread.Start();
-                _workerThreads.Add(workerThread);
+                break;
             }
         }
     }
@@ -116,19 +115,12 @@ public class DesktopCapturingEngine : ICaptureEngine
 
     private TimeSpan ProvideDelayDuration(int index)
     {
-        if (index < 10)
+        return index switch
         {
-            return TimeSpan.FromMilliseconds(100);
-        }
-
-        if (index < 10 + 256)
-        {
-            //steps where there is also led dimming
-
-            return TimeSpan.FromMilliseconds(5000d / 256);
-        }
-
-        return TimeSpan.FromMilliseconds(1000);
+            < 10 => TimeSpan.FromMilliseconds(100),
+            < 10 + 256 => TimeSpan.FromMilliseconds(5000d / 256),
+            _ => TimeSpan.FromMilliseconds(1000)
+        };
     }
 
     private void Run(IScreenCapture capture, int index, ICaptureZone zone, CancellationToken token)
@@ -142,10 +134,8 @@ public class DesktopCapturingEngine : ICaptureEngine
                 {
                     capture.CaptureScreen();
                     var frameTime = Stopwatch.StartNew();
-                    Dispatcher.UIThread.InvokeAsync(()=>ScreenUpdated?.Invoke(zone, index));
-                    
-
-                    var minFrameTimeInMs = 1000 / 30;
+                    Dispatcher.UIThread.InvokeAsync(() => ScreenUpdated?.Invoke(zone, index));
+                    const int minFrameTimeInMs = 1000 / 100;
                     var elapsedMs = (int)frameTime.ElapsedMilliseconds;
                     if (elapsedMs < minFrameTimeInMs)
                     {
@@ -164,15 +154,12 @@ public class DesktopCapturingEngine : ICaptureEngine
         }
     }
 
-    public void Stop()
+    private void Stop()
     {
         Log.Information("Stop called for WCG");
-        if (_cancellationTokenSource != null)
-        {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource = null;
-        }
-
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource = null;
+        
         _state = RunningState.Canceling;
         IsRunning = false;
         for (var i = 0; i < _workerThreads.Count(); i++)
@@ -185,8 +172,9 @@ public class DesktopCapturingEngine : ICaptureEngine
         }
     }
 
-    public void StopCapture(int screenIndex)
+    public void Dispose()
     {
+        Stop();
         _captureService.Dispose();
         Log.Information("Dispose called");
     }

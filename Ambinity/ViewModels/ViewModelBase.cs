@@ -7,5 +7,10 @@ namespace Ambinity.ViewModels
         public virtual void Init(object parameter)
         {
         }
+
+        public virtual void Dispose()
+        {
+            
+        }
     }
 }

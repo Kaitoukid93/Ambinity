@@ -6,11 +6,11 @@
              xmlns:captureEngines="clr-namespace:Ambinity.Views.Screens.CaptureEngine"
              x:DataType="captureEngines:ScreenPreviewViewModel"
              x:Class="Ambinity.Views.Screens.CaptureEngine.ScreenPreview">
-    <Panel>
-        <Image Name="DisplayPreviewImage"
-               Height="130"
-               Source="{Binding PreviewImage }"
-               RenderOptions.BitmapInterpolationMode="LowQuality"
-               Stretch="Uniform" />
-    </Panel>
+        <Border ClipToBounds="True" CornerRadius="0 8 8 0">
+            <Image Name="DisplayPreviewImage"
+                   Height="500"
+                   Source="{Binding PreviewImage}"
+                   RenderOptions.BitmapInterpolationMode="LowQuality"
+                   Stretch="Uniform" />
+        </Border>
 </UserControl>
