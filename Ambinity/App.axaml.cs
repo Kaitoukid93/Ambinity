@@ -40,7 +40,7 @@ namespace Ambinity
                     .AddSingleton<GeneralSettingsManager>()
                     .AddSingleton<RootNavigationStores>()
                     .AddSingleton<DesktopCapturingEngine>()
-                    .AddSingleton<ScreenCapturingViewModel>()
+                    .AddTransient<ScreenCapturingViewModel>()
                     .BuildServiceProvider());
         }
         public override void OnFrameworkInitializationCompleted()

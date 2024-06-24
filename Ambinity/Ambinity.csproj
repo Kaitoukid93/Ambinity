@@ -9,6 +9,10 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<DefineConstants>$(DefineConstants);ENABLE_XAML_HOT_RELOAD</DefineConstants>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -44,6 +48,7 @@
 		<PackageReference Include="Serilog" Version="4.0.0" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0-dev-00979" />
+		<PackageReference Include="SkiaSharp" Version="3.0.0-preview.3.1" />
 		<PackageReference Include="System.Drawing.Common" Version="9.0.0-preview.5.24306.5" />
 		<PackageReference Include="System.IO.Ports" Version="9.0.0-preview.5.24306.7" />
 	</ItemGroup>
@@ -74,6 +79,10 @@
 
 	<ItemGroup>
 	  <Compile Remove="obj\**" />
+	  <Compile Update="Views\Screens\CaptureEngine\ScreenPreview.axaml.cs">
+	    <DependentUpon>ScreenPreview.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>

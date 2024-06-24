@@ -1,9 +1,9 @@
-
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
+using System;
+using System.Threading.Tasks;
 using AmbinityCore.DataBase;
 using AmbinityCore.Models.GeneralSetting;
+using Avalonia.Threading;
 using Polly;
 using ScreenCapture.NET;
 using Serilog;
@@ -12,6 +12,8 @@ namespace AmbinityCore.CaptureEngines;
 
 public class DesktopCapturingEngine : ICaptureEngine
 {
+    public event Action<ICaptureZone, int> ScreenUpdated;
+
     public DesktopCapturingEngine(GeneralSettingsManager generalSettings)
     {
         _generalSettings = generalSettings.Settings;
@@ -70,7 +72,6 @@ public class DesktopCapturingEngine : ICaptureEngine
         var isRunning = _state != RunningState.Canceling;
         var shouldBeRunning = true;
         _captureService = new DX11ScreenCaptureService();
-
         IEnumerable<GraphicsCard> graphicsCards = _captureService.GetGraphicsCards();
 
         IEnumerable<Display> displays = _captureService.GetDisplays(graphicsCards.First());
@@ -96,20 +97,22 @@ public class DesktopCapturingEngine : ICaptureEngine
             {
                 IScreenCapture screenCapture = _captureService.GetScreenCapture(display);
                 ICaptureZone fullscreen = screenCapture.RegisterCaptureZone(0, 0, screenCapture.Display.Width,
-                    screenCapture.Display.Height,downscaleLevel:3);
+                    screenCapture.Display.Height, downscaleLevel: 3);
                 AvailableDesktop.Add(fullscreen);
-                var workerThread = new Thread(() => Run(screenCapture, fullscreen, _cancellationTokenSource.Token))
-                {
-                    IsBackground = true,
-                    Priority = ThreadPriority.BelowNormal,
-                    Name = "WCG" + display.DeviceName
-                };
+                var workerThread =
+                    new Thread(() => Run(screenCapture, index, fullscreen, _cancellationTokenSource.Token))
+                    {
+                        IsBackground = true,
+                        Priority = ThreadPriority.BelowNormal,
+                        Name = "ScreenCapture .Net" + display.DeviceName
+                    };
                 _state = RunningState.Capturing;
                 workerThread.Start();
                 _workerThreads.Add(workerThread);
             }
         }
     }
+
 
     private TimeSpan ProvideDelayDuration(int index)
     {
@@ -128,7 +131,7 @@ public class DesktopCapturingEngine : ICaptureEngine
         return TimeSpan.FromMilliseconds(1000);
     }
 
-    public async Task Run(IScreenCapture capture, ICaptureZone zone, CancellationToken token)
+    private void Run(IScreenCapture capture, int index, ICaptureZone zone, CancellationToken token)
     {
         Log.Information("WCG is running for screen :" + zone.Display.DeviceName);
         try
@@ -139,11 +142,8 @@ public class DesktopCapturingEngine : ICaptureEngine
                 {
                     capture.CaptureScreen();
                     var frameTime = Stopwatch.StartNew();
-                    using (zone.Lock())
-                    {
-                        IImage image = zone.Image;
-                        
-                    }
+                    Dispatcher.UIThread.InvokeAsync(()=>ScreenUpdated?.Invoke(zone, index));
+                    
 
                     var minFrameTimeInMs = 1000 / 30;
                     var elapsedMs = (int)frameTime.ElapsedMilliseconds;
@@ -190,5 +190,4 @@ public class DesktopCapturingEngine : ICaptureEngine
         _captureService.Dispose();
         Log.Information("Dispose called");
     }
-    
 }

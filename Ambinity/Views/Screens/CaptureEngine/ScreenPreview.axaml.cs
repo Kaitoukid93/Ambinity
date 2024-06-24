@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Ambinity.Views.Screens.CaptureEngine;
 
-public partial class ScreenCapturingView : UserControl
+public partial class ScreenPreview : UserControl
 {
-    public ScreenCapturingView()
+    public ScreenPreview()
     {
         InitializeComponent();
         
