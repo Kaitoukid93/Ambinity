@@ -39,7 +39,7 @@ public class ScreenCapturingViewModel : ViewModelBase
         for (int i = 0; i < _capturingEngine.AvailableDesktop.Count; i++)
         {
             var view = new ScreenPreview();
-            var vm = new ScreenPreviewViewModel(view.DisplayPreviewImage, _capturingEngine.AvailableDesktop[i]);
+            var vm = new ScreenPreviewViewModel(_capturingEngine.AvailableDesktop[i]);
             view.DataContext = vm;
             AvailableScreen.Add(vm);
         }

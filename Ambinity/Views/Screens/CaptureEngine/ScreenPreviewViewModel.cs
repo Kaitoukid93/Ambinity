@@ -10,10 +10,9 @@ namespace Ambinity.Views.Screens.CaptureEngine;
 
 public class ScreenPreviewViewModel : ViewModelBase
 {
-    public ScreenPreviewViewModel(Image previewImageControl,ICaptureZone zone)
+    public ScreenPreviewViewModel(ICaptureZone zone)
     {
         _captureZone = zone;
-        PreviewImageControl = previewImageControl;
         PreviewImage = new WriteableBitmap(
             new PixelSize(zone.Width,
                 zone.Height),
