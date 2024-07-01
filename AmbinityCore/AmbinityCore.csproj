@@ -25,7 +25,6 @@
       <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
       <PackageReference Include="Serilog.Sinks.File" Version="6.0.0-dev-00979" />
       <PackageReference Include="SkiaSharp" Version="3.0.0-preview.3.1" />
-      <PackageReference Include="System.Drawing.Common" Version="9.0.0-preview.5.24306.5" />
     </ItemGroup>
 
     <ItemGroup>
@@ -38,6 +37,10 @@
 
     <ItemGroup>
       <None Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Draw2D.Core\Draw2D.Core.csproj" />
     </ItemGroup>
 
 </Project>

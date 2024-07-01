@@ -1,4 +1,7 @@
 using AmbinityCore.Enums;
+using Newtonsoft.Json;
+using Draw2D.Core;
+using Draw2D.Core.Shapes.Basic;
 
 namespace AmbinityCore.Models.Device;
 
@@ -14,6 +17,8 @@ public class Device:IDevice
     public string ProductionDate { get; set; }
     public bool IsVisible { get; set; }
     public bool IsEnabled { get; set; }
+    public Rectangle Rectangle { get; set; }
+    [JsonIgnore]
     public  string Address { get; set; }
     public  bool IsTransferActive { get; set; }
 }

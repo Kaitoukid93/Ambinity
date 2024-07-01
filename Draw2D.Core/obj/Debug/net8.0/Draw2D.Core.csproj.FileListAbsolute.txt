@@ -1,0 +1,14 @@
+F:\Ambinity Rider\Draw2D.Core\bin\Debug\net8.0\Draw2D.Core.deps.json
+F:\Ambinity Rider\Draw2D.Core\bin\Debug\net8.0\Draw2D.Core.dll
+F:\Ambinity Rider\Draw2D.Core\bin\Debug\net8.0\Draw2D.Core.pdb
+F:\Ambinity Rider\Draw2D.Core\obj\Debug\net8.0\Draw2D.Core.csproj.AssemblyReference.cache
+F:\Ambinity Rider\Draw2D.Core\obj\Debug\net8.0\Avalonia\Resources.Inputs.cache
+F:\Ambinity Rider\Draw2D.Core\obj\Debug\net8.0\Draw2D.Core.GeneratedMSBuildEditorConfig.editorconfig
+F:\Ambinity Rider\Draw2D.Core\obj\Debug\net8.0\Draw2D.Core.AssemblyInfoInputs.cache
+F:\Ambinity Rider\Draw2D.Core\obj\Debug\net8.0\Draw2D.Core.AssemblyInfo.cs
+F:\Ambinity Rider\Draw2D.Core\obj\Debug\net8.0\Draw2D.Core.csproj.CoreCompileInputs.cache
+F:\Ambinity Rider\Draw2D.Core\obj\Debug\net8.0\Draw2D.Core.sourcelink.json
+F:\Ambinity Rider\Draw2D.Core\obj\Debug\net8.0\Draw2D.Core.dll
+F:\Ambinity Rider\Draw2D.Core\obj\Debug\net8.0\refint\Draw2D.Core.dll
+F:\Ambinity Rider\Draw2D.Core\obj\Debug\net8.0\Draw2D.Core.pdb
+F:\Ambinity Rider\Draw2D.Core\obj\Debug\net8.0\ref\Draw2D.Core.dll

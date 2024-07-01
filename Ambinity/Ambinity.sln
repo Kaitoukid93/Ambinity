@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ambinity", "Ambinity.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmbinityCore", "..\AmbinityCore\AmbinityCore.csproj", "{50873B7C-5502-47EB-9DE2-2B735256FB75}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Draw2D.Core", "..\Draw2D.Core\Draw2D.Core.csproj", "{6BD0EC25-BA46-4D66-9428-96DBE02CD76C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Draw2DControlLibrary", "..\Draw2DControlLibrary\Draw2DControlLibrary.csproj", "{4CE6E597-BA5B-448B-8172-93FBACE0DDEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{50873B7C-5502-47EB-9DE2-2B735256FB75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50873B7C-5502-47EB-9DE2-2B735256FB75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50873B7C-5502-47EB-9DE2-2B735256FB75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BD0EC25-BA46-4D66-9428-96DBE02CD76C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BD0EC25-BA46-4D66-9428-96DBE02CD76C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BD0EC25-BA46-4D66-9428-96DBE02CD76C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BD0EC25-BA46-4D66-9428-96DBE02CD76C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CE6E597-BA5B-448B-8172-93FBACE0DDEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CE6E597-BA5B-448B-8172-93FBACE0DDEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CE6E597-BA5B-448B-8172-93FBACE0DDEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CE6E597-BA5B-448B-8172-93FBACE0DDEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
