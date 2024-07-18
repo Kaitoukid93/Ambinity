@@ -3,10 +3,12 @@
              x:Class="Ambinity.App"
              xmlns:local="using:Ambinity"
              xmlns:sty="using:FluentAvalonia.Styling"
+             xmlns:converters ="clr-namespace:AmbinityCore.Converters;assembly=AmbinityCore"
              RequestedThemeVariant="Dark">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
     <Application.Styles>
-        <sty:FluentAvaloniaTheme CustomAccentColor="LimeGreen" />
+            <sty:FluentAvaloniaTheme PreferUserAccentColor="True" />
+            <StyleInclude Source="avares://Ambinity/Styles/Ambinity.axaml" />
     </Application.Styles>
     <Application.DataTemplates>
         <local:ViewLocator />
@@ -16,6 +18,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="/Views/GeometryCollection.axaml" />
                 <ResourceInclude Source="/Views/Generic.axaml"></ResourceInclude>
+                <ResourceDictionary>
+                    <converters:StaticResourceConverter x:Key="ResourceConverter" />
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

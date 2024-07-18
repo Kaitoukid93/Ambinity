@@ -13,7 +13,7 @@ namespace Draw2D.Core
         private Color _strokeColor = Colors.Green;
         private float _strokeThickness = 2;
         private IDashStyle _dashStyle = null;
-        private Color _fillColor = Colors.LightGray;
+        private Color _fillColor = Colors.Transparent;
         private bool _overideStrokeStyle = true;
 
         public Color FillColor

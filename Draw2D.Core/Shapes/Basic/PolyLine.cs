@@ -72,11 +72,11 @@ namespace Draw2D.Core.Shapes.Basic
 
         public override void Render(DrawingContext dc, double strokeThickness, Color strokeColor)
         {
-            var strokeBrush = new ImmutableSolidColorBrush(StrokeColor);
+            var strokeBrush = new ImmutableSolidColorBrush(Canvas.StrokeColor);
             var thickness = StrokeThickness;
             if (OverrideStrokeStyle)
             {
-                strokeBrush = new ImmutableSolidColorBrush(strokeColor);
+                strokeBrush = new ImmutableSolidColorBrush(Canvas.StrokeColor);
                 thickness = (float)strokeThickness;
             }
             //strokeBrush.Freeze();

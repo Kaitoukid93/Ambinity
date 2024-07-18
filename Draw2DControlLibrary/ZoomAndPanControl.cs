@@ -823,7 +823,7 @@ namespace Draw2DControlLibrary
 
         public double ContentFitZoom => _content == null
             ? Bounds.Width
-            : Math.Min(Bounds.Width / _content.Bounds.Width, Bounds.Height / _content.Bounds.Height);
+            : Math.Min((Bounds.Width -10) / _content.Bounds.Width, (Bounds.Height-10) / _content.Bounds.Height);
 
         public double ContentFillZoom => _content == null
             ? Bounds.Width

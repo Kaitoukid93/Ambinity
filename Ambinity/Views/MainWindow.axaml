@@ -2,33 +2,41 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Background="Transparent"
         TransparencyLevelHint="Mica"
         ExtendClientAreaToDecorationsHint="True"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        Width="1600"
+        Height="900"
         x:Class="Ambinity.Views.MainWindow"
         x:DataType="views:MainWindowViewModel"
         xmlns:views="clr-namespace:Ambinity.Views"
-        xmlns:dashboard="clr-namespace:Ambinity.Views.Screens.Dashboard"
-        xmlns:devicecontrol="clr-namespace:Ambinity.Views.Screens.DeviceControl"
         xmlns:nonclientarea="clr-namespace:Ambinity.Views.NonClientArea"
         xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
         xmlns:ambinity="clr-namespace:Ambinity"
+        xmlns:sideMenu = "clr-namespace:Ambinity.Views.SideMenu"
         Icon="/Assets/avalonia-logo.ico"
         Title="Ambinity">
-    
-        <Grid RowDefinitions="Auto,*">
-            <Grid ColumnDefinitions="Auto,Auto,*,*">
-                <nonclientarea:NonClientAreaContent></nonclientarea:NonClientAreaContent>
-            </Grid>
-            <Button Grid.Row="1" Command="{Binding GoToSurfaceEditorCommand}" Content="Surface Editor"></Button>
-            <ui:Frame Grid.Row="2" Name="RootFrame"  IsNavigationStackEnabled="False" CacheSize="0">
-                <ui:Frame.NavigationPageFactory>
-                    <ambinity:PageFactory/>
-                </ui:Frame.NavigationPageFactory>
-            </ui:Frame>
-            
+
+    <Grid RowDefinitions="Auto,*">
+        <Grid ColumnDefinitions="Auto,Auto,*,*">
+            <nonclientarea:NonClientAreaContent></nonclientarea:NonClientAreaContent>
         </Grid>
-    
-    
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+            <!-- Vertical selection -->
+            <Grid>
+            <sideMenu:SideMenuView DataContext="{Binding SideMenu}"></sideMenu:SideMenuView>
+            </Grid>
+            <!-- main page view -->
+            <Grid Column="1">
+                <ui:Frame Grid.Row="2" Name="RootFrame" IsNavigationStackEnabled="False" CacheSize="0">
+                    <ui:Frame.NavigationPageFactory>
+                        <ambinity:PageFactory />
+                    </ui:Frame.NavigationPageFactory>
+                </ui:Frame>
+            </Grid>
+        </Grid>
+    </Grid>
+
 
 </Window>

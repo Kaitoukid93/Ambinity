@@ -15,11 +15,11 @@ public class DashboardDeviceViewModel : ViewModelBase
         CommandSetup();
     }
 
-    public IDevice Device { get; set; }
+    public ILEDController IledController { get; set; }
 
-    public void Init(IDevice device)
+    public void Init(ILEDController iledController)
     {
-        Device = device;
+        IledController = iledController;
     }
 
     private void CommandSetup()

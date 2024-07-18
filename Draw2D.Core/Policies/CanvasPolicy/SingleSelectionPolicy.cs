@@ -25,9 +25,18 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
         public virtual void OnMouseMove(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
         {
-
+            var figure = canvas.GetBestFigure(mouseX, mouseY, new List<Type> { typeof(Selectionbox) }, new List<Type>());
+            if (figure == null)
+            {
+                canvas.UnHoverAll();
+                return;
+            }
+            if (figure.IsSelectable == true)
+            {
+                canvas?.HoverFigure(figure);
+            }
         }
-
+        
         public virtual void OnMouseLeftDown(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
         {
             _mouseMovedDuringMouseDown = false;
@@ -251,5 +260,15 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             }
 
         }
+        private void MouseLeave(Figure figure)
+        {
+            figure.IsMouseOver = false;
+        }
+
+        private void MouseEnter(Figure figure)
+        {
+            figure.IsMouseOver = true;
+        }
+       
     }
 }

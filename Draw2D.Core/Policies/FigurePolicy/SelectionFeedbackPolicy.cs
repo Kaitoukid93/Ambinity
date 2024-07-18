@@ -33,7 +33,7 @@ namespace Draw2D.Core.Policies.FigurePolicy
         {
             figure.EnableSelectionFeedback(false);
         }
-
+        
         internal override void OnInstall(Figure hostFigure)
         {
             base.OnInstall(hostFigure);

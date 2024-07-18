@@ -71,7 +71,7 @@ namespace Draw2D.Core.Shapes.Basic
             var thickness = StrokeThickness;
             if (OverrideStrokeStyle)
             {
-                strokeBrush = new ImmutableSolidColorBrush(strokeColor);
+                strokeBrush = new ImmutableSolidColorBrush(StrokeColor);
                 thickness = (float)strokeThickness;
             }
             var screenPoint = Canvas.CoordinateSystem.ToScreenSpace(Position);
@@ -89,7 +89,6 @@ namespace Draw2D.Core.Shapes.Basic
 
             Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
             dc.PushTransform(translate);
-
             dc.DrawRectangle(fillBrush, pen,
                 new Rect(new Point(X, Y), new Size(Width, Height)));
 

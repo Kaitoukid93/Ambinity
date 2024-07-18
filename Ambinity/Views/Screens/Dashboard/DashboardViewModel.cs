@@ -2,9 +2,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
-using Ambinity.Views.Screens.DeviceControl;
 using AmbinityCore.Models.Device;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Ambinity.Views.Screens.Dashboard;
@@ -40,7 +38,7 @@ public class DashboardViewModel : ViewModelBase
 
     #region Methods
 
-    public override void Init(object parameter = null)
+    public void Init()
     {
         //load available devices
         //setup commands
@@ -60,18 +58,19 @@ public class DashboardViewModel : ViewModelBase
 
     private void GoToDeviceControl(DashboardDeviceViewModel device)
     {
-        var vm = Ioc.Default.GetRequiredService<DeviceControlViewModel>();
-        vm.Init(device.Device);
-        _rootNavigationStores.CurrentViewModel = vm;
+       // var vm = Ioc.Default.GetRequiredService<DeviceControlViewModel>();
+      //  vm.Init(device.IledController);
+       // _rootNavigationStores.CurrentViewModel = vm;
     }
 
     private DashboardDeviceViewModel CreateDummyDevice(int port)
     {
-        var device = new Device();
-        device.Name = "Ambino Basic";
-        device.Description = "USB Lighting Device";
-        device.Address = "COM" + port.ToString();
-        device.IsTransferActive = false;
+        var device = new LEDController();
+        device.DeviceName = "Ambino Basic";
+        device.DeviceDescription = "USB Lighting Device";
+        device.IledControllerHardwareSettings = new SerialLEDControllerHardwareSettings();
+        device.IledControllerHardwareSettings.DeviceCommunicationAddress = "COM" + port.ToString();
+        device.IsTransferEnabled = false;
         var deviceVm = new DashboardDeviceViewModel();
         deviceVm.Init(device);
         deviceVm.DeviceClicked += OnDeviceClicked;

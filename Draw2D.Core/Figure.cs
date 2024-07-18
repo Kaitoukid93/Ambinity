@@ -6,7 +6,6 @@ using Draw2D.Core.Policies.FigurePolicy;
 
 namespace Draw2D.Core
 {
-
     [Flags]
     public enum SnapTargets
     {
@@ -15,7 +14,6 @@ namespace Draw2D.Core
         MidPoints = 2, //TopCenter,TopRight etc. of a rectangle. Mid-Points of a line/polyline.
         Center = 4, //Center of bounding box. Less useful with line/polyline.
     }
-
 
 
     public abstract class Figure
@@ -35,7 +33,9 @@ namespace Draw2D.Core
         protected readonly List<ConstraintPoint> DynamicConstraintPoints = new List<ConstraintPoint>();
 
         public List<ConstraintPoint> ConstraintPoints => FixConstraintPoints.Concat(DynamicConstraintPoints).ToList();
-
+        public bool IsMouseOver { get; set; }
+        public event Action<float,float> PositionPropertyChanged;
+        public event Action<float, float> SizePropertyChanged;
         public int ZOrder
         {
             get { return _zOrder; }
@@ -207,6 +207,7 @@ namespace Draw2D.Core
             {
                 handle.Hide(Canvas);
             }
+
             Canvas?.Selection.Remove(this);
 
 
@@ -277,6 +278,7 @@ namespace Draw2D.Core
         {
             X += dx;
             Y += dy;
+            PositionPropertyChanged?.Invoke(dx,dy);
 
             foreach (var handle in _handles)
             {
@@ -293,7 +295,7 @@ namespace Draw2D.Core
         {
             if (!IsResizable)
                 return;
-
+            
             var adjustSizeResult = new AdjustSizeResult(dTop, dRight, dBottom, dLeft);
 
             foreach (var policy in _policies.OfType<IAdjustPositionAndSize>())
@@ -301,19 +303,20 @@ namespace Draw2D.Core
                 adjustSizeResult = policy.AdjustSizeByDelta(this, dTop, dRight, dBottom, dLeft, adjustSizeResult);
             }
 
-            if (adjustSizeResult.DeltaTop != 0 || adjustSizeResult.DeltaRight != 0 || adjustSizeResult.DeltaBottom != 0 || adjustSizeResult.DeltaLeft != 0)
+            if (adjustSizeResult.DeltaTop != 0 || adjustSizeResult.DeltaRight != 0 ||
+                adjustSizeResult.DeltaBottom != 0 || adjustSizeResult.DeltaLeft != 0)
             {
-                ApplyResize(adjustSizeResult.DeltaTop, adjustSizeResult.DeltaRight, adjustSizeResult.DeltaBottom, adjustSizeResult.DeltaLeft);
+                ApplyResize(adjustSizeResult.DeltaTop, adjustSizeResult.DeltaRight, adjustSizeResult.DeltaBottom,
+                    adjustSizeResult.DeltaLeft);
 
                 foreach (var handle in _handles)
                 {
                     handle.Update();
                 }
-
+               
 
                 Canvas?.NeedsRepaint(this);
             }
-
         }
 
         private void ApplyResize(float dTop, float dRight, float dBottom, float dLeft)
@@ -326,16 +329,21 @@ namespace Draw2D.Core
                 Width += dRight;
                 X += dLeft;
                 Width -= dLeft;
+                SizePropertyChanged?.Invoke(this.Width,this.Height);
+                PositionPropertyChanged?.Invoke(dLeft,0);
             }
+
             if (box.Height >= MinHeight)
             {
                 Y += dBottom;
                 Height += dTop;
                 Height -= dBottom;
+                SizePropertyChanged?.Invoke(this.Width,this.Height);
+                PositionPropertyChanged?.Invoke(0,dBottom);
             }
-
+            
             Canvas?.OnFigureTranslated(this);
-
+             
 
             Canvas?.NeedsRepaint(this);
         }
@@ -376,10 +384,8 @@ namespace Draw2D.Core
 
         public virtual Figure EnableSelectionFeedback(bool isFeedbackEnabled)
         {
-
             return this;
         }
-
 
 
         public virtual bool OnDragStart(Canvas canvas, float x, float y)
@@ -401,7 +407,8 @@ namespace Draw2D.Core
         }
 
 
-        public virtual void OnDrag(Canvas canvas, float dxSum, float dySum, float dx, float dy, bool isShiftKey, bool isCtrlKey)
+        public virtual void OnDrag(Canvas canvas, float dxSum, float dySum, float dx, float dy, bool isShiftKey,
+            bool isCtrlKey)
         {
             if (HittedResizeHandle != null)
             {
@@ -414,7 +421,8 @@ namespace Draw2D.Core
                 foreach (var policy in canvas.GetSnapPolicies())
                 {
                     Point snapPoint;
-                    isSnapped = policy.Snap(canvas, Position, dx, dy, dxSum, dySum, out snapPoint, out delta, new[] { this });
+                    isSnapped = policy.Snap(canvas, Position, dx, dy, dxSum, dySum, out snapPoint, out delta,
+                        new[] { this });
 
                     if (isSnapped)
                         break;
@@ -455,12 +463,12 @@ namespace Draw2D.Core
 
         private float GetAbsoluteY()
         {
-            return Y;//+ Parent?.GetAbsoluteY() ?? Y;
+            return Y; //+ Parent?.GetAbsoluteY() ?? Y;
         }
 
         private float GetAbsoluteX()
         {
-            return X;//+ Parent?.GetAbsoluteX() ?? X;
+            return X; //+ Parent?.GetAbsoluteX() ?? X;
         }
 
         public Rectangle GetAbsoluteBounds()
@@ -557,7 +565,6 @@ namespace Draw2D.Core
         }
 
 
-
         public virtual IEnumerable<Point> GetSnapPoints()
         {
             if (SnapTargets.HasFlag(SnapTargets.Vertices))
@@ -566,8 +573,8 @@ namespace Draw2D.Core
                 {
                     yield return vertex;
                 }
-
             }
+
             if (SnapTargets.HasFlag(SnapTargets.MidPoints))
             {
                 yield return BoundingBox.TopCenter.Clone();
@@ -575,11 +582,11 @@ namespace Draw2D.Core
                 yield return BoundingBox.BottomCenter.Clone();
                 yield return BoundingBox.LeftCenter.Clone();
             }
+
             if (SnapTargets.HasFlag(SnapTargets.Center))
             {
                 yield return BoundingBox.Center;
             }
-
         }
 
         public bool CanBeSnapTarget { get; set; } = true;
@@ -588,7 +595,5 @@ namespace Draw2D.Core
         {
             SnapTargets = snapTargets;
         }
-
     }
 }
-

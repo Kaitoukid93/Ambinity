@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:draw2DControlLibrary="clr-namespace:Draw2DControlLibrary;assembly=Draw2DControlLibrary"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:draw2DCanvas="clr-namespace:Ambinity.Views.Draw2DCanvas"
+             x:DataType="draw2DCanvas:Draw2DCanvasViewModel"
+             x:Class="Ambinity.Views.Draw2DCanvas.Draw2DCanvasView">
+<UserControl.Resources>
+    <VisualBrush x:Key="TemplateCheckerBoard" TileMode="Tile" Stretch="None" AlignmentX="Left" AlignmentY="Top" SourceRect="0,0,20,20" DestinationRect="0,0,20,20">
+        <VisualBrush.Visual>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Vertical">
+                    <Rectangle Width="10" Height="10" Fill="Black" Opacity="0.15" />
+                    <Rectangle Width="10" Height="10" Canvas.Left="10" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <Rectangle Width="10" Height="10" Canvas.Top="10" />
+                    <Rectangle Width="10" Height="10" Canvas.Left="10" Canvas.Top="10" Fill="Black" Opacity="0.15" />
+                </StackPanel>
+            </StackPanel>
+        </VisualBrush.Visual>
+    </VisualBrush>
+</UserControl.Resources>
+        <Grid>
+            <draw2DControlLibrary:ZoomAndPanControl
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        x:Name="zoomAndPanControl" MinimumZoom="0.0001"
+                        BorderThickness="0"
+                        Margin="0"
+                        Background="{DynamicResource TemplateCheckerBoard}"
+                        FitCommandDepProp="{Binding FitCommand, Mode=OneWayToSource}"
+                        FillCommandDepProp="{Binding FillCommand, Mode=OneWayToSource}"
+                        OneHundredPercentCommandDepProp="{Binding OneHundredPercentCommand, Mode=OneWayToSource}"
+                        ZoomInCommandDepProp="{Binding ZoomInCommand, Mode=OneWayToSource}"
+                        ZoomOutCommandDepProp="{Binding ZoomOutCommand, Mode=OneWayToSource}"
+                        UndoZoomCommandDepProp="{Binding UndoZoomCommand, Mode=OneWayToSource}"
+                        RedoZoomCommandDepProp="{Binding  RedoZoomCommand, Mode=OneWayToSource}">
+                     <draw2DControlLibrary:ZoomAndPanControl.Content>
+                <draw2DControlLibrary:Draw2DControl x:Name="Draw2DControl" HorizontalAlignment="Left"
+                                                    VerticalAlignment="Top"
+                                                    Focusable="True"
+                                                    Margin="4"
+                                                    Canvas="{Binding Canvas}"
+                                                    WorldMousePosX="{Binding WorldMousePosX, Mode=TwoWay}"
+                                                    WorldMousePosY="{Binding WorldMousePosY, Mode=TwoWay}"
+                                                    RenderedItemsCount="{Binding RenderedItemsCount, Mode=TwoWay}"
+                                                    ViewportWidth="{Binding ElementName=zoomAndPanControl,Path=ContentViewportWidth, Mode=TwoWay}"
+                                                    ViewportHeight="{Binding ElementName=zoomAndPanControl,Path=ContentViewportHeight, Mode=TwoWay}"
+                                                    ContentOffsetX="{Binding ElementName=zoomAndPanControl,Path=ContentOffsetX, Mode=TwoWay}"
+                                                    ContentOffsetY="{Binding ElementName=zoomAndPanControl,Path=ContentOffsetY, Mode=TwoWay}" />
+            </draw2DControlLibrary:ZoomAndPanControl.Content>
+        </draw2DControlLibrary:ZoomAndPanControl>
+        </Grid>
+</UserControl>

@@ -1,0 +1,92 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.SideMenu"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:DataType="local:SideMenuProfileViewModel"
+             x:Class="Ambinity.Views.SideMenu.SideMenuProfileView">
+    <UserControl.Resources>
+        <MenuFlyout x:Key="ProfileMenuFlyout" Placement="Bottom">
+            <MenuItem Header="Edit properties">
+                <MenuItem.Icon>
+                    <PathIcon Data="{DynamicResource generalSettings}"></PathIcon>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="-" />
+            <MenuItem Header="Edit properties">
+                <MenuItem.Icon>
+                    <avalonia:MaterialIcon Kind="Cog" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Edit properties">
+                <MenuItem.Icon>
+                    <avalonia:MaterialIcon Kind="Cog" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </MenuFlyout>
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style Selector=":is(Button).properties-button">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector=":is(PathIcon).playing-grid">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Grid#ItemGrid:pointerover :is(Button).properties-button">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="Grid#ItemGrid:pointerover :is(Grid).playing-grid">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Grid#ItemGrid.flyout-open :is(Button).properties-button">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector=":is(TextBlock).playing-foreGround">
+            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
+        </Style>
+        <Style Selector=":is(PathIcon).playing-fill">
+            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
+        </Style>
+    </UserControl.Styles>
+    <Grid Background="Transparent"
+          x:Name="ItemGrid"
+          ContextFlyout="{DynamicResource ProfileMenuFlyout}"
+          ColumnDefinitions="Auto,*,Auto">
+        <PathIcon Width="15" Height="15" Margin="0,0,5,0"
+                  Classes.playing-fill="{CompiledBinding IsPlaying}"
+                  Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+        </PathIcon>
+        <TextBlock TextTrimming="CharacterEllipsis" Grid.Column="1" Padding="0 5"
+                   FontWeight="SemiBold"
+                   FontSize="13"
+                   Classes.playing-foreGround="{CompiledBinding IsPlaying}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   Text="{CompiledBinding Content, FallbackValue='New Category'}">
+        </TextBlock>
+        <Grid  HorizontalAlignment="Right" Grid.Column="2" Margin="0,0,7,0" Classes="playing-grid">
+            <PathIcon Foreground="{DynamicResource SystemAccentColor}" IsVisible="{Binding IsPlaying}" Width="13" Height="13"
+                      Data="{DynamicResource 'pauseComposition'}">
+            </PathIcon>
+        </Grid>
+
+        <Button Classes="properties-button icon-button icon-button-small"
+                Grid.Column="2"
+                Command="{CompiledBinding TogglePlayPauseProfileCommand}"
+                ToolTip.Tip="Play/Pause profile"
+                HorizontalAlignment="Right"
+                Margin="0 0 2 0">
+            <Panel>
+                <PathIcon IsVisible="{Binding !IsPlaying}" Width="13" Height="13"
+                          Data="{DynamicResource 'playComposition'}">
+                </PathIcon>
+                <PathIcon IsVisible="{Binding IsPlaying}" Width="13" Height="13"
+                          Data="{DynamicResource 'pauseComposition'}">
+                </PathIcon>
+            </Panel>
+        </Button>
+
+    </Grid>
+</UserControl>

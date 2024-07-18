@@ -334,7 +334,7 @@ namespace Draw2DControlLibrary
         public ICommand FillCommandDepProp
         {
             get { return _fillCommandDepProp; }
-            set { SetAndRaise(FitCommandDepPropProperty, ref _fillCommandDepProp, value); }
+            set { SetAndRaise(FillCommandDepPropProperty, ref _fillCommandDepProp, value); }
         }
 
         public static readonly DirectProperty<ZoomAndPanControl,ICommand> FillCommandDepPropProperty = 
@@ -445,7 +445,7 @@ namespace Draw2DControlLibrary
         public ICommand FitCommand => _fitCommand ?? (_fitCommand = new RelayCommand(() =>
         {
             SaveZoom();
-            AnimatedZoomTo(ContentFitZoom);
+            ZoomTo(ContentFitZoom);
             RaiseCanExecuteChanged();
         }, () => Math.Abs(ViewportZoom - ContentFitZoom) > .01 * ContentFitZoom && ContentFitZoom >= ContentMinZoom));
 

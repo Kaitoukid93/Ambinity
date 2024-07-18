@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Screens.ProfileEditor"
+             x:DataType="local:ZoneLayerViewModel"
+             x:Class="Ambinity.Views.Screens.ProfileEditor.ZoneLayerView">
+    <UserControl.Styles>
+        <Style Selector=":is(Button).properties-button">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Grid#ContainerGrid:pointerover :is(Button).properties-button">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="Grid#ContainerGrid.flyout-open :is(Button).properties-button">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="Grid#ContainerGrid.plus-flyout-open :is(Button).properties-button">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </UserControl.Styles>
+    <Grid Background="Transparent" x:Name="ContainerGrid" ColumnDefinitions="Auto,*,Auto,Auto">
+        <PathIcon Margin="0,0,10,0" Data="{DynamicResource Zone_layer_icon}"></PathIcon>
+        <TextBlock Grid.Column="1" Padding="0 5"
+                   FontWeight="SemiBold"
+                   PointerPressed="InputElement_OnPointerPressed"
+                   FontSize="13"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left" Text="{Binding Name}"></TextBlock>
+        <Button Grid.Column="2" Margin="0,0,2,0" Classes="properties-button icon-button icon-button-small">
+            <PathIcon Width="13" Height="13" Data="{DynamicResource 'Eye Open'}"></PathIcon>
+        </Button>
+        <Button Margin="0,0,2,0" Grid.Column="3" Classes="properties-button icon-button icon-button-small">
+            <PathIcon Width="13" Height="13" Data="{DynamicResource 'delete'}"></PathIcon>
+        </Button>
+
+    </Grid>
+
+</UserControl>

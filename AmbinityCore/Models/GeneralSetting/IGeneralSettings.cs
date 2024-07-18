@@ -7,4 +7,5 @@ public interface IGeneralSettings
 {
     bool AutoStart { get; set; }
     Color PrimaryColor { get; set; }
+    bool EnableSnapToGrid { get; set; }
 }

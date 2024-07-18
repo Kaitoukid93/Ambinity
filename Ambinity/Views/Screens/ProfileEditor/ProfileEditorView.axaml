@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Screens.ProfileEditor"
+             x:DataType="local:ProfileEditorViewModel"
+             x:Class="Ambinity.Views.Screens.ProfileEditor.ProfileEditorView">
+    <Grid ColumnDefinitions="2.5*, 4, *">
+        <Grid RowDefinitions="2.5*,4,*">
+            <Border Padding="0" Classes="card" Margin="5" Grid.Row="0">
+                <local:ZoneMappingView DataContext="{CompiledBinding ZoneMappingViewModel}"></local:ZoneMappingView>
+            </Border>
+            <GridSplitter Grid.Row="1" MinHeight="4" Margin="6,0" ResizeDirection="Rows" />
+            <Border Classes="card" Margin="5" Grid.Row="2" />
+        </Grid>
+       
+        <GridSplitter Grid.Column="1" MinWidth="4" Margin="0,6" ResizeDirection="Columns" />
+        
+        
+        <Grid Grid.Column="2" RowDefinitions="2.5*,4,*">
+            <Border Padding="0" Classes="card" Margin="5" Grid.Row="0">
+            </Border>
+            <GridSplitter Grid.Row="1" MinHeight="4" Margin="6,0" ResizeDirection="Rows" />
+            <Border Classes="card" Margin="5" Grid.Row="2">
+                <local:LayersView DataContext="{CompiledBinding LayersViewModel}"></local:LayersView>
+            </Border>
+        </Grid>
+    </Grid>
+
+</UserControl>

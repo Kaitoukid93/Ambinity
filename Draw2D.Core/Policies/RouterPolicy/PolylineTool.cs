@@ -118,11 +118,13 @@ namespace Draw2D.Core.Policies.RouterPolicy
 
         public override void OnMouseRightDown(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
         {
+            if(_clickCount>0)
             _clickCount--;
 
             if (_clickCount == 0)
             {
                 Cancel(canvas);
+                canvas.UnInstallCurrentTool();
             }
             else
             {

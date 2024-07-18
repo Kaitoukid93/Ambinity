@@ -81,7 +81,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
             //Console.WriteLine($"Drag start: {_x}, {_y}");
             _selectBox = new Selectionbox(_x, _y, 10, 10);
-            _selectBox.FillColor = Colors.Black.AdjustOpacity(0.2);
+            _selectBox.FillColor = canvas.StrokeColor.AdjustOpacity(0.1);
             _absoluteBoundingBox = _selectBox.BoundingBox.Clone();
 
             canvas.AddAdornerFigure(_selectBox);

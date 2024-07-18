@@ -30,6 +30,7 @@ namespace Draw2DControlLibrary
             ContentOffsetXProperty.Changed.AddClassHandler<Draw2DControl>(ContentOffsetXChanged);
             ViewportWidthProperty.Changed.AddClassHandler<Draw2DControl>(ViewportWidthChanged);
             ViewportHeightProperty.Changed.AddClassHandler<Draw2DControl>(ViewportHeightChanged);
+   
         }
 
 

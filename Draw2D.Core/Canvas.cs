@@ -145,7 +145,7 @@ namespace Draw2D.Core
 
         public QuadTree<Figure> QuadTree { get; private set; }
         public int ZOrder { get; }
-
+        private Figure _lastHoverFigure;
         public Selection Selection { get; set; }
 
         public float Width
@@ -244,8 +244,23 @@ namespace Draw2D.Core
             return this;
         }
 
+        public void HoverFigure(Figure figure)
+        {
+            figure.IsMouseOver = true;
+            _lastHoverFigure = figure;
+            NeedsRepaint(figure);
+        }
 
-    
+        public void UnHoverAll()
+        {
+            if (_lastHoverFigure != null)
+            {
+                _lastHoverFigure.IsMouseOver = false;
+                NeedsRepaint(_lastHoverFigure);
+                _lastHoverFigure = null;
+            }
+            
+        }
         public void OnMouseLeftDown(double x, double y, bool isShiftKey, bool isCtrlKey)
         {
             var worldPoint = CoordinateSystem.ToWorldSpace(x, y);
@@ -573,7 +588,10 @@ namespace Draw2D.Core
             };
 
         }
-
+        public void UnInstallCurrentTool()
+        {
+            ActiveTool = null;
+        }
         public IEnumerable<ISnapPolicy> GetInstalledSnapPolicies()
         {
             return Policies.OfType<ISnapPolicy>();

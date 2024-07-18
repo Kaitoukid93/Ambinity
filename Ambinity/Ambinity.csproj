@@ -43,6 +43,7 @@
 		<PackageReference Include="HotAvalonia" Version="1.1.1" />
 		<PackageReference Include="HotAvalonia.Extensions" Version="1.1.1" />
 		<PackageReference Include="Live.Avalonia" Version="1.4.1" />
+		<PackageReference Include="Material.Icons.Avalonia" Version="2.1.10" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.5.24306.7" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="QuickGraph" Version="3.6.61119.7" />
@@ -69,13 +70,12 @@
 
 	<ItemGroup>
 	  <Folder Include="Services\" />
-	  <Folder Include="Views\Screens\SurfaceEditor\" />
+	  <Folder Include="Views\Screens\DeviceControl\" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <AdditionalFiles Include="Views\Screens\Dashboard\DashboardDeviceView.axaml" />
 	  <AdditionalFiles Include="Views\Screens\Dashboard\DashboardView.axaml" />
-	  <AdditionalFiles Include="Views\Screens\DeviceControl\DeviceControlView.axaml" />
 	  <AdditionalFiles Remove="obj\**" />
 	  <AdditionalFiles Remove="Draw2D.Core\**" />
 	  <AdditionalFiles Remove="Draw2DControlLibrary\**" />
@@ -91,10 +91,6 @@
 	  <Compile Remove="obj\**" />
 	  <Compile Update="Views\Screens\CaptureEngine\ScreenPreview.axaml.cs">
 	    <DependentUpon>ScreenPreview.axaml</DependentUpon>
-	    <SubType>Code</SubType>
-	  </Compile>
-	  <Compile Update="Views\Screens\DeviceControl\DeviceCanvas\DeviceCanvasView.axaml.cs">
-	    <DependentUpon>DeviceControlView.axaml</DependentUpon>
 	    <SubType>Code</SubType>
 	  </Compile>
 	  <Compile Remove="Draw2D.Core\**" />

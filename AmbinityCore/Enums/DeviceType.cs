@@ -96,7 +96,5 @@ public enum DeviceType
     ///     Unknown device type.
     /// </summary>
     Unknown,
-
-
-    AmbinoHyperPort
+    
 }
