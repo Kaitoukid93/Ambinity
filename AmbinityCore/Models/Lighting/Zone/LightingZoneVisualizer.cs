@@ -1,33 +1,48 @@
-using System.Globalization;
-using AmbinityCore.Models.Device.LED;
+using System.Runtime.InteropServices;
+using AmbinityCore.Models.Geography;
+using AmbinityCore.Visualizer;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Media.Immutable;
 using Avalonia.Platform;
 using Draw2D.Core;
-using Draw2D.Core.Shapes.Basic;
+using Draw2D.Core.Graphic;
 
 namespace AmbinityCore.Models.Lighting.Zone;
 
-public class LightingZoneVisualizer
+public class LightingZoneVisualizer : ICanvasVisualizerItem
 {
-    public event Action ZoneUpdated;
+    public event Action ItemUpdated;
     private Rect _zoneBounds;
-    public Rect ZoneBounds => _zoneBounds;
+    private Pen _defaultPen = new Pen(new SolidColorBrush(Avalonia.Media.Colors.Chartreuse));
+    public Rect Bounds => _zoneBounds;
     private RenderTargetBitmap? _zoneImage;
-    private WriteableBitmap _zoneReusableBitmap;
-   
-
-    public LightingZoneVisualizer(LightingZone zone)
-    {
-        _zone = zone;
-        SetupZone();
-    }
-
+    public IPositionAware Item => _zone;
     private LightingZone _zone;
     private bool _loading;
 
+
+    public LightingZoneVisualizer(IPositionAware zone)
+    {
+        _zone = zone as LightingZone;
+        _zone.LocationUpdated += OnZoneLocationChanged;
+        _zone.SizeUpdated += OnZoneSizeChanged;
+        SetupZone();
+    }
+
+  
+
+    private void OnZoneSizeChanged()
+    {
+        SetupZone();
+        ItemUpdated?.Invoke();
+    }
+
+    private void OnZoneLocationChanged()
+    {
+        SetupZone();
+        ItemUpdated?.Invoke();
+    }
     public void UpdateContainerOffset(float dx, float dy)
     {
         _zone.X += dx;
@@ -42,7 +57,7 @@ public class LightingZoneVisualizer
         _zoneBounds = MeasureZone();
     }
 
-    public void RenderZone(DrawingContext dc, Canvas canvas)
+    public void Render(DrawingContext dc, Canvas canvas)
     {
         if (_zone == null || _zoneBounds.Width == 0 || _zoneBounds.Height == 0 || _loading)
             return;
@@ -61,8 +76,9 @@ public class LightingZoneVisualizer
             using DrawingContext.PushedState rotationPush =
                 dc.PushTransform(Matrix.CreateRotation(Matrix.ToRadians(_zone.Rotation)));
             //render zone bitmap and info
-           
-
+          
+            
+            
             // todo: render zone info 
         }
         finally
@@ -80,10 +96,7 @@ public class LightingZoneVisualizer
         _loading = false;
     }
 
-    private void UpdateBitmap()
-    {
-        //_zoneReusableBitmap = new WriteableBitmap(_zone.Width, _zone.Height, 96, 96, PixelFormats.Bgra32, null);
-    }
+    
 
     private Rect MeasureZone()
     {
@@ -101,8 +114,7 @@ public class LightingZoneVisualizer
                 new TranslateTransform(_zone.X, _zone.Y)
             }
         };
-
-
+        
         return geometry.Bounds;
     }
 }

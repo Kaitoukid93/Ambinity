@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.CollectableItem.LightingZone"
+             x:DataType="local:LightingZoneAssetViewModel"
+             x:Class="Ambinity.Views.CollectableItem.LightingZone.LightingZoneAssetView">
+    <Button MinWidth="270" Margin=" 0,5" HorizontalContentAlignment="Stretch" Padding="0" HorizontalAlignment="Stretch">
+        <Grid ColumnDefinitions="50,*" Height="100">
+            <PathIcon HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Data="{Binding Icon,Converter={StaticResource ResourceConverter}}"></PathIcon>
+            <Grid Column="1" RowDefinitions="Auto,30,*,Auto">
+                <TextBlock ToolTip.Tip="{Binding Name}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"
+                           MaxWidth="180" Grid.Row="0" Margin="0,7,0,0" FontWeight="SemiBold" Text="{Binding Name}">
+                </TextBlock>
+                <Grid Row="1" RowDefinitions="*,*">
+                    <TextBlock FontSize="12" Foreground="{DynamicResource ButtonForegroundDisabled}"
+                               Text="{Binding Description }">
+                    </TextBlock>
+                    <TextBlock ToolTip.Tip="{Binding ConfigInfo}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"  MaxWidth="180" Grid.Row="1" FontSize="12" Foreground="{DynamicResource ButtonForegroundDisabled}"
+                               Text="{Binding ConfigInfo }">
+                    </TextBlock>
+                </Grid>
+                <Grid Grid.Row="3">
+                    <Button CornerRadius="3" Padding="5,3" Margin="5,5" HorizontalAlignment="Right" Classes="chip">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <PathIcon Margin="0,0,5,0" Width="12" Height="10" Data="{DynamicResource plus}"></PathIcon>
+                            <TextBlock Margin="0,0,0,2" Grid.Column="1" FontSize="12" Text="Add to canvas"></TextBlock>
+                        </Grid>
+                    </Button>
+                </Grid>
+            </Grid>
+
+        </Grid>
+    </Button>
+</UserControl>

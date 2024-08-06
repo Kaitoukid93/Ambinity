@@ -38,10 +38,10 @@ namespace Draw2D.Core.Shapes.Basic
             var fillBrush = new ImmutableSolidColorBrush(FillColor);
             //fillBrush.Freeze();
             Matrix translate = Matrix.CreateTranslation(offset.X , offset.Y);
-            
+            var scale = strokeThickness/1.5  ;
             dc.PushTransform(translate);
-
-            dc.DrawEllipse(fillBrush, pen, new Avalonia.Point(BoundingBox.Center.X,BoundingBox.Center.Y) , Width / 2, Height / 2);
+         
+            dc.DrawEllipse(fillBrush, pen, new Avalonia.Point(BoundingBox.Center.X,BoundingBox.Center.Y) , Width*scale / 2, Height*scale / 2);
 
            // dc.Pop();
         }

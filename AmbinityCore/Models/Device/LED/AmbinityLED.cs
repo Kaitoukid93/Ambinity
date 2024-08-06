@@ -21,7 +21,7 @@ public class AmbinityLED : ObservableObject
         float height,
         int index,
         bool isActivated,
-        Geometry geometry)
+        string geometry)
     {
         LED = led;
         Device = device;
@@ -37,6 +37,7 @@ public class AmbinityLED : ObservableObject
 
     public ArgbLed LED { get; }
     public int Index { get; set; }
+    [JsonIgnore]
     public AmbinityDevice Device { get; }
 
     /// <summary>
@@ -50,12 +51,12 @@ public class AmbinityLED : ObservableObject
     public Rect AbsoluteRectangle => new Rect(AbsoluteX, AbsoluteY, Width, Height);
 
 
-    private Geometry _geometry;
+    private string _geometry;
 
     /// <summary>
     /// Path Geometry of this LED
     /// </summary>
-    public Geometry Geometry
+    public string Geometry
     {
         get => _geometry;
         set => SetProperty(ref _geometry, value);

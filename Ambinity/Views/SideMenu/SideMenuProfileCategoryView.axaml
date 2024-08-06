@@ -164,17 +164,27 @@
                      MinHeight="35"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                <ListBox.ItemContainerTheme>
+                    <ControlTheme 
+                        TargetType="ListBoxItem"
+                        BasedOn="{StaticResource {x:Type ListBoxItem}}"
+                        x:DataType="local:SideMenuProfileViewModel">
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    </ControlTheme>
+                </ListBox.ItemContainerTheme>
                 <ListBox.DataTemplates>
                     <DataTemplate DataType="{x:Type local:SideMenuProfileView}"></DataTemplate>
                 </ListBox.DataTemplates>
             </ListBox>
             <TextBlock IsVisible="{CompiledBinding !Profiles.Count}" 
-                       Margin="12 0 0 0"
+                       Margin="20 0 0 0"
                        FontSize="13"
+                       Foreground="{DynamicResource ButtonForegroundDisabled}"
                        VerticalAlignment="Center" 
                        HorizontalAlignment="Left"
                        IsHitTestVisible="False">
-                       </TextBlock>
+                Empty collection
+            </TextBlock>
         </Panel>
     </Grid>
 </UserControl>

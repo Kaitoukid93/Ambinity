@@ -2,23 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:dashboard="clr-namespace:Ambinity.Views.Screens.Dashboard"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:DataType="dashboard:DashboardViewModel"
+             xmlns:local="clr-namespace:Ambinity.Views.Screens.Dashboard"
+             x:DataType="local:DashboardViewModel"
              x:Class="Ambinity.Views.Screens.Dashboard.DashboardView">
-    <Grid>
-        <ItemsControl ItemsSource="{Binding Devices}">
-           <ItemsControl.ItemTemplate>
-               <DataTemplate>
-                   <dashboard:DashboardDeviceView></dashboard:DashboardDeviceView>
-               </DataTemplate>
-           </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal"></WrapPanel>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-    </Grid>
+    Welcome to Avalonia!
 </UserControl>

@@ -14,7 +14,7 @@ public sealed class LightingProfileCategoryRepository : CollectableItemRepositor
     public LightingProfileCategoryRepository()
     {
         LocalFolderPath = FolderPath;
-        Init();
+        Name = "Lighting Profiles Category";
     }
 
     public override void CreateDefault()
@@ -32,7 +32,7 @@ public sealed class LightingProfileCategoryRepository : CollectableItemRepositor
             var category = JsonHelpers.DeserializeJson<LightingProfileCategory>(file);
             if (category == null)
                 continue;
-            Items.Add(category);
+            AddItem(category);
         }
     }
 
@@ -45,16 +45,18 @@ public sealed class LightingProfileCategoryRepository : CollectableItemRepositor
         {
             Name = "Color Palette",
             ID = Guid.NewGuid(),
-            IsDefault = true
+            IsDefault = true,
+            LocalPath = Path.Combine(this.FolderPath,"Color Palette")
         };
-        var staticColor = new LightingProfileCategory()
+        var download = new LightingProfileCategory()
         {
-            Name = "Static Color",
+            Name = "Download",
             ID = Guid.NewGuid(),
-            IsDefault = true
+            IsDefault = false,
+            LocalPath = Path.Combine(this.FolderPath,"Download")
         };
-        Items.Add(colorPalette);
-        Items.Add(staticColor);
+        AddItem(colorPalette);
+        AddItem(download);
         //write this to disk
     }
 }

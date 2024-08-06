@@ -29,7 +29,7 @@ public class ScreenCapturingViewModel : ViewModelBase
         set
         {
             _availableScreen = value;
-            RaisePropertyChanged(nameof(AvailableScreen));
+            OnPropertyChanged();
         }
     }
 

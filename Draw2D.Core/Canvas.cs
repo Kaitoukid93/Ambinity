@@ -1,9 +1,9 @@
-﻿
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Input;
 using Avalonia.Media;
 using Draw2D.Core.Commands;
 using Draw2D.Core.Factories.Handles;
+using Draw2D.Core.Graphic;
 using Draw2D.Core.Handles;
 using Draw2D.Core.Layout.Connection;
 using Draw2D.Core.Policies;
@@ -12,7 +12,6 @@ using Draw2D.Core.Policies.FigurePolicy;
 using Draw2D.Core.Policies.RouterPolicy;
 using Draw2D.Core.Shapes.Basic;
 using Draw2D.Core.Utlils;
-using Draw2D.Core.Utlils.Linq;
 using Draw2D.Core.Utlils.QuadTree;
 
 
@@ -41,26 +40,22 @@ namespace Draw2D.Core
         private readonly List<PolicyBase> _policies = new List<PolicyBase>();
         private SnapTargets _currentSnapTargets = SnapTargets.Center | SnapTargets.Vertices | SnapTargets.MidPoints;
         private ICoordinateSystem _coordinateSystem;
-        private Rectangle _viewport = new Rectangle(0,0,1,1);
-
+        private Rectangle _viewport = new Rectangle(0, 0, 1, 1);
+        public FrameBuffer BackgroundImageBuffer { get; set; }
+        public bool ShouldDrawBackgroundImage { get; set; }
 
         public Color StrokeColor
         {
-            get
-            {
-                return _strokeColor;
-            }
-            set
-            {
-                _strokeColor = value;
-            }
+            get { return _strokeColor; }
+            set { _strokeColor = value; }
         }
+
         public IEnumerable<PolicyBase> Policies
         {
             get { return _policies.Where(p => p.Enabled); }
         }
-
  
+
         public Geo.Rectangle Size
         {
             get { return _size; }
@@ -92,13 +87,15 @@ namespace Draw2D.Core
         {
             get
             {
-                _adornerfigures.Sort(Figure.ZorderComparer); //hmmm. Collection for automatic ZOrder sorting would be nice.
+                _adornerfigures.Sort(Figure
+                    .ZorderComparer); //hmmm. Collection for automatic ZOrder sorting would be nice.
                 return _adornerfigures;
             }
         }
 
         public event EventHandler<EventArgs> SceneChanged;
         public event EventHandler<FigureClickEventArgs> FigureRightClicked;
+        public event EventHandler<CanvasClickEventArgs>CanvasRightClicked; 
         public event EventHandler<ConnectionCreatedEventArgs> ConnectionCreated;
         public event EventHandler<SelectionChangedEventArgs> SelectionChanged;
 
@@ -110,6 +107,7 @@ namespace Draw2D.Core
                 {
                     _activeCommand = CommandBase.Empty;
                 }
+
                 return _activeCommand;
             }
             set
@@ -118,6 +116,7 @@ namespace Draw2D.Core
                 {
                     _activeCommand = CommandBase.Empty;
                 }
+
                 _activeCommand = value;
             }
         }
@@ -138,9 +137,7 @@ namespace Draw2D.Core
 
             SnapCluster = new SnapCluster<Figure>(10, 10);
 
-            QuadTree = new QuadTree<Figure>(new Geo.Rectangle(0,0, Width, Height));
-
-
+            QuadTree = new QuadTree<Figure>(new Geo.Rectangle(0, 0, Width, Height));
         }
 
         public QuadTree<Figure> QuadTree { get; private set; }
@@ -196,6 +193,7 @@ namespace Draw2D.Core
             {
                 figure.ZOrder = maxZOrder + 1;
             }
+
             return figure;
         }
 
@@ -246,9 +244,15 @@ namespace Draw2D.Core
 
         public void HoverFigure(Figure figure)
         {
+            if (_lastHoverFigure != null && figure != _lastHoverFigure)
+            {
+                _lastHoverFigure.IsMouseOver = false;
+                _lastHoverFigure = figure;
+            }
+
             figure.IsMouseOver = true;
             _lastHoverFigure = figure;
-            NeedsRepaint(figure);
+            
         }
 
         public void UnHoverAll()
@@ -259,8 +263,8 @@ namespace Draw2D.Core
                 NeedsRepaint(_lastHoverFigure);
                 _lastHoverFigure = null;
             }
-            
         }
+
         public void OnMouseLeftDown(double x, double y, bool isShiftKey, bool isCtrlKey)
         {
             var worldPoint = CoordinateSystem.ToWorldSpace(x, y);
@@ -295,12 +299,12 @@ namespace Draw2D.Core
             }
             else
             {
-                Policies.OfType<IMouseAware>().ToList().ForEach(p => p.OnMouseLeftUp(this, worldPoint.X, worldPoint.Y, isShiftKey, isCtrlKey));
+                Policies.OfType<IMouseAware>().ToList().ForEach(p =>
+                    p.OnMouseLeftUp(this, worldPoint.X, worldPoint.Y, isShiftKey, isCtrlKey));
             }
 
             _lastMousePosX = 0;
             _lastMousePosY = 0;
-
         }
 
         public void OnMouseMove(double x, double y, bool isShiftKey, bool isCtrlKey)
@@ -314,7 +318,8 @@ namespace Draw2D.Core
 
             if (!_leftMouseDown)
             {
-                Policies.OfType<IMouseAware>().ToList().ForEach(p => p.OnMouseMove(this, worldPoint.X, worldPoint.Y, isShiftKey, isCtrlKey));
+                Policies.OfType<IMouseAware>().ToList().ForEach(p =>
+                    p.OnMouseMove(this, worldPoint.X, worldPoint.Y, isShiftKey, isCtrlKey));
             }
             else
             {
@@ -333,23 +338,21 @@ namespace Draw2D.Core
                             .ToList()
                             .ForEach(
                                 p =>
-                                    p.OnDragStart(this, _lastMouseDownPosX, _lastMouseDownPosY, dxSum, dySum, isShiftKey,
+                                    p.OnDragStart(this, _lastMouseDownPosX +dxSum, _lastMouseDownPosY +dySum, dxSum, dySum,
+                                        isShiftKey,
                                         isCtrlKey));
-
-
                     }
                 }
                 else
                 {
-
                     Policies.OfType<IDragAware>()
                         .ToList()
                         .ForEach(
                             p =>
                                 p.OnMouseDrag(this, dxSum, dySum, dx, dy, isShiftKey, isCtrlKey));
-
                 }
             }
+
             _lastMousePosX = worldPoint.X;
             _lastMousePosY = worldPoint.Y;
         }
@@ -363,8 +366,13 @@ namespace Draw2D.Core
             }
             else
             {
-                _rightMouseDownFigureHit = GetBestFigure(worldPoint.X, worldPoint.Y, new List<Type>(), new List<Type>());
-
+                _rightMouseDownFigureHit =
+                    GetBestFigure(worldPoint.X, worldPoint.Y, new List<Type>(), new List<Type>());
+                //right click on canvas
+                if (_rightMouseDownFigureHit == null)
+                {
+                    OnCanvasRightClicked(new CanvasClickEventArgs(this, worldPoint.X, worldPoint.Y));
+                }
                 foreach (var policy in Policies.OfType<IMouseAware>())
                 {
                     policy.OnMouseRightDown(this, worldPoint.X, worldPoint.Y, isShiftKey, isCtrlKey);
@@ -428,10 +436,9 @@ namespace Draw2D.Core
 
         public void CreateConnection()
         {
-
         }
 
-        public float MinimalDragDistance { get; set; } = 4;
+        public float MinimalDragDistance { get; set; } = 1;
 
         public void AddAdornerFigure(Figure figure)
         {
@@ -453,7 +460,7 @@ namespace Draw2D.Core
             StartBulkEdit();
 
             figure.Canvas = this;
-                
+
             if (figure.CanBeSnapTarget)
             {
                 SnapCluster.Add(figure.GetSnapPoints(), figure);
@@ -495,14 +502,14 @@ namespace Draw2D.Core
 
         public List<Figure> GetBestFigures(Geo.Rectangle searchBox, List<Type> blacklist, List<Type> whitelist)
         {
-            var hits = QuadTree.Query(searchBox).ToList(); //Figures.Where(f => searchBox.Contains(f.BoundingBox)).ToList();
+            var hits = QuadTree.Query(searchBox)
+                .ToList(); //Figures.Where(f => searchBox.Contains(f.BoundingBox)).ToList();
             var toFilterOut = new List<Figure>();
 
             foreach (var type in blacklist)
             {
                 foreach (var figure in hits)
                 {
-
                     if (figure.GetType().GetInterfaces().Contains(type))
                     {
                         toFilterOut.Add(figure);
@@ -551,7 +558,7 @@ namespace Draw2D.Core
 
         private void RebuildQuadTree()
         {
-            QuadTree = new QuadTree<Figure>(new Geo.Rectangle(0,0, Width, Height));
+            QuadTree = new QuadTree<Figure>(new Geo.Rectangle(0, 0, Width, Height));
             foreach (var oldFigure in _figures.Where(f => f.IsVisible))
             {
                 QuadTree.Insert(oldFigure);
@@ -582,16 +589,14 @@ namespace Draw2D.Core
 
             ActiveTool = tool;
 
-            tool.OnDone = (toolBase) =>
-            {
-                ActiveTool = null;
-            };
-
+            tool.OnDone = (toolBase) => { ActiveTool = null; };
         }
+
         public void UnInstallCurrentTool()
         {
             ActiveTool = null;
         }
+
         public IEnumerable<ISnapPolicy> GetInstalledSnapPolicies()
         {
             return Policies.OfType<ISnapPolicy>();
@@ -611,6 +616,14 @@ namespace Draw2D.Core
             EndBulkEdit();
         }
 
+        public void Clear()
+        {
+            foreach (var figure in _figures)
+            {
+                figure.Unselect();
+            }
+            _figures.Clear();
+        }
         public void StartBulkEdit()
         {
             _bulkEditCount++;
@@ -621,13 +634,11 @@ namespace Draw2D.Core
             _bulkEditCount--;
             if (_bulkEditCount == 0)
             {
-
                 RebuildQuadTree();
 
                 OnSceneChanged();
             }
         }
-
 
 
         public ConnectionRouter ConnectionRouter { get; set; }
@@ -677,7 +688,7 @@ namespace Draw2D.Core
             set
             {
                 _viewport = new Rectangle(-ContentOffsetX.ToFloat(), -ContentOffsetY.ToFloat(),
-                                           value.ToFloat(),ViewportHeight.ToFloat());
+                    value.ToFloat(), ViewportHeight.ToFloat());
                 OnSceneChanged();
             }
         }
@@ -687,8 +698,8 @@ namespace Draw2D.Core
             get { return _viewport.Height; }
             set
             {
-                _viewport = new Rectangle(-ContentOffsetX.ToFloat(),- ContentOffsetY.ToFloat(),
-                                            ViewportWidth.ToFloat(), value.ToFloat());
+                _viewport = new Rectangle(-ContentOffsetX.ToFloat(), -ContentOffsetY.ToFloat(),
+                    ViewportWidth.ToFloat(), value.ToFloat());
                 OnSceneChanged();
             }
         }
@@ -709,14 +720,19 @@ namespace Draw2D.Core
             get { return _viewport.Y; }
             set
             {
-                _viewport = new Rectangle( -ContentOffsetX.ToFloat(),- value.ToFloat(),
-                    ViewportWidth.ToFloat(),ViewportHeight.ToFloat());
+                _viewport = new Rectangle(-ContentOffsetX.ToFloat(), -value.ToFloat(),
+                    ViewportWidth.ToFloat(), ViewportHeight.ToFloat());
                 OnSceneChanged();
             }
         }
+
         protected virtual void OnFigureRightClicked(FigureClickEventArgs e)
         {
             FigureRightClicked?.Invoke(this, e);
+        }
+        protected virtual void OnCanvasRightClicked(CanvasClickEventArgs e)
+        {
+            CanvasRightClicked?.Invoke(this, e);
         }
 
         protected virtual void OnConnectionCreated(ConnectionCreatedEventArgs e)
@@ -748,7 +764,6 @@ namespace Draw2D.Core
             {
                 SnapCluster.Add(figure.GetSnapPoints(), figure);
             }
-
         }
     }
 
@@ -757,6 +772,5 @@ namespace Draw2D.Core
     {
         void DrawLine(Pen pen, Point p1, Point p2);
         void DrawEllipse(Brush brush, Pen pen, Point center, float radiusX, float radiusY);
-
     }
 }

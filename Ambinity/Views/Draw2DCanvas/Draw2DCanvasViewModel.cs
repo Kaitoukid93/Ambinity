@@ -1,32 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using adrilight_shared.Models.Device.SlaveDevice;
-using Ambinity.Stores;
 using Ambinity.ViewModels;
-using Ambinity.Views.Screens.Dashboard;
+using Ambinity.Windows;
 using AmbinityCore.DataBase;
+using AmbinityCore.Helpers;
 using AmbinityCore.Models.Device;
-using AmbinityCore.Models.Device.LED;
-using AmbinityCore.Models.Flyout;
 using AmbinityCore.Models.GeneralSetting;
-using Avalonia.Controls;
+using AmbinityCore.Models.Geography;
+using AmbinityCore.Models.Lighting.Zone;
+using AmbinityCore.Models.Profile;
+using AmbinityCore.Utils;
+using Avalonia;
 using Avalonia.Media;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 using Draw2D.Core.Constants;
+using Draw2D.Core.Graphic;
 using Draw2D.Core.Policies.CanvasPolicy;
 using Draw2D.Core.Policies.FigurePolicy;
 using Draw2D.Core.Policies.RouterPolicy;
 using Draw2D.Core.Shapes.Basic;
 using Draw2D.Core.Shapes.FigureExtensions;
-using FluentAvalonia.UI.Controls;
-using Newtonsoft.Json;
-using SixLabors.Primitives;
 using Canvas = Draw2D.Core.Canvas;
 using Grid = Draw2D.Core.Grid;
 using Size = Avalonia.Size;
@@ -48,7 +46,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
     private int _selectionCount;
     private readonly SnapGridPolicy _snapGridPolicy = new SnapGridPolicy();
     private readonly SnapElementPolicy _snapElementPolicy = new SnapElementPolicy();
-
+    private List<Figure> _clipboardFigures;
     private int _gridUnitX;
     private int _gridUnitY;
     private ICommand _enablePanModeCommand;
@@ -62,9 +60,13 @@ public class Draw2DCanvasViewModel : ViewModelBase
     public RelayCommand ToggleGridSnapCommand { get; set; }
     public RelayCommand ToggleElementSnapCommand { get; set; }
 
-    public RelayCommand DeleteCommand { get; set; }
+    public ICommand DeleteCommand { get; set; }
     public RelayCommand UpdateFigureData { get; set; }
     private ObservableCollection<Figure> _figures;
+
+    public event Action SelectionChanged;
+    public event Action<Figure> FigureAdded;
+    public event Action<Figure> FigureRemoved;
 
     public ObservableCollection<Figure> Figures
     {
@@ -72,7 +74,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
         set
         {
             _figures = value;
-            RaisePropertyChanged(nameof(Figures));
+            OnPropertyChanged();
         }
     }
 
@@ -84,75 +86,91 @@ public class Draw2DCanvasViewModel : ViewModelBase
         set
         {
             _generalSettings = value;
-            RaisePropertyChanged(nameof(GeneralSettings));
+            OnPropertyChanged();
         }
     }
 
-    public Draw2DCanvasViewModel(GeneralSettingsManager settingManager)
+    private IDialogService _dialogService;
+
+    public Draw2DCanvasViewModel(GeneralSettingsManager settingManager, IDialogService dialogService,
+        FrameBuffer buffer, LightingProfileDecoder decoder)
     {
         GeneralSettings = settingManager.Settings;
+        _dialogService = dialogService;
+        _buffer = buffer;
+        CreateCommands();
     }
 
+
+    private FrameBuffer _buffer;
+
     /// <summary>
-    /// initialize canvas with new list of figures and canvas size
+    /// Init a new canvas with <param name="canvasSize"></param>
     /// </summary>
-    /// <param name="figures"></param>
     /// <param name="canvasSize"></param>
-    public void Init(List<Figure> figures, Size canvasSize)
+    public void Init(Size canvasSize)
     {
-        Canvas = new Canvas(0)
+        if (Canvas == null)
         {
-            Width = (float)canvasSize.Width,
-            Height = (float)canvasSize.Height,
-            Grid = new Grid()
+            Canvas = new Canvas(0)
             {
-                UnitX = 20,
-                UnitY = 20
-            }
-        };
-
-        GridUnitX = 20;
-        GridUnitY = 20;
-        Canvas.CoordinateSystem = new TopDownCartesianCoordinateSystem(0, 0);
-        Canvas.StrokeColor = GeneralSettings.PrimaryColor;
-        Canvas.SelectionChanged += (sender, args) =>
-        {
-            SelectionCount = ((ICanvas)sender).Selection.All.Count();
-            DeleteCommand.NotifyCanExecuteChanged();
-        };
-        var regionPolicy =
-            new RegionDragDropEditPolicy(new Draw2D.Core.Geo.Rectangle(0, 0, Canvas.Width, Canvas.Height));
-        CreateCommands();
-        Canvas.InstallEditPolicy(new BoundingBoxSelectionPolicy());
-        // get all device that is in global lighting mode?
-       // Canvas?.InstallTool(new PolylineTool(), (tool) => PolylineCommand.NotifyCanExecuteChanged());
-        Canvas?.InstallEditPolicy(_snapGridPolicy);
-       // Canvas?.InstallEditPolicy(_snapElementPolicy);
-        //get snap setting from general settings
-        _snapGridPolicy.Enabled = _generalSettings.EnableSnapToGrid;
-        _snapElementPolicy.Enabled = false;
-        foreach (Figure figure in figures)
-        {
-            if (figure is DeviceContainerFigure deviceContainer)
+                Width = (float)canvasSize.Width,
+                Height = (float)canvasSize.Height,
+                Grid = new Grid()
+                {
+                    UnitX = 5,
+                    UnitY = 5
+                }
+            };
+            Canvas.BackgroundImageBuffer = _buffer;
+            GridUnitX = 5;
+            GridUnitY = 5;
+            Canvas.CoordinateSystem = new TopDownCartesianCoordinateSystem(0, 0);
+            Canvas.StrokeColor = GeneralSettings.PrimaryColor;
+            Canvas.SelectionChanged += (sender, args) =>
             {
-                deviceContainer.StrokeColor = Colors.Transparent;
-                deviceContainer.OverrideStrokeStyle = false;
-                deviceContainer.FillColor = Colors.Transparent;
-                deviceContainer.IsResizable = false;
-            }
-            else
-            {
-                figure.AddHandlesCornerDirections(Canvas, HandleSizes.Small, HandleShapeType.Round);
-                figure.InstallEditPolicy(SelectionFeedbackPolicy);
-                figure.InstallEditPolicy(regionPolicy);
-            }
-
-            Canvas.AddFigure(figure);
+                SelectionChanged?.Invoke();
+                SelectionCount = ((ICanvas)sender).Selection.All.Count();
+            };
+            Canvas.InstallEditPolicy(new BoundingBoxSelectionPolicy());
+            // get all device that is in global lighting mode?
+            // Canvas?.InstallTool(new PolylineTool(), (tool) => PolylineCommand.NotifyCanExecuteChanged());
+            Canvas?.InstallEditPolicy(_snapGridPolicy);
+            // Canvas?.InstallEditPolicy(_snapElementPolicy);
+            //get snap setting from general settings
+            _snapGridPolicy.Enabled = _generalSettings.EnableSnapToGrid;
+            _snapElementPolicy.Enabled = false;
         }
 
+        Canvas.Clear();
         UpdateFigure();
     }
 
+    /// <summary>
+    /// disable all action on the canvas 
+    /// </summary>
+    public void LockCanvas()
+    {
+        foreach (var figure in Figures)
+        {
+            figure.IsResizable = false;
+            figure.IsDragable = false;
+            figure.Unselect();
+        }
+    }
+
+    /// <summary>
+    /// Enable actions that should be enabled
+    /// </summary>
+    public void UnlockCanvas()
+    {
+        foreach (var figure in Figures)
+        {
+            figure.IsResizable = true;
+            figure.IsDragable = true;
+            figure.Unselect();
+        }
+    }
 
     public int SelectionCount
     {
@@ -161,7 +179,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
         {
             if (value == _selectionCount) return;
             _selectionCount = value;
-            RaisePropertyChanged(nameof(SelectionCount));
+            OnPropertyChanged();
         }
     }
 
@@ -173,7 +191,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
             if (value.Equals(_gridUnitX)) return;
             _gridUnitX = value;
             Canvas.Grid = new Grid() { UnitX = _gridUnitX, UnitY = GridUnitY };
-            RaisePropertyChanged(nameof(GridUnitX));
+            OnPropertyChanged();
         }
     }
 
@@ -185,7 +203,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
             if (value.Equals(_gridUnitY)) return;
             _gridUnitY = value;
             Canvas.Grid = new Grid() { UnitX = GridUnitX, UnitY = _gridUnitY };
-            RaisePropertyChanged(nameof(GridUnitY));
+            OnPropertyChanged();
         }
     }
 
@@ -301,10 +319,12 @@ public class Draw2DCanvasViewModel : ViewModelBase
         {
             if (Equals(value, _enablePanModeCommand)) return;
             _enablePanModeCommand = value;
-            RaisePropertyChanged(nameof(EnablePanModeCommand));
+            OnPropertyChanged();
         }
     }
 
+    public ICommand CopySelectedFigureCommand { get; set; }
+    public ICommand PasteCommand { get; set; }
 
     private void CreateCommands()
     {
@@ -321,10 +341,110 @@ public class Draw2DCanvasViewModel : ViewModelBase
         ToggleGridSnapCommand = new RelayCommand(EnableGridSnapCommandExecute);
         ToggleElementSnapCommand = new RelayCommand(EnableElementSnapCommandExecute);
 
-        DeleteCommand = new RelayCommand(() => { Canvas.RemoveSelected(); }, () => Canvas.Selection.All.Any());
+        DeleteCommand = new AsyncRelayCommand(RemoveFigure, () => Canvas.Selection.All.Any());
 
         EnablePanModeCommand = new RelayCommand(EnablePanModeCommandExecute);
         UpdateFigureData = new RelayCommand(UpdateFigure);
+        CopySelectedFigureCommand = new RelayCommand(Copy, CanCopy);
+        PasteCommand = new RelayCommand(Paste, CanPaste);
+    }
+
+    private async Task RemoveFigure()
+    {
+        //show dialogvar vm = new InputDialogContentViewModel();
+        var vm = new InputDialogContentViewModel();
+        await _dialogService.ShowInputDialog(vm, "Rename", "Ok", "Cancel");
+        var result = vm.UserInput;
+        if (result == "OK")
+        {
+            foreach (var figure in Canvas.Selection.All)
+            {
+                FigureRemoved?.Invoke(figure);
+            }
+
+            Canvas.RemoveSelected();
+            UpdateFigure();
+        }
+    }
+
+    /// <summary>
+    /// copy selected figure to clipboard
+    /// </summary>
+    /// <param name="figure"></param>
+    private void Copy()
+    {
+        var selectedFigure = Canvas.Figures.Where(f => f.IsSelected && f.IsSelectable).ToList();
+        _clipboardFigures = selectedFigure;
+    }
+
+    private bool CanCopy()
+    {
+        var selectedFigure = Canvas.Figures.Where(f => f.IsSelected && f.IsSelectable).ToList();
+        if (selectedFigure.Count > 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// paste clipboard item at certain point, at the moment this method only apply to container figure
+    /// </summary>
+    /// <param name="point"></param>
+    private void Paste()
+    {
+        var bound = Getbound(_clipboardFigures);
+        foreach (var figure in _clipboardFigures)
+        {
+            //todo implementing paste abstract
+            var clipboardChilItem = (figure as ContainerFigure).ChildItem;
+            var offSetX = clipboardChilItem.X - bound.X;
+            var offSetY = clipboardChilItem.Y - bound.Y;
+            var cloneFigure = clipboardChilItem.Clone((float)WorldMousePosX + (float)offSetX,
+                (float)WorldMousePosY + (float)offSetY);
+            AddFigure(cloneFigure);
+            cloneFigure.Select();
+            FigureAdded?.Invoke(cloneFigure);
+        }
+    }
+
+    private bool CanPaste()
+    {
+        if (_clipboardFigures == null || _clipboardFigures.Count == 0)
+            return false;
+        var bound = Getbound(_clipboardFigures);
+        if (WorldMousePosX + bound.Width > Canvas.Width || WorldMousePosY + bound.Height > Canvas.Height)
+            return false;
+        return true;
+    }
+
+    private Rect Getbound(List<Figure> figuers)
+    {
+        var rects = new List<Rect>();
+        foreach (var fig in _clipboardFigures)
+        {
+            var rect = new Rect(fig.X, fig.Y, fig.Width, fig.Height);
+            rects.Add(rect);
+        }
+
+        var bound = RectCalculation.GetBound(rects.ToArray());
+        return bound;
+    }
+
+    public void AddFigure(Figure figure)
+    {
+        // var regionPolicy =
+        //     new RegionDragDropEditPolicy(new Draw2D.Core.Geo.Rectangle(0, 0, Canvas.Width, Canvas.Height));
+        if (figure.IsResizable)
+            figure.AddHandlesAllDirections(Canvas, HandleSizes.Tiny, HandleShapeType.Square);
+        if (figure.IsSelectable)
+            figure.InstallEditPolicy(SelectionFeedbackPolicy);
+        // figure.InstallEditPolicy(regionPolicy);
+        figure.MinWidth = 2;
+        figure.MinHeight = 2;
+        Canvas.AddFigure(figure);
+        UpdateFigure();
     }
 
     private void UpdateFigure()
@@ -369,7 +489,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
         {
             if (value.Equals(_worldMousePosX)) return;
             _worldMousePosX = Math.Round(value, 2);
-            RaisePropertyChanged(nameof(WorldMousePosX));
+            OnPropertyChanged();
         }
     }
 
@@ -380,7 +500,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
         {
             if (value.Equals(_worldMousePosY)) return;
             _worldMousePosY = Math.Round(value, 2);
-            RaisePropertyChanged(nameof(WorldMousePosY));
+            OnPropertyChanged();
         }
     }
 
@@ -391,7 +511,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
         {
             if (value == _renderedItemsCount) return;
             _renderedItemsCount = value;
-            RaisePropertyChanged(nameof(RenderedItemsCount));
+            OnPropertyChanged();
         }
     }
 
@@ -403,7 +523,14 @@ public class Draw2DCanvasViewModel : ViewModelBase
         set
         {
             _canvas = value;
-            RaisePropertyChanged(nameof(Canvas));
+            OnPropertyChanged();
         }
+    }
+
+    public override void Dispose()
+    {
+        // Canvas = null;
+        Canvas.Clear();
+        Figures = null;
     }
 }

@@ -4,6 +4,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Ambinity.ViewModels;
 using Ambinity.Windows;
+using AmbinityCore.Models.Profile;
 using AmbinityCore.Models.ProfileCategory;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
@@ -15,11 +16,12 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
 {
     public event Action<SideMenuProfileViewModel> SelectionChanged;
 
-    public SideMenuProfileCategoryViewModel(LightingProfileCategory category, IDialogService dialogService)
+    public SideMenuProfileCategoryViewModel(LightingProfileCategory category, IDialogService dialogService,LightingProfileDecoder decoder)
     {
         _profileCategory = category;
         Content = _profileCategory.Name;
         _dialogService = dialogService;
+        _decoder = decoder;
         Profiles = new ObservableCollection<SideMenuProfileViewModel>();
         ToggleCollapsed = new RelayCommand(ExecuteToggleCollapsed);
         ToggleSuspended = new RelayCommand(ExecuteToggleSuspended);
@@ -34,6 +36,7 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
 
     private LightingProfileCategory _profileCategory;
     private IDialogService _dialogService;
+    private LightingProfileDecoder _decoder;
     private string _content = "New Catergory";
     private bool? _isCollapsed;
     public ObservableCollection<SideMenuProfileViewModel> Profiles { get; set; }
@@ -47,7 +50,7 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         set
         {
             _content = value;
-            RaisePropertyChanged(nameof(Content));
+            OnPropertyChanged();
         }
     }
 
@@ -59,7 +62,7 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         set
         {
             _isExpanded = value;
-            RaisePropertyChanged(nameof(IsExpanded));
+            OnPropertyChanged();
         }
     }
 
@@ -71,7 +74,7 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         set
         {
             _isSuspended = value;
-            RaisePropertyChanged(nameof(IsSuspended));
+            OnPropertyChanged();
         }
     }
 
@@ -83,10 +86,10 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         set
         {
             _selectedProfile = value;
-            RaisePropertyChanged(nameof(SelectedProfile));
+            OnPropertyChanged();
             if (value != null)
             {
-                SelectionChanged?.Invoke(SelectedProfile);
+                SelectionChanged?.Invoke(value);
             }
         }
     }
@@ -100,7 +103,7 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         Content = _profileCategory.Name;
         foreach (var profile in _profileCategory.Profiles)
         {
-            var profileViewModel = new SideMenuProfileViewModel(profile, this);
+            var profileViewModel = new SideMenuProfileViewModel(profile, this,_decoder);
             Profiles.Add(profileViewModel);
         }
     }

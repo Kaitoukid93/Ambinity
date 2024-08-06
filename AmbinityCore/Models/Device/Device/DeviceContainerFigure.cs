@@ -1,11 +1,15 @@
+using AmbinityCore.Models.Collection;
+using AmbinityCore.Models.Geography;
+using AmbinityCore.Repositories;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using Draw2D.Core.Shapes.Basic;
+using Draw2D.Core.Utlils;
 
 namespace AmbinityCore.Models.Device;
 
-    public class DeviceContainerFigure : Rectangle
+    public class DeviceContainerFigure : ContainerFigure, IAssetSelectable
     {
         public DeviceContainerFigure(float x, float y, float width, float height) : base(x, y, width,
             height)
@@ -15,44 +19,31 @@ namespace AmbinityCore.Models.Device;
             Width = width;
             Height = height;
             // SnapTargets = SnapTargets.Center | SnapTargets.MidPoints | SnapTargets.Vertices;
-            PositionPropertyChanged += OnPositionChanged;
-            SizePropertyChanged += OnSizeChanged;
+   
         }
-
-        private void OnSizeChanged(float newWidth, float newHeight)
+        
+        public override void SetChild(IPositionAware child)
         {
-            _deviceVisualizer.UpdateContainerSize(newWidth, newHeight);
+            ChildItem = child;
+            ItemVisualizer = new DeviceVisualizer(child);
+            ItemVisualizer.ItemUpdated += OnItemUpdate;
+            Width = (float)ItemVisualizer.Bounds.Width;
+            Height = (float)ItemVisualizer.Bounds.Height;
+            X = (float)ItemVisualizer.Bounds.X;
+            Y = (float)ItemVisualizer.Bounds.Y;
         }
-
-        private void OnPositionChanged(float dx, float dy)
+        private void OnItemUpdate()
         {
-            _deviceVisualizer.UpdateContainerOffset(dx, dy);
-        }
-
-        private DeviceVisualizer _deviceVisualizer;
-
-        public void SetDevice(AmbinityDevice device)
-        {
-            _deviceVisualizer = new DeviceVisualizer(device);
-            _deviceVisualizer.DeviceUpdate += OnDeviceUpdate;
-            Width = (float)_deviceVisualizer.DeviceBounds.Width;
-            Height = (float)_deviceVisualizer.DeviceBounds.Height;
-            X = (float)_deviceVisualizer.DeviceBounds.X;
-            Y = (float)_deviceVisualizer.DeviceBounds.Y;
-        }
-
-        private void OnDeviceUpdate()
-        {
-            Width = (float)_deviceVisualizer.DeviceBounds.Width;
-            Height = (float)_deviceVisualizer.DeviceBounds.Height;
-            X = (float)_deviceVisualizer.DeviceBounds.X;
-            Y = (float)_deviceVisualizer.DeviceBounds.Y;
+            Width = (float)ItemVisualizer.Bounds.Width;
+            Height = (float)ItemVisualizer.Bounds.Height;
+            X = (float)ItemVisualizer.Bounds.X;
+            Y = (float)ItemVisualizer.Bounds.Y;
         }
 
         public override void Render(DrawingContext dc, double strokeThickness, Color strokeColor)
         {
             //get size and location from device property
-            _deviceVisualizer.RenderDevice(dc, Canvas);
+            ItemVisualizer.Render(dc, Canvas);
             var strokeBrush = new ImmutableSolidColorBrush(StrokeColor);
             var thickness = StrokeThickness;
             if (OverrideStrokeStyle)
@@ -60,20 +51,21 @@ namespace AmbinityCore.Models.Device;
                 strokeBrush = new ImmutableSolidColorBrush(strokeColor);
                 thickness = (float)strokeThickness;
             }
-
+            var _canvasRect = new Rect(0, 0, Canvas.Width, Canvas.Height);
+            var rect = new Rect(X, Y, Width, Height);
+            bool _isValid = _canvasRect.Contains(rect);
             var screenPoint = Canvas.CoordinateSystem.ToScreenSpace(Position);
             var offset = new Point((float)screenPoint[0] - X, (float)screenPoint[1] - Y);
-
-            // strokeBrush.Freeze();
-            var pen = new Pen(strokeBrush, thickness, DashStyle);
-            //  {
-            //  DashStyle = DashStyle
-            //  };
-            // pen.Freeze();
-
             var fillBrush = new ImmutableSolidColorBrush(FillColor);
-            // fillBrush.Freeze();
-
+            if (!_isValid)
+                strokeBrush = new ImmutableSolidColorBrush(Avalonia.Media.Colors.Red);
+            if (IsMouseOver && !IsSelected)
+            {
+                fillBrush = new ImmutableSolidColorBrush(Avalonia.Media.Colors.Gray.AdjustOpacity(0.2));
+                strokeBrush = new ImmutableSolidColorBrush(Avalonia.Media.Colors.Orange);
+            }
+         
+            var pen = new Pen(strokeBrush, thickness, DashStyle);
             Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
             dc.PushTransform(translate);
             dc.DrawRectangle(fillBrush, pen,
@@ -81,4 +73,12 @@ namespace AmbinityCore.Models.Device;
 
             // dc.Pop();
         }
+
+        #region IAssetSelectable implementation
+
+
+        public ICollectableItem AssetSelectableProperty => (ChildItem as AmbinityDevice).Layout;
+
+        #endregion
+
     }

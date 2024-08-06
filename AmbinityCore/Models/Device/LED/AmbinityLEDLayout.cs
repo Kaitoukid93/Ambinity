@@ -4,7 +4,7 @@ namespace AmbinityCore.Models.Device.LED;
 
 public class AmbinityLEDLayout
 {
-    public AmbinityLEDLayout(float x, float y, float width,float height,Geometry geometry,int index)
+    public AmbinityLEDLayout(float x, float y, float width,float height,string geometry,int index)
     {
         X = x;
         Y = y;
@@ -17,6 +17,6 @@ public class AmbinityLEDLayout
     public float Y { get; set; }
     public float Width { get; set; }
     public float Height { get; set; }
-    public Geometry Geometry { get; set; }
+    public string Geometry { get; set; }
     public int Index { get; set; }
 }

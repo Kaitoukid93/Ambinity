@@ -11,6 +11,7 @@ public abstract class CollectableItemRepository : ObservableObject
     public event Action<ICollectableItem> ItemNameChaned;
     public event Action<ICollectableItem> ItemPinStatusChanged;
     public event Action<ICollectableItem> ItemCheckStatusChanged;
+    public event Action<string> OnInitialized;
 
     #region Construct
 
@@ -18,14 +19,14 @@ public abstract class CollectableItemRepository : ObservableObject
     {
         Items = new ObservableCollection<ICollectableItem>();
     }
-
     public CollectableItemRepository(string name)
     {
         Name = name;
         Items = new ObservableCollection<ICollectableItem>();
     }
+
     public string LocalFolderPath { get; set; }
-    
+
     public virtual void Init()
     {
         if (!Directory.Exists(LocalFolderPath))
@@ -34,7 +35,9 @@ public abstract class CollectableItemRepository : ObservableObject
             SaveToDisk();
             return;
         }
+
         LoadFromDisk();
+        OnInitialized?.Invoke(Name);
     }
 
     public virtual void CreateDefault()
@@ -43,11 +46,12 @@ public abstract class CollectableItemRepository : ObservableObject
 
     public virtual void LoadFromDisk()
     {
-        
     }
 
     public virtual void SaveToDisk()
     {
+        if(LocalFolderPath==null)
+            return;
         if (!Directory.Exists(LocalFolderPath))
             Directory.CreateDirectory(LocalFolderPath);
         lock (Items)
@@ -59,9 +63,23 @@ public abstract class CollectableItemRepository : ObservableObject
             }
         }
     }
+
+    public virtual void SaveToDisk(ICollectableItem item)
+    {
+        if (!Directory.Exists(LocalFolderPath))
+            Directory.CreateDirectory(LocalFolderPath);
+        lock (item)
+        {
+            var localPath = Path.Combine(LocalFolderPath, item.Name + ".json");
+            JsonHelpers.WriteSimpleJson(item, localPath);
+        }
+        
+    }
+
     #endregion
-    
+
     #region Properties
+
     public ObservableCollection<ICollectableItem> Items { get; set; }
     private ICollectableItem _selectedItem;
 
@@ -100,6 +118,10 @@ public abstract class CollectableItemRepository : ObservableObject
         //try to remove local path
         foreach (var item in selectedItems)
         {
+            item.ItemCheckStatusChanged -= OnItemCheckStatusChanged;
+            item.ItemNameChanged -= OnItemNameChanged;
+            item.ItemPinStatusChanged -= OnItemPinStatusChanged;
+            item.PropertyChanged -= OnItemPropertyChanged;
             Items.Remove(item);
         }
     }
@@ -112,6 +134,12 @@ public abstract class CollectableItemRepository : ObservableObject
         item.ItemCheckStatusChanged += OnItemCheckStatusChanged;
         item.ItemNameChanged += OnItemNameChanged;
         item.ItemPinStatusChanged += OnItemPinStatusChanged;
+        item.PropertyChanged += OnItemPropertyChanged;
+    }
+
+    private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        SaveToDisk(sender as ICollectableItem);
     }
 
     private void OnItemNameChanged(ICollectableItem item)

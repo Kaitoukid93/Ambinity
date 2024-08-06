@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "dgSpecHash": "J/i61FbHESYPF1UBMWokJQgwqlnRoeuOhLwIDQ+2c8RGbkG1Ou+Uziy0Lu3bJsKAS7oWZUn/XWKkdR6rxY396w==",
+  "success": true,
+  "projectFilePath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityServer\\AmbinityServer.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\zOe\\.nuget\\packages\\avalonia\\11.1.0-beta1\\avalonia.11.1.0-beta1.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\avalonia.buildservices\\0.0.29\\avalonia.buildservices.0.0.29.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\avalonia.remote.protocol\\11.1.0-beta1\\avalonia.remote.protocol.11.1.0-beta1.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\communitytoolkit.mvvm\\8.2.2\\communitytoolkit.mvvm.8.2.2.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\microcom.runtime\\0.11.0\\microcom.runtime.0.11.0.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\serilog\\4.0.0\\serilog.4.0.0.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\ssh.net\\2024.1.0\\ssh.net.2024.1.0.nupkg.sha512"
+  ],
+  "logs": []
+}

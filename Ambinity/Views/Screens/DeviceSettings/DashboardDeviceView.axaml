@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
+             x:DataType="local:DashboardDeviceViewModel"
+             x:Class="Ambinity.Views.Screens.DeviceSettings.DashboardDeviceView">
+    <Grid>
+        <Button HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="0"
+                Command="{Binding DeviceClickedCommand}" Margin="10" CornerRadius="7"
+                Width="{Binding Controller.DashboardWidth}"
+                Height="{Binding Controller.DashboardHeight}">
+
+            <Grid RowDefinitions="auto,*,auto">
+                <Grid HorizontalAlignment="Left" Margin="20,15,0,0">
+                    <TextBlock
+                        Text="{Binding Controller.Name}"
+                        FontSize="20" FontWeight="SemiBold">
+                    </TextBlock>
+                </Grid>
+
+                <Image Grid.Row="1" Margin="15" Source="{Binding Controller.Thumbnail}"></Image>
+                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10" Grid.Row="2"
+                           Text="{Binding Controller.SerialPort}">
+                </TextBlock>
+            </Grid>
+
+        </Button>
+
+    </Grid>
+</UserControl>

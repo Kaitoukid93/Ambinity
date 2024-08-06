@@ -29,7 +29,7 @@ public class NonClientAreaContentViewModel : ViewModelBase
         set
         {
             _header = value;
-            RaisePropertyChanged(nameof(Header));
+            OnPropertyChanged();
         }
     }
 
@@ -42,7 +42,7 @@ public class NonClientAreaContentViewModel : ViewModelBase
         set
         {
             _backButtonCommand = value;
-            RaisePropertyChanged(nameof(BackButtonCommand));
+            OnPropertyChanged();
         }
     }
 
@@ -52,7 +52,7 @@ public class NonClientAreaContentViewModel : ViewModelBase
         set
         {
             _showBackButton = value;
-            RaisePropertyChanged(nameof(ShowBackButton));
+            OnPropertyChanged();
         }
     }
 }

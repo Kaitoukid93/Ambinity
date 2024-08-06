@@ -8,4 +8,10 @@ public class AnimationConfiguration : ILightingConfiguration
     }
 
     public ConfigurationType Type => ConfigurationType.Animation;
+    public string Icon => "LightingConfiguration_Animation";
+
+    public string GetInfo()
+    {
+        return "not implement";
+    }
 }

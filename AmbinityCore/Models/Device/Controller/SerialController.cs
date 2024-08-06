@@ -1,0 +1,167 @@
+using System.ComponentModel;
+using AmbinityCore.Helpers;
+using AmbinityCore.Models.Collection;
+using AmbinityCore.Models.Device.Device;
+using AmbinityServer.OnlineItem;
+using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Newtonsoft.Json;
+
+namespace AmbinityCore.Models.Device.Controller;
+
+public class SerialController : ObservableObject, ICollectableItem, IController
+{
+    /// <summary>
+    /// bare-bones information from serial device
+    /// </summary>
+    public event Action WorkingStateChanged;
+
+    public event Action SerialPortChanged;
+    public event Action TransferActiveChanged;
+
+    private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "Ambinity\\");
+
+    private string resourcePath => Path.Combine(JsonPath, "Resources", "Thumbs");
+
+    public SerialController()
+    {
+    }
+
+    public HardwareTypeEnum HardwareType { get; set; }
+    public bool AutoConnect { get; set; } = true;
+    [JsonIgnore] public bool IsTransferActive { get; set; }
+    private string _serialPort;
+    public string SerialPort
+    {
+        get => _serialPort;
+        set
+        {
+            _serialPort = value;
+            OnPropertyChanged();
+        }
+    }
+    public int Baudrate { get; set; } = 1000000;
+    public bool CustomBaudrateEnabled { get; set; }
+    public event Action<ICollectableItem>? ItemNameChanged;
+    public event Action<ICollectableItem>? ItemPinStatusChanged;
+    public event Action<ICollectableItem>? ItemCheckStatusChanged;
+    public string Name { get; set; }
+    [JsonIgnore] public bool IsSelected { get; set; }
+    [JsonIgnore] public bool IsEditing { get; set; }
+    [JsonIgnore] public bool IsChecked { get; set; }
+    [JsonIgnore] public bool IsPinned { get; set; }
+    [JsonIgnore] public string LocalPath { get; set; }
+    public string SerialNumber { get; set; }
+    
+    private string _firmwareVersion;
+    /// <summary>
+    /// firmware version read from controller
+    /// </summary>
+    public string FirmwareVersion
+    {
+        get => _firmwareVersion;
+        set
+        {
+            _firmwareVersion = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private string _hardwareVersion;
+    /// <summary>
+    /// hardware version read from controller
+    /// </summary>
+    public string HardwareVersion
+    {
+        get => _hardwareVersion;
+        set
+        {
+            _hardwareVersion = value;
+            OnPropertyChanged();
+        }
+    }
+    public int DashboardWidth { get; set; }
+    public int DashboardHeight { get; set; }
+
+    public int HWLVersion { get; set; }
+    public LEDController LedController { get; set; }
+    public FanController FanController { get; set; }
+
+    public void RegisterLEDController()
+    {
+        if(LedController ==null)
+            return;
+        LedController.PropertyChanged += OnControllerPropertyChanged;
+    }
+
+    public void RegisterFanController()
+    {
+        if(FanController ==null)
+            return;
+        FanController.PropertyChanged += OnControllerPropertyChanged;
+    }
+    private void OnControllerPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(sender));
+    }
+
+    [JsonIgnore] public ControllerWorkingStateEnum WorkingStateEnum { get; set; } = ControllerWorkingStateEnum.Normal;
+
+    public void DisableTransfer()
+    {
+        IsTransferActive = false;
+        TransferActiveChanged?.Invoke();
+    }
+
+    public void EnterDFU()
+    {
+        WorkingStateEnum = ControllerWorkingStateEnum.DFU;
+        WorkingStateChanged?.Invoke();
+    }
+
+    public void ChangeComPort(string port)
+    {
+        SerialPort = port;
+        SerialPortChanged?.Invoke();
+    }
+
+    public void EnableTransfer()
+    {
+        IsTransferActive = true;
+        TransferActiveChanged?.Invoke();
+    }
+    /// <summary>
+    /// Save controller data to json file
+    /// </summary>
+    public void Save()
+    {
+        JsonHelpers.WriteSimpleJson(this,LocalPath);
+    }
+    public Bitmap Thumbnail => LoadFromFile(File.Exists(Path.Combine(resourcePath, Name + ".png"))
+        ? Path.Combine(resourcePath, Name + ".png")
+        : Path.Combine(resourcePath, HardwareType.ToString() + ".png"));
+
+    private Bitmap LoadFromFile(string file)
+    {
+        using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read))
+        using (var memory = new MemoryStream())
+        {
+            fs.CopyTo(memory);
+            memory.Seek(0, SeekOrigin.Begin);
+            var bitmap = Bitmap.DecodeToWidth(memory,400);
+            return bitmap;
+        }
+    }
+    public CollectableItemRepository GetLocalRepository()
+    {
+        return Ioc.Default.GetRequiredService<SerialControllerRepository>();
+    }
+
+    public OnlineItemRepository GetOnlineRerpository()
+    {
+        //todo make online repo for serial controller
+        return null;
+    }
+}

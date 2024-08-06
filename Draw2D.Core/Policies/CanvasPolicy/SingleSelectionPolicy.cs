@@ -81,7 +81,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             }
             else
             {
-                //Todo:Slect Problem ->  isDragging
+                //Todo:Select Problem ->  isDragging
                 Unselect(canvas, canvas.Selection.All);
                 Select(canvas, figure);
             }
@@ -194,6 +194,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                 canvas.Selection.All.ToList().ForEach(f => f.OnDragEnd(canvas, isShiftKey, isCtrlKey));
 
             }
+            canvas.NeedsRepaint(null);
         }
 
         public virtual void OnMouseLeftUp(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
@@ -216,7 +217,52 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
         public virtual void OnMouseRightDown(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
         {
+            _mouseMovedDuringMouseDown = false;
 
+            var figure = canvas.GetBestFigure(mouseX, mouseY, new List<Type> { typeof(Selectionbox) }, new List<Type>());
+
+            if (figure == null)
+            {
+                Unselect(canvas, canvas.Selection.All);
+                return;
+            }
+
+            if (figure.IsSelectable == false)
+            {
+                Unselect(canvas, canvas.Selection.All);
+            }
+
+            if (canvas.Selection.Contains(figure))
+            {
+                return;
+            }
+
+            //Ignore via policy linked figures. Only master will be selected.
+            var slaves = canvas.Selection.All.SelectMany(f => f.Policies.OfType<ILink>())
+                .SelectMany(f => f.GetLinkedFigures()).ToList();
+            Unselect(canvas, slaves);
+
+            //Unselect the slaves of the newly selected figure.
+            var slavesOfToBeSelected = figure.Policies.OfType<ILink>().SelectMany(f => f.GetLinkedFigures()).ToList();
+            Unselect(canvas, slavesOfToBeSelected);
+
+            if (isCtrlKey)
+            {
+                if (canvas.Selection.Contains(figure))
+                {
+                    Unselect(canvas, figure);
+                }
+                else if (figure.IsSelectable)
+                {
+                    Select(canvas, figure);
+                }
+            }
+            else
+            {
+                //Todo:Select Problem ->  isDragging
+                Unselect(canvas, canvas.Selection.All);
+                Select(canvas, figure);
+            }
         }
 
         public override void Select(Canvas canvas, Figure figure)
@@ -231,7 +277,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                 return;
 
 
-            figure.Select(true);
+            figure.Select(true,false);
             canvas.Selection.Primary = figure;
 
         }

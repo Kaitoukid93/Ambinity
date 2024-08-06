@@ -1,28 +1,49 @@
 using System.Collections.ObjectModel;
 using AmbinityCore.Enums;
+using AmbinityCore.Models.Collection;
+using AmbinityCore.Models.Device.Device;
 using AmbinityCore.Models.Device.LED;
 using AmbinityCore.Models.GeneralSetting;
+using AmbinityCore.Models.Geography;
 using AmbinityCore.Utils;
+using AmbinityServer.OnlineItem;
 using Avalonia;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Draw2D.Core;
 using Draw2D.Core.Constants;
 using Draw2D.Core.Shapes.Basic;
 using Draw2D.Core.Shapes.FigureExtensions;
+using Newtonsoft.Json;
 using SkiaSharp;
+using RGBLEDOrderEnum = AmbinityCore.Enums.RGBLEDOrderEnum;
 
 namespace AmbinityCore.Models.Device;
 
-public class AmbinityDevice : ObservableObject
+public class AmbinityDevice : ObservableObject, IPositionAware
 {
     public event Action DeviceUpdate;
+    public event Action<Rect> TryUpdateEvent;
 
     public AmbinityDevice()
     {
         Leds = new ObservableCollection<AmbinityLED>();
     }
+
+    /// <summary>
+    /// construct new Ambinity device from existed layout
+    /// </summary>
+    /// <param name="layout"></param>
+    public AmbinityDevice(AmbinityDeviceLayout layout)
+    {
+        Layout = layout;
+        Leds = new ObservableCollection<AmbinityLED>();
+        LoadLayout();
+    }
+
     private string _deviceName = "New Slave Device";
+
     /// <summary>
     /// Display name of the device
     /// </summary>
@@ -54,9 +75,21 @@ public class AmbinityDevice : ObservableObject
         set => SetProperty(ref _targetParrentDeviceType, value);
     }
 
+    private RGBLEDOrderEnum _rgbOrder;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public RGBLEDOrderEnum RGBOrder
+    {
+        get => _rgbOrder;
+        set => SetProperty(ref _rgbOrder, value);
+    }
+
     /// <summary>
     /// All the leds this device contains
     /// </summary>
+    [JsonIgnore]
     public ObservableCollection<AmbinityLED> Leds { get; set; }
 
     /// <summary>
@@ -64,26 +97,23 @@ public class AmbinityDevice : ObservableObject
     /// </summary>
     public AmbinityDeviceLayout Layout { get; set; }
 
-    #region Canvas Behavior Properties
+
+    #region Iposition aware implement
 
     private bool _isDragable = true;
     private bool _isSelectable = true;
     private bool _isDeleteable = true;
     private bool _isResizeable = true;
     private bool _isHitTestVisible = true;
-
-    /// <summary>
-    /// Device can or can not be drag on the canvas
-    /// </summary>
-    public bool IsDragable
-    {
-        get => _isDragable;
-        set => SetProperty(ref _isDragable, value);
-    }
+    private bool _isRotatable;
+    private bool _isDraggable;
+    private bool _isScalable;
+    public string Name => _deviceName;
 
     /// <summary>
     /// Device can or can not be selected on the canvas
     /// </summary>
+    [JsonIgnore]
     public bool IsSelectable
     {
         get => _isSelectable;
@@ -93,6 +123,7 @@ public class AmbinityDevice : ObservableObject
     /// <summary>
     /// Device can or can not be deleted from the canvas
     /// </summary>
+    [JsonIgnore]
     public bool IsDeleteable
     {
         get => _isDeleteable;
@@ -102,6 +133,7 @@ public class AmbinityDevice : ObservableObject
     /// <summary>
     /// Device can or can not be resized on the canvas
     /// </summary>
+    [JsonIgnore]
     public bool IsResizeable
     {
         get => _isResizeable;
@@ -109,14 +141,48 @@ public class AmbinityDevice : ObservableObject
     }
 
     /// <summary>
-    /// Device can or can not be hovered on the canvas
+    /// Device can or can not be drag on the canvas
     /// </summary>
-    public bool IsHitTestVisible
+    [JsonIgnore]
+    public bool IsDraggable
     {
-        get => _isHitTestVisible;
-        set => SetProperty(ref _isHitTestVisible, value);
+        get => _isDraggable;
+        set => SetProperty(ref _isDraggable, value);
     }
 
+    /// <summary>
+    /// Device can or can not be rotate on the canvas
+    /// </summary>
+    [JsonIgnore]
+    public bool IsRotatable
+    {
+        get => _isRotatable;
+        set => SetProperty(ref _isRotatable, value);
+    }
+
+    /// <summary>
+    /// Device can or can not be scale on the canvas
+    /// </summary>
+    [JsonIgnore]
+    public bool IsScalable
+    {
+        get => _isScalable;
+        set => SetProperty(ref _isScalable, value);
+    }
+    public ContainerFigure GetContainer()
+    {
+        return new DeviceContainerFigure(X, Y, Width, Height)
+        {
+            IsResizable = this.IsResizeable,
+            IsSelectable = this.IsSelectable,
+            IsDragable = this.IsDraggable,
+        };
+    }
+
+    public ContainerFigure Clone(float X, float Y)
+    {
+        throw new NotImplementedException("Can not clone deivce");
+    }
     #endregion
 
     #region Canvas Corordinate Properties
@@ -131,13 +197,23 @@ public class AmbinityDevice : ObservableObject
     public float X
     {
         get => _x;
-        set => SetProperty(ref _x, value);
+        set
+        {
+            _x = value;
+            OnPropertyChanged();
+            DeviceUpdate?.Invoke();
+        }
     }
 
     public float Y
     {
         get => _y;
-        set => SetProperty(ref _y, value);
+        set
+        {
+            _y = value;
+            OnPropertyChanged();
+            DeviceUpdate?.Invoke();
+        }
     }
 
     private float _width = 100;
@@ -146,30 +222,81 @@ public class AmbinityDevice : ObservableObject
     public float Width
     {
         get => _width;
-        set => SetProperty(ref _width, value);
+        set
+        {
+            _width = value;
+            OnPropertyChanged();
+            DeviceUpdate?.Invoke();
+        }
     }
 
     public float Height
     {
         get => _height;
-        set => SetProperty(ref _height, value);
+        set
+        {
+            _height = value;
+            OnPropertyChanged();
+            DeviceUpdate?.Invoke();
+        }
     }
 
-    private float _scale = 1;
+    /// <summary>
+    /// set scale ot match canvas size
+    /// </summary>
+    private float _scale = 0.25f;
+
     private float _rotation = 0;
 
     public float Scale
     {
         get => _scale;
-        set => SetProperty(ref _scale, value);
+        set
+        {
+            _scale = value;
+            OnPropertyChanged();
+            DeviceUpdate?.Invoke();
+        }
     }
 
     public float Rotation
     {
         get => _rotation;
-        set => SetProperty(ref _rotation, value);
+        set
+        {
+            _rotation = value;
+            OnPropertyChanged();
+            DeviceUpdate?.Invoke();
+        }
     }
+
+   
+
     #endregion
+
+    /// <summary>
+    /// Device can or can not be hovered on the canvas
+    /// </summary>
+    [JsonIgnore]
+    public bool IsHitTestVisible
+    {
+        get => _isHitTestVisible;
+        set => SetProperty(ref _isHitTestVisible, value);
+    }
+
+    /// <summary>
+    /// Lock the setup when modifying
+    /// </summary>
+    [JsonIgnore]
+    public object Lock { get; } = new object();
+
+    /// <summary>
+    /// White balance
+    /// </summary>
+    public byte RedScale { get; set; }
+
+    public byte GreenScale { get; set; }
+    public byte BlueScale { get; set; }
 
 
     #region Methods
@@ -184,6 +311,11 @@ public class AmbinityDevice : ObservableObject
     {
         Rotation = angle;
         DeviceUpdate?.Invoke();
+    }
+
+    public void LoadLayout()
+    {
+        Layout.ApplyToDevice(this);
     }
 
     public void UpdateSizeByChild(bool withPoint)
@@ -204,5 +336,6 @@ public class AmbinityDevice : ObservableObject
             Y = (float)newBound.Top;
         }
     }
+
     #endregion
 }

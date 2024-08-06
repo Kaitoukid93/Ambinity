@@ -1,0 +1,189 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+       <!-- Add Styles Here -->
+    <Style Selector="TextBox">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DataValidationErrors>
+                    <Panel>
+                        <Border Name="PART_BorderElement"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                MinWidth="{TemplateBinding MinWidth}"
+                                MinHeight="{TemplateBinding MinHeight}">
+                        </Border>
+
+                        <Border Margin="{TemplateBinding BorderThickness}">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <ContentPresenter Grid.Column="0" Content="{TemplateBinding InnerLeftContent}" />
+                                <Grid x:Name="PART_InnerGrid"
+                                      Grid.Column="1"
+                                      RowDefinitions="Auto,*"
+                                      ColumnDefinitions="Auto,*,Auto"
+                                      Cursor="IBeam"
+                                      Margin="{TemplateBinding Padding}">
+                                    <TextBlock Grid.Row="0"
+                                               Grid.ColumnSpan="3"
+                                               Name="PART_FloatingWatermark"
+                                               Foreground="{DynamicResource SystemAccentColor}"
+                                               FontSize="{TemplateBinding FontSize}"
+                                               IsVisible="False"
+                                               Text="{TemplateBinding Watermark}" />
+
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="0"
+                                               Name="PART_Prefix"
+                                               Text="{TemplateBinding attachedProperties:TextBoxAssist.PrefixText}"
+                                               IsVisible="{TemplateBinding attachedProperties:TextBoxAssist.PrefixText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                               IsHitTestVisible="False"
+                                               DockPanel.Dock="Left" />
+
+                                    <ScrollViewer Grid.Row="1"
+                                                  Grid.Column="1"
+                                                  HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                                  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+                                                  IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                                  AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}">
+                                        <Panel>
+                                            <TextBlock Name="PART_Watermark"
+                                                       Foreground="{DynamicResource TextControlPlaceholderForeground}"
+                                                       Text="{TemplateBinding Watermark}"
+                                                       TextAlignment="{TemplateBinding TextAlignment}"
+                                                       TextWrapping="{TemplateBinding TextWrapping}"
+                                                       IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                            <TextPresenter Name="PART_TextPresenter"
+                                                           Text="{TemplateBinding Text, Mode=TwoWay}"
+                                                           CaretIndex="{TemplateBinding CaretIndex}"
+                                                           SelectionStart="{TemplateBinding SelectionStart}"
+                                                           SelectionEnd="{TemplateBinding SelectionEnd}"
+                                                           TextAlignment="{TemplateBinding TextAlignment}"
+                                                           TextWrapping="{TemplateBinding TextWrapping}"
+                                                           LineHeight="{TemplateBinding LineHeight}"
+                                                           PasswordChar="{TemplateBinding PasswordChar}"
+                                                           RevealPassword="{TemplateBinding RevealPassword}"
+                                                           SelectionBrush="{TemplateBinding SelectionBrush}"
+                                                           SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                                           CaretBrush="{TemplateBinding CaretBrush}"
+                                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                        </Panel>
+                                    </ScrollViewer>
+
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="2"
+                                               Name="PART_Suffix"
+                                               Text="{TemplateBinding attachedProperties:TextBoxAssist.SuffixText}"
+                                               IsVisible="{TemplateBinding attachedProperties:TextBoxAssist.SuffixText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                               IsHitTestVisible="False"
+                                               HorizontalAlignment="Left" />
+                                </Grid>
+                                <ContentPresenter Grid.Column="2" Content="{TemplateBinding InnerRightContent}" />
+                            </Grid>
+                        </Border>
+                    </Panel>
+                </DataValidationErrors>
+                
+            </ControlTemplate>
+        </Setter>
+        
+    </Style>
+       <Style Selector="DataValidationErrors">
+           <Setter Property="Template">
+               <ControlTemplate>
+                   <DockPanel LastChildFill="True">
+                       <ContentControl DockPanel.Dock="Right"
+                                       ContentTemplate="{TemplateBinding ErrorTemplate}"
+                                       DataContext="{TemplateBinding Owner}"
+                                       Content="{Binding (DataValidationErrors.Errors)}"
+                                       IsVisible="{Binding (DataValidationErrors.HasErrors)}"/>
+                       <ContentPresenter Name="PART_ContentPresenter"
+                                         Background="{TemplateBinding Background}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         ContentTemplate="{TemplateBinding ContentTemplate}"
+                                         Content="{TemplateBinding Content}"
+                                         Padding="{TemplateBinding Padding}"/>
+                   </DockPanel>
+               </ControlTemplate>
+           </Setter>
+           <Setter Property="ErrorTemplate">
+               <DataTemplate x:DataType="{x:Type x:Object}">
+                   <Canvas Width="3" Height="30" Margin="5 0 1 0" 
+                           Background="Transparent">
+                       <Canvas.Styles>
+                           <Style Selector="ToolTip">
+                               <Setter Property="Background" Value="IndianRed"/>
+                               <Setter Property="BorderBrush" Value="Red"/>
+                           </Style>
+                       </Canvas.Styles>
+                       <ToolTip.Tip>
+                           <ItemsControl ItemsSource="{Binding}"/>
+                       </ToolTip.Tip>
+                       <Rectangle Canvas.Left="0" Canvas.Top="1" Height="28" RadiusX="3" RadiusY="3" Width="3" Fill="Red"></Rectangle>
+                   </Canvas>
+               </DataTemplate>
+           </Setter>
+       </Style>
+       <!-- Focused State -->
+       <Style Selector=":is(TextBox):focus">
+           <Setter Property="Foreground" Value="{DynamicResource TextControlForegroundFocused}" />
+
+           <Style Selector="^ /template/ TextBlock#PART_Watermark">
+               <Setter Property="Foreground" Value="{DynamicResource TextControlPlaceholderForegroundFocused}" />
+           </Style>
+
+           <Style Selector="^ /template/ Border#PART_BorderElement">
+               <Setter Property="Background" Value="{DynamicResource TextControlBackgroundPointerOver}"/>
+               <Setter Property="BorderBrush" Value="{DynamicResource TextControlBorderBrushFocused}"/>
+               <Setter Property="BorderThickness" Value="0" />
+           </Style>
+       </Style>
+
+       
+       <Style Selector="TextBox /template/ TextBlock#PART_Prefix">
+           <Setter Property="Foreground" Value="{DynamicResource TextControlForegroundDisabled}"></Setter>
+           <Setter Property="Margin" Value="-4 0 4 0"></Setter>
+       </Style>
+       <Style Selector="TextBox /template/ TextBlock#PART_Suffix">
+           <Setter Property="Foreground" Value="{DynamicResource TextControlForegroundDisabled}"></Setter>
+           <Setter Property="Margin" Value="4 0 0 0"></Setter>
+       </Style>
+
+       <Style Selector="TextBox.condensed /template/ TextBlock#PART_Prefix">
+           <Setter Property="Margin" Value="0 0 4 0"></Setter>
+       </Style>
+       <Style Selector="TextBox.condensed /template/ TextBlock#PART_Suffix">
+           <Setter Property="Margin" Value="4 0 0 0"></Setter>
+       </Style>
+    <Style Selector="TextBox.search-box">
+        <Setter Property="VerticalAlignment" Value="Top"></Setter>
+        <Setter Property="InnerRightContent">
+            <Template>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="&#xE8BB;"
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            Theme="{StaticResource TransparentButton}"
+                            Command="{CompiledBinding $parent[TextBox].Clear}"
+                            IsVisible="{CompiledBinding Text, RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                    <Button Content="&#xE721;"
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            Theme="{StaticResource TransparentButton}"
+                            Command="{CompiledBinding $parent[TextBox].Clear}"
+                            IsHitTestVisible="False" />
+                </StackPanel>
+            </Template>
+        </Setter>
+    </Style>
+</Styles>

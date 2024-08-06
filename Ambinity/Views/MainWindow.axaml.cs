@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
 using Avalonia.Controls;
@@ -10,15 +11,6 @@ namespace Ambinity.Views
         public MainWindow()
         {
             this.InitializeComponent();
-            _rootNavigationStores = Ioc.Default.GetRequiredService<RootNavigationStores>();
-            _rootNavigationStores.CurrentViewModelChanged += FrameNavigate;
-        }
-
-        private RootNavigationStores _rootNavigationStores;
-
-        private void FrameNavigate(ViewModelBase vm)
-        {
-            RootFrame.NavigateFromObject(vm);
         }
     }
 }

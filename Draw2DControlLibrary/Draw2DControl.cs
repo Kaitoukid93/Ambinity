@@ -1,10 +1,14 @@
-﻿using Avalonia;
+﻿using System.Runtime.InteropServices;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Media.Immutable;
+using Avalonia.Platform;
 using Draw2D.Core;
+using Draw2D.Core.Utlils;
 using Canvas = Avalonia.Controls.Canvas;
 
 namespace Draw2DControlLibrary
@@ -12,6 +16,9 @@ namespace Draw2DControlLibrary
     public partial class Draw2DControl : Control
     {
         private Pen _gridPen;
+        private Pen _borderPen;
+        private object frameLock = new object();
+        private WriteableBitmap _reusableBitmap;
 
         static Draw2DControl()
         {
@@ -21,7 +28,8 @@ namespace Draw2DControlLibrary
 
         public Draw2DControl()
         {
-            _gridPen = new Pen(new ImmutableSolidColorBrush(Colors.Gray), 1);
+            _gridPen = new Pen(new ImmutableSolidColorBrush(Colors.Gray.AdjustOpacity(0.2)), 1);
+            _borderPen = new Pen(new ImmutableSolidColorBrush(Colors.Gray), 1);
             CanvasProperty.Changed.AddClassHandler<Draw2DControl>(OnCanvasChanged);
             //  _gridPen.Freeze();
             //Background = Brushes.Transparent;
@@ -30,14 +38,27 @@ namespace Draw2DControlLibrary
             ContentOffsetXProperty.Changed.AddClassHandler<Draw2DControl>(ContentOffsetXChanged);
             ViewportWidthProperty.Changed.AddClassHandler<Draw2DControl>(ViewportWidthChanged);
             ViewportHeightProperty.Changed.AddClassHandler<Draw2DControl>(ViewportHeightChanged);
-   
         }
 
 
         public ICanvas Canvas
         {
             get { return (ICanvas)GetValue(CanvasProperty); }
-            set { SetValue(CanvasProperty, value); }
+            set
+            {
+                SetValue(CanvasProperty, value);
+                UpdateBitmap();
+            }
+        }
+
+        private void UpdateBitmap()
+        {
+            Vector dpi = new Vector(96, 96);
+            _reusableBitmap = new WriteableBitmap(
+                new PixelSize((int)Canvas.Width, (int)Canvas.Height),
+                dpi,
+                PixelFormat.Bgra8888,
+                AlphaFormat.Premul);
         }
 
         public sealed override void Render(DrawingContext dc)
@@ -47,8 +68,24 @@ namespace Draw2DControlLibrary
             DrawBackground(dc);
             // DrawGrid(dc);
             DrawBorder(dc);
-           
-            // var vectorFigures = Canvas.Figures.OfType<VectorFigure>().Where(f => f.IsVisible).ToList();
+            if (_zoomValue > 5)
+                DrawGrid(dc);
+            //var vectorFigures = Canvas.Figures.OfType<VectorFigure>().Where(f => f.IsVisible).ToList();
+
+            if (Canvas.BackgroundImageBuffer != null && Canvas.ShouldDrawBackgroundImage)
+            {
+                using (var frameBuffer = _reusableBitmap.Lock())
+                {
+                    lock (Canvas.BackgroundImageBuffer.FrameLock)
+                    {
+                        Marshal.Copy(Canvas.BackgroundImageBuffer.PixelData, 0, frameBuffer.Address,
+                            Canvas.BackgroundImageBuffer.PixelData.Length);
+                    }
+
+                    dc.DrawImage(_reusableBitmap, new Rect(0, 0, Canvas.Width, Canvas.Height));
+                }
+            }
+
             List<VectorFigure> vectorFigures = Canvas.GetRenderableFigures();
 
             RenderedItemsCount = vectorFigures.Count;
@@ -57,7 +94,7 @@ namespace Draw2DControlLibrary
             {
                 var vectorFigure = figure;
 
-                vectorFigure.Render(dc,_globalBorderThickness,Canvas.StrokeColor);
+                vectorFigure.Render(dc, _globalBorderThickness, Canvas.StrokeColor);
             }
 
             base.Render(dc);
@@ -71,22 +108,28 @@ namespace Draw2DControlLibrary
         }
 
         private double _globalBorderThickness = 1;
+        private double _zoomValue = 1;
 
         public void UpdateZoomValue(double value)
         {
-            _globalBorderThickness = 2 / value;
+            _zoomValue = value;
+            _globalBorderThickness = 1.5d / value;
             foreach (var figure in Canvas.Figures)
             {
                 if (figure is VectorFigure)
                     (figure as VectorFigure).StrokeThickness = (float)_globalBorderThickness;
             }
+
+            _gridPen.Thickness = 1 / _zoomValue;
         }
 
         private void DrawBorder(DrawingContext dc)
-        {  
-            IPen pen = new Pen(new ImmutableSolidColorBrush(Canvas.StrokeColor), _globalBorderThickness,DashStyle.Dash);
+        {
+            _borderPen.Brush = new ImmutableSolidColorBrush(Canvas.StrokeColor);
+            _borderPen.DashStyle = new ImmutableDashStyle(new double[] { 7, 3 }, 1);
+            _borderPen.Thickness = _globalBorderThickness;
             var renderSize = Bounds.Size;
-            dc.DrawRectangle(pen, new Rect(renderSize));
+            dc.DrawRectangle(_borderPen, new Rect(renderSize));
         }
 
         private void DrawGrid(DrawingContext dc)

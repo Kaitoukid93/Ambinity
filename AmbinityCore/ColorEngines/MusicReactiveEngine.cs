@@ -1,4 +1,5 @@
 using AmbinityCore.CapturingService;
+using AmbinityCore.Models.Lighting.Zone;
 
 namespace AmbinityCore.LightingEngines;
 
@@ -12,6 +13,15 @@ public class MusicReactiveEngine : IColorEngine
     {
         
     }
-
+    public void Init(LightingZone zone)
+    {
+        
+    }
+    public bool IsDisposed { get; private set; }
+    public void Dispose()
+    {
+        IsDisposed = true;
+        GC.Collect();
+    }
     public CapturingType CaptureType { get; set; }
 }

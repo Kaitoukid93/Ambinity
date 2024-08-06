@@ -1,6 +1,7 @@
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Lighting.Zone;
+using AmbinityCore.Repositories;
 using Newtonsoft.Json;
 
 namespace AmbinityCore.Models.Profile;
@@ -14,11 +15,12 @@ public sealed class LightingProfileRepository : CollectableItemRepository
     private string FolderPath => Path.Combine(dbPath, "Profiles");
     private LightingZoneRepository _zoneRepository;
 
-    public LightingProfileRepository( LightingZoneRepository zoneRepository)
+    public LightingProfileRepository(LightingZoneRepository zoneRepository)
     {
         LocalFolderPath = FolderPath;
         _zoneRepository = zoneRepository;
-        Init();
+        Name = "Lighting Profiles";
+
     }
 
 
@@ -36,7 +38,7 @@ public sealed class LightingProfileRepository : CollectableItemRepository
             var profile = JsonHelpers.DeserializeJson<LightingProfile>(file);
             if (profile == null)
                 continue;
-            Items.Add(profile);
+            AddItem(profile);
         }
     }
 
@@ -48,22 +50,39 @@ public sealed class LightingProfileRepository : CollectableItemRepository
         //create default ambilight profile
         var ambilightProfile = new LightingProfile()
         {
-            Name = "Ambilight",
-            Icon = "Ambilight_addzone",
+            Name = "Theater",
+            Icon = "Youtube",
             ID = Guid.NewGuid(),
-            IsDefault = true,
+            LocalPath = Path.Combine(this.FolderPath,"Theater"),
+            IsDefault = true
         };
         var solidColorProfile = new LightingProfile()
         {
-            Name = "Solid",
-            Icon = "Color_bucket",
+            Name = "Solid Red",
+            Icon = "solidrect",
             ID = Guid.NewGuid(),
-            IsDefault = true,
+            LocalPath = Path.Combine(this.FolderPath,"Solid Red"),
+            IsDefault = true
         };
-        ambilightProfile.Zones.Add(_zoneRepository.GetDefaultAmbilightZone());
-        solidColorProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone());
-        Items.Add(ambilightProfile);
-        Items.Add(solidColorProfile);
+        var colorPaletteProfile  = new LightingProfile()
+        {
+            Name = "Retro",
+            Icon = "solidrect",
+            ID = Guid.NewGuid(),
+            LocalPath = Path.Combine(this.FolderPath,"Retro"),
+            IsDefault = true
+        };
+        ambilightProfile.TogglePlayPause();
+        ambilightProfile.Zones.Add(_zoneRepository.GetDefaultAmbilightZone("Big Ambilight",0,0,200,100,0));
+        ambilightProfile.Zones.Add(_zoneRepository.GetDefaultAmbilightZone("Smalll Ambilight",0,0,50,50,1));
+        solidColorProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Red",0,0,200,200,Avalonia.Media.Colors.Red));
+        solidColorProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Greed",0,0,100,100,Avalonia.Media.Colors.GreenYellow));
+        colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Retro Palette",0,0,200,100,DefaultColorPalettes.RetroPalette()));
+        colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Red Palette",0,0,100,200,DefaultColorPalettes.RetroPalette()));
+        AddItem(ambilightProfile);
+        AddItem(solidColorProfile);
+        AddItem(colorPaletteProfile);
+        
         //write this to disk
     }
 }

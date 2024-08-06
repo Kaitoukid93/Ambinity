@@ -87,7 +87,7 @@ public class LedVisualizer
             double width = Led.LedSize.Width - deflateAmount;
             double height = Led.LedSize.Height - deflateAmount;
 
-            Geometry geometry = Led.Geometry.Clone();
+            Geometry geometry = Geometry.Parse(Led.Geometry);
             var boundsLeft = geometry.Bounds.Left;
             var boundsTop = geometry.Bounds.Top;
             var scaleX = width / geometry.Bounds.Width;

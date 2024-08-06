@@ -11,7 +11,7 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         get => _autoStart;
         set => SetProperty(ref _autoStart, value);
     }
-    private Color _primaryColor = Avalonia.Media.Colors.Lime;
+    private Color _primaryColor = Avalonia.Media.Colors.LimeGreen;
 
     public Color PrimaryColor
     {
@@ -24,5 +24,12 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
     {
         get => _enableSnapToGrid;
         set => SetProperty(ref _enableSnapToGrid, value);
+    }
+    private bool _startMinimized = true;
+
+    public bool StartMinimized
+    {
+        get => _startMinimized;
+        set => SetProperty(ref _startMinimized, value);
     }
 }

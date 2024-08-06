@@ -6,11 +6,10 @@ namespace Ambinity.Windows;
 
 public class InputDialogContentViewModel : ViewModelBase
 {
-    private  ContentDialog _dialog;
+    private ContentDialog _dialog;
 
     public InputDialogContentViewModel()
     {
-       
     }
 
     public void Init(ContentDialog dialog)
@@ -23,6 +22,7 @@ public class InputDialogContentViewModel : ViewModelBase
         _dialog = dialog;
         dialog.Closed += DialogOnClosed;
     }
+
     private void DialogOnClosed(ContentDialog sender, ContentDialogClosedEventArgs args)
     {
         _dialog.Closed -= DialogOnClosed;
@@ -48,10 +48,8 @@ public class InputDialogContentViewModel : ViewModelBase
         get => _UserInput;
         set
         {
-            if (RaiseAndSetIfChanged(ref _UserInput, value))
-            {
-                HandleUserInput();
-            }
+            SetProperty(ref _UserInput, value);
+            HandleUserInput();
         }
     }
 

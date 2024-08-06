@@ -7,7 +7,7 @@ public class ScreenCapturingService : ICapturingService
 {
     public ScreenCapturingService()
     {
-        
+        Init();
     }
 
 
@@ -27,8 +27,32 @@ public class ScreenCapturingService : ICapturingService
             var screenCapture = _screenCaptureService.GetScreenCapture(display);
             _screenCaptures.Add(screenCapture);
         }
-    }
 
+        foreach (var screenCapture in _screenCaptures)
+        {
+            var thread = new Thread(() => CaptureScreen(screenCapture))
+            {
+                IsBackground = true,
+                Priority = ThreadPriority.BelowNormal,
+                Name = "capture"
+            };
+            thread.Start();
+        }
+      
+        
+    }
+    public void CaptureScreen(IScreenCapture screenCapture)
+    {
+        while (true)
+        {
+            //call render from engine
+
+            // _paletteEngine.Render(zone, _imageBuffer, colorBank)
+            screenCapture.CaptureScreen();
+            Thread.Sleep(1000 / 30);
+
+        }
+    }
     public IScreenCapture GetScreenCapture(int index)
     {
         if (index >= _screenCaptures.Count)
@@ -56,6 +80,10 @@ public class ScreenCapturingService : ICapturingService
 
         if (disposing)
         {
+            foreach (var capture in _screenCaptures)
+            {
+                capture?.Dispose();
+            }
             _screenCaptureService?.Dispose();
         }
 

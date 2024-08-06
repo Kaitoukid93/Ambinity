@@ -2,7 +2,7 @@ using Avalonia.Media;
 
 namespace AmbinityCore.Repositories;
 
-public class DefaultSolidColors
+public static class DefaultSolidColors
 {
     public static List<Color> Colors => new List<Color>()
     {

@@ -1,21 +1,22 @@
-
+using Avalonia;
 using Avalonia.Media;
+using Avalonia.Media.Immutable;
 using Draw2D.Core.Constants;
-using Draw2D.Core.Geo;
+using Point = Draw2D.Core.Geo.Point;
 
 namespace Draw2D.Core.Handles
 {
-
     public class ResizeHandle : VectorFigure, IHandle
     {
         private readonly float _offsetX;
         private readonly float _offsetY;
         public ResizeDirections Direction { get; set; }
 
-        public ResizeHandle(Figure owner, VectorFigure handleShape, float offsetX, float offsetY, ResizeDirections direction)
+        public ResizeHandle(Figure owner, VectorFigure handleShape, float offsetX, float offsetY,
+            ResizeDirections direction)
         {
             HandleShape = handleShape;
-            
+
             Width = handleShape.Width;
             Height = handleShape.Height;
 
@@ -25,7 +26,7 @@ namespace Draw2D.Core.Handles
             handleShape.IsVisible = false;
             handleShape.IsSelectable = false;
             handleShape.CanBeSnapTarget = false;
-            
+
             Direction = direction;
 
             IsDragable = true;
@@ -53,7 +54,8 @@ namespace Draw2D.Core.Handles
         //    return true;
         //}
 
-        public override void OnDrag(Canvas canvas, float dxSum, float dySum, float dx, float dy, bool isShiftKey, bool isCtrlKey)
+        public override void OnDrag(Canvas canvas, float dxSum, float dySum, float dx, float dy, bool isShiftKey,
+            bool isCtrlKey)
         {
             if (!IsDragable)
                 return;
@@ -64,7 +66,8 @@ namespace Draw2D.Core.Handles
             foreach (var policy in canvas.GetSnapPolicies())
             {
                 Point snapPoint;
-                isSnapped = policy.Snap(canvas, HandleShape.Position, dx, dy, dxSum, dySum, out snapPoint,out delta, new []{this});
+                isSnapped = policy.Snap(canvas, HandleShape.Position, dx, dy, dxSum, dySum, out snapPoint, out delta,
+                    new[] { this });
 
                 if (isSnapped)
                     break;
@@ -75,7 +78,7 @@ namespace Draw2D.Core.Handles
                 dx = delta.X;
                 dy = delta.Y;
             }
-            
+
             switch (Direction)
             {
                 case ResizeDirections.TopLeft:
@@ -105,7 +108,6 @@ namespace Draw2D.Core.Handles
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
         }
 
         public override void OnDragEnd(Canvas canvas, bool isShiftKey, bool isCtrlKey)
@@ -176,9 +178,36 @@ namespace Draw2D.Core.Handles
             if (HandleShape != null)
             {
                 HandleShape.Canvas = Canvas;
-                HandleShape.Render(dc,strokeThickness,strokeColor);
+                var strokeBrush = new ImmutableSolidColorBrush(HandleShape.StrokeColor);
+                var thickness = HandleShape.StrokeThickness;
+                if (OverrideStrokeStyle)
+                {
+                    strokeBrush = new ImmutableSolidColorBrush(strokeColor);
+                    thickness = (float)strokeThickness;
+                }
+
+                var screenPoint = Canvas.CoordinateSystem.ToScreenSpace(HandleShape.Position);
+                var offset = new Point((float)screenPoint[0] - HandleShape.X, (float)screenPoint[1] - HandleShape.Y);
+
+                // strokeBrush.Freeze();
+                var pen = new Pen(strokeBrush, thickness, HandleShape.DashStyle);
+                //  {
+                //  DashStyle = DashStyle
+                //  };
+                // pen.Freeze();
+
+                var fillBrush = new ImmutableSolidColorBrush(HandleShape.FillColor);
+                // fillBrush.Freeze();
+                var scale = strokeThickness / 1.5;
+                var newWidth = HandleShape.Width * scale;
+                var newHeight = HandleShape.Height * scale;
+                var newX = HandleShape.X + (HandleShape.Width - HandleShape.Width * scale) / 2;
+                var newY = HandleShape.Y + (HandleShape.Height - HandleShape.Height * scale) / 2;
+                Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
+                dc.PushTransform(translate);
+                dc.DrawRectangle(fillBrush, pen,
+                    new Rect(new Avalonia.Point(newX, newY), new Size(newWidth, newHeight)));
             }
-            
         }
 
         public Figure Owner { get; }

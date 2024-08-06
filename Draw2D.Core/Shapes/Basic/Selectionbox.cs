@@ -25,7 +25,6 @@ namespace Draw2D.Core.Shapes.Basic
             }
             var screenPoint = Canvas.CoordinateSystem.ToScreenSpace(Position);
             var offset = new Point((float)screenPoint[0] - X, (float)screenPoint[1] - Y);
-            
             // strokeBrush.Freeze();
             var pen = new Pen(strokeBrush, thickness, DashStyle);
             //  {
@@ -39,7 +38,7 @@ namespace Draw2D.Core.Shapes.Basic
             Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
             dc.PushTransform(translate);
             dc.DrawRectangle(fillBrush, pen,
-                new Rect(new Point(X, Y), new Size(Width, Height)),4d,4d);
+                new Rect(new Point(X, Y), new Size(Width, Height)),1d,1d);
 
             // dc.Pop();
         }

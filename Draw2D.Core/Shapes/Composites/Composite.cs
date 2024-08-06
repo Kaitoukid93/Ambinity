@@ -8,13 +8,12 @@ using Draw2D.Core.Utlils;
 
 namespace Draw2D.Core.Shapes.Composites
 {
-    public  class Composite : Rectangle
+    public class Composite : Rectangle
     {
         private readonly List<Figure> _members = new List<Figure>();
 
         public Composite(float x, float y, float width, float height) : base(x, y, width, height)
         {
-            
         }
 
         public virtual Composite AddMember(Figure figure)
@@ -24,7 +23,7 @@ namespace Draw2D.Core.Shapes.Composites
             return this;
         }
 
-        public override Figure Select(bool showHandles = true)
+        public override Figure Select(bool showHandles = true, bool repaint = true)
         {
             base.Select(showHandles);
 
@@ -37,7 +36,8 @@ namespace Draw2D.Core.Shapes.Composites
             return this;
         }
 
-        public override void OnDrag(Canvas canvas, float dxSum, float dySum, float dx, float dy, bool isShiftKey, bool isCtrlKey)
+        public override void OnDrag(Canvas canvas, float dxSum, float dySum, float dx, float dy, bool isShiftKey,
+            bool isCtrlKey)
         {
             base.OnDrag(canvas, dxSum, dySum, dx, dy, isShiftKey, isCtrlKey);
 

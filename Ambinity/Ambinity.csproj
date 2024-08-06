@@ -6,6 +6,7 @@
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+		<ApplicationIcon>Assets\appicon.ico</ApplicationIcon>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<DefineConstants>$(DefineConstants);ENABLE_XAML_HOT_RELOAD</DefineConstants>
@@ -17,6 +18,7 @@
 
 	<ItemGroup>
 		<PackageReference Condition="$(DefineConstants.Contains(ENABLE_XAML_HOT_RELOAD))" Include="Avalonia.Markup.Xaml.Loader" Version="11.1.0-beta1" />
+		<PackageReference Include="Avalonia.Skia.Lottie" Version="11.0.0" />
 		<PackageReference Condition="$(DefineConstants.Contains(ENABLE_XAML_HOT_RELOAD))" Include="HotAvalonia" Version="1.1.1" />
 		<PackageReference Include="HotAvalonia.Extensions" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
@@ -59,6 +61,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\AmbinityCore\AmbinityCore.csproj" />
+	  <ProjectReference Include="..\AmbinityServer\AmbinityServer.csproj" />
 	  <ProjectReference Include="..\Draw2D.Core\Draw2D.Core.csproj" />
 	  <ProjectReference Include="..\Draw2DControlLibrary\Draw2DControlLibrary.csproj" />
 	</ItemGroup>
@@ -69,22 +72,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Services\" />
-	  <Folder Include="Views\Screens\DeviceControl\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <AdditionalFiles Include="Views\Screens\Dashboard\DashboardDeviceView.axaml" />
-	  <AdditionalFiles Include="Views\Screens\Dashboard\DashboardView.axaml" />
 	  <AdditionalFiles Remove="obj\**" />
 	  <AdditionalFiles Remove="Draw2D.Core\**" />
 	  <AdditionalFiles Remove="Draw2DControlLibrary\**" />
+	  <AdditionalFiles Include="Views\Screens\DeviceLayout\DeviceLayoutEditorView.axaml" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <AvaloniaXaml Remove="obj\**" />
 	  <AvaloniaXaml Remove="Draw2D.Core\**" />
 	  <AvaloniaXaml Remove="Draw2DControlLibrary\**" />
+	  <AvaloniaXaml Remove="Views\Screens\ProfileEditor\ZoneMappingView.axaml" />
+	  <AvaloniaXaml Remove="Views\Screens\DeviceLayout\DeviceLayoutView.axaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -95,6 +94,76 @@
 	  </Compile>
 	  <Compile Remove="Draw2D.Core\**" />
 	  <Compile Remove="Draw2DControlLibrary\**" />
+	  <Compile Update="Views\Screens\DeviceSettings\DashboardDeviceView.axaml.cs">
+	    <DependentUpon>DashboardDeviceView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\LayoutEditor\RightPanelView.axaml.cs">
+	    <DependentUpon>RightPanelView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\LayoutEditor\LayersView.axaml.cs">
+	    <DependentUpon>LayersView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\LayoutEditor\LayerView.axaml.cs">
+	    <DependentUpon>ZoneLayerView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\LayoutEditor\ToolsView.axaml.cs">
+	    <DependentUpon>ZoneMappingToolsView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Remove="Views\Screens\ProfileEditor\ZoneMappingViewModel.cs" />
+	  <Compile Remove="Views\Screens\ProfileEditor\ZoneMappingView.axaml.cs" />
+	  <Compile Remove="Views\Screens\DeviceLayout\DeviceLayoutViewModel.cs" />
+	  <Compile Remove="Views\Screens\DeviceLayout\DeviceLayoutView.axaml.cs" />
+	  <Compile Update="Views\Screens\DeviceLayout\DeviceLayoutEditorView.axaml.cs">
+	    <DependentUpon>LayoutEditorView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Remove="Views\CollectableItem\DeviceLayout\AmbinityDeviceLayoutAssetView.axaml.cs" />
+	  <Compile Remove="Views\CollectableItem\DeviceLayout\AmbinityDeviceLayoutAssetViewModel.cs" />
+	  <Compile Update="Views\Configuration\ColorConfiguration\Parameters\Shared\BrightnessParameterView.axaml.cs">
+	    <DependentUpon>BrightnessParameterView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\Configuration\ColorConfiguration\Parameters\ColorPalette\PaletteAppearanceParameterView.axaml.cs">
+	    <DependentUpon>PaletteAppearanceParameterView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\Configuration\ColorConfiguration\Parameters\ColorPalette\PaletteBlendModeParameterView.axaml.cs">
+	    <DependentUpon>PaletteBlendModeParameterView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\Configuration\ColorConfiguration\Parameters\ColorPalette\PaletteColorIntensityView.axaml.cs">
+	    <DependentUpon>PaletteColorIntensityView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\Configuration\ColorConfiguration\Parameters\ColorPalette\PaletteSelectionParameterView.axaml.cs">
+	    <DependentUpon>PaletteSelectionParameterView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\Configuration\ColorConfiguration\Parameters\Shared\SaturationParameterView.axaml.cs">
+	    <DependentUpon>SaturationParameterView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\Configuration\ColorConfiguration\Parameters\Shared\SmoothingParameterView.axaml.cs">
+	    <DependentUpon>SmoothingParameterView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\Configuration\ColorConfiguration\Parameters\ScreenCapture\ScreenRegionSelectionParameterView.axaml.cs">
+	    <DependentUpon>ScreenRegionSelectionParameterView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\Configuration\ColorConfiguration\Parameters\Shared\SpeedParameterView.axaml.cs">
+	    <DependentUpon>SpeedParameterView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Views\Configuration\ColorConfiguration\Parameters\StaticColor\StaticColorSelectionParameterView.axaml.cs">
+	    <DependentUpon>StaticColorSelectionParameterView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -107,6 +176,16 @@
 	  <None Remove="obj\**" />
 	  <None Remove="Draw2D.Core\**" />
 	  <None Remove="Draw2DControlLibrary\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Views\CollectableItem\Animation\" />
+	  <Folder Include="Views\CollectableItem\ColorPalette\" />
+	  <Folder Include="Views\CollectableItem\Gif\" />
+	  <Folder Include="Views\CollectableItem\SolidColor\" />
+	  <Folder Include="Views\Configuration\ColorConfiguration\Parameters\Animation\" />
+	  <Folder Include="Views\Configuration\ColorConfiguration\Parameters\Gifxelation\" />
+	  <Folder Include="Views\Configuration\ColorConfiguration\Parameters\MusicReactive\" />
 	</ItemGroup>
 	
 </Project>

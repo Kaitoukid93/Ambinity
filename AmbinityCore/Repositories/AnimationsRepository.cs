@@ -4,5 +4,8 @@ namespace AmbinityCore.Repositories;
 
 public class AnimationsRepository : CollectableItemRepository
 {
-    
+    public AnimationsRepository()
+    {
+        Name = "Animation";
+    }
 }

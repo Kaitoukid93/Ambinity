@@ -86,7 +86,7 @@ namespace Draw2D.Core.Shapes.Basic
 
             var fillBrush = new ImmutableSolidColorBrush(FillColor);
             // fillBrush.Freeze();
-
+            
             Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
             dc.PushTransform(translate);
             dc.DrawRectangle(fillBrush, pen,

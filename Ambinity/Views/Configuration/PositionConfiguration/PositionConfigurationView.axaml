@@ -1,0 +1,114 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Configuration.PositionConfiguration"
+             xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:DataType="local:PositionConfigurationViewModel"
+             x:Class="Ambinity.Views.Configuration.PositionConfiguration.PositionConfigurationView">
+    <UserControl.Resources>
+        <MenuFlyout x:Key="ScaleMenuFlyout"
+                    Placement="Bottom">
+            <MenuItem Command="{CompiledBinding SetItemScaleCommand}"
+                      CommandParameter="0.25"
+                      Header="0.25">
+            </MenuItem>
+            <MenuItem Command="{CompiledBinding SetItemScaleCommand}"
+                      CommandParameter="0.5"
+                      Header="0.5">
+            </MenuItem>
+            <MenuItem Command="{CompiledBinding SetItemScaleCommand}"
+                      CommandParameter="0.75"
+                      Header="0.75">
+            </MenuItem>
+            <MenuItem Command="{CompiledBinding SetItemScaleCommand}"
+                      CommandParameter="1"
+                      Header="1">
+            </MenuItem>
+        </MenuFlyout>
+    </UserControl.Resources>
+    <UserControl.Styles>
+
+    </UserControl.Styles>
+    <Grid IsEnabled="{Binding IsEnabled}" MinWidth="300" RowDefinitions="Auto,*">
+        <Grid>
+            <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
+                       Text="Dimensions">
+            </TextBlock>
+            <Button Click="InfoButton_OnClick"  x:Name="infoButton" Background="Transparent" BorderThickness="0" Classes="icon-button-small" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8">
+                <PathIcon Width="15" Height="15" Data="{DynamicResource infoCircle}"></PathIcon>
+            </Button>
+            <ui:TeachingTip x:Name="infoTip" 
+                            Target="{Binding #infoButton}"
+                            Title="Dimension"
+                            Subtitle="Only device can have scale and rotation property">
+            </ui:TeachingTip>
+        </Grid>
+        <Grid Row="1" ColumnDefinitions="*,20,*">
+            <Grid MaxWidth="120" Column="0" RowDefinitions="*,*,*">
+                <Grid IsEnabled="{CompiledBinding CanResize}" Margin="0,7" ColumnDefinitions="20,*">
+                    <TextBlock Foreground="{DynamicResource TextControlForegroundDisabled}" VerticalAlignment="Center"
+                               Text="W">
+                    </TextBlock>
+                    <TextBox LostFocus="InputElement_OnLostFocus" HorizontalContentAlignment="Right"
+                             attachedProperties:TextBoxAssist.SuffixText="px"
+                             BorderThickness="0" Grid.Column="1" Text="{Binding WidthProperty}" Height="20"
+                             Margin="5,0">
+                    </TextBox>
+                </Grid>
+                <Grid Margin="0,7" Row="1" ColumnDefinitions="20,*">
+                    <TextBlock Foreground="{DynamicResource TextControlForegroundDisabled}" VerticalAlignment="Center"
+                               Text="X">
+                    </TextBlock>
+                    <TextBox LostFocus="InputElement_OnLostFocus" HorizontalContentAlignment="Right"
+                             attachedProperties:TextBoxAssist.SuffixText="px"
+                             BorderThickness="0" Grid.Column="1" Text="{Binding XProperty}" Height="20" Margin="5,0">
+                    </TextBox>
+                </Grid>
+                <Grid IsVisible="{CompiledBinding CanRotate}" Margin="0,7" Row="2" ColumnDefinitions="20,*">
+                    <PathIcon  HorizontalAlignment="Left" Foreground="{DynamicResource ButtonForegroundDisabled}" Width="20" Height="20" Data="{DynamicResource Rotate_value}"></PathIcon>
+                    <TextBox LostFocus="InputElement_OnLostFocus" HorizontalContentAlignment="Right"
+                             attachedProperties:TextBoxAssist.SuffixText="&#186;"
+                             BorderThickness="0" Grid.Column="1" Text="{Binding RotationProperty}" Height="20"
+                             Margin="5,0">
+                    </TextBox>
+                </Grid>
+            </Grid>
+            <Grid MaxWidth="120" Column="2" RowDefinitions="*,*,*">
+                <Grid IsEnabled="{CompiledBinding CanResize}" Margin="0,7" ColumnDefinitions="20,*">
+                    <TextBlock Foreground="{DynamicResource TextControlForegroundDisabled}" VerticalAlignment="Center"
+                               Text="H">
+                    </TextBlock>
+                    <TextBox LostFocus="InputElement_OnLostFocus" HorizontalContentAlignment="Right"
+                             attachedProperties:TextBoxAssist.SuffixText="px"
+                             BorderThickness="0" Grid.Column="1" Text="{Binding HeightProperty}" Height="20"
+                             Margin="5,0,0,0">
+                    </TextBox>
+                </Grid>
+                <Grid Margin="0,7" Row="1" ColumnDefinitions="20,*">
+                    <TextBlock Foreground="{DynamicResource TextControlForegroundDisabled}" VerticalAlignment="Center"
+                               Text="Y">
+                    </TextBlock>
+                    <TextBox LostFocus="InputElement_OnLostFocus" HorizontalContentAlignment="Right"
+                             attachedProperties:TextBoxAssist.SuffixText="px"
+                             BorderThickness="0" Grid.Column="1" Text="{Binding YProperty}" Height="20"
+                             Margin="5,0,0,0">
+                    </TextBox>
+                </Grid>
+                <Grid IsVisible="{CompiledBinding CanScale}" ColumnDefinitions="20,*" Margin="0,7" Row="2">
+                    <PathIcon HorizontalAlignment="Left" Foreground="{DynamicResource ButtonForegroundDisabled}" Width="15" Height="15" Data="{DynamicResource scale}"></PathIcon>
+                    <SplitButton BorderThickness="0" Height="20" Grid.Column="1" Margin="5,0,0,0"
+                                 Flyout="{StaticResource ScaleMenuFlyout}">
+                        <TextBox CornerRadius="4,0,0,4" Background="Transparent" LostFocus="InputElement_OnLostFocus"
+                                 HorizontalContentAlignment="Right"
+                                 BorderThickness="0" Grid.Column="1" Text="{Binding ScaleProperty}">
+                        </TextBox>
+                    </SplitButton>
+
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

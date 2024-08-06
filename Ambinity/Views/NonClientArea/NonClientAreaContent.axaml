@@ -9,8 +9,8 @@
            <PathIcon Margin="15,15,10,10" Height="20" Width="20"            
                      Data="{DynamicResource appicon}"/>
        </Grid>
-       <Grid Margin="0,0,0,0" Column="1" VerticalAlignment="Center">
-           <TextBlock Theme="{StaticResource CaptionTextBlockStyle}" Text="Ambinity | Dashboard"></TextBlock>
+       <Grid Margin="0,2,0,0" Column="1" VerticalAlignment="Center">
+           <TextBlock Theme="{StaticResource CaptionTextBlockStyle}" Text="Ambinity"></TextBlock>
        </Grid>
    </Grid>
 </UserControl>

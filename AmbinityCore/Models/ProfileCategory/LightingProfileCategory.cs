@@ -1,7 +1,10 @@
+using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Profile;
+using AmbinityServer.OnlineItem;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace AmbinityCore.Models.ProfileCategory;
@@ -35,23 +38,33 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
     /// <summary>
     /// Indicate Item is selected by user
     /// </summary>
-    public bool IsSelected { get; set; }
+    [JsonIgnore] public bool IsSelected { get; set; }
 
     /// <summary>
     /// Indicate Item is being edited by user
     /// </summary>
-    public bool IsEditing { get; set; }
+    [JsonIgnore] public bool IsEditing { get; set; }
 
     /// <summary>
     /// Indicate Item is being checked by user
     /// </summary>
-    public bool IsChecked { get; set; }
+    [JsonIgnore] public bool IsChecked { get; set; }
 
     /// <summary>
     /// Indicate Item is being Pinned to dashboard
     /// </summary>
-    public bool IsPinned { get; set; }
+    [JsonIgnore] public bool IsPinned { get; set; }
+    
+    public CollectableItemRepository GetLocalRepository()
+    {
+        return Ioc.Default.GetRequiredService<LightingProfileRepository>();
+    }
 
+    public OnlineItemRepository GetOnlineRerpository()
+    {
+        //todo make online repo for lighting profile controller
+        return null;
+    }
     /// <summary>
     /// Store Local path of this item
     /// </summary>
@@ -77,6 +90,7 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
     {
         profile.CategoryID = ID;
         Profiles.Add(profile);
+        OnPropertyChanged(nameof(Profiles));
     }
 
     /// <summary>
@@ -85,6 +99,7 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
     /// <param name="profiles"></param>
     public void FindChild(List<ICollectableItem> profiles)
     {
+        Profiles?.Clear();
         if (profiles == null)
             return;
         foreach (LightingProfile profile in profiles)
@@ -93,13 +108,19 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
                 continue;
             if (profile.CategoryID == ID)
             {
+                profile.Category = this;
                 Profiles.Add(profile);
             }
 
             if (profile.IsDefault && IsDefault)
             {
+                profile.Category = this;
                 Profiles.Add(profile);
             }
         }
+    }
+    public void Save()
+    {
+        JsonHelpers.WriteSimpleJson(this,LocalPath);
     }
 }

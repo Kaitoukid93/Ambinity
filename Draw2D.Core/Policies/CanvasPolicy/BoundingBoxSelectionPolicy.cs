@@ -29,7 +29,6 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
             _absoluteBoundingBox.Width += dx;
             _absoluteBoundingBox.Height += dy;
-
             var normalized = _absoluteBoundingBox.Normalized();
 
             _selectBox.ForceSetDimensions(normalized);
@@ -80,8 +79,9 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             _y = startPosY;
 
             //Console.WriteLine($"Drag start: {_x}, {_y}");
-            _selectBox = new Selectionbox(_x, _y, 10, 10);
+            _selectBox = new Selectionbox(_x, _y, 1, 1);
             _selectBox.FillColor = canvas.StrokeColor.AdjustOpacity(0.1);
+            _selectBox.StrokeColor = canvas.StrokeColor;
             _absoluteBoundingBox = _selectBox.BoundingBox.Clone();
 
             canvas.AddAdornerFigure(_selectBox);

@@ -7,7 +7,7 @@
              x:DataType="local:SideMenuScreenViewModel"
              x:Class="Ambinity.Views.SideMenu.SideMenuScreenView">
     <Grid ColumnDefinitions="Auto,*">
-        <PathIcon Width="15" Height="15" Margin="0,0,5,0"
+        <PathIcon Width="18" Height="18" Margin="0,0,5,0"
                   Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
         </PathIcon>
         <TextBlock Grid.Column="1" Margin="5,0,0,0" Text="{Binding Content}"></TextBlock>

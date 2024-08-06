@@ -41,7 +41,7 @@ public class CollectableItemsViewModel : ViewModelBase
         set
         {
             _uniformGridRowNumber = value;
-            RaisePropertyChanged(nameof(UniformGridRowNumber));
+            OnPropertyChanged();
         }
     }
     private IProgress<int> _progress;
@@ -59,7 +59,7 @@ public class CollectableItemsViewModel : ViewModelBase
             {
                 _progress.Report(0);
             }
-            RaisePropertyChanged(nameof(ProgressBarVisibility));
+            OnPropertyChanged();
         }
     }
 
@@ -74,7 +74,7 @@ public class CollectableItemsViewModel : ViewModelBase
             if (_loadingPercent != value)
             {
                 _loadingPercent = value;
-                RaisePropertyChanged(nameof(LoadingPercent));
+                OnPropertyChanged();
             }
         }
     }
@@ -130,7 +130,7 @@ public class CollectableItemsViewModel : ViewModelBase
         var selectedItems = Items.Where(d => d.IsChecked).ToList();
         if (selectedItems != null && selectedItems.Count > 0)
             AvailableTools.Add(DeleteTool());
-        RaisePropertyChanged(nameof(ShowToolBar));
+        OnPropertyChanged();
 
     }
     private IToolbarItem DeleteTool()

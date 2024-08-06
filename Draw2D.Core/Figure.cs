@@ -16,7 +16,7 @@ namespace Draw2D.Core
     }
 
 
-    public abstract class Figure
+    public abstract class Figure 
     {
         private readonly List<PolicyBase> _policies = new List<PolicyBase>();
         readonly List<IHandle> _handles = new List<IHandle>();
@@ -33,9 +33,21 @@ namespace Draw2D.Core
         protected readonly List<ConstraintPoint> DynamicConstraintPoints = new List<ConstraintPoint>();
 
         public List<ConstraintPoint> ConstraintPoints => FixConstraintPoints.Concat(DynamicConstraintPoints).ToList();
-        public bool IsMouseOver { get; set; }
+        private bool _isMouseOver;
+
+        public bool IsMouseOver
+        {
+            get => _isMouseOver;
+            set
+            {
+                _isMouseOver = value;
+                MouseOverChanged?.Invoke(value);
+                Canvas?.NeedsRepaint(this);
+            }
+        }
         public event Action<float,float> PositionPropertyChanged;
         public event Action<float, float> SizePropertyChanged;
+        public event Action<bool> MouseOverChanged;
         public int ZOrder
         {
             get { return _zOrder; }
@@ -167,7 +179,7 @@ namespace Draw2D.Core
             //Todo: Children checks...
         }
 
-        public virtual Figure Select(bool showHandles = true)
+        public virtual Figure Select(bool showHandles = true, bool repaint = true)
         {
             BringToFront();
 
@@ -178,7 +190,7 @@ namespace Draw2D.Core
                 policy.OnSelect(Canvas, this);
             }
 
-            if (showHandles)
+            if (showHandles && IsResizable)
             {
                 foreach (var handle in _handles)
                 {
@@ -190,7 +202,7 @@ namespace Draw2D.Core
             {
                 policy.GetLinkedFigures().ToList().ForEach(s => s.BringToFront());
             }
-
+           if(repaint)
             Canvas?.NeedsRepaint(this);
 
             return this;
@@ -558,6 +570,8 @@ namespace Draw2D.Core
 
         public void ShowHandles(Canvas canvas)
         {
+            if(!IsResizable)
+                return;
             foreach (var handle in Handles)
             {
                 handle.Show(Canvas);

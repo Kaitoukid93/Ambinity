@@ -28,7 +28,6 @@ namespace Draw2DControlLibrary
         /// Reference to the underlying content, which is named PART_Content in the template.
         /// </summary>
         private Control _content = null;
-
         /// <summary>
         /// The transform that is applied to the content to scale it by 'ViewportZoom'.
         /// </summary>
@@ -135,7 +134,7 @@ namespace Draw2DControlLibrary
             // _content = this.GetControl<Control>("123");
 
             _content = (this.GetVisualChildren().FirstOrDefault() as ContentPresenter).Content as Draw2DControl;
-
+            ScrollOwner = this.GetVisualParent() as ScrollContentPresenter;
             if (_content != null)
             {
                 _content.RenderTransformOrigin = RelativePoint.TopLeft;
@@ -541,7 +540,8 @@ namespace Draw2DControlLibrary
         private void ViewportZoom_PropertyChanged(ZoomAndPanControl c, AvaloniaPropertyChangedEventArgs e)
         {
             //calculate  constant size brush
-            (_content as Draw2DControl).UpdateZoomValue(ViewportZoom);
+            
+            (_content as Draw2DControl)?.UpdateZoomValue(ViewportZoom);
             
             if (c._contentZoomTransform != null)
             {
@@ -588,7 +588,8 @@ namespace Draw2DControlLibrary
             }
 
             c.ContentZoomChanged?.Invoke(c, EventArgs.Empty);
-            c.ScrollOwner?.InvalidateVisual();
+            ScrollOwner?.InvalidateMeasure();
+            ScrollOwner?.InvalidateVisual();
             c.RaiseCanExecuteChanged();
         }
 
@@ -651,7 +652,7 @@ namespace Draw2DControlLibrary
                 //
                 // Notify the owning ScrollViewer that the scrollbar offsets should be updated.
                 //
-                c.ScrollOwner?.InvalidateVisual();
+                ScrollOwner?.InvalidateVisual();
         }
 
         /// <summary>
@@ -685,7 +686,7 @@ namespace Draw2DControlLibrary
                 //
                 // Notify the owning ScrollViewer that the scrollbar offsets should be updated.
                 //
-                c.ScrollOwner?.InvalidateVisual();
+                ScrollOwner?.InvalidateVisual();
             //
             // Raise an event to let users of the control know that the content offset has changed.
             //

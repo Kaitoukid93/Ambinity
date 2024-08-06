@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 
 namespace Draw2DControlLibrary
 {
@@ -70,7 +71,7 @@ namespace Draw2DControlLibrary
         /// Reference to the ScrollViewer that is wrapped (in XAML) around the ZoomAndPanControl.
         /// Or set to null if there is no ScrollViewer.
         /// </summary>
-        public ScrollViewer ScrollOwner { get; set; } = null;
+        public ScrollContentPresenter ScrollOwner { get; set; } = null;
 
         /// <summary>
         /// The offset of the horizontal scrollbar.

@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:zoneConfiguration="clr-namespace:Ambinity.Views.Screens.ProfileEditor.ZoneConfiguration"
+             x:DataType="zoneConfiguration:PropertiesViewHeader"
+             x:Class="Ambinity.Views.Screens.ProfileEditor.ZoneConfiguration.ConfigurationHeaderView">
+
+    <Grid IsVisible="{Binding Visibility}" ColumnDefinitions="Auto,*">
+        <PathIcon VerticalAlignment="Center" HorizontalAlignment="Left" Width="25" Margin="0,10,10,10" Height="25"
+                  Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+        </PathIcon>
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="1" Margin="10" FontSize="13"
+                   Text="{Binding Header }">
+        </TextBlock>
+    </Grid>
+</UserControl>

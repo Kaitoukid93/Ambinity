@@ -4,5 +4,8 @@ namespace AmbinityCore.Repositories;
 
 public class GradientColorsRepository : CollectableItemRepository
 {
-    
+    public GradientColorsRepository()
+    {
+        Name = "Gradient";
+    }
 }

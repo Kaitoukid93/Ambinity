@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.OnlineStore"
+             x:DataType="local:OnlineItemAssetViewModel"
+             x:Class="Ambinity.Views.OnlineStore.OnlineItemAssetView">
+    <Button Margin=" 0,5" HorizontalContentAlignment="Stretch" Padding="0" HorizontalAlignment="Stretch">
+        <Grid ColumnDefinitions="70,*" Height="100">
+            <Image Margin="15" Width="70" HorizontalAlignment="Left"
+                   Source="{Binding GetThumbnail^,FallbackValue=null}" Stretch="Uniform">
+            </Image>
+            <Grid Column="1" RowDefinitions="Auto,30,*,Auto">
+                <TextBlock ToolTip.Tip="{Binding Name}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis" MaxWidth="180" Grid.Row="0" Margin="0,10,0,0" FontWeight="SemiBold" Text="{Binding Name}"></TextBlock>
+                <Grid Row="1" RowDefinitions="*,*">
+                    <TextBlock  FontSize="12"  Foreground="{DynamicResource ButtonForegroundDisabled}"
+                               Text="{Binding Description }">
+                    </TextBlock>
+                    <TextBlock  Margin="0,0,15,0" HorizontalAlignment="Left" Grid.Row="1" FontSize="12" Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding LastUpdate}"></TextBlock>
+                </Grid>
+                <Grid Grid.Row="3">
+                   <Border CornerRadius="3" IsVisible="{Binding IsLocalExisted}" Margin="5,5" HorizontalAlignment="Right" Classes="chip">
+                       <Grid ColumnDefinitions="Auto,*">
+                           <PathIcon Foreground="{DynamicResource SystemAccentColor}" Width="12"  Margin="0,0,3,0"  Height="12" Data="{DynamicResource checkIcon}"></PathIcon>
+                           <TextBlock Margin="0,0,0,2" Grid.Column="1" Foreground="{DynamicResource SystemAccentColor}" FontSize="12" Text="Installed"></TextBlock>
+                       </Grid>
+                   </Border>
+                    <Button CornerRadius="3" Padding="5,3" IsVisible="{Binding !IsLocalExisted}" Margin="5,5" HorizontalAlignment="Right" Classes="chip">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <PathIcon Margin="0,0,5,0" Width="12" Height="10" Data="{DynamicResource download}"></PathIcon>
+                            <TextBlock Margin="0,0,0,2" Grid.Column="1" FontSize="12" Text="Install"></TextBlock>
+                        </Grid>
+                   
+                    </Button>
+                </Grid>
+            </Grid>
+
+        </Grid>
+    </Button>
+
+</UserControl>

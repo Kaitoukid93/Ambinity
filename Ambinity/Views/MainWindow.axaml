@@ -8,14 +8,14 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         Width="1600"
         Height="900"
+        MinWidth="800"
+        Focusable="True"
         x:Class="Ambinity.Views.MainWindow"
-        x:DataType="views:MainWindowViewModel"
-        xmlns:views="clr-namespace:Ambinity.Views"
+        x:DataType="root:RootViewModel"
+        xmlns:root="clr-namespace:Ambinity.Views.Root"
         xmlns:nonclientarea="clr-namespace:Ambinity.Views.NonClientArea"
-        xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
-        xmlns:ambinity="clr-namespace:Ambinity"
-        xmlns:sideMenu = "clr-namespace:Ambinity.Views.SideMenu"
-        Icon="/Assets/avalonia-logo.ico"
+        xmlns:sideMenu="clr-namespace:Ambinity.Views.SideMenu"
+        Icon="/Assets/appicon.ico"
         Title="Ambinity">
 
     <Grid RowDefinitions="Auto,*">
@@ -25,15 +25,11 @@
         <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
             <!-- Vertical selection -->
             <Grid>
-            <sideMenu:SideMenuView DataContext="{Binding SideMenu}"></sideMenu:SideMenuView>
+                <sideMenu:SideMenuView DataContext="{Binding SideMenu}"></sideMenu:SideMenuView>
             </Grid>
             <!-- main page view -->
             <Grid Column="1">
-                <ui:Frame Grid.Row="2" Name="RootFrame" IsNavigationStackEnabled="False" CacheSize="0">
-                    <ui:Frame.NavigationPageFactory>
-                        <ambinity:PageFactory />
-                    </ui:Frame.NavigationPageFactory>
-                </ui:Frame>
+                <ContentControl Content="{CompiledBinding}" />
             </Grid>
         </Grid>
     </Grid>

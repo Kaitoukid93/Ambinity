@@ -11,7 +11,7 @@ public class DeviceSpot
     public int Index { get; set; } // Physical index
    
     public int MID { get; set; }
-    public Geometry Geometry { get; set; } 
+    public string Geometry { get; set; } 
  
     public double Top { get; set; }
 

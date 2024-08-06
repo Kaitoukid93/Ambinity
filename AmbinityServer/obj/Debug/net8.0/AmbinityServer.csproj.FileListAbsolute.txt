@@ -1,0 +1,14 @@
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\bin\Debug\net8.0\AmbinityServer.deps.json
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\bin\Debug\net8.0\AmbinityServer.dll
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\bin\Debug\net8.0\AmbinityServer.pdb
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Debug\net8.0\AmbinityServer.csproj.AssemblyReference.cache
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Debug\net8.0\Avalonia\Resources.Inputs.cache
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Debug\net8.0\AmbinityServer.GeneratedMSBuildEditorConfig.editorconfig
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Debug\net8.0\AmbinityServer.AssemblyInfoInputs.cache
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Debug\net8.0\AmbinityServer.AssemblyInfo.cs
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Debug\net8.0\AmbinityServer.csproj.CoreCompileInputs.cache
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Debug\net8.0\AmbinityServer.sourcelink.json
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Debug\net8.0\AmbinityServer.dll
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Debug\net8.0\refint\AmbinityServer.dll
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Debug\net8.0\AmbinityServer.pdb
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Debug\net8.0\ref\AmbinityServer.dll

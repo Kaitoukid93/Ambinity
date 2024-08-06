@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor"
+             x:DataType="local:LayerViewModel"
+             Focusable="True"
+             KeyDown="InputElement_OnKeyDown"
+             KeyUp="InputElement_OnKeyUp"
+             x:Class="Ambinity.Views.LayoutEditor.LayerView">
+    <UserControl.Styles>
+
+
+    </UserControl.Styles>
+    <Grid  PointerPressed="ContainerGrid_OnPointerPressed" PointerExited="ContainerGrid_OnPointerExited"
+          PointerEntered="ContainerGrid_OnPointerEntered" Margin="0,0,0,0" x:Name="ContainerGrid">
+        <Border CornerRadius="5" IsVisible="{Binding IsSelected}" HorizontalAlignment="Left" Height="15" Width="3"
+                Background="{DynamicResource SystemAccentColor}">
+        </Border>
+        <Border IsVisible="{Binding IsSelected}"
+                Height="35" Background="{DynamicResource ListViewItemBackgroundPointerOver}"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 CornerRadius="4" Margin="0,5,0,5">
+        </Border>
+        <Border IsVisible="{Binding IsMouseOver}"
+                Height="35" Background="{DynamicResource ListViewItemBackgroundPointerOver}"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 CornerRadius="4" Margin="0,5,0,5">
+        </Border>
+        <Grid Height="35" Margin="0,5,0,5" Background="Transparent" ColumnDefinitions="Auto,*,Auto,Auto">
+            <PathIcon Margin="15,0,10,0" Data="{DynamicResource Zone_layer_icon}"></PathIcon>
+            <TextBlock Grid.Column="1" Padding="0 5"
+                       FontWeight="SemiBold"
+                       PointerPressed="InputElement_OnPointerPressed"
+                       FontSize="13"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Left" Text="{Binding Name}">
+            </TextBlock>
+            <Button IsVisible="{Binding ShowButtons}" Grid.Column="2" Margin="0,0,2,0"
+                    Classes="icon-button icon-button-small">
+                <PathIcon Width="13" Height="13" Data="{DynamicResource 'Eye Open'}"></PathIcon>
+            </Button>
+            <Button IsVisible="{Binding ShowButtons}" Margin="0,0,2,0" Grid.Column="3"
+                    Classes=" icon-button icon-button-small">
+            
+                <PathIcon Width="13" Height="13" Data="{DynamicResource 'delete'}"></PathIcon>
+            </Button>
+
+        </Grid>
+
+    </Grid>
+
+
+</UserControl>

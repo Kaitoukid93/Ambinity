@@ -7,6 +7,8 @@ public class JsonHelpers
     private static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings() { 
         TypeNameHandling = TypeNameHandling.Auto
     };
+
+    private static object Lock = new object();
     public static void WriteSimpleJson(object obj, string path)
     {
         try
@@ -22,8 +24,12 @@ public class JsonHelpers
 
     public static T DeserializeJson<T>(string path)
     {
-        var jsonData = File.ReadAllText(path);
-        T obj = JsonConvert.DeserializeObject<T>(jsonData,jsonSerializerSettings);
-        return obj;
+        lock (Lock)
+        {
+            var jsonData = File.ReadAllText(path);
+            T obj = JsonConvert.DeserializeObject<T>(jsonData,jsonSerializerSettings);
+            return obj;
+        }
+        
     }
 }

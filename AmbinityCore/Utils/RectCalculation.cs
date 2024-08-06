@@ -16,7 +16,7 @@ public class RectCalculation
             double yMin = rects.Min(s => s.Top);
             double xMax = rects.Max(s => s.Left + s.Width);
             double yMax = rects.Max(s => s.Top + s.Height);
-            var rect = new Rect(xMin - 1, yMin - 1, xMax + 1, yMax + 1);
+            var rect = new Rect(xMin - 1, yMin - 1, xMax - xMin + 1, yMax - yMin + 1);
             return rect;
         }
  

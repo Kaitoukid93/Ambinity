@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:DataType="local:DeviceSettingsDashboardViewModel"
+             x:Class="Ambinity.Views.Screens.DeviceSettings.DeviceSettingsDashboardView">
+    <Grid>
+        <ItemsControl ItemsSource="{Binding Devices}">
+            <ItemsControl.DataTemplates>
+                <DataTemplate DataType="{x:Type local:DashboardDeviceViewModel}">
+                    <local:DashboardDeviceView></local:DashboardDeviceView>
+                </DataTemplate>
+            </ItemsControl.DataTemplates>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal"></WrapPanel>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <Grid>
+            <ui:InfoBar Width="400" DataContext="{Binding InfoBarViewModel }" IsOpen="{Binding IsOpen,Mode=TwoWay}" HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom" Margin="20" Title="{Binding Title}">
+                <ui:InfoBar.IconSource>
+                    <ui:PathIconSource Data="{DynamicResource infoCircle}"></ui:PathIconSource>
+                </ui:InfoBar.IconSource>
+                <Grid ColumnDefinitions="Auto,*">
+                    <Grid RowDefinitions="Auto,*,Auto">
+                        <TextBlock Margin="0,5" Text="{Binding Content}"
+                                   Foreground="{Binding ForeGround}"
+                                   FontWeight="SemiBold">
+                        </TextBlock>
+                        <TextBlock Grid.Row="1" Margin="0,0,0,15" Text="{Binding SubContent}"></TextBlock>
+
+                    </Grid>
+                    <ProgressBar IsVisible="{Binding IsLoading}" Margin="20,0,10,0" Grid.Column="1" Grid.Row="2" Height="2" IsIndeterminate="True"></ProgressBar>
+                </Grid>
+
+
+            </ui:InfoBar>
+        </Grid>
+    </Grid>
+</UserControl>

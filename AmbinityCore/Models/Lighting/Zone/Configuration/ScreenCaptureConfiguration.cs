@@ -4,7 +4,7 @@ namespace AmbinityCore.Models.Lighting.Zone.Configuration;
 
 public class ScreenCaptureConfiguration : ILightingConfiguration
 {
-    public ScreenCaptureConfiguration( int brightness, int smooth, Rect screenCaptureArea, int displayIndex,bool brightnessCorrection)
+    public ScreenCaptureConfiguration( int brightness, int smooth, CaptureArea screenCaptureArea, int displayIndex,bool brightnessCorrection)
     {
         Brightness = brightness;
         Smooth = smooth;
@@ -32,7 +32,7 @@ public class ScreenCaptureConfiguration : ILightingConfiguration
     /// <summary>
     /// Indicate the area the zone capture from
     /// </summary>
-    public Rect ScreenCaptureArea { get; set; }
+    public CaptureArea ScreenCaptureArea { get; set; }
 
     /// <summary>
     /// Indicate which display the zone capture from
@@ -43,4 +43,13 @@ public class ScreenCaptureConfiguration : ILightingConfiguration
     /// Switch between Linear and Non-Linear Lighting
     /// </summary>
     public bool BrightnessCorrection { get; set; }
+    public string Icon => "LightingConfiguration_ScreenCapture";
+    public string GetInfo()
+    {
+        //example
+        // Screen: 1, Brightness: 80, Smooth: 2, Area: 1,2,3,4, 
+
+        return "Screen: " + (DisplayIndex+1) + ", " + "Brightness: " + Brightness + ", " + "Smooth: " + Smooth + ", " +
+               "Area: " + ScreenCaptureArea.RatioWidth + " - " + ScreenCaptureArea.RatioHeight;
+    }
 }

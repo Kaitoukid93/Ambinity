@@ -29,7 +29,7 @@ public class ScreenPreviewViewModel : ViewModelBase
         set
         {
             _previewImageControl = value;
-            RaisePropertyChanged(nameof(PreviewImageControl));
+            OnPropertyChanged();
         }
     }
     

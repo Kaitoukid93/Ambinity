@@ -1,10 +1,14 @@
-using System.Collections.ObjectModel;
 using adrilight_shared.Models.Device.SlaveDevice;
-using AmbinityCore.Enums;
+using AmbinityCore.Helpers;
+using AmbinityCore.Models.Collection;
+using AmbinityCore.Models.Device.Device;
 using AmbinityCore.Models.Device.LED;
+using AmbinityServer.OnlineItem;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -13,8 +17,12 @@ namespace AmbinityCore.Models.Device;
 /// <summary>
 /// Store layout for slave device without saving to actual slave device data
 /// </summary>
-public class AmbinityDeviceLayout
+public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
 {
+    /// <summary>
+    /// construct new layout from file path
+    /// </summary>
+    /// <param name="filePath"></param>
     public AmbinityDeviceLayout(string filePath)
     {
         FilePath = filePath;
@@ -23,18 +31,20 @@ public class AmbinityDeviceLayout
         LoadLayout();
     }
 
+    public string Description { get; set; }
     public string FilePath { get; }
     [JsonIgnore] public List<AmbinityLEDLayout> Leds { get; }
     [JsonIgnore] public Uri? Image { get; private set; }
-    [JsonIgnore] public Uri? Thumbnail { get; private set; }
+    [JsonIgnore] public string Thumbnail { get; private set; }
 
     private void LoadLayout()
     {
         if (Directory.Exists(FilePath))
         {
-            var json = File.ReadAllText(Path.Combine(FilePath, "config.json"));
+            LocalPath = FilePath;
             try
             {
+                var json = File.ReadAllText(Path.Combine(FilePath, "config.json"));
                 var legacyDevice = JsonConvert.DeserializeObject<ARGBLEDSlaveDevice>(json);
                 if (legacyDevice == null)
                     return;
@@ -50,7 +60,8 @@ public class AmbinityDeviceLayout
                 }
 
                 Image = new Uri(Path.Combine(FilePath, "thumbnail.png"), UriKind.Absolute);
-                Thumbnail = new Uri(Path.Combine(FilePath, "colored_thumbnail.png"), UriKind.Absolute);
+                Thumbnail = Path.Combine(FilePath, "colored_thumbnail.png");
+                Name = legacyDevice.Name;
             }
             catch (Exception ex)
             {
@@ -93,6 +104,8 @@ public class AmbinityDeviceLayout
             led.Geometry = ledLayout.Geometry;
         }
 
+        device.DeviceName = this.Name;
+        device.Layout = this;
         device.UpdateSizeByChild(false);
     }
 
@@ -105,7 +118,7 @@ public class AmbinityDeviceLayout
     /// <param name="height"></param>
     /// <param name="scale"></param>
     /// <returns></returns>
-    public  RenderTargetBitmap RenderLayout(int width, int height, int scale = 2)
+    public RenderTargetBitmap RenderLayout(int width, int height, int scale = 2)
     {
         string? path = Image?.LocalPath;
 
@@ -134,4 +147,32 @@ public class AmbinityDeviceLayout
     public void GetDefaultLayout(AmbinityDevice device)
     {
     }
+
+    /// <summary>
+    /// save data to local path
+    /// </summary>
+    public void Save()
+    {
+        JsonHelpers.WriteSimpleJson(this, LocalPath);
+    }
+
+    public CollectableItemRepository GetLocalRepository()
+    {
+        return Ioc.Default.GetRequiredService<AmbinityDeviceLayoutRepository>();
+    }
+
+    public OnlineItemRepository GetOnlineRerpository()
+    {
+        return Ioc.Default.GetRequiredService<AmbinityDeviceOnlineRepository>();
+    }
+
+    public event Action<ICollectableItem>? ItemNameChanged;
+    public event Action<ICollectableItem>? ItemPinStatusChanged;
+    public event Action<ICollectableItem>? ItemCheckStatusChanged;
+    public string Name { get; set; }
+    [JsonIgnore] public bool IsSelected { get; set; }
+    [JsonIgnore] public bool IsEditing { get; set; }
+    [JsonIgnore] public bool IsChecked { get; set; }
+    [JsonIgnore] public bool IsPinned { get; set; }
+    [JsonIgnore] public string LocalPath { get; set; }
 }
