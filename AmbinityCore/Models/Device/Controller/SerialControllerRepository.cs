@@ -9,27 +9,33 @@ namespace AmbinityCore.Models.Device.Controller;
 
 public class SerialControllerRepository : CollectableItemRepository
 {
-    private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "Ambinity\\");
 
-    public event Action<SerialController> NewControllerAdded;
-    public event Action<SerialController> OldDeviceReconnected;
-    public event Action<SerialController> OldDeviceDetected;
-    public event Action<SerialController> ControllerDisconnected;
-    public event Action<SerialController> LoadingFromDisk;
-    private string dbPath => Path.Combine(JsonPath, "Hardwares");
-    private string FolderPath => Path.Combine(dbPath, "Controllers");
+    public event Action<IController> NewControllerAdded;
+    public event Action<IController> OldDeviceReconnected;
+    public event Action<IController> OldDeviceDetected;
+    public event Action<IController> ControllerDisconnected;
+    public event Action<IController> LoadingFromDisk;
+    private string dbPath => Path.Combine(Constants.AppDataFolder, "Hardwares");
+    private string FolderPath => Path.Combine(dbPath, "Controllers", "Serial");
     private SerialControllerProvider _controllerProvider;
     private List<IDataStream> _dataStreams;
-
-    public SerialControllerRepository(SerialControllerProvider controllerProvider)
+    private DataStreamProvider _streamProvider;
+    public SerialControllerRepository(SerialControllerProvider controllerProvider , DataStreamProvider streamProvider)
     {
+        _streamProvider = streamProvider;
         LocalFolderPath = FolderPath;
         _controllerProvider = controllerProvider;
         _controllerProvider.NewDeviceFound += OnNewDeviceFound;
         Name = "Controllers";
     }
-    private async void OnNewDeviceFound(SerialController controller)
+
+    public override void Init()
+    {
+        base.Init();
+        _controllerProvider.Init();
+    }
+
+    private async void OnNewDeviceFound(IController controller)
     {
         _controllerProvider.Hold();
         //wait for 1sec because the discovery routine take 1 sec to update
@@ -40,10 +46,13 @@ public class SerialControllerRepository : CollectableItemRepository
             AddItem(controller);
             NewControllerAdded?.Invoke(controller);
         }
+
         //wait for serialstream to start first
         _controllerProvider.Resume();
+        
         SaveToDisk();
     }
+
     private async Task OnOldDeviceLoaded(SerialController controller)
     {
         var result = await RegisterController(controller);
@@ -52,15 +61,18 @@ public class SerialControllerRepository : CollectableItemRepository
             AddItem(controller);
             NewControllerAdded?.Invoke(controller);
         }
+
         //wait for serialstream to start first
+        
         SaveToDisk();
     }
+
     /// <summary>
     /// return fail if controller already exist, true if it's a new one
     /// </summary>
     /// <param name="controller"></param>
     /// <returns></returns>
-    private async Task<bool> RegisterController(SerialController controller)
+    private async Task<bool> RegisterController(IController controller)
     {
         bool isNew = false;
         if (_dataStreams == null)
@@ -68,7 +80,7 @@ public class SerialControllerRepository : CollectableItemRepository
         var dataStream = GetSerialStream(controller);
         if (dataStream == null)
         {
-            dataStream = DataStreamRepository.CreateDeviceStreamService(controller);
+            dataStream = _streamProvider.CreateDeviceStreamService(controller);
             dataStream.ControllerDisconnected += SerialControllerDisconnected;
             dataStream.Init();
             await Task.Run(() => Task.Delay(2000));
@@ -79,18 +91,22 @@ public class SerialControllerRepository : CollectableItemRepository
         {
             //oldevice but the port changed
             (dataStream as SerialStream).Controller.SerialPort = controller.SerialPort;
-            OldDeviceDetected?.Invoke( (dataStream as SerialStream).Controller);
+            OldDeviceDetected?.Invoke((dataStream as SerialStream).Controller);
             if (!dataStream.IsRunning)
                 dataStream.Init();
             await Task.Run(() => Task.Delay(2000));
             OldDeviceReconnected?.Invoke(controller);
+            Log.Information("Old Device Reconnected " + controller.Name);
         }
+
         return isNew;
     }
+
     private void SerialControllerDisconnected(IController controller)
     {
         ControllerDisconnected?.Invoke(controller as SerialController);
     }
+
     private IDataStream GetSerialStream(IController controller)
     {
         if (_dataStreams == null)
@@ -103,7 +119,6 @@ public class SerialControllerRepository : CollectableItemRepository
     public override void CreateDefault()
     {
         //todo add default controller
-       
     }
 
     public override async void LoadFromDisk()
@@ -112,24 +127,29 @@ public class SerialControllerRepository : CollectableItemRepository
         //wait for update routine to pickup hold signal
         await Task.Run(() => Task.Delay(1000));
         Items?.Clear();
-        string[] files = Directory.GetFiles(FolderPath);
+        string[] files = Directory.GetDirectories(FolderPath);
         foreach (var file in files)
         {
-            
-            var controller = JsonHelpers.DeserializeJson<SerialController>(file);
+            var controllerPath = Path.Combine(file, "controller.json");
+            var controller = JsonHelpers.DeserializeJson<SerialController>(controllerPath);
             if (controller == null)
+            {
+                Log.Error("Can not load " + file);
                 continue;
+            }
+               
+            controller.LocalPath = controllerPath;
             foreach (var output in controller.LedController.Outputs)
             {
                 output.Device.LoadLayout();
             }
+
             controller.RegisterLEDController();
             controller.RegisterFanController();
             LoadingFromDisk?.Invoke(controller);
             await Task.Run(() => OnOldDeviceLoaded(controller));
         }
+
         _controllerProvider.Resume();
     }
-
-    
 }

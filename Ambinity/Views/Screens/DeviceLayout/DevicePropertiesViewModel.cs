@@ -2,17 +2,16 @@ using System.Linq;
 using Ambinity.Views.Configuration.ColorConfiguration;
 using Ambinity.Views.Configuration.PositionConfiguration;
 using Ambinity.Views.Draw2DCanvas;
-using Ambinity.Views.Screens.ProfileEditor.ZoneConfiguration;
+using Ambinity.Views.LayoutEditor.RightPanel.PropertiesView;
 using AmbinityCore.Models.Device;
-using AmbinityCore.Models.Lighting.Zone;
-using AmbinityCore.Models.Lighting.Zone.Configuration;
 
 namespace Ambinity.Views.Screens.DeviceLayout;
 
 public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
 {
-    public DevicePropertiesViewModel(Draw2DCanvasViewModel canvasViewModel)
+    public DevicePropertiesViewModel(Draw2DCanvasViewModel canvasViewModel, PositionConfigurationViewModel positionConfigurationViewModel)
     {
+        PositionConfiguration = positionConfigurationViewModel;
         _canvasViewModel = canvasViewModel;
         Init();
     }
@@ -30,12 +29,16 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         {
             var fig = selectedItems.First();
             fig.PositionPropertyChanged += OnItemPositionChanged;
-            var device = (fig as DeviceContainerFigure).ChildItem as AmbinityDevice;
-            if (device == null)
+            var device = (fig as DeviceContainerFigure)?.ChildItem as AmbinityDevice;
+            if (device == null|| !fig.IsDragable)
+            {
                 DisableEdit();
+                return;
+            }
             else
             {
-                PositionConfiguration = new PositionConfigurationViewModel(_canvasViewModel);
+                _device = device;
+                EnableEdit();
                 PositionConfiguration.Init(device);
             }
             Header = GetHeader(device);
@@ -53,17 +56,19 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         PositionConfiguration.Update();
     }
 
-    private LightingZone _zone;
+    private AmbinityDevice _device;
     private Draw2DCanvasViewModel _canvasViewModel;
     private PositionConfigurationViewModel _positionConfiguration;
 
     public override void DisableEdit()
     {
-        PositionConfiguration = new PositionConfigurationViewModel(_canvasViewModel);
         PositionConfiguration.IsEnabled = false;
-        ColorConfiguration = new NullColorConfigurationViewModel();
+        
     }
-
+    public override void EnableEdit()
+    {
+        PositionConfiguration.IsEnabled = true;
+    }
     public PositionConfigurationViewModel PositionConfiguration
     {
         get => _positionConfiguration;
@@ -73,22 +78,10 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
             OnPropertyChanged();
         }
     }
+    
+    private ConfigurationHeaderViewModel _header;
 
-    private ColorConfigurationViewModelBase _colorConfiguration;
-
-    public ColorConfigurationViewModelBase ColorConfiguration
-    {
-        get => _colorConfiguration;
-        set
-        {
-            _colorConfiguration = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private PropertiesViewHeader _header;
-
-    public PropertiesViewHeader Header
+    public ConfigurationHeaderViewModel Header
     {
         get => _header;
         set
@@ -98,9 +91,9 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         }
     }
 
-    private PropertiesViewHeader GetHeader(AmbinityDevice device)
+    private ConfigurationHeaderViewModel GetHeader(AmbinityDevice device)
     {
-        var header = new PropertiesViewHeader(null, null);
+        var header = new ConfigurationHeaderViewModel(null, "null");
 
         header.Icon = "slaveDevice";
         header.Header = device.DeviceName;
@@ -108,13 +101,13 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         return header;
     }
 
-    private PropertiesViewHeader NullHeader()
+    private ConfigurationHeaderViewModel NullHeader()
     {
-        return new PropertiesViewHeader("0 item selected", null, false);
+        return new ConfigurationHeaderViewModel("Select an item to begin", "void_selected");
     }
 
-    private PropertiesViewHeader MultipleSelectedHeader(int count)
+    private ConfigurationHeaderViewModel MultipleSelectedHeader(int count)
     {
-        return new PropertiesViewHeader(count + " " + "items selected", "Zones");
+        return new ConfigurationHeaderViewModel(count + " " + "items selected", "Zones");
     }
 }

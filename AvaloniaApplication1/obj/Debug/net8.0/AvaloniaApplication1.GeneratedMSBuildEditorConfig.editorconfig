@@ -1,0 +1,46 @@
+is_global = true
+build_property.AvaloniaNameGeneratorIsEnabled = true
+build_property.AvaloniaNameGeneratorBehavior = InitializeComponent
+build_property.AvaloniaNameGeneratorDefaultFieldModifier = internal
+build_property.AvaloniaNameGeneratorFilterByPath = *
+build_property.AvaloniaNameGeneratorFilterByNamespace = *
+build_property.AvaloniaNameGeneratorViewFileNamingStrategy = NamespaceAndClassName
+build_property.AvaloniaNameGeneratorAttachDevTools = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = AvaloniaApplication1
+build_property.ProjectDir = D:\AmbinityAvalonia\Ambinity_Avalonia\AvaloniaApplication1\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+
+[D:/AmbinityAvalonia/Ambinity_Avalonia/AvaloniaApplication1/Styles/Ambinity.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = 
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/AmbinityAvalonia/Ambinity_Avalonia/AvaloniaApplication1/Styles/Border.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = 
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/AmbinityAvalonia/Ambinity_Avalonia/AvaloniaApplication1/Styles/Button.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = 
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/AmbinityAvalonia/Ambinity_Avalonia/AvaloniaApplication1/Styles/ColorPickerButton.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = 
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/AmbinityAvalonia/Ambinity_Avalonia/AvaloniaApplication1/Styles/TextBox.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = 
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/AmbinityAvalonia/Ambinity_Avalonia/AvaloniaApplication1/App.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/AmbinityAvalonia/Ambinity_Avalonia/AvaloniaApplication1/Views/MainWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

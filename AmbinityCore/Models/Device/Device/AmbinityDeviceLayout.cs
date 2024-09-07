@@ -3,6 +3,7 @@ using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device.Device;
 using AmbinityCore.Models.Device.LED;
+using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
 using Avalonia;
 using Avalonia.Media;
@@ -68,6 +69,11 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
                 Log.Error("Layout parse failed");
             }
         }
+        else
+        {
+            //handle file offline deleted- could be disk malfunctioning or user delete
+            Log.Error("Could not find " + "[" + FilePath + "]" + "  default layout used");
+        }
     }
 
     /// <summary>
@@ -78,6 +84,9 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
     {
         if (device == null)
             return;
+        if (Leds.Count <= 0)
+            return;
+        var usableLeds = new List<AmbinityLED>();
         foreach (var ledLayout in Leds)
         {
             var led = device.Leds.Where(l => l.Index == ledLayout.Index).FirstOrDefault();
@@ -93,6 +102,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
                     true,
                     ledLayout.Geometry);
                 device.Leds.Add(missingLED);
+                usableLeds.Add(missingLED);
                 continue;
             }
 
@@ -102,11 +112,19 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
             led.Height = ledLayout.Height;
             led.Index = ledLayout.Index;
             led.Geometry = ledLayout.Geometry;
+            usableLeds.Add(led);
+        }
+
+        device.Leds.Clear();
+        foreach (var led in usableLeds)
+        {
+            device.Leds.Add(led);
         }
 
         device.DeviceName = this.Name;
         device.Layout = this;
         device.UpdateSizeByChild(false);
+        device.TransformLeds();
     }
 
     /// <summary>
@@ -140,20 +158,22 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
         return renderTargetBitmap;
     }
 
-    /// <summary>
-    /// get default layout for device stored in resource
-    /// </summary>
-    /// <param name="device"></param>
-    public void GetDefaultLayout(AmbinityDevice device)
-    {
-    }
 
     /// <summary>
     /// save data to local path
     /// </summary>
     public void Save()
     {
-        JsonHelpers.WriteSimpleJson(this, LocalPath);
+        //todo implement profile save with icon 
+        if (LocalPath == null || !Directory.Exists(LocalPath))
+        {
+            //create local path
+            var dbPath = GetLocalRepository().LocalFolderPath;
+            LocalPath = Path.Combine(dbPath, Name);
+            Directory.CreateDirectory(LocalPath);
+        }
+
+        JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath, "layout.json"));
     }
 
     public CollectableItemRepository GetLocalRepository()

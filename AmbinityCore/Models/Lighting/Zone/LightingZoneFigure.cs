@@ -8,13 +8,14 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Media.Immutable;
 using Avalonia.Platform;
+using Draw2D.Core;
 using Draw2D.Core.Graphic;
 using Draw2D.Core.Shapes.Basic;
 using Draw2D.Core.Utlils;
 
 namespace AmbinityCore.Models.Lighting.Zone;
 
-public class LightingZoneFigure : ContainerFigure ,IAssetSelectable
+public class LightingZoneFigure : ContainerFigure, IAssetSelectable
 {
     private FormattedText _text;
     private Point _textOrigin = new Point(5, -30);
@@ -22,6 +23,7 @@ public class LightingZoneFigure : ContainerFigure ,IAssetSelectable
     private WriteableBitmap _zoneReusableBitmap;
     private bool _isValid;
     private Rect _canvasRect;
+
     public LightingZoneFigure(float x, float y, float width, float height) : base(x, y, width, height)
     {
         X = x;
@@ -29,13 +31,14 @@ public class LightingZoneFigure : ContainerFigure ,IAssetSelectable
         Width = width;
         Height = height;
     }
-    
+
     public override void SetChild(IPositionAware zone)
     {
         ChildItem = zone;
         ItemVisualizer = new LightingZoneVisualizer(ChildItem);
         ItemVisualizer.ItemUpdated += ZoneUpdated;
-        _text = new FormattedText((zone as LightingZone).Name, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, Typeface.Default,
+        _text = new FormattedText((zone as LightingZone).Name, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+            Typeface.Default,
             20, new ImmutableSolidColorBrush(Avalonia.Media.Colors.Gray));
         _text.MaxTextWidth = 200;
         _text.MaxLineCount = 1;
@@ -85,19 +88,19 @@ public class LightingZoneFigure : ContainerFigure ,IAssetSelectable
             if (rect.Intersects(rect2))
                 count++;
         }
+
         _canvasRect = new Rect(0, 0, Canvas.Width, Canvas.Height);
         _isValid = count <= 0 && _canvasRect.Contains(rect);
         ItemVisualizer.Render(dc, Canvas);
-        
-            // using (var frameBuffer = _zoneReusableBitmap.Lock())
-            // {
-            //     lock (_zone.Buffer.FrameLock)
-            //     {
-            //         Marshal.Copy(_zone.Buffer.PixelData, 0, frameBuffer.Address, _zone.Buffer.PixelData.Length);
-            //     }
-            //     dc.DrawImage(_zoneReusableBitmap,new Rect(X,Y,_zone.Width,_zone.Height));
-            // }
-        
+        // using (var frameBuffer = _zoneReusableBitmap.Lock())
+        // {
+        //     lock (_zone.Buffer.FrameLock)
+        //     {
+        //         Marshal.Copy(_zone.Buffer.PixelData, 0, frameBuffer.Address, _zone.Buffer.PixelData.Length);
+        //     }
+        //     dc.DrawImage(_zoneReusableBitmap,new Rect(X,Y,_zone.Width,_zone.Height));
+        // }
+
 
         var strokeBrush = new ImmutableSolidColorBrush(StrokeColor);
         var thickness = StrokeThickness;
@@ -106,7 +109,7 @@ public class LightingZoneFigure : ContainerFigure ,IAssetSelectable
             strokeBrush = new ImmutableSolidColorBrush(strokeColor);
             thickness = (float)strokeThickness;
         }
-
+        
         var screenPoint = Canvas.CoordinateSystem.ToScreenSpace(Position);
         var offset = new Point((float)screenPoint[0] - X, (float)screenPoint[1] - Y);
         
@@ -118,13 +121,51 @@ public class LightingZoneFigure : ContainerFigure ,IAssetSelectable
             fillBrush = new ImmutableSolidColorBrush(Avalonia.Media.Colors.Gray.AdjustOpacity(0.2));
             strokeBrush = new ImmutableSolidColorBrush(Avalonia.Media.Colors.Orange);
         }
-
+        
         var pen = new Pen(strokeBrush, thickness, DashStyle);
         
         Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
         dc.PushTransform(translate);
-        dc.DrawRectangle(fillBrush, pen,
-            new Rect(new Point(X, Y), new Size(Width, Height)));
+        var zone = ChildItem as LightingZone;
+        
+            if (zone.Shape == ZoneShapeEnum.Ellipse)
+            {
+                dc.DrawEllipse(fillBrush, pen,
+                    new Rect(new Point(X, Y), new Size(Width, Height)));
+            }
+            else if (zone.Shape == ZoneShapeEnum.Rectangle)
+            {
+                dc.DrawRectangle(fillBrush, pen,
+                    new Rect(new Point(X, Y), new Size(Width, Height)));
+            }
+            else if (zone.Shape == ZoneShapeEnum.Polyline)
+            {
+                if(zone.Points.Count ==0)
+                    return;
+                var geom = new StreamGeometry();
+                using (StreamGeometryContext ctx = geom.Open())
+                {
+                    var StartPoint = new Draw2D.Core.Geo.Point((float)zone.Points[0].X, (float)zone.Points[0].Y);
+                    var startVertex = Canvas.CoordinateSystem.ToScreenSpace(StartPoint);
+                    ctx.BeginFigure(new Avalonia.Point(startVertex[0], startVertex[1]), false);
+                    int pointCount = 0;
+                    foreach (var point in zone.Points)
+                    {
+                        var GeoPoint = new Draw2D.Core.Geo.Point((float)point.X, (float)point.Y);
+                        if (pointCount == 0)
+                        {
+                            pointCount++;
+                            continue;
+                        }
+                        
+                        var vertex = Canvas.CoordinateSystem.ToScreenSpace(GeoPoint);
+                        var v = new Avalonia.Point(vertex[0], vertex[1]);
+                        ctx.LineTo(v);
+                        pointCount++;
+                    }
+                }
+                dc.DrawGeometry(null, pen, geom);
+            }
         //  var currentZoomValue = 2 / strokeThickness;
         //  double adaptiveFontSize = 12d / currentZoomValue;
         //  _text.SetFontSize(adaptiveFontSize);
@@ -141,7 +182,6 @@ public class LightingZoneFigure : ContainerFigure ,IAssetSelectable
     }
 
     #region IAssetSelectable implementation
-
 
     public ICollectableItem AssetSelectableProperty => ChildItem as LightingZone;
 

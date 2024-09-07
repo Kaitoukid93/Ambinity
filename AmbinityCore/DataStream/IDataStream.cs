@@ -32,4 +32,6 @@ public interface IDataStream
     /// </summary>
     /// <returns></returns>
     bool IsValid();
+    
+    IController Controller { get;set; }
 }

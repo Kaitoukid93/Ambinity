@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:Ambinity.Views.SideMenu"
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              x:DataType="local:SideMenuViewModel"
+             RenderOptions.BitmapInterpolationMode="HighQuality"
              x:Class="Ambinity.Views.SideMenu.SideMenuView">
-    <Grid RowDefinitions="*,Auto">
-        <StackPanel>
+    <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
             <ListBox Margin="10,10"
                      Width="200"
                      SelectedItem="{CompiledBinding SelectedScreen}"
@@ -19,24 +19,27 @@
                     </DataTemplate>
                 </ListBox.DataTemplates>
             </ListBox>
-            <ui:NavigationViewItemSeparator Margin="10,0,10,0"></ui:NavigationViewItemSeparator>
+            <ui:NavigationViewItemSeparator Grid.Row="1" Margin="10,0,10,0"></ui:NavigationViewItemSeparator>
 
+            <ScrollViewer Grid.Row="2">
+                <ItemsControl Width="200" Margin="10,5,5,10" ItemsSource="{Binding ProfileCategorymenuItems}">
+                    <ItemsControl.DataTemplates>
+                        <DataTemplate DataType="{x:Type local:SideMenuProfileCategoryViewModel}">
+                            <local:SideMenuProfileCategoryView></local:SideMenuProfileCategoryView>
+                        </DataTemplate>
+                    </ItemsControl.DataTemplates>
+                </ItemsControl>
+            </ScrollViewer>
+           
+           <Button Grid.Row="3" Margin="10" Command="{CompiledBinding CreateNewCategoryCommand}" HorizontalAlignment="Center">
+               <Grid ColumnDefinitions="Auto,5,*">
+                   <PathIcon Width="12" Height="12" Data="{DynamicResource plus}"></PathIcon>
+                   <TextBlock Grid.Column="2" Text="Add new category"></TextBlock>
+               </Grid>
+           </Button>
+        <StackPanel Grid.Row="4" VerticalAlignment="Bottom" Spacing="5">
 
-            <ItemsControl Margin="10,5,5,10" ItemsSource="{Binding ProfileCategorymenuItems}">
-                <ItemsControl.DataTemplates>
-                    <DataTemplate DataType="{x:Type local:SideMenuProfileCategoryViewModel}">
-                        <local:SideMenuProfileCategoryView></local:SideMenuProfileCategoryView>
-                    </DataTemplate>
-                </ItemsControl.DataTemplates>
-            </ItemsControl>
-
-        </StackPanel>
-        <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Spacing="5">
-            <Grid ColumnDefinitions="auto,*">
-                <TextBlock Margin="20,0,5,0" Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Now Playing"></TextBlock>
-                <Separator Margin="0,3,0,0" Grid.Column="1"></Separator>
-            </Grid>
-            
+            <Separator Margin="10,3,10,0" Grid.Column="1"></Separator>
             <ContentControl Content="{Binding ProfilePlayerViewModel}"></ContentControl>
         </StackPanel>
 

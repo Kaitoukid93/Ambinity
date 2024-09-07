@@ -15,7 +15,7 @@ namespace Draw2D.Core
         private IDashStyle _dashStyle = null;
         private Color _fillColor = Colors.Transparent;
         private bool _overideStrokeStyle = true;
-
+        public event Action StrokeThicknessChanged;
         public Color FillColor
         {
             get { return _fillColor; }
@@ -52,6 +52,7 @@ namespace Draw2D.Core
             set
             {
                 _strokeThickness = value;
+                StrokeThicknessChanged?.Invoke();
                 Canvas?.NeedsRepaint(this);
             }
         }

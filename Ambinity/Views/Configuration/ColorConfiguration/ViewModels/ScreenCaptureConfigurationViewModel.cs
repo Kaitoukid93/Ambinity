@@ -1,34 +1,36 @@
+using System.Collections.Generic;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
+using AmbinityCore.CapturingService;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
-using DynamicData;
+using ScreenCapture.NET;
 
 namespace Ambinity.Views.Configuration.ColorConfiguration;
 
 public class ScreenCaptureConfigurationViewModel : ColorConfigurationViewModelBase
 {
-    public ScreenCaptureConfigurationViewModel(ScreenCaptureConfiguration configuration)
+    public ScreenCaptureConfigurationViewModel(ScreenCaptureConfiguration configuration,
+        ParameterViewModelFactory viewModelFactory)
     {
         _configuration = configuration;
+        _parameterViewModelFactory = viewModelFactory;
+       
         Init();
     }
 
-    private ScreenCaptureConfiguration _configuration;
+    private ILightingConfiguration _configuration;
+    private ParameterViewModelFactory _parameterViewModelFactory;
+   
 
     /// <summary>
     /// Init list param
     /// </summary>
-    private void Init()
+    public override void Init()
     {
-        var captureParameter = new ScreenRegionSelectionParameterViewModel();
-        var brightnessParameter = new BrightnessParameterViewModel();
-        var staturationParameter = new SaturationParameterViewModel();
-        var smoothingParamter = new SmoothingParameterViewModel();
-        Parameters.Add(captureParameter);
-        Parameters.Add(new SeparationParameterViewModel());
-        Parameters.Add(brightnessParameter);
-        Parameters.Add(new SeparationParameterViewModel());
-        Parameters.Add(staturationParameter);
-        Parameters.Add(new SeparationParameterViewModel());
-        Parameters.Add(smoothingParamter);
+        foreach (var param in _parameterViewModelFactory.CreateParameterViewModels(_configuration))
+        {
+            Parameters.Add(param);
+        }
     }
+    
+
 }

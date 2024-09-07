@@ -47,6 +47,18 @@ public class LightingZoneVisualizer : ICanvasVisualizerItem
     {
         _zone.X += dx;
         _zone.Y += dy;
+        if (_zone.Shape == ZoneShapeEnum.Polyline)
+        {
+            var newPoints = new List<Point>();
+            foreach (var point in _zone.Points)
+            {
+                var newPoint = new Point(point.X + dx, point.Y+dy);
+                newPoints.Add(newPoint);
+            }
+
+            _zone.Points = newPoints;
+        }
+       
         _zoneBounds = MeasureZone();
     }
 
@@ -76,7 +88,6 @@ public class LightingZoneVisualizer : ICanvasVisualizerItem
             using DrawingContext.PushedState rotationPush =
                 dc.PushTransform(Matrix.CreateRotation(Matrix.ToRadians(_zone.Rotation)));
             //render zone bitmap and info
-          
             
             
             // todo: render zone info 

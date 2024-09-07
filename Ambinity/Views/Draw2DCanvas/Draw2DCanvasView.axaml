@@ -8,32 +8,15 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              x:DataType="draw2DCanvas:Draw2DCanvasViewModel"
              x:Class="Ambinity.Views.Draw2DCanvas.Draw2DCanvasView">
-    <UserControl.Resources>
-        <VisualBrush x:Key="TemplateCheckerBoard" TileMode="Tile" Stretch="None" AlignmentX="Left" AlignmentY="Top"
-                     SourceRect="0,0,20,20" DestinationRect="0,0,20,20">
-            <VisualBrush.Visual>
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel Orientation="Vertical">
-                        <Rectangle Width="10" Height="10" Fill="Black" Opacity="0.15" />
-                        <Rectangle Width="10" Height="10" Canvas.Left="10" />
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical">
-                        <Rectangle Width="10" Height="10" Canvas.Top="10" />
-                        <Rectangle Width="10" Height="10" Canvas.Left="10" Canvas.Top="10" Fill="Black" Opacity="0.15" />
-                    </StackPanel>
-                </StackPanel>
-            </VisualBrush.Visual>
-        </VisualBrush>
-    </UserControl.Resources>
     <Grid>
             <draw2DControlLibrary:ZoomAndPanControl
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-                x:Name="zoomAndPanControl" MinimumZoom="0.0001"
-                MaximumZoom="15"
+                x:Name="zoomAndPanControl" MinimumZoom="{Binding MinimumZoom}"
+                MaximumZoom="{Binding MaximumZoom}"
                 BorderThickness="0"
                 Margin="0"
-                ViewportZoom="2"
+                ViewportZoom="{Binding CurrentZoom}"
                 FitCommandDepProp="{Binding FitCommand, Mode=OneWayToSource}"
                 FillCommandDepProp="{Binding FillCommand, Mode=OneWayToSource}"
                 OneHundredPercentCommandDepProp="{Binding OneHundredPercentCommand, Mode=OneWayToSource}"
@@ -45,7 +28,6 @@
                     <draw2DControlLibrary:Draw2DControl x:Name="Draw2DControl" HorizontalAlignment="Left"
                                                         VerticalAlignment="Top"
                                                         Focusable="True"
-                                                        Margin="4"
                                                         Canvas="{Binding Canvas}"
                                                         WorldMousePosX="{Binding WorldMousePosX, Mode=TwoWay}"
                                                         WorldMousePosY="{Binding WorldMousePosY, Mode=TwoWay}"

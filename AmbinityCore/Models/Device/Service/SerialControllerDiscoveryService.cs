@@ -21,7 +21,6 @@ public class SerialControllerDiscoveryService
     public SerialControllerDiscoveryService()
     {
         _serialControllerHelpers = new SerialControllerHelpers();
-        Start();
     }
 
     public bool IsRunning { get; set; }
@@ -69,7 +68,7 @@ public class SerialControllerDiscoveryService
                 // new device contains serial and openrgb devices ( Wled devices in the future)
                 if (!_onHold)
                 {
-                    await ScanSerialDevice();
+                   await ScanSerialDevice();
                 }
             }
             catch (Exception ex)
@@ -127,8 +126,6 @@ public class SerialControllerDiscoveryService
             }
             catch (Exception ex)
             {
-                // Log.Error(ex,"AcessDenied " + _serialPort.PortName);
-                Log.Error(_serialPort.PortName + " is removed");
                 invalidDevice.Add(port);
             }
         }
@@ -141,33 +138,32 @@ public class SerialControllerDiscoveryService
         if (ports.Count > 0)
         {
             Dispatcher.UIThread.Invoke(() => { NewComportDetected?.Invoke(ports.First()); });
+            await Task.Delay(500);
+            string deviceName = null;
+            string deviceID = null;
+            string deviceFirmware = null;
+            string deviceHardware = null;
+            int deviceHWL = 0;
+            HardwareTypeEnum hardwareType = HardwareTypeEnum.Unknown;
+            var result = await Task.Run(() => _serialControllerHelpers.RefreshDeviceInfo(ports.First(),
+                out deviceName,
+                out deviceID,
+                out deviceFirmware,
+                out deviceHardware,
+                out deviceHWL,
+                out hardwareType));
+            if (!result)
+                return;
+            var controller = new SerialController();
+            controller.Name = deviceName;
+            controller.SerialNumber = deviceID;
+            controller.SerialPort = ports.First();
+            controller.FirmwareVersion = deviceFirmware;
+            controller.HardwareVersion = deviceHardware;
+            controller.HardwareType = hardwareType;
+
+            //invoke provider
+            Dispatcher.UIThread.Invoke(() => { NewDevicesFound?.Invoke(controller); });
         }
-
-        await Task.Delay(500);
-        string deviceName = null;
-        string deviceID = null;
-        string deviceFirmware = null;
-        string deviceHardware = null;
-        int deviceHWL = 0;
-        HardwareTypeEnum hardwareType = HardwareTypeEnum.Unknown;
-        var result = await Task.Run(() => _serialControllerHelpers.RefreshDeviceInfo(ports.First(),
-            out deviceName,
-            out deviceID,
-            out deviceFirmware,
-            out deviceHardware,
-            out deviceHWL,
-            out hardwareType));
-        if (!result)
-            return;
-        var controller = new SerialController();
-        controller.Name = deviceName;
-        controller.SerialNumber = deviceID;
-        controller.SerialPort = ports.First();
-        controller.FirmwareVersion = deviceFirmware;
-        controller.HardwareVersion = deviceHardware;
-        controller.HardwareType = hardwareType;
-
-        //invoke provider
-        Dispatcher.UIThread.Invoke(() => { NewDevicesFound?.Invoke(controller); });
     }
 }

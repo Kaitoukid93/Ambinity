@@ -25,25 +25,28 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
         public virtual void OnMouseMove(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
         {
-            var figure = canvas.GetBestFigure(mouseX, mouseY, new List<Type> { typeof(Selectionbox) }, new List<Type>());
+            var figure =
+                canvas.GetBestFigure(mouseX, mouseY, new List<Type> { typeof(Selectionbox) }, new List<Type>());
             if (figure == null)
             {
                 canvas.UnHoverAll();
                 return;
             }
+
             if (figure.IsSelectable == true)
             {
                 canvas?.HoverFigure(figure);
             }
         }
-        
+
         public virtual void OnMouseLeftDown(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
         {
             _mouseMovedDuringMouseDown = false;
 
-            var figure = canvas.GetBestFigure(mouseX, mouseY, new List<Type> { typeof(Selectionbox) }, new List<Type>());
+            var figure =
+                canvas.GetBestFigure(mouseX, mouseY, new List<Type> { typeof(Selectionbox) }, new List<Type>());
 
-             if (figure == null)
+            if (figure == null)
             {
                 Unselect(canvas, canvas.Selection.All);
                 return;
@@ -87,13 +90,14 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             }
         }
 
-        public virtual void OnMouseLeftDoubleClick(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
+        public virtual void OnMouseLeftDoubleClick(Canvas canvas, float mouseX, float mouseY, bool isShiftKey,
+            bool isCtrlKey)
         {
-
         }
 
 
-        public virtual void OnMouseDrag(Canvas canvas, float dxSum, float dySum, float dx, float dy, bool isShiftKey, bool isCtrlKey)
+        public virtual void OnMouseDrag(Canvas canvas, float dxSum, float dySum, float dx, float dy, bool isShiftKey,
+            bool isCtrlKey)
         {
             if (canvas == null)
                 return;
@@ -106,7 +110,8 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             {
                 if (canvas.Selection.All.Count() == 1)
                 {
-                    canvas.Selection.All.ToList().ForEach(f => f.OnDrag(canvas, dxSum, dySum, dx, dy, isShiftKey, isCtrlKey));
+                    canvas.Selection.All.ToList()
+                        .ForEach(f => f.OnDrag(canvas, dxSum, dySum, dx, dy, isShiftKey, isCtrlKey));
                 }
                 else
                 {
@@ -116,7 +121,8 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                     foreach (var snapPolicy in canvas.GetSnapPolicies())
                     {
                         Point snapPoint;
-                        isSnapped = snapPolicy.Snap(canvas, canvas.Selection.All.First().Position, dx, dy, dxSum, dySum, out snapPoint, out delta, canvas.Selection.All);
+                        isSnapped = snapPolicy.Snap(canvas, canvas.Selection.All.First().Position, dx, dy, dxSum, dySum,
+                            out snapPoint, out delta, canvas.Selection.All);
 
                         if (isSnapped)
                             break;
@@ -130,11 +136,11 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
                     canvas.Selection.All.ToList().ForEach(f => f.Translate(dx, dy));
                 }
-
             }
         }
 
-        public virtual void OnDragStart(Canvas canvas, float startPosX, float startPosY, float dx, float dy, bool isShiftKey, bool isCtrlKey)
+        public virtual void OnDragStart(Canvas canvas, float startPosX, float startPosY, float dx, float dy,
+            bool isShiftKey, bool isCtrlKey)
         {
             if (canvas == null)
                 return;
@@ -178,7 +184,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             {
                 if (canvas.Selection.All.Count() == 1)
                 {
-                   foreach (var selectedFigure in canvas.Selection.All)
+                    foreach (var selectedFigure in canvas.Selection.All)
                     {
                         selectedFigure.ShowHandles(canvas);
                     }
@@ -192,14 +198,14 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                 }
 
                 canvas.Selection.All.ToList().ForEach(f => f.OnDragEnd(canvas, isShiftKey, isCtrlKey));
-
             }
+
             canvas.NeedsRepaint(null);
         }
 
         public virtual void OnMouseLeftUp(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
         {
-             if (canvas.Selection.All.Count() == 1)
+            if (canvas.Selection.All.Count() == 1)
             {
                 foreach (var selectedFigure in canvas.Selection.All)
                 {
@@ -219,7 +225,8 @@ namespace Draw2D.Core.Policies.CanvasPolicy
         {
             _mouseMovedDuringMouseDown = false;
 
-            var figure = canvas.GetBestFigure(mouseX, mouseY, new List<Type> { typeof(Selectionbox) }, new List<Type>());
+            var figure =
+                canvas.GetBestFigure(mouseX, mouseY, new List<Type> { typeof(Selectionbox) }, new List<Type>());
 
             if (figure == null)
             {
@@ -277,9 +284,8 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                 return;
 
 
-            figure.Select(true,false);
+            figure.Select(true, false);
             canvas.Selection.Primary = figure;
-
         }
 
         public override void Unselect(Canvas canvas, Figure figure)
@@ -292,8 +298,6 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
             canvas.Selection.Remove(figure);
             figure.Unselect();
-
-
         }
 
         private void Unselect(Canvas canvas, IEnumerable<Figure> all)
@@ -304,8 +308,8 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             {
                 Unselect(canvas, figure);
             }
-
         }
+
         private void MouseLeave(Figure figure)
         {
             figure.IsMouseOver = false;
@@ -315,6 +319,5 @@ namespace Draw2D.Core.Policies.CanvasPolicy
         {
             figure.IsMouseOver = true;
         }
-       
     }
 }

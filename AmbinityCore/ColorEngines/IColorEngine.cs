@@ -9,5 +9,8 @@ public interface IColorEngine
     void Render();
     void Init(LightingZone zone);
     void Dispose();
-    CapturingType CaptureType { get; set; }
+    bool IsDisposed { get; }
+    CapturingType CaptureType { get; }
+    
+    LightingZone Zone { get;}
 }

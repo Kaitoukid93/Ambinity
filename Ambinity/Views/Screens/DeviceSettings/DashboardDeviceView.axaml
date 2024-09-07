@@ -6,6 +6,31 @@
              xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
              x:DataType="local:DashboardDeviceViewModel"
              x:Class="Ambinity.Views.Screens.DeviceSettings.DashboardDeviceView">
+    <UserControl.Styles>
+        <Style Selector="TextBlock.connected">
+            <Setter Property="Text" Value="Connected" />
+            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}"></Setter>
+        </Style>
+        <Style Selector="TextBlock.disconnected">
+            <Setter Property="Text" Value="Disconnected" />
+            <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundDisabled}"></Setter>
+        </Style>
+        <Style Selector="Border.connected">
+            <Setter Property="Padding" Value="5,3" />
+            <Setter Property="Background">
+                <SolidColorBrush Color="{DynamicResource SystemAccentColor}" Opacity="0.2"></SolidColorBrush>
+            </Setter>
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+        </Style>
+        <Style Selector="Border.disconnected">
+            <Setter Property="Padding" Value="5,3" />
+            <Setter Property="Background" Value="{DynamicResource ButtonBackgroundDisabled}"/>
+            
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+        </Style>
+    </UserControl.Styles>
     <Grid>
         <Button HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="0"
                 Command="{Binding DeviceClickedCommand}" Margin="10" CornerRadius="7"
@@ -13,17 +38,34 @@
                 Height="{Binding Controller.DashboardHeight}">
 
             <Grid RowDefinitions="auto,*,auto">
-                <Grid HorizontalAlignment="Left" Margin="20,15,0,0">
-                    <TextBlock
-                        Text="{Binding Controller.Name}"
+                <Grid HorizontalAlignment="Left" Margin="20,15,10,0">
+                    <TextBlock ToolTip.Tip="{Binding Controller.Name}"
+                        Text="{Binding Controller.Name}" TextTrimming="CharacterEllipsis"
                         FontSize="20" FontWeight="SemiBold">
                     </TextBlock>
                 </Grid>
 
                 <Image Grid.Row="1" Margin="15" Source="{Binding Controller.Thumbnail}"></Image>
-                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10" Grid.Row="2"
-                           Text="{Binding Controller.SerialPort}">
-                </TextBlock>
+                <!-- <TextBlock HorizontalAlignment="Right" TextTrimming="CharacterEllipsis" VerticalAlignment="Bottom" Margin="10" Grid.Row="2" -->
+                <!--            Text="{Binding Controller.SerialPort}"> -->
+                <!-- </TextBlock> -->
+                <Border Classes.connected="{Binding IsTransferActive}"
+                        Classes.disconnected="{Binding !IsTransferActive}"
+                        ToolTip.Tip="{Binding Controller.SerialPort}" Grid.Row="2" VerticalAlignment="Bottom"
+                        CornerRadius="3" Margin="10,10" HorizontalAlignment="Right" Classes="chip">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <PathIcon IsVisible="{Binding IsTransferActive}"  Foreground="{DynamicResource SystemAccentColor}" Width="12" Margin="0,0,3,0"
+                                  Height="12" Data="{DynamicResource checkIcon}">
+                        </PathIcon>
+                        <PathIcon IsVisible="{Binding !IsTransferActive}"  Foreground="{DynamicResource ButtonForegroundDisabled}" Width="12" Margin="0,0,3,0"
+                                   Height="12" Data="{DynamicResource disconnected}">
+                        </PathIcon>
+                        <TextBlock Classes.connected="{Binding IsTransferActive}"
+                                   Classes.disconnected="{Binding !IsTransferActive}" Margin="0,0,0,2"
+                                   Grid.Column="1" FontSize="12" >
+                        </TextBlock>
+                    </Grid>
+                </Border>
             </Grid>
 
         </Button>

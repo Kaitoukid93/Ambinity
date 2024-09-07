@@ -1,0 +1,43 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AvaloniaApplication1.App"
+             xmlns:local="using:AvaloniaApplication1"
+             xmlns:sty="using:FluentAvalonia.Styling"
+             RequestedThemeVariant="Dark">
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+    <Application.Styles>
+        <sty:FluentAvaloniaTheme PreferUserAccentColor="True" />
+      
+    </Application.Styles>
+    <Application.Styles>
+        <sty:FluentAvaloniaTheme PreferUserAccentColor="True" />
+        <StyleInclude Source="avares://AvaloniaApplication1/Styles/Ambinity.axaml" />
+    </Application.Styles>
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon ToolTipText="Ambinity"   CommandParameter="devices" Icon="/Assets/avalonia-logo.ico" >
+                <TrayIcon.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="Home"    />
+                        <NativeMenuItem Header="Profiles">
+                            <NativeMenu>
+                                <NativeMenuItem Header="Option 1" ToggleType="Radio" IsChecked="True" />
+                                <NativeMenuItem Header="Option 2" ToggleType="Radio" />
+                                <NativeMenuItemSeparator />
+                                <NativeMenuItem Header="Option 3" ToggleType="CheckBox" IsChecked="True" />
+                                <NativeMenuItem Icon="/Assets/avalonia-logo.ico" Header="Restore Defaults"  />
+                                <NativeMenuItem Header="Disabled option" IsEnabled="False" />
+                                <NativeMenuItem Header="Hidden option" IsVisible="False" />
+                            </NativeMenu>
+                        </NativeMenuItem>
+                        <NativeMenuItem Header="Exit"   />
+                    </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
+</Application>

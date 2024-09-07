@@ -30,6 +30,7 @@ public class FrameBuffer
     public void UpdatePixelData()
     {
         PixelData = new byte[FrameWidth * FrameHeight * 4];
+        
     }
     public void GetBitmap(WriteableBitmap reusableBitmap)
     {

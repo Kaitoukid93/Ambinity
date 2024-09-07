@@ -1,8 +1,8 @@
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Profile;
+using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Newtonsoft.Json;
@@ -57,7 +57,7 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
     
     public CollectableItemRepository GetLocalRepository()
     {
-        return Ioc.Default.GetRequiredService<LightingProfileRepository>();
+        return Ioc.Default.GetRequiredService<LightingProfileCategoryRepository>();
     }
 
     public OnlineItemRepository GetOnlineRerpository()
@@ -86,11 +86,18 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
     [JsonIgnore]
     public List<LightingProfile> Profiles { get; set; }
 
+    public void RemoveProfile(LightingProfile profile)
+    {
+        Profiles.Remove(profile);
+        OnPropertyChanged(nameof(Profiles));
+        Save();
+    }
     public void AddProfile(LightingProfile profile)
     {
         profile.CategoryID = ID;
         Profiles.Add(profile);
         OnPropertyChanged(nameof(Profiles));
+        Save();
     }
 
     /// <summary>
@@ -110,6 +117,7 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
             {
                 profile.Category = this;
                 Profiles.Add(profile);
+                continue;
             }
 
             if (profile.IsDefault && IsDefault)
@@ -121,6 +129,12 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
     }
     public void Save()
     {
-        JsonHelpers.WriteSimpleJson(this,LocalPath);
+        if (LocalPath == null || !Directory.Exists(LocalPath))
+        {
+            //create local path
+            var dbPath = GetLocalRepository().LocalFolderPath;
+            LocalPath = Path.Combine(dbPath, Name + ".json"); // item without thumbnaill will be store in the same folder
+        }
+        JsonHelpers.WriteSimpleJson(this, LocalPath);
     }
 }

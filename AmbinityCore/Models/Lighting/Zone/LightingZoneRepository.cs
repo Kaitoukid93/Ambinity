@@ -11,10 +11,8 @@ namespace AmbinityCore.Models.Lighting.Zone;
 
 public class LightingZoneRepository : CollectableItemRepository
 {
-    private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "Ambinity\\");
 
-    private string dbPath => Path.Combine(JsonPath, "Data");
+    private string dbPath => Path.Combine(Constants.AppDataFolder, "Data");
     private string FolderPath => Path.Combine(dbPath, "Zones");
 
     public LightingZoneRepository()
@@ -38,6 +36,7 @@ public class LightingZoneRepository : CollectableItemRepository
             var zone = JsonHelpers.DeserializeJson<LightingZone>(file);
             if (zone == null)
                 continue;
+            zone.LocalPath = file;
             AddItem(zone);
         }
     }
@@ -71,15 +70,21 @@ public class LightingZoneRepository : CollectableItemRepository
     {
         var solidRedZone = new LightingZone(x, y, width, height);
         solidRedZone.Name = name;
-        solidRedZone.LightingConfiguration = new StaticColorConfiguration(80, new SolidColor(color.ToString(),color), false);
+        solidRedZone.LightingConfiguration = new SelfGeneratedColorConfiguration( new List<Color>(){color}, new NoneMotionConfiguration());
         return solidRedZone;
     }
-
     public LightingZone GetDefaultColorPaletteZone(string name,int x, int y, int width, int height, ColorPalette palette)
     {
         var solidRedZone = new LightingZone(x, y, width, height);
         solidRedZone.Name = name;
-        solidRedZone.LightingConfiguration = new ColorPaletteConfiguration(80, palette);
+        solidRedZone.LightingConfiguration = new SelfGeneratedColorConfiguration( palette.Colors.ToList(), new NoneMotionConfiguration());
         return solidRedZone;
+    }
+    public LightingZone GetDefaultAnimationZone(string name,int x, int y, int width, int height, string animationPath)
+    {
+        var animationZone = new LightingZone(x, y, width, height);
+        animationZone.Name = name;
+        animationZone.LightingConfiguration = new AnimationConfiguration();
+        return animationZone;
     }
 }

@@ -1,0 +1,446 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AvaloniaApplication1\\AvaloniaApplication1.csproj": {}
+  },
+  "projects": {
+    "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityCore\\AmbinityCore.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityCore\\AmbinityCore.csproj",
+        "projectName": "AmbinityCore",
+        "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityCore\\AmbinityCore.csproj",
+        "packagesPath": "C:\\Users\\zOe\\.nuget\\packages\\",
+        "outputPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityCore\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\zOe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityServer\\AmbinityServer.csproj": {
+                "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityServer\\AmbinityServer.csproj"
+              },
+              "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\Draw2D.Core.csproj": {
+                "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\Draw2D.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Avalonia.Skia.Lottie": {
+              "target": "Package",
+              "version": "[11.0.0, )"
+            },
+            "CommunityToolkit.Mvvm": {
+              "target": "Package",
+              "version": "[8.2.2, )"
+            },
+            "ManagedBass": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
+            "ManagedBass.Wasapi": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
+            "MathNet.Numerics": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "OpenRGB.NET": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
+            "Polly": {
+              "target": "Package",
+              "version": "[8.4.0, )"
+            },
+            "ScreenCapture.NET": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "ScreenCapture.NET.DX11": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "Serilog": {
+              "target": "Package",
+              "version": "[4.0.1, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Serilog.Sinks.File": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "System.IO.Ports": {
+              "target": "Package",
+              "version": "[9.0.0-preview.5.24306.7, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityServer\\AmbinityServer.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityServer\\AmbinityServer.csproj",
+        "projectName": "AmbinityServer",
+        "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityServer\\AmbinityServer.csproj",
+        "packagesPath": "C:\\Users\\zOe\\.nuget\\packages\\",
+        "outputPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityServer\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\zOe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "Avalonia": {
+              "target": "Package",
+              "version": "[11.1.3, )"
+            },
+            "CommunityToolkit.Mvvm": {
+              "target": "Package",
+              "version": "[8.2.2, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "SSH.NET": {
+              "target": "Package",
+              "version": "[2024.1.0, )"
+            },
+            "Serilog": {
+              "target": "Package",
+              "version": "[4.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AvaloniaApplication1\\AvaloniaApplication1.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AvaloniaApplication1\\AvaloniaApplication1.csproj",
+        "projectName": "AvaloniaApplication1",
+        "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AvaloniaApplication1\\AvaloniaApplication1.csproj",
+        "packagesPath": "C:\\Users\\zOe\\.nuget\\packages\\",
+        "outputPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AvaloniaApplication1\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\zOe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityCore\\AmbinityCore.csproj": {
+                "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityCore\\AmbinityCore.csproj"
+              },
+              "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityServer\\AmbinityServer.csproj": {
+                "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\AmbinityServer\\AmbinityServer.csproj"
+              },
+              "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\Draw2D.Core.csproj": {
+                "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\Draw2D.Core.csproj"
+              },
+              "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2DControlLibrary\\Draw2DControlLibrary.csproj": {
+                "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2DControlLibrary\\Draw2DControlLibrary.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Avalonia": {
+              "target": "Package",
+              "version": "[11.1.3, )"
+            },
+            "Avalonia.Desktop": {
+              "target": "Package",
+              "version": "[11.1.3, )"
+            },
+            "Avalonia.Diagnostics": {
+              "target": "Package",
+              "version": "[11.1.3, )"
+            },
+            "Avalonia.Fonts.Inter": {
+              "target": "Package",
+              "version": "[11.1.3, )"
+            },
+            "Avalonia.ReactiveUI": {
+              "target": "Package",
+              "version": "[11.0.10, )"
+            },
+            "Avalonia.Themes.Fluent": {
+              "target": "Package",
+              "version": "[11.1.3, )"
+            },
+            "FluentAvaloniaUI": {
+              "target": "Package",
+              "version": "[2.1.0, )"
+            },
+            "Material.Icons.Avalonia": {
+              "target": "Package",
+              "version": "[2.1.10, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\Draw2D.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\Draw2D.Core.csproj",
+        "projectName": "Draw2D.Core",
+        "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\Draw2D.Core.csproj",
+        "packagesPath": "C:\\Users\\zOe\\.nuget\\packages\\",
+        "outputPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\zOe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "Avalonia": {
+              "target": "Package",
+              "version": "[11.1.3, )"
+            },
+            "QuickGraph": {
+              "target": "Package",
+              "version": "[3.6.61119.7, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2DControlLibrary\\Draw2DControlLibrary.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2DControlLibrary\\Draw2DControlLibrary.csproj",
+        "projectName": "Draw2DControlLibrary",
+        "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2DControlLibrary\\Draw2DControlLibrary.csproj",
+        "packagesPath": "C:\\Users\\zOe\\.nuget\\packages\\",
+        "outputPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2DControlLibrary\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\zOe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\Draw2D.Core.csproj": {
+                "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\Draw2D.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "Avalonia": {
+              "target": "Package",
+              "version": "[11.1.3, )"
+            },
+            "CommunityToolkit.Mvvm": {
+              "target": "Package",
+              "version": "[8.2.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

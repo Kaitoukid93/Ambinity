@@ -1,7 +1,7 @@
 
 using Avalonia.Media;
 using Draw2D.Core.Shapes.Basic;
-
+using Draw2D.Core.Utlils.Linq;
 using Point = Draw2D.Core.Geo.Point;
 
 namespace Draw2D.Core.Policies.RouterPolicy

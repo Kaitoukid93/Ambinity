@@ -8,32 +8,16 @@ public enum ConfigurationType
     ScreenCapture,
 
     /// <summary>
-    /// Require ColorPalette engine
+    /// Require Self Generated color engine
     /// </summary>
-    ColorPalette,
-
-    /// <summary>
-    /// Require StaticColor engine
-    /// </summary>
-    StaticColor,
-
-    /// <summary>
-    /// Require StaticColor engine
-    /// </summary>
-    BreathingColor,
-
-    /// <summary>
-    /// Require MusicReactive engine
-    /// </summary>
-    MusicReactive,
+    SelfGeneratedColor,
 
     /// <summary>
     /// Require Gif image decode and capture engine
     /// </summary>
     Gifxelation,
-
     /// <summary>
-    /// Require Animation engine
+    /// Require animation engine
     /// </summary>
-    Animation,
+    Animation
 }

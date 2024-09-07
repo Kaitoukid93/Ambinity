@@ -1,4 +1,5 @@
 using AmbinityCore.Models.Device.LED;
+using AmbinityCore.Models.Geography;
 using Avalonia;
 using Avalonia.Media;
 
@@ -12,7 +13,7 @@ public class LedVisualizer
 
     public LedVisualizer(AmbinityLED led)
     {
-        Led = led;
+        Led = led as AmbinityLED;
 
         _fillBrush = new SolidColorBrush();
         _penBrush = new SolidColorBrush();
@@ -29,11 +30,8 @@ public class LedVisualizer
         if (DisplayGeometry == null)
             return;
 
-        byte r = 255;
-        byte g = 255;
-        byte b = 0;
-        _fillBrush.Color = new Color(100, r, g, b);
-        _penBrush.Color = new Color(255, r, g, b);
+        _fillBrush.Color = new Color(100, Led.LED.Red, Led.LED.Green, Led.LED.Blue);
+        _penBrush.Color = new Color(255, Led.LED.Red, Led.LED.Green, Led.LED.Blue);
 
         // Render the LED geometry
         drawingContext.DrawGeometry(_fillBrush, _pen, DisplayGeometry);
@@ -49,7 +47,11 @@ public class LedVisualizer
         // The minimum required size for geometry to be created
         if (Led.LedSize.Width < 2 || Led.LedSize.Height < 2)
             return;
-        CreateCustomGeometry(1.0);
+        if (Led.Geometry == null)
+            CreateRectangleGeometry();
+        else
+            CreateCustomGeometry(1.0);
+
         // switch (Led.RgbLed.Shape)
         // {
         //     case Shape.Custom:
@@ -77,17 +79,15 @@ public class LedVisualizer
         DisplayGeometry = new RectangleGeometry(new Rect(Led.RelativeX + 0.5, Led.RelativeY + 0.5,
             Led.LedSize.Width - 1, Led.LedSize.Height - 1));
     }
+
     private void CreateCustomGeometry(double deflateAmount)
     {
         try
         {
-            if (Led.Geometry == null)
-                return;
-
             double width = Led.LedSize.Width - deflateAmount;
             double height = Led.LedSize.Height - deflateAmount;
-
-            Geometry geometry = Geometry.Parse(Led.Geometry);
+            Geometry geometry;
+            geometry = Geometry.Parse(Led.Geometry);
             var boundsLeft = geometry.Bounds.Left;
             var boundsTop = geometry.Bounds.Top;
             var scaleX = width / geometry.Bounds.Width;
@@ -97,11 +97,9 @@ public class LedVisualizer
                 Children = new Transforms()
                 {
                     new ScaleTransform(scaleX, scaleY),
-                    new TranslateTransform(Led.RelativeX-boundsLeft*scaleX, Led.RelativeY-boundsTop*scaleY)
-
+                    new TranslateTransform(Led.RelativeX - boundsLeft * scaleX, Led.RelativeY - boundsTop * scaleY)
                 }
             };
-            DisplayGeometry = geometry;
             DisplayGeometry = geometry;
         }
         catch (Exception)

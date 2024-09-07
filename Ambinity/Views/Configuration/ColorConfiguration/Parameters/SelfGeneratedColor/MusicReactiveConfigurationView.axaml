@@ -1,0 +1,182 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
+             x:DataType="local:MusicReactiveConfigurationViewModel"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia.Tight"
+             Background="Transparent"
+
+             x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.MusicReactiveConfigurationView">
+
+    <Grid RowDefinitions="40,10,5,10,*" Width="300" Height="472">
+        <Grid Margin="10,10,20,0" ColumnDefinitions="Auto,10,*">
+            <PathIcon Width="25" Height="25" Data="{Binding Icon,Converter={StaticResource ResourceConverter}}"></PathIcon>
+            <TextBlock Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center"
+                       Text="Music Reactive">
+            </TextBlock>
+        </Grid>
+        <Separator Margin="10,0" Grid.Row="2"></Separator>
+        <ScrollViewer Padding="10,0,10,10" Grid.Row="4" IsScrollInertiaEnabled="True">
+            <Grid Margin="10,0">
+                <StackPanel Spacing="35">
+                    <Grid RowDefinitions="Auto,10,Auto">
+                        <Grid>
+                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Text="Audio device"></TextBlock>
+                            <CheckBox x:Name="isDefaultCheckBox" Content="Use default" IsChecked="{Binding IsDefault}"
+                                      HorizontalAlignment="Right">
+                            </CheckBox>
+                        </Grid>
+
+                        <ui:FAComboBox IsEnabled="{Binding ElementName=isDefaultCheckBox,Path=!IsChecked}"
+                                       ItemsSource="{Binding AvailableAudioDevices}"
+                                       SelectedItem="{Binding SelectedAudioDevice}" Grid.Row="2"
+                                       HorizontalAlignment="Stretch">
+                            <ui:FAComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}"></TextBlock>
+                                </DataTemplate>
+                            </ui:FAComboBox.ItemTemplate>
+                        </ui:FAComboBox>
+                    </Grid>
+                    <Grid RowDefinitions="Auto,10,Auto">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Text="Frequency range"></TextBlock>
+                                <Grid>
+                                    <Button Click="InfoButton_OnClick" x:Name="infoButton" Background="Transparent"
+                                            BorderThickness="0" Classes="icon-button-small" HorizontalAlignment="Right"
+                                            VerticalAlignment="Top" Margin="0,8">
+                                        <PathIcon Width="15" Height="15" Data="{DynamicResource infoCircle}"></PathIcon>
+                                    </Button>
+                                    <ui:TeachingTip x:Name="infoTip"
+                                                    IsLightDismissEnabled="True"
+                                                    Target="{Binding #infoButton}"
+                                                    Title="Frequencies"
+                                                    Subtitle="Use the range slider below to select frequencies">
+                                    </ui:TeachingTip>
+                                </Grid>
+                            </StackPanel>
+
+
+                        </Grid>
+
+                        <Grid Row="2" RowDefinitions="70,10,Auto">
+                            <ItemsControl ItemsSource="{Binding Frequencies}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Rows="1" Columns="32"></UniformGrid>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <ProgressBar Background="Transparent" HorizontalAlignment="Stretch"
+                                                     MinHeight="60" Orientation="Vertical" Maximum="255"
+                                                     Value="{Binding Value }">
+                                            <ProgressBar.Foreground>
+                                                <SolidColorBrush Color="{Binding ForeGround}"></SolidColorBrush>
+                                            </ProgressBar.Foreground>
+                                        </ProgressBar>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ui:RangeSlider RangeStart="{Binding StartFrequency}" RangeEnd="{Binding StopFrequency}"
+                                            MinimumRange="1" Minimum="0" Maximum="31" Grid.Row="2">
+                            </ui:RangeSlider>
+                        </Grid>
+                    </Grid>
+                    <Grid RowDefinitions="Auto,10,Auto">
+                        <TextBlock VerticalAlignment="Center" Text="Visualizer style"></TextBlock>
+                        <Grid Row="2" ColumnDefinitions="*,Auto,Auto">
+                            <ui:FAComboBox ItemsSource="{Binding AvailableVisualStyles}" Name="visualStyleBox"
+                                           VerticalAlignment="Center" SelectedItem="{Binding VisualizerStyle}"
+                                           HorizontalAlignment="Stretch">
+                                <ui:FAComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}"></TextBlock>
+                                    </DataTemplate>
+                                </ui:FAComboBox.ItemTemplate>
+
+                            </ui:FAComboBox>
+                            <Grid Width="10" Column="1"
+                                  IsVisible="{Binding ElementName=visualStyleBox,Path=SelectedIndex}">
+                            </Grid>
+                            <Grid IsVisible="{Binding ElementName=visualStyleBox,Path=SelectedIndex}" Column="2">
+                                <Border Classes="card" Padding="0" CornerRadius="7" BorderThickness="1">
+                                    <ListBox ItemContainerTheme="{DynamicResource _optionsListboxItem}"
+                                             SelectedIndex="{Binding VuMode}"
+                                             ItemsSource="{Binding VUModes}"
+                                             Background="Transparent"
+                                             Padding="0" VerticalAlignment="Center" Margin="0,0,0,0"
+                                             HorizontalAlignment="Left">
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Spacing="1" Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <PathIcon Width="18" Height="18"
+                                                          Data="{Binding .,Converter={StaticResource ResourceConverter}}">
+                                                </PathIcon>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Border>
+
+                            </Grid>
+                        </Grid>
+
+                    </Grid>
+
+                    <Grid RowDefinitions="Auto,10,Auto">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"
+                                           Text="No sound behavior">
+                                </TextBlock>
+                                <Grid>
+                                    <Button Click="NoSoundTeachingButton_OnClick" x:Name="nosoundTeaching"
+                                            Background="Transparent" BorderThickness="0" Classes="icon-button-small"
+                                            HorizontalAlignment="Right" VerticalAlignment="Top">
+                                        <PathIcon Width="15" Height="15" Data="{DynamicResource infoCircle}"></PathIcon>
+                                    </Button>
+                                    <ui:TeachingTip IsLightDismissEnabled="True" x:Name="nosoundTip"
+                                                    HeroContentPlacement="Auto"
+                                                    Target="{Binding ElementName=nosoundTeaching}">
+                                        <ui:TeachingTip.HeroContent>
+                                            <Border CornerRadius="7,7,0,0"  Background="{Binding #nosoundTip.Background}" Padding="10">
+                                                <mdxaml:MarkdownScrollViewer xml:space="preserve">
+##### **How the LEDs behavior when there is no sound captured for the period of time**
+
+ * **Keep LEDs off** : The LEDs will stay off as there is no sound present
+ * **Return to normal lighting** : The LEDs will show full brightness and will react to music when the sound data is available in the buffer
+ 
+Learn more at [Ambino](https://ambino.vn)
+                                                </mdxaml:MarkdownScrollViewer>
+                                            </Border>
+                                        </ui:TeachingTip.HeroContent>
+                                    </ui:TeachingTip>
+                                </Grid>
+
+                            </StackPanel>
+
+
+                        </Grid>
+                        <Grid Row="2" ColumnDefinitions="*,Auto,Auto">
+                            <ui:FAComboBox Name="behaviorBox" SelectedIndex="{Binding NoSoundBehavior}"
+                                           VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                <ui:FAComboBoxItem>Keep LEDs off</ui:FAComboBoxItem>
+                                <ui:FAComboBoxItem>Return to normal lighting</ui:FAComboBoxItem>
+                            </ui:FAComboBox>
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+
+            </Grid>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

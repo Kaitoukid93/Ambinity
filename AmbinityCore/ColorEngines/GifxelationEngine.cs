@@ -9,14 +9,15 @@ public class GifxelationEngine : IColorEngine
     {
         
     }
-
+    public LightingZone Zone => _zone;
+    private LightingZone _zone;
     public void Render()
     {
         
     }
     public void Init(LightingZone zone)
     {
-        
+        _zone = zone;
     }
     public bool IsDisposed { get; private set; }
     public void Dispose()
@@ -24,5 +25,6 @@ public class GifxelationEngine : IColorEngine
         IsDisposed = true;
         GC.Collect();
     }
+    
     public CapturingType CaptureType { get; set; }
 }

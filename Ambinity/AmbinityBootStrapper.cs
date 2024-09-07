@@ -5,9 +5,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Reactive;
 using System.Threading.Tasks;
+using Ambinity.AppResource;
 using Ambinity.Services;
 using Ambinity.Stores;
 using Ambinity.Views;
+using Ambinity.Views.Configuration.ColorConfiguration;
+using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
+using Ambinity.Views.Configuration.PositionConfiguration;
 using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Views.Root;
@@ -19,6 +23,7 @@ using Ambinity.Views.SideMenu;
 using Ambinity.Views.SplashScreen;
 using Ambinity.Windows;
 using AmbinityCore.CapturingService;
+using AmbinityCore.CapturingService.AudioCapturing;
 using AmbinityCore.Colors;
 using AmbinityCore.DataBase;
 using AmbinityCore.Helpers;
@@ -30,6 +35,7 @@ using AmbinityCore.Models.Device.Service;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Models.ProfileCategory;
+using AmbinityCore.OpenRGB;
 using AmbinityCore.Repositories;
 using AmbinityServer;
 using AmbinityServer.OnlineItem;
@@ -42,18 +48,16 @@ using Draw2D.Core.Graphic;
 using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Serilog;
+using Serilog.Core;
+using Constants = AmbinityCore.Constants;
 using RootViewModel = Ambinity.Views.Root.RootViewModel;
 
 namespace Ambinity;
 
 public class AmbinityBootStrapper
 {
-    private string JsonPath => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "Ambinity\\");
-
-    private string ResourceLocalFolderpath => Path.Combine(JsonPath, "Resources");
-
+    
     #region Properties
 
     private static KnownTypesBinder _knownTypeBinders { get; set; }
@@ -68,6 +72,7 @@ public class AmbinityBootStrapper
     public static async void Initialize(Application application)
     {
         _application = application;
+        SetupDebugLogging();
         //register all Services and ViewModels
         ConfigureIoc();
         //set theme and color
@@ -80,7 +85,7 @@ public class AmbinityBootStrapper
         desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         // Show Splash screen
         _windowService = Ioc.Default.GetRequiredService<IWindowService>();
-        _splashViewModel = ShowSplashScreen();
+       _splashViewModel = ShowSplashScreen();
         // Configuring core service
         await ConfigureCoreService(_splashViewModel);
         // Close Splash screen
@@ -120,7 +125,7 @@ public class AmbinityBootStrapper
 
     private static void ConfigureIoc()
     {
-        var mainFrameBuffer = new FrameBuffer(500, 250);
+        var mainFrameBuffer = new FrameBuffer(750, 500);
         Ioc.Default.ConfigureServices(
             new ServiceCollection()
                 //Main view
@@ -140,24 +145,38 @@ public class AmbinityBootStrapper
                 .AddSingleton<ProfileEditorViewModel>()
                 .AddSingleton<LayoutCanvasViewModel>()
                 .AddSingleton<RightPanelAssetsViewModel>()
+                .AddSingleton<ParameterViewModelFactory>()
+                .AddSingleton<ColorConfigurationViewModelFactory>()
+                .AddTransient<PositionConfigurationViewModel>()
+                .AddSingleton<ColorPaletteAssetsViewModel>()
+                .AddSingleton<AnimationAssetsViewModel>()
+                .AddSingleton<ColorPalettesLibraryViewModel>()
+                .AddSingleton<AnimationLibraryViewModel>()
+                .AddSingleton<LibraryViewModelFactory>()
+                .AddSingleton<Draw2DCanvasInfoBarViewModel>()
+                .AddSingleton<AssetItemViewModelFactory>()
+                .AddSingleton<DeviceLayoutRightPanelViewModel>()
                 //device layout
                 .AddSingleton<DevicePropertiesViewModel>()
                 //Capturing Service
                 .AddSingleton<ScreenCapturingService>()
                 .AddSingleton<AudioCapturingService>()
                 .AddSingleton<CapturingServiceProvider>()
+                .AddSingleton<DeviceBitmapCaptureFactory>()
+                .AddSingleton<BassAudioDeviceEnumerationService>()
+                .AddSingleton<BrightnessProviderFactory>()
+                .AddSingleton<AudioDeviceNotificationClient>()
                 //lighting engine
-                .AddTransient<ColorPaletteEngine>()
-                .AddTransient<StaticColorEngine>()
+                .AddTransient<SelfGeneratedColorEngine>()
                 .AddTransient<ScreenCaptureEngine>()
-                .AddTransient<AnimationEngine>()
                 .AddTransient<GifxelationEngine>()
-                .AddTransient<MusicReactiveEngine>()
+                .AddTransient<AnimationDecodeEngine>()
                 //Side menu
                 .AddSingleton<SideMenuViewModel>()
                 .AddSingleton<LightingProfileRepository>()
                 .AddSingleton<LightingProfileCategoryRepository>()
                 .AddSingleton<SideMenuProfilePlayerViewModel>()
+                .AddSingleton<SideMenuViewModelFactory>()
                 //Dialogs
                 .AddSingleton<IDialogService, DialogService>()
                 //Profile editor
@@ -168,7 +187,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<RightPanelViewModel>()
                 .AddSingleton<ZonePropertiesViewModel>()
                 .AddTransient<LayersView>()
-                .AddSingleton<ZoneMappingRenderControllerViewModel>()
+                
                 //profile Decoder
                 .AddSingleton(mainFrameBuffer)
                 .AddSingleton<LightingProfileDecoder>()
@@ -183,12 +202,24 @@ public class AmbinityBootStrapper
                 .AddSingleton<SerialControllerDiscoveryService>()
                 .AddSingleton<SerialControllerProvider>()
                 .AddSingleton<SerialControllerRepository>()
+                .AddSingleton<OpenRGBControllerRepository>()
+                .AddSingleton<OpenRGBControllerProvider>()
+                .AddSingleton<OpenRGBControllerDiscoveryService>()
+                .AddSingleton<DataStreamProvider>()
+                .AddSingleton<AmbinityOpenRGBClient>()
                 .AddSingleton<AmbinityDeviceLayoutRepository>()
                 .AddSingleton<AmbinityDeviceOnlineRepository>()
                 .AddSingleton<LightingZoneOnlineRepository>()
+                .AddSingleton<ColorPaletteOnlineRepository>()
+                .AddSingleton<AmbinityDeviceRepository>()
+                .AddSingleton<ResourceService>()
+                .AddSingleton<AnimationsRepository>()
+                .AddSingleton<AnimationOnlineRepository>()
+               
                 //Server
                 .AddSingleton<AmbinityClient>()
                 .AddSingleton<ThumbnailService>()
+                .AddSingleton<DownloadService>()
                 .BuildServiceProvider());
     }
 
@@ -199,7 +230,12 @@ public class AmbinityBootStrapper
 
     private static async Task ConfigureCoreService(SplashViewModel splashViewModel)
     {
-        //Load All repository
+        //Try download assets from server
+        var resourceService = Ioc.Default.GetRequiredService<ResourceService>();
+        await Task.Run(async () =>
+        {
+            await resourceService.DownloadFirstRunResource(_splashViewModel.DownloadProgress);
+        });
         var colorPaletteRepository = Ioc.Default.GetRequiredService<ColorPaletteRepository>();
         var solidColorsRepository = Ioc.Default.GetRequiredService<StaticColorsRepository>();
         var gifImagesRepository = Ioc.Default.GetRequiredService<GifImagesRepository>();
@@ -208,22 +244,14 @@ public class AmbinityBootStrapper
         var lightingProfileRepository = Ioc.Default.GetRequiredService<LightingProfileRepository>();
         var lightingProfileCategoryRepository = Ioc.Default.GetRequiredService<LightingProfileCategoryRepository>();
         var serialControllerRepository = Ioc.Default.GetRequiredService<SerialControllerRepository>();
+        //if open rgb enable
+        var openRGBControllerRepository = Ioc.Default.GetRequiredService<OpenRGBControllerRepository>();
+        var ambinityDeviceRepository = Ioc.Default.GetRequiredService<AmbinityDeviceRepository>();
         var ambinityDeviceLayoutRepository = Ioc.Default.GetRequiredService<AmbinityDeviceLayoutRepository>();
-        var ambinityClient = Ioc.Default.GetRequiredService<AmbinityClient>();
+      
         splashViewModel.Progress = 5;
         await Task.Run(async () =>
         {
-            if (!ambinityClient.Init())
-            {
-                splashViewModel.Status = "Ambinity server is not available";
-                await Task.Delay(2000);
-            }
-            
-            splashViewModel.Status = "Downloading assets";
-            if(!ambinityClient.Init());
-            //throw
-            await ambinityClient.DownloadAssets(null);
-            splashViewModel.Progress = 15;
             colorPaletteRepository.Init();
             await Task.Delay(100);
             splashViewModel.Progress = 25;
@@ -243,10 +271,11 @@ public class AmbinityBootStrapper
             lightingProfileCategoryRepository.Init();
             await Task.Delay(100);
             splashViewModel.Progress = 75;
-            serialControllerRepository.Init();
+            ambinityDeviceLayoutRepository.Init();
             await Task.Delay(100);
             splashViewModel.Progress = 85;
-            ambinityDeviceLayoutRepository.Init();
+            serialControllerRepository.Init();
+            openRGBControllerRepository.Init();
         });
         //run the profile decoder for rendering to device
         var profileDecoder = Ioc.Default.GetRequiredService<LightingProfileDecoder>();
@@ -255,4 +284,16 @@ public class AmbinityBootStrapper
         splashViewModel.Progress = 100;
         //start OpenRGB controller repository
     }
+    private static void SetupDebugLogging()
+    {
+        var logPath = Path.Combine(Constants.AppDataFolder, "Logs");
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .WriteTo.File(Path.Combine(logPath, "ambinity-.txt"),rollingInterval: RollingInterval.Day, retainedFileCountLimit: 10, shared: true, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .CreateLogger();
+
+        Log.Information($"DEBUG logging set up!");
+
+    }
+  
 }

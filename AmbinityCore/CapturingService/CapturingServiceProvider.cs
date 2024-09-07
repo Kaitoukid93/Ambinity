@@ -22,9 +22,7 @@ public class CapturingServiceProvider
             case CapturingType.ScreenCapture:
                 return Ioc.Default.GetRequiredService<ScreenCapturingService>();
                 break;
-            case CapturingType.AudioCapture:
-                return Ioc.Default.GetRequiredService<AudioCapturingService>();
-                break;
+
         }
 
         return null;

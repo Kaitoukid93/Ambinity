@@ -1,14 +1,15 @@
-using System.Text.Json.Serialization;
 using AmbinityCore.Helpers;
+using AmbinityCore.LightingEngines;
 using AmbinityCore.Models.Collection;
-using AmbinityCore.Models.Device.Device;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
+using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Draw2D.Core.Graphic;
+using Newtonsoft.Json;
 
 namespace AmbinityCore.Models.Lighting.Zone;
 
@@ -33,6 +34,17 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
 
     public LightingZone()
     {
+    }
+
+    public Guid GroupID { get; set; }
+    public void SetScale(float scale)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetRotation(float angle)
+    {
+        throw new NotImplementedException();
     }
 
     #region Canvas Corordinate Properties
@@ -145,9 +157,10 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
     private bool _isDeleteable = true;
     private bool _isResizeable = true;
     private bool _isHitTestVisible = true;
-    private bool _isRotatable;
-    private bool _isDraggable;
-    private bool _isScalable;
+    private bool _isRotatable = false;
+    private bool _isDraggable = true;
+    private bool _isScalable = false;
+
     /// <summary>
     /// Device can or can not be selected on the canvas
     /// </summary>
@@ -210,6 +223,8 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
 
     public ContainerFigure GetContainer()
     {
+        if (Shape == ZoneShapeEnum.Polyline)
+            this.IsResizeable = false;
         return new LightingZoneFigure(X, Y, Width, Height)
         {
             IsResizable = this.IsResizeable,
@@ -227,12 +242,28 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
     public ContainerFigure Clone(float x, float y)
     {
         var cloneZone = ObjectHelpers.Clone<LightingZone>(this);
+        var movX = x - X;
+        var movY = y - Y;
         cloneZone.X = x;
         cloneZone.Y = y;
-        var cloneContainerFigure = new LightingZoneFigure(x, y,Width, Height);
+        if (Shape == ZoneShapeEnum.Polyline)
+        {
+            var newPoints = new List<Point>();
+            foreach (var point in cloneZone.Points)
+            {
+                var newPoint = new Point(point.X + movX, point.Y + movY);
+                newPoints.Add(newPoint);
+            }
+
+            cloneZone.Points = newPoints;
+        }
+
+        var cloneContainerFigure = new LightingZoneFigure(x, y, Width, Height);
         cloneContainerFigure.SetChild(cloneZone);
         return cloneContainerFigure;
     }
+
+    public Rect Bound => ZoneBound;
 
     public CollectableItemRepository GetLocalRepository()
     {
@@ -288,15 +319,71 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
     public event Action<ICollectableItem>? ItemNameChanged;
     public event Action<ICollectableItem>? ItemPinStatusChanged;
     public event Action<ICollectableItem>? ItemCheckStatusChanged;
+    public ZoneShapeEnum Shape { get; set; } // polyline, rectangle, ellipse
+    public List<Point> Points { get; set; }
+
+    /// <summary>
+    /// get list of points this zone defined by
+    /// </summary>
+    public List<Point> GetPoints()
+    {
+        var points = new List<Point>();
+        switch (Shape)
+        {
+            case ZoneShapeEnum.Rectangle:
+                points = GeometryHelper.RectToPolygon(ZoneBound).ToList();
+                break;
+            case ZoneShapeEnum.Ellipse:
+                points = GeometryHelper.ConvertEllipseToPolygon(Center, Width / 2, Height / 2, 5);
+                break;
+            case ZoneShapeEnum.Polyline:
+                points = Points;
+                break;
+        }
+
+        return points;
+    }
+
+    [JsonIgnore] public Rect ZoneBound => new Rect(X, Y, Width, Height);
+    [JsonIgnore] public Point Center => new Point(X + Width / 2, Y + Height / 2);
     public string Name { get; set; }
     [JsonIgnore] public bool IsSelected { get; set; }
     [JsonIgnore] public bool IsEditing { get; set; }
     [JsonIgnore] public bool IsChecked { get; set; }
     [JsonIgnore] public bool IsPinned { get; set; }
+    [JsonIgnore] public string Icon => GetIcon();
+
+    private string GetIcon()
+    {
+        switch (Shape)
+        {
+            case ZoneShapeEnum.Ellipse:
+                return "CanvasTool_Ellipse";
+            case ZoneShapeEnum.Rectangle:
+                return "CanvasTool_Rectangle";
+            case ZoneShapeEnum.Polyline:
+                return "CanvasTool_PolyLine";
+            default: return null;
+        }
+    }
+
+    public string GetDisplayName()
+    {
+        return Shape.ToString() + " - " + LightingConfiguration.Name;
+    }
+
     public string LocalPath { get; set; }
 
     public void Save()
     {
+        if (LocalPath == null || !Directory.Exists(LocalPath))
+        {
+            //create local path
+            var dbPath = GetLocalRepository().LocalFolderPath;
+            LocalPath = Path.Combine(dbPath,
+                Name + ".json"); // item without thumbnaill will be store in the same folder
+        }
+
         JsonHelpers.WriteSimpleJson(this, LocalPath);
     }
 }

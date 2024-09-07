@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
-using AmbinityCore.Models.Device.Device;
+using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -10,20 +10,16 @@ using Newtonsoft.Json;
 
 namespace AmbinityCore.Models.Device.Controller;
 
-public class SerialController : ObservableObject, ICollectableItem, IController
+public class SerialController : ObservableObject, IController
 {
     /// <summary>
     /// bare-bones information from serial device
     /// </summary>
     public event Action WorkingStateChanged;
-
     public event Action SerialPortChanged;
     public event Action TransferActiveChanged;
-
-    private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "Ambinity\\");
-
-    private string resourcePath => Path.Combine(JsonPath, "Resources", "Thumbs");
+    
+    private string resourcePath => Path.Combine(Constants.AppDataFolder, "Images");
 
     public SerialController()
     {
@@ -137,7 +133,15 @@ public class SerialController : ObservableObject, ICollectableItem, IController
     /// </summary>
     public void Save()
     {
-        JsonHelpers.WriteSimpleJson(this,LocalPath);
+        //todo implement profile save with icon 
+        if (LocalPath == null || !Directory.Exists(LocalPath))
+        {
+            //create local path
+            var dbPath = GetLocalRepository().LocalFolderPath;
+            LocalPath = Path.Combine(dbPath, Name + "-" + SerialPort);
+            Directory.CreateDirectory(LocalPath);
+        }
+        JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath,"controller.json"));
     }
     public Bitmap Thumbnail => LoadFromFile(File.Exists(Path.Combine(resourcePath, Name + ".png"))
         ? Path.Combine(resourcePath, Name + ".png")
@@ -145,6 +149,8 @@ public class SerialController : ObservableObject, ICollectableItem, IController
 
     private Bitmap LoadFromFile(string file)
     {
+        if (!File.Exists(file))
+            return null;
         using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read))
         using (var memory = new MemoryStream())
         {

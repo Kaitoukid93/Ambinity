@@ -163,7 +163,6 @@ namespace Draw2D.Core
 
 
         public bool IsMoving { get; set; }
-
         public virtual Canvas Canvas { get; set; }
 
 

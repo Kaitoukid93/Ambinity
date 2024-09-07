@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
+             x:DataType="local:MotionConfigParameterViewModel"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties"
+             x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.MotionConfigParameterView">
+    <Grid RowDefinitions="Auto,*,*">
+        <Grid Row="0" ColumnDefinitions="Auto,*">
+            <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
+                       Text="Motion Configuration">
+            </TextBlock>
+            <Grid Column="1">
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5">
+                    <Grid>
+
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <StackPanel Grid.Row="1" Spacing="10">
+            <Grid RowDefinitions="auto,*">
+                <Grid>
+                    <!-- <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Blend mode"></TextBlock> -->
+                </Grid>
+                <Grid Margin="0,8" Row="1" ColumnDefinitions="*,12,30">
+                    <ui:FAComboBox SelectedItem="{CompiledBinding SelectedMotionConfig}"
+                                   ItemsSource="{Binding AvailableMotions}"
+                                   HorizontalAlignment="Stretch">
+                        <ui:FAComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding }"></TextBlock>
+                            </DataTemplate>
+                        </ui:FAComboBox.ItemTemplate>
+                    </ui:FAComboBox>
+                    <!-- <PathIcon IsVisible="{Binding ShowBlendValue}" Foreground="{DynamicResource ButtonForegroundDisabled}" -->
+                    <!--           Data="{DynamicResource contrast}" Width="20" Grid.Column="2"> -->
+                    <!-- </PathIcon> -->
+                    <Grid Column="2">
+                        <Button ToolTip.Tip="Settings" IsVisible="{Binding ShowSettingsButton}" Command="{CompiledBinding OpenConfigCommand}" Padding="1"
+                                Background="Transparent" Width="30" Height="30"
+                                Classes="icon-button">
+                            <PathIcon Width="15" Data="{DynamicResource Properties}"></PathIcon>
+                        </Button>
+                    </Grid>
+                    <!-- <Grid Column="4"> -->
+                    <!--     <Button ToolTip.Tip="Hide" Padding="1" -->
+                    <!--             Background="Transparent" Width="30" Height="30" -->
+                    <!--             Classes="icon-button"> -->
+                    <!--         <PathIcon Width="15" Data="{DynamicResource 'Eye Open'}"></PathIcon> -->
+                    <!--     </Button> -->
+                    <!-- </Grid> -->
+                    <!-- <TextBox MaxWidth="65" IsVisible="{Binding ShowBlendValue}" -->
+                    <!--          attachedProperties:TextBoxAssist.SuffixText="st" -->
+                    <!--          HorizontalContentAlignment="Right" -->
+                    <!--          BorderThickness="0" Grid.Column="4" Text="{Binding BlendValue}" Height="20" -->
+                    <!--          Margin="0,0,0,0"> -->
+                    <!-- </TextBox> -->
+
+                </Grid>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

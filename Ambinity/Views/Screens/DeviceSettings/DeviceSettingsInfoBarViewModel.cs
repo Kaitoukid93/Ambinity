@@ -22,7 +22,7 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
         _controllerRepository.LoadingFromDisk += OnLoadingFromDisk;
     }
 
-    private void OnLoadingFromDisk(SerialController controller)
+    private void OnLoadingFromDisk(IController controller)
     {
         if (IsOpen)
             IsOpen = false;
@@ -36,7 +36,7 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
         IsOpen = true;
     }
 
-    private void OnSerialControllerDisconnected(SerialController controller)
+    private void OnSerialControllerDisconnected(IController controller)
     {
         if (IsOpen)
             IsOpen = false;
@@ -49,7 +49,7 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
         IsOpen = true;
     }
 
-    private void OnOldSerilaPortDetected(SerialController controller)
+    private void OnOldSerilaPortDetected(IController controller)
     {
         if (IsOpen)
             IsOpen = false;

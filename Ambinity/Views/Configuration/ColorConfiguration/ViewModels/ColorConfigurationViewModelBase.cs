@@ -1,11 +1,8 @@
-using System.Collections.Generic;
+
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using Ambinity.ViewModels;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
-using Ambinity.Views.Screens.ProfileEditor.ZoneConfiguration;
-using AmbinityCore.Models.Lighting.Zone.Configuration;
-using Avalonia.Threading;
+
 
 namespace Ambinity.Views.Configuration.ColorConfiguration;
 
@@ -26,7 +23,12 @@ public abstract class ColorConfigurationViewModelBase : ViewModelBase
             OnPropertyChanged();
         }
     }
-    public void Reset()
+    public virtual void Reset()
+    {
+        
+    }
+
+    public virtual void Init()
     {
         
     }

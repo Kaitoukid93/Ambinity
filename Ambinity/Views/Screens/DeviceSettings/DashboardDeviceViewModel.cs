@@ -14,9 +14,16 @@ public class DashboardDeviceViewModel : ViewModelBase
     public DashboardDeviceViewModel(IController controller)
     {
         Controller = controller;
+        Controller.TransferActiveChanged += OnTransferActiveChanged;
         CommandSetup();
     }
 
+    private void OnTransferActiveChanged()
+    {
+        OnPropertyChanged(nameof(IsTransferActive));
+    }
+
+    public bool IsTransferActive => Controller.IsTransferActive;
     public IController Controller { get; set; }
     private void CommandSetup()
     {

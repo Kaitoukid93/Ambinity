@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
 using Ambinity.Views.LayoutEditor;
@@ -11,6 +12,7 @@ using Ambinity.Views.Screens.DeviceLayout;
 using Ambinity.Views.Screens.DeviceSettings;
 using Ambinity.Views.Screens.ProfileEditor;
 using Ambinity.Windows;
+using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Device.Device;
@@ -18,7 +20,10 @@ using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Models.ProfileCategory;
+using AmbinityServer.OnlineItem;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Input;
+using FluentAvalonia.UI.Controls;
 
 namespace Ambinity.Views.SideMenu;
 
@@ -30,24 +35,65 @@ public class SideMenuViewModel : ViewModelBase
     public SideMenuViewModel(LightingProfileRepository profileRepository,
         LightingProfileCategoryRepository categoryRepository, IDialogService dialogService,
         RootNavigationStores rootNavigationStores,
-        SideMenuProfilePlayerViewModel profilePlayerViewModel,
-        LightingProfileDecoder decoder)
+        SideMenuProfilePlayerViewModel profilePlayerViewModel, SideMenuViewModelFactory vmFactory,
+        ProfileEditorViewModel profileEditorViewModel, DeviceLayoutEditorViewModel deviceLayoutEditorViewModel)
     {
+        _profileEditorViewModel = profileEditorViewModel;
+        _deviceLayoutEditorViewModel = deviceLayoutEditorViewModel;
+        _vmFactory = vmFactory;
         _profileRepository = profileRepository;
         _categoryRepository = categoryRepository;
+        _categoryRepository.ItemAdded += OnNewCategoryAdded;
         _rootNavigationStores = rootNavigationStores;
         _dialogService = dialogService;
-        _decoder = decoder;
         ProfilePlayerViewModel = profilePlayerViewModel;
-        ProfilePlayerViewModel.PlayingButtonClicked += GoToProfileEditor;
+        ProfilePlayerViewModel.PlayingButtonClicked += OnPlayingButtonClicked;
+        CreateNewCategoryCommand = new AsyncRelayCommand(OpenCreateNewProfileDialog);
     }
 
+    private void OnPlayingButtonClicked(LightingProfile profile)
+    {
+        UnselectCurrentSideMenuItem();
+        GoToProfileEditor(profile);
+    }
 
-    private LightingProfileDecoder _decoder;
+    private void OnNewCategoryAdded(ICollectableItem item)
+    {
+        var category = item as LightingProfileCategory;
+        var vm = _vmFactory.GetCategoryViewModel(category);
+        vm.SelectionChanged += CatergorySelectionChanged;
+        ProfileCategorymenuItems.Add(vm);
+    }
+
+    private async Task OpenCreateNewProfileDialog()
+    {
+        var vm = new InputDialogContentViewModel();
+        vm.DialogClosed += OnCreateNewCategoryDialogClosed;
+        await _dialogService.ShowInputDialog(vm, "New category", "Ok", "Cancel");
+    }
+
+    private void OnCreateNewCategoryDialogClosed(object? sender, EventArgs e)
+    {
+        var vm = sender as InputDialogContentViewModel;
+        var result = (e as ContentDialogClosedEventArgs).Result;
+        if (result == ContentDialogResult.Secondary || result == ContentDialogResult.None)
+            return;
+        if (result == ContentDialogResult.Primary)
+        {
+            //create new profile
+            var category = new LightingProfileCategory();
+            category.Name = vm.UserInput;
+            category.IsDefault = false;
+            category.ID = Guid.NewGuid();
+            _categoryRepository.AddItem(category);
+        }
+    }
+
     private LightingProfileRepository _profileRepository;
     private LightingProfileCategoryRepository _categoryRepository;
     private ObservableCollection<SideMenuScreenViewModel> _screenMenuItems;
     private IDialogService _dialogService;
+    private SideMenuViewModelFactory _vmFactory;
 
     private bool _isInit;
     public SideMenuProfilePlayerViewModel ProfilePlayerViewModel { get; set; }
@@ -77,6 +123,8 @@ public class SideMenuViewModel : ViewModelBase
     private readonly RootNavigationStores _rootNavigationStores;
     private SideMenuScreenViewModel _selectedScreen;
     private SideMenuProfileViewModel _selectedProfile;
+    private readonly ProfileEditorViewModel _profileEditorViewModel;
+    private readonly DeviceLayoutEditorViewModel _deviceLayoutEditorViewModel;
 
     public SideMenuProfileViewModel SelectedProfile
     {
@@ -123,11 +171,27 @@ public class SideMenuViewModel : ViewModelBase
         ScreenMenuItems.Add(settingsMenu);
         foreach (LightingProfileCategory category in _categoryRepository.Items)
         {
-            category.FindChild(_profileRepository.Items.ToList());
-            var vm = new SideMenuProfileCategoryViewModel(category, _dialogService, _decoder);
+            var vm = _vmFactory.GetCategoryViewModel(category);
             vm.SelectionChanged += CatergorySelectionChanged;
+            vm.Delete += OnUserDelete;
             ProfileCategorymenuItems.Add(vm);
         }
+    }
+
+    private void OnUserDelete(SideMenuProfileCategoryViewModel category)
+    {
+        ProfileCategorymenuItems.Remove(category);
+        _categoryRepository.RemoveItem(category.Category);
+    }
+
+    private void UnselectCurrentSideMenuItem()
+    {
+        foreach (var vm in ProfileCategorymenuItems)
+        {
+            vm.SelectedProfile = null;
+        }
+
+        SelectedScreen = null;
     }
 
     private void ScreenSelectionChanged(SideMenuScreenViewModel screen)
@@ -158,9 +222,9 @@ public class SideMenuViewModel : ViewModelBase
 
     private async Task GoToDeviceLayout()
     {
-        var vm = Ioc.Default.GetRequiredService<DeviceLayoutEditorViewModel>();
-        vm.Init();
-        _rootNavigationStores.CurrentViewModel = vm;
+        _profileEditorViewModel?.Dispose();
+        _deviceLayoutEditorViewModel.Init();
+        _rootNavigationStores.CurrentViewModel = _deviceLayoutEditorViewModel;
     }
 
     private void GoToDashBoard()
@@ -172,9 +236,9 @@ public class SideMenuViewModel : ViewModelBase
     //todo take away items init 
     private void GoToProfileEditor(LightingProfile profile)
     {
-        var vm = Ioc.Default.GetRequiredService<ProfileEditorViewModel>();
-        vm.Init(profile);
-        _rootNavigationStores.CurrentViewModel = vm;
+        _deviceLayoutEditorViewModel?.Dispose();
+        _profileEditorViewModel.Init(profile);
+        _rootNavigationStores.CurrentViewModel = _profileEditorViewModel;
     }
 
     private void GoToDeviceSettings()
@@ -201,6 +265,8 @@ public class SideMenuViewModel : ViewModelBase
         SelectedScreen = null;
         GoToProfileEditor(item.Profile);
     }
+
+    public ICommand CreateNewCategoryCommand { get; set; }
 
     public override void Dispose()
     {

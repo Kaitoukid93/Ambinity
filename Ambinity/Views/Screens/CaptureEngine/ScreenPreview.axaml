@@ -10,7 +10,7 @@
             <Image Name="DisplayPreviewImage"
                    Height="500"
                    Source="{Binding PreviewImage}"
-                   RenderOptions.BitmapInterpolationMode="LowQuality"
+                   RenderOptions.BitmapInterpolationMode="HighQuality"
                    Stretch="Uniform" />
         </Border>
 </UserControl>

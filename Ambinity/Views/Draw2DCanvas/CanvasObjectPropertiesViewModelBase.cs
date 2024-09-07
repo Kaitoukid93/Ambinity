@@ -27,4 +27,12 @@ public abstract class CanvasObjectPropertiesViewModelBase : ViewModelBase
     public virtual void DisableEdit()
     {
     }
+
+    /// <summary>
+    /// Enable Properties editor
+    /// </summary>
+    public virtual void EnableEdit()
+    {
+        
+    }
 }

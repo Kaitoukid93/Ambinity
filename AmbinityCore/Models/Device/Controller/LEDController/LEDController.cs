@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using AmbinityCore.Enums;
 using AmbinityCore.Models.Collection;
+using AmbinityCore.Models.Device.Device;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
 
@@ -49,5 +50,13 @@ public class LEDController : ObservableObject
         get => _outputs;
         set => SetProperty(ref _outputs, value);
     }
-    
+
+    public void PopulateDefaultLayout()
+    {
+        var layout = AmbinoDefaultLayout.GetDefaultLayout(HardwareSettings.HardwareType);
+        foreach (var output in Outputs)
+        {
+            output.Device.ForceTranslate(layout[output.Index].X,layout[output.Index].Y);
+        }
+    }
 }

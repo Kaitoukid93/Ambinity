@@ -1,5 +1,6 @@
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace AmbinityCore.Models.GeneralSetting;
 
 public class GeneralSettings : ObservableObject, IGeneralSettings
@@ -11,6 +12,7 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         get => _autoStart;
         set => SetProperty(ref _autoStart, value);
     }
+
     private Color _primaryColor = Avalonia.Media.Colors.LimeGreen;
 
     public Color PrimaryColor
@@ -18,6 +20,7 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         get => _primaryColor;
         set => SetProperty(ref _primaryColor, value);
     }
+
     private bool _enableSnapToGrid = true;
 
     public bool EnableSnapToGrid
@@ -25,11 +28,20 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         get => _enableSnapToGrid;
         set => SetProperty(ref _enableSnapToGrid, value);
     }
+
     private bool _startMinimized = true;
 
     public bool StartMinimized
     {
         get => _startMinimized;
         set => SetProperty(ref _startMinimized, value);
+    }
+
+    private bool _showCanvasLockedInfo = true;
+
+    public bool ShowCanvasLockedInfo
+    {
+        get => _showCanvasLockedInfo;
+        set => SetProperty(ref _showCanvasLockedInfo, value);
     }
 }

@@ -52,12 +52,16 @@ public class FigureContextMenuProvider
     {
         var containerFigure = figure as ContainerFigure;
         _contextMenu.Items.Clear();
+
         if (containerFigure.ChildItem.IsDeleteable)
+        {
             _contextMenu.Items.Add(new MenuItem()
             {
                 Header = "Copy", Command = _canvasVM.CopySelectedFigureCommand,
                 InputGesture = new KeyGesture(Key.C, KeyModifiers.Control)
             });
+        }
+            
 
         _contextMenu.Items.Add(new MenuItem() { Header = "-" });
         _contextMenu.Items.Add(new MenuItem() { Header = "Show/Hide" });

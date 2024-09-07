@@ -11,7 +11,7 @@ namespace Draw2D.Core.Shapes.Basic
         private readonly List<Point> _points = new List<Point>() { new Point(0, 0), new Point(0, 0) };
 
         private Color _storedStrokeColor;
-       
+        private double zoomVal = 1d;
         public Line(Point startPoint, Point endPoint)
         {
             SnapTargets = SnapTargets.Vertices;
@@ -20,9 +20,16 @@ namespace Draw2D.Core.Shapes.Basic
             StartPoint = startPoint;
             EndPoint = endPoint;
             _storedStrokeColor = StrokeColor;
+            StrokeThicknessChanged += OnStrokeThicknessChanged;
 
         }
-        
+
+        private void OnStrokeThicknessChanged()
+        {
+             zoomVal = StrokeThickness/1.5;
+            CoronaWidth = 10 * zoomVal;
+        }
+
         public void ResetPoints()
         {
             var startPoint = StartPoint;

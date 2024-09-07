@@ -36,13 +36,16 @@
         </Grid>
         <Grid Row="1" Margin="0,8" ColumnDefinitions="*,12,*">
             <Grid Column="0">
-                <ui:FAComboBox VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                    <ui:FAComboBoxItem> Display 1</ui:FAComboBoxItem>
-                    <ui:FAComboBoxItem> Display 2</ui:FAComboBoxItem>
+                <ui:FAComboBox ItemsSource="{Binding AvailableScreen}" SelectedItem="{Binding SelectedScreen}" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                   <ui:FAComboBox.ItemTemplate>
+                       <DataTemplate>
+                           <TextBlock Text="{Binding Name }"></TextBlock>
+                       </DataTemplate>
+                   </ui:FAComboBox.ItemTemplate>
                 </ui:FAComboBox>
             </Grid>
             <Grid  Column="2">
-                <SplitButton ToolTip.Tip="Click for more" VerticalAlignment="Center" HorizontalAlignment="Stretch" BorderThickness="1" Height="20" Margin="0,0,0,0"
+                <SplitButton Command="{Binding OpenRegionSelectionCommand}" ToolTip.Tip="Click for more" VerticalAlignment="Center" HorizontalAlignment="Stretch" BorderThickness="1" Height="20" Margin="0,0,0,0"
                              Flyout="{StaticResource CaptureRegionFlyout}">
                     <Grid ColumnDefinitions="*,Auto">
                         <TextBlock HorizontalAlignment="Left" Text="Custom">

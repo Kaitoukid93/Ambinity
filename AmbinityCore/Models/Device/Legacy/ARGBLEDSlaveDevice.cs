@@ -9,6 +9,8 @@ public class ARGBLEDSlaveDevice
 {
     public ARGBLEDSlaveDevice()
     {
+        ControlableZones = new ObservableCollection<LEDSetup>();
+        
     }
 
     public List<DeviceSpot> GetSpots()
