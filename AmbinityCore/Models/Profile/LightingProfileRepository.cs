@@ -8,10 +8,8 @@ namespace AmbinityCore.Models.Profile;
 
 public sealed class LightingProfileRepository : CollectableItemRepository
 {
-    private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "Ambinity\\");
 
-    private string dbPath => Path.Combine(JsonPath, "Data");
+    private string dbPath => Path.Combine(Constants.AppDataFolder, "Data");
     private string FolderPath => Path.Combine(dbPath, "Profiles");
     private LightingZoneRepository _zoneRepository;
 
@@ -32,12 +30,14 @@ public sealed class LightingProfileRepository : CollectableItemRepository
     public override void LoadFromDisk()
     {
         Items?.Clear();
-        string[] files = Directory.GetFiles(FolderPath);
+        string[] files = Directory.GetDirectories(FolderPath);
         foreach (var file in files)
         {
-            var profile = JsonHelpers.DeserializeJson<LightingProfile>(file);
+            var profilePath = Path.Combine(file, "profile.json");
+            var profile = JsonHelpers.DeserializeJson<LightingProfile>(profilePath);
             if (profile == null)
                 continue;
+            profile.LocalPath = profilePath;
             AddItem(profile);
         }
     }
@@ -50,26 +50,37 @@ public sealed class LightingProfileRepository : CollectableItemRepository
         //create default ambilight profile
         var ambilightProfile = new LightingProfile()
         {
-            Name = "Theater",
+            Name = "Ambilight",
             Icon = "Youtube",
             ID = Guid.NewGuid(),
-            LocalPath = Path.Combine(this.FolderPath,"Theater"),
             IsDefault = true
         };
         var solidColorProfile = new LightingProfile()
         {
-            Name = "Solid Red",
+            Name = "Solid Green",
             Icon = "solidrect",
             ID = Guid.NewGuid(),
-            LocalPath = Path.Combine(this.FolderPath,"Solid Red"),
             IsDefault = true
         };
         var colorPaletteProfile  = new LightingProfile()
         {
-            Name = "Retro",
+            Name = "Color palette",
             Icon = "solidrect",
             ID = Guid.NewGuid(),
-            LocalPath = Path.Combine(this.FolderPath,"Retro"),
+            IsDefault = true
+        };
+        var musicReactive  = new LightingProfile()
+        {
+            Name = "Music Reactive",
+            Icon = "solidrect",
+            ID = Guid.NewGuid(),
+            IsDefault = true
+        };
+        var animation  = new LightingProfile()
+        {
+            Name = "Animation",
+            Icon = "solidrect",
+            ID = Guid.NewGuid(),
             IsDefault = true
         };
         ambilightProfile.TogglePlayPause();
@@ -79,9 +90,12 @@ public sealed class LightingProfileRepository : CollectableItemRepository
         solidColorProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Greed",0,0,100,100,Avalonia.Media.Colors.GreenYellow));
         colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Retro Palette",0,0,200,100,DefaultColorPalettes.RetroPalette()));
         colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Red Palette",0,0,100,200,DefaultColorPalettes.RetroPalette()));
+        colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultAnimationZone("Demo",100,100,200,100,null));
         AddItem(ambilightProfile);
         AddItem(solidColorProfile);
         AddItem(colorPaletteProfile);
+        AddItem(musicReactive);
+        AddItem(animation);
         
         //write this to disk
     }

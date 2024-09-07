@@ -7,7 +7,7 @@ namespace Ambinity.Windows;
 public class InputDialogContentViewModel : ViewModelBase
 {
     private ContentDialog _dialog;
-
+    public EventHandler? DialogClosed;
     public InputDialogContentViewModel()
     {
     }
@@ -27,15 +27,7 @@ public class InputDialogContentViewModel : ViewModelBase
     {
         _dialog.Closed -= DialogOnClosed;
 
-        // do something with the result
-        var resultHint = new ContentDialog()
-        {
-            Content = $"You chose \"{args.Result}\"",
-            Title = "Result",
-            PrimaryButtonText = "Thanks"
-        };
-
-        _ = resultHint.ShowAsync();
+        DialogClosed?.Invoke(this,args);
     }
 
     private string _UserInput;
@@ -49,41 +41,16 @@ public class InputDialogContentViewModel : ViewModelBase
         set
         {
             SetProperty(ref _UserInput, value);
-            HandleUserInput();
         }
     }
-
-    private void HandleUserInput()
-    {
-        switch (UserInput.ToLowerInvariant())
-        {
-            case "accept":
-            case "ok":
-                _dialog.Hide(ContentDialogResult.Primary);
-                break;
-
-            case "dismiss":
-            case "not ok":
-                _dialog.Hide(ContentDialogResult.Secondary);
-                break;
-
-            case "cancel":
-            case "close":
-            case "hide":
-                _dialog.Hide();
-                break;
-        }
-    }
-
+    
     private static readonly string[] _AvailableKeyWords = new[]
     {
-        "Accept",
-        "OK",
-        "Dismiss",
-        "Not OK",
-        "Close",
-        "Cancel",
-        "Hide"
+        "Static",
+        "Rainbow",
+        "Party",
+        "Music",
+        "Favorite",
     };
 
     public string[] AvailableKeyWords => _AvailableKeyWords;

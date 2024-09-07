@@ -2,6 +2,7 @@ using System.Buffers;
 using System.Runtime.InteropServices;
 using AmbinityCore.LightingEngines;
 using AmbinityCore.Models.Lighting.Zone;
+using AmbinityCore.Repositories;
 using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -18,14 +19,19 @@ namespace AmbinityCore.Models.Profile;
 public class LightingProfileDecoder
 {
     public event Action RenderingStatusChanged;
-    public LightingProfileDecoder(LightingProfileRepository repository, ColorEngineProvider colorEngineProvider, FrameBuffer buffer)
+    public event Action FrameUpdate;
+
+    public LightingProfileDecoder(LightingProfileRepository repository, ColorEngineProvider colorEngineProvider,
+        FrameBuffer buffer, AmbinityDeviceRepository deviceRepository)
     {
+        _deviceRepository = deviceRepository;
         _colorEngineProvider = colorEngineProvider;
         _repository = repository;
         var lastPlayedProfile =
             repository.Items.Where(i => (i as LightingProfile).IsPlaying == true).FirstOrDefault() as LightingProfile;
-        if (lastPlayedProfile != null)
-            Init(lastPlayedProfile);
+        if (lastPlayedProfile == null)
+            lastPlayedProfile = repository.Items.First() as LightingProfile;
+        Init(lastPlayedProfile);
         _buffer = buffer;
     }
 
@@ -37,9 +43,13 @@ public class LightingProfileDecoder
     public LightingProfile CurrentPlayingProfile => _currentPlayingProfile;
     private LightingProfile _currentPlayingProfile;
     private FrameBuffer _buffer;
+    private List<IColorEngine> _engines;
+    private readonly AmbinityDeviceRepository _deviceRepository;
 
     public void Init(LightingProfile profile)
     {
+        _deviceRepository.UpdateDeviceTransform();
+        _engines = new List<IColorEngine>();
         var isRunning = _tokenSource != null && _isRendering;
         if (isRunning)
             return;
@@ -49,6 +59,8 @@ public class LightingProfileDecoder
         _tokenSource = new CancellationTokenSource();
         _currentPlayingProfile = profile;
         _currentPlayingProfile.IsPlaying = true;
+        profile.LightingZoneAdded += OnLightingZoneAdded;
+        profile.LightingZoneRemoved += OnLightingZoneRemoved;
         foreach (var zone in profile.Zones)
         {
             RegisterZone(zone);
@@ -58,11 +70,22 @@ public class LightingProfileDecoder
         RenderingStatusChanged?.Invoke();
     }
 
+    private void OnLightingZoneAdded(LightingZone zone)
+    {
+        // RegisterZone(zone);
+    }
+
+    private void OnLightingZoneRemoved(LightingZone zone)
+    {
+        // UnregisterZone(zone);
+    }
+
     /// <summary>
     /// Replay the profile
     /// </summary>
     public void Resume()
     {
+        _deviceRepository.UpdateDeviceTransform();
         if (CurrentPlayingProfile == null)
             return;
         var isRunning = _isRendering;
@@ -75,6 +98,7 @@ public class LightingProfileDecoder
         {
             _buffer.PixelData = new byte[_buffer.FrameWidth * _buffer.FrameHeight * 4];
         }
+
         foreach (var zone in CurrentPlayingProfile.Zones)
         {
             RegisterZone(zone);
@@ -85,18 +109,29 @@ public class LightingProfileDecoder
         RenderingStatusChanged?.Invoke();
     }
 
+    public void Toggle()
+    {
+        if (_isRendering)
+            Stop();
+        else
+        {
+            Resume();
+        }
+    }
+
     /// <summary>
     /// stop signal, call init to play again
     /// </summary>
     public void Stop()
     {
-        if(_currentPlayingProfile==null)
+        if (_currentPlayingProfile == null)
             return;
         //clear buffer
         lock (_buffer.FrameLock)
         {
             _buffer.PixelData = new byte[_buffer.FrameWidth * _buffer.FrameHeight * 4];
         }
+
         _currentPlayingProfile.IsPlaying = false;
         if (!_isRendering)
             return;
@@ -121,6 +156,15 @@ public class LightingProfileDecoder
             Name = "colorsweep"
         };
         thread.Start();
+        _engines.Add(engine);
+    }
+
+    public void UnregisterZone(LightingZone zone)
+    {
+        var engine = _engines.Where(e => e.Zone == zone).FirstOrDefault();
+        if (engine == null)
+            return;
+        engine.Dispose();
     }
 
     /// <summary>
@@ -134,6 +178,7 @@ public class LightingProfileDecoder
             {
                 engine.Render();
                 Thread.Sleep(1000 / 30);
+                FrameUpdate?.Invoke();
             }
         }
         catch (Exception ex)
@@ -145,28 +190,5 @@ public class LightingProfileDecoder
             engine.Dispose();
             GC.Collect();
         }
-    }
-
-
-    public WriteableBitmap CreateBitmapFromPixelData(
-        byte[] buffer,
-        int pixelWidth,
-        int pixelHeight)
-    {
-        // Standard may need to change on some devices 
-        Vector dpi = new Vector(96, 96);
-
-        var bitmap = new WriteableBitmap(
-            new PixelSize(pixelWidth, pixelHeight),
-            dpi,
-            PixelFormat.Bgra8888,
-            AlphaFormat.Premul);
-
-        using (var frameBuffer = bitmap.Lock())
-        {
-            Marshal.Copy(buffer, 0, frameBuffer.Address, buffer.Length);
-        }
-
-        return bitmap;
     }
 }

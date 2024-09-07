@@ -9,7 +9,8 @@
         Width="1600"
         Height="900"
         MinWidth="800"
-        Focusable="True"
+        MinHeight="750"
+        WindowStartupLocation="CenterScreen"
         x:Class="Ambinity.Views.MainWindow"
         x:DataType="root:RootViewModel"
         xmlns:root="clr-namespace:Ambinity.Views.Root"
@@ -17,7 +18,11 @@
         xmlns:sideMenu="clr-namespace:Ambinity.Views.SideMenu"
         Icon="/Assets/appicon.ico"
         Title="Ambinity">
-
+    <Window.Styles>
+        <Style Selector="Window[WindowState=Maximized]">
+            <Setter Property="Padding" Value="8" />
+        </Style>
+    </Window.Styles>
     <Grid RowDefinitions="Auto,*">
         <Grid ColumnDefinitions="Auto,Auto,*,*">
             <nonclientarea:NonClientAreaContent></nonclientarea:NonClientAreaContent>

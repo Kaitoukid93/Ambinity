@@ -11,6 +11,7 @@ public abstract class CollectableItemRepository : ObservableObject
     public event Action<ICollectableItem> ItemNameChaned;
     public event Action<ICollectableItem> ItemPinStatusChanged;
     public event Action<ICollectableItem> ItemCheckStatusChanged;
+    public event Action<ICollectableItem> ItemAdded;
     public event Action<string> OnInitialized;
 
     #region Construct
@@ -19,6 +20,7 @@ public abstract class CollectableItemRepository : ObservableObject
     {
         Items = new ObservableCollection<ICollectableItem>();
     }
+
     public CollectableItemRepository(string name)
     {
         Name = name;
@@ -50,7 +52,7 @@ public abstract class CollectableItemRepository : ObservableObject
 
     public virtual void SaveToDisk()
     {
-        if(LocalFolderPath==null)
+        if (LocalFolderPath == null)
             return;
         if (!Directory.Exists(LocalFolderPath))
             Directory.CreateDirectory(LocalFolderPath);
@@ -58,8 +60,7 @@ public abstract class CollectableItemRepository : ObservableObject
         {
             foreach (var item in Items)
             {
-                var localPath = Path.Combine(LocalFolderPath, item.Name + ".json");
-                JsonHelpers.WriteSimpleJson(item, localPath);
+                item.Save();
             }
         }
     }
@@ -70,10 +71,8 @@ public abstract class CollectableItemRepository : ObservableObject
             Directory.CreateDirectory(LocalFolderPath);
         lock (item)
         {
-            var localPath = Path.Combine(LocalFolderPath, item.Name + ".json");
-            JsonHelpers.WriteSimpleJson(item, localPath);
+            item.Save();
         }
-        
     }
 
     #endregion
@@ -104,6 +103,34 @@ public abstract class CollectableItemRepository : ObservableObject
     {
         RegisterItem(item);
         Items.Add(item);
+        ItemAdded?.Invoke(item);
+        SaveToDisk(item);
+    }
+
+    /// <summary>
+    /// import item from disk
+    /// </summary>
+    /// <param name="path"></param>
+    public virtual void ImportItem(string path)
+    {
+    }
+
+    public void RemoveItem(ICollectableItem item)
+    {
+        item.ItemCheckStatusChanged -= OnItemCheckStatusChanged;
+        item.ItemNameChanged -= OnItemNameChanged;
+        item.ItemPinStatusChanged -= OnItemPinStatusChanged;
+        item.PropertyChanged -= OnItemPropertyChanged;
+        Items.Remove(item);
+        RemoveFromDisk(item);
+    }
+
+    public void RemoveFromDisk(ICollectableItem item)
+    {
+        if (File.Exists(item.LocalPath))
+            File.Delete(item.LocalPath);
+        if (Directory.Exists(item.LocalPath))
+            Directory.Delete(item.LocalPath, true);
     }
 
     public void InsertItem(ICollectableItem item)

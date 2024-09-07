@@ -11,7 +11,9 @@ public interface ILEDControllerHardwareSettings : INotifyPropertyChanged
     string DeviceManufacturer { get; set; }
     string DeviceCommunicationAddress { get; set; }
     string DeviceName { get; set; }
-    
+
+    HardwareTypeEnum HardwareType { get; set; }
+
     //Hardware lighting//
     bool HWL_enable { get; set; }
     bool StatusLEDEnable { get; set; }

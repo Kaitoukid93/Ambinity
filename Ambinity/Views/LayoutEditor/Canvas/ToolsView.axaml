@@ -1,0 +1,83 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor"
+             xmlns:toolbarItem="clr-namespace:AmbinityCore.Models.Toolbar;assembly=AmbinityCore"
+             xmlns:flyoutItem="clr-namespace:AmbinityCore.Models.Flyout;assembly=AmbinityCore"
+             x:DataType="local:ToolsViewModel"
+             x:Class="Ambinity.Views.LayoutEditor.ToolsView">
+    <Grid>
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <Border Background="#2c2c2c" CornerRadius="7" Margin="0,0,0,0" Padding="0">
+                <ItemsControl ItemsSource="{Binding ToolbarItems}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.DataTemplates>
+                        <DataTemplate DataType="{x:Type toolbarItem:ToggleToolbarItem}">
+                            <ToggleButton BorderThickness="0" CornerRadius="4" IsChecked="{Binding IsChecked}"
+                                          Command="{Binding Command}" ToolTip.Tip="{Binding ToolTip}"
+                                          Background="Transparent"
+                                          Width="40" Height="40"
+
+                                          Padding="0" Margin="5,5">
+                                <PathIcon Width="18" Height="18"
+                                          Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+                                </PathIcon>
+                            </ToggleButton>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type toolbarItem:ButtonToolbarItem}">
+                            <Button CornerRadius="4" Classes="icon-button" ToolTip.Tip="{Binding ToolTip}"
+                                    Background="Transparent" Width="40" Height="40"
+                                    BorderThickness="0"
+                                    Command="{Binding Command}"
+                                    Padding="0" Margin="5,5">
+                                <PathIcon Width="18" Height="18"
+                                          Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+                                </PathIcon>
+                            </Button>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type toolbarItem:SeparatorToolbarItem}">
+                            <Separator Width="1" Height="35" Margin="5"></Separator>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type toolbarItem:FlyoutButtonToolbarItem}">
+                            <Button BorderThickness="0" Command="{CompiledBinding Command}" CornerRadius="4"
+                                    ToolTip.Tip="{Binding ToolTip}" Width="40" Height="40" Padding="0" Margin="5,5"
+                                    Classes="icon-button">
+                                <PathIcon
+                                    Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+                                </PathIcon>
+                                <Button.Flyout>
+                                    <ui:FAMenuFlyout VerticalOffset="-10" Placement="Top"
+                                                     ItemsSource="{Binding FlyoutItems}">
+                                        <ui:FAMenuFlyout.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type flyoutItem:FlyoutItem}">
+                                                <ui:MenuFlyoutItem Command="{Binding Command}" Text="{Binding Content}">
+                                                    <ui:MenuFlyoutItem.IconSource>
+                                                        <ui:PathIconSource
+                                                            Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+                                                        </ui:PathIconSource>
+                                                    </ui:MenuFlyoutItem.IconSource>
+                                                </ui:MenuFlyoutItem>
+                                            </DataTemplate>
+                                        </ui:FAMenuFlyout.ItemTemplate>
+                                    </ui:FAMenuFlyout>
+                                </Button.Flyout>
+
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.DataTemplates>
+                </ItemsControl>
+            </Border>
+            <Border IsVisible="{Binding  ShowLockSymbol}" Width="50"  Background="#2c2c2c" CornerRadius="7" Margin="0,0,0,0"  Padding="0">
+                <PathIcon Foreground="OrangeRed" ToolTip.Tip="Canvas is locked"  Data="{DynamicResource lock}"></PathIcon>
+            </Border>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

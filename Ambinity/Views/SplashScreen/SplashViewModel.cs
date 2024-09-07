@@ -7,35 +7,21 @@ using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Models.ProfileCategory;
 using AmbinityCore.Repositories;
+using AmbinityServer.Download;
 
 namespace Ambinity.Views.SplashScreen;
 
 public class SplashViewModel : ViewModelBase
 {
-    public SplashViewModel( ColorPaletteRepository colorPaletteRepository,
-        StaticColorsRepository staticColorsRepository,
-        GifImagesRepository gifImagesRepository,
-        AnimationsRepository animationsRepository,
-        LightingProfileRepository lightingProfileRepository,
-        LightingProfileCategoryRepository lightingProfileCategoryRepository,
-        SerialControllerRepository serialControllerRepository)
+    public SplashViewModel()
     {
-        _repositories = new List<CollectableItemRepository>
+        DownloadProgress = new Progress<DownloadProgress>((p) =>
         {
-            colorPaletteRepository,
-            staticColorsRepository,
-            gifImagesRepository,
-            animationsRepository,
-            lightingProfileRepository,
-            lightingProfileCategoryRepository,
-            serialControllerRepository
-        };
-        foreach (var repo in _repositories)
-        {
-            repo.OnInitialized += OnRepositoryLoaded;
-        }
+            Progress = p.Progress;
+            Status = p.Status;
+        });
     }
-
+    public IProgress<DownloadProgress> DownloadProgress { get; set; }
     private int _progress;
 
     public int Progress

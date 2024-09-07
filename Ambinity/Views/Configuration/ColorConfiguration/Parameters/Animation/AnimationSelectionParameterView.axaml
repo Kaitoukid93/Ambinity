@@ -1,0 +1,91 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
+             xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties"
+             x:DataType="local:AnimationSelectionParameterViewModel"
+             x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.AnimationSelectionParameterView">
+    <Grid RowDefinitions="Auto,10,*">
+        <Grid Row="0" ColumnDefinitions="Auto,*">
+            <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
+                       Text="Animations settings">
+            </TextBlock>
+            <Grid Column="1">
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5">
+                    <Grid>
+                        <Button Width="30" Height="30" Command="{Binding ImportAnimationCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Import animation" Classes="icon-button">
+                            <PathIcon Width="15" Data="{DynamicResource Import}"></PathIcon>
+                        </Button>
+                    </Grid>
+                    <Grid>
+                        <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1" Background="Transparent" Width="30" Height="30"
+                                Classes="icon-button">
+                            <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Row="2">
+            <StackPanel Spacing="5">
+                <Grid RowDefinitions="Auto,*">
+                    <Grid>
+                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Frame rate"></TextBlock>
+                    </Grid>
+                    <Grid Row="1" ColumnDefinitions="*,12,Auto">
+                        <Grid Column="0">
+                            <Slider x:Name="sensitivitySlider"
+                                    Width="190"
+                                    SmallChange="0.1"
+                                    LargeChange="0.5"
+                                    Minimum="0" Maximum="200" HorizontalAlignment="Left">
+                            </Slider>
+
+                        </Grid>
+                        <Grid Column="2">
+                            <TextBox CornerRadius="4"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Left"
+                                     HorizontalContentAlignment="Right"
+                                     attachedProperties:TextBoxAssist.SuffixText="fps"
+                                     BorderThickness="0"
+                                     Text="{Binding ElementName=sensitivitySlider,Path=Value, StringFormat=N1}">
+                            </TextBox>
+
+
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid RowDefinitions="Auto,10,*">
+                    <Grid>
+                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Animation details"></TextBlock>
+                    </Grid>
+                    <Grid Row="2">
+                        <StackPanel Spacing="2">
+                            <Grid ColumnDefinitions="Auto, *">
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Duration: "></TextBlock>
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1" Text="{Binding Animation.Duration}"></TextBlock>
+                            </Grid>
+                            <Grid ColumnDefinitions="Auto, *">
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Fps: "></TextBlock>
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1" Text="{Binding Animation.Fps}"></TextBlock>
+                            </Grid>
+                            <Grid ColumnDefinitions="Auto, *">
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Version: "></TextBlock>
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1" Text="{Binding Animation.Version}"></TextBlock>
+                            </Grid>
+                            <Grid ColumnDefinitions="Auto, *">
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Size: "></TextBlock>
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1" Text="{Binding Animation.Size}"></TextBlock>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </StackPanel>
+            
+        </Grid>
+    </Grid>
+    
+</UserControl>

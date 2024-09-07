@@ -48,4 +48,50 @@ public class DialogService : IDialogService
         td.XamlRoot = owner;
         var result = await td.ShowAsync();
     }
+
+    public async Task ShowDeleteDialog(DeleteDialogContentViewModel vm, string title, string primaryButtonText,
+        string closeButtonText)
+    {
+        var dialog = new ContentDialog()
+        {
+            Title = title,
+            PrimaryButtonText = primaryButtonText,
+            IsSecondaryButtonEnabled = false,
+            CloseButtonText = closeButtonText
+        };
+        vm.Init(dialog);
+        dialog.Content = new DeleteDialogContent()
+        {
+            DataContext = vm
+        };
+
+        var result = await dialog.ShowAsync();
+    }
+
+    public async Task ShowWindowDialog(WindowDialogViewModelBase vm,string title, string primaryButtonText, string closeButtonText)
+    {
+        string name = vm.GetType().FullName!.Split('`')[0].Replace("ViewModel", "View");
+        Type? type = vm.GetType().Assembly.GetType(name);
+
+        if (type == null)
+            throw new Exception($"Failed to find a usercontrol named {name}.");
+
+        if (!type.IsAssignableTo(typeof(UserControl)))
+            throw new Exception($"Type {name} is not a usercontrol.");
+
+        UserControl content = (UserControl)Activator.CreateInstance(type)!;
+        content.DataContext = vm;
+        var dialog = new ContentDialog()
+        {
+            Title = title,
+            PrimaryButtonText = primaryButtonText,
+            IsSecondaryButtonEnabled = false,
+            CloseButtonText = closeButtonText
+        };
+        vm.Init(dialog);
+        dialog.Content = content;
+        
+        var result = await dialog.ShowAsync();
+    }
+    
 }

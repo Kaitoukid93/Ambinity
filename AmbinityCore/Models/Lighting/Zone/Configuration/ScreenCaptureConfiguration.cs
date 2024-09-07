@@ -18,6 +18,7 @@ public class ScreenCaptureConfiguration : ILightingConfiguration
         
     }
     public ConfigurationType Type => ConfigurationType.ScreenCapture;
+    public string Name => "Ambilight";
 
     /// <summary>
     /// Brightness value in range 0-100

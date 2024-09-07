@@ -5,11 +5,12 @@ namespace AmbinityCore.Models.Toolbar;
 
 public class ButtonToolbarItem : ObservableObject, IToolbarItem
 {
-    public ButtonToolbarItem(string name, string toolTip, string icon)
+    public ButtonToolbarItem(string name, string toolTip, string icon, ICommand command)
     {
         Name = name;
         ToolTip = toolTip;
         Icon = icon;
+        Command = command;
     }
 
     public ButtonToolbarItem()

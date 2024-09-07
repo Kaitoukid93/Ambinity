@@ -13,6 +13,7 @@ public class LEDSetup
 {
     public LEDSetup()
     {
+        Spots = new ObservableCollection<DeviceSpot>();
     }
 
 

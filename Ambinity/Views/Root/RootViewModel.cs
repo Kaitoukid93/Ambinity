@@ -15,11 +15,13 @@ using AmbinityCore.Models.GeneralSetting;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Models.ProfileCategory;
 using AmbinityCore.Repositories;
+using AmbinityServer;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
+using Serilog;
 
 
 namespace Ambinity.Views.Root;
@@ -38,8 +40,10 @@ namespace Ambinity.Views.Root;
             LightingProfileRepository lightingProfileRepository,
             LightingProfileCategoryRepository lightingProfileCategoryRepository,
             SerialControllerRepository serialControllerRepository,
+            OpenRGBControllerRepository openRgbControllerRepository,
             IMainWindowService mainWindowService,
-            GeneralSettingsManager settingsManager)
+            GeneralSettingsManager settingsManager,
+            AmbinityClient ambinityClient)
         {
             
             _rootNavigationStores = rootNavigationStores;
@@ -52,11 +56,13 @@ namespace Ambinity.Views.Root;
                 animationsRepository,
                 lightingProfileRepository,
                 lightingProfileCategoryRepository,
-                serialControllerRepository
+                serialControllerRepository,
+                openRgbControllerRepository
             };
             SideMenu = sideMenu;
             _lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
             _settings = settingsManager.Settings;
+            _ambinityClient = ambinityClient;
             mainWindowService.ConfigureMainWindowProvider(this);
             //show UI if requested
             if (ShouldShowUI())
@@ -155,6 +161,15 @@ namespace Ambinity.Views.Root;
         {
             MainWindowClosed?.Invoke(this, EventArgs.Empty);
             await SaveRepositories();
+            try
+            {
+                _ambinityClient.Disconnect();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.ToString());
+                throw;
+            }
 
         }
 
@@ -170,6 +185,7 @@ namespace Ambinity.Views.Root;
         private readonly IClassicDesktopStyleApplicationLifetime _lifeTime;
         private readonly IGeneralSettings _settings;
         private SideMenuViewModel _sideMenu;
+        private AmbinityClient _ambinityClient;
 
         public SideMenuViewModel SideMenu
         {

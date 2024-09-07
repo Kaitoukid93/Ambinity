@@ -25,7 +25,7 @@ public class AmbinityLED : ObservableObject
     {
         LED = led;
         Device = device;
-        
+
         LedID = index;
         Width = width;
         Height = height;
@@ -37,8 +37,7 @@ public class AmbinityLED : ObservableObject
 
     public ArgbLed LED { get; }
     public int Index { get; set; }
-    [JsonIgnore]
-    public AmbinityDevice Device { get; }
+    [JsonIgnore] public AmbinityDevice Device { get; }
 
     /// <summary>
     /// Get rectangle relative positioned to the device
@@ -138,6 +137,12 @@ public class AmbinityLED : ObservableObject
     /// Absolute Y position
     /// </summary>
     public float AbsoluteY => OffsetY + RelativeY;
+
+    /// <summary>
+    /// Rect respect to rotation and scale on great bitmap
+    /// </summary>
+    public Rect TransformedRect { get; set; }
+
 
     #region Methods
 

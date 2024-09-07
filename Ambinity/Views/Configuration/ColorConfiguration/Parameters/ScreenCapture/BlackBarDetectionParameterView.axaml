@@ -1,0 +1,80 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
+             xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia.Tight"
+             x:DataType="local:BlackBarDetectionParameterViewModel"
+             x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.BlackBarDetectionParameterView">
+    <Grid RowDefinitions="Auto,10,*">
+        <Grid Row="0" ColumnDefinitions="Auto,5,Auto,*">
+            <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
+                       Text="Blackbar detection">
+            </TextBlock>
+            <Grid Column="2">
+                <Button Click="InfoButton_OnClick" x:Name="infoButton" Background="Transparent"
+                        BorderThickness="0" Classes=" icon-button icon-button-small" HorizontalAlignment="Center"
+                        VerticalAlignment="Center" Margin="0,0">
+                    <PathIcon Width="15" Height="15" Data="{DynamicResource infoCircle}"></PathIcon>
+                </Button>
+                <ui:TeachingTip IsLightDismissEnabled="True" x:Name="infotip"
+                                HeroContentPlacement="Auto"
+                                Target="{Binding ElementName=infoButton}">
+                    <ui:TeachingTip.HeroContent>
+                        <Border MaxHeight="300" CornerRadius="7,7,0,0" Background="{Binding #infotip.Background}" Padding="10">
+                            <mdxaml:MarkdownScrollViewer xml:space="preserve">
+##### **Blackbar Detection**
+
+ * **What even is Blackbar Detection?** 
+ Blackbar detection is an algorithm to detect "no-pixel' zone in the screen, such as viewing 21:9 content in 16:9 ratio screen
+ * **How does it work?** 
+ When there are black zones in the content, the background service will count for stable frames, if the stable frames count exceed for example 20 frame,
+the screen capture service will copy the area next to the black zone (that have colors) and render at the black zones location
+ * **Should I turn this on?** 
+ Sure! You can try to turn this on and watch some content that have different ration than your screen ratio, but this has some downside when the black zone
+situation is so complicated, feel free to tweak the sensitivity value that suit best for you
+ 
+Learn more [Ambino-ScreenCapturre](https://ambino.vn)
+                                                </mdxaml:MarkdownScrollViewer>
+                        </Border>
+                    </ui:TeachingTip.HeroContent>
+                </ui:TeachingTip>
+            </Grid>
+            <ToggleSwitch x:Name="enable" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="3"></ToggleSwitch>
+        </Grid>
+        <StackPanel Grid.Row="2" Spacing="5">
+            <Grid IsVisible="{Binding ElementName=enable,Path=IsChecked}" RowDefinitions="Auto,*">
+                <Grid>
+                    <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Sensitivity"></TextBlock>
+                </Grid>
+                <Grid Row="1" ColumnDefinitions="*,12,Auto">
+                    <Grid Column="0">
+                        <Slider x:Name="sensitivitySlider"
+                                Width="190"
+                                SmallChange="0.1"
+                                LargeChange="0.5"
+                                Minimum="0" Maximum="200" HorizontalAlignment="Left">
+                        </Slider>
+
+                    </Grid>
+                    <Grid Column="2">
+                        <TextBox CornerRadius="4"
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Left"
+                                 HorizontalContentAlignment="Right"
+                                 attachedProperties:TextBoxAssist.SuffixText="s"
+                                 BorderThickness="0"
+                                 Text="{Binding ElementName=sensitivitySlider,Path=Value, StringFormat=N1}">
+                        </TextBox>
+
+
+                    </Grid>
+                </Grid>
+            </Grid>
+        </StackPanel>
+    </Grid>
+
+</UserControl>

@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 using Draw2D.Core.Shapes.Basic;
 using Microsoft.Extensions.DependencyInjection;
+using Canvas = Draw2D.Core.Canvas;
 
 namespace Ambinity.Views.Draw2DCanvas;
 
@@ -28,6 +29,8 @@ public partial class Draw2DCanvasView : UserControl
     }
     private void OnCanvasRightClicked(object? sender, CanvasClickEventArgs e)
     {
+        if(_viewModel.IsLocked)
+            return;
         var point = new Point(e.MousePosX, e.MousePosY);
         var menu = _contextMenuProvider.GetContextMenu(null, point);
         menu.ShowAt(Draw2DControl);
@@ -35,6 +38,8 @@ public partial class Draw2DCanvasView : UserControl
 
     private void OnFigureRightClicked(object? sender, FigureClickEventArgs e)
     {
+        if(_viewModel.IsLocked)
+            return;
         var figure = e.Sender as Figure;
         var point = new Point(e.MousePosX, e.MousePosY);
         var menu = _contextMenuProvider.GetContextMenu(figure, point);

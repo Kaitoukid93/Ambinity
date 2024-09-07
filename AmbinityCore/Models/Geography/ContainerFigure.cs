@@ -28,12 +28,16 @@ public abstract class ContainerFigure : Rectangle
     private void OnSizeChanged(float newWidth, float newHeight)
     {
         //update zone
+        if(ItemVisualizer==null)
+            return;
         ItemVisualizer.UpdateContainerSize(newWidth, newHeight);
     }
 
     private void OnPositionChanged(float dx, float dy)
     {
         //update zone
+        if(ItemVisualizer==null)
+            return;
         ItemVisualizer.UpdateContainerOffset(dx, dy);
     }
     

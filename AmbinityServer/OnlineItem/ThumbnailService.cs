@@ -50,10 +50,15 @@ public sealed class ThumbnailService
             // Not in the cache, so load from path server
             await using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                thumbnail = Bitmap.DecodeToWidth(stream, 70);
+                thumbnail = Bitmap.DecodeToWidth(stream, 100);
             }
             _cache.Add(path, thumbnail);
         }
         return thumbnail;
+    }
+
+    public void ClearCache(string path)
+    {
+        _cache.Remove(path);
     }
 }

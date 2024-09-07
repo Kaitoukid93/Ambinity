@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="800"
+        x:Class="Ambinity.Views.SideMenu.ProfilePropertiesEditorView"
+        xmlns:sideMenu = "clr-namespace:Ambinity.Views.SideMenu"
+        x:DataType="sideMenu:ProfilePropertiesEditorViewModel">
+    <Grid>
+        <StackPanel Spacing="10">
+            <Grid Margin="10,0" Height="100" ColumnDefinitions="100,*">
+                <Button Command="{Binding SelectBitmapCommand}" ToolTip.Tip="Click to change icon"  Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" ClipToBounds="True">
+                    <Image Source="{Binding GetThumbnail^,FallbackValue=null}"></Image>
+                </Button>
+                <Grid Margin="0,10" Column="1">
+                    <StackPanel VerticalAlignment="Center" Spacing="0">
+                        <TextBlock VerticalAlignment="Center" FontSize="18" FontWeight="SemiBold" Grid.Column="0" Text="Ambilight"></TextBlock>
+                        <TextBlock Grid.Row="1" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="0" Text="Ambino default"></TextBlock>
+                        <TextBlock Grid.Row="2" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="0" Text="All devices using capture screen mode"></TextBlock>
+                    </StackPanel>
+                    
+                </Grid>
+            </Grid>
+            <Separator Margin="10,0"></Separator>
+            <Grid  Margin="10,0" Height="100" ColumnDefinitions="100,*">
+                <Grid RowDefinitions="*,*">
+                    <TextBlock VerticalAlignment="Center" Text="Name :"></TextBlock>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="1" Text="Description :"></TextBlock>
+                </Grid>
+                <Grid Column="1" RowDefinitions="*,*">
+                        <TextBox Text="{Binding Name}" Margin="10" VerticalAlignment="Center"></TextBox>
+                    <TextBox Grid.Row="1" Text="{Binding Description}" Margin="10" VerticalAlignment="Center"></TextBox>
+                </Grid>
+            </Grid>
+            <Separator Margin="10,0"></Separator>
+            <Grid Margin="10,0" Height="50" ColumnDefinitions="100,*">
+                <Grid >
+                    <TextBlock VerticalAlignment="Center" Text="Activation :"></TextBlock>
+                </Grid>
+                <Grid Column="1">
+                    <TextBox Text="123123" Margin="10" VerticalAlignment="Center"></TextBox>
+                </Grid>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

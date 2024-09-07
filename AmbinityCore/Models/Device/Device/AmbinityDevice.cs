@@ -26,22 +26,29 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     public event Action DeviceUpdate;
     public event Action<Rect> TryUpdateEvent;
 
-    public AmbinityDevice()
+    public AmbinityDevice(float scale = 0.25f)
     {
+        Scale = scale;
         Leds = new ObservableCollection<AmbinityLED>();
     }
-
+    public AmbinityDevice()
+    {
+       
+        Leds = new ObservableCollection<AmbinityLED>();
+    }
     /// <summary>
-    /// construct new Ambinity device from existed layout
+    /// Construct new Ambinity device from existed layout and predefined scale
     /// </summary>
     /// <param name="layout"></param>
-    public AmbinityDevice(AmbinityDeviceLayout layout)
+    /// <param name="scale"></param>
+    public AmbinityDevice(AmbinityDeviceLayout layout, float scale = 0.25f)
     {
         Layout = layout;
         Leds = new ObservableCollection<AmbinityLED>();
+        Scale = scale;
         LoadLayout();
     }
-
+    
     private string _deviceName = "New Slave Device";
 
     /// <summary>
@@ -62,17 +69,6 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     {
         get => _deviceDescription;
         set => SetProperty(ref _deviceDescription, value);
-    }
-
-    private List<DeviceType> _targetParrentDeviceType = new List<DeviceType>() { DeviceType.Unknown };
-
-    /// <summary>
-    /// device type this slave is compatible with
-    /// </summary>
-    public List<DeviceType> TargetParrentDeviceType
-    {
-        get => _targetParrentDeviceType;
-        set => SetProperty(ref _targetParrentDeviceType, value);
     }
 
     private RGBLEDOrderEnum _rgbOrder;
@@ -102,12 +98,23 @@ public class AmbinityDevice : ObservableObject, IPositionAware
 
     private bool _isDragable = true;
     private bool _isSelectable = true;
+    private bool _isSelected;
     private bool _isDeleteable = true;
     private bool _isResizeable = true;
     private bool _isHitTestVisible = true;
     private bool _isRotatable;
     private bool _isDraggable;
     private bool _isScalable;
+
+
+    public Guid GroupID { get; set; }
+
+    public string GetDisplayName()
+    {
+        return Name;
+    }
+
+    public string Icon => "slaveDevice";
     public string Name => _deviceName;
 
     /// <summary>
@@ -119,7 +126,15 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         get => _isSelectable;
         set => SetProperty(ref _isSelectable, value);
     }
-
+    /// <summary>
+    /// Device can or can not be selected on the canvas
+    /// </summary>
+    [JsonIgnore]
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => SetProperty(ref _isSelected, value);
+    }
     /// <summary>
     /// Device can or can not be deleted from the canvas
     /// </summary>
@@ -169,6 +184,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         get => _isScalable;
         set => SetProperty(ref _isScalable, value);
     }
+
     public ContainerFigure GetContainer()
     {
         return new DeviceContainerFigure(X, Y, Width, Height)
@@ -183,6 +199,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     {
         throw new NotImplementedException("Can not clone deivce");
     }
+
     #endregion
 
     #region Canvas Corordinate Properties
@@ -255,7 +272,6 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         {
             _scale = value;
             OnPropertyChanged();
-            DeviceUpdate?.Invoke();
         }
     }
 
@@ -266,11 +282,11 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         {
             _rotation = value;
             OnPropertyChanged();
-            DeviceUpdate?.Invoke();
         }
     }
 
-   
+    public Point CenterPoint => new Point(X + Width / 2, Y + Height / 2);
+    public Rect Bound => new Rect(X, Y, Width, Height);
 
     #endregion
 
@@ -303,19 +319,63 @@ public class AmbinityDevice : ObservableObject, IPositionAware
 
     public void SetScale(float scale)
     {
-        Scale = scale;
-        DeviceUpdate?.Invoke();
+        lock (Lock)
+        {
+            Scale = scale;
+            TransformLeds();
+            UpdateSizeByChild(false);
+            DeviceUpdate?.Invoke();
+        }
+        
     }
 
     public void SetRotation(float angle)
     {
-        Rotation = angle;
-        DeviceUpdate?.Invoke();
+        lock (Lock)
+        {
+            Rotation = angle;
+            TransformLeds();
+            UpdateSizeByChild(false);
+            DeviceUpdate?.Invoke();
+        }
+       
+    }
+
+    public void TransformLeds()
+    {
+        var angle = Rotation;
+        //find offset of the device first;
+        foreach (var led in Leds)
+        {
+            led.TransformedRect =
+                RectCalculation.TransformRectangle(led.RelativeRectangle, new Point(0, 0), angle, Scale, X, Y);
+        }
     }
 
     public void LoadLayout()
     {
-        Layout.ApplyToDevice(this);
+        lock (Lock)
+        {
+            Layout.ApplyToDevice(this);
+            DeviceUpdate?.Invoke();
+        }
+     
+    }
+    public void LoadLayout(AmbinityDeviceLayout layout)
+    {
+        lock (Lock)
+        {
+            layout.ApplyToDevice(this);
+            DeviceUpdate?.Invoke();
+        }
+    }
+    /// <summary>
+    /// Force device to move to specific position
+    /// </summary>
+    public void ForceTranslate(double x, double y)
+    {
+        X = (float)x;
+        Y = (float)y;
     }
 
     public void UpdateSizeByChild(bool withPoint)

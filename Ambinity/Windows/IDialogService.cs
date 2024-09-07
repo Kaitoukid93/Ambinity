@@ -9,4 +9,8 @@ public interface IDialogService
     Task ShowInputDialog(InputDialogContentViewModel vm, string title, string primaryButtonText,
         string closeButtonText);
     Task ShowDownloadDialog(DownloadDialogViewModel vm, Window owner,bool showCancelButton );
+    Task ShowDeleteDialog(DeleteDialogContentViewModel vm, string title, string primaryButtonText,
+        string closeButtonText);
+    Task ShowWindowDialog(WindowDialogViewModelBase vm,string title,string primaryButtonText,
+        string closeButtonText);
 }

@@ -33,7 +33,7 @@ namespace Draw2DControlLibrary
             CanvasProperty.Changed.AddClassHandler<Draw2DControl>(OnCanvasChanged);
             //  _gridPen.Freeze();
             //Background = Brushes.Transparent;
-            RenderOptions.SetEdgeMode(this, EdgeMode.Antialias);
+            RenderOptions.SetEdgeMode(this, EdgeMode.Aliased);
             ContentOffsetYProperty.Changed.AddClassHandler<Draw2DControl>(ContentOffsetYChanged);
             ContentOffsetXProperty.Changed.AddClassHandler<Draw2DControl>(ContentOffsetXChanged);
             ViewportWidthProperty.Changed.AddClassHandler<Draw2DControl>(ViewportWidthChanged);
@@ -72,6 +72,19 @@ namespace Draw2DControlLibrary
                 DrawGrid(dc);
             //var vectorFigures = Canvas.Figures.OfType<VectorFigure>().Where(f => f.IsVisible).ToList();
 
+         
+
+            List<VectorFigure> vectorFigures = Canvas.GetRenderableFigures();
+
+            RenderedItemsCount = vectorFigures.Count;
+
+            foreach (var figure in vectorFigures)
+            {
+                var vectorFigure = figure;
+                vectorFigure.Render(dc, _globalBorderThickness, Canvas.StrokeColor);
+            }
+            
+            ///render image on top
             if (Canvas.BackgroundImageBuffer != null && Canvas.ShouldDrawBackgroundImage)
             {
                 using (var frameBuffer = _reusableBitmap.Lock())
@@ -81,22 +94,11 @@ namespace Draw2DControlLibrary
                         Marshal.Copy(Canvas.BackgroundImageBuffer.PixelData, 0, frameBuffer.Address,
                             Canvas.BackgroundImageBuffer.PixelData.Length);
                     }
-
+                    
+                    dc.PushOpacity(0.5d);
                     dc.DrawImage(_reusableBitmap, new Rect(0, 0, Canvas.Width, Canvas.Height));
                 }
             }
-
-            List<VectorFigure> vectorFigures = Canvas.GetRenderableFigures();
-
-            RenderedItemsCount = vectorFigures.Count;
-
-            foreach (var figure in vectorFigures)
-            {
-                var vectorFigure = figure;
-
-                vectorFigure.Render(dc, _globalBorderThickness, Canvas.StrokeColor);
-            }
-
             base.Render(dc);
         }
 

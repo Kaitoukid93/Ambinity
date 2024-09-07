@@ -1,34 +1,107 @@
+using System;
 using System.ComponentModel;
+using System.IO;
+using System.IO.Compression;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Ambinity.Services;
 using Ambinity.ViewModels;
+using Ambinity.Windows;
+using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Profile;
+using AmbinityServer.OnlineItem;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
+using Serilog;
 
 namespace Ambinity.Views.SideMenu;
 
 public class SideMenuProfileViewModel : ViewModelBase
 {
-    public SideMenuProfileViewModel(LightingProfile profile, SideMenuProfileCategoryViewModel category,LightingProfileDecoder decoder)
+    public SideMenuProfileViewModel(LightingProfile profile, SideMenuProfileCategoryViewModel category,
+        LightingProfileDecoder decoder, ThumbnailService thumbnailService, IDialogService dialogService,
+        SideMenuViewModelFactory vmFactory, IWindowService windowService)
     {
+        _vmFactory = vmFactory;
         Profile = profile;
+        Profile.IconChanged += OnIconChanged;
+        Profile.ItemNameChanged += OnProfileNameChanged;
         Catergory = category;
         _decoder = decoder;
         _decoder.RenderingStatusChanged += OnRenderingStatusChanged;
+        SelfDeleteCommand = new RelayCommand(SelfDelete, CanDelete);
+        OpenPropertiesEditorCommand = new RelayCommand(OpenPropertiesEditor);
+        DuplicateCommand = new RelayCommand(SelfDuplicate);
+        ExportCommand = new AsyncRelayCommand(ExportProfile);
+        _thumbnailService = thumbnailService;
+        _dialogService = dialogService;
+        _windowService = windowService;
         Init();
         CommandSetup();
+    }
+    
+
+    private async Task ExportProfile()
+    {
+        string? result = await _windowService.CreateSaveFileDialog()
+            .HavingFilter(f => f.WithExtension("zip"))
+            .WithInitialFileName(Content)
+            .ShowAsync();
+        if (result == null)
+            return;
+        Profile.Save();
+        if(File.Exists(result))
+            File.Delete(result);
+        ZipFile.CreateFromDirectory(Profile.LocalPath, result);
+        Log.Information("Profile exported to " + result);
+        //zip
+        //save
+    }
+
+    private void SelfDuplicate()
+    {
+        Catergory.Duplicate(this);
+    }
+
+    private void OnProfileNameChanged(ICollectableItem obj)
+    {
+        Content = Profile.Name;
+    }
+
+    private void OnIconChanged(ICollectableItem obj)
+    {
+        OnPropertyChanged(nameof(GetThumbnail));
+    }
+
+    private void OpenPropertiesEditor()
+    {
+        var vm = _vmFactory.GetProfilePropertiesViewModel(Profile);
+        _dialogService.ShowWindowDialog(vm, "Edit Properties", "Save", "Cancel");
+    }
+
+    private bool CanDelete()
+    {
+        return !_isPlaying;
+    }
+
+    private void SelfDelete()
+    {
+        Catergory.RemoveProfile(this);
+        //profile category should be aware of this, we keep the file in the profile repository
+        //because the category own this profile will not init this profile anymore but others does
     }
 
     private void OnRenderingStatusChanged()
     {
-        if(this.Profile != _decoder.CurrentPlayingProfile)
+        if (this.Profile != _decoder.CurrentPlayingProfile)
             return;
         IsPlaying = _decoder.CurrentPlayingProfile.IsPlaying;
-        
     }
 
     public LightingProfile Profile { get; set; }
     private string _content = "New Profile";
     private LightingProfileDecoder _decoder;
+    private ThumbnailService _thumbnailService;
     public SideMenuProfileCategoryViewModel Catergory { get; set; }
 
     /// <summary>
@@ -55,7 +128,7 @@ public class SideMenuProfileViewModel : ViewModelBase
         set
         {
             _icon = value;
-           OnPropertyChanged();
+            OnPropertyChanged();
         }
     }
 
@@ -75,6 +148,9 @@ public class SideMenuProfileViewModel : ViewModelBase
     }
 
     private bool _isPlaying;
+    private readonly SideMenuViewModelFactory _vmFactory;
+    private readonly IDialogService _dialogService;
+    private readonly IWindowService _windowService;
 
     public bool IsPlaying
     {
@@ -123,7 +199,22 @@ public class SideMenuProfileViewModel : ViewModelBase
         }
     }
 
+    public Task<Bitmap> GetThumbnail => GetThumbnailAsync();
+
+    private async Task<Bitmap> GetThumbnailAsync()
+    {
+        var thumbnailPath = Path.Combine(Profile.LocalPath, "icon.png");
+        if (!File.Exists(thumbnailPath))
+            return null;
+        var thumb = await _thumbnailService.LoadThumbnail(thumbnailPath);
+        return thumb;
+    }
+
     public ICommand TogglePlayPauseProfileCommand { get; set; }
+    public ICommand OpenPropertiesEditorCommand { get; set; }
+    public ICommand SelfDeleteCommand { get; set; }
+    public ICommand DuplicateCommand { get; set; }
+    public ICommand ExportCommand { get; set; }
 
     #endregion
 }

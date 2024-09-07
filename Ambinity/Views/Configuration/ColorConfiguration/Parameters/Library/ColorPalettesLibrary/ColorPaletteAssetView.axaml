@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
+             x:DataType="local:ColorPaletteAssetViewModel"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties"
+             x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.ColorPaletteAssetView">
+    <Grid>
+        <Button Command="{CompiledBinding SelectItemCommand}"
+            CornerRadius="4" HorizontalContentAlignment="Stretch" Margin="0,5" HorizontalAlignment="Stretch"
+            Padding="2" Classes="icon-button">
+            <Grid ColumnDefinitions="150,12,*">
+                <Border CornerRadius="2" Background="Transparent" ClipToBounds="True">
+                    <ItemsControl ItemsSource="{Binding Colors}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" Columns="{Binding Colors.Count}"></UniformGrid>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border HorizontalAlignment="Stretch" Height="30">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="{Binding }"></SolidColorBrush>
+                                    </Border.Background>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="2" Text="{Binding Name}"></TextBlock>
+            </Grid>
+
+        </Button>
+    </Grid>
+</UserControl>

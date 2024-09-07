@@ -8,7 +8,10 @@
              x:Class="Ambinity.Views.Screens.ProfileEditor.ProfileEditorView">
     <Grid ColumnDefinitions="*, auto">
         <Grid Column="0">
-            <ContentControl Content="{CompiledBinding LayoutViewModel}"></ContentControl>
+            <Border Padding="10" Classes="card" Margin="0,10,10,10">
+                <ContentControl Content="{CompiledBinding LayoutViewModel}"></ContentControl>
+            </Border>
+      
         </Grid>
         
         <Grid HorizontalAlignment="Right"  Grid.Column="1">

@@ -9,4 +9,5 @@ public interface IGeneralSettings
     bool StartMinimized { get; set; }
     Color PrimaryColor { get; set; }
     bool EnableSnapToGrid { get; set; }
+    bool ShowCanvasLockedInfo { get; set; }
 }

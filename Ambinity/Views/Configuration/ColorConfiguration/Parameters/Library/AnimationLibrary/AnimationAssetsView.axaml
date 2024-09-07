@@ -1,0 +1,77 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
+             x:DataType="local:AnimationAssetsViewModel"
+             x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.AnimationAssetsView">
+       <Grid RowDefinitions="50,10,5,Auto,*">
+        <Grid ColumnDefinitions="Auto,*,40">
+            <ListBox SelectedItem="{Binding SelectedRepository}" ItemContainerTheme="{DynamicResource _striplessListboxItem}"
+                     ItemsSource="{Binding Tabs}"
+                     Padding="1" VerticalAlignment="Center" Margin="10,0,0,0" HorizontalAlignment="Left">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="7" Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding }"></TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <Separator Margin="10,0" Grid.Row="1" Height="1"></Separator>
+        <ProgressBar Margin="10,0" IsIndeterminate="True" IsVisible="{Binding IsLoading}" Height="2" Grid.Row="2"></ProgressBar>
+        <Grid Margin="10,0,10,5" Row="3">
+            <Grid ColumnDefinitions="Auto,*">
+                <StackPanel Margin="0,0,0,0" Grid.Column="0" Orientation="Horizontal" Spacing="5">
+                    <TextBlock Margin="0,10" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
+                               Text="{Binding DisplayAssets.Count}">
+                    </TextBlock>
+                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13" Text="Items"></TextBlock>
+
+                </StackPanel>
+                <TextBox Height="25"
+                         Margin="40,0,0,0"
+                         HorizontalContentAlignment="Left"
+                         HorizontalAlignment="Stretch"
+                         IsEnabled="{Binding !IsLoading}"
+                         Text="{Binding SearchContent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                         BorderThickness="0" Grid.Column="1">
+                    <TextBox.InnerRightContent>
+                        <PathIcon Margin="10,0" Width="15" Height="15" Data="{DynamicResource search}"></PathIcon>
+                    </TextBox.InnerRightContent>
+                </TextBox>
+            </Grid>
+
+
+        </Grid>
+        <ScrollViewer Padding="0,0,0,10" Grid.Row="4">
+            <Grid Margin="10,5">
+                <ItemsControl ItemsSource="{Binding DisplayAssets}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel></VirtualizingStackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <Grid RowDefinitions="*,Auto,*" IsVisible="{Binding ShowNoResult}">
+                    <StackPanel Grid.Row="1" Spacing="3">
+                        <TextBlock FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Text="No result">
+                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource ButtonForegroundDisabled}"
+                                   Text="{Binding SearchContent,StringFormat='for &quot;{0}&quot;'}">
+                        </TextBlock>
+                    </StackPanel>
+
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

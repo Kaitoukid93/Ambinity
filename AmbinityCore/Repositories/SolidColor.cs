@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace AmbinityCore.Repositories;
 
-public class SolidColor : StaticColor, ICollectableItem
+public class SolidColor : FillColorBase, ICollectableItem
 {
     public event Action<ICollectableItem>? ItemNameChanged;
     public event Action<ICollectableItem>? ItemPinStatusChanged;
@@ -39,9 +39,9 @@ public class SolidColor : StaticColor, ICollectableItem
         Name = name;
     }
 
-    public override Brush GetBrush()
+    public override List<Brush>  GetBrush()
     {
-        return new SolidColorBrush(Color);
+        return new List<Brush>() { new SolidColorBrush(Color) };
     }
 
     public SolidColor()
@@ -50,6 +50,12 @@ public class SolidColor : StaticColor, ICollectableItem
 
     public void Save()
     {
+        if (LocalPath == null || !Directory.Exists(LocalPath))
+        {
+            //create local path
+            var dbPath = GetLocalRepository().LocalFolderPath;
+            LocalPath = Path.Combine(dbPath, Name + ".json"); // item without thumbnaill will be store in the same folder
+        }
         JsonHelpers.WriteSimpleJson(this, LocalPath);
     }
 }

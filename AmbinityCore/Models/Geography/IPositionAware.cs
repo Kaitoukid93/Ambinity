@@ -55,7 +55,10 @@ public interface IPositionAware
     /// Indicate selectable property of this object
     /// </summary>
     bool IsSelectable { get; set; }
-
+    /// <summary>
+    /// Indicate Selected property of this object
+    /// </summary>
+    bool IsSelected { get; set; }
     /// <summary>
     /// Indicate resizeable property of this object
     /// </summary>
@@ -73,4 +76,12 @@ public interface IPositionAware
 
     ContainerFigure GetContainer();
     ContainerFigure Clone(float x, float y);
+    string GetDisplayName();
+    string Icon { get; }
+    Rect Bound { get; }
+    Guid GroupID { get; set; }
+    void SetScale(float scale);
+
+    void SetRotation(float angle);
+
 }

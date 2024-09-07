@@ -2,9 +2,12 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Ambinity.Builders;
+using Ambinity.Views.SideMenu;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using FluentAvalonia.UI.Controls;
@@ -48,6 +51,46 @@ internal class WindowService : IWindowService
         window.Show();
 
         return window;
+    }
+
+    public Window ShowWindow(object viewModel, int screen)
+    {
+        string name = viewModel.GetType().FullName!.Split('`')[0].Replace("ViewModel", "View");
+        Type? type = viewModel.GetType().Assembly.GetType(name);
+
+        if (type == null)
+            throw new Exception($"Failed to find a window named {name}.");
+
+        if (!type.IsAssignableTo(typeof(Window)))
+            throw new Exception($"Type {name} is not a window.");
+
+        Window window = (Window)Activator.CreateInstance(type)!;
+        window.DataContext = viewModel;
+
+        var monitor = window.Screens.All.Count <= screen ? window.Screens.All.First() : window.Screens.All[screen];
+        if (monitor != null)
+        {
+            window.Position = monitor.WorkingArea.TopLeft;
+            window.Show();
+        }
+
+        return window;
+    }
+
+    public OpenFileDialogBuilder CreateOpenFileDialog()
+    {
+        Window? currentWindow = GetCurrentWindow();
+        if (currentWindow == null)
+            throw new Exception("Can't show an open file dialog without any windows being shown.");
+        return new OpenFileDialogBuilder(currentWindow);
+    }
+
+    public SaveFileDialogBuilder CreateSaveFileDialog()
+    {
+        Window? currentWindow = GetCurrentWindow();
+        if (currentWindow == null)
+            throw new Exception("Can't show a save file dialog without any windows being shown.");
+        return new SaveFileDialogBuilder(currentWindow);
     }
 
     public Window? GetCurrentWindow()

@@ -92,7 +92,10 @@ namespace Draw2D.Core.Handles
         {
             canvas.RemoveAdornerFigure(this);
         }
-
+        public override bool HitTest(float x, float y)
+        {
+            return BoundingBox.HitTest(x, y,1.5/StrokeThickness);
+        }
         public void Update()
         {
             ForceSetPositionOfCenter(_line[LinePointIndex].X, _line[LinePointIndex].Y);

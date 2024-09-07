@@ -78,8 +78,8 @@ public class PositionConfigurationViewModel : ViewModelBase
         PositionAwareItem.Y = float.Parse(YProperty);
         PositionAwareItem.Width = float.Parse(WidthProperty);
         PositionAwareItem.Height = float.Parse(HeightProperty);
-        PositionAwareItem.Rotation = float.Parse(RotationProperty);
-        PositionAwareItem.Scale = float.Parse(ScaleProperty);
+        PositionAwareItem.SetRotation(float.Parse(RotationProperty));
+        PositionAwareItem.SetScale(float.Parse(ScaleProperty));
         (_canvas.Canvas as Canvas).NeedsRepaint(null);
     }
 
@@ -234,7 +234,17 @@ public class PositionConfigurationViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+    private bool _isVisible = true;
 
+    public bool IsVisible
+    {
+        get => _isVisible;
+        set
+        {
+            _isVisible = value;
+            OnPropertyChanged();
+        }
+    }
     public ICommand SetItemScaleCommand { get; set; }
 
     public void Reset()

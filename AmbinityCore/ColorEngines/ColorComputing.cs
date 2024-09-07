@@ -1,3 +1,4 @@
+using AmbinityCore.Models.Lighting.Zone.Configuration;
 using Avalonia;
 using Avalonia.Media;
 using Draw2D.Core.Graphic;
@@ -53,15 +54,20 @@ public static class ColorComputing
 
      }
  }
- public static void PlotPixel(FrameBuffer _imageBuffer, int x, int y, byte redValue,
+ public static unsafe void PlotPixel(FrameBuffer _imageBuffer, int x, int y, byte redValue,
  byte greenValue, byte blueValue)
  {
      int offset = ((_imageBuffer.FrameWidth * 4) * y) + (x * 4);
-     _imageBuffer.PixelData[offset] = blueValue;
-     _imageBuffer.PixelData[offset + 1] = greenValue;
-     _imageBuffer.PixelData[offset + 2] = redValue;
-     // Fixed alpha value (No transparency)
-     _imageBuffer.PixelData[offset + 3] = 255;
+     fixed (byte* ptr = _imageBuffer.PixelData)
+     {
+         ptr[offset] = blueValue;
+         ptr[offset + 1] = greenValue;
+         ptr[offset + 2] = redValue;
+         // Fixed alpha value (No transparency)
+        ptr[offset + 3] = 255;
+     }
+     
+   
  }
  public static void SetBlockImage(byte[]_imageBuffer,Rect block, byte[]_imagesource)
  {
@@ -70,10 +76,7 @@ public static class ColorComputing
  }
  public static List<Color> GetColorGradient(Color from, Color to, int totalNumberOfColors)
  {
-     if (totalNumberOfColors < 2)
-     {
-         throw new ArgumentException("Gradient cannot have less than two colors.", nameof(totalNumberOfColors));
-     }
+     
      var colorList = new List<Color>();
      double diffA = to.A - from.A;
      double diffR = to.R - from.R;
@@ -81,6 +84,8 @@ public static class ColorComputing
      double diffB = to.B - from.B;
 
      var steps = totalNumberOfColors - 1;
+     if (steps <= 0)
+         steps = 1;
 
      var stepA = diffA / steps;
      var stepR = diffR / steps;
@@ -107,35 +112,33 @@ public static class ColorComputing
      return colorList;
 
  }
- public static IEnumerable<Color> GetColorGradientfromPaletteWithFixedColorPerGap(Color[] colorCollection)
- {
-     var colors = new List<Color>();
-     var colorPerGap = (int)(1024 / colorCollection.Length);
 
-     for (int i = 0; i < colorCollection.Length - 1; i++)
-     {
-         var gradient = GetColorGradient(colorCollection[i], colorCollection[i + 1], colorPerGap);
-         colors = colors.Concat(gradient).ToList();
-     }
-     var lastGradient = GetColorGradient(colorCollection[colorCollection.Length - 1], colorCollection[0], colorPerGap);
-     colors = colors.Concat(lastGradient).ToList();
-     return colors;
-
- }
- public static IEnumerable<Color> GetColorColorBankfromPaletteWithFixedColorPerGap(Color[] colorCollection, int length)
+ public static IEnumerable<Color> GetColorColorBankfromPaletteWithFixedColorPerGap(Color[] colorCollection, int length, PaletteBlend blend)
  {
-     var colors = new List<Color>();
+     
+     var colors  = new List<Color>();
+     if (colorCollection.Length < 1)
+         return colors;
      var colorPerGap = (int)(length / colorCollection.Length);
-
-
-     for (int i = 0; i < colorCollection.Length; i++)
+     if (blend.Mode == PaletteBlendModeEnum.LinearBlend)
      {
-         var gradient = new Color[colorPerGap];
-         Array.Fill(gradient, colorCollection[i]);
-         colors = colors.Concat(gradient).ToList();
+         for (int i = 0; i < colorCollection.Length - 1; i++)
+         {
+             var gradient = GetColorGradient(colorCollection[i], colorCollection[i + 1], colorPerGap);
+             colors = colors.Concat(gradient).ToList();
+         }
+         var lastGradient = GetColorGradient(colorCollection[colorCollection.Length - 1], colorCollection[0], colorPerGap);
+         colors = colors.Concat(lastGradient).ToList();
      }
-
-
+     else
+     {
+         for (int i = 0; i < colorCollection.Length; i++)
+         {
+             var gradient = new Color[colorPerGap];
+             Array.Fill(gradient, colorCollection[i]);
+             colors = colors.Concat(gradient).ToList();
+         }
+     }
      return colors;
 
  }

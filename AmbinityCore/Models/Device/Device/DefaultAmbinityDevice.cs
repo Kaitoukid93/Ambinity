@@ -2,9 +2,7 @@ namespace AmbinityCore.Models.Device.Device;
 
 public class DefaultAmbinityDevice
 {
-    private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "adrilight\\");
-    private string SupportedDeviceCollectionFolderPath =>  Path.Combine(JsonPath, "SupportedDevices");
+    private string SupportedDeviceCollectionFolderPath =>  Path.Combine(Constants.AppDataFolder, "SupportedDevices");
     private string folderPath => Path.Combine(SupportedDeviceCollectionFolderPath, "Ambino Dualring Fan");
    
     public AmbinityDevice DefaultARGBLEDStrip()

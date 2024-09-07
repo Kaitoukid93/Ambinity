@@ -589,7 +589,7 @@ namespace Draw2D.Core
 
             ActiveTool = tool;
 
-            tool.OnDone = (toolBase) => { ActiveTool = null; };
+            tool.OnDone = (toolBase) => { ActiveTool = null; onDone.Invoke(null); };
         }
 
         public void UnInstallCurrentTool()

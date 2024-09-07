@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:draw2DCanvas="clr-namespace:Ambinity.Views.Draw2DCanvas"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             x:DataType="draw2DCanvas:Draw2DCanvasInfoBarViewModel"
+             x:Class="Ambinity.Views.Draw2DCanvas.Draw2DCanvasInfoBarView">
+    
+    <ui:InfoBar IsOpen="{CompiledBinding IsOpen}" Message="{Binding Message}" Title="{CompiledBinding Title }"
+                Severity="{CompiledBinding Severity}">
+        <CheckBox Command="{Binding ShowCanvasLockedInfoCheck}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" Content="Don't show again"/>
+    </ui:InfoBar>
+</UserControl>

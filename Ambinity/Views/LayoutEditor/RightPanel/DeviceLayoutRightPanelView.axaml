@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia"
+             x:DataType="local:DeviceLayoutRightPanelViewModel"
+             Focusable="True"
+             x:Class="Ambinity.Views.LayoutEditor.DeviceLayoutRightPanelView">
+    <Grid>
+        <Grid RowDefinitions="Auto,0,Auto,*">
+            <ContentControl IsVisible="{Binding !IsLocked}" Content="{Binding PropertiesViewModel}"></ContentControl>
+            <Grid IsVisible="{Binding !IsLocked}" Grid.Row="2" Margin="20,0,20,10" ColumnDefinitions="*,Auto">
+                <TextBlock HorizontalAlignment="Left" Text="Available Device Layout"></TextBlock>
+                <Grid Column="1">
+                    <Button Click="InfoButton_OnClick" x:Name="infoButton" Background="Transparent"
+                            BorderThickness="0" Classes="icon-button" HorizontalAlignment="Right"
+                            VerticalAlignment="Top" Margin="0,0">
+                        <PathIcon Width="15" Height="15" Data="{DynamicResource infoCircle}"></PathIcon>
+                    </Button>
+                    <ui:TeachingTip IsLightDismissEnabled="True" x:Name="infotip"
+                                    HeroContentPlacement="Auto"
+                                    Target="{Binding ElementName=infoButton}">
+                        <ui:TeachingTip.HeroContent>
+                            <Border CornerRadius="7,7,0,0" Background="{Binding #infotip.Background}" Padding="10">
+                                <mdxaml:MarkdownScrollViewer xml:space="preserve">
+##### **Device Layout**
+
+ * **What even is Device Layout?** 
+ Device layout is the model Ambinity use to calculate the color based on position and shape.
+ * **Why do I need a custom Device Layout** 
+ It's fine if you just use the default layout, but Ambinity will not be able to calculate the color precisely. Hence the default model will
+not represent a 1:1 color to the actual device
+ 
+Request custom layout at [Ambino-Layout](https://ambino.vn)
+                                                </mdxaml:MarkdownScrollViewer>
+                            </Border>
+                        </ui:TeachingTip.HeroContent>
+                    </ui:TeachingTip>
+                </Grid>
+            </Grid>
+
+            <ContentControl Grid.Row="3" IsVisible="{Binding !IsLocked}" Content="{Binding AssetsesViewModel}"></ContentControl>
+        </Grid>
+        <Border Width="350" IsVisible="{Binding IsLocked}">
+
+            <StackPanel Spacing="20" Margin="20" VerticalAlignment="Center">
+                <PathIcon Data="{DynamicResource lock}" Width="100" Height="100"></PathIcon>
+                <TextBlock Foreground="DarkOrange" TextAlignment="Center" TextWrapping="Wrap" FontWeight="SemiBold"
+                           FontSize="15"
+                           Text="Properties panel is locked during rendering. Please stop the profile to change device's properties">
+                </TextBlock>
+            </StackPanel>
+
+        </Border>
+    </Grid>
+</UserControl>

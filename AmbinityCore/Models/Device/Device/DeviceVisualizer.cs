@@ -39,6 +39,7 @@ public class DeviceVisualizer : ICanvasVisualizerItem
     private void OnDeviceUpdate()
     {
         _deviceBounds = MeasureDevice();
+        SetupForDevice();
         ItemUpdated?.Invoke();
     }
 
@@ -73,10 +74,14 @@ public class DeviceVisualizer : ICanvasVisualizerItem
                 dc.PushTransform(Matrix.CreateTranslation(_device.X / _device.Scale, _device.Y / _device.Scale));
             using DrawingContext.PushedState rotationPush =
                 dc.PushTransform(Matrix.CreateRotation(Matrix.ToRadians(_device.Rotation)));
-
             // Render device and LED images 
             if (_deviceImage != null)
-                dc.DrawImage(_deviceImage, new Rect(_deviceImage.Size), new Rect(0, 0, _device.Width, _device.Height));
+            {
+                if (_device.IsDraggable)
+                    dc.DrawImage(_deviceImage, new Rect(_deviceImage.Size),
+                        new Rect(0, 0, _device.Width, _device.Height));
+            }
+            // 
 
             // if (!ShowColors)
             //     return;
@@ -163,7 +168,10 @@ public class DeviceVisualizer : ICanvasVisualizerItem
         AmbinityDeviceLayout? layout = device.Layout;
         if (layout == null)
             return null;
-
+        if (layout.FilePath == null)
+            return null;
+        if (!File.Exists(Path.Combine(layout.FilePath, "thumbnail.png")))
+            return null;
         if (BitmapCache.TryGetValue(layout.FilePath, out RenderTargetBitmap? existingBitmap))
             return existingBitmap;
 

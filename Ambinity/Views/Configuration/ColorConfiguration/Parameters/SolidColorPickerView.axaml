@@ -1,0 +1,129 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
+             x:DataType="local:SolidColorPickerViewModel"
+             Focusable="True"
+             xmlns:repo="clr-namespace:AmbinityCore.Repositories;assembly=AmbinityCore"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties"
+             x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.SolidColorPickerView">
+
+    <Grid Background="Transparent" Width="300" Height="472" RowDefinitions="50,5,20,*">
+        <Grid ColumnDefinitions="*,Auto">
+            <ListBox SelectedIndex="{Binding SelectedTab}" ItemContainerTheme="{DynamicResource _striplessListboxItem}"
+                     ItemsSource="{Binding Tabs}"
+                     Padding="1" VerticalAlignment="Center" Margin="10,0,0,0" HorizontalAlignment="Left">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="7" Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding }"></TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+
+        </Grid>
+        <Separator Margin="12,0" Grid.Row="1"></Separator>
+        <Grid Row="3" IsVisible="{Binding SelectedTab}">
+            <ScrollViewer>
+                <ItemsControl ItemsSource="{Binding ColorsLibrary}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="5"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type repo:SolidColor}">
+                            <Button
+                                Command="{Binding $parent[ItemsControl].((local:SolidColorPickerViewModel)DataContext).SelectPredefinedColorCommand }"
+                                CommandParameter="{Binding }" CornerRadius="0" Classes="icon-button" Height="30"
+                                Padding="5,0" HorizontalContentAlignment="Left" VerticalContentAlignment="Stretch"
+                                HorizontalAlignment="Stretch">
+                                <Grid Margin="10,5" ColumnDefinitions="Auto,10,*">
+                                    <Ellipse StrokeThickness="1" Stroke="{DynamicResource ButtonBorderBrush}"
+                                             Width="20" Height="20">
+                                        <Ellipse.Fill>
+                                            <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+                                    <TextBlock VerticalAlignment="Top" Padding="0" Grid.Column="2"
+                                               Text="{Binding Name}">
+                                    </TextBlock>
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+        </Grid>
+        <Grid IsVisible="{Binding !SelectedTab}" Row="3" RowDefinitions="200,12,Auto,12,5,12,Auto">
+            <Border CornerRadius="7" ClipToBounds="True">
+                <ui:ColorSpectrum Color="{CompiledBinding Color,Mode=TwoWay}" Margin="12,0"
+                                  ColorChanged="Spectrum_OnColorChanged"
+                                  x:Name="Spectrum" VerticalAlignment="Top" Height="200">
+                </ui:ColorSpectrum>
+            </Border>
+            <Grid Row="2" ColumnDefinitions="Auto,*">
+                <Grid Column="0">
+                    <Border Width="65" Height="65" Margin="12,0" CornerRadius="7">
+                        <Border.Background>
+                            <SolidColorBrush Color="{CompiledBinding Color,Mode=TwoWay}"></SolidColorBrush>
+                        </Border.Background>
+                    </Border>
+                </Grid>
+                <Grid Column="1" RowDefinitions="20,12,32">
+                    <Grid Row="0">
+                        <ui:ColorRamp  Margin="0,0,12,0" x:Name="Hue"
+                                       Color="{CompiledBinding Color, Mode=TwoWay}"
+                                      BorderThickness="2" CornerRadius="{DynamicResource OverlayCornerRadius}"
+                                      ColorChanged="ColorPickerComponent_OnColorChanged" Height="20"
+                                      Orientation="Horizontal" Component="Hue">
+                        </ui:ColorRamp>
+                    </Grid>
+                    <Grid Row="2" ColumnDefinitions="Auto,12,*">
+                        <ui:FAComboBox SelectedIndex="0" Width="80" Margin="0">
+                            <ui:FAComboBoxItem>Hex</ui:FAComboBoxItem>
+                        </ui:FAComboBox>
+                        <TextBox Grid.Column="2" LostFocus="HexBox_OnLostFocus" HorizontalAlignment="Stretch"
+                                 BorderThickness="0" Margin="0,0,12,0"
+                                 x:Name="HexBox">
+                        </TextBox>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Separator Margin="12,0" Grid.Row="4"></Separator>
+            <Grid Row="6">
+                <ItemsControl Tag="{Binding}" ItemsSource="{Binding ColorShades}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="5" Rows="1"></UniformGrid>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.DataTemplates>
+                        <DataTemplate DataType="{x:Type Color}">
+                            <Button ToolTip.Tip="{Binding }"
+                                    Command="{Binding $parent[ItemsControl].((local:SolidColorPickerViewModel)DataContext).SelectShadeCommand }"
+                                    CommandParameter="{Binding }"
+                                    CornerRadius="7" HorizontalAlignment="Center" Padding="2" Classes="icon-button">
+                                <Border Width="40" Height="40" CornerRadius="5">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="{Binding }"></SolidColorBrush>
+                                    </Border.Background>
+                                </Border>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.DataTemplates>
+                </ItemsControl>
+            </Grid>
+        </Grid>
+
+    </Grid>
+</UserControl>

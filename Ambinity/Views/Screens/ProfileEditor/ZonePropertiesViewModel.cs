@@ -1,47 +1,60 @@
 using System.Linq;
-using Ambinity.ViewModels;
 using Ambinity.Views.Configuration.ColorConfiguration;
 using Ambinity.Views.Configuration.PositionConfiguration;
 using Ambinity.Views.Draw2DCanvas;
-using Ambinity.Views.Screens.ProfileEditor.ZoneConfiguration;
+using Ambinity.Views.LayoutEditor.RightPanel.PropertiesView;
+using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
-using Draw2D.Core;
 
 namespace Ambinity.Views.Screens.ProfileEditor;
 
 public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
 {
-    public ZonePropertiesViewModel(Draw2DCanvasViewModel canvasViewModel)
+    public ZonePropertiesViewModel(Draw2DCanvasViewModel canvasViewModel,
+        ColorConfigurationViewModelFactory colorConfigurationViewModelFactory,
+        PositionConfigurationViewModel positionConfigurationViewModel)
     {
+        PositionConfiguration = positionConfigurationViewModel;
         _canvasViewModel = canvasViewModel;
+        _colorConfigurationViewModelFactory = colorConfigurationViewModelFactory;
         Init();
     }
+
     public override void UpdateObjectProperties()
     {
         var selectedItems = _canvasViewModel.Canvas.Selection.All;
         if (selectedItems.Count == 0)
         {
-           DisableEdit();
-           Header = NullHeader();
-           //clear view
+            DisableEdit();
+            Header = NullHeader();
+            //clear view
         }
         else if (selectedItems.Count == 1)
         {
-             var fig = selectedItems.First();
-             fig.PositionPropertyChanged += OnItemPositionChanged;
-            var zone = (fig as LightingZoneFigure).ChildItem as LightingZone;
-            if(zone ==null || !fig.IsResizable)
-                DisableEdit();
+           
+            var fig = selectedItems.First();
+            if(fig is not ContainerFigure)
+                return;
+            fig.PositionPropertyChanged += OnItemPositionChanged;
+            var zone = (fig as LightingZoneFigure)?.ChildItem as LightingZone;
+            if (zone == null)
+                return;
+            if(!fig.IsResizable)
+            {
+                PositionConfiguration.IsEnabled = false;
+            }
+               
             else
             {
                 
-                PositionConfiguration = new PositionConfigurationViewModel(_canvasViewModel);
+                EnableEdit();
                 PositionConfiguration.Init(zone);
             }
+            _zone = zone;
             //show full view
-            
-            ColorConfiguration = ColorConfigurationHelper.GetColorConfiguration(zone.LightingConfiguration);
+            ColorConfiguration?.Dispose();
+            ColorConfiguration = _colorConfigurationViewModelFactory.GetColorConfiguration(zone.LightingConfiguration);
             Header = GetHeader(zone.LightingConfiguration);
         }
         else
@@ -51,23 +64,26 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         }
     }
 
-    
-
 
     private void OnItemPositionChanged(float arg1, float arg2)
     {
         PositionConfiguration.Update();
     }
-    
+
     private LightingZone _zone;
     private Draw2DCanvasViewModel _canvasViewModel;
     private PositionConfigurationViewModel _positionConfiguration;
-    
+    private ColorConfigurationViewModelFactory _colorConfigurationViewModelFactory;
+
     public override void DisableEdit()
     {
-        PositionConfiguration = new PositionConfigurationViewModel(_canvasViewModel);
         PositionConfiguration.IsEnabled = false;
+        ColorConfiguration?.Dispose();
         ColorConfiguration = new NullColorConfigurationViewModel();
+    }
+    public override void EnableEdit()
+    {
+        PositionConfiguration.IsEnabled = true;
     }
     public PositionConfigurationViewModel PositionConfiguration
     {
@@ -80,20 +96,20 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
     }
 
     private ColorConfigurationViewModelBase _colorConfiguration;
-   
+
     public ColorConfigurationViewModelBase ColorConfiguration
     {
         get => _colorConfiguration;
         set
         {
             _colorConfiguration = value;
-           OnPropertyChanged();
+            OnPropertyChanged();
         }
     }
 
-    private PropertiesViewHeader _header;
+    private ConfigurationHeaderViewModel _header;
 
-    public PropertiesViewHeader Header
+    public ConfigurationHeaderViewModel Header
     {
         get => _header;
         set
@@ -102,51 +118,20 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
             OnPropertyChanged();
         }
     }
-    private PropertiesViewHeader GetHeader(ILightingConfiguration config)
+
+    private ConfigurationHeaderViewModel GetHeader(ILightingConfiguration config)
     {
-        var header = new PropertiesViewHeader(null, null);
-        switch (config.Type)
-        {
-            case ConfigurationType.ScreenCapture:
-                header.Icon = config.Icon;
-                header.Header = "Screen Capture";
-                break;
-            
-            case ConfigurationType.ColorPalette:
-                header.Header = "Color Palette";
-                header.Icon = config.Icon;
-                break;
-            
-            case ConfigurationType.StaticColor:
-                header.Header = "Fill Color";
-                header.Icon = config.Icon;
-                break;
-            
-            case ConfigurationType.MusicReactive:
-                header.Header = "Music Reactive";
-                header.Icon = config.Icon;
-                break;
-            
-            case ConfigurationType.Gifxelation:
-                header.Header = "Gifxelation";
-                header.Icon = config.Icon;
-                break;
-            
-            case ConfigurationType.Animation:
-                header.Header = "Animation";
-                header.Icon = config.Icon;
-                break;
-        }
+        var header = new ConfigurationHeaderViewModel(_zone.Shape.ToString() + " - " + _zone.LightingConfiguration.Name, _zone.Icon);
         return header;
-        
     }
-    private PropertiesViewHeader NullHeader()
+
+    private ConfigurationHeaderViewModel NullHeader()
     {
-        return new PropertiesViewHeader("0 item selected", null,false);
+        return new ConfigurationHeaderViewModel("Please select an item to begin", "void_selected", true);
     }
-    private PropertiesViewHeader MultipleSelectedHeader(int count)
+
+    private ConfigurationHeaderViewModel MultipleSelectedHeader(int count)
     {
-        return new PropertiesViewHeader(count+" "+"items selected", "Zones");
+        return new ConfigurationHeaderViewModel(count + " " + "items selected", "Zones");
     }
-    
 }

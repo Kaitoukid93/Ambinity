@@ -14,15 +14,17 @@ public class ScreenCapturingService : ICapturingService
     private IScreenCaptureService _screenCaptureService;
     private List<IScreenCapture> _screenCaptures { get; set; }
     private bool _disposed { get; set; }
+    public List<Display> AvailableScreens => _availableScreen;
+    private List<Display> _availableScreen;
 
     public void Init()
     {
         _screenCaptureService?.Dispose();
         _screenCaptureService ??= new DX11ScreenCaptureService();
         IEnumerable<GraphicsCard> graphicsCards = _screenCaptureService.GetGraphicsCards();
-        IEnumerable<Display> displays = _screenCaptureService.GetDisplays(graphicsCards.First());
+         _availableScreen = _screenCaptureService.GetDisplays(graphicsCards.First()).ToList();
         _screenCaptures = new List<IScreenCapture>();
-        foreach (var display in displays)
+        foreach (var display in _availableScreen)
         {
             var screenCapture = _screenCaptureService.GetScreenCapture(display);
             _screenCaptures.Add(screenCapture);

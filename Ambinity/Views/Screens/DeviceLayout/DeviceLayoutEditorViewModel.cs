@@ -9,7 +9,9 @@ using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Device.Device;
+using AmbinityCore.Models.Device.LED;
 using AmbinityCore.Models.Geography;
+using AmbinityCore.Repositories;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Draw2D.Core;
 
@@ -17,17 +19,23 @@ namespace Ambinity.Views.Screens.DeviceLayout;
 
 public class DeviceLayoutEditorViewModel : ViewModelBase
 {
-    public DeviceLayoutEditorViewModel(LayoutCanvasViewModel layoutViewModel, RightPanelViewModel rightPanelViewModel,
+    public DeviceLayoutEditorViewModel(LayoutCanvasViewModel layoutViewModel, DeviceLayoutRightPanelViewModel rightPanelViewModel,
         IMainWindowService mainWindowService, DevicePropertiesViewModel propertiesViewModel,
-        SerialControllerRepository serialControllerRepository )
+        ToolsViewModel toolsViewModel,
+        AmbinityDeviceLayoutRepository ambinityDeviceLayoutRepository,
+        AmbinityDeviceOnlineRepository ambinityDeviceOnlineRepository,
+        AmbinityDeviceRepository deviceRepository )
     {
         LayoutViewModel = layoutViewModel;
         LayoutViewModel.ItemAdded += OnItemAdded;
         LayoutViewModel.ItemRemoved += OnItemRemoved;
-        _serialControllerRepository = serialControllerRepository;
+        _deviceRepository = deviceRepository;
         RightPanelViewModel = rightPanelViewModel;
         _propertiesViewModel = propertiesViewModel;
         mainWindowService.MainWindowClosed += OnMainWindowClosed;
+        _ambinityDeviceLayoutRepository = ambinityDeviceLayoutRepository;
+        _ambinityDeviceOnlineRepository = ambinityDeviceOnlineRepository;
+        _toolsViewModel = toolsViewModel;
     }
 
     private void OnItemRemoved(Figure item)
@@ -43,37 +51,49 @@ public class DeviceLayoutEditorViewModel : ViewModelBase
 
     private void OnMainWindowClosed(object? sender, EventArgs e)
     {
-        // throw new NotImplementedException();
+        Dispose();
     }
 
     public LayoutCanvasViewModel LayoutViewModel { get; set; }
-    public RightPanelViewModel RightPanelViewModel { get; set; }
-    private SerialControllerRepository _serialControllerRepository;
+    public DeviceLayoutRightPanelViewModel RightPanelViewModel { get; set; }
     private DevicePropertiesViewModel _propertiesViewModel;
+    private readonly AmbinityDeviceLayoutRepository _ambinityDeviceLayoutRepository;
+    private readonly AmbinityDeviceOnlineRepository _ambinityDeviceOnlineRepository;
+    private readonly ToolsViewModel _toolsViewModel;
+    private readonly AmbinityDeviceRepository _deviceRepository;
+
     public void Init()
     {
         var devices = new List<AmbinityDevice>();
-        foreach (SerialController controller in _serialControllerRepository.Items)
+        var leds = new List<AmbinityLED>();
+        foreach (var device in _deviceRepository.Devices)
         {
-            foreach (var output in controller.LedController.Outputs)
+            device.IsSelectable = true;
+            device.IsDraggable = true;
+            device.IsResizeable = false;
+            device.IsRotatable = true;
+            device.IsScalable = true;
+            device.IsDeleteable = false;
+            devices.Add(device);
+            foreach (var led in device.Leds)
             {
-                var device = output.Device;
-                device.IsSelectable = true;
-                device.IsDraggable = true;
-                device.IsResizeable = false;
-                device.IsRotatable = true;
-                device.IsScalable = true;
-                device.IsDeleteable = false;
-                devices.Add(device);
+                leds.Add(led);
             }
         }
-
-        var localRepo = Ioc.Default.GetRequiredService<AmbinityDeviceLayoutRepository>();
-        var onlineRepo = Ioc.Default.GetRequiredService<AmbinityDeviceOnlineRepository>();
+               
+            
+        
         //init layout canvas
         LayoutViewModel.ShoudDrawBackground = false;
         LayoutViewModel.Init(devices);
+        _toolsViewModel.InitForDeviceLayout();
         RightPanelViewModel.PropertiesViewModel = _propertiesViewModel;
-         RightPanelViewModel.Init(localRepo,onlineRepo);
+         RightPanelViewModel.Init(_ambinityDeviceLayoutRepository,_ambinityDeviceOnlineRepository);
+    }
+
+    public override void Dispose()
+    {
+        LayoutViewModel?.Dispose();
+        RightPanelViewModel?.Dispose();
     }
 }

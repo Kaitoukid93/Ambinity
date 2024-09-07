@@ -10,37 +10,37 @@
              x:Class="Ambinity.Views.SideMenu.SideMenuProfileCategoryView">
      <UserControl.Resources>
         <MenuFlyout x:Key="CategoryMenuFlyout" Placement="Bottom">
-            <MenuItem Header="Move up" Command="{CompiledBinding MoveUp}">
-                <MenuItem.Icon>
-                    <PathIcon Width="12" Height="12" Data="{DynamicResource moveUp}"></PathIcon>
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="Move down" Command="{CompiledBinding MoveDown}">
-                <MenuItem.Icon>
-                    <PathIcon Width="12" Height="12" Data="{DynamicResource moveDown}"></PathIcon>
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="-" />
+            <!-- <MenuItem Header="Move up" Command="{CompiledBinding MoveUp}"> -->
+            <!--     <MenuItem.Icon> -->
+            <!--         <PathIcon Width="12" Height="12" Data="{DynamicResource moveUp}"></PathIcon> -->
+            <!--     </MenuItem.Icon> -->
+            <!-- </MenuItem> -->
+            <!-- <MenuItem Header="Move down" Command="{CompiledBinding MoveDown}"> -->
+            <!--     <MenuItem.Icon> -->
+            <!--         <PathIcon Width="12" Height="12" Data="{DynamicResource moveDown}"></PathIcon> -->
+            <!--     </MenuItem.Icon> -->
+            <!-- </MenuItem> -->
+            <!-- <MenuItem Header="-" /> -->
             <MenuItem Header="Rename" Command="{CompiledBinding RenameCategory}">
                 <MenuItem.Icon>
-                    <PathIcon Width="12" Height="12" Data="{DynamicResource rename}"></PathIcon>
+                    <PathIcon Width="15" Height="15" Data="{DynamicResource rename}"></PathIcon>
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="Delete" Command="{CompiledBinding DeleteCategory}">
                 <MenuItem.Icon>
-                    <PathIcon Width="12" Height="12" Data="{DynamicResource remove}"></PathIcon>
+                    <PathIcon Width="15" Height="15" Data="{DynamicResource delete}"></PathIcon>
                 </MenuItem.Icon>
             </MenuItem>
         </MenuFlyout>
         <MenuFlyout x:Key="PlusMenuFlyout" Placement="Bottom">
             <MenuItem Header="Create profile" Command="{CompiledBinding AddProfile}">
                 <MenuItem.Icon>
-                    <avalonia:MaterialIcon Kind="Plus" />
+                    <PathIcon Width="15" Height="15" Data="{DynamicResource SideMenu_Create_Profile}"></PathIcon>
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="Import profile" Command="{CompiledBinding ImportProfile}">
                 <MenuItem.Icon>
-                    <avalonia:MaterialIcon Kind="Import" />
+                    <PathIcon Width="15" Height="15" Data="{DynamicResource Import}"></PathIcon>
                 </MenuItem.Icon>
             </MenuItem>
         </MenuFlyout>
@@ -145,20 +145,21 @@
                     Margin="0 0 2 0">
                 <PathIcon Width="13" Height="13" Data="{DynamicResource generalSettings}"></PathIcon>
             </Button>
-            <Button Classes="icon-button icon-button-small"
-                    Command="{CompiledBinding ToggleSuspended}"
-                    Grid.Column="4"
-                    ToolTip.Tip="Suspend/resume category"
-                    Margin="0 0 2 0">
-                <Panel>
-                    <PathIcon IsVisible="{Binding IsSuspended}" Width="13" Height="13" Data="{DynamicResource 'Eye Close'}"></PathIcon>
-                    <PathIcon IsVisible="{Binding !IsSuspended}" Width="13" Height="13" Data="{DynamicResource 'Eye Open'}"></PathIcon>
-                </Panel>
-            </Button>
+            <!-- <Button Classes="icon-button icon-button-small" -->
+            <!--         Command="{CompiledBinding ToggleSuspended}" -->
+            <!--         Grid.Column="4" -->
+            <!--         ToolTip.Tip="Suspend/resume category" -->
+            <!--         Margin="0 0 2 0"> -->
+            <!--     <Panel> -->
+            <!--         <PathIcon IsVisible="{Binding IsSuspended}" Width="13" Height="13" Data="{DynamicResource 'Eye Close'}"></PathIcon> -->
+            <!--         <PathIcon IsVisible="{Binding !IsSuspended}" Width="13" Height="13" Data="{DynamicResource 'Eye Open'}"></PathIcon> -->
+            <!--     </Panel> -->
+            <!-- </Button> -->
         </Grid>
 
         <Panel Grid.Row="1" IsVisible="{CompiledBinding IsExpanded}">
-            <ListBox Name="SidebarListBox"
+            <ListBox Name="SidebarListBox" 
+                     Classes="sidebar-listbox"
                      ItemsSource="{CompiledBinding Profiles}"
                      SelectedItem="{CompiledBinding SelectedProfile}"
                      MinHeight="35"

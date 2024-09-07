@@ -23,22 +23,16 @@ public class ColorEngineProvider
             case ConfigurationType.ScreenCapture:
                 return Ioc.Default.GetRequiredService<ScreenCaptureEngine>();
                 break;
-            case ConfigurationType.ColorPalette:
-                return Ioc.Default.GetRequiredService<ColorPaletteEngine>();
-                break;
-            case ConfigurationType.StaticColor:
-            case ConfigurationType.BreathingColor:
-                return Ioc.Default.GetRequiredService<StaticColorEngine>();
-                break;
-            case ConfigurationType.MusicReactive:
-                return Ioc.Default.GetRequiredService<MusicReactiveEngine>();
+            case ConfigurationType.SelfGeneratedColor:
+                return Ioc.Default.GetRequiredService<SelfGeneratedColorEngine>();
                 break;
             case ConfigurationType.Gifxelation:
                 return Ioc.Default.GetRequiredService<GifxelationEngine>();
                 break;
             case ConfigurationType.Animation:
-                return Ioc.Default.GetRequiredService<AnimationEngine>();
+                return Ioc.Default.GetRequiredService<AnimationDecodeEngine>();
                 break;
+          
         }
 
         return null;

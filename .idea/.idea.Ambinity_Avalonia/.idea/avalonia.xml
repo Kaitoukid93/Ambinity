@@ -4,6 +4,7 @@
     <option name="projectPerEditor">
       <map>
         <entry key="Ambinity/App.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/ControlTheme/LessUglyColorPicker.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/ControlTheme/StriplessListbox.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styles/Ambinity.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styles/Border.axaml" value="Ambinity/Ambinity.csproj" />
@@ -18,37 +19,82 @@
         <entry key="Ambinity/Views/CollectableItem/DeviceLayout/AmbinityDeviceLayoutAssetView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/CollectableItem/LightingZone/LightingZoneAssetView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/ColorConfigurationView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Animation/AnimationSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/AnimationAssetView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/AnimationAssetsView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/AnimationLibraryView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/AnimationSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/BreathingColorConfigurationView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/BrightnessParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ColorAppearanceParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ColorBehaviorParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ColorPalette/PaletteAppearanceParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ColorPalette/PaletteBlendModeParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ColorPalette/PaletteColorIntensityView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ColorPalette/PaletteSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ColorPaletteAssetView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ColorPaletteAssetsView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ColorsLibraryView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/FillColorSelectionView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Library/AnimationLibrary/AnimationAssetsView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Library/AnimationLibrary/AnimationLibraryView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Library/ColorPalettesLibrary/ColorPaletteAssetView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Library/ColorPalettesLibrary/ColorPaletteAssetsView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Library/ColorPalettesLibrary/ColorPalettesLibraryView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/MotionConfigParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/MusicReactiveConfigurationView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/PaletteAppearanceParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/PaletteBlendModeParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/PaletteColorIntensityView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/PaletteSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SaturationParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/BlackBarDetectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/ScreenCaptureRegionSelectionView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/ScreenRegionSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenRegionSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/BreathingColorConfigurationView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/ColorAppearanceParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/ColorBehaviorParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/ColorsLibraryView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/FillColorSelectionView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/MotionConfigParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/MusicReactiveConfigurationView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/PaletteAppearanceParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/PaletteBlendModeParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SeparationParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Shared/BrightnessParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Shared/SaturationParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Shared/SmoothingParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Shared/SpeedParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SmoothingParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SolidColorPickerView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SpeedParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/StaticColorSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ValueEditorFlyoutView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/PositionConfiguration/PositionConfigurationView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Controls/EyeDroper.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Dashboard/DashboardDeviceView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Dashboard/DashboardView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/DashboardView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/DeviceControl/DeviceControlView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Draw2DCanvas/Draw2DCanvasInfoBarView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Draw2DCanvas/Draw2DCanvasView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Generic.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/GeometryCollection.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/AssetsView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/LayoutEditor/Canvas/LayoutCanvasView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/LayoutEditor/Canvas/ToolsView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/LayerView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/LayersView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/LayoutCanvasView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/LayoutEditorView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/LayoutEditor/RightPanel/AssetsView/RightPanelAssetsView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/LayoutEditor/RightPanel/DeviceLayoutRightPanelView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/LayoutEditor/RightPanel/LayersView/LayerView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/LayoutEditor/RightPanel/LayersView/LayersView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/LayoutEditor/RightPanel/PropertiesView/ConfigurationHeaderView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/LayoutEditor/RightPanel/PropertiesView/UserControl1.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/LayoutEditor/RightPanel/RightPanelView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/RightPanelAssetsView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/RightPanelView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/ToolsView.axaml" value="Ambinity/Ambinity.csproj" />
@@ -60,6 +106,7 @@
         <entry key="Ambinity/Views/Root/RootView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/CaptureEngine/CaptureEngineWindow.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/CaptureEngine/ScreenCapturingView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/CaptureEngine/ScreenPreview.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/Dashboard/DashboardDeviceView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/Dashboard/DashboardView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceControl/DeviceCanvas/DeviceCanvasView.axaml" value="Ambinity/Ambinity.csproj" />
@@ -76,6 +123,7 @@
         <entry key="Ambinity/Views/Screens/ProfileEditor/EffectControlView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/LayersView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/ProfileEditorView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/ProfileEditor/RightPanelFlyoutView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/RightPanelView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/RightPanelViewModel.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/ZoneConfiguration/ConfigurationHeaderView.axaml" value="Ambinity/Ambinity.csproj" />
@@ -89,6 +137,7 @@
         <entry key="Ambinity/Views/Screens/ProfileEditor/ZoneMappingView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/ZoneMappingview.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/ZonePropertiesView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/SideMenu/ProfilePropertiesEditorView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/SideMenu/SideMenuProfileCategoryView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/SideMenu/SideMenuProfilePlayerView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/SideMenu/SideMenuProfileView.axaml" value="Ambinity/Ambinity.csproj" />
@@ -97,9 +146,18 @@
         <entry key="Ambinity/Views/SideMenu/SideMenuView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/SplashScreen/SplashScreenView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/SplashScreen/SplashView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/UserControls/SimpleColorPicker.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Window1.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Windows/DeleteDialogContent.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Windows/DialogWindow.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Windows/DownloadDialogContent.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Windows/InputDialogContent.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="AvaloniaApplication1/Ambinity.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
+        <entry key="AvaloniaApplication1/App.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
+        <entry key="AvaloniaApplication1/Styles/Ambinity.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
+        <entry key="AvaloniaApplication1/Styles/Button.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
+        <entry key="AvaloniaApplication1/Styles/TextBox.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
+        <entry key="AvaloniaApplication1/Views/MainWindow.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
       </map>
     </option>
   </component>

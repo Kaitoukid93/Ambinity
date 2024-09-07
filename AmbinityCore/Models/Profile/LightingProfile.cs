@@ -6,7 +6,9 @@ using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.ProfileCategory;
+using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Newtonsoft.Json;
@@ -19,9 +21,13 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     public event Action<ICollectableItem>? ItemNameChanged;
     public event Action<ICollectableItem>? ItemPinStatusChanged;
     public event Action<ICollectableItem>? ItemCheckStatusChanged;
+    public event Action<LightingZone>? LightingZoneAdded;
+    public event Action<LightingZone>? LightingZoneRemoved;
+    public event Action<ICollectableItem>? IconChanged;
 
     public LightingProfile()
     {
+        //todo implement file save client to save when zones property changed
         Zones = new ObservableCollection<LightingZone>();
     }
 
@@ -39,13 +45,27 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     public string Name
     {
         get => _name;
-        set => SetProperty(ref _name, value);
+        set
+        {
+            _name = value;
+            ItemNameChanged?.Invoke(this);
+        }
     }
+
+    /// <summary>
+    /// Display Icon type of this profile
+    /// </summary>
+    public IconTypeEnum IconType { get; set; }
 
     /// <summary>
     /// Display Icon of this profile
     /// </summary>
     public string Icon { get; set; }
+
+    public void UpdateIcon()
+    {
+        IconChanged?.Invoke(this);
+    }
 
     /// <summary>
     /// Describe the profile
@@ -106,6 +126,7 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     /// <summary>
     /// Store Local path of this item
     /// </summary>
+    [JsonIgnore]
     public string LocalPath { get; set; }
 
     /// <summary>
@@ -113,6 +134,7 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     /// </summary>
     [JsonIgnore]
     public bool Disposed { get; set; }
+
     public CollectableItemRepository GetLocalRepository()
     {
         return Ioc.Default.GetRequiredService<LightingProfileRepository>();
@@ -123,6 +145,7 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
         //todo make online repo for lighting profile controller
         return null;
     }
+
     public bool IsDefault { get; set; }
     public ObservableCollection<LightingZone> Zones { get; set; }
     private ColorEngineProvider _colorEngineProvider;
@@ -132,7 +155,25 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     /// </summary>
     public void Save()
     {
-        JsonHelpers.WriteSimpleJson(this, LocalPath);
+        //todo implement profile save with icon 
+        if (LocalPath == null || !Directory.Exists(LocalPath))
+        {
+            //create local path
+            var dbPath = GetLocalRepository().LocalFolderPath;
+            LocalPath = Path.Combine(dbPath, ID.ToString());
+            Directory.CreateDirectory(LocalPath);
+        }
+
+        JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath, "profile.json"));
+    }
+
+    /// <summary>
+    /// save this profile to a folder with the name "profile.json
+    /// </summary>
+    /// <param name="path"></param>
+    public void SaveTo(string path)
+    {
+        JsonHelpers.WriteSimpleJson(this, Path.Combine(path, "profile.json"));
     }
 
     /// <summary>
@@ -141,6 +182,7 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     public void AddLightingZone(LightingZone zone)
     {
         Zones.Add(zone);
+        LightingZoneAdded?.Invoke(zone);
     }
 
     private void ZonePropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -155,6 +197,7 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     public void RemoveLightingZone(LightingZone zone)
     {
         Zones.Remove(zone);
+        LightingZoneRemoved?.Invoke(zone);
     }
 
     public void TogglePlayPause()

@@ -1,3 +1,4 @@
+using AmbinityServer.Download;
 using Avalonia.Media.Imaging;
 using Newtonsoft.Json;
 using Renci.SshNet;
@@ -13,42 +14,60 @@ public class SftpWrapper
     private const string developer_User_Login_Name = "adrilight_developeruser";
     private const string developer_User_Password = "@drilightDeveloper";
     private const string host = @"103.148.57.184";
+    private CancellationTokenSource _cancellationTokenSource;
     public SftpClient sFTP { get; set; }
 
     public SftpWrapper()
     {
         sFTP = new SftpClient(host, 1512, developer_User_Login_Name, developer_User_Password);
+        _progress = new Progress<int>((p) =>
+        {
+           Log.Information(p+"%");
+        });
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
-    public bool Connect()
+    public async Task<bool> Connect()
     {
+        if (sFTP.IsConnected)
+            return true;
         try
         {
-            sFTP.Connect();
+            await sFTP.ConnectAsync(_cancellationTokenSource.Token);
             return true;
         }
         catch (Exception e)
         {
             Log.Error(e.ToString());
-            
+            return false;
         }
-        return false;
+
+        
     }
 
     public void Disconnect()
     {
-        sFTP.Disconnect();
-   
+        try
+        {
+            sFTP.Disconnect();
+        }
+        catch (Exception e)
+        {
+            Log.Error(e.ToString());
+            throw;
+        }
     }
+
     public void Dispose()
     {
         sFTP.Dispose();
-  
+
         GC.SuppressFinalize(this);
     }
 
     private IProgress<int> _progress;
     private long _itemSize;
+    private string _itemName;
 
     public async Task<List<String>> GetAllFilesAddressInFolder(string folderPath)
     {
@@ -140,20 +159,33 @@ public class SftpWrapper
         return attrs;
     }
 
-    public ISftpFile GetFileOrFoldername(string remotePath)
+    public ISftpFile GetFileOrFolderName(string remotePath)
     {
         return sFTP.Get(remotePath);
     }
 
-    private void DownloadProgresBar(ulong uploaded)
+    private void DownloadProgres(ulong donwloaded)
     {
         // Update progress bar on foreground thread
-        _progress.Report((int)((100 * uploaded) / (ulong)_itemSize));
+        Log.Information($"Downloading: " + _itemName);
+        _progress.Report((int)((100 * donwloaded) / (ulong)_itemSize));
+        
     }
 
-    public void DownloadFile(string remotePath, string localPath, IProgress<int> progress = null)
+    public bool IsFolder(string path)
     {
-        _progress = progress;
+        var att = sFTP.GetAttributes(path);
+        if (att.IsDirectory)
+            return true;
+        return false;
+    }
+
+    public bool IsExist(string path)
+    {
+        return sFTP.Exists(path);
+    }
+    public void DownloadFile(string remotePath, string localPath)
+    {
         if (File.Exists(localPath))
             return;
 
@@ -162,7 +194,8 @@ public class SftpWrapper
             using (var s = System.IO.File.Create(localPath))
             {
                 _itemSize = GetFileAttributes(remotePath).Size;
-                sFTP.DownloadFile(remotePath, s, DownloadProgresBar);
+                _itemName = remotePath;
+                sFTP.DownloadFile(remotePath, s, DownloadProgres);
             }
         }
         catch (System.IO.IOException ex)
@@ -174,13 +207,15 @@ public class SftpWrapper
             Log.Warning(ex.ToString());
         }
     }
-
-    public async Task DownloadDirectory(string sourceRemotePath, string destLocalPath, IProgress<int> progress = null)
+ 
+    public async Task DownloadDirectory(string sourceRemotePath, string destLocalPath,
+        IProgress<DownloadProgress> progress = null)
     {
+        Log.Information("Start downloading: " + sourceRemotePath);
         Directory.CreateDirectory(destLocalPath);
         IEnumerable<ISftpFile> files = sFTP.ListDirectory(sourceRemotePath);
         var step = 100 / files.Count();
-        int currentProgress = 0;
+        DownloadProgress currentProgress = new DownloadProgress();
         foreach (SftpFile file in files)
         {
             if ((file.Name != ".") && (file.Name != ".."))
@@ -189,27 +224,32 @@ public class SftpWrapper
                 string destFilePath = Path.Combine(destLocalPath, file.Name);
                 if (file.IsDirectory)
                 {
-                   await DownloadDirectory(sourceFilePath, destFilePath);
+                    await DownloadDirectory(sourceFilePath, destFilePath);
                 }
                 else
                 {
-                    using (Stream fileStream = File.Create(destFilePath))
-                    {
-                        sFTP.DownloadFile(sourceFilePath, fileStream);
-                    }
+                    DownloadFile(sourceFilePath, destFilePath);
+                }
+
+                for (int i = 0; i < step; i++)
+                {
+                    currentProgress.Progress += 1;
+                    currentProgress.Status = "Downloading" + " : " + file.Name;
+                    
+                    
+                    await Task.Delay(1);
+                    progress?.Report(currentProgress);
                 }
             }
-
-            for (int i = 0; i < step; i++)
-            {
-                currentProgress += 1;
-                await Task.Delay(5);
-                progress?.Report(currentProgress);
-            }
-          
         }
+        Log.Information("Download complete!");
     }
-
+    static string GetProgressString(int current, int total)
+    {
+        const int maxDots = 20; // Maximum number of dots
+        int dotsToShow = (int)Math.Round((double)current / total * maxDots);
+        return new string('.', dotsToShow);
+    }
     public async Task<T> GetFiles<T>(string filePath) //only use for text format
     {
         try
@@ -263,7 +303,9 @@ public class SftpWrapper
             return serializer.Deserialize<T>(jsonTextReader);
         }
     }
-    public async Task<Stream> GetThumb(string thumbPath)  // this method get all file from dropbox adrilight App folder to temp folder
+
+    public async Task<Stream>
+        GetThumb(string thumbPath) // this method get all file from dropbox adrilight App folder to temp folder
     {
         try
         {

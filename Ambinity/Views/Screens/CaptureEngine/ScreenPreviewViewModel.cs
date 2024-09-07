@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using Avalonia.Media.Imaging;
+using HPPH;
 using ScreenCapture.NET;
 
 namespace Ambinity.Views.Screens.CaptureEngine;

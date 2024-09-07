@@ -9,9 +9,7 @@ namespace AmbinityCore.Colors;
 
 public class StaticColorsRepository : CollectableItemRepository
 {
-    private string JsonPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "Ambinity\\");
-    private string dbPath =>Path.Combine(JsonPath, "Data","Colors");
+    private string dbPath =>Path.Combine(Constants.AppDataFolder, "Data","Colors");
     private string FolderPath => Path.Combine(dbPath, "SolidColor");
 
     public StaticColorsRepository()
@@ -34,6 +32,7 @@ public class StaticColorsRepository : CollectableItemRepository
             var color = JsonHelpers.DeserializeJson<SolidColor>(file);
             if (color == null)
                 continue;
+            color.LocalPath = file; 
             AddItem(color);
         }
     }

@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Diagnostics;
 using System.IO.Ports;
 using adrilight_shared.Models.Device.SlaveDevice;
 using adrilight_shared.Models.Device.Zone;
@@ -14,6 +15,7 @@ namespace AmbinityCore.DataStream;
 internal sealed class SerialStream : IDisposable, IDataStream
 {
     public event Action<IController> ControllerDisconnected;
+    private byte[] testBuffer = new byte[1216];
 
     public SerialStream(IController controller)
     {
@@ -30,7 +32,7 @@ internal sealed class SerialStream : IDisposable, IDataStream
     }
 
     //Dependency Injection//
-    public SerialController Controller { get; set; }
+    public IController Controller { get; set; }
     public string ID { get; set; }
 
     private void DeviceStateChanged()
@@ -140,7 +142,7 @@ internal sealed class SerialStream : IDisposable, IDataStream
         outputStream[counter++] = lo;
         outputStream[counter++] = chk;
         outputStream[counter++] = (byte)id;
-        outputStream[counter++] = 0;
+        outputStream[counter++] = 200;
         outputStream[counter++] = 0;
 
         double brightnessCap = Controller.LedController.MaxBrightness / 100d;
@@ -167,12 +169,12 @@ internal sealed class SerialStream : IDisposable, IDataStream
                         out byte FinalR, out byte FinalG, out byte FinalB);
                     ReOrderSpotColor(rgbOrder, FinalR, FinalG, FinalB, out byte r, out byte g, out byte b);
                     //get data
-                    outputStream[counter + led.Index * 3 + 0] = 255;
+                    outputStream[counter + led.Index * 3 + 0] = led.LED.Green;
 
-                    outputStream[counter + led.Index * 3 + 1] =
-                        (byte)(g * brightnessCap * _dimFactor); // green
-                    outputStream[counter + led.Index * 3 + 2] =
-                        (byte)(b * brightnessCap * _dimFactor); // red
+                    outputStream[counter + led.Index * 3 + 1] = led.LED.Blue;
+                    // green
+                    outputStream[counter + led.Index * 3 + 2] = led.LED.Red;
+                    // red
                     aliveSpotCounter++;
 
 
@@ -248,22 +250,19 @@ internal sealed class SerialStream : IDisposable, IDataStream
             return;
         }
 
-        int baudRate = 1000000;
-        if (Controller.CustomBaudrateEnabled)
-        {
-            baudRate = Controller.Baudrate;
-        }
-        else
-        {
-            if (Controller.HardwareType == HardwareTypeEnum.AmbinoFanHub ||
-                Controller.HardwareType == HardwareTypeEnum.AmbinoHUBV3)
-                baudRate = 2000000;
-        }
+        int baudRate = 2000000;
+        // if ((Controller as SerialController).CustomBaudrateEnabled)
+        // {
+        //     baudRate = (Controller as SerialController).Baudrate;
+        // }
+        // else
+        // {
+        //     if (Controller.HardwareType == HardwareTypeEnum.AmbinoFanHub ||
+        //         Controller.HardwareType == HardwareTypeEnum.AmbinoHUBV3)
+        //         baudRate = 2500000;
+        // }
 
         var _serialPort = new SerialPort(Controller.SerialPort, baudRate);
-        _serialPort.ReadTimeout = 5000;
-        _serialPort.WriteTimeout = 1000;
-        _serialPort.DtrEnable = true;
         try
         {
             _serialPort.Open();
@@ -284,26 +283,43 @@ internal sealed class SerialStream : IDisposable, IDataStream
             while (!cancellationToken.IsCancellationRequested)
             {
                 //send frame data
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                var outputCount = Controller.LedController.Outputs.Count;
+                var singleOutputBufferLength = 255 * 3 + 9;
+                var buffer = ArrayPool<byte>.Shared.Rent(singleOutputBufferLength * outputCount);
+                int bufferLength = 0;
                 for (int i = 0; i < Controller.LedController.Outputs.Count; i++)
                 {
                     if (!Controller.LedController.Outputs[i].IsEnabled)
                         continue;
                     var (outputBuffer, streamLength) = GetOutputStream(i);
-                    _serialPort.Write(outputBuffer, 0, streamLength);
-                    ArrayPool<byte>.Shared.Return(outputBuffer);
-
-                    //ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
-                    //receiving over serial takes it time as well and the arduino does both tasks in sequence
-                    //+1 ms extra safe zone
-                    double fastLedTime;
-                    if (Controller.HardwareType == HardwareTypeEnum.AmbinoHUBV2)
-                        fastLedTime = ((192) / 3.0 * 0.030d);
-                    else
-                        fastLedTime = ((streamLength - _messagePreamble.Length - 6) / 3.0 * 0.030d);
-                    var serialTransferTime = streamLength * 10.0 * 1000.0 / baudRate;
-                    var minTimespan = (byte)(fastLedTime + serialTransferTime + 1);
-                    Thread.Sleep(1);
+                    Buffer.BlockCopy(outputBuffer, 0, buffer, bufferLength, streamLength);
+                    bufferLength += streamLength;
                 }
+
+                _serialPort.Write(buffer, 0, bufferLength);
+                ArrayPool<byte>.Shared.Return(buffer);
+                var sw2 = new Stopwatch();
+                //ws2812b LEDs need 30 µs = 0.030 ms for each led to set its color so there is a lower minimum to the allowed refresh rate
+                //receiving over serial takes it time as well and the arduino does both tasks in sequence
+                //+1 ms extra safe zone
+                double fastLedTime;
+                // if (Controller.HardwareType == HardwareTypeEnum.AmbinoHUBV2)
+                //     fastLedTime = ((192) / 3.0 * 0.030d);
+                // else
+                    fastLedTime = ((bufferLength - _messagePreamble.Length - 6) / 3.0 * 0.030d);
+                var serialTransferTime = bufferLength * 10.0 * 1000.0 / baudRate;
+                var minTimespan = (byte)(fastLedTime + serialTransferTime + 1);
+                sw.Stop();
+                int extra = 0;
+                if (sw.ElapsedMilliseconds < 20)
+                {
+                    extra = (int)(20 - sw.ElapsedMilliseconds);
+                }
+
+                if (extra > 0)
+                    Thread.Sleep(extra);
             }
         }
         catch (Exception e)

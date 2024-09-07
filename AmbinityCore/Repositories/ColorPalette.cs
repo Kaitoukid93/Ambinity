@@ -9,7 +9,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace AmbinityCore.Repositories;
 
-public class ColorPalette : ObservableObject, ICollectableItem
+public class ColorPalette : FillColorBase, ICollectableItem
 {
     public event Action<ICollectableItem>? ItemNameChanged;
     public event Action<ICollectableItem>? ItemPinStatusChanged;
@@ -32,7 +32,16 @@ public class ColorPalette : ObservableObject, ICollectableItem
     
     public string LocalPath { get; set; }
     public Color[] Colors { get; set; }
+    public override List<Brush>  GetBrush()
+    {
+        var brushes = new List<Brush>();
+        foreach (var color in Colors)
+        {
+            brushes.Add(new SolidColorBrush(color)); 
+        }
 
+        return brushes;
+    }
     public ColorPalette(string name, Color[] colors)
     {
         Colors = colors;
@@ -45,6 +54,14 @@ public class ColorPalette : ObservableObject, ICollectableItem
 
     public void Save()
     {
-        JsonHelpers.WriteSimpleJson(this, LocalPath);
+        //todo implement profile save with icon 
+        if (LocalPath == null || !Directory.Exists(LocalPath))
+        {
+            //create local path
+            var dbPath = GetLocalRepository().LocalFolderPath;
+            LocalPath = Path.Combine(dbPath, Name);
+            Directory.CreateDirectory(LocalPath);
+        }
+        JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath,"config.json"),new HexColorConverter());
     }
 }

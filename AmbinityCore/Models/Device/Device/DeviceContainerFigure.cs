@@ -4,6 +4,7 @@ using AmbinityCore.Repositories;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
+using Draw2D.Core.Policies.FigurePolicy;
 using Draw2D.Core.Shapes.Basic;
 using Draw2D.Core.Utlils;
 
@@ -19,7 +20,6 @@ namespace AmbinityCore.Models.Device;
             Width = width;
             Height = height;
             // SnapTargets = SnapTargets.Center | SnapTargets.MidPoints | SnapTargets.Vertices;
-   
         }
         
         public override void SetChild(IPositionAware child)
@@ -38,6 +38,7 @@ namespace AmbinityCore.Models.Device;
             Height = (float)ItemVisualizer.Bounds.Height;
             X = (float)ItemVisualizer.Bounds.X;
             Y = (float)ItemVisualizer.Bounds.Y;
+            Canvas.NeedsRepaint(this);
         }
 
         public override void Render(DrawingContext dc, double strokeThickness, Color strokeColor)
@@ -68,6 +69,7 @@ namespace AmbinityCore.Models.Device;
             var pen = new Pen(strokeBrush, thickness, DashStyle);
             Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
             dc.PushTransform(translate);
+            if(IsSelectable)
             dc.DrawRectangle(fillBrush, pen,
                 new Rect(new Point(X, Y), new Size(Width, Height)));
 

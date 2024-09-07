@@ -7,8 +7,6 @@ using System.Windows.Input;
 using Ambinity.ViewModels;
 using Ambinity.Windows;
 using AmbinityCore.DataBase;
-using AmbinityCore.Helpers;
-using AmbinityCore.Models.Device;
 using AmbinityCore.Models.GeneralSetting;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
@@ -79,36 +77,56 @@ public class Draw2DCanvasViewModel : ViewModelBase
     }
 
     private IGeneralSettings _generalSettings;
-
-    public IGeneralSettings GeneralSettings
-    {
-        get { return _generalSettings; }
-        set
-        {
-            _generalSettings = value;
-            OnPropertyChanged();
-        }
-    }
-
     private IDialogService _dialogService;
 
+    public Draw2DCanvasViewModel(GeneralSettingsManager _settingsManager)
+    {
+        _generalSettings = _settingsManager.Settings;
+        CreateCommands();
+    }
+
     public Draw2DCanvasViewModel(GeneralSettingsManager settingManager, IDialogService dialogService,
+        LightingZoneRepository zoneRepository,
         FrameBuffer buffer, LightingProfileDecoder decoder)
     {
-        GeneralSettings = settingManager.Settings;
+        _zoneRepository = zoneRepository;
+        _generalSettings = settingManager.Settings;
         _dialogService = dialogService;
         _buffer = buffer;
+        _decoder = decoder;
+        _decoder.FrameUpdate += OnFrameUpdate;
+        _decoder.RenderingStatusChanged += OnRenderingStatusChanged;
         CreateCommands();
+    }
+
+    private void OnRenderingStatusChanged()
+    {
+        //incase this canvas is use for another purpose 
+        if (_decoder == null)
+            return;
+        if (_decoder.IsRendering)
+        {
+            LockCanvas();
+            return;
+        }
+
+        UnlockCanvas();
+    }
+
+    private void OnFrameUpdate()
+    {
+        (Canvas as Canvas)?.NeedsRepaint(null);
     }
 
 
     private FrameBuffer _buffer;
+    private LightingProfileDecoder _decoder;
 
     /// <summary>
     /// Init a new canvas with <param name="canvasSize"></param>
     /// </summary>
     /// <param name="canvasSize"></param>
-    public void Init(Size canvasSize)
+    public void Init(Size canvasSize, bool enableSelection = true)
     {
         if (Canvas == null)
         {
@@ -126,15 +144,16 @@ public class Draw2DCanvasViewModel : ViewModelBase
             GridUnitX = 5;
             GridUnitY = 5;
             Canvas.CoordinateSystem = new TopDownCartesianCoordinateSystem(0, 0);
-            Canvas.StrokeColor = GeneralSettings.PrimaryColor;
+            Canvas.StrokeColor = _generalSettings.PrimaryColor;
             Canvas.SelectionChanged += (sender, args) =>
             {
                 SelectionChanged?.Invoke();
                 SelectionCount = ((ICanvas)sender).Selection.All.Count();
             };
+            if(enableSelection)
             Canvas.InstallEditPolicy(new BoundingBoxSelectionPolicy());
             // get all device that is in global lighting mode?
-            // Canvas?.InstallTool(new PolylineTool(), (tool) => PolylineCommand.NotifyCanExecuteChanged());
+
             Canvas?.InstallEditPolicy(_snapGridPolicy);
             // Canvas?.InstallEditPolicy(_snapElementPolicy);
             //get snap setting from general settings
@@ -142,21 +161,75 @@ public class Draw2DCanvasViewModel : ViewModelBase
             _snapElementPolicy.Enabled = false;
         }
 
+        CurrentZoom = 1d;
         Canvas.Clear();
         UpdateFigure();
+        //update lock status
+        OnRenderingStatusChanged();
+        SelectionChanged?.Invoke();
     }
 
     /// <summary>
     /// disable all action on the canvas 
     /// </summary>
+    public bool IsLocked { get; set; }
+
     public void LockCanvas()
     {
+        if (Figures == null)
+            return;
         foreach (var figure in Figures)
         {
             figure.IsResizable = false;
             figure.IsDragable = false;
             figure.Unselect();
         }
+
+        IsLocked = true;
+    }
+
+
+    public void InstallPolylineTool()
+    {
+        Canvas?.InstallTool(new PolylineTool(), (tool) => OnPolylineFinishDrawing());
+    }
+
+    private void OnPolylineFinishDrawing()
+    {
+        var polyLine = Canvas.Figures.Where(f => f is PolyLine).First() as PolyLine;
+        var points = new List<Point>();
+
+        for (int i = 0; i < polyLine.Points.Count - 1; i++)
+        {
+            points.Add(new Point(polyLine.Points[i].X, polyLine.Points[i].Y));
+        }
+
+        var bound = polyLine.BoundingBox;
+
+        var newZone =
+            _zoneRepository.GetDefaultSolidColorZone("Polyline", (int)bound.X, (int)bound.Y, (int)bound.Width,
+                (int)bound.Height,
+                Colors.Red);
+        if (newZone.Width < 2)
+        {
+            newZone.Width = 2;
+            // newZone.X += 1;
+        }
+
+        if (newZone.Height < 2)
+        {
+            newZone.Height = 2;
+            // newZone.Y += 1;
+        }
+
+        newZone.Points = points;
+        newZone.Shape = ZoneShapeEnum.Polyline;
+        newZone.IsResizeable = false;
+        var container = newZone.GetContainer();
+        container.SetChild(newZone);
+        Canvas.RemoveSelected();
+        UpdateFigure();
+        AddFigure(container, true);
     }
 
     /// <summary>
@@ -164,12 +237,16 @@ public class Draw2DCanvasViewModel : ViewModelBase
     /// </summary>
     public void UnlockCanvas()
     {
+        if (Figures == null)
+            return;
         foreach (var figure in Figures)
         {
             figure.IsResizable = true;
             figure.IsDragable = true;
             figure.Unselect();
         }
+
+        IsLocked = false;
     }
 
     public int SelectionCount
@@ -325,6 +402,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
 
     public ICommand CopySelectedFigureCommand { get; set; }
     public ICommand PasteCommand { get; set; }
+    public ICommand GroupSelectedFigureCommand { get; set; }
 
     private void CreateCommands()
     {
@@ -347,6 +425,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
         UpdateFigureData = new RelayCommand(UpdateFigure);
         CopySelectedFigureCommand = new RelayCommand(Copy, CanCopy);
         PasteCommand = new RelayCommand(Paste, CanPaste);
+        GroupSelectedFigureCommand = new RelayCommand(Group, CanGroup);
     }
 
     private async Task RemoveFigure()
@@ -403,9 +482,8 @@ public class Draw2DCanvasViewModel : ViewModelBase
             var offSetY = clipboardChilItem.Y - bound.Y;
             var cloneFigure = clipboardChilItem.Clone((float)WorldMousePosX + (float)offSetX,
                 (float)WorldMousePosY + (float)offSetY);
-            AddFigure(cloneFigure);
+            AddFigure(cloneFigure, true);
             cloneFigure.Select();
-            FigureAdded?.Invoke(cloneFigure);
         }
     }
 
@@ -413,10 +491,37 @@ public class Draw2DCanvasViewModel : ViewModelBase
     {
         if (_clipboardFigures == null || _clipboardFigures.Count == 0)
             return false;
-        var bound = Getbound(_clipboardFigures);
-        if (WorldMousePosX + bound.Width > Canvas.Width || WorldMousePosY + bound.Height > Canvas.Height)
-            return false;
+        // var bound = Getbound(_clipboardFigures);
+        // if (WorldMousePosX + bound.Width > Canvas.Width || WorldMousePosY + bound.Height > Canvas.Height)
+        //     return false;
         return true;
+    }
+
+    private void Group()
+    {
+        var newGroup = new LightingZoneGroup();
+        foreach (ContainerFigure figure in Canvas.Selection.All)
+        {
+            newGroup.AddChild(figure.ChildItem);
+        }
+
+        newGroup.UpdateSizeByChild(true);
+        var newGroupContainer =
+            new LightingZoneGroupContainerFigure(newGroup.X, newGroup.Y, newGroup.Width, newGroup.Height);
+        AddFigure(newGroupContainer, false);
+        foreach (ContainerFigure figure in Canvas.Selection.All)
+        {
+            figure.IsDragable = false;
+            figure.IsResizable = false;
+            newGroupContainer.InstallEditPolicy(new MasterSlaveDragDropPolicy(figure));
+        }
+    }
+
+    private bool CanGroup()
+    {
+        if (Canvas.Selection.All.Count > 1)
+            return true;
+        return false;
     }
 
     private Rect Getbound(List<Figure> figuers)
@@ -432,7 +537,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
         return bound;
     }
 
-    public void AddFigure(Figure figure)
+    public void AddFigure(Figure figure, bool notify)
     {
         // var regionPolicy =
         //     new RegionDragDropEditPolicy(new Draw2D.Core.Geo.Rectangle(0, 0, Canvas.Width, Canvas.Height));
@@ -440,11 +545,20 @@ public class Draw2DCanvasViewModel : ViewModelBase
             figure.AddHandlesAllDirections(Canvas, HandleSizes.Tiny, HandleShapeType.Square);
         if (figure.IsSelectable)
             figure.InstallEditPolicy(SelectionFeedbackPolicy);
+
+        if (IsLocked)
+        {
+            figure.IsDragable = false;
+            figure.IsResizable = false;
+        }
+
         // figure.InstallEditPolicy(regionPolicy);
         figure.MinWidth = 2;
         figure.MinHeight = 2;
         Canvas.AddFigure(figure);
         UpdateFigure();
+        if (notify)
+            FigureAdded?.Invoke(figure);
     }
 
     private void UpdateFigure()
@@ -516,6 +630,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
     }
 
     private ICanvas _canvas;
+    private readonly LightingZoneRepository _zoneRepository;
 
     public ICanvas Canvas
     {
@@ -527,10 +642,15 @@ public class Draw2DCanvasViewModel : ViewModelBase
         }
     }
 
+    public bool IsDisposed { get; set; }
+    public double CurrentZoom { get; set; }
+    public object MinimumZoom { get; set; } = 0.0001;
+    public object MaximumZoom { get; set; } = 10;
+
     public override void Dispose()
     {
         // Canvas = null;
-        Canvas.Clear();
+        Canvas?.Clear();
         Figures = null;
     }
 }
