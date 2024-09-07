@@ -1,0 +1,12 @@
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\bin\Release\netstandard2.1\osx-x64\AmbinityServer.deps.json
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\bin\Release\netstandard2.1\osx-x64\AmbinityServer.dll
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\bin\Release\netstandard2.1\osx-x64\AmbinityServer.pdb
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Release\netstandard2.1\osx-x64\AmbinityServer.csproj.AssemblyReference.cache
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Release\netstandard2.1\osx-x64\Avalonia\Resources.Inputs.cache
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Release\netstandard2.1\osx-x64\AmbinityServer.GeneratedMSBuildEditorConfig.editorconfig
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Release\netstandard2.1\osx-x64\AmbinityServer.AssemblyInfoInputs.cache
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Release\netstandard2.1\osx-x64\AmbinityServer.AssemblyInfo.cs
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Release\netstandard2.1\osx-x64\AmbinityServer.csproj.CoreCompileInputs.cache
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Release\netstandard2.1\osx-x64\AmbinityServer.sourcelink.json
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Release\netstandard2.1\osx-x64\AmbinityServer.dll
+D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\obj\Release\netstandard2.1\osx-x64\AmbinityServer.pdb

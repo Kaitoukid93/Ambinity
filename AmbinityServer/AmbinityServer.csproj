@@ -15,4 +15,14 @@
       <PackageReference Include="SSH.NET" Version="2024.1.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="obj\Debug\netstandard2.1\AmbinityServer.assets.cache" />
+      <Content Include="obj\Debug\netstandard2.1\AmbinityServer.csproj.AssemblyReference.cache" />
+      <Content Include="obj\Debug\netstandard2.1\AmbinityServer.csproj.CoreCompileInputs.cache" />
+      <Content Include="obj\Debug\netstandard2.1\AmbinityServer.csproj.FileListAbsolute.txt" />
+      <Content Include="obj\Debug\netstandard2.1\AmbinityServer.dll" />
+      <Content Include="obj\Debug\netstandard2.1\AmbinityServer.pdb" />
+      <Content Include="obj\Debug\netstandard2.1\AmbinityServer.sourcelink.json" />
+    </ItemGroup>
+
 </Project>

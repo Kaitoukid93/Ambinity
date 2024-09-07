@@ -15,6 +15,7 @@
             <Grid Column="1">
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5">
                     <Grid>
+                        <Button Width="30" Height="30" Command="{Binding ImportAnimationCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Import palette" Classes="icon-button">
                             <PathIcon Width="15" Data="{DynamicResource Import}"></PathIcon>
                         </Button>
                     </Grid>

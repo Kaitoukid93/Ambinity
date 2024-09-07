@@ -16,4 +16,20 @@
       <ProjectReference Include="..\Draw2D.Core\Draw2D.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Include="obj\Debug\netstandard2.1\.NETStandard,Version=v2.1.AssemblyAttributes.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="obj\Debug\netstandard2.1\Draw2DCo.33AB0F36.Up2Date" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2DControlLibrary.AssemblyInfoInputs.cache" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2DControlLibrary.assets.cache" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2DControlLibrary.csproj.AssemblyReference.cache" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2DControlLibrary.csproj.CoreCompileInputs.cache" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2DControlLibrary.csproj.FileListAbsolute.txt" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2DControlLibrary.dll" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2DControlLibrary.pdb" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2DControlLibrary.sourcelink.json" />
+    </ItemGroup>
+
 </Project>

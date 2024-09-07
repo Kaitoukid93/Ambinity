@@ -16,4 +16,19 @@
       <Folder Include="Shapes\Custom\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="obj\Debug\netstandard2.1\Draw2D.Core.AssemblyInfoInputs.cache" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2D.Core.assets.cache" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2D.Core.csproj.AssemblyReference.cache" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2D.Core.csproj.CoreCompileInputs.cache" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2D.Core.csproj.FileListAbsolute.txt" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2D.Core.dll" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2D.Core.pdb" />
+      <Content Include="obj\Debug\netstandard2.1\Draw2D.Core.sourcelink.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="obj\Debug\netstandard2.1\.NETStandard,Version=v2.1.AssemblyAttributes.cs" />
+    </ItemGroup>
+
 </Project>
