@@ -13,7 +13,6 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AmbinityServer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+607f9fd9140861256fee71c9be6900de067ba8b8")]
 [assembly: System.Reflection.AssemblyProductAttribute("AmbinityServer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AmbinityServer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
