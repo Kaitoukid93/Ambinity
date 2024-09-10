@@ -29,6 +29,8 @@ public class AmbinityDeviceLayoutAssetViewModel : AssetItemViewModelBase
     {
        //get all selected device and apply this layout
        var figs = _canvasViewModel.Canvas.Selection.All;
+       if(figs == null || figs.Count == 0)
+           return;
        var selectedDevices = new List<AmbinityDevice>();
        foreach (var fig in figs)
        {

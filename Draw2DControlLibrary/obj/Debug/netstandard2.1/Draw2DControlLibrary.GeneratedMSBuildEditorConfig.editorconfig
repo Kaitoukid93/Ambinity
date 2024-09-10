@@ -7,6 +7,6 @@ build_property.AvaloniaNameGeneratorFilterByNamespace = *
 build_property.AvaloniaNameGeneratorViewFileNamingStrategy = NamespaceAndClassName
 build_property.AvaloniaNameGeneratorAttachDevTools = true
 build_property.RootNamespace = Draw2DControlLibrary
-build_property.ProjectDir = D:\AmbinityAvalonia\Ambinity_Avalonia\Draw2DControlLibrary\
+build_property.ProjectDir = C:\Users\AMBINO\RiderProjects\Ambinity\Draw2DControlLibrary\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

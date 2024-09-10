@@ -23,6 +23,7 @@ public abstract class AssetsViewModelBase : ViewModelBase
     {
         _assetItemViewModelFactory = assetItemViewModelFactory;
         _downloadService = downloadService;
+        Tabs = ["Local", "Online"];
     }
 
     private string[] _filters;
@@ -170,7 +171,7 @@ public abstract class AssetsViewModelBase : ViewModelBase
         _onlineItemRepository = onlineRepo;
         DisplayAssets = new ObservableCollection<AssetItemViewModelBase>();
         AvailableAssets = new ObservableCollection<AssetItemViewModelBase>();
-        Tabs = ["Local", "Online"];
+        
         //show local repo
         _selectedRepository = "Local";
         await UpdateAssets();
@@ -207,6 +208,7 @@ public abstract class AssetsViewModelBase : ViewModelBase
 
     public virtual void Dispose()
     {
+        IsLoading = false;
         AvailableAssets = null;
         DisplayAssets = null;
     }

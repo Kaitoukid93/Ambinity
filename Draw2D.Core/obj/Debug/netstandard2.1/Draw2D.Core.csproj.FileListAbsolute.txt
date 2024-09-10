@@ -10,3 +10,15 @@ D:\AmbinityAvalonia\Ambinity_Avalonia\Draw2D.Core\bin\Debug\netstandard2.1\Draw2
 D:\AmbinityAvalonia\Ambinity_Avalonia\Draw2D.Core\bin\Debug\netstandard2.1\Draw2D.Core.pdb
 D:\AmbinityAvalonia\Ambinity_Avalonia\Draw2D.Core\obj\Debug\netstandard2.1\Draw2D.Core.dll
 D:\AmbinityAvalonia\Ambinity_Avalonia\Draw2D.Core\obj\Debug\netstandard2.1\Draw2D.Core.pdb
+C:\Users\AMBINO\RiderProjects\Ambinity\Draw2D.Core\bin\Debug\netstandard2.1\Draw2D.Core.deps.json
+C:\Users\AMBINO\RiderProjects\Ambinity\Draw2D.Core\bin\Debug\netstandard2.1\Draw2D.Core.dll
+C:\Users\AMBINO\RiderProjects\Ambinity\Draw2D.Core\bin\Debug\netstandard2.1\Draw2D.Core.pdb
+C:\Users\AMBINO\RiderProjects\Ambinity\Draw2D.Core\obj\Debug\netstandard2.1\Draw2D.Core.csproj.AssemblyReference.cache
+C:\Users\AMBINO\RiderProjects\Ambinity\Draw2D.Core\obj\Debug\netstandard2.1\Avalonia\Resources.Inputs.cache
+C:\Users\AMBINO\RiderProjects\Ambinity\Draw2D.Core\obj\Debug\netstandard2.1\Draw2D.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\AMBINO\RiderProjects\Ambinity\Draw2D.Core\obj\Debug\netstandard2.1\Draw2D.Core.AssemblyInfoInputs.cache
+C:\Users\AMBINO\RiderProjects\Ambinity\Draw2D.Core\obj\Debug\netstandard2.1\Draw2D.Core.AssemblyInfo.cs
+C:\Users\AMBINO\RiderProjects\Ambinity\Draw2D.Core\obj\Debug\netstandard2.1\Draw2D.Core.csproj.CoreCompileInputs.cache
+C:\Users\AMBINO\RiderProjects\Ambinity\Draw2D.Core\obj\Debug\netstandard2.1\Draw2D.Core.sourcelink.json
+C:\Users\AMBINO\RiderProjects\Ambinity\Draw2D.Core\obj\Debug\netstandard2.1\Draw2D.Core.dll
+C:\Users\AMBINO\RiderProjects\Ambinity\Draw2D.Core\obj\Debug\netstandard2.1\Draw2D.Core.pdb

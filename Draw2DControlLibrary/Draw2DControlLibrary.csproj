@@ -18,6 +18,7 @@
 
     <ItemGroup>
       <Compile Include="obj\Debug\netstandard2.1\.NETStandard,Version=v2.1.AssemblyAttributes.cs" />
+      <Compile Remove="obj\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -30,6 +31,22 @@
       <Content Include="obj\Debug\netstandard2.1\Draw2DControlLibrary.dll" />
       <Content Include="obj\Debug\netstandard2.1\Draw2DControlLibrary.pdb" />
       <Content Include="obj\Debug\netstandard2.1\Draw2DControlLibrary.sourcelink.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaXaml Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="obj\**" />
     </ItemGroup>
 
 </Project>

@@ -35,10 +35,13 @@ public class ToolsViewModel : ViewModelBase
         _lightingZoneRepository = lightingZoneRepository;
         _decoder = decoder;
         _decoder.RenderingStatusChanged += OnRenderingStatusChanged;
-        
         CommandSetup();
+        _addColorZoneTools = AddColorZoneTool();
     }
 
+    private FlyoutButtonToolbarItem _addColorZoneTools;
+    private FlyoutButtonToolbarItem _addAmbilightZoneTools;
+    private FlyoutButtonToolbarItem _addAnimationZoneTools;
     private void OnRenderingStatusChanged()
     {
         ZoneToolsCommandCanExecute = !_decoder.IsRendering;
@@ -116,7 +119,7 @@ public class ToolsViewModel : ViewModelBase
         snapToGridTools.Command = ToggleSnapToGridCommand;
         var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas", FitCanvasToViewCommand);
         var separator = new SeparatorToolbarItem();
-        ToolbarItems.Add(AddColorZoneTool());
+        ToolbarItems.Add(_addColorZoneTools);
         ToolbarItems.Add(AddAmbilightZoneTool());
         ToolbarItems.Add(AddAnimationZoneTool());
         ToolbarItems.Add(separator);

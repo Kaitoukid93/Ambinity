@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Draw2DControlLibrary")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+df164413b450db1e688114659ed05ee499dd7b76")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a79fbbf424d1b202f1a22948609117d1aaa010ea")]
 [assembly: System.Reflection.AssemblyProductAttribute("Draw2DControlLibrary")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Draw2DControlLibrary")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
