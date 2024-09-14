@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Ambinity.Builders;
+using Avalonia;
 using Avalonia.Controls;
 
 namespace Ambinity.Services;
@@ -23,6 +24,15 @@ public interface IWindowService
     /// <param name="monitor"></param>
     /// <returns></returns>
     Window ShowWindow(object viewModel, int monitor);
+
+    /// <summary>
+    /// Show a window from specific location and size with a given ViewModel
+    /// </summary>
+    /// <param name="viewModel"></param>
+    /// <param name="startupLocation"></param>
+    /// <param name="windowSize"></param>
+    /// <returns></returns>
+    Window ShowWindow(object viewModel, PixelPoint startupLocation, Size windowSize);
 
     /// <summary>
     ///     Gets the current window of the application

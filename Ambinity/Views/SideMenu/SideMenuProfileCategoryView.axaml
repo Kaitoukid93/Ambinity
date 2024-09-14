@@ -76,7 +76,7 @@
         </Style>
     </UserControl.Styles>
     <Grid Name="ContainerGrid"
-          Margin="0 8 0 0" 
+          Margin="0 5 0 5" 
           RowDefinitions="Auto,*" 
           ContextFlyout="{StaticResource CategoryMenuFlyout}"
           Classes.flyout-open="{CompiledBinding IsOpen, Source={StaticResource CategoryMenuFlyout}}"
@@ -157,8 +157,8 @@
             <!-- </Button> -->
         </Grid>
 
-        <Panel Grid.Row="1" IsVisible="{CompiledBinding IsExpanded}">
-            <ListBox Name="SidebarListBox" 
+        <Panel x:Name="profilesPanel" Grid.Row="1" IsVisible="{CompiledBinding IsExpanded}">
+            <ListBox x:Name="SidebarListBox" 
                      Classes="sidebar-listbox"
                      ItemsSource="{CompiledBinding Profiles}"
                      SelectedItem="{CompiledBinding SelectedProfile}"

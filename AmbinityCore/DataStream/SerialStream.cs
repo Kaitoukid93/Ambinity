@@ -167,13 +167,13 @@ internal sealed class SerialStream : IDisposable, IDataStream
                         ambinityDevice.RedScale, ambinityDevice.GreenScale,
                         ambinityDevice.BlueScale,
                         out byte FinalR, out byte FinalG, out byte FinalB);
-                    ReOrderSpotColor(rgbOrder, FinalR, FinalG, FinalB, out byte r, out byte g, out byte b);
+                    ReOrderSpotColor(rgbOrder, led.LED.Red, led.LED.Green, led.LED.Blue, out byte r, out byte g, out byte b);
                     //get data
-                    outputStream[counter + led.Index * 3 + 0] = led.LED.Green;
+                    outputStream[counter + led.Index * 3 + 0] = r;
 
-                    outputStream[counter + led.Index * 3 + 1] = led.LED.Blue;
+                    outputStream[counter + led.Index * 3 + 1] = g;
                     // green
-                    outputStream[counter + led.Index * 3 + 2] = led.LED.Red;
+                    outputStream[counter + led.Index * 3 + 2] = b;
                     // red
                     aliveSpotCounter++;
 

@@ -9,11 +9,13 @@ using Ambinity.AppResource;
 using Ambinity.Services;
 using Ambinity.Stores;
 using Ambinity.Views;
+using Ambinity.Views.AppTour;
 using Ambinity.Views.Configuration.ColorConfiguration;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 using Ambinity.Views.Configuration.PositionConfiguration;
 using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.LayoutEditor;
+using Ambinity.Views.NonClientArea;
 using Ambinity.Views.Root;
 using Ambinity.Views.Screens.Dashboard;
 using Ambinity.Views.Screens.DeviceLayout;
@@ -138,6 +140,8 @@ public class AmbinityBootStrapper
                 .AddSingleton<DeviceSettingsViewModel>()
                 .AddSingleton<DeviceSettingsDashboardViewModel>()
                 .AddSingleton<DeviceSettingsInfoBarViewModel>()
+                .AddSingleton<NonClientAreaContentViewModel>()
+                .AddSingleton<AppTourViewModel>()
                 //splash
                 .AddSingleton<SplashViewModel>()
                 //layout editor

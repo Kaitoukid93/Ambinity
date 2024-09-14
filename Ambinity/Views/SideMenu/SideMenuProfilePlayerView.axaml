@@ -16,14 +16,14 @@
 </UserControl.Styles>
     <Grid RowDefinitions="200,10,40,25">
         <Grid Row="0">
-            <Button ToolTip.Tip="Edit this profile" Command="{CompiledBinding GoToProfileEditorCommand}"
+            <Button x:Name="ProfileButton" Click="ProfileButton_OnClick" ToolTip.Tip="Edit this profile" Command="{CompiledBinding GoToProfileEditorCommand}"
                     CornerRadius="5" Margin="10,10,8,0" Padding="2" HorizontalAlignment="Center"
                     VerticalAlignment="Center" Classes="icon-button">
                 <Border Padding="0" Width="180" Height="180" BorderThickness="0" ClipToBounds="True" CornerRadius="2"
                         Classes="card">
                     <Grid Background="Transparent" Name="ContainerGrid">
                         <Image Name="profilePicture" Stretch="Uniform" Source="{CompiledBinding ProfileBitmap}"></Image>
-                        <Button Command="{Binding PlayButtonCommand}" ToolTip.Tip="{Binding PlayButtonToolTip}"
+                        <Button x:Name="PlayButton"  Click="PlayButton_OnClick" Command="{Binding PlayButtonCommand}" ToolTip.Tip="{Binding PlayButtonToolTip}"
                                 Width="50"
                                 Height="50" VerticalAlignment="Center" CornerRadius="30" Grid.Column="0" HorizontalAlignment="Center"
                                 Classes="icon-button play-button">

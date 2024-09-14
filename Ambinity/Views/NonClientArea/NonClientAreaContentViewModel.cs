@@ -1,24 +1,39 @@
+using System;
 using System.Windows.Input;
+using Ambinity.Services;
 using Ambinity.ViewModels;
+using Ambinity.Views.AppTour;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Ambinity.Views.NonClientArea;
 
 public class NonClientAreaContentViewModel : ViewModelBase
 {
-    public NonClientAreaContentViewModel(string header, string geometry)
+    public event Action ShowAppTourEvent;
+    public NonClientAreaContentViewModel(IWindowService windowService)
     {
-        Geometry = geometry;
-        Header = header;
+        // Geometry = geometry;
+        // Header = header;
+        _windowService = windowService;;
+        _lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
     }
 
-    public NonClientAreaContentViewModel(string content, string geometry, bool showBackButton, ICommand buttonCommand)
+    private void ShowAppTour()
     {
-        Header = content;
-        Geometry = geometry;
-        ShowBackButton = showBackButton;
-        if (ShowBackButton)
-            BackButtonCommand = buttonCommand;
+        ShowAppTourEvent?.Invoke();
+        
     }
+    private readonly IClassicDesktopStyleApplicationLifetime _lifeTime;
+    // public NonClientAreaContentViewModel(string content, string geometry, bool showBackButton, ICommand buttonCommand)
+    // {
+    //     Header = content;
+    //     Geometry = geometry;
+    //     ShowBackButton = showBackButton;
+    //     if (ShowBackButton)
+    //         BackButtonCommand = buttonCommand;
+    // }
 
     public string Geometry { get; set; }
     private string _header;
@@ -35,7 +50,7 @@ public class NonClientAreaContentViewModel : ViewModelBase
 
     private bool _showBackButton;
     private ICommand _backButtonCommand;
-
+    private readonly IWindowService _windowService;
     public ICommand BackButtonCommand
     {
         get { return _backButtonCommand; }

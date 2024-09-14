@@ -5,6 +5,8 @@ using System.Windows.Input;
 using Ambinity.Services;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
+using Ambinity.Views.AppTour;
+using Ambinity.Views.NonClientArea;
 using Ambinity.Views.SideMenu;
 using Ambinity.Views.SplashScreen;
 using AmbinityCore.Colors;
@@ -43,7 +45,8 @@ namespace Ambinity.Views.Root;
             OpenRGBControllerRepository openRgbControllerRepository,
             IMainWindowService mainWindowService,
             GeneralSettingsManager settingsManager,
-            AmbinityClient ambinityClient)
+            AmbinityClient ambinityClient,NonClientAreaContentViewModel nonClientAreaContentViewModel,
+            AppTourViewModel appTourViewModel)
         {
             
             _rootNavigationStores = rootNavigationStores;
@@ -64,16 +67,19 @@ namespace Ambinity.Views.Root;
             _settings = settingsManager.Settings;
             _ambinityClient = ambinityClient;
             mainWindowService.ConfigureMainWindowProvider(this);
+            NonClientAreaContentViewModel = nonClientAreaContentViewModel;
+            AppTourViewModel = appTourViewModel;
             //show UI if requested
             if (ShouldShowUI())
             {
-                
                 OpenMainWindow();
             }
         }
 
-       
+        public AppTourViewModel AppTourViewModel { get; set; }
+        
 
+        
         private bool ShouldShowUI()
         {
             return !_settings.StartMinimized;
@@ -99,6 +105,7 @@ namespace Ambinity.Views.Root;
                 _lifeTime.MainWindow.WindowState = WindowState.Normal;
             SideMenu.Init();
             OnMainWindowOpened();
+            
         }
 
         public void CloseMainWindow()
@@ -237,6 +244,7 @@ namespace Ambinity.Views.Root;
 
         public ICommand OpenUiCommand { get; set; }
         public ICommand ExitAppCommand { get; set; }
+        public NonClientAreaContentViewModel NonClientAreaContentViewModel { get; }
 
         #endregion
     }

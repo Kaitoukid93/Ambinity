@@ -23,20 +23,25 @@
             <Setter Property="Padding" Value="8" />
         </Style>
     </Window.Styles>
-    <Grid RowDefinitions="Auto,*">
-        <Grid ColumnDefinitions="Auto,Auto,*,*">
-            <nonclientarea:NonClientAreaContent></nonclientarea:NonClientAreaContent>
-        </Grid>
-        <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
-            <!-- Vertical selection -->
-            <Grid>
-                <sideMenu:SideMenuView DataContext="{Binding SideMenu}"></sideMenu:SideMenuView>
+    <Grid>
+
+        <Grid RowDefinitions="Auto,*">
+            <Grid ColumnDefinitions="Auto,Auto,*,*">
+                <ContentControl x:Name="nonClientArea" Content="{Binding NonClientAreaContentViewModel}"></ContentControl>
             </Grid>
-            <!-- main page view -->
-            <Grid Column="1">
-                <ContentControl Content="{CompiledBinding}" />
+            <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+                <!-- Vertical selection -->
+                <Grid>
+                    <ContentControl Content="{Binding SideMenu}"></ContentControl>
+                </Grid>
+                <!-- main page view -->
+                <Grid Column="1">
+                    <ContentControl Content="{CompiledBinding}" />
+                </Grid>
             </Grid>
+
         </Grid>
+        <ContentControl Content="{Binding AppTourViewModel}"></ContentControl>
     </Grid>
 
 

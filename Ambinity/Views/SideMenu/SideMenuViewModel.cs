@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
+using Ambinity.Views.AppTour;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Views.Screens.Dashboard;
 using Ambinity.Views.Screens.DeviceLayout;
@@ -27,7 +28,7 @@ using FluentAvalonia.UI.Controls;
 
 namespace Ambinity.Views.SideMenu;
 
-public class SideMenuViewModel : ViewModelBase
+public class SideMenuViewModel : ViewModelBase, IApptourElement
 {
     public event Action<SideMenuProfileViewModel> SelectedProfileChanged;
     public event Action<SideMenuScreenViewModel> SelectedScreenChanged;
@@ -271,4 +272,26 @@ public class SideMenuViewModel : ViewModelBase
     public override void Dispose()
     {
     }
+
+    #region App tour element implementations
+
+    public string Name => "SideMenu";
+
+    public void Deactivate()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Activate()
+    {
+        //todo
+        //implement app tour script
+       
+        
+    }
+
+    public int CurrentStep { get; set; }
+    public int StepCount => 5;
+
+    #endregion
 }

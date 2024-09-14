@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Ambinity.Views.NonClientArea;
 
-public partial class NonClientAreaContent : UserControl
+public partial class NonClientAreaContentView : UserControl
 {
-    public NonClientAreaContent()
+    public NonClientAreaContentView()
     {
         InitializeComponent();
     }

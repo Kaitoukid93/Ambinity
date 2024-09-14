@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Draw2D.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a79fbbf424d1b202f1a22948609117d1aaa010ea")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8b4a0c9a7b4f63c9c29b7442a995203098b47f64")]
 [assembly: System.Reflection.AssemblyProductAttribute("Draw2D.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Draw2D.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

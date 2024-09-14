@@ -77,6 +77,28 @@ internal class WindowService : IWindowService
         return window;
     }
 
+    public Window ShowWindow(object viewModel, PixelPoint startupLocation, Size windowSize)
+    {
+        string name = viewModel.GetType().FullName!.Split('`')[0].Replace("ViewModel", "View");
+        Type? type = viewModel.GetType().Assembly.GetType(name);
+
+        if (type == null)
+            throw new Exception($"Failed to find a window named {name}.");
+
+        if (!type.IsAssignableTo(typeof(Window)))
+            throw new Exception($"Type {name} is not a window.");
+
+        Window window = (Window)Activator.CreateInstance(type)!;
+        window.DataContext = viewModel;
+        window.Position = startupLocation;
+        window.Width = windowSize.Width;
+        window.Height = windowSize.Height;
+        window.Show();
+
+
+        return window;
+    }
+
     public OpenFileDialogBuilder CreateOpenFileDialog()
     {
         Window? currentWindow = GetCurrentWindow();

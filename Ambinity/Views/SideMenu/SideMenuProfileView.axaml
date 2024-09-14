@@ -73,7 +73,7 @@
         <Image Width="20" Margin="0,0,7,0" RenderOptions.BitmapInterpolationMode="HighQuality"
                Source="{Binding GetThumbnail^,FallbackValue=null}">
         </Image>
-        <TextBlock TextTrimming="CharacterEllipsis" Grid.Column="1" Padding="0 5,0,6"
+        <TextBlock TextTrimming="CharacterEllipsis" Grid.Column="1" Padding="0 6,0,6"
                    FontWeight="SemiBold"
                    FontSize="13"
                    Classes.playing-foreGround="{CompiledBinding IsPlaying}"
@@ -81,7 +81,7 @@
                    HorizontalAlignment="Left"
                    Text="{CompiledBinding Content, FallbackValue='New Category'}">
         </TextBlock>
-        <Grid HorizontalAlignment="Right" Grid.Column="3" Margin="0,0,5,1" Classes="playing-grid">
+        <Grid HorizontalAlignment="Right" Grid.Column="3" Margin="0,1,5,0" Classes="playing-grid">
             <PathIcon Foreground="{DynamicResource SystemAccentColor}" IsVisible="{Binding IsPlaying}" Width="13"
                       Height="13"
                       Data="{DynamicResource 'pauseComposition'}">
@@ -99,6 +99,8 @@
                 </PathIcon>
             </Button>
             <Button Classes="properties-button icon-button icon-button-small"
+                    Click="Button_OnClick"
+                    x:Name="PlayButton"
                     Classes.isSelected-button="{Binding IsSelected}"
                     Command="{CompiledBinding TogglePlayPauseProfileCommand}"
                     ToolTip.Tip="Play/Pause profile"

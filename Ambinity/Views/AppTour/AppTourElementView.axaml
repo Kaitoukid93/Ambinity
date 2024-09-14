@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.AppTour" 
+             x:DataType="local:AppTourElementViewModel"
+             
+             x:Class="Ambinity.Views.AppTour.AppTourElementView">
+    <Border Height="{Binding Height}">
+        <StackPanel Orientation="Horizontal" Spacing="2">
+           <Rectangle IsHitTestVisible="False" StrokeThickness="2"  Fill="Transparent" RadiusX="7" RadiusY="7" Stroke="{DynamicResource AccentButtonBackground}" Width="{Binding Rect.Width}" Height="{Binding Rect.Height}">
+             
+           </Rectangle>
+            <Separator VerticalAlignment="Center" Background="{DynamicResource AccentButtonBackground}" Height="2" Width="200"></Separator>
+            <Grid Margin="20,0,0,0" RowDefinitions="*,Auto,*" VerticalAlignment="Stretch">
+                <TextBlock FontSize="20" Margin="0,0,0,5" VerticalAlignment="Bottom" Text="{Binding Title}"></TextBlock>
+                <Separator Grid.Row="1"></Separator>
+                <TextBlock MaxWidth="300" TextWrapping="Wrap" Grid.Row="2" VerticalAlignment="Top" Margin="0,5,0,0" Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding Description}"></TextBlock>
+            </Grid>
+         <Button Command="{Binding SkipCommand}" Margin="20,0,0,0" Classes="icon-button">
+             <Grid ColumnDefinitions="*,5,Auto">
+                 <TextBlock Text="Skip"></TextBlock>
+                 <PathIcon Width="12" Height="12" Grid.Column="2" Data="{DynamicResource Skip}"></PathIcon>
+             </Grid>
+         </Button>
+          
+        </StackPanel>
+    </Border>
+</UserControl>

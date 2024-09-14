@@ -56,6 +56,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
                         var led = new AmbinityLEDLayout((float)spot.Left + (float)zone.Left,
                             (float)spot.Top + (float)zone.Top, (float)spot.Width,
                             (float)spot.Height, spot.Geometry, spot.Index);
+                        
                         Leds.Add(led);
                     }
                 }
@@ -112,6 +113,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
             led.Height = ledLayout.Height;
             led.Index = ledLayout.Index;
             led.Geometry = ledLayout.Geometry;
+            
             usableLeds.Add(led);
         }
 
@@ -120,7 +122,6 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
         {
             device.Leds.Add(led);
         }
-
         device.DeviceName = this.Name;
         device.Layout = this;
         device.UpdateSizeByChild(false);

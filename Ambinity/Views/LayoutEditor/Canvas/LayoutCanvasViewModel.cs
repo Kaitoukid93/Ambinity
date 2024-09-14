@@ -96,9 +96,10 @@ public class LayoutCanvasViewModel : ViewModelBase
     {
         ToolsViewModel.FitCanvasToViewEvent -= FitCanvasToView;
         ToolsViewModel.ToggleSnapToGridEvent -= ToggleSnapToGrid;
-
         CanvasViewModel.FigureAdded -= OnFigureAdded;
         CanvasViewModel.FigureRemoved -= OnFigureRemoved;
+        ToolsViewModel.InstallPolylineTool -= InstallTool;
+        ToolsViewModel.AddFigure -= OnFigureAddedFromTool;
         CanvasViewModel?.Dispose();
         ToolsViewModel?.Dispose();
     }

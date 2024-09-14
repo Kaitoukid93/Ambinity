@@ -101,10 +101,13 @@ public abstract class CollectableItemRepository : ObservableObject
 
     public void AddItem(ICollectableItem item)
     {
-        RegisterItem(item);
-        Items.Add(item);
-        ItemAdded?.Invoke(item);
-        SaveToDisk(item);
+        lock (Items)
+        {
+            RegisterItem(item);
+            Items.Add(item);
+            ItemAdded?.Invoke(item);
+            SaveToDisk(item);
+        }
     }
 
     /// <summary>
@@ -121,8 +124,12 @@ public abstract class CollectableItemRepository : ObservableObject
         item.ItemNameChanged -= OnItemNameChanged;
         item.ItemPinStatusChanged -= OnItemPinStatusChanged;
         item.PropertyChanged -= OnItemPropertyChanged;
-        Items.Remove(item);
-        RemoveFromDisk(item);
+        lock (Items)
+        {
+            Items.Remove(item);
+            RemoveFromDisk(item);
+        }
+       
     }
 
     public void RemoveFromDisk(ICollectableItem item)
@@ -135,22 +142,29 @@ public abstract class CollectableItemRepository : ObservableObject
 
     public void InsertItem(ICollectableItem item)
     {
-        RegisterItem(item);
-        Items.Insert(0, item);
+        lock (Items)
+        {
+            RegisterItem(item);
+            Items.Insert(0, item);
+        }
     }
 
     public void RemoveSelectedItems()
     {
-        var selectedItems = Items.Where(i => i.IsChecked).ToList();
-        //try to remove local path
-        foreach (var item in selectedItems)
+        lock (Items)
         {
-            item.ItemCheckStatusChanged -= OnItemCheckStatusChanged;
-            item.ItemNameChanged -= OnItemNameChanged;
-            item.ItemPinStatusChanged -= OnItemPinStatusChanged;
-            item.PropertyChanged -= OnItemPropertyChanged;
-            Items.Remove(item);
+            var selectedItems = Items.Where(i => i.IsChecked).ToList();
+            //try to remove local path
+            foreach (var item in selectedItems)
+            {
+                item.ItemCheckStatusChanged -= OnItemCheckStatusChanged;
+                item.ItemNameChanged -= OnItemNameChanged;
+                item.ItemPinStatusChanged -= OnItemPinStatusChanged;
+                item.PropertyChanged -= OnItemPropertyChanged;
+                Items.Remove(item);
+            }
         }
+        
     }
 
     /// <summary>
