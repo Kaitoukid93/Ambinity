@@ -9,13 +9,11 @@ public class LibraryViewModelFactory(
 {
     public LibraryViewModelBase GetLibraryViewModel(string type)
     {
-        switch (type)
+        return type switch
         {
-            case "ColorPalette":
-                return colorPalettesLibraryViewModel;
-            case"Animation":
-                return animationLibraryViewModel;
-            default: return null;
-        }
+            "ColorPalette" => colorPalettesLibraryViewModel,
+            "Animation" => animationLibraryViewModel,
+            _ => null
+        };
     }
 }

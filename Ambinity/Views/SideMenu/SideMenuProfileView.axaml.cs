@@ -13,16 +13,14 @@ namespace Ambinity.Views.SideMenu;
 
 public partial class SideMenuProfileView : UserControl
 {
-    private AppTourViewModel _appTourViewModel;
-    private readonly IClassicDesktopStyleApplicationLifetime? _lifeTime;
-    private readonly Window? _mainWindow;
+    private readonly AppTourViewModel _appTourViewModel;
+    private readonly AppTourElementProvider _appTourElementProvider;
     public SideMenuProfileView()
     {
         InitializeComponent();
-        _lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
-        _mainWindow = _lifeTime.MainWindow;
         _appTourViewModel = Ioc.Default.GetService<AppTourViewModel>();
         _appTourViewModel.NextStepActivated += OnAppTourStepChanged;
+        _appTourElementProvider = Ioc.Default.GetRequiredService<AppTourElementProvider>();
     }
     private async  void OnAppTourStepChanged(ViewModelBase element)
     {
@@ -48,10 +46,10 @@ public partial class SideMenuProfileView : UserControl
         
         var thisPlayButton = new AppTourElement(this.PlayButton, "Play Profile",
             "To Play or Pause this profile, click this button");
-        var thisPlayButtonVm = AppTourElementHelper.GetAppTourElements(thisPlayButton,this._mainWindow);
+        var thisPlayButtonVm = _appTourElementProvider.GetAppTourElements(thisPlayButton);
         if(thisPlayButtonVm ==null)
             return;
-        _appTourViewModel?.Show(thisPlayButtonVm,true,this._mainWindow);
+        _appTourViewModel?.Show(thisPlayButtonVm,true);
         
     }
 }

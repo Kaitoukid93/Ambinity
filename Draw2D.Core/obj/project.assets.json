@@ -809,24 +809,27 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\AMBINO\\.nuget\\packages\\": {}
+    "C:\\Users\\zOe\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\AMBINO\\RiderProjects\\Ambinity\\Draw2D.Core\\Draw2D.Core.csproj",
+      "projectUniqueName": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\Draw2D.Core.csproj",
       "projectName": "Draw2D.Core",
-      "projectPath": "C:\\Users\\AMBINO\\RiderProjects\\Ambinity\\Draw2D.Core\\Draw2D.Core.csproj",
-      "packagesPath": "C:\\Users\\AMBINO\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\AMBINO\\RiderProjects\\Ambinity\\Draw2D.Core\\obj\\",
+      "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\Draw2D.Core.csproj",
+      "packagesPath": "C:\\Users\\zOe\\.nuget\\packages\\",
+      "outputPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\AMBINO\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\zOe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netstandard2.1"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -839,11 +842,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -875,7 +873,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Users\\AMBINO\\.dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
       }
     }
   },

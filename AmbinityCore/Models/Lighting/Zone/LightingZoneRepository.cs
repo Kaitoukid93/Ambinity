@@ -11,12 +11,14 @@ namespace AmbinityCore.Models.Lighting.Zone;
 
 public class LightingZoneRepository : CollectableItemRepository
 {
+    private readonly AnimationsRepository _animationsRepository;
 
     private string dbPath => Path.Combine(Constants.AppDataFolder, "Data");
     private string FolderPath => Path.Combine(dbPath, "Zones");
 
-    public LightingZoneRepository()
+    public LightingZoneRepository( AnimationsRepository animationsRepository)
     {
+        _animationsRepository = animationsRepository;
         LocalFolderPath = FolderPath;
         Name = "Lighting Zone";
     }
@@ -80,11 +82,13 @@ public class LightingZoneRepository : CollectableItemRepository
         solidRedZone.LightingConfiguration = new SelfGeneratedColorConfiguration( palette.Colors.ToList(), new NoneMotionConfiguration());
         return solidRedZone;
     }
-    public LightingZone GetDefaultAnimationZone(string name,int x, int y, int width, int height, string animationPath)
+    public LightingZone GetDefaultAnimationZone(string name,int x, int y, int width, int height)
     {
         var animationZone = new LightingZone(x, y, width, height);
         animationZone.Name = name;
-        animationZone.LightingConfiguration = new AnimationConfiguration();
+        var animation = _animationsRepository.Items.First();
+        animationZone.LightingConfiguration = new AnimationConfiguration(animation as Animation);
+        
         return animationZone;
     }
 }

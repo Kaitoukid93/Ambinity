@@ -113,7 +113,10 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     {
         return Name;
     }
-
+    public Color? GetDisplayColor()
+    {
+        return Avalonia.Media.Colors.White;
+    }
     public string Icon => "slaveDevice";
     public string Name => _deviceName;
 

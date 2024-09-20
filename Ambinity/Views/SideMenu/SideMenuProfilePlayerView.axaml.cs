@@ -15,8 +15,7 @@ namespace Ambinity.Views.SideMenu;
 public partial class SideMenuProfilePlayerView : UserControl
 {
     private AppTourViewModel _appTourViewModel;
-    private readonly IClassicDesktopStyleApplicationLifetime? _lifeTime;
-    private readonly Window? _mainWindow;
+    private AppTourElementProvider _appTourElementProvider;
     private int _playClickCount;
     private int _profileClickCount;
 
@@ -26,8 +25,7 @@ public partial class SideMenuProfilePlayerView : UserControl
         var vm = Ioc.Default.GetRequiredService<SideMenuProfilePlayerViewModel>();
         _appTourViewModel = Ioc.Default.GetService<AppTourViewModel>();
         vm.ProfilePictureUpdated += OnProfilePictureUpdated;
-        _lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
-        _mainWindow = _lifeTime.MainWindow;
+        _appTourElementProvider = Ioc.Default.GetRequiredService<AppTourElementProvider>();
         _appTourViewModel = Ioc.Default.GetService<AppTourViewModel>();
         _appTourViewModel.NextStepActivated += OnAppTourStepChanged;
     }
@@ -52,11 +50,11 @@ public partial class SideMenuProfilePlayerView : UserControl
         //focus on this category
 
         var thisProfileButton = new AppTourElement(this.ProfileButton, "Current Playing Profile",
-            "To Play or Pause this profile, click Play button. To edit this access Now Playing Profile anywhere, click this image");
-        var thisProfileButtonVm = AppTourElementHelper.GetAppTourElements(thisProfileButton, this._mainWindow);
+            "To edit Now Playing Profile, click this image");
+        var thisProfileButtonVm = _appTourElementProvider.GetAppTourElements(thisProfileButton);
         if (thisProfileButtonVm == null)
             return;
-        _appTourViewModel?.Show(thisProfileButtonVm, true, this._mainWindow);
+        _appTourViewModel?.Show(thisProfileButtonVm, true);
         //wait for user to interact
         while (!PlayButton.IsVisible)
         {
@@ -65,20 +63,20 @@ public partial class SideMenuProfilePlayerView : UserControl
 
         //show play button guide
         var thisPlayButton = new AppTourElement(this.PlayButton, "Current Playing Profile",
-            "To Play or Pause this profile, click Play button. To edit this access Now Playing Profile anywhere, click this image");
-        var thisPlayButtonVm = AppTourElementHelper.GetAppTourElements(thisPlayButton, this._mainWindow);
+            "To Play or Pause this profile, click Play button");
+        var thisPlayButtonVm = _appTourElementProvider.GetAppTourElements(thisPlayButton);
         if (thisPlayButtonVm == null)
             return;
-        _appTourViewModel?.Show(thisPlayButtonVm, true, this._mainWindow);
+        _appTourViewModel?.Show(thisPlayButtonVm, true);
         while (_playClickCount == 0)
         {
             await Task.Delay(100);
         }
 
-        _appTourViewModel?.Show(thisProfileButtonVm, true, this._mainWindow);
+        _appTourViewModel?.Show(thisProfileButtonVm, true);
         while (_profileClickCount == 0)
         {
-            await Task.Delay(3000);
+            await Task.Delay(1000);
         }
 
         _appTourViewModel?.NextStep(Ioc.Default.GetRequiredService<ToolsViewModel>());

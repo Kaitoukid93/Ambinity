@@ -102,11 +102,11 @@ public class LightingZoneFigure : ContainerFigure, IAssetSelectable
         // }
 
 
-        var strokeBrush = new ImmutableSolidColorBrush(StrokeColor);
+        var strokeBrush = new ImmutableSolidColorBrush(ChildItem.GetDisplayColor()??strokeColor);
         var thickness = StrokeThickness;
         if (OverrideStrokeStyle)
         {
-            strokeBrush = new ImmutableSolidColorBrush(strokeColor);
+            strokeBrush = new ImmutableSolidColorBrush(ChildItem.GetDisplayColor()??strokeColor);
             thickness = (float)strokeThickness;
         }
         

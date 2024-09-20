@@ -142,8 +142,8 @@ public abstract class AssetsViewModelBase : ViewModelBase
                     RegisterAsset(asset);
                     AvailableAssets.Add(asset);
                     DisplayAssets.Add(asset);
+                    //todo filter? at the moment, download items is too small in quantity to actually need a filter system
                 }
-
                 break;
             case "Online":
                 await Task.Run(() => _onlineItemRepository.Init());
@@ -155,10 +155,7 @@ public abstract class AssetsViewModelBase : ViewModelBase
                     AvailableAssets.Add(asset);
                     DisplayAssets.Add(asset);
                 }
-
                 Filters = _onlineItemRepository.Filters.ToArray();
-                //download filter
-                
                 break;
         }
 
@@ -171,7 +168,6 @@ public abstract class AssetsViewModelBase : ViewModelBase
         _onlineItemRepository = onlineRepo;
         DisplayAssets = new ObservableCollection<AssetItemViewModelBase>();
         AvailableAssets = new ObservableCollection<AssetItemViewModelBase>();
-        
         //show local repo
         _selectedRepository = "Local";
         await UpdateAssets();

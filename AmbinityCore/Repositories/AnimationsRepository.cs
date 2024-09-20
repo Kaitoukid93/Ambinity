@@ -26,7 +26,7 @@ public class AnimationsRepository : CollectableItemRepository
         foreach (var dir in directories)
         {
 
-            var animation = JsonHelpers.DeserializeJson<ColorPalette>(Path.Combine(dir,"config.json"));
+            var animation = JsonHelpers.DeserializeJson<Animation>(Path.Combine(dir,"animation.json"));
             if (animation == null)
                 continue;
             animation.LocalPath = dir;

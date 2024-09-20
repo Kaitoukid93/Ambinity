@@ -44,6 +44,6 @@ public class SideMenuViewModelFactory
 
     public ProfilePropertiesEditorViewModel GetProfilePropertiesViewModel(LightingProfile profile)
     {
-        return new ProfilePropertiesEditorViewModel(_thumbnailService, profile, _windowService);
+        return new ProfilePropertiesEditorViewModel(_thumbnailService, profile, _windowService,_dialogService);
     }
 }

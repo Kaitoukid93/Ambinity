@@ -15,8 +15,10 @@
     </UserControl.Styles>
     <Grid  PointerPressed="ContainerGrid_OnPointerPressed" PointerExited="ContainerGrid_OnPointerExited"
           PointerEntered="ContainerGrid_OnPointerEntered" Margin="0,0,0,0" x:Name="ContainerGrid">
-        <Border CornerRadius="5" IsVisible="{Binding IsSelected}" HorizontalAlignment="Left" Height="15" Width="3"
-                Background="{DynamicResource SystemAccentColor}">
+        <Border CornerRadius="5"  HorizontalAlignment="Left" Height="15" Width="3">
+            <Border.Background>
+                <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+            </Border.Background>
         </Border>
         <Border IsVisible="{Binding IsSelected}"
                 Height="35" Background="{DynamicResource ListViewItemBackgroundPointerOver}"
@@ -41,7 +43,7 @@
                     Classes="icon-button icon-button-small">
                 <PathIcon Width="13" Height="13" Data="{DynamicResource 'Eye Open'}"></PathIcon>
             </Button>
-            <Button IsVisible="{Binding ShowButtons}" Margin="0,0,2,0" Grid.Column="3"
+            <Button IsVisible="{Binding ShowButtons}" Margin="0,0,6,0" Grid.Column="3"
                     Classes=" icon-button icon-button-small">
             
                 <PathIcon Width="13" Height="13" Data="{DynamicResource 'delete'}"></PathIcon>

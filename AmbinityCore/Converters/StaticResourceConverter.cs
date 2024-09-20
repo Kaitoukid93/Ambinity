@@ -14,7 +14,7 @@ public class StaticResourceConverter:MarkupExtension, IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value == null || value.ToString() == string.Empty)
-            return _target?.FindResource("binary") ?? Application.Current.FindResource("binary");
+            return _target?.FindResource("nullIcon") ?? Application.Current.FindResource("nullIcon");
         var resourceKey = (string)value;
 
         return _target?.FindResource(resourceKey) ?? Application.Current.FindResource(resourceKey);

@@ -98,12 +98,9 @@
             </PathIcon>
 
             <Panel Grid.Column="1" HorizontalAlignment="Left">
-                <TextBlock Classes="fadable"
+                <TextBlock Classes="smallBold fadable"
                            Classes.suspended="{CompiledBinding IsSuspended}"
                            Padding="0 5"
-                           FontWeight="SemiBold"
-                           FontSize="13"
-                           VerticalAlignment="Center"
                            HorizontalAlignment="Left"
                            Text="{CompiledBinding Content, FallbackValue='New Category'}"
                            TextTrimming="CharacterEllipsis"
@@ -168,9 +165,10 @@
                 <ListBox.ItemContainerTheme>
                     <ControlTheme 
                         TargetType="ListBoxItem"
-                        BasedOn="{StaticResource {x:Type ListBoxItem}}"
+                        BasedOn="{StaticResource  _striplessListboxItem}"
                         x:DataType="local:SideMenuProfileViewModel">
                         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                        <Setter Property="Padding" Value="0,5,0,5" />
                     </ControlTheme>
                 </ListBox.ItemContainerTheme>
                 <ListBox.DataTemplates>
@@ -179,9 +177,7 @@
             </ListBox>
             <TextBlock IsVisible="{CompiledBinding !Profiles.Count}" 
                        Margin="20 0 0 0"
-                       FontSize="13"
-                       Foreground="{DynamicResource ButtonForegroundDisabled}"
-                       VerticalAlignment="Center" 
+                       Classes="smallSecondary"
                        HorizontalAlignment="Left"
                        IsHitTestVisible="False">
                 Empty collection

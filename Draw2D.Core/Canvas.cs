@@ -36,7 +36,7 @@ namespace Draw2D.Core
         private float _width;
         private float _height;
         private Color _strokeColor;
-
+      
         private readonly List<PolicyBase> _policies = new List<PolicyBase>();
         private SnapTargets _currentSnapTargets = SnapTargets.Center | SnapTargets.Vertices | SnapTargets.MidPoints;
         private ICoordinateSystem _coordinateSystem;
@@ -98,6 +98,8 @@ namespace Draw2D.Core
         public event EventHandler<CanvasClickEventArgs>CanvasRightClicked; 
         public event EventHandler<ConnectionCreatedEventArgs> ConnectionCreated;
         public event EventHandler<SelectionChangedEventArgs> SelectionChanged;
+
+        public event EventHandler<HoverChangedEventArgs> FigureHoverChanged;
 
         public CommandBase ActiveCommand
         {
@@ -249,10 +251,11 @@ namespace Draw2D.Core
                 _lastHoverFigure.IsMouseOver = false;
                 _lastHoverFigure = figure;
             }
-
             figure.IsMouseOver = true;
             _lastHoverFigure = figure;
-            
+            var eventArgs = new HoverChangedEventArgs(figure, true);
+            FigureHoverChanged?.Invoke(this,eventArgs);
+
         }
 
         public void UnHoverAll()
@@ -263,6 +266,8 @@ namespace Draw2D.Core
                 NeedsRepaint(_lastHoverFigure);
                 _lastHoverFigure = null;
             }
+            var eventArgs = new HoverChangedEventArgs(null, false);
+            FigureHoverChanged?.Invoke(this,eventArgs);
         }
 
         public void OnMouseLeftDown(double x, double y, bool isShiftKey, bool isCtrlKey)
@@ -338,7 +343,7 @@ namespace Draw2D.Core
                             .ToList()
                             .ForEach(
                                 p =>
-                                    p.OnDragStart(this, _lastMouseDownPosX +dxSum, _lastMouseDownPosY +dySum, dxSum, dySum,
+                                    p.OnDragStart(this, _lastMouseDownPosX, _lastMouseDownPosY,
                                         isShiftKey,
                                         isCtrlKey));
                     }
@@ -491,11 +496,11 @@ namespace Draw2D.Core
             //Note: We expect that figures are ordered by ZOrder. That's why we can take the last element.
             var hitFigure = Figures.LastOrDefault(f => !blacklist.Contains(f.GetType()) && f.HitTest(x, y));
 
-            var resizeHandle = hitFigure as IHandle;
-            if (resizeHandle != null)
-            {
-                return resizeHandle.Owner;
-            }
+            // var resizeHandle = hitFigure as IHandle;
+            // if (resizeHandle != null)
+            // {
+            //     return resizeHandle.Owner;
+            // }
 
             return hitFigure;
         }

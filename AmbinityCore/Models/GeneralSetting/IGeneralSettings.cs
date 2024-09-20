@@ -10,4 +10,6 @@ public interface IGeneralSettings
     Color PrimaryColor { get; set; }
     bool EnableSnapToGrid { get; set; }
     bool ShowCanvasLockedInfo { get; set; }
+    bool ShowAppTour { get; set; }
+    Guid LastPlayedProfileID { get; set; }
 }

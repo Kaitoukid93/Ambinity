@@ -1,22 +1,22 @@
 {
   "version": 2,
-  "dgSpecHash": "XMPD4GD5BqY=",
+  "dgSpecHash": "8qRspK79IbfVE/gqV39kat8aZOJ7mIcL62mMDG0eMKpsKci0S/gVi23JVb6i/r6y/GbOtlmO21y4sWftFjAO8g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\AMBINO\\RiderProjects\\Ambinity\\Draw2D.Core\\Draw2D.Core.csproj",
+  "projectFilePath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\Draw2D.Core\\Draw2D.Core.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\AMBINO\\.nuget\\packages\\avalonia\\11.1.3\\avalonia.11.1.3.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\avalonia.buildservices\\0.0.29\\avalonia.buildservices.0.0.29.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\avalonia.remote.protocol\\11.1.3\\avalonia.remote.protocol.11.1.3.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\microcom.runtime\\0.11.0\\microcom.runtime.0.11.0.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\quickgraph\\3.6.61119.7\\quickgraph.3.6.61119.7.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\system.buffers\\4.4.0\\system.buffers.4.4.0.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\system.componentmodel.annotations\\4.5.0\\system.componentmodel.annotations.4.5.0.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\system.numerics.vectors\\4.4.0\\system.numerics.vectors.4.4.0.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.6.0\\system.runtime.compilerservices.unsafe.4.6.0.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\system.valuetuple\\4.5.0\\system.valuetuple.4.5.0.nupkg.sha512"
+    "C:\\Users\\zOe\\.nuget\\packages\\avalonia\\11.1.3\\avalonia.11.1.3.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\avalonia.buildservices\\0.0.29\\avalonia.buildservices.0.0.29.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\avalonia.remote.protocol\\11.1.3\\avalonia.remote.protocol.11.1.3.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\microcom.runtime\\0.11.0\\microcom.runtime.0.11.0.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\quickgraph\\3.6.61119.7\\quickgraph.3.6.61119.7.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\system.buffers\\4.4.0\\system.buffers.4.4.0.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\system.componentmodel.annotations\\4.5.0\\system.componentmodel.annotations.4.5.0.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\system.numerics.vectors\\4.4.0\\system.numerics.vectors.4.4.0.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.6.0\\system.runtime.compilerservices.unsafe.4.6.0.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
+    "C:\\Users\\zOe\\.nuget\\packages\\system.valuetuple\\4.5.0\\system.valuetuple.4.5.0.nupkg.sha512"
   ],
   "logs": [
     {

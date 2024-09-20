@@ -101,7 +101,7 @@ public class ToolsViewModel : ViewModelBase
 
     private void AddAnimationZone()
     {
-        var zone = _lightingZoneRepository.GetDefaultAnimationZone("new zone", 100, 100, 100, 100,null);
+        var zone = _lightingZoneRepository.GetDefaultAnimationZone("new zone", 100, 100, 100, 100);
         zone.Shape = ZoneShapeEnum.Rectangle;
         var figure = zone.GetContainer();
         figure.SetChild(zone);
@@ -117,7 +117,7 @@ public class ToolsViewModel : ViewModelBase
         var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
         snapToGridTools.Command = ToggleSnapToGridCommand;
-        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas", FitCanvasToViewCommand);
+        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas", Colors.White, FitCanvasToViewCommand);
         var separator = new SeparatorToolbarItem();
         ToolbarItems.Add(_addColorZoneTools);
         ToolbarItems.Add(AddAmbilightZoneTool());
@@ -134,7 +134,7 @@ public class ToolsViewModel : ViewModelBase
         var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
         snapToGridTools.Command = ToggleSnapToGridCommand;
-        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas", FitCanvasToViewCommand);
+        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",Colors.White,  FitCanvasToViewCommand);
         ToolbarItems.Add(snapToGridTools);
         ToolbarItems.Add(centerCanvasTool);
         OnRenderingStatusChanged();
@@ -147,16 +147,17 @@ public class ToolsViewModel : ViewModelBase
 
     private ButtonToolbarItem AddAmbilightZoneTool()
     {
-        return new ButtonToolbarItem("Ambilight", "Add Ambilight Zone", "ambilight", AddAmbilightZoneCommand);
+        return new ButtonToolbarItem("Ambilight", "Add Ambilight Zone", "ambilight",Color.Parse("#d769ff"), AddAmbilightZoneCommand);
     }
     private ButtonToolbarItem AddAnimationZoneTool()
     {
-        return new ButtonToolbarItem("Animation", "Add Animation Zone", "LightingConfiguration_Animation", AddAnimationZoneCommand);
+        return new ButtonToolbarItem("Animation", "Add Animation Zone", "LightingConfiguration_Animation",Color.Parse("#ffb033"), AddAnimationZoneCommand);
     }
 
     private FlyoutButtonToolbarItem AddColorZoneTool()
     {
-        var addZonetools = new FlyoutButtonToolbarItem("Add", "Add new color zone", "SolidColor_Button", AddColorZoneCommand);
+        
+        var addZonetools = new FlyoutButtonToolbarItem("Add", "Add new color zone", "SolidColor_Button",Color.Parse("#33bbff"), AddColorZoneCommand);
         FlyoutItem addRectangle = new FlyoutItem("Rectangle", "CanvasTool_Rectangle");
         addRectangle.FlyoutItemSelected += AddRectangle;
         FlyoutItem addEllipse = new FlyoutItem("Ellipse", "CanvasTool_Ellipse");

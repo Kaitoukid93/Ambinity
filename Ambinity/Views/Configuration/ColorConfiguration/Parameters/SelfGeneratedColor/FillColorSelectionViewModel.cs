@@ -1,33 +1,40 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Services;
 using Ambinity.Views.LayoutEditor;
+using Ambinity.Windows;
 using AmbinityCore.Colors;
+using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
+using AmbinityCore.Models.Profile;
 using AmbinityCore.Repositories;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.Core;
+using FluentAvalonia.UI.Controls;
+using Serilog;
 
 namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 
 public class FillColorSelectionViewModel : ParameterViewModelBase
 {
-
     public FillColorSelectionViewModel(SelfGeneratedColorConfiguration configuration,
-        RightPanelViewModel rightPanelViewModel,StaticColorsRepository staticColorsRepository,
- LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService)
+        RightPanelViewModel rightPanelViewModel, StaticColorsRepository staticColorsRepository, ColorPaletteRepository colorPaletteRepository,
+        LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService, IDialogService dialogService)
     {
         _libraryViewModelFactory = libraryViewModelFactory;
         _colorsRepository = staticColorsRepository;
         _configuration = configuration;
         _windowService = windowService;
+        _dialogService = dialogService;
+        _colorPaletteRepository = colorPaletteRepository;
         Colors = new ObservableCollection<SolidColorViewModel>();
         foreach (var color in configuration.Colors)
         {
@@ -37,6 +44,8 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
         }
 
         ImportPaletteCommand = new AsyncRelayCommand(ImportPalette);
+        ExportPaletteCommand = new AsyncRelayCommand(ExportPalette);
+        AddPaletteToLibraryCommand = new AsyncRelayCommand(AddPaletteToLibrary);
         SelectedColors = new ObservableCollection<SolidColorViewModel>();
         AddColorCommand = new RelayCommand<Color>(AddColor);
         OpenLibraryCommand = new AsyncRelayCommand(OpenLibrary);
@@ -44,21 +53,68 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
         
     }
 
+    private async Task AddPaletteToLibrary()
+    {
+        var vm = new InputDialogContentViewModel();
+        vm.DialogClosed += OnCreateNewProfileDialogClosed;
+        await _dialogService.ShowInputDialog(vm, "New profile", "Ok", "Cancel");
+    }
+
+    private void OnCreateNewProfileDialogClosed(object? sender, EventArgs e)
+    {
+        var vm = sender as InputDialogContentViewModel;
+        var result = (e as ContentDialogClosedEventArgs).Result;
+        if (result == ContentDialogResult.Secondary || result == ContentDialogResult.None)
+            return;
+        if (result == ContentDialogResult.Primary)
+        {
+            //create new profile
+            var palette = new ColorPalette(vm.UserInput,_configuration.Colors.ToArray());
+            _colorPaletteRepository.AddItem(palette);
+        }
+    }
+
+    private async Task ExportPalette()
+    {
+        string? result = await _windowService.CreateSaveFileDialog()
+            .HavingFilter(f => f.WithExtension("json"))
+            .WithInitialFileName("My Palette")
+            .ShowAsync();
+        if (result == null)
+            return;
+        if(File.Exists(result))
+            File.Delete(result);
+        var fileName = Path.GetFileNameWithoutExtension(result);
+        var palette = new ColorPalette(fileName, _configuration.Colors.ToArray());
+        JsonHelpers.WriteSimpleJson(palette,result);
+        Log.Information("Palette exported to " + result);
+    }
+
     private void OnPaletteSelected(ICollectableItem obj)
     {
         ApplyPalette(obj as ColorPalette);
     }
+
     private async Task ImportPalette()
     {
         string[]? result = await _windowService.CreateOpenFileDialog()
-            
             .HavingFilter(f => f.WithExtension("json").WithName("json file"))
             .ShowAsync();
 
         if (result == null)
             return;
         var importFilePath = result.First();
+        var hexConverter = new HexColorConverter();
+        var palette = JsonHelpers.DeserializeJson<ColorPalette>(importFilePath, hexConverter);
+        if (palette == null)
+        {
+            Log.Error("Palette parse error: " + importFilePath);
+            return;
+        }
+
+        ApplyPalette(palette);
     }
+
     private void ApplyPalette(ColorPalette colorPalette)
     {
         Colors?.Clear();
@@ -67,6 +123,7 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
         {
             AddColor(color);
         }
+
         _configuration.UpdateColors();
     }
 
@@ -84,8 +141,10 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
     private StaticColorsRepository _colorsRepository;
     private readonly SelfGeneratedColorConfiguration _configuration;
     private readonly LibraryViewModelFactory _libraryViewModelFactory;
-    private  LibraryViewModelBase _libraryViewModel;
+    private LibraryViewModelBase _libraryViewModel;
     private readonly IWindowService _windowService;
+    private readonly IDialogService _dialogService;
+    private readonly ColorPaletteRepository _colorPaletteRepository;
 
     public ObservableCollection<SolidColorViewModel> SelectedColors
     {
@@ -97,7 +156,7 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
         }
     }
 
-    private void AddColor( Color color )
+    private void AddColor(Color color)
     {
         //add new solid red color to the colletion
         if (color == null)
@@ -105,16 +164,16 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
         var newCol = new SolidColorViewModel(color);
         RegisterColor(newCol);
         Colors.Insert(0, newCol);
-        _configuration.Colors.Insert(0,newCol.Color);
+        _configuration.Colors.Insert(0, newCol.Color);
         _configuration.UpdateColors();
     }
-   
+
     private void InsertColor(int index)
     {
         var newCol = new SolidColorViewModel(Color.FromRgb(255, 0, 0));
         RegisterColor(newCol);
         Colors.Insert(index, newCol);
-        _configuration.Colors.Insert(index,newCol.Color);
+        _configuration.Colors.Insert(index, newCol.Color);
         _configuration.UpdateColors();
     }
 
@@ -148,8 +207,8 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
 
     public override void Dispose()
     {
-        if(_libraryViewModel!=null)
-        _libraryViewModel.ItemSelected -= OnPaletteSelected;
+        if (_libraryViewModel != null)
+            _libraryViewModel.ItemSelected -= OnPaletteSelected;
         foreach (var color in Colors)
         {
             UnregisterColor(color);
@@ -157,6 +216,7 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
 
         Colors.Clear();
     }
+
     private void OnColorChanged(object? sender, EventArgs e)
     {
         var index = Colors.IndexOf(sender as SolidColorViewModel);
@@ -197,10 +257,13 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
             Colors.Remove(color);
             _configuration.Colors.RemoveAt(index);
         }
+
         _configuration.UpdateColors();
     }
 
     public ICommand AddColorCommand { get; set; }
     public ICommand OpenLibraryCommand { get; set; }
     public ICommand ImportPaletteCommand { get; }
+    public ICommand ExportPaletteCommand { get; }
+    public ICommand AddPaletteToLibraryCommand { get; }
 }

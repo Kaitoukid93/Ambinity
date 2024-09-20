@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using Ambinity.Services;
-using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.LayoutEditor;
+using Ambinity.Windows;
 using AmbinityCore.CapturingService;
 using AmbinityCore.Colors;
 using AmbinityCore.DataBase;
 using AmbinityCore.LightingEngines;
-using AmbinityCore.Models.GeneralSetting;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
 using AmbinityCore.Repositories;
 
@@ -16,87 +15,69 @@ namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 /// return list of parameter based on lighting configurations
 /// and for my laziness, I also add separator viewmodel -_-
 /// </summary>
-public class ParameterViewModelFactory
+public class ParameterViewModelFactory(
+    RightPanelViewModel rightPanelViewModel,
+    AudioCapturingService audioCapturingService,
+    IWindowService windowService,
+    IDialogService dialogService,
+    GeneralSettingsManager settingsManager,
+    StaticColorsRepository colorsRepository,
+    ColorPaletteRepository colorPaletteRepository,
+    AnimationsRepository animationsRepository,
+    LibraryViewModelFactory libraryViewModelFactory,
+    BrightnessProviderFactory brightnessProviderFactory,
+    ScreenCapturingService screenCapturingService)
 {
-    public ParameterViewModelFactory(RightPanelViewModel rightPanelViewModel,
-        AudioCapturingService audioCapturingService,
-        IWindowService windowService, GeneralSettingsManager settingsManager,
-        StaticColorsRepository colorsRepository, LibraryViewModelFactory libraryViewModelFactory,
-        BrightnessProviderFactory brightnessProviderFactory, ScreenCapturingService screenCapturingService)
-    {
-        _audioCapturingService = audioCapturingService;
-        _libraryViewModelFactory = libraryViewModelFactory;
-        _rightPanelViewModel = rightPanelViewModel;
-        _colorsRepository = colorsRepository;
-        _windowService = windowService;
-        _settingsManager = settingsManager;
-        _brightnessProviderFactory = brightnessProviderFactory;
-        _screenCapturingService = screenCapturingService;
-    }
-
-    private readonly RightPanelViewModel _rightPanelViewModel;
-    private readonly StaticColorsRepository _colorsRepository;
-    private readonly BrightnessProviderFactory _brightnessProviderFactory;
-    private readonly AudioCapturingService _audioCapturingService;
-    private readonly IWindowService _windowService;
-    private readonly GeneralSettingsManager _settingsManager;
-    private readonly ScreenCapturingService _screenCapturingService;
-    private readonly LibraryViewModelFactory _libraryViewModelFactory;
-
-
     public List<ParameterViewModelBase> CreateParameterViewModels(ILightingConfiguration config)
     {
-        switch (config.Type)
+        return config.Type switch
         {
-            case ConfigurationType.Animation:
-                return GetAnimationParameters(config);
-                break;
-            case ConfigurationType.ScreenCapture:
-                return GetScreenCaptureParameters(config);
-                break;
-            case ConfigurationType.SelfGeneratedColor:
-                return GetSelfGeneratedColorParameters(config);
-                break;
-            default:
-                return null;
-        }
+            ConfigurationType.Animation => GetAnimationParameters(config),
+            ConfigurationType.ScreenCapture => GetScreenCaptureParameters(config),
+            ConfigurationType.SelfGeneratedColor => GetSelfGeneratedColorParameters(config)
+        };
     }
 
-    private List<ParameterViewModelBase> GetSelfGeneratedColorParameters(ILightingConfiguration config)
+    private List<ParameterViewModelBase>? GetSelfGeneratedColorParameters(ILightingConfiguration config)
     {
         var parameters = new List<ParameterViewModelBase>();
-        var _configuration = config as SelfGeneratedColorConfiguration;
-        var colorSelectorParameter = new FillColorSelectionViewModel(_configuration, _rightPanelViewModel,
-            _colorsRepository, _libraryViewModelFactory,_windowService);
+        if (config is not SelfGeneratedColorConfiguration configuration)
+            return null;
+        var colorSelectorParameter = new FillColorSelectionViewModel(configuration, rightPanelViewModel,
+            colorsRepository, colorPaletteRepository, libraryViewModelFactory, windowService, dialogService);
         parameters.Add(colorSelectorParameter);
 
         parameters.Add(new SeparationParameterViewModel());
-        var colorBehaviorParameterViewModel = new ColorBehaviorParameterViewModel(_configuration);
+        var colorBehaviorParameterViewModel = new ColorBehaviorParameterViewModel(configuration);
         parameters.Add(colorBehaviorParameterViewModel);
 
         parameters.Add(new SeparationParameterViewModel());
-        var colorAppearanceParameter = new ColorAppearanceParameterViewModel(_configuration);
+        var colorAppearanceParameter = new ColorAppearanceParameterViewModel(configuration);
         parameters.Add(colorAppearanceParameter);
         parameters.Add(new SeparationParameterViewModel());
-        var motionConfigParamter = new MotionConfigParameterViewModel(_configuration, _audioCapturingService,
-            _rightPanelViewModel, _brightnessProviderFactory);
-        parameters.Add(motionConfigParamter);
+        var motionConfigParameter = new MotionConfigParameterViewModel(configuration, audioCapturingService,
+            rightPanelViewModel, brightnessProviderFactory);
+        parameters.Add(motionConfigParameter);
         return parameters;
     }
 
-    private List<ParameterViewModelBase> GetScreenCaptureParameters(ILightingConfiguration configuration)
+    private List<ParameterViewModelBase>? GetScreenCaptureParameters(ILightingConfiguration config)
     {
-        var captureParameter = new ScreenRegionSelectionParameterViewModel(configuration as ScreenCaptureConfiguration,
-            _windowService, _settingsManager,_screenCapturingService);
+        if (config is not ScreenCaptureConfiguration configuration)
+            return null;
+        var captureParameter = new ScreenRegionSelectionParameterViewModel(configuration,
+            windowService, settingsManager, screenCapturingService);
         var blackBarDetectionParameter = new BlackBarDetectionParameterViewModel();
-        return new List<ParameterViewModelBase>()
-            { captureParameter, new SeparationParameterViewModel(), blackBarDetectionParameter };
+        return [captureParameter, new SeparationParameterViewModel(), blackBarDetectionParameter];
     }
 
-    private List<ParameterViewModelBase> GetAnimationParameters(ILightingConfiguration configuration)
+    private List<ParameterViewModelBase>? GetAnimationParameters(ILightingConfiguration config)
     {
-        var animationSelectionParameter = new AnimationSelectionParameterViewModel(configuration as AnimationConfiguration,_rightPanelViewModel,_libraryViewModelFactory,_windowService);
-        return new List<ParameterViewModelBase>()
-            { animationSelectionParameter };
+        if (config is not AnimationConfiguration configuration)
+            return null;
+        var animationSelectionParameter = new AnimationSelectionParameterViewModel(
+            configuration, rightPanelViewModel, libraryViewModelFactory, windowService,
+            animationsRepository);
+        return [animationSelectionParameter];
     }
 }

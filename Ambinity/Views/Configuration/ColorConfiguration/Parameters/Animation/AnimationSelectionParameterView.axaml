@@ -15,12 +15,15 @@
             <Grid Column="1">
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5">
                     <Grid>
-                        <Button Width="30" Height="30" Command="{Binding ImportAnimationCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Import palette" Classes="icon-button">
+                        <Button Width="30" Height="30" Command="{Binding ImportAnimationCommand}"
+                                Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Import animation"
+                                Classes="icon-button">
                             <PathIcon Width="15" Data="{DynamicResource Import}"></PathIcon>
                         </Button>
                     </Grid>
                     <Grid>
-                        <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1" Background="Transparent" Width="30" Height="30"
+                        <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1"
+                                Background="Transparent" Width="30" Height="30"
                                 Classes="icon-button">
                             <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon>
                         </Button>
@@ -29,10 +32,10 @@
             </Grid>
         </Grid>
         <Grid Row="2">
-            <StackPanel Spacing="5">
+            <StackPanel Grid.Column="1" Spacing="5">
                 <Grid RowDefinitions="Auto,*">
                     <Grid>
-                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Frame rate"></TextBlock>
+                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Speed"></TextBlock>
                     </Grid>
                     <Grid Row="1" ColumnDefinitions="*,12,Auto">
                         <Grid Column="0">
@@ -40,19 +43,13 @@
                                     Width="190"
                                     SmallChange="0.1"
                                     LargeChange="0.5"
-                                    Minimum="0" Maximum="200" HorizontalAlignment="Left">
+                                    Value="{Binding FrameRate}"
+                                    Minimum="1" Maximum="5" HorizontalAlignment="Left">
                             </Slider>
 
                         </Grid>
                         <Grid Column="2">
-                            <TextBox CornerRadius="4"
-                                     VerticalAlignment="Center"
-                                     HorizontalAlignment="Left"
-                                     HorizontalContentAlignment="Right"
-                                     attachedProperties:TextBoxAssist.SuffixText="fps"
-                                     BorderThickness="0"
-                                     Text="{Binding ElementName=sensitivitySlider,Path=Value, StringFormat=N1}">
-                            </TextBox>
+                            <NumericUpDown BorderThickness="0" Minimum="1" Maximum="5" FormatString="0" Increment="1" VerticalAlignment="Center" Value="{Binding FrameRate}"></NumericUpDown>
 
 
                         </Grid>
@@ -62,30 +59,42 @@
                     <Grid>
                         <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Animation details"></TextBlock>
                     </Grid>
-                    <Grid Row="2">
-                        <StackPanel Spacing="2">
+                    <Grid Row="2" ColumnDefinitions="Auto,10,*">
+                        <Grid>
+                            <Border Classes="card" BorderThickness="1" Padding="0" Width="100" Height="100" CornerRadius="7">
+                                <Lottie Margin="5" Path="{Binding Configuration.AnimationFilePath}"></Lottie>
+                            </Border>
+                        </Grid>
+                        <StackPanel Grid.Column="2" Spacing="2">
                             <Grid ColumnDefinitions="Auto, *">
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Duration: "></TextBlock>
-                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1" Text="{Binding Animation.Duration}"></TextBlock>
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1"
+                                           Text="{Binding Animation.Duration}">
+                                </TextBlock>
                             </Grid>
                             <Grid ColumnDefinitions="Auto, *">
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Fps: "></TextBlock>
-                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1" Text="{Binding Animation.Fps}"></TextBlock>
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1"
+                                           Text="{Binding Animation.Fps}">
+                                </TextBlock>
                             </Grid>
                             <Grid ColumnDefinitions="Auto, *">
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Version: "></TextBlock>
-                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1" Text="{Binding Animation.Version}"></TextBlock>
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1"
+                                           Text="{Binding Animation.Version}">
+                                </TextBlock>
                             </Grid>
                             <Grid ColumnDefinitions="Auto, *">
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Size: "></TextBlock>
-                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1" Text="{Binding Animation.Size}"></TextBlock>
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1"
+                                           Text="{Binding Animation.Size}">
+                                </TextBlock>
                             </Grid>
                         </StackPanel>
                     </Grid>
                 </Grid>
             </StackPanel>
-            
         </Grid>
     </Grid>
-    
+
 </UserControl>

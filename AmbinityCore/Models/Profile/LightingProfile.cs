@@ -8,6 +8,7 @@ using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.ProfileCategory;
 using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -61,6 +62,8 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     /// Display Icon of this profile
     /// </summary>
     public string Icon { get; set; }
+    
+    public Color IconColor { get; set; }
 
     public void UpdateIcon()
     {
@@ -77,6 +80,7 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     /// </summary>
     private bool _isPlaying;
 
+    [JsonIgnore]
     public bool IsPlaying
     {
         get => _isPlaying;

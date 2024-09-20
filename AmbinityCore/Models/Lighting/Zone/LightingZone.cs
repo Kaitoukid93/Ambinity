@@ -6,6 +6,7 @@ using AmbinityCore.Models.Lighting.Zone.Configuration;
 using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
 using Avalonia;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Draw2D.Core.Graphic;
@@ -22,6 +23,7 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
     public event Action SizeUpdated;
     public event Action LocationUpdated;
     public event Action<Rect> UserInputUpdateValidate;
+    private Color? _displayColor = null;
 
     public LightingZone(float x, float y, float width, float height)
     {
@@ -37,14 +39,15 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
     }
 
     public Guid GroupID { get; set; }
+
     public void SetScale(float scale)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     public void SetRotation(float angle)
     {
-        throw new NotImplementedException();
+       // throw new NotImplementedException();
     }
 
     #region Canvas Corordinate Properties
@@ -230,6 +233,8 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
             IsResizable = this.IsResizeable,
             IsSelectable = this.IsSelectable,
             IsDragable = this.IsDraggable,
+            MinWidth = 2,
+            MinHeight = 2,
         };
     }
 
@@ -370,6 +375,30 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
     public string GetDisplayName()
     {
         return Shape.ToString() + " - " + LightingConfiguration.Name;
+    }
+
+    public Color? GetDisplayColor()
+    {
+        if (_displayColor != null)
+            return _displayColor;
+        switch (LightingConfiguration.Type)
+        {
+            case ConfigurationType.ScreenCapture:
+                _displayColor = Color.Parse("#d769ff");
+                break;
+            case ConfigurationType.Animation:
+                _displayColor = Color.Parse("#ffb033");
+                break;
+            case ConfigurationType.Gifxelation:
+                _displayColor = Avalonia.Media.Colors.White;
+                break;
+            case ConfigurationType.SelfGeneratedColor:
+                _displayColor = Color.Parse("#33bbff");
+
+                break;
+        }
+
+        return _displayColor;
     }
 
     public string LocalPath { get; set; }

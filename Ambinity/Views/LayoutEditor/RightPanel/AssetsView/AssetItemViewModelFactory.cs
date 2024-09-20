@@ -40,6 +40,7 @@ public  class AssetItemViewModelFactory
                 return new LightingZoneAssetViewModel(item);
                 break;
             case "Animation":
+                return new AnimationAssetViewModel(item);
                 return null;
                 break;
             case "Gif":

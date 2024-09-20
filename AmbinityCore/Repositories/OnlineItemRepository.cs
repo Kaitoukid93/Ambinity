@@ -57,9 +57,6 @@ public abstract class OnlineItemRepository : ObservableObject
 
         if (ResourceAddress != null)
             await UpdateCollection();
-        //load list entries
-        //load async image one by one
-        // _client.Disconnect();
     }
 
     /// <summary>

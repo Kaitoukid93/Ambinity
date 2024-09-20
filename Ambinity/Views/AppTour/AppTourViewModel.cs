@@ -19,7 +19,6 @@ public class AppTourViewModel : ViewModelBase
 {
     public event Action<ViewModelBase> NextStepActivated;
     private readonly IMainWindowService _mainWindowService;
-
     public AppTourViewModel(IMainWindowService mainWindowService)
     {
         ApptourElements = new ObservableCollection<AppTourElementViewModel>();
@@ -38,7 +37,8 @@ public class AppTourViewModel : ViewModelBase
     private void OnMainWindowOpened(object? sender, EventArgs e)
     {
         //todo apptour condition
-        //show apptour
+        _lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
+        _mainWindow = _lifeTime.MainWindow;
         Start();
     }
 
@@ -68,11 +68,11 @@ public class AppTourViewModel : ViewModelBase
         }
     }
 
-    public void Show(AppTourElementViewModel appTourElement, bool overwrite = true, Window? mainWindow = null)
+    //show apptour on main window
+    public void Show(AppTourElementViewModel appTourElement, bool overwrite = true)
     {
-        if (mainWindow == null)
+        if (_mainWindow == null)
             return;
-        _mainWindow = mainWindow;
         SkipCommand = new RelayCommand(Skip);
         appTourElement.SkipCommand = SkipCommand;
         IsRunning = true;

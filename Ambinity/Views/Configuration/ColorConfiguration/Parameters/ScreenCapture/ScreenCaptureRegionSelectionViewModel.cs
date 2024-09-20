@@ -24,6 +24,8 @@ public class ScreenCaptureRegionSelectionViewModel
             CanvasViewModel.MinimumZoom = 1;
             CanvasViewModel.MaximumZoom = 1;
             var rect = new Rectangle(100f, 100f, 500f, 500f);
+            rect.MinWidth = 100;
+            rect.MinHeight = 100;
             rect.InstallEditPolicy(new RegionDragDropEditPolicy(new Draw2D.Core.Geo.Rectangle(10, 10,
                 CanvasViewModel.Canvas.Width-20, CanvasViewModel.Canvas.Height-20)));
             CanvasViewModel.AddFigure(rect, false);

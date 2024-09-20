@@ -39,6 +39,7 @@ public class LayoutCanvasViewModel : ViewModelBase
     private void OnFigureAddedFromTool(Figure figure)
     {
         CanvasViewModel.AddFigure(figure, true);
+        figure.Select();
     }
 
     public bool ShoudDrawBackground { get; set; }
@@ -81,10 +82,12 @@ public class LayoutCanvasViewModel : ViewModelBase
         CanvasViewModel.Canvas.ShouldDrawBackgroundImage = ShoudDrawBackground;
         //resolve list figures
         var zones = new List<ContainerFigure>();
+        int zOrder = 0;
         foreach (var item in items)
         {
             var containerFigure = item.GetContainer();
             containerFigure.SetChild(item);
+            containerFigure.ZOrder = zOrder++;
             CanvasViewModel.AddFigure(containerFigure, false);
             zones.Add(containerFigure);
         }

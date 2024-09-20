@@ -1,17 +1,23 @@
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using Ambinity.Services;
 using Ambinity.ViewModels;
 using Ambinity.Windows;
+using AmbinityCore;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Models.ProfileCategory;
+using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using MathNet.Numerics.Distributions;
 using Serilog;
 
 namespace Ambinity.Views.SideMenu;
@@ -24,10 +30,10 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
 
     public SideMenuProfileCategoryViewModel(LightingProfileCategory category,
         IDialogService dialogService,
-        LightingProfileDecoder decoder, 
+        LightingProfileDecoder decoder,
         LightingProfileRepository profileRepository,
         IWindowService windowService,
-        ThumbnailService thumbnailService,SideMenuViewModelFactory vmFactory)
+        ThumbnailService thumbnailService, SideMenuViewModelFactory vmFactory)
     {
         _windowService = windowService;
         _vmFactory = vmFactory;
@@ -44,6 +50,7 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         ImportProfile = new AsyncRelayCommand(ExecuteImportProfile);
         MoveUp = new RelayCommand(ExecuteMoveUp);
         MoveDown = new RelayCommand(ExecuteMoveDown);
+        RenameCategory = new AsyncRelayCommand(ExecuteRenameCategory);
         RenameCategory = new AsyncRelayCommand(ExecuteRenameCategory);
         DeleteCategory = new AsyncRelayCommand(ExecuteDeleteCategory);
         Init();
@@ -120,7 +127,6 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         Profiles.Remove(profile);
         Category.RemoveProfile(profile.Profile);
         _profileRepository.RemoveItem(profile.Profile);
-
     }
 
     public void Duplicate(SideMenuProfileViewModel profile)
@@ -134,8 +140,9 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         _profileRepository.AddItem(clone);
         var cloneVm = _vmFactory.GetProfileViewModel(clone, this);
         Profiles.Add(cloneVm);
-        Log.Information("Successfully clone" + " "+ profile.Profile.Name + "!");
+        Log.Information("Successfully clone" + " " + profile.Profile.Name + "!");
     }
+
     private void Init()
     {
         if (_profileCategory == null)
@@ -144,7 +151,7 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         _profileCategory.FindChild(_profileRepository.Items.ToList());
         foreach (var profile in _profileCategory.Profiles)
         {
-            var profileViewModel = _vmFactory.GetProfileViewModel(profile,this);
+            var profileViewModel = _vmFactory.GetProfileViewModel(profile, this);
             Profiles.Add(profileViewModel);
         }
     }
@@ -195,9 +202,10 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
     private async Task ExecuteAddProfile()
     {
         var vm = new InputDialogContentViewModel();
-       // vm.DialogClosed += OnCreateNewProfileDialogClosed;
+        vm.DialogClosed += OnCreateNewProfileDialogClosed;
         await _dialogService.ShowInputDialog(vm, "New profile", "Ok", "Cancel");
     }
+
     private void OnCreateNewProfileDialogClosed(object? sender, EventArgs e)
     {
         var vm = sender as InputDialogContentViewModel;
@@ -207,25 +215,76 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         if (result == ContentDialogResult.Primary)
         {
             //create new profile
-            var category = new LightingProfileCategory();
-            category.Name = vm.UserInput;
-            category.IsDefault = false;
-            category.ID = Guid.NewGuid();
+            var profile = new LightingProfile();
+            profile.Name = vm.UserInput;
+            profile.IsDefault = false;
+            profile.ID = Guid.NewGuid();
+            profile.CategoryID = this.Category.ID;
+            profile.Category = this.Category;
+            profile.IconType = IconTypeEnum.Geometry;
+            profile.Icon = "genericCircle";
+            var random = new Random();
+            var index = random.Next(DefaultSolidColors.Colors.Count);
+            profile.IconColor = DefaultSolidColors.Colors[index];
             //add to repo
+            var profileViewModel = _vmFactory.GetProfileViewModel(profile, this);
+            Profiles.Add(profileViewModel);
+            _profileRepository.AddItem(profile);
         }
     }
+
     private async Task ExecuteImportProfile()
     {
         string[]? result = await _windowService.CreateOpenFileDialog()
-            
             .HavingFilter(f => f.WithExtension("zip").WithName("Zip archive"))
             .ShowAsync();
 
         if (result == null)
             return;
         var importFilePath = result.First();
-        //execute import
-        
+        // var profileName = Path.GetFileNameWithoutExtension(importFilePath);
+        if (!Directory.Exists(Constants.CacheFolderPath))
+            Directory.CreateDirectory(Constants.CacheFolderPath);
+        ZipFile.ExtractToDirectory(importFilePath, Constants.CacheFolderPath, true);
+        var cacheConfig = Path.Combine(Constants.CacheFolderPath, "profile.json");
+        if (!File.Exists(cacheConfig))
+        {
+            Log.Error("Profile is corrupted or not supported");
+            return;
+        }
+
+        var profile = JsonHelpers.DeserializeJson<LightingProfile>(cacheConfig);
+        if (profile == null)
+        {
+            Log.Error("Profile parse error: " + cacheConfig);
+            return;
+        }
+
+        if (profile.ID == null)
+        {
+            profile.ID = Guid.NewGuid();
+        }
+
+        profile.CategoryID = this.Category.ID;
+        profile.Category = this.Category;
+        profile.IsDefault = false;
+        var profileViewModel = _vmFactory.GetProfileViewModel(profile, this);
+        Profiles.Add(profileViewModel);
+        _profileRepository.AddItem(profile);
+        //copy icon
+        var _iconPath = Path.Combine(Constants.CacheFolderPath, "icon.png");
+        if (!File.Exists(_iconPath))
+            return;
+        File.Copy(_iconPath, Path.Combine(profile.LocalPath,"icon.png"), true);
+        //clear cache
+        ClearCache();
+        profile.UpdateIcon();
+    }
+
+    public void ClearCache()
+    {
+        if (Directory.Exists(Constants.CacheFolderPath))
+            Directory.Delete(Constants.CacheFolderPath, true);
     }
 
     private void ExecuteToggleSuspended()

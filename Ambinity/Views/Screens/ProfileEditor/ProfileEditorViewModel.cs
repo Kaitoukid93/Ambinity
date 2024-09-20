@@ -97,9 +97,8 @@ public class ProfileEditorViewModel : ViewModelBase
             device.IsDeleteable = false;
             devices.Add(device);
         }
-
-        items.AddRange(zones);
         items.AddRange(devices);
+        items.AddRange(zones);
         //init layout canvas
         LayoutViewModel.ShoudDrawBackground = true;
         LayoutViewModel.Init(items);

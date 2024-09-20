@@ -31,7 +31,7 @@ public abstract class AssetItemViewModelBase : ViewModelBase
             OnPropertyChanged();
         }
     }
-    public  void SelectItem()
+    private void SelectItem()
     {
         ItemSelected?.Invoke(this);
     }

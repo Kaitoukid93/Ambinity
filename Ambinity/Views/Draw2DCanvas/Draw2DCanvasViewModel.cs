@@ -553,8 +553,6 @@ public class Draw2DCanvasViewModel : ViewModelBase
         }
 
         // figure.InstallEditPolicy(regionPolicy);
-        figure.MinWidth = 2;
-        figure.MinHeight = 2;
         Canvas.AddFigure(figure);
         UpdateFigure();
         if (notify)

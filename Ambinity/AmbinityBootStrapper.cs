@@ -142,6 +142,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<DeviceSettingsInfoBarViewModel>()
                 .AddSingleton<NonClientAreaContentViewModel>()
                 .AddSingleton<AppTourViewModel>()
+                .AddSingleton<AppTourElementProvider>()
                 //splash
                 .AddSingleton<SplashViewModel>()
                 //layout editor

@@ -63,7 +63,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             base.OnDragEnd(canvas, isShiftKey, isCtrlKey);
         }
 
-        public override void OnDragStart(Canvas canvas, float startPosX, float startPosY, float dx, float dy, bool isShiftKey,
+        public override void OnDragStart(Canvas canvas, float startPosX, float startPosY, bool isShiftKey,
             bool isCtrlKey)
         {
             var hitFigure = canvas.GetBestFigure(startPosX, startPosY, new List<Type> { typeof(Selectionbox) },
@@ -71,7 +71,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
             if (hitFigure != null && hitFigure.IsSelectable)
             {
-                base.OnDragStart(canvas, startPosX, startPosY, dx, dy, isShiftKey, isCtrlKey);
+                base.OnDragStart(canvas, startPosX, startPosY, isShiftKey, isCtrlKey);
                 return;
             }
 

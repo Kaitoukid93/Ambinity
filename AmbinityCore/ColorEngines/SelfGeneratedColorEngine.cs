@@ -239,6 +239,13 @@ public class SelfGeneratedColorEngine : IColorEngine
 
     public void Dispose()
     {
+        _config.ColorsUpdated -= UpdateColorsData;
+        _config.ColorsBehaviorUpdated -= UpdateColorsBehavior;
+        _config.ApperanceUpdated -= UpdatePixelsData;
+        _config.MotionConfigUpdated -= UpdateMotionConfig;
+        _brightnessProviderFactory.DefaultDeviceChanged -= UpdateBrightnessProvider;
+        _deviceRepository.NewDevicesAdded -= OnNewDeviceAdded;
+        _motionConfig.Update -= UpdateBrightnessProvider;
         IsDisposed = true;
         GC.Collect();
     }

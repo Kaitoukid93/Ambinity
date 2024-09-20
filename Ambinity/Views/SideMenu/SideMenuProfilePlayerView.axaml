@@ -47,13 +47,12 @@
             <!-- </Button> -->
 
             <Grid RowDefinitions="*,*">
-                <TextBlock MaxWidth="200" ToolTip.Tip="{Binding CurrentPlayingProfile.Name}" FontSize="18"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
-                           FontWeight="SemiBold"
+                <TextBlock MaxWidth="180" ToolTip.Tip="{Binding CurrentPlayingProfile.Name}" Classes="generalBold" FontSize="18"
+                           HorizontalAlignment="Center"  TextTrimming="CharacterEllipsis"
                            Text="{Binding CurrentPlayingProfile.Name}">
                 </TextBlock>
-                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Row="1" FontSize="12"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold"
+                <TextBlock Grid.Row="1" Classes="smallBoldSecondary"
+                           HorizontalAlignment="Center" 
                            Text="{Binding CurrentPlayingProfileDescription}">
                 </TextBlock>
             </Grid>

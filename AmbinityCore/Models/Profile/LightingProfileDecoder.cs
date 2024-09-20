@@ -1,6 +1,8 @@
 using System.Buffers;
 using System.Runtime.InteropServices;
+using AmbinityCore.DataBase;
 using AmbinityCore.LightingEngines;
+using AmbinityCore.Models.GeneralSetting;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Repositories;
 using Avalonia;
@@ -21,23 +23,30 @@ public class LightingProfileDecoder
     public event Action RenderingStatusChanged;
     public event Action FrameUpdate;
 
+
     public LightingProfileDecoder(LightingProfileRepository repository, ColorEngineProvider colorEngineProvider,
-        FrameBuffer buffer, AmbinityDeviceRepository deviceRepository)
+        FrameBuffer buffer, AmbinityDeviceRepository deviceRepository, GeneralSettingsManager generalSettingsManager)
     {
         _deviceRepository = deviceRepository;
         _colorEngineProvider = colorEngineProvider;
         _repository = repository;
-        var lastPlayedProfile =
-            repository.Items.Where(i => (i as LightingProfile).IsPlaying == true).FirstOrDefault() as LightingProfile;
-        if (lastPlayedProfile == null)
-            lastPlayedProfile = repository.Items.First() as LightingProfile;
-        Init(lastPlayedProfile);
         _buffer = buffer;
+        _generalSettings = generalSettingsManager?.Settings;
+        _engines = new List<IColorEngine>();
+        //only play if app tour is not activated, app tour is designed to work with nothing is playing,
+        //so it can show user how to press the play button to render a profile
+        if (!_generalSettings.ShowAppTour)
+        {
+            LoadLastProfile();
+            Resume();
+        }
+     
     }
 
     private LightingProfileRepository _repository;
     private ColorEngineProvider _colorEngineProvider;
     private CancellationTokenSource _tokenSource;
+    private IGeneralSettings _generalSettings;
     private bool _isRendering;
     public bool IsRendering => _isRendering;
     public LightingProfile CurrentPlayingProfile => _currentPlayingProfile;
@@ -46,38 +55,35 @@ public class LightingProfileDecoder
     private List<IColorEngine> _engines;
     private readonly AmbinityDeviceRepository _deviceRepository;
 
+    private void LoadLastProfile()
+    {
+        if (_generalSettings.LastPlayedProfileID == null)
+            return;
+        var lastPlayedProfile =
+            _repository.Items.Where(i => (i as LightingProfile).ID == _generalSettings.LastPlayedProfileID)
+                .FirstOrDefault() as LightingProfile;
+        if (lastPlayedProfile == null)
+            lastPlayedProfile = _repository.Items.First() as LightingProfile;
+        _currentPlayingProfile = lastPlayedProfile;
+    }
+
+    /// <summary>
+    /// Init a profle ready to play
+    /// </summary>
+    /// <param name="profile"></param>
     public void Init(LightingProfile profile)
     {
-        _deviceRepository.UpdateDeviceTransform();
-        _engines = new List<IColorEngine>();
-        var isRunning = _tokenSource != null && _isRendering;
-        if (isRunning)
-            return;
+        //create list engines for managing
         if (profile == null)
             return;
-        Log.Information("Start Rendering");
-        _tokenSource = new CancellationTokenSource();
         _currentPlayingProfile = profile;
-        _currentPlayingProfile.IsPlaying = true;
-        profile.LightingZoneAdded += OnLightingZoneAdded;
-        profile.LightingZoneRemoved += OnLightingZoneRemoved;
-        foreach (var zone in profile.Zones)
+        Log.Information("Init profile: " + profile.Name);
+        if (profile.Zones.Count == 0)
         {
-            RegisterZone(zone);
+            Log.Warning("Profile contains 0 zones!");
+            //return;
         }
-
-        _isRendering = true;
-        RenderingStatusChanged?.Invoke();
-    }
-
-    private void OnLightingZoneAdded(LightingZone zone)
-    {
-        // RegisterZone(zone);
-    }
-
-    private void OnLightingZoneRemoved(LightingZone zone)
-    {
-        // UnregisterZone(zone);
+        Resume();
     }
 
     /// <summary>
@@ -85,13 +91,14 @@ public class LightingProfileDecoder
     /// </summary>
     public void Resume()
     {
-        _deviceRepository.UpdateDeviceTransform();
+        //todo reuse engines
         if (CurrentPlayingProfile == null)
             return;
-        var isRunning = _isRendering;
+        _deviceRepository.UpdateDeviceTransform();
+        var isRunning = _tokenSource != null && _isRendering;
         if (isRunning)
             return;
-        Log.Information("Start Rendering");
+        Log.Information("Start rendering for profile: " + _currentPlayingProfile.Name);
         _tokenSource = new CancellationTokenSource();
         //clear buffer
         lock (_buffer.FrameLock)
@@ -106,6 +113,7 @@ public class LightingProfileDecoder
 
         _currentPlayingProfile.IsPlaying = true;
         _isRendering = true;
+        _generalSettings.LastPlayedProfileID = _currentPlayingProfile.ID;
         RenderingStatusChanged?.Invoke();
     }
 
@@ -132,6 +140,11 @@ public class LightingProfileDecoder
             _buffer.PixelData = new byte[_buffer.FrameWidth * _buffer.FrameHeight * 4];
         }
 
+        foreach (var engine in _engines)
+        {
+            engine.Dispose();
+        }
+        _engines.Clear();
         _currentPlayingProfile.IsPlaying = false;
         if (!_isRendering)
             return;
@@ -145,7 +158,7 @@ public class LightingProfileDecoder
     /// get corresponding lighting engine
     /// </summary>
     /// <param name="zone"></param>
-    public void RegisterZone(LightingZone zone)
+    private void RegisterZone(LightingZone zone)
     {
         var engine = _colorEngineProvider.GetEngine(zone);
         engine.Init(zone);
@@ -170,7 +183,7 @@ public class LightingProfileDecoder
     /// <summary>
     /// render activated child to canvas
     /// </summary>
-    public void Render(IColorEngine engine, CancellationToken token)
+    private void Render(IColorEngine engine, CancellationToken token)
     {
         try
         {

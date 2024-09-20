@@ -3,7 +3,9 @@ using AmbinityCore.Models.Collection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Newtonsoft.Json;
-
+using Serilog;
+using SkiaSharp;
+using SkiaSharp.Skottie;
 namespace AmbinityCore.Repositories;
 
 public class Animation : ObservableObject, ICollectableItem
@@ -29,6 +31,7 @@ public class Animation : ObservableObject, ICollectableItem
     }
 
     public string LocalPath { get; set; }
+    public string Description { get; set; }
 
     public Animation(string name)
     {
@@ -44,16 +47,33 @@ public class Animation : ObservableObject, ICollectableItem
     /// </summary>
     public void LoadAnimation()
     {
-        
+        if (!File.Exists(Path.Combine(LocalPath, "config.json")))
+        {
+            //todo revert to default animation
+            Log.Error("Animation file not found: " + Path.Combine(LocalPath,"config.json"));
+            return;
+        }
+            
+        var json = File.ReadAllText(Path.Combine(LocalPath,"config.json"));
+        SkottieAnimation = SkiaSharp.Skottie.Animation.Parse(json);
     }
 
     public void Save()
     {
-        JsonHelpers.WriteSimpleJson(this, LocalPath);
+        if (LocalPath == null || !Directory.Exists(LocalPath))
+        {
+            //create local path
+            var dbPath = GetLocalRepository().LocalFolderPath;
+            LocalPath = Path.Combine(dbPath, Name);
+            Directory.CreateDirectory(LocalPath);
+        }
+
+        JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath, "animation.json"));
     }
 
     public void Export(string path)
     {
         JsonHelpers.WriteSimpleJson(this, path);
     }
+    [JsonIgnore] public SkiaSharp.Skottie.Animation SkottieAnimation { get; set; }
 }

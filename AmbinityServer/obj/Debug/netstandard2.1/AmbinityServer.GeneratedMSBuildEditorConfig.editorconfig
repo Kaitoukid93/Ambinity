@@ -7,6 +7,6 @@ build_property.AvaloniaNameGeneratorFilterByNamespace = *
 build_property.AvaloniaNameGeneratorViewFileNamingStrategy = NamespaceAndClassName
 build_property.AvaloniaNameGeneratorAttachDevTools = true
 build_property.RootNamespace = AmbinityServer
-build_property.ProjectDir = C:\Users\AMBINO\RiderProjects\Ambinity\AmbinityServer\
+build_property.ProjectDir = D:\AmbinityAvalonia\Ambinity_Avalonia\AmbinityServer\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

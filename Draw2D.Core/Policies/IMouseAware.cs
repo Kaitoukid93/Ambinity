@@ -14,7 +14,7 @@
     public interface IDragAware
     {
         void OnMouseDrag(Canvas canvas, float dxSum, float dySum, float dx, float dy, bool isShiftKey, bool isCtrlKey);
-        void OnDragStart(Canvas canvas,float startPosX, float startPosY, float dx, float dy, bool isShiftKey, bool isCtrlKey);
+        void OnDragStart(Canvas canvas,float startPosX, float startPosY, bool isShiftKey, bool isCtrlKey);
         void OnDragEnd(Canvas canvas, bool isShiftKey, bool isCtrlKey);
 
     }

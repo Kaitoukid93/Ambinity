@@ -18,6 +18,7 @@ namespace Draw2D.Core
         event EventHandler<ConnectionCreatedEventArgs> ConnectionCreated;
         event EventHandler<SelectionChangedEventArgs> SelectionChanged;
         event EventHandler<CanvasClickEventArgs> CanvasRightClicked;
+        event EventHandler<HoverChangedEventArgs> FigureHoverChanged;
         void AddFigure(Figure figure);
         Selection Selection { get; }
 
@@ -71,6 +72,17 @@ namespace Draw2D.Core
     {
         public SelectionChangedEventArgs()
         {
+        }
+    }
+
+    public class HoverChangedEventArgs : EventArgs
+    {
+        public Figure Figure { get; private set; }
+        public bool IsHover { get; private set; }
+        public HoverChangedEventArgs(Figure figure,bool isHover)
+        {
+            Figure = figure;
+            IsHover = isHover;
         }
     }
 

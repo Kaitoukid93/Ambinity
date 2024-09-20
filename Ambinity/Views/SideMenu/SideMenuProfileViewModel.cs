@@ -10,6 +10,7 @@ using Ambinity.Windows;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Profile;
 using AmbinityServer.OnlineItem;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;
@@ -70,7 +71,10 @@ public class SideMenuProfileViewModel : ViewModelBase
 
     private void OnIconChanged(ICollectableItem obj)
     {
-        OnPropertyChanged(nameof(GetThumbnail));
+        IconType = Profile.IconType;
+        Icon = Profile.Icon;
+        IconColor = Profile.IconColor;
+        OnPropertyChanged(IconType == IconTypeEnum.Geometry ? nameof(Icon) : nameof(GetThumbnail));
     }
 
     private void OpenPropertiesEditor()
@@ -132,6 +136,29 @@ public class SideMenuProfileViewModel : ViewModelBase
         }
     }
 
+    private Color _iconColor;
+
+    public Color IconColor
+    {
+        get => _iconColor;
+        set
+        {
+            _iconColor = value;
+            OnPropertyChanged();
+        }
+    }
+    private IconTypeEnum _iconType;
+
+    public IconTypeEnum IconType
+    {
+        get => _iconType;
+        set
+        {
+            _iconType = value;
+            OnPropertyChanged();
+        }
+    }
+
     private bool _isSelected;
 
     /// <summary>
@@ -171,7 +198,9 @@ public class SideMenuProfileViewModel : ViewModelBase
         if (Profile == null)
             return;
         Content = Profile.Name;
-        Icon = Profile.Icon;
+        _icon = Profile.Icon;
+        _iconColor = Profile.IconColor;
+        IconType = Profile.IconType;
         IsPlaying = Profile.IsPlaying;
     }
 

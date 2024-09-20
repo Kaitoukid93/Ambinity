@@ -5,6 +5,8 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Draw2D.Core;
+using Draw2D.Core.Constants;
+using Draw2D.Core.Handles;
 using Draw2D.Core.Policies.RouterPolicy;
 using Canvas = Avalonia.Controls.Canvas;
 
@@ -73,12 +75,14 @@ namespace Draw2DControlLibrary
             {
                 control.Canvas.SceneChanged += control.CanvasOnSceneChanged;
                 control.Canvas.FigureRightClicked += control.OnFigureRightClicked;
+                control.Canvas.FigureHoverChanged += control.OnFigureHoverChanged;
                 control.Width = control.Canvas.Width;
                 control.Height = control.Canvas.Height;
             }
 
             control.InvalidateVisual();
         }
+
 
         public static readonly StyledProperty<double> ViewportWidthProperty =
             AvaloniaProperty.Register<Draw2DControl, double>(
@@ -176,11 +180,47 @@ namespace Draw2DControlLibrary
 
         private void OnFigureRightClicked(object sender, FigureClickEventArgs e)
         {
-          // Dispatcher.UIThread.Invoke(() => ShowFlyOut(e.Sender, e.MousePosX, e.MousePosY));
+            // Dispatcher.UIThread.Invoke(() => ShowFlyOut(e.Sender, e.MousePosX, e.MousePosY));
         }
 
+        private void OnFigureHoverChanged(object sender, HoverChangedEventArgs e)
+        {
+            var isHover = e.IsHover;
+            if (isHover)
+            {
+                this.Cursor = new Cursor(StandardCursorType.Hand);
+                if (e.Figure is ResizeHandle)
+                {
+                    var handle = e.Figure as ResizeHandle;
+                    switch (handle.Direction)
+                    {
+                        case ResizeDirections.Bottom:
+                        case ResizeDirections.Top:
+                            this.Cursor = new Cursor(StandardCursorType.SizeNorthSouth);
+                            break;
+                        case ResizeDirections.Left:
+                        case ResizeDirections.Right:
+                            this.Cursor = new Cursor(StandardCursorType.SizeWestEast);
+                            break;
+                        case ResizeDirections.TopLeft:
+                        case ResizeDirections.BottomRight:
+                            this.Cursor = new Cursor(StandardCursorType.BottomLeftCorner);
+                            break;
+                        case ResizeDirections.TopRight:
+                        case ResizeDirections.BottomLeft:
+                            this.Cursor = new Cursor(StandardCursorType.BottomRightCorner);
+                            break;
+                            
+                    }
+                }
+            }
 
-      
+            else
+            {
+                this.Cursor = Cursor.Default;
+            }
+        }
+
 
         private void CanvasOnSceneChanged(object sender, EventArgs eventArgs)
         {
@@ -271,7 +311,6 @@ namespace Draw2DControlLibrary
         {
             base.OnPointerEntered(e);
             var hasFocused = this.Focus();
-             
         }
 
         protected override void OnPointerExited(PointerEventArgs e)

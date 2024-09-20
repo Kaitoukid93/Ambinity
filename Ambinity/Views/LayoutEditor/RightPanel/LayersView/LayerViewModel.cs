@@ -2,6 +2,7 @@ using System;
 using Ambinity.ViewModels;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
+using Avalonia.Media;
 using Draw2D.Core;
 
 namespace Ambinity.Views.LayoutEditor;
@@ -13,12 +14,13 @@ public class LayerViewModel : ViewModelBase
         _figure = figure;
         Name = figure.ChildItem.GetDisplayName();
         Icon = figure.ChildItem.Icon;
-      _figure.MouseOverChanged += OnMouseOverChanged;
-
+        Color = figure.ChildItem.GetDisplayColor() ?? Colors.White;
+        _figure.MouseOverChanged += OnMouseOverChanged;
     }
 
-    public  event Action<LayerViewModel,bool> Selected;
+    public event Action<LayerViewModel, bool> Selected;
     public string Name { get; set; }
+    public Color Color { get; set; }
     public bool IsVisible { get; set; }
     public string Icon { get; set; }
 
@@ -39,6 +41,7 @@ public class LayerViewModel : ViewModelBase
             OnPropertyChanged(nameof(ShowButtons));
         }
     }
+
     private bool _isSelected;
 
     public bool IsSelected
@@ -49,25 +52,26 @@ public class LayerViewModel : ViewModelBase
             _isSelected = value;
             OnPropertyChanged(nameof(IsSelected));
             OnPropertyChanged(nameof(ShowButtons));
-            
         }
     }
 
     public bool ShowButtons => IsSelected || IsMouseOver;
+
     public Figure Figure
     {
         get => _figure;
     }
+
     private Figure _figure;
 
-    public  void Update()
+    public void Update()
     {
-       // Name = _zoneFigure.Zone.Name;
+        // Name = _zoneFigure.Zone.Name;
         IsSelected = _figure.IsSelected;
     }
 
     public void OnLayerPointerPress(bool isCtrl)
     {
-        Selected?.Invoke(this,isCtrl);
+        Selected?.Invoke(this, isCtrl);
     }
 }

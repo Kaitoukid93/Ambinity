@@ -193,6 +193,10 @@
 	    <DependentUpon>AnimationAssetsView.axaml</DependentUpon>
 	    <SubType>Code</SubType>
 	  </Compile>
+	  <Compile Update="Views\GeometryCollection\GeometryPickerView.axaml.cs">
+	    <DependentUpon>GeometryPickerView.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>

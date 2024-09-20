@@ -5,6 +5,7 @@ using AmbinityCore.Repositories;
 using AmbinityCore.Utils;
 using AmbinityServer.OnlineItem;
 using Avalonia;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
 
@@ -45,6 +46,10 @@ public abstract class Group : ObservableObject, ICollectableItem, IPositionAware
         throw new NotImplementedException();
     }
 
+    public Color? GetDisplayColor()
+    {
+        return Avalonia.Media.Colors.White;
+    }
     public Guid GroupID { get; set; }
     public void SetScale(float scale)
     {

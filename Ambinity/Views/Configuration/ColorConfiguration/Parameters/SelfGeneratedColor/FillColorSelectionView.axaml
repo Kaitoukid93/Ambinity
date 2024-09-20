@@ -27,16 +27,27 @@
             <Grid Column="1">
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5">
                     <Grid>
-                        <Button Width="30" Height="30" Command="{Binding ImportPaletteCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Import palette" Classes="icon-button">
-                            <PathIcon Width="15" Data="{DynamicResource Import}"></PathIcon>
-                        </Button>
-                    </Grid>
-                    <Grid>
                         <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1" Background="Transparent" Width="30" Height="30"
                                 Classes="icon-button">
                             <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon>
                         </Button>
                     </Grid>
+                    <Grid>
+                        <Button Width="30" Height="30" Command="{Binding AddPaletteToLibraryCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Add To Library" Classes="icon-button">
+                            <PathIcon Width="15" Data="{DynamicResource AddToCollection}"></PathIcon>
+                        </Button>
+                    </Grid>
+                    <Grid>
+                        <Button Width="30" Height="30" Command="{Binding ImportPaletteCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Import palette" Classes="icon-button">
+                            <PathIcon Width="15" Data="{DynamicResource Import}"></PathIcon>
+                        </Button>
+                    </Grid>
+                    <Grid>
+                        <Button Width="30" Height="30" Command="{Binding ExportPaletteCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Export palette" Classes="icon-button">
+                            <PathIcon Width="15" Data="{DynamicResource Export}"></PathIcon>
+                        </Button>
+                    </Grid>
+                   
                     <Grid>
                         <Button ToolTip.Tip="Add color" Command="{Binding AddColorCommand}" CommandParameter="{x:Static Colors.Red}" Padding="1"
                                 Background="Transparent" Width="30" Height="30"

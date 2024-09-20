@@ -1,40 +1,84 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="800"
-        x:Class="Ambinity.Views.SideMenu.ProfilePropertiesEditorView"
-        xmlns:sideMenu = "clr-namespace:Ambinity.Views.SideMenu"
-        x:DataType="sideMenu:ProfilePropertiesEditorViewModel">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="800"
+             x:Class="Ambinity.Views.SideMenu.ProfilePropertiesEditorView"
+             xmlns:sideMenu="clr-namespace:Ambinity.Views.SideMenu"
+             x:DataType="sideMenu:ProfilePropertiesEditorViewModel">
+    <UserControl.Resources>
+        <MenuFlyout x:Key="iconFlyout" Placement="Bottom">
+            <MenuItem Command="{Binding SelectBitmapCommand}" Header="Brows Image">
+                <MenuItem.Icon>
+                    <PathIcon Width="15" Height="15" Data="{DynamicResource Assets}"></PathIcon>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Command="{Binding SelectIconCommand}" Header="Icon">
+                <MenuItem.Icon>
+                    <PathIcon Width="15" Height="15" Data="{DynamicResource save}"></PathIcon>
+                </MenuItem.Icon>
+            </MenuItem>
+          
+        </MenuFlyout>
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style Selector="ContentControl.profileIcon">
+            <Setter Property="Content">
+                <Template>
+                    <PathIcon Width="50" Height="50" Margin="0,0,0,0"
+                              Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+                        <PathIcon.Foreground>
+                            <SolidColorBrush Color="{Binding IconColor}"></SolidColorBrush>
+                        </PathIcon.Foreground>
+                    </PathIcon>
+                </Template>
+            </Setter>
+        </Style>
+        <Style Selector="ContentControl.profileIcon.image">
+            <Setter Property="Content">
+                <Template>
+                    <Image Width="50" Margin="0,0,0,0" RenderOptions.BitmapInterpolationMode="HighQuality"
+                           Source="{Binding GetThumbnail^,FallbackValue=null}">
+                    </Image>
+                </Template>
+            </Setter>
+        </Style>
+    </UserControl.Styles>
     <Grid>
         <StackPanel Spacing="10">
             <Grid Margin="10,0" Height="100" ColumnDefinitions="100,*">
-                <Button Command="{Binding SelectBitmapCommand}" ToolTip.Tip="Click to change icon"  Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" ClipToBounds="True">
-                    <Image Source="{Binding GetThumbnail^,FallbackValue=null}"></Image>
+                <Button Flyout="{DynamicResource iconFlyout}" ToolTip.Tip="Click to change icon" Width="80"
+                        Height="80" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5"
+                        ClipToBounds="True">
+                  <ContentControl Classes="profileIcon" Classes.image="{Binding !IconType}"></ContentControl>
                 </Button>
                 <Grid Margin="0,10" Column="1">
-                    <StackPanel VerticalAlignment="Center" Spacing="0">
-                        <TextBlock VerticalAlignment="Center" FontSize="18" FontWeight="SemiBold" Grid.Column="0" Text="Ambilight"></TextBlock>
-                        <TextBlock Grid.Row="1" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="0" Text="Ambino default"></TextBlock>
-                        <TextBlock Grid.Row="2" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="0" Text="All devices using capture screen mode"></TextBlock>
+                    <StackPanel VerticalAlignment="Top" Spacing="0">
+                        <TextBlock VerticalAlignment="Center" FontSize="18" HorizontalAlignment="Left" FontWeight="SemiBold" Grid.Column="0"
+                                   Text="{Binding Name}">
+                        </TextBlock>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13" TextWrapping="Wrap" MaxWidth="250"
+                                   Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="0"
+                                   Text="{Binding Description}">
+                        </TextBlock>
                     </StackPanel>
-                    
+
                 </Grid>
             </Grid>
             <Separator Margin="10,0"></Separator>
-            <Grid  Margin="10,0" Height="100" ColumnDefinitions="100,*">
+            <Grid Margin="10,0" ColumnDefinitions="100,*">
                 <Grid RowDefinitions="*,*">
                     <TextBlock VerticalAlignment="Center" Text="Name :"></TextBlock>
                     <TextBlock VerticalAlignment="Center" Grid.Row="1" Text="Description :"></TextBlock>
                 </Grid>
-                <Grid Column="1" RowDefinitions="*,*">
-                        <TextBox Text="{Binding Name}" Margin="10" VerticalAlignment="Center"></TextBox>
-                    <TextBox Grid.Row="1" Text="{Binding Description}" Margin="10" VerticalAlignment="Center"></TextBox>
+                <Grid Column="1" RowDefinitions="*,Auto">
+                    <TextBox MaxWidth="300" TextWrapping="Wrap" Text="{Binding Name}" Margin="10" VerticalAlignment="Center"></TextBox>
+                    <TextBox MaxWidth="300" MaxHeight="100" AcceptsReturn="True" TextWrapping="Wrap" Grid.Row="1" Text="{Binding Description}" Margin="10" VerticalAlignment="Center"></TextBox>
                 </Grid>
             </Grid>
             <Separator Margin="10,0"></Separator>
             <Grid Margin="10,0" Height="50" ColumnDefinitions="100,*">
-                <Grid >
+                <Grid>
                     <TextBlock VerticalAlignment="Center" Text="Activation :"></TextBlock>
                 </Grid>
                 <Grid Column="1">

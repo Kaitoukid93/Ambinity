@@ -1,6 +1,7 @@
 using AmbinityCore.Models.Collection;
 using AmbinityServer.OnlineItem;
 using Avalonia;
+using Avalonia.Media;
 
 namespace AmbinityCore.Models.Geography;
 
@@ -81,7 +82,7 @@ public interface IPositionAware
     Rect Bound { get; }
     Guid GroupID { get; set; }
     void SetScale(float scale);
-
+    Color? GetDisplayColor();
     void SetRotation(float angle);
 
 }

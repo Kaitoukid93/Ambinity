@@ -48,12 +48,14 @@ public sealed class LightingProfileRepository : CollectableItemRepository
     private void CreateDefaultProfiles()
     {
         //create default ambilight profile
-        var ambilightProfile = new LightingProfile()
+        var ambinoMixProfile = new LightingProfile()
         {
-            Name = "Ambilight",
+            Name = "Ambino Mix Profile",
             Icon = "Youtube",
             ID = Guid.NewGuid(),
-            IsDefault = true
+            IsDefault = true,
+            IconType = IconTypeEnum.Geometry,
+            Description = "Default profile for Ambino devices only"
         };
         var solidColorProfile = new LightingProfile()
         {
@@ -83,20 +85,17 @@ public sealed class LightingProfileRepository : CollectableItemRepository
             ID = Guid.NewGuid(),
             IsDefault = true
         };
-        ambilightProfile.TogglePlayPause();
-        ambilightProfile.Zones.Add(_zoneRepository.GetDefaultAmbilightZone("Big Ambilight",0,0,200,100,0));
-        ambilightProfile.Zones.Add(_zoneRepository.GetDefaultAmbilightZone("Smalll Ambilight",0,0,50,50,1));
-        solidColorProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Red",0,0,200,200,Avalonia.Media.Colors.Red));
-        solidColorProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Greed",0,0,100,100,Avalonia.Media.Colors.GreenYellow));
-        colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Retro Palette",0,0,200,100,DefaultColorPalettes.RetroPalette()));
-        colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Red Palette",0,0,100,200,DefaultColorPalettes.RetroPalette()));
-        colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultAnimationZone("Demo",100,100,200,100,null));
-        AddItem(ambilightProfile);
-        AddItem(solidColorProfile);
-        AddItem(colorPaletteProfile);
-        AddItem(musicReactive);
-        AddItem(animation);
+        ambinoMixProfile.Zones.Add(_zoneRepository.GetDefaultAmbilightZone("Big Ambilight",30,177,140,90,0));
+        ambinoMixProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Retro Palette",495,155,75,180,DefaultColorPalettes.RetroPalette()));
+        ambinoMixProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Red",29,400,542,58,Avalonia.Media.Colors.Red));
+        // solidColorProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Red",0,0,200,200,Avalonia.Media.Colors.Red));
+        // solidColorProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Greed",0,0,100,100,Avalonia.Media.Colors.GreenYellow));
+        // colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Retro Palette",0,0,200,100,DefaultColorPalettes.RetroPalette()));
+        // colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Red Palette",0,0,100,200,DefaultColorPalettes.RetroPalette()));
+        // colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultAnimationZone("Demo",100,100,200,100,null));
+        AddItem(ambinoMixProfile);
         
+        //todo download default profile
         //write this to disk
     }
 }

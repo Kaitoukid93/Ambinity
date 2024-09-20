@@ -17,11 +17,11 @@ namespace Draw2D.Core.Geo
 
         public Rectangle(Point topLeft, Point bottomRight)
             : this(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y)
-        { }
+        {
+        }
 
         public Rectangle(Rectangle rectangle) : this(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height)
         {
-
         }
 
 
@@ -42,10 +42,8 @@ namespace Draw2D.Core.Geo
             {
                 _height = value;
                 AdjustBoundary();
-
             }
         }
-
 
 
         public float Left => X;
@@ -120,7 +118,7 @@ namespace Draw2D.Core.Geo
 
         public new Rectangle Translated(float dx, float dy)
         {
-            return new Rectangle(X + dx, Y + dy, Width,  Height);
+            return new Rectangle(X + dx, Y + dy, Width, Height);
         }
 
         public Rectangle SetBounds(Rectangle bounds)
@@ -138,16 +136,18 @@ namespace Draw2D.Core.Geo
         {
             var iX2 = X + Width;
             var iY2 = Y + Height;
-
-            return (iX >= X && iX <= iX2 && iY >= Y && iY <= iY2);
+            //need to add 1 pixel correction because of the drag behavior
+            return (iX >= X  && iX <= iX2  && iY >= Y  && iY <= iY2 );
         }
+
         public bool HitTest(float iX, float iY, double scale)
         {
-            var iX2 = X + Width/scale;
-            var iY2 = Y + Height/scale;
+            var iX2 = X + Width / scale;
+            var iY2 = Y + Height / scale;
 
             return (iX >= X && iX <= iX2 && iY >= Y && iY <= iY2);
         }
+
         public bool HitTest(Point point)
         {
             return HitTest(point.X, point.Y);
@@ -157,7 +157,6 @@ namespace Draw2D.Core.Geo
         {
             return new Rectangle(X, Y, Width, Height);
         }
-
 
 
         #region Equality
@@ -274,7 +273,6 @@ namespace Draw2D.Core.Geo
 
         public bool Intersects(Rectangle other)
         {
-
             return other.Left < Right &&
                    Left < other.Right &&
                    other.Bottom < Top &&
@@ -315,6 +313,4 @@ namespace Draw2D.Core.Geo
                    && Right >= other.Right;
         }
     }
-
-
 }

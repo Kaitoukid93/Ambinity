@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace AmbinityCore.Models.Lighting.Zone.Configuration;
 
 public interface ILightingConfiguration

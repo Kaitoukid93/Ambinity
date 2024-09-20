@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Draw2D.Core.Geo;
+using Draw2D.Core.Handles;
 using Draw2D.Core.Shapes.Basic;
 
 namespace Draw2D.Core.Policies.CanvasPolicy
@@ -86,7 +87,10 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             {
                 //Todo:Select Problem ->  isDragging
                 Unselect(canvas, canvas.Selection.All);
-                Select(canvas, figure);
+                if (figure is ResizeHandle)
+                    Select(canvas, (figure as ResizeHandle).Owner);
+                else
+                    Select(canvas, figure);
             }
         }
 
@@ -139,7 +143,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             }
         }
 
-        public virtual void OnDragStart(Canvas canvas, float startPosX, float startPosY, float dx, float dy,
+        public virtual void OnDragStart(Canvas canvas, float startPosX, float startPosY,
             bool isShiftKey, bool isCtrlKey)
         {
             if (canvas == null)

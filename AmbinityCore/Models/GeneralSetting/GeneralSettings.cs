@@ -44,4 +44,19 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         get => _showCanvasLockedInfo;
         set => SetProperty(ref _showCanvasLockedInfo, value);
     }
+
+    private bool _showApptour = true;
+    public bool ShowAppTour
+    {
+        get => _showApptour;
+        set => SetProperty(ref _showApptour, value);
+
+    }
+
+    private Guid _lastPlayedProfileID;
+    public Guid LastPlayedProfileID  {
+        get => _lastPlayedProfileID;
+        set => SetProperty(ref _lastPlayedProfileID, value);
+
+    }
 }

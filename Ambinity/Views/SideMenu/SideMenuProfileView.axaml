@@ -55,68 +55,85 @@
             <Setter Property="IsVisible" Value="True" />
         </Style>
         <Style Selector=":is(TextBlock).playing-foreGround">
-            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
         </Style>
         <Style Selector=":is(PathIcon).playing-fill">
-            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
+        </Style>
+        <Style Selector="ContentControl.profileIcon">
+            <Setter Property="Content">
+                <Template>
+                    <PathIcon Width="18" Height="18" Margin="5,0,7,0"
+                              Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+                        <PathIcon.Foreground>
+                            <SolidColorBrush Color="{Binding IconColor}"></SolidColorBrush>
+                        </PathIcon.Foreground>
+                    </PathIcon>
+                </Template>
+            </Setter>
+        </Style>
+        <Style Selector="ContentControl.profileIcon.image">
+            <Setter Property="Content">
+                <Template>
+                    <Border Margin="5,0,7,0" Width="18" Height="18" Padding="0" CornerRadius="9" ClipToBounds="True">
+                        <Image RenderOptions.BitmapInterpolationMode="HighQuality" Stretch="UniformToFill"
+                               Source="{Binding GetThumbnail^,FallbackValue=null}">
+                        </Image>
+                    </Border>
+
+                </Template>
+            </Setter>
         </Style>
     </UserControl.Styles>
     <Grid Background="Transparent"
           x:Name="ItemGrid"
+          Margin="0,2"
           ContextFlyout="{DynamicResource ProfileMenuFlyout}"
           ColumnDefinitions="Auto,*,10,Auto">
         <!-- <PathIcon Width="15" Height="15" Margin="0,0,7,0" -->
         <!--           Classes.playing-fill="{CompiledBinding IsPlaying}" -->
         <!--           Data="{Binding Icon,Converter={StaticResource ResourceConverter}}"> -->
         <!-- </PathIcon> -->
+        <ContentControl Classes="profileIcon" Classes.image="{Binding !IconType}"></ContentControl>
 
-        <Image Width="20" Margin="0,0,7,0" RenderOptions.BitmapInterpolationMode="HighQuality"
-               Source="{Binding GetThumbnail^,FallbackValue=null}">
-        </Image>
         <TextBlock TextTrimming="CharacterEllipsis" Grid.Column="1" Padding="0 6,0,6"
-                   FontWeight="SemiBold"
-                   FontSize="13"
+                   Classes="smallBold"
                    Classes.playing-foreGround="{CompiledBinding IsPlaying}"
-                   VerticalAlignment="Center"
                    HorizontalAlignment="Left"
                    Text="{CompiledBinding Content, FallbackValue='New Category'}">
         </TextBlock>
-        <Grid HorizontalAlignment="Right" Grid.Column="3" Margin="0,1,5,0" Classes="playing-grid">
-            <PathIcon Foreground="{DynamicResource SystemAccentColor}" IsVisible="{Binding IsPlaying}" Width="13"
-                      Height="13"
-                      Data="{DynamicResource 'pauseComposition'}">
-            </PathIcon>
-        </Grid>
-        <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="0">
+
+        <Grid Column="3" HorizontalAlignment="Right" ColumnDefinitions="Auto,*">
             <Button Classes="properties-button icon-button icon-button-small"
                     Classes.isSelected-button="{Binding IsSelected}"
                     Flyout="{StaticResource ProfileMenuFlyout}"
                     ToolTip.Tip="Settings"
                     HorizontalAlignment="Right"
-                    Margin="0 0 0 0">
+                    Margin="0 2 0 2">
                 <PathIcon Width="13" Height="13"
                           Data="{DynamicResource generalSettings}">
                 </PathIcon>
             </Button>
-            <Button Classes="properties-button icon-button icon-button-small"
+            <Button Grid.Column="1" Classes="properties-button icon-button icon-button-small"
                     Click="Button_OnClick"
                     x:Name="PlayButton"
                     Classes.isSelected-button="{Binding IsSelected}"
                     Command="{CompiledBinding TogglePlayPauseProfileCommand}"
                     ToolTip.Tip="Play/Pause profile"
                     HorizontalAlignment="Right"
-                    Margin="0 0 0 0">
+                    Margin="0 2 0 2">
                 <Panel>
                     <PathIcon IsVisible="{Binding !IsPlaying}" Width="13" Height="13"
                               Data="{DynamicResource 'playComposition'}">
                     </PathIcon>
-                    <PathIcon IsVisible="{Binding IsPlaying}" Width="13" Height="13"
+                    <PathIcon HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding IsPlaying}"
+                              Width="13" Height="13"
                               Data="{DynamicResource 'pauseComposition'}">
                     </PathIcon>
                 </Panel>
             </Button>
 
-        </StackPanel>
+        </Grid>
 
 
     </Grid>

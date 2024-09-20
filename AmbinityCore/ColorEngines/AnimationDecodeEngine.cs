@@ -19,6 +19,8 @@ public class AnimationDecodeEngine : IColorEngine
     private byte[] _reusableRow;
     private Animation _animation;
     private AnimationConfiguration _config;
+    private bool _loadingAnimation;
+    private int _frameRate = 1;
 
     public AnimationDecodeEngine(FrameBuffer buffer)
     {
@@ -27,8 +29,11 @@ public class AnimationDecodeEngine : IColorEngine
 
     public void Render()
     {
+        if (_loadingAnimation)
+            return;
         int width = (int)_zone.Width;
         int height = (int)_zone.Height;
+        int frameCount = (int)(_animation.Fps * _animation.Duration.TotalMilliseconds/1000);
         lock (_buffer.FrameLock)
         {
             using (var bitmap = new SKBitmap(width, height))
@@ -52,10 +57,10 @@ public class AnimationDecodeEngine : IColorEngine
             }
         }
 
-       // Thread.Sleep(1000 / 10);
+        // Thread.Sleep(1000 / 10);
         //increase color index
-        _startIndex += 1;
-        if (_startIndex >= 200)
+        _startIndex += _config.FrameRate;;
+        if (_startIndex >= frameCount)
             _startIndex = 0;
         //update frame if needed
         // _zone.UpdateFrame();
@@ -65,18 +70,23 @@ public class AnimationDecodeEngine : IColorEngine
     {
         _zone = zone;
         _config = zone.LightingConfiguration as AnimationConfiguration;
-        //do render
-        // Load the Lottie animation
-        var json = File.ReadAllText(_animationFilePath);
-        _animation = Animation.Parse(File.ReadAllText(_animationFilePath));
-        _config.Animation = _animation;
-        // Create a SkiaSharp canvas
+        _config.AnimationChanged += OnAnimationChanged;
+        OnAnimationChanged();
+    }
 
+    private void OnAnimationChanged()
+    {
+        if (_config.Animation == null)
+            return;
+        _loadingAnimation = true;
+        _config.Animation.LoadAnimation();
+        _animation = _config.Animation.SkottieAnimation;
+        _loadingAnimation = false;
     }
 
     public void Dispose()
     {
-        // throw new NotImplementedException();
+        _config.AnimationChanged -= OnAnimationChanged;
     }
 
     public bool IsDisposed { get; }

@@ -1,17 +1,30 @@
-using System.Collections.Generic;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace Ambinity.Views.AppTour;
 
-public static class AppTourElementProvider
+public class AppTourElementProvider
 {
-    // public static List<AppTourElement> FirstUseAppTourElements()
-    // {
-    //     var appTourElements = new List<AppTourElement>();
-    //     var sidePanel = new AppTourElement("sideMenuView", "Side Menu",
-    //         "Side menu provide quick access to available profiles, settings, and Now Playing profile");
-    //     appTourElements.Add(sidePanel);
-    //     var profileCategories = new  AppTourElement("sideMenuView-categories", "Profile Categories",
-    //         "Profile Categories contains default profiles and downloaded profiles, you can collapse and expand just like window explorer");
-    //     return appTourElements;
-    // }
+    private IClassicDesktopStyleApplicationLifetime? _lifeTime;
+    private Window? _mainWindow;
+
+    public AppTourElementProvider()
+    {
+    }
+
+    public AppTourElementViewModel? GetAppTourElements(AppTourElement element, bool isVertical = false,
+        bool isReverse = false)
+    {
+        _lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
+        _mainWindow = _lifeTime.MainWindow;
+        if (_mainWindow == null)
+            return null;
+        if (element.Control == null)
+            return null;
+        Rect rect = VisualTransformHelper.TransformBoundsTo(element.Control, _mainWindow);
+        var elementvm = new AppTourElementViewModel(rect,
+            element.Title, element.Description, isVertical, isReverse, new Size(_mainWindow.Width, _mainWindow.Height));
+        return elementvm;
+    }
 }

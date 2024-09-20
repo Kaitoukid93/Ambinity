@@ -11,6 +11,7 @@
         <entry key="Ambinity/Styles/BrokenState.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styles/Button.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styles/ColorPickerButton.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Styles/TexBlock.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styles/TextBox.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styling/ControlsGalleryStyles.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styling/Resources.axaml" value="Ambinity/Ambinity.csproj" />
@@ -38,6 +39,7 @@
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ColorPaletteAssetsView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ColorsLibraryView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/FillColorSelectionView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Library/AnimationLibrary/AnimationAssetView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Library/AnimationLibrary/AnimationAssetsView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Library/AnimationLibrary/AnimationLibraryView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Library/ColorPalettesLibrary/ColorPaletteAssetView.axaml" value="Ambinity/Ambinity.csproj" />
@@ -83,6 +85,9 @@
         <entry key="Ambinity/Views/Draw2DCanvas/Draw2DCanvasView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Generic.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/GeometryCollection.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/GeometryCollection/GeometryCollection.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/GeometryCollection/GeometryPickerView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/GeometryPickerView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/AssetsView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/Canvas/LayoutCanvasView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/Canvas/ToolsView.axaml" value="Ambinity/Ambinity.csproj" />

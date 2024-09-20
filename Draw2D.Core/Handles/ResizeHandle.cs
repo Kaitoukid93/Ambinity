@@ -120,8 +120,7 @@ namespace Draw2D.Core.Handles
 
         public void Show(Canvas canvas)
         {
-            canvas.AddAdornerFigure(this);
-
+            canvas?.AddAdornerFigure(this);
             BringToFront();
         }
 

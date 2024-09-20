@@ -28,6 +28,7 @@
                                           Padding="0" Margin="5,5">
                                 <PathIcon Width="18" Height="18"
                                           Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+                                 
                                 </PathIcon>
                             </ToggleButton>
                         </DataTemplate>
@@ -39,6 +40,9 @@
                                     Padding="0" Margin="5,5">
                                 <PathIcon Width="18" Height="18"
                                           Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+                                    <PathIcon.Foreground>
+                                        <SolidColorBrush Color="{Binding FillColor }"></SolidColorBrush>
+                                    </PathIcon.Foreground>
                                 </PathIcon>
                             </Button>
                         </DataTemplate>
@@ -51,13 +55,16 @@
                                     Classes="icon-button">
                                 <PathIcon
                                     Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+                                    <PathIcon.Foreground>
+                                        <SolidColorBrush Color="{Binding FillColor }"></SolidColorBrush>
+                                    </PathIcon.Foreground>
                                 </PathIcon>
                                 <Button.Flyout>
                                     <ui:FAMenuFlyout VerticalOffset="-10" Placement="Top"
                                                      ItemsSource="{Binding FlyoutItems}">
                                         <ui:FAMenuFlyout.ItemTemplate>
                                             <DataTemplate DataType="{x:Type flyoutItem:FlyoutItem}">
-                                                <ui:MenuFlyoutItem Command="{Binding Command}" Text="{Binding Content}">
+                                                <ui:MenuFlyoutItem Click="MenuFlyoutItem_OnClick" Command="{Binding Command}" Text="{Binding Content}">
                                                     <ui:MenuFlyoutItem.IconSource>
                                                         <ui:PathIconSource
                                                             Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">

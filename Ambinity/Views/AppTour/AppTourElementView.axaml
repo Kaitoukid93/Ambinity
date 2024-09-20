@@ -3,28 +3,129 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:local="clr-namespace:Ambinity.Views.AppTour" 
+             xmlns:local="clr-namespace:Ambinity.Views.AppTour"
              x:DataType="local:AppTourElementViewModel"
-             
              x:Class="Ambinity.Views.AppTour.AppTourElementView">
-    <Border Height="{Binding Height}">
-        <StackPanel Orientation="Horizontal" Spacing="2">
-           <Rectangle IsHitTestVisible="False" StrokeThickness="2"  Fill="Transparent" RadiusX="7" RadiusY="7" Stroke="{DynamicResource AccentButtonBackground}" Width="{Binding Rect.Width}" Height="{Binding Rect.Height}">
-             
-           </Rectangle>
-            <Separator VerticalAlignment="Center" Background="{DynamicResource AccentButtonBackground}" Height="2" Width="200"></Separator>
-            <Grid Margin="20,0,0,0" RowDefinitions="*,Auto,*" VerticalAlignment="Stretch">
-                <TextBlock FontSize="20" Margin="0,0,0,5" VerticalAlignment="Bottom" Text="{Binding Title}"></TextBlock>
-                <Separator Grid.Row="1"></Separator>
-                <TextBlock MaxWidth="300" TextWrapping="Wrap" Grid.Row="2" VerticalAlignment="Top" Margin="0,5,0,0" Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding Description}"></TextBlock>
-            </Grid>
-         <Button Command="{Binding SkipCommand}" Margin="20,0,0,0" Classes="icon-button">
-             <Grid ColumnDefinitions="*,5,Auto">
-                 <TextBlock Text="Skip"></TextBlock>
-                 <PathIcon Width="12" Height="12" Grid.Column="2" Data="{DynamicResource Skip}"></PathIcon>
-             </Grid>
-         </Button>
-          
-        </StackPanel>
-    </Border>
+    <UserControl.Styles>
+        <Style Selector="ContentControl.layout">
+            <!-- vertical style -->
+            <Setter Property="Content">
+                <Template>
+                    <Border Height="{Binding Height}">
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <Rectangle IsHitTestVisible="False"  Fill="Transparent" RadiusX="7"
+                                       RadiusY="7"
+                                       Stroke="{DynamicResource AccentButtonBackground}" Width="{Binding Rect.Width}"
+                                       Height="{Binding Rect.Height}">
+
+                            </Rectangle>
+                            <Separator VerticalAlignment="Center" Background="{DynamicResource AccentButtonBackground}"
+                                       Height="2"
+                                       Width="195">
+                            </Separator>
+                            <Grid Margin="20,0,0,0" RowDefinitions="*,Auto,*" VerticalAlignment="Stretch">
+                                <TextBlock FontSize="20" Margin="0,0,0,5" VerticalAlignment="Bottom"
+                                           Text="{Binding Title}">
+                                </TextBlock>
+                                <Separator Grid.Row="1"></Separator>
+                                <TextBlock MaxWidth="300" TextWrapping="Wrap" Grid.Row="2" VerticalAlignment="Top"
+                                           Margin="0,5,0,0"
+                                           Foreground="{DynamicResource ButtonForegroundDisabled}"
+                                           Text="{Binding Description}">
+                                </TextBlock>
+                            </Grid>
+                            <Button Command="{Binding SkipCommand}" Margin="20,0,0,0" Classes="icon-button">
+                                <Grid ColumnDefinitions="*,5,Auto">
+                                    <TextBlock Text="{Binding SkipButtonContent}"></TextBlock>
+                                    <PathIcon Width="12" Height="12" Grid.Column="2" Data="{DynamicResource Skip}"></PathIcon>
+                                </Grid>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </Template>
+            </Setter>
+        </Style>
+         <Style Selector="ContentControl.layout.reverse">
+            <!-- vertical style -->
+            <Setter Property="Content">
+                <Template>
+                    <Border Height="{Binding Height}">
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <Grid Margin="20,0,0,0" VerticalAlignment="Center" RowDefinitions="Auto,5,32">
+                                <Grid VerticalAlignment="Stretch" RowDefinitions="*,Auto,*">
+                                    <TextBlock FontSize="20" Margin="0,0,0,5" VerticalAlignment="Bottom"
+                                               Text="{Binding Title}">
+                                    </TextBlock>
+                                    <Separator Grid.Row="1"></Separator>
+                                    <TextBlock MaxWidth="300" TextWrapping="Wrap" Grid.Row="2" VerticalAlignment="Top"
+                                               Margin="0,5,0,0"
+                                               Foreground="{DynamicResource ButtonForegroundDisabled}"
+                                               Text="{Binding Description}">
+                                    </TextBlock>
+                                </Grid>
+                                <Button Grid.Row="2" Command="{Binding SkipCommand}" VerticalAlignment="Top" Classes="icon-button">
+                                    <Grid ColumnDefinitions="*,5,Auto">
+                                        <TextBlock Text="{Binding SkipButtonContent}"></TextBlock>
+                                        <PathIcon Width="12" Height="12" Grid.Column="2" Data="{DynamicResource Skip}"></PathIcon>
+                                    </Grid>
+                                </Button>
+                            </Grid>
+                            
+                            <Separator VerticalAlignment="Center" Background="{DynamicResource AccentButtonBackground}"
+                                       Height="2"
+                                       Width="195">
+                            </Separator>
+                            <Rectangle IsHitTestVisible="False"  Fill="Transparent" RadiusX="7"
+                                       RadiusY="7"
+                                       Stroke="{DynamicResource AccentButtonBackground}" Width="{Binding Rect.Width}"
+                                       Height="{Binding Rect.Height}">
+
+                            </Rectangle>
+                           
+                            
+                        </StackPanel>
+                    </Border>
+                </Template>
+            </Setter>
+        </Style>
+          <Style Selector="ContentControl.layout.vertical">
+            <Setter Property="Content">
+                <Template>
+                    <Border>
+                        <Grid RowDefinitions="200,5,32,5,200,Auto">
+                            <Grid Margin="20,0,0,0" RowDefinitions="*,Auto,*"
+                                  VerticalAlignment="Stretch">
+                                <TextBlock FontSize="20" Margin="0,0,0,5" VerticalAlignment="Bottom"
+                                           Text="{Binding Title}">
+                                </TextBlock>
+                                <Separator Grid.Row="1"></Separator>
+                                <TextBlock MaxWidth="280" TextWrapping="Wrap" Grid.Row="2" VerticalAlignment="Top"
+                                           Margin="0,5,0,0" Foreground="{DynamicResource ButtonForegroundDisabled}"
+                                           Text="{Binding Description}">
+                                </TextBlock>
+                            </Grid>
+                            <Button Grid.Row="2" Height="32" Command="{Binding SkipCommand}" VerticalAlignment="Top"
+                                    Margin="20,0,0,0" Classes="icon-button">
+                                <Grid ColumnDefinitions="*,5,Auto">
+                                    <TextBlock Text="{Binding SkipButtonContent}"></TextBlock>
+                                    <PathIcon Width="12" Height="12" Grid.Column="2" Data="{DynamicResource Skip}"></PathIcon>
+                                </Grid>
+                            </Button>
+                            <Separator Grid.Row="4" VerticalAlignment="Top" Background="{DynamicResource AccentButtonBackground}"
+                                       Height="195" Width="2">
+                            </Separator>
+                            <Rectangle Grid.Row="5" IsHitTestVisible="False"  Fill="Transparent" RadiusX="7"
+                                       RadiusY="7" Stroke="{DynamicResource AccentButtonBackground}"
+                                       Width="{Binding Rect.Width}" Height="{Binding Rect.Height}">
+                            
+                            </Rectangle>
+                        </Grid>
+                    </Border>
+                </Template>
+            </Setter>
+        </Style>
+    </UserControl.Styles>
+    <ContentControl Classes="layout" Classes.reverse="{Binding IsReverse}" Classes.vertical="{Binding IsVertical}">
+        <!-- default style -->
+    </ContentControl>
 </UserControl>
