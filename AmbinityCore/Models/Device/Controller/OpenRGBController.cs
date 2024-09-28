@@ -27,6 +27,34 @@ public class OpenRGBController : ObservableObject, IController
 
     public DeviceType HardwareType { get; set; }
     public bool AutoConnect { get; set; } = true;
+    private string _firmwareVersion;
+
+    /// <summary>
+    /// firmware version read from OpenRGB if available
+    /// </summary>
+    public string FirmwareVersion
+    {
+        get => _firmwareVersion;
+        set
+        {
+            _firmwareVersion = value;
+            OnPropertyChanged();
+        }
+    }
+    private string _hardwareVersion;
+
+    /// <summary>
+    /// hardware version read from OpenRGB if available
+    /// </summary>
+    public string HardwareVersion
+    {
+        get => _hardwareVersion;
+        set
+        {
+            _hardwareVersion = value;
+            OnPropertyChanged();
+        }
+    }
 
     public int MaxLEDSupport { get; set; } = 250;
     [JsonIgnore] public bool IsTransferActive { get; set; }
@@ -53,7 +81,9 @@ public class OpenRGBController : ObservableObject, IController
 
     public int DashboardWidth { get; set; }
     public int DashboardHeight { get; set; }
-    
+    public double PhysicalWidth { get; set; } = 200;
+    public double PhysicalHeight { get; set; } = 200;
+
     public LEDController LedController { get; set; }
     public FanController FanController { get; set; }
 

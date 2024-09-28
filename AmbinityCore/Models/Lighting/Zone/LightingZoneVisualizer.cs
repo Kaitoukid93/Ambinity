@@ -13,6 +13,7 @@ namespace AmbinityCore.Models.Lighting.Zone;
 public class LightingZoneVisualizer : ICanvasVisualizerItem
 {
     public event Action ItemUpdated;
+    public event Action RefreshVisualizer;
     private Rect _zoneBounds;
     private Pen _defaultPen = new Pen(new SolidColorBrush(Avalonia.Media.Colors.Chartreuse));
     public Rect Bounds => _zoneBounds;

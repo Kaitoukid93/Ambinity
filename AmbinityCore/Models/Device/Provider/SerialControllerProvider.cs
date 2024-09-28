@@ -2,6 +2,7 @@ using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Device.Device;
 using AmbinityCore.Models.Device.Service;
 using AmbinityCore.Repositories;
+using Avalonia.Controls;
 
 namespace AmbinityCore.Models.Device.Provider;
 
@@ -50,13 +51,13 @@ public class SerialControllerProvider
                 controller.DashboardHeight = 270;
                 controller.DashboardWidth = 230;
                 ledController.Outputs.Add(new LEDOutput(80, 0,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Basic 24inch",30),0.4f)));
+                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Basic 24inch", 30), 0.4f)));
                 break;
             case HardwareTypeEnum.AmbinoEDGE:
                 controller.DashboardHeight = 270;
                 controller.DashboardWidth = 230;
                 ledController.Outputs.Add(new LEDOutput(80, 0,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Basic 24inch",48))));
+                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Basic 24inch", 48))));
                 break;
             case HardwareTypeEnum.AmbinoFanHub:
                 controller.DashboardHeight = 270;
@@ -64,28 +65,40 @@ public class SerialControllerProvider
                 for (int i = 0; i < 10; i++)
                 {
                     ledController.Outputs.Add(new LEDOutput(80, i,
-                        new AmbinityDevice(_layoutRepository.GetLayout("Ambino Dualring Fan",30))));
+                        new AmbinityDevice(_layoutRepository.GetLayout("Ambino Dualring Fan", 30))));
                 }
 
+                controller.FanController = new FanController()
+                {
+                    Name = "Generic PWM Fan Controller",
+                    DeviceDescription = "Ambino high performance dual mode pwm controller"
+                    
+                };
                 break;
             case HardwareTypeEnum.AmbinoHUBV3:
                 controller.DashboardHeight = 270;
                 controller.DashboardWidth = 290;
-                ledController.Outputs.Add(new LEDOutput(80, 4,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Neon 24P",200),0.5f)));
-                ledController.Outputs.Add(new LEDOutput(80, 5,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Neon 24P",200),0.5f)));
+
                 for (int i = 0; i < 4; i++)
                 {
                     ledController.Outputs.Add(new LEDOutput(80, i,
-                        new AmbinityDevice(_layoutRepository.GetLayout("Default ARGB LED Strip",64))));
+                        new AmbinityDevice(_layoutRepository.GetLayout("Default ARGB LED Strip", 64))));
                 }
 
+                ledController.Outputs.Add(new LEDOutput(80, 4,
+                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Neon 24P", 200), 0.5f)));
+                ledController.Outputs.Add(new LEDOutput(80, 5,
+                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Neon 24P", 200), 0.5f)));
+                ledController.Outputs.Add(new LEDOutput(80, 6,
+                    new AmbinityDevice(_layoutRepository.GetLayout("Default ARGB LED Strip", 64))));
                 break;
         }
 
         ledController.HardwareSettings.HardwareType = controller.HardwareType;
+        ledController.ApplyOutputMapping(OutputMappingProvider.GetOutputMapping(controller.HardwareType));
         ledController.PopulateDefaultLayout();
+        controller.PhysicalHeight = 317;
+        controller.PhysicalWidth = 500;
         controller.LedController = ledController;
         controller.RegisterLEDController();
         controller.RegisterFanController();

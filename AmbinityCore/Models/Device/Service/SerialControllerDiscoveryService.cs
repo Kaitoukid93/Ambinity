@@ -137,7 +137,7 @@ public class SerialControllerDiscoveryService
 
         if (ports.Count > 0)
         {
-            Dispatcher.UIThread.Invoke(() => { NewComportDetected?.Invoke(ports.First()); });
+           // Dispatcher.UIThread.Invoke(() => { NewComportDetected?.Invoke(ports.First()); });
             await Task.Delay(500);
             string deviceName = null;
             string deviceID = null;

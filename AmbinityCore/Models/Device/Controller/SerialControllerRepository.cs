@@ -1,4 +1,3 @@
-using System.IO.Ports;
 using AmbinityCore.DataStream;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
@@ -9,7 +8,6 @@ namespace AmbinityCore.Models.Device.Controller;
 
 public class SerialControllerRepository : CollectableItemRepository
 {
-
     public event Action<IController> NewControllerAdded;
     public event Action<IController> OldDeviceReconnected;
     public event Action<IController> OldDeviceDetected;
@@ -17,10 +15,11 @@ public class SerialControllerRepository : CollectableItemRepository
     public event Action<IController> LoadingFromDisk;
     private string dbPath => Path.Combine(Constants.AppDataFolder, "Hardwares");
     private string FolderPath => Path.Combine(dbPath, "Controllers", "Serial");
-    private SerialControllerProvider _controllerProvider;
+    private readonly SerialControllerProvider _controllerProvider;
     private List<IDataStream> _dataStreams;
-    private DataStreamProvider _streamProvider;
-    public SerialControllerRepository(SerialControllerProvider controllerProvider , DataStreamProvider streamProvider)
+    private readonly DataStreamProvider _streamProvider;
+
+    public SerialControllerRepository(SerialControllerProvider controllerProvider, DataStreamProvider streamProvider)
     {
         _streamProvider = streamProvider;
         LocalFolderPath = FolderPath;
@@ -49,7 +48,7 @@ public class SerialControllerRepository : CollectableItemRepository
 
         //wait for serialstream to start first
         _controllerProvider.Resume();
-        
+
         SaveToDisk();
     }
 
@@ -63,7 +62,7 @@ public class SerialControllerRepository : CollectableItemRepository
         }
 
         //wait for serialstream to start first
-        
+
         SaveToDisk();
     }
 
@@ -90,13 +89,14 @@ public class SerialControllerRepository : CollectableItemRepository
         else
         {
             //oldevice but the port changed
-            (dataStream as SerialStream).Controller.SerialPort = controller.SerialPort;
-            OldDeviceDetected?.Invoke((dataStream as SerialStream).Controller);
+            var oldController = (dataStream as SerialStream).Controller;
+            oldController.SerialPort = controller.SerialPort;
+            OldDeviceDetected?.Invoke(oldController);
             if (!dataStream.IsRunning)
                 dataStream.Init();
             await Task.Run(() => Task.Delay(2000));
-            OldDeviceReconnected?.Invoke(controller);
-            Log.Information("Old Device Reconnected " + controller.Name);
+            OldDeviceReconnected?.Invoke(oldController);
+            Log.Information("Old Device Reconnected " + oldController.Name);
         }
 
         return isNew;
@@ -107,13 +107,12 @@ public class SerialControllerRepository : CollectableItemRepository
         ControllerDisconnected?.Invoke(controller as SerialController);
     }
 
-    private IDataStream GetSerialStream(IController controller)
+    public IDataStream GetSerialStream(IController controller)
     {
         if (_dataStreams == null)
             return null;
         return _dataStreams
-            .Where(d => (d as SerialStream).Port == controller.SerialPort || d.ID == controller.SerialNumber)
-            .FirstOrDefault();
+            .FirstOrDefault(d => (d as SerialStream).Port == controller.SerialPort || d.ID == controller.SerialNumber);
     }
 
     public override void CreateDefault()
@@ -137,7 +136,7 @@ public class SerialControllerRepository : CollectableItemRepository
                 Log.Error("Can not load " + file);
                 continue;
             }
-               
+
             controller.LocalPath = controllerPath;
             foreach (var output in controller.LedController.Outputs)
             {

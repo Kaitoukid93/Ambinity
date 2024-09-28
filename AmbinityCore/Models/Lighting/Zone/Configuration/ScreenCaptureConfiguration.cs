@@ -4,6 +4,7 @@ namespace AmbinityCore.Models.Lighting.Zone.Configuration;
 
 public class ScreenCaptureConfiguration : ILightingConfiguration
 {
+    public event Action CaptureAreaUpdated;
     public ScreenCaptureConfiguration( int brightness, int smooth, CaptureArea screenCaptureArea, int displayIndex,bool brightnessCorrection)
     {
         Brightness = brightness;
@@ -52,5 +53,12 @@ public class ScreenCaptureConfiguration : ILightingConfiguration
 
         return "Screen: " + (DisplayIndex+1) + ", " + "Brightness: " + Brightness + ", " + "Smooth: " + Smooth + ", " +
                "Area: " + ScreenCaptureArea.RatioWidth + " - " + ScreenCaptureArea.RatioHeight;
+    }
+
+    public void UpdateCaptureArea(CaptureArea captureArea, int screenIndex)
+    {
+        DisplayIndex = screenIndex;
+        ScreenCaptureArea = captureArea;
+        CaptureAreaUpdated?.Invoke();
     }
 }

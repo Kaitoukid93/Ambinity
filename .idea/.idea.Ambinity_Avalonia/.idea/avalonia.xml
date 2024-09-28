@@ -6,6 +6,7 @@
         <entry key="Ambinity/App.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/ControlTheme/LessUglyColorPicker.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/ControlTheme/StriplessListbox.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/ControlTheme/TransparrentSettingsExpander.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styles/Ambinity.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styles/Border.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styles/BrokenState.axaml" value="Ambinity/Ambinity.csproj" />
@@ -115,6 +116,7 @@
         <entry key="Ambinity/Views/Screens/CaptureEngine/CaptureEngineWindow.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/CaptureEngine/ScreenCapturingView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/CaptureEngine/ScreenPreview.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/CoolingSettings/CoolingSettingsView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/Dashboard/DashboardDeviceView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/Dashboard/DashboardView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceControl/DeviceCanvas/DeviceCanvasView.axaml" value="Ambinity/Ambinity.csproj" />
@@ -124,10 +126,20 @@
         <entry key="Ambinity/Views/Screens/DeviceLayout/DevicePropertiesView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceMaping/DeviceMappingView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceMapping/DeviceMappingView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/AmbinityDeviceDetailView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DashboardDeviceView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceAdvanceSettingsView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceConfigurationView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceConnectionSettingsView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceFirmwareSettingsView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceHardwareFanView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceHardwareLightingView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/DevicePortConfigurationView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/DevicePortListView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/DevicePortMapView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceSettingsDashboardView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceSettingsView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/PortDetailView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/EffectControlView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/LayersView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/ProfileEditorView.axaml" value="Ambinity/Ambinity.csproj" />
@@ -159,7 +171,9 @@
         <entry key="Ambinity/Windows/DeleteDialogContent.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Windows/DialogWindow.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Windows/DownloadDialogContent.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Windows/ErrorDialogContent.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Windows/InputDialogContent.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Windows/LoadingDialogContent.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="AvaloniaApplication1/Ambinity.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
         <entry key="AvaloniaApplication1/App.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
         <entry key="AvaloniaApplication1/Styles/Ambinity.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />

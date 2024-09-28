@@ -16,12 +16,12 @@ namespace Ambinity.Views.CollectableItem.AmbinityDeviceLayout;
 
 public class AmbinityDeviceLayoutAssetViewModel : AssetItemViewModelBase
 {
-    public AmbinityDeviceLayoutAssetViewModel(ICollectableItem item,Draw2DCanvasViewModel canvasViewModel)
+    public AmbinityDeviceLayoutAssetViewModel(ICollectableItem item,Draw2DCanvasViewModel canvasViewModel,ThumbnailService thumbnailService)
     {
         _canvasViewModel = canvasViewModel;
         _layout = item as AmbinityCore.Models.Device.AmbinityDeviceLayout;
         Name = _layout.Name;
-        _thumbnailService = Ioc.Default.GetRequiredService<ThumbnailService>();
+        _thumbnailService = thumbnailService;
         ApplyLayoutCommand = new RelayCommand(ApplyLayout);
     }
 

@@ -1,7 +1,16 @@
+using System.Linq;
+using System.Threading.Tasks;
+using Ambinity.Views.Screens.DeviceLayout;
+using AmbinityCore.Converters;
+using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Geography;
+using AmbinityCore.Models.Lighting.Zone;
+using AmbinityCore.Repositories;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Media;
+using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 
 namespace Ambinity.Views.Draw2DCanvas;
@@ -52,23 +61,39 @@ public class FigureContextMenuProvider
     {
         var containerFigure = figure as ContainerFigure;
         _contextMenu.Items.Clear();
-
-        if (containerFigure.ChildItem.IsDeleteable)
+        if (containerFigure is LightingZoneFigure)
         {
-            _contextMenu.Items.Add(new MenuItem()
+            if (containerFigure.ChildItem.IsDeleteable)
             {
-                Header = "Copy", Command = _canvasVM.CopySelectedFigureCommand,
-                InputGesture = new KeyGesture(Key.C, KeyModifiers.Control)
-            });
+                _contextMenu.Items.Add(new MenuItem()
+                {
+                    Header = "Copy", Command = _canvasVM.CopySelectedFigureCommand,
+                    InputGesture = new KeyGesture(Key.C, KeyModifiers.Control)
+                });
+                _contextMenu.Items.Add(new MenuItem()
+                {
+                    Header = "Delete", Command = _canvasVM.DeleteCommand, InputGesture = new KeyGesture(Key.Delete)
+                });
+            }
         }
-            
+        else if (containerFigure is DeviceContainerFigure)
+        {
+            _contextMenu.Items.Add(new MenuItem() { Header = "Ping device", Command = new AsyncRelayCommand<AmbinityDevice>(PingDevice),CommandParameter = containerFigure.ChildItem});
+            _contextMenu.Items.Add(new MenuItem() { Header = "Order check", Command = new AsyncRelayCommand<AmbinityDevice>(CheckDeviceLedOrder),CommandParameter = containerFigure.ChildItem});
+            _contextMenu.Items.Add(new MenuItem() { Header = "Disable device" });
+        }
 
-        _contextMenu.Items.Add(new MenuItem() { Header = "-" });
-        _contextMenu.Items.Add(new MenuItem() { Header = "Show/Hide" });
-        _contextMenu.Items.Add(new MenuItem() { Header = "Lock/Unlock" });
-        _contextMenu.Items.Add(new MenuItem() { Header = "-" });
-        if (containerFigure.ChildItem.IsDeleteable)
-            _contextMenu.Items.Add(new MenuItem()
-                { Header = "Delete", Command = _canvasVM.DeleteCommand, InputGesture = new KeyGesture(Key.Delete) });
+
+       
+    }
+
+    private async Task PingDevice(AmbinityDevice device)
+    {
+        await device.Ping();
+    }
+
+    private async Task CheckDeviceLedOrder(AmbinityDevice device)
+    {
+        await device.OrderCheck();
     }
 }

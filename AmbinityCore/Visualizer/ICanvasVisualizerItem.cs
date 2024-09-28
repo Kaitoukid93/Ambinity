@@ -9,6 +9,7 @@ namespace AmbinityCore.Visualizer;
 
 public interface ICanvasVisualizerItem
 {
+    event Action RefreshVisualizer;
     /// <summary>
     /// Raise when actual item get updated
     /// </summary>

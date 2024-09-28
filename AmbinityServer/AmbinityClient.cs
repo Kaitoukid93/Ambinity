@@ -8,9 +8,11 @@ public class AmbinityClient
     private SftpWrapper _ftpServer;
     public SftpWrapper SftpServer => _ftpServer;
 
+    public string HomeAddress = "/home/adrilight_developeruser/";
+
     public AmbinityClient()
     {
-        _ftpServer = new SftpWrapper();
+        _ftpServer = new SftpWrapper("adrilight_developeruser","@drilightDeveloper");
     }
 
     public async Task<bool> Init()

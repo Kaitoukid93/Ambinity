@@ -58,6 +58,7 @@
 	  <UpToDateCheckInput Remove="Styling\ControlsGalleryStyles.axaml" />
 	  <UpToDateCheckInput Remove="Styling\Resources.axaml" />
 	  <UpToDateCheckInput Remove="Views\Controls\EyeDroper.axaml" />
+	  <UpToDateCheckInput Remove="Views\Screens\Dashboard\DashboardView.axaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -77,10 +78,6 @@
 
 	<ItemGroup>
 	  <Compile Remove="obj\**" />
-	  <Compile Update="Views\Screens\CaptureEngine\ScreenPreview.axaml.cs">
-	    <DependentUpon>ScreenPreview.axaml</DependentUpon>
-	    <SubType>Code</SubType>
-	  </Compile>
 	  <Compile Remove="Draw2D.Core\**" />
 	  <Compile Remove="Draw2DControlLibrary\**" />
 	  <Compile Update="Views\Screens\DeviceSettings\DashboardDeviceView.axaml.cs">

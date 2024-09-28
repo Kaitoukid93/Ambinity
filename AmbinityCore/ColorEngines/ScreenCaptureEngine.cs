@@ -24,66 +24,48 @@ public class ScreenCaptureEngine : IColorEngine
 
     public LightingZone Zone => _zone;
     private LightingZone _zone;
-    private FrameBuffer _buffer;
-    private CapturingServiceProvider _capturingServiceProvider;
+    private readonly FrameBuffer _buffer;
+    private readonly CapturingServiceProvider _capturingServiceProvider;
     private IScreenCapture _screenCapture;
     private ICaptureZone _captureZone;
     private byte[] _reusableRow;
     private readonly AmbinityDeviceRepository _deviceRepository;
     private List<CaptureRect> _ledRects;
+    private ScreenCaptureConfiguration _config;
+    private ScreenCapturingService _screenCapturingService;
     private Rect _captureZoneRect => new Rect(_captureZone.X, _captureZone.Y, _captureZone.Width, _captureZone.Height);
 
     public void Init(LightingZone zone)
     {
+        _screenCapturingService = (ScreenCapturingService)_capturingServiceProvider.GetCapturingService(this);
         _zone = zone;
         _zone.UpdateFrameBuffer();
         _ledRects = new List<CaptureRect>();
-        var zoneConfig = (ScreenCaptureConfiguration)_zone.LightingConfiguration;
-
+        _config = (ScreenCaptureConfiguration)_zone.LightingConfiguration;
+        _config.CaptureAreaUpdated += OnCaptureAreaUpdated;
+        _screenCapturingService.RegisterUse();
         //get screen index this zone desired
-        var capturingService = (ScreenCapturingService)_capturingServiceProvider.GetCapturingService(this);
-        var displayIndex = zoneConfig.DisplayIndex;
-        _screenCapture = capturingService.GetScreenCapture(displayIndex);
+        OnCaptureAreaUpdated();
+        
+    }
+
+    private void OnCaptureAreaUpdated()
+    {
+        
+        var displayIndex = _config.DisplayIndex;
+        _screenCapture = _screenCapturingService.GetScreenCapture(displayIndex);
         if (_screenCapture == null)
         {
             Log.Error("Screen Capture Engine Init Failed");
             return;
         }
 
-        var left = zoneConfig.ScreenCaptureArea.RatioX * _screenCapture.Display.Width;
-        var top = zoneConfig.ScreenCaptureArea.RatioY * _screenCapture.Display.Height;
-        var width = zoneConfig.ScreenCaptureArea.RatioWidth * _screenCapture.Display.Width;
-        var height = zoneConfig.ScreenCaptureArea.RatioHeight * _screenCapture.Display.Height;
-        //calculating downscale level to get exact size of the image
-        // first calculate desire desktop size
-        // var ratioX = width / _zone.Width;
-        // var ratioY = height / _zone.Height;
-        // var ratio = Math.Min(ratioX, ratioY);
-        // var convertedRatio = 1;
-        // int downscaleLevel = 0;
-        // if (ratio < 2)
-        // {
-        //     downscaleLevel = 0;
-        //     convertedRatio = 1;
-        // }
-        //
-        // else if (ratio >= 2 && ratio < 4)
-        // {
-        //     downscaleLevel = 1;
-        //     convertedRatio = 2;
-        // }
-        //
-        // else if (ratio >= 4 && ratio < 8)
-        // {
-        //     downscaleLevel = 2;
-        //     convertedRatio = 4;
-        // }
-        // else if (ratio >= 8)
-        // {
-        //     downscaleLevel = 3;
-        //     convertedRatio = 8;
-        // }
-
+        var left = _config.ScreenCaptureArea.RatioX * _screenCapture.Display.Width;
+        var top = _config.ScreenCaptureArea.RatioY * _screenCapture.Display.Height;
+        var width = _config.ScreenCaptureArea.RatioWidth * _screenCapture.Display.Width;
+        var height = _config.ScreenCaptureArea.RatioHeight * _screenCapture.Display.Height;
+        if (_captureZone != null)
+            _screenCapture?.UnregisterCaptureZone(_captureZone);
         try
         {
             _captureZone = _screenCapture.RegisterCaptureZone((int)left, (int)top, (int)width,
@@ -92,8 +74,8 @@ public class ScreenCaptureEngine : IColorEngine
         catch (Exception ex)
         {
             Log.Error(ex.ToString());
+            return;
         }
-
         _reusableRow = new byte[(int)_zone.Width * 4];
         UpdatePixelData();
     }
@@ -108,10 +90,10 @@ public class ScreenCaptureEngine : IColorEngine
             foreach (var led in device.Leds)
             {
                 var intersect = _zone.ZoneBound.Intersect(led.TransformedRect);
-                if (intersect == default)
+                if (intersect != led.TransformedRect)
                     continue;
                 var translatedRect = RectCalculation.TranslateRect(led.TransformedRect, _zone.Bound, _captureZoneRect);
-                _ledRects.Add(new CaptureRect(led.TransformedRect,translatedRect));
+                _ledRects.Add(new CaptureRect(led.TransformedRect, translatedRect));
             }
         }
     }
@@ -123,7 +105,7 @@ public class ScreenCaptureEngine : IColorEngine
             IImage image = _captureZone.Image;
             Span<byte> row = _reusableRow;
             //render whole image
-            
+
             // for (int i = 0; i < image.Height; i++)
             // {
             //     image.Rows[i].CopyTo(row);
@@ -137,12 +119,13 @@ public class ScreenCaptureEngine : IColorEngine
             foreach (var rect in _ledRects)
             {
                 //translate rect to image coordinate system
-              //  var translatedRect = RectCalculation.TranslateRect(rect, _zone.Bound, _captureZoneRect);
-                IImage subImage = image[(int)rect.TranslatedRect.X, (int)rect.TranslatedRect.Y, (int)rect.TranslatedRect.Width,
+                //  var translatedRect = RectCalculation.TranslateRect(rect, _zone.Bound, _captureZoneRect);
+                IImage subImage = image[(int)rect.TranslatedRect.X, (int)rect.TranslatedRect.Y,
+                    (int)rect.TranslatedRect.Width,
                     (int)rect.TranslatedRect.Height];
                 //render sub image at led rect position
                 var col = subImage.Average();
-                ColorComputing.SetBlockColor(_buffer,rect.OriginalRect,col.R,col.G,col.B);
+                ColorComputing.SetBlockColor(_buffer, rect.OriginalRect, col.R, col.G, col.B);
             }
         }
     }
@@ -154,6 +137,7 @@ public class ScreenCaptureEngine : IColorEngine
         IsDisposed = true;
         if (_captureZone != null)
             _screenCapture.UnregisterCaptureZone(_captureZone);
+        _screenCapturingService.UnregisterUse();
         GC.Collect();
     }
 

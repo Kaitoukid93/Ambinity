@@ -14,8 +14,9 @@ public class LEDController : ObservableObject
         Outputs = new List<LEDOutput>();
         HardwareSettings = new SerialLEDControllerHardwareSettings();
     }
+
     private string _deviceName = "New Device";
-    
+
     /// <summary>
     /// Display name of the device
     /// </summary>
@@ -38,13 +39,16 @@ public class LEDController : ObservableObject
 
     private ILEDControllerHardwareSettings _hardwareSettings;
 
+    [JsonIgnore]
     public ILEDControllerHardwareSettings HardwareSettings
     {
         get => _hardwareSettings;
         set => SetProperty(ref _hardwareSettings, value);
     }
+
     public byte MaxBrightness { get; set; }
     private List<LEDOutput> _outputs;
+
     public List<LEDOutput> Outputs
     {
         get => _outputs;
@@ -56,7 +60,17 @@ public class LEDController : ObservableObject
         var layout = AmbinoDefaultLayout.GetDefaultLayout(HardwareSettings.HardwareType);
         foreach (var output in Outputs)
         {
-            output.Device.ForceTranslate(layout[output.Index].X,layout[output.Index].Y);
+            output.Device.ForceTranslate(layout[output.Index].X, layout[output.Index].Y);
+        }
+    }
+
+    public void ApplyOutputMapping(LEDControllerOutputMapping outputMapping)
+    {
+        if (outputMapping == null)
+            return;
+        for (int i = 0; i < Outputs.Count; i++)
+        {
+            Outputs[i].OutputPosition = outputMapping.OutputsMap[Outputs[i].Index];
         }
     }
 }

@@ -27,6 +27,7 @@ namespace AmbinityCore.Models.Device;
             ChildItem = child;
             ItemVisualizer = new DeviceVisualizer(child);
             ItemVisualizer.ItemUpdated += OnItemUpdate;
+            ItemVisualizer.RefreshVisualizer += OnItemVisualizerUpdated;
             Width = (float)ItemVisualizer.Bounds.Width;
             Height = (float)ItemVisualizer.Bounds.Height;
             X = (float)ItemVisualizer.Bounds.X;
@@ -41,6 +42,10 @@ namespace AmbinityCore.Models.Device;
             Canvas.NeedsRepaint(this);
         }
 
+        private void OnItemVisualizerUpdated()
+        {
+            Canvas.NeedsRepaint(this);
+        }
         public override void Render(DrawingContext dc, double strokeThickness, Color strokeColor)
         {
             //get size and location from device property

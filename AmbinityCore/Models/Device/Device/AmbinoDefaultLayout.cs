@@ -58,12 +58,14 @@ public static class AmbinoDefaultLayout
         var output3 = new Point(34, 451);
         var output4 = new Point(372, 203);
         var output5 = new Point(372, 241);
+        var output6 = new Point(34, 466);
         points.Add(output0);
         points.Add(output1);
         points.Add(output2);
         points.Add(output3);
         points.Add(output4);
         points.Add(output5);
+        points.Add(output6);
         return points;
     }
     public static List<Point> DefaultAmbinoBasicZone()

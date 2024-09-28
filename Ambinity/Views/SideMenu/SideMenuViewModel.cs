@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,23 +6,15 @@ using System.Windows.Input;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
 using Ambinity.Views.AppTour;
-using Ambinity.Views.LayoutEditor;
-using Ambinity.Views.Screens.Dashboard;
 using Ambinity.Views.Screens.DeviceLayout;
 using Ambinity.Views.Screens.DeviceSettings;
 using Ambinity.Views.Screens.ProfileEditor;
 using Ambinity.Windows;
 using AmbinityCore.Models.Collection;
-using AmbinityCore.Models.Device;
-using AmbinityCore.Models.Device.Controller;
-using AmbinityCore.Models.Device.Device;
-using AmbinityCore.Models.Geography;
-using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Models.ProfileCategory;
-using AmbinityServer.OnlineItem;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
+using DynamicData;
 using FluentAvalonia.UI.Controls;
 
 namespace Ambinity.Views.SideMenu;
@@ -37,8 +28,9 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         LightingProfileCategoryRepository categoryRepository, IDialogService dialogService,
         RootNavigationStores rootNavigationStores,
         SideMenuProfilePlayerViewModel profilePlayerViewModel, SideMenuViewModelFactory vmFactory,
-        ProfileEditorViewModel profileEditorViewModel, DeviceLayoutEditorViewModel deviceLayoutEditorViewModel)
+        ProfileEditorViewModel profileEditorViewModel, DeviceLayoutEditorViewModel deviceLayoutEditorViewModel, DeviceSettingsDashboardViewModel dashboardViewModel)
     {
+        _dashboardViewModel = dashboardViewModel;
         _profileEditorViewModel = profileEditorViewModel;
         _deviceLayoutEditorViewModel = deviceLayoutEditorViewModel;
         _vmFactory = vmFactory;
@@ -126,6 +118,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     private SideMenuProfileViewModel _selectedProfile;
     private readonly ProfileEditorViewModel _profileEditorViewModel;
     private readonly DeviceLayoutEditorViewModel _deviceLayoutEditorViewModel;
+    private readonly DeviceSettingsDashboardViewModel _dashboardViewModel;
 
     public SideMenuProfileViewModel SelectedProfile
     {
@@ -165,10 +158,10 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         ScreenMenuItems = new ObservableCollection<SideMenuScreenViewModel>();
         ProfileCategorymenuItems = new ObservableCollection<SideMenuProfileCategoryViewModel>();
         var deviceSettingsMenu = new SideMenuScreenViewModel("Devices", "Device_settings");
-        var devicemapingMenu = new SideMenuScreenViewModel("Layout", "map_rounded");
+        var deviceLayoutMenu = new SideMenuScreenViewModel("Layout", "map_rounded");
         var settingsMenu = new SideMenuScreenViewModel("Settings", "General_Outline_Settings");
         ScreenMenuItems.Add(deviceSettingsMenu);
-        ScreenMenuItems.Add(devicemapingMenu);
+        ScreenMenuItems.Add(deviceLayoutMenu);
         ScreenMenuItems.Add(settingsMenu);
         foreach (LightingProfileCategory category in _categoryRepository.Items)
         {
@@ -206,9 +199,9 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         SelectedProfile = null;
         switch (screen.Content)
         {
-            case "Dashboard":
-                GoToDashBoard();
-                break;
+            // case "Dashboard":
+            //     GoToDashBoard();
+            //     break;
             case "Layout":
                 GoToDeviceLayout();
                 break;
@@ -228,11 +221,11 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         _rootNavigationStores.CurrentViewModel = _deviceLayoutEditorViewModel;
     }
 
-    private void GoToDashBoard()
-    {
-        var vm = Ioc.Default.GetRequiredService<DashboardViewModel>();
-        _rootNavigationStores.CurrentViewModel = vm;
-    }
+    // private void GoToDashBoard()
+    // {
+    //     var vm = Ioc.Default.GetRequiredService<DashboardViewModel>();
+    //     _rootNavigationStores.CurrentViewModel = vm;
+    // }
 
     //todo take away items init 
     private void GoToProfileEditor(LightingProfile profile)
@@ -244,9 +237,8 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
 
     private void GoToDeviceSettings()
     {
-        var vm = Ioc.Default.GetRequiredService<DeviceSettingsDashboardViewModel>();
-        vm.Init();
-        _rootNavigationStores.CurrentViewModel = vm;
+        _dashboardViewModel.Init();
+        _rootNavigationStores.CurrentViewModel = _dashboardViewModel;
     }
 
     private void CatergorySelectionChanged(SideMenuProfileViewModel item)
@@ -271,6 +263,8 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
 
     public override void Dispose()
     {
+        _dashboardViewModel?.Dispose();
+        _deviceLayoutEditorViewModel?.Dispose();
     }
 
     #region App tour element implementations

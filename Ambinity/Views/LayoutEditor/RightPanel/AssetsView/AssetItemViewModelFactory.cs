@@ -6,6 +6,7 @@ using Ambinity.Views.Draw2DCanvas;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Repositories;
+using AmbinityServer.OnlineItem;
 
 namespace Ambinity.Views.LayoutEditor;
 
@@ -15,17 +16,19 @@ namespace Ambinity.Views.LayoutEditor;
 public  class AssetItemViewModelFactory
 {
     private readonly Draw2DCanvasViewModel _canvasViewModel;
+    private readonly ThumbnailService _thumnailService;
 
-    public AssetItemViewModelFactory(Draw2DCanvasViewModel canvasViewModel)
+    public AssetItemViewModelFactory(Draw2DCanvasViewModel canvasViewModel, ThumbnailService thumbnailService)
     {
         _canvasViewModel = canvasViewModel;
+        _thumnailService = thumbnailService;
     }
     public  AssetItemViewModelBase GetViewModel(ICollectableItem item)
     {
         switch (item.GetType().Name)
         {
             case "AmbinityDeviceLayout":
-                return new AmbinityDeviceLayoutAssetViewModel(item,_canvasViewModel);
+                return new AmbinityDeviceLayoutAssetViewModel(item,_canvasViewModel,_thumnailService);
                 break;
             case "SolidColor":
                 return null;

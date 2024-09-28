@@ -102,6 +102,7 @@
                            Classes.suspended="{CompiledBinding IsSuspended}"
                            Padding="0 5"
                            HorizontalAlignment="Left"
+                           ToolTip.Tip="{Binding Content}"
                            Text="{CompiledBinding Content, FallbackValue='New Category'}"
                            TextTrimming="CharacterEllipsis"
                            PointerReleased="InputElement_OnPointerReleased"

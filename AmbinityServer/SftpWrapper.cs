@@ -11,14 +11,16 @@ public class SftpWrapper
 {
     private const string public_User_LoginName = "adrilight_publicuser";
     private const string public_User_PassWord = "@drilightPublic";
-    private const string developer_User_Login_Name = "adrilight_developeruser";
-    private const string developer_User_Password = "@drilightDeveloper";
+    private string developer_User_Login_Name;
+    private string developer_User_Password;
     private const string host = @"103.148.57.184";
     private CancellationTokenSource _cancellationTokenSource;
     public SftpClient sFTP { get; set; }
 
-    public SftpWrapper()
+    public SftpWrapper(string userName, string password)
     {
+        developer_User_Login_Name = userName;
+        developer_User_Password = password;
         sFTP = new SftpClient(host, 1512, developer_User_Login_Name, developer_User_Password);
         _progress = new Progress<int>((p) =>
         {
@@ -118,7 +120,7 @@ public class SftpWrapper
         {
             var files = sFTP.ListDirectory(folderPath);
 
-            var file = files.Where(i => i.Name == fileName).FirstOrDefault();
+            var file = files.Where(i => i.Name.Contains(fileName)).FirstOrDefault();
 
             return await Task.FromResult(file);
         }

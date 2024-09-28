@@ -143,6 +143,8 @@ public class OpenRGBStream : IDataStream
 
     public void Start()
     {
+        if(!Controller.AutoConnect)
+            return;
         Log.Information("Start called for SerialStream");
         if(!_client.IsInitialized)
             return;

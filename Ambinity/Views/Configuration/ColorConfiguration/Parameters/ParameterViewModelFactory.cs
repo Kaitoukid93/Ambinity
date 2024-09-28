@@ -7,6 +7,7 @@ using AmbinityCore.Colors;
 using AmbinityCore.DataBase;
 using AmbinityCore.LightingEngines;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
+using AmbinityCore.Models.Profile;
 using AmbinityCore.Repositories;
 
 namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
@@ -26,7 +27,8 @@ public class ParameterViewModelFactory(
     AnimationsRepository animationsRepository,
     LibraryViewModelFactory libraryViewModelFactory,
     BrightnessProviderFactory brightnessProviderFactory,
-    ScreenCapturingService screenCapturingService)
+    ScreenCapturingService screenCapturingService,
+    LightingProfileDecoder decoder)
 {
     public List<ParameterViewModelBase> CreateParameterViewModels(ILightingConfiguration config)
     {
@@ -66,7 +68,7 @@ public class ParameterViewModelFactory(
         if (config is not ScreenCaptureConfiguration configuration)
             return null;
         var captureParameter = new ScreenRegionSelectionParameterViewModel(configuration,
-            windowService, settingsManager, screenCapturingService);
+            windowService, settingsManager, screenCapturingService,decoder);
         var blackBarDetectionParameter = new BlackBarDetectionParameterViewModel();
         return [captureParameter, new SeparationParameterViewModel(), blackBarDetectionParameter];
     }

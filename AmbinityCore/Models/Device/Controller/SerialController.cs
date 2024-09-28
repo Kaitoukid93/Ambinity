@@ -2,7 +2,6 @@ using System.ComponentModel;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Repositories;
-using AmbinityServer.OnlineItem;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -15,10 +14,11 @@ public class SerialController : ObservableObject, IController
     /// <summary>
     /// bare-bones information from serial device
     /// </summary>
-    public event Action WorkingStateChanged;
+    public event Action? WorkingStateChanged;
+
     public event Action SerialPortChanged;
     public event Action TransferActiveChanged;
-    
+
     private string resourcePath => Path.Combine(Constants.AppDataFolder, "Images");
 
     public SerialController()
@@ -29,6 +29,7 @@ public class SerialController : ObservableObject, IController
     public bool AutoConnect { get; set; } = true;
     [JsonIgnore] public bool IsTransferActive { get; set; }
     private string _serialPort;
+
     public string SerialPort
     {
         get => _serialPort;
@@ -38,6 +39,7 @@ public class SerialController : ObservableObject, IController
             OnPropertyChanged();
         }
     }
+
     public int Baudrate { get; set; } = 1000000;
     public bool CustomBaudrateEnabled { get; set; }
     public event Action<ICollectableItem>? ItemNameChanged;
@@ -50,8 +52,9 @@ public class SerialController : ObservableObject, IController
     [JsonIgnore] public bool IsPinned { get; set; }
     [JsonIgnore] public string LocalPath { get; set; }
     public string SerialNumber { get; set; }
-    
+
     private string _firmwareVersion;
+
     /// <summary>
     /// firmware version read from controller
     /// </summary>
@@ -66,6 +69,7 @@ public class SerialController : ObservableObject, IController
     }
 
     private string _hardwareVersion;
+
     /// <summary>
     /// hardware version read from controller
     /// </summary>
@@ -78,26 +82,30 @@ public class SerialController : ObservableObject, IController
             OnPropertyChanged();
         }
     }
+
     public int DashboardWidth { get; set; }
     public int DashboardHeight { get; set; }
+    public double PhysicalWidth { get; set; } = 200;
+    public double PhysicalHeight { get; set; } = 200;
 
     public int HWLVersion { get; set; }
-    public LEDController LedController { get; set; }
+    public LEDController? LedController { get; set; }
     public FanController FanController { get; set; }
 
     public void RegisterLEDController()
     {
-        if(LedController ==null)
+        if (LedController == null)
             return;
         LedController.PropertyChanged += OnControllerPropertyChanged;
     }
 
     public void RegisterFanController()
     {
-        if(FanController ==null)
+        if (FanController == null)
             return;
         FanController.PropertyChanged += OnControllerPropertyChanged;
     }
+
     private void OnControllerPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         OnPropertyChanged(nameof(sender));
@@ -123,11 +131,18 @@ public class SerialController : ObservableObject, IController
         SerialPortChanged?.Invoke();
     }
 
+    public void Sleep()
+    {
+        WorkingStateEnum = ControllerWorkingStateEnum.Sleep;
+        WorkingStateChanged?.Invoke();
+    }
+
     public void EnableTransfer()
     {
         IsTransferActive = true;
         TransferActiveChanged?.Invoke();
     }
+
     /// <summary>
     /// Save controller data to json file
     /// </summary>
@@ -141,8 +156,10 @@ public class SerialController : ObservableObject, IController
             LocalPath = Path.Combine(dbPath, Name + "-" + SerialPort);
             Directory.CreateDirectory(LocalPath);
         }
-        JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath,"controller.json"));
+
+        JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath, "controller.json"));
     }
+
     public Bitmap Thumbnail => LoadFromFile(File.Exists(Path.Combine(resourcePath, Name + ".png"))
         ? Path.Combine(resourcePath, Name + ".png")
         : Path.Combine(resourcePath, HardwareType.ToString() + ".png"));
@@ -156,10 +173,11 @@ public class SerialController : ObservableObject, IController
         {
             fs.CopyTo(memory);
             memory.Seek(0, SeekOrigin.Begin);
-            var bitmap = Bitmap.DecodeToWidth(memory,400);
+            var bitmap = Bitmap.DecodeToWidth(memory, 400);
             return bitmap;
         }
     }
+
     public CollectableItemRepository GetLocalRepository()
     {
         return Ioc.Default.GetRequiredService<SerialControllerRepository>();

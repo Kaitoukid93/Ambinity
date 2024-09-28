@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using AmbinityServer;
 using AmbinityServer.Download;
 using AmbinityServer.OnlineItem;
 using Serilog.Core;
@@ -15,11 +16,13 @@ public class ResourceService
 {
     private string ImagesLocalFolderPath => Path.Combine(Constants.AppDataFolder, "Images");
     private string AmbinityDeviceFolderPath => Path.Combine(Constants.AppDataFolder, "AmbinityDevices");
-    public const string ImageRemotePath = "/home/adrilight_developeruser/ftp/files/Resources/Thumbs";
-    public const string DeviceRemotePath = "/home/adrilight_developeruser/ftp/files/Resources/AmbinityDevices";
+    public string ImageRemotePath;
+    public string DeviceRemotePath;
 
-    public ResourceService(DownloadService downloadService)
+    public ResourceService(AmbinityClient client, DownloadService downloadService)
     {
+        ImageRemotePath = client.HomeAddress + "ftp/files/Resources/Thumbs";
+        DeviceRemotePath = client.HomeAddress + "ftp/files/Resources/AmbinityDevices";
         _downloadService = downloadService;
     }
 

@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Ambinity.Views.Screens.DeviceSettings;
 
-public partial class DeviceAdvanceSettingsView : UserControl
+public partial class AmbinityDeviceDetailView : UserControl
 {
-    public DeviceAdvanceSettingsView()
+    public AmbinityDeviceDetailView()
     {
         InitializeComponent();
     }

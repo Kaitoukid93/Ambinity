@@ -12,6 +12,7 @@ namespace Draw2D.Core.Shapes.Basic;
 public class DeviceVisualizer : ICanvasVisualizerItem
 {
     public event Action ItemUpdated;
+    public event Action RefreshVisualizer;
 
     internal static readonly Dictionary<string, RenderTargetBitmap?> BitmapCache = new();
 
@@ -32,8 +33,14 @@ public class DeviceVisualizer : ICanvasVisualizerItem
     {
         _device = device as AmbinityDevice;
         _device.DeviceUpdate += OnDeviceUpdate;
+        _device.ManualLedUpdate += OnDeviceManualLedUpdate;
         _ledVisualizers = new List<LedVisualizer>();
         SetupForDevice();
+    }
+
+    private void OnDeviceManualLedUpdate()
+    {
+        RefreshVisualizer?.Invoke();
     }
 
     private void OnDeviceUpdate()

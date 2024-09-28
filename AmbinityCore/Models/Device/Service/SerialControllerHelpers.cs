@@ -22,7 +22,7 @@ public class SerialControllerHelpers
     public byte[] GetSettingOutputStream(SerialController controller)
     {
         var ledSettings = controller.LedController.HardwareSettings;
-        var fanSettings = controller.FanController.HardwareSettings;
+        var fanSettings = controller.FanController?.HardwareSettings;
         var outputStream = new byte[48];
         Buffer.BlockCopy(sendCommand, 0, outputStream, 0, sendCommand.Length);
         int counter = sendCommand.Length;
@@ -43,7 +43,12 @@ public class SerialControllerHelpers
         }
 
         outputStream[counter++] = ledSettings.HWL_effectIntensity;
-        outputStream[counter++] = fanSettings.HW_FanSpeed;
+        if (fanSettings != null)
+            outputStream[counter++] = fanSettings.HW_FanSpeed;
+        else
+        {
+            outputStream[counter++] = 0;
+        }
         outputStream[counter++] = ledSettings.HWL_MaxLEDPerOutput;
         return outputStream;
     }
@@ -343,7 +348,7 @@ public class SerialControllerHelpers
                 }
 
                 deviceHardware = Encoding.ASCII.GetString(hw, 0, hw.Length);
-                switch (deviceHardware.Substring(0,2))
+                switch (deviceHardware.Substring(0, 2))
                 {
                     case "AF":
                         hardwareType = HardwareTypeEnum.AmbinoFanHub;
@@ -403,7 +408,7 @@ public class SerialControllerHelpers
         //+----------+---------------------+------------+---------------+
 
         var ledSettings = controller.LedController.HardwareSettings;
-        var fanSettings = controller.FanController.HardwareSettings;
+        var fanSettings = controller.FanController?.HardwareSettings;
         ledSettings.HWL_enable = _serialPort.ReadByte() == 1 ? true : false;
         Log.Information("HWL_enable: " + ledSettings.HWL_enable);
         ledSettings.StatusLEDEnable = _serialPort.ReadByte() == 1 ? true : false;
@@ -433,10 +438,13 @@ public class SerialControllerHelpers
 
         ledSettings.HWL_effectIntensity = (byte)_serialPort.ReadByte();
         Log.Information("HWL_effectIntensity: " + ledSettings.HWL_effectIntensity);
+        if (fanSettings != null)
+        {
+            var noSignalFanSpeed = _serialPort.ReadByte();
+            fanSettings.HW_FanSpeed = noSignalFanSpeed < 20 ? (byte)20 : (byte)noSignalFanSpeed;
+            Log.Information("NoSignalFanSpeed: " + noSignalFanSpeed);
+        }
 
-        var noSignalFanSpeed = _serialPort.ReadByte();
-        fanSettings.HW_FanSpeed = noSignalFanSpeed < 20 ? (byte)20 : (byte)noSignalFanSpeed;
-        Log.Information("NoSignalFanSpeed: " + noSignalFanSpeed);
         ledSettings.HWL_MaxLEDPerOutput = (byte)_serialPort.ReadByte();
         Log.Information("HWL_MaxLEDPerOutput: " + ledSettings.HWL_MaxLEDPerOutput);
     }

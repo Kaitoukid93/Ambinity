@@ -8,6 +8,6 @@ public class ColorPaletteOnlineRepository : OnlineItemRepository
 {
     public ColorPaletteOnlineRepository(AmbinityClient _client) : base(_client)
     {
-        ResourceAddress = "/home/adrilight_developeruser/ftp/files/ColorPalettes";
+        ResourceAddress = _client.HomeAddress+ "/ftp/files/ColorPalettes";
     }
 }

@@ -21,4 +21,16 @@ public abstract class ParameterViewModelBase : ViewModelBase
     /// Description to display
     /// </summary>
     public string Description { get; set; }
+
+    private bool _isEnabled = true;
+
+    public bool IsEnabled
+    {
+        get => _isEnabled;
+        set
+        {
+            _isEnabled = value;
+            OnPropertyChanged();
+        }
+    }
 }

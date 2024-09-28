@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
-using System.Reactive;
 using System.Threading.Tasks;
 using Ambinity.AppResource;
 using Ambinity.Services;
 using Ambinity.Stores;
-using Ambinity.Views;
 using Ambinity.Views.AppTour;
 using Ambinity.Views.Configuration.ColorConfiguration;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
@@ -16,8 +10,6 @@ using Ambinity.Views.Configuration.PositionConfiguration;
 using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Views.NonClientArea;
-using Ambinity.Views.Root;
-using Ambinity.Views.Screens.Dashboard;
 using Ambinity.Views.Screens.DeviceLayout;
 using Ambinity.Views.Screens.DeviceSettings;
 using Ambinity.Views.Screens.ProfileEditor;
@@ -51,7 +43,6 @@ using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Serilog;
-using Serilog.Core;
 using Constants = AmbinityCore.Constants;
 using RootViewModel = Ambinity.Views.Root.RootViewModel;
 
@@ -59,7 +50,6 @@ namespace Ambinity;
 
 public class AmbinityBootStrapper
 {
-    
     #region Properties
 
     private static KnownTypesBinder _knownTypeBinders { get; set; }
@@ -87,7 +77,7 @@ public class AmbinityBootStrapper
         desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         // Show Splash screen
         _windowService = Ioc.Default.GetRequiredService<IWindowService>();
-       _splashViewModel = ShowSplashScreen();
+        _splashViewModel = ShowSplashScreen();
         // Configuring core service
         await ConfigureCoreService(_splashViewModel);
         // Close Splash screen
@@ -134,12 +124,17 @@ public class AmbinityBootStrapper
                 .AddSingleton<IMainWindowService, MainWindowService>()
                 .AddSingleton<IWindowService, WindowService>()
                 .AddSingleton<RootViewModel>()
-                .AddSingleton<DashboardViewModel>()
                 .AddSingleton<GeneralSettingsManager>()
                 .AddSingleton<RootNavigationStores>()
                 .AddSingleton<DeviceSettingsViewModel>()
                 .AddSingleton<DeviceSettingsDashboardViewModel>()
+                .AddSingleton<DeviceFirmwareSettingsViewModel>()
+                .AddSingleton<DeviceHardwareLightingViewModel>()
+                .AddSingleton<DeviceConnectionSettingsViewModel>()
+                .AddSingleton<DevicePortConfigurationViewModel>()
                 .AddSingleton<DeviceSettingsInfoBarViewModel>()
+                .AddSingleton<PortDetailViewModel>()
+                .AddSingleton<AmbinityDeviceViewModelFactory>()
                 .AddSingleton<NonClientAreaContentViewModel>()
                 .AddSingleton<AppTourViewModel>()
                 .AddSingleton<AppTourElementProvider>()
@@ -192,7 +187,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<RightPanelViewModel>()
                 .AddSingleton<ZonePropertiesViewModel>()
                 .AddTransient<LayersView>()
-                
+
                 //profile Decoder
                 .AddSingleton(mainFrameBuffer)
                 .AddSingleton<LightingProfileDecoder>()
@@ -220,11 +215,12 @@ public class AmbinityBootStrapper
                 .AddSingleton<ResourceService>()
                 .AddSingleton<AnimationsRepository>()
                 .AddSingleton<AnimationOnlineRepository>()
-               
+
                 //Server
                 .AddSingleton<AmbinityClient>()
                 .AddSingleton<ThumbnailService>()
                 .AddSingleton<DownloadService>()
+                .AddSingleton<FirmwareService>()
                 .BuildServiceProvider());
     }
 
@@ -253,7 +249,7 @@ public class AmbinityBootStrapper
         var openRGBControllerRepository = Ioc.Default.GetRequiredService<OpenRGBControllerRepository>();
         var ambinityDeviceRepository = Ioc.Default.GetRequiredService<AmbinityDeviceRepository>();
         var ambinityDeviceLayoutRepository = Ioc.Default.GetRequiredService<AmbinityDeviceLayoutRepository>();
-      
+
         splashViewModel.Progress = 5;
         await Task.Run(async () =>
         {
@@ -289,16 +285,17 @@ public class AmbinityBootStrapper
         splashViewModel.Progress = 100;
         //start OpenRGB controller repository
     }
+
     private static void SetupDebugLogging()
     {
         var logPath = Path.Combine(Constants.AppDataFolder, "Logs");
         Log.Logger = new LoggerConfiguration()
             .WriteTo.Console()
-            .WriteTo.File(Path.Combine(logPath, "ambinity-.txt"),rollingInterval: RollingInterval.Day, retainedFileCountLimit: 10, shared: true, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .WriteTo.File(Path.Combine(logPath, "ambinity-.txt"), rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 10, shared: true,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
             .CreateLogger();
 
         Log.Information($"DEBUG logging set up!");
-
     }
-  
 }

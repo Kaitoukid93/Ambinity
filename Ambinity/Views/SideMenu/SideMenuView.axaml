@@ -23,7 +23,7 @@
             <ui:NavigationViewItemSeparator Grid.Row="1" Margin="10,0,10,0"></ui:NavigationViewItemSeparator>
 
             <ScrollViewer Grid.Row="2">
-                <ItemsControl x:Name="categories" Width="200" Margin="10,5,5,10" ItemsSource="{Binding ProfileCategorymenuItems}">
+                <ItemsControl x:Name="categories" Width="200" Margin="10,5,15,10" ItemsSource="{Binding ProfileCategorymenuItems}">
                     <ItemsControl.DataTemplates>
                         <DataTemplate DataType="{x:Type local:SideMenuProfileCategoryViewModel}">
                             <local:SideMenuProfileCategoryView></local:SideMenuProfileCategoryView>

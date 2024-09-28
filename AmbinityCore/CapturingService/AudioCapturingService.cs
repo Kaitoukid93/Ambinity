@@ -20,6 +20,7 @@ public class AudioCapturingService : ICapturingService
     private AudioBuffer _buffer;
     private int _eventCounter;
     private int _activeVisualizerCount;
+    private int _activeBrightnessProviderCount;
     public event Action VisualizerUpdate;
     public List<AudioCaptureBasic> AvalableAudioCaptures => _availableAudioCapture;
 
@@ -149,6 +150,17 @@ public class AudioCapturingService : ICapturingService
             _activeVisualizerCount--;
     }
 
+    public void RegisterBrightnessProvider()
+    {
+        _activeBrightnessProviderCount++;
+    }
+
+    public void UnRegisterBrightnessProvider()
+    {
+        if (_activeBrightnessProviderCount > 0)
+            _activeBrightnessProviderCount--;
+    }
+
     private void Capture(CancellationToken token)
     {
         //init each device
@@ -160,15 +172,22 @@ public class AudioCapturingService : ICapturingService
 
         while (!token.IsCancellationRequested)
         {
-            foreach (var device in _availableAudioCapture)
+            if (_activeBrightnessProviderCount > 0 || _activeVisualizerCount > 0)
             {
-                device.StartBassWasapi();
-                device.Capture();
-            }
+                foreach (var device in _availableAudioCapture)
+                {
+                    device.StartBassWasapi();
+                    device.Capture();
+                }
 
-            if (_activeVisualizerCount > 0)
-                VisualizerUpdate?.Invoke();
-            Thread.Sleep(1000 / 40);
+                if (_activeVisualizerCount > 0)
+                    VisualizerUpdate?.Invoke();
+                Thread.Sleep(1000 / 40);
+            }
+            else
+            {
+                Thread.Sleep(1000);
+            }
         }
     }
 

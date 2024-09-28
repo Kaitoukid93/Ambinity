@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:DataType="local:PortDetailViewModel"
+             x:Class="Ambinity.Views.Screens.DeviceSettings.PortDetailView">
+    <ScrollViewer IsScrollInertiaEnabled="True">
+        <StackPanel Spacing="4">
+            <TextBlock Text="{Binding Name}" FontSize="20" Margin="0,0,0,10" FontWeight="SemiBold"></TextBlock>
+            <ContentControl Margin="0,10" Content="{Binding DetailViewModel}"></ContentControl>
+            <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}" Height="1"></Separator>
+            <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}"  Margin="0,0" Grid.Row="1" Header="Enable"
+                                 Description="Disable this output will turn off all Leds attached"
+                                 IsClickEnabled="False">
+                <ui:SettingsExpander.IconSource>
+                    <ui:PathIconSource Data="{DynamicResource 'disable'}"></ui:PathIconSource>
+                </ui:SettingsExpander.IconSource>
+                <ui:SettingsExpander.Footer>
+                    <ToggleSwitch></ToggleSwitch>
+                </ui:SettingsExpander.Footer>
+            </ui:SettingsExpander>
+            <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}"  Height="1"></Separator>
+            <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0" Grid.Row="1" Header="Brightness limit"
+
+                                 Description="Set brightness limit to prevent overloading"
+                                 IsClickEnabled="False">
+                <ui:SettingsExpander.IconSource>
+                    <ui:PathIconSource Data="{DynamicResource 'brightness'}"></ui:PathIconSource>
+                </ui:SettingsExpander.IconSource>
+                <ui:SettingsExpander.Footer>
+                    <Slider IsSnapToTickEnabled="True" TickFrequency="1"
+                            Margin="0" Width="160" Value="50" Minimum="0" Maximum="100">
+                    </Slider>
+                </ui:SettingsExpander.Footer>
+            </ui:SettingsExpander>
+        </StackPanel>
+    </ScrollViewer>
+   
+  
+</UserControl>

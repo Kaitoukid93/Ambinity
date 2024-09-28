@@ -17,6 +17,7 @@
                 <ResourceInclude Source="/Views/GeometryCollection/GeometryCollection.axaml" />
                 <ResourceInclude Source="/Views/Generic.axaml"></ResourceInclude>
                 <ResourceInclude Source="/ControlTheme/StriplessListbox.axaml"></ResourceInclude>
+                <ResourceInclude Source="/ControlTheme/TransparrentSettingsExpander.axaml"></ResourceInclude>
                 <ResourceDictionary>
                     <converters:StaticResourceConverter x:Key="ResourceConverter" />
                 </ResourceDictionary>

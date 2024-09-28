@@ -98,9 +98,10 @@
 
         <TextBlock TextTrimming="CharacterEllipsis" Grid.Column="1" Padding="0 6,0,6"
                    Classes="smallBold"
+                   ToolTip.Tip="{Binding Content}"
                    Classes.playing-foreGround="{CompiledBinding IsPlaying}"
                    HorizontalAlignment="Left"
-                   Text="{CompiledBinding Content, FallbackValue='New Category'}">
+                   Text="{CompiledBinding Content, FallbackValue='No Name'}">
         </TextBlock>
 
         <Grid Column="3" HorizontalAlignment="Right" ColumnDefinitions="Auto,*">

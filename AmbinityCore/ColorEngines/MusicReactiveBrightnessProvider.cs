@@ -15,15 +15,11 @@ public class MusicReactiveBrightnessProvider : IBrightnessProvider
     private AudioCapturingService _capturingService;
     private bool _isActivated;
     private int _deviceID;
-    private FrameBuffer _frameBuffer;
-    private CancellationTokenSource? _cancellationTokenSource;
-    private int _userCount;
-    public event Action<byte[]> DataUpdate;
     private Thread? _workerThread;
     private bool _isActivating;
-    private AudioBuffer _buffer;
-    private byte[] _internalBuffer;
-    private MusicReactiveMotionConfiguration _configuration;
+    private readonly AudioBuffer _buffer;
+    private readonly byte[] _internalBuffer;
+    private readonly MusicReactiveMotionConfiguration _configuration;
     private int[] _frequencyRange;
     private byte[] _soundData;
     private int _blackFrameCounter;
@@ -42,7 +38,6 @@ public class MusicReactiveBrightnessProvider : IBrightnessProvider
         _deviceID = _configuration.UseDefaultDevice ? _capturingService.DefaultDeviceID : _configuration.AudioDevice.ID;
         _buffer = _capturingService.Buffer;
         _internalBuffer = new byte[32];
-        _frameBuffer = new FrameBuffer(32, 1); // each frame represent current audio data across the frequencies
         OnFrequencyRangeUpdate();
         OnVisualizerStyleUpdate();
         OnNoSoundBehaviorUpdate();
@@ -65,12 +60,13 @@ public class MusicReactiveBrightnessProvider : IBrightnessProvider
 
     public void Activate()
     {
+        _capturingService.RegisterBrightnessProvider();
     }
 
 
     public void Deactivate()
     {
-        //_bassAudioInput.DataAvailable -= OnNewDataReceived;
+        _capturingService.UnRegisterBrightnessProvider();
     }
 
     public void Init(IMotionConfiguration config)
@@ -197,5 +193,10 @@ public class MusicReactiveBrightnessProvider : IBrightnessProvider
                 VUMeterManipulation(reusableArray, currentBrightnessLevel);
                 break;
         }
+    }
+
+    public void Dispose()
+    {
+        Deactivate();
     }
 }

@@ -1,0 +1,102 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
+             xmlns:device="clr-namespace:AmbinityCore.Models.Device;assembly=AmbinityCore"
+             x:DataType="local:DevicePortConfigurationViewModel"
+             x:Class="Ambinity.Views.Screens.DeviceSettings.DevicePortConfigurationView">
+    <UserControl.Styles>
+        <Style Selector="Rectangle.port">
+            <Setter Property="StrokeThickness" Value="0"></Setter>
+        </Style>
+        <Style Selector="Rectangle.port.selected">
+            <Setter Property="Stroke" Value="{DynamicResource AccentButtonBackground}"></Setter>
+            <Setter Property="StrokeThickness" Value="2"></Setter>
+        </Style>
+
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,10,*">
+        <Grid>
+            <TextBlock Classes="smallBold" Text="Port Configuration"></TextBlock>
+        </Grid>
+
+        <Grid Row="2" ColumnDefinitions="Auto,5,500,5,*">
+            <Grid Column="0">
+                <Border Classes="card">
+                    <ScrollViewer IsScrollInertiaEnabled="True">
+                        <ItemsControl ItemsSource="{Binding Outputs}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:DevicePortListView></local:DevicePortListView>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+
+            </Grid>
+
+            <Grid Column="2">
+                <Border Classes="card">
+                    <ContentControl Content="{Binding PortDetailViewModel}"></ContentControl>
+                </Border>
+
+            </Grid>
+
+            <Grid Column="4">
+                <Border Classes="card">
+                      <Viewbox Margin="0" MaxWidth="{Binding Controller.PhysicalWidth}"
+                         MaxHeight="{Binding Controller.PhysicalHeight}" HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch" Stretch="Uniform">
+                    <Grid>
+                        <Image Height="{Binding Controller.PhysicalHeight}"
+                               Width="{Binding Controller.PhysicalWidth}"
+                               Stretch="Uniform"
+                               Source="{Binding Controller.Thumbnail}">
+                        </Image>
+                        <ItemsControl ItemsSource="{Binding Outputs}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas Width="{Binding Controller.PhysicalWidth}"
+                                            Height="{Binding Controller.PhysicalHeight}">
+                                    </Canvas>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.Styles>
+                                <Style x:DataType="local:DevicePortViewModel"
+                                       Selector="ItemsControl > ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding Output.OutputPosition.Left}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Output.OutputPosition.Top}" />
+                                </Style>
+                            </ItemsControl.Styles>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type local:DevicePortViewModel}">
+                                    <Rectangle Classes="port" Classes.selected="{Binding IsSelected}"
+                                               Width="{Binding Output.OutputPosition.Width}"
+                                               Height="{Binding Output.OutputPosition.Height}">
+                                    </Rectangle>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Path VerticalAlignment="Center" HorizontalAlignment="Center"
+                              Data="{Binding CurrentGeometry}">
+                            <Path.Fill>
+                                <SolidColorBrush Color="Black" Opacity="0.75"></SolidColorBrush>
+                            </Path.Fill>
+                        </Path>
+                    </Grid>
+                </Viewbox>
+                </Border>
+              
+            </Grid>
+
+
+        </Grid>
+
+    </Grid>
+
+
+</UserControl>

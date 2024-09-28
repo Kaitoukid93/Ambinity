@@ -8,6 +8,7 @@ namespace AmbinityCore.LightingEngines;
 public class BrightnessProviderFactory
 {
     public event Action DefaultDeviceChanged;
+
     public BrightnessProviderFactory(AudioCapturingService capturingService)
     {
         _capturingService = capturingService;
@@ -20,11 +21,10 @@ public class BrightnessProviderFactory
     }
 
     private AudioCapturingService _capturingService;
+
     private MusicReactiveBrightnessProvider GetMusicBrightnessProvider(IMotionConfiguration config)
     {
-        var brightnessProvider =
-            new MusicReactiveBrightnessProvider(config,_capturingService);
-       // musicReactiveBrightnessProviderMap.Add(ID, brightnessProvider);
+        var brightnessProvider = new MusicReactiveBrightnessProvider(config, _capturingService);
         brightnessProvider.Activate();
         return brightnessProvider;
     }
@@ -37,7 +37,7 @@ public class BrightnessProviderFactory
                 return new BreathingBrightnessProvider(configuration);
             //to reduce cpu usage, all music reactive using same device share the same brightness provider
             case MotionTypeEnum.MusicReactive:
-                    return GetMusicBrightnessProvider(configuration);
+                return GetMusicBrightnessProvider(configuration);
             case MotionTypeEnum.None:
                 return new StaticBrightnessProvider();
             default: return null;

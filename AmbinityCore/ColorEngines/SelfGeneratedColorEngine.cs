@@ -244,6 +244,7 @@ public class SelfGeneratedColorEngine : IColorEngine
         _config.ApperanceUpdated -= UpdatePixelsData;
         _config.MotionConfigUpdated -= UpdateMotionConfig;
         _brightnessProviderFactory.DefaultDeviceChanged -= UpdateBrightnessProvider;
+        _brightnessProvider.Deactivate();
         _deviceRepository.NewDevicesAdded -= OnNewDeviceAdded;
         _motionConfig.Update -= UpdateBrightnessProvider;
         IsDisposed = true;

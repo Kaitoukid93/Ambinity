@@ -3,6 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local = "clr-namespace:Ambinity.Windows"
+             x:DataType="local:DownloadDialogViewModel"
              x:Class="Ambinity.Windows.DownloadDialogContent">
-    Welcome to Avalonia!
+    <StackPanel Spacing="5">
+        <ProgressBar  Value="{Binding Progress}"></ProgressBar>
+        <TextBlock HorizontalAlignment="Left" Text="{Binding Description}" MaxWidth="200" TextTrimming="CharacterEllipsis" Classes="smallSecondary"></TextBlock>
+    </StackPanel>
+ 
 </UserControl>

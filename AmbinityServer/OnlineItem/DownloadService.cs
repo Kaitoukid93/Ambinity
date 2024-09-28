@@ -67,4 +67,29 @@ public class DownloadService
         }
         await _sftpServer.DownloadDirectory(remotePath, localPath, progress);
     }
+    /// <summary>
+    /// download first item from directory with specific name
+    /// </summary>
+    /// <param name="remotePath"></param>
+    /// <param name="localPath"></param>
+    /// <param name="progress"></param>
+    public async Task<string> DownloadItemWithName(string directory,string name, string localDirectory, IProgress<DownloadProgress> progress)
+    {
+        IsDownloading = true;
+        if (!_isInit)
+        {
+            var result = await Init();
+            if(!result)
+                return null;
+        }
+
+        var file = await _sftpServer.GetFileByNameMatching(name, directory);
+        if (file != null)
+        {
+             _sftpServer.DownloadFile(file.FullName, Path.Combine(localDirectory,file.Name));
+             return Path.Combine(localDirectory, file.Name);
+        }
+
+        return null;
+    }
 }

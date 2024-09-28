@@ -19,6 +19,7 @@ public class ColorPalette : FillColorBase, ICollectableItem
     [JsonIgnore] public bool IsEditing { get; set; }
     [JsonIgnore] public bool IsChecked { get; set; }
     [JsonIgnore] public bool IsPinned { get; set; }
+
     public CollectableItemRepository GetLocalRepository()
     {
         return Ioc.Default.GetRequiredService<ColorPaletteRepository>();
@@ -29,19 +30,21 @@ public class ColorPalette : FillColorBase, ICollectableItem
         //todo make online repo for color palette
         return null;
     }
-    
+
     public string LocalPath { get; set; }
     public Color[] Colors { get; set; }
-    public override List<Brush>  GetBrush()
+
+    public override List<Brush> GetBrush()
     {
         var brushes = new List<Brush>();
         foreach (var color in Colors)
         {
-            brushes.Add(new SolidColorBrush(color)); 
+            brushes.Add(new SolidColorBrush(color));
         }
 
         return brushes;
     }
+
     public ColorPalette(string name, Color[] colors)
     {
         Colors = colors;
@@ -50,6 +53,11 @@ public class ColorPalette : FillColorBase, ICollectableItem
 
     public ColorPalette()
     {
+    }
+
+    public ColorPalette(Color[] colors)
+    {
+        Colors = colors;
     }
 
     public void Save()
@@ -62,6 +70,27 @@ public class ColorPalette : FillColorBase, ICollectableItem
             LocalPath = Path.Combine(dbPath, Name);
             Directory.CreateDirectory(LocalPath);
         }
-        JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath,"config.json"),new HexColorConverter());
+
+        JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath, "config.json"), new HexColorConverter());
+    }
+    public Color[] Resize(int numColor)
+    {
+        int w1 = Colors.Length;
+        int w2 = numColor;
+        Color[] temp = new Color[8];
+        int x_ratio = (int)((w1 << 16) / w2) + 1;
+        int y_ratio = 1;
+        int x2, y2;
+        for (int i = 0; i < 1; i++)
+        {
+            for (int j = 0; j < w2; j++)
+            {
+                x2 = ((j * x_ratio) >> 16);
+                y2 = ((i * y_ratio) >> 16);
+                temp[(i * w2) + j] = Colors[(y2 * w1) + x2];
+            }
+        }
+
+        return temp;
     }
 }

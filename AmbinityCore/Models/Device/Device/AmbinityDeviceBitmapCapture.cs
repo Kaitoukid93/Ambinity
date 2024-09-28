@@ -64,13 +64,14 @@ public class AmbinityDeviceBitmapCapture
                                 r,
                                 g,
                                 b,
-                                out var RealfinalR,
-                                out var RealfinalG,
-                                out var RealfinalB,
+                                out var R,
+                                out var G,
+                                out var B,
                                 led.LED.Red,
                                 led.LED.Green,
                                 led.LED.Blue);
-                            led.LED.SetColor(RealfinalR, RealfinalG, RealfinalB, false);
+                            if(!_device.IsIdentifying)
+                            led.LED.SetColor(R, G, B, false);
                         }
                     }
                 }

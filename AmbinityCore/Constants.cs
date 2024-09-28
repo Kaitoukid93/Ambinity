@@ -14,5 +14,7 @@ public static class Constants
 
     public static readonly string GeneralSettingsFilePath = Path.Combine(AppDataFolder, "config.json");
     public static readonly string CacheFolderPath = Path.Combine(AppDataFolder, "Cache");
+    public static readonly string ToolsFolderPath = Path.Combine(AppDataFolder, "Tools");
+
     #endregion
 }

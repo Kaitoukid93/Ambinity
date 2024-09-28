@@ -1,11 +1,7 @@
 using System.Buffers;
 using System.Diagnostics;
 using System.IO.Ports;
-using adrilight_shared.Models.Device.SlaveDevice;
-using adrilight_shared.Models.Device.Zone;
-using adrilight_shared.Models.Device.Zone.Spot;
 using AmbinityCore.Enums;
-using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Device.LED;
 using Serilog;
@@ -15,7 +11,6 @@ namespace AmbinityCore.DataStream;
 internal sealed class SerialStream : IDisposable, IDataStream
 {
     public event Action<IController> ControllerDisconnected;
-    private byte[] testBuffer = new byte[1216];
 
     public SerialStream(IController controller)
     {
@@ -32,7 +27,7 @@ internal sealed class SerialStream : IDisposable, IDataStream
     }
 
     //Dependency Injection//
-    public IController Controller { get; set; }
+    public IController? Controller { get; set; }
     public string ID { get; set; }
 
     private void DeviceStateChanged()
@@ -167,7 +162,8 @@ internal sealed class SerialStream : IDisposable, IDataStream
                         ambinityDevice.RedScale, ambinityDevice.GreenScale,
                         ambinityDevice.BlueScale,
                         out byte FinalR, out byte FinalG, out byte FinalB);
-                    ReOrderSpotColor(rgbOrder, led.LED.Red, led.LED.Green, led.LED.Blue, out byte r, out byte g, out byte b);
+                    ReOrderSpotColor(rgbOrder, led.LED.Red, led.LED.Green, led.LED.Blue, out byte r, out byte g,
+                        out byte b);
                     //get data
                     outputStream[counter + led.Index * 3 + 0] = r;
 
@@ -308,7 +304,7 @@ internal sealed class SerialStream : IDisposable, IDataStream
                 // if (Controller.HardwareType == HardwareTypeEnum.AmbinoHUBV2)
                 //     fastLedTime = ((192) / 3.0 * 0.030d);
                 // else
-                    fastLedTime = ((bufferLength - _messagePreamble.Length - 6) / 3.0 * 0.030d);
+                fastLedTime = ((bufferLength - _messagePreamble.Length - 6) / 3.0 * 0.030d);
                 var serialTransferTime = bufferLength * 10.0 * 1000.0 / baudRate;
                 var minTimespan = (byte)(fastLedTime + serialTransferTime + 1);
                 sw.Stop();

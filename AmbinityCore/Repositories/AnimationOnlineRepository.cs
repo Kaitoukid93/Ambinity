@@ -6,6 +6,6 @@ public class AnimationOnlineRepository : OnlineItemRepository
 {
     public AnimationOnlineRepository(AmbinityClient _client) : base(_client)
     {
-        ResourceAddress = "/home/adrilight_developeruser/ftp/files/Animations";
+        ResourceAddress = _client.HomeAddress+ "/ftp/files/Animations";
     }
 }

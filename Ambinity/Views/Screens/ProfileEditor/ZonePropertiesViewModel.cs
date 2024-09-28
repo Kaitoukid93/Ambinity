@@ -26,31 +26,34 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         var selectedItems = _canvasViewModel.Canvas.Selection.All;
         if (selectedItems.Count == 0)
         {
+            _zone = null;
             DisableEdit();
             Header = NullHeader();
             //clear view
         }
         else if (selectedItems.Count == 1)
         {
-           
             var fig = selectedItems.First();
-            if(fig is not ContainerFigure)
+            if (fig is not ContainerFigure)
+                return;
+            var zone = (fig as LightingZoneFigure)?.ChildItem as LightingZone;
+            if (_zone == zone)
                 return;
             fig.PositionPropertyChanged += OnItemPositionChanged;
-            var zone = (fig as LightingZoneFigure)?.ChildItem as LightingZone;
+
             if (zone == null)
                 return;
-            if(!fig.IsResizable)
+            if (!fig.IsResizable)
             {
                 PositionConfiguration.IsEnabled = false;
             }
-               
+
             else
             {
-                
                 EnableEdit();
                 PositionConfiguration.Init(zone);
             }
+
             _zone = zone;
             //show full view
             ColorConfiguration?.Dispose();
@@ -59,6 +62,7 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         }
         else
         {
+            _zone = null;
             Header = MultipleSelectedHeader(selectedItems.Count);
             DisableEdit();
         }
@@ -81,10 +85,12 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         ColorConfiguration?.Dispose();
         ColorConfiguration = new NullColorConfigurationViewModel();
     }
+
     public override void EnableEdit()
     {
         PositionConfiguration.IsEnabled = true;
     }
+
     public PositionConfigurationViewModel PositionConfiguration
     {
         get => _positionConfiguration;
@@ -121,7 +127,8 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
 
     private ConfigurationHeaderViewModel GetHeader(ILightingConfiguration config)
     {
-        var header = new ConfigurationHeaderViewModel(_zone.Shape.ToString() + " - " + _zone.LightingConfiguration.Name, _zone.Icon);
+        var header = new ConfigurationHeaderViewModel(_zone.Shape.ToString() + " - " + _zone.LightingConfiguration.Name,
+            _zone.Icon);
         return header;
     }
 

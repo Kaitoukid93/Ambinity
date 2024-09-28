@@ -126,7 +126,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
     /// Init a new canvas with <param name="canvasSize"></param>
     /// </summary>
     /// <param name="canvasSize"></param>
-    public void Init(Size canvasSize, bool enableSelection = true)
+    public void Init(Size canvasSize, bool enableSelection = true, bool enableRegionSelection = false)
     {
         if (Canvas == null)
         {
@@ -150,8 +150,10 @@ public class Draw2DCanvasViewModel : ViewModelBase
                 SelectionChanged?.Invoke();
                 SelectionCount = ((ICanvas)sender).Selection.All.Count();
             };
-            if(enableSelection)
-            Canvas.InstallEditPolicy(new BoundingBoxSelectionPolicy());
+            if (enableSelection)
+                Canvas.InstallEditPolicy(new BoundingBoxSelectionPolicy());
+            if (enableRegionSelection)
+                Canvas.InstallEditPolicy(new RegionSelectionPolicy());
             // get all device that is in global lighting mode?
 
             Canvas?.InstallEditPolicy(_snapGridPolicy);

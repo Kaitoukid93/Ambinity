@@ -43,4 +43,13 @@ public abstract class ColorConfigurationViewModelBase : ViewModelBase
             OnPropertyChanged();
         }
     }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        foreach (var param in Parameters)
+        {
+            param.Dispose();
+        }
+    }
 }

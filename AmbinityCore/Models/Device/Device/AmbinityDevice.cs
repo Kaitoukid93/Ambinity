@@ -24,6 +24,7 @@ namespace AmbinityCore.Models.Device;
 public class AmbinityDevice : ObservableObject, IPositionAware
 {
     public event Action DeviceUpdate;
+    public event Action ManualLedUpdate;
     public event Action<Rect> TryUpdateEvent;
 
     public AmbinityDevice(float scale = 0.25f)
@@ -31,11 +32,12 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         Scale = scale;
         Leds = new ObservableCollection<AmbinityLED>();
     }
+
     public AmbinityDevice()
     {
-       
         Leds = new ObservableCollection<AmbinityLED>();
     }
+
     /// <summary>
     /// Construct new Ambinity device from existed layout and predefined scale
     /// </summary>
@@ -48,7 +50,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         Scale = scale;
         LoadLayout();
     }
-    
+
     private string _deviceName = "New Slave Device";
 
     /// <summary>
@@ -113,10 +115,12 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     {
         return Name;
     }
+
     public Color? GetDisplayColor()
     {
         return Avalonia.Media.Colors.White;
     }
+
     public string Icon => "slaveDevice";
     public string Name => _deviceName;
 
@@ -129,6 +133,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         get => _isSelectable;
         set => SetProperty(ref _isSelectable, value);
     }
+
     /// <summary>
     /// Device can or can not be selected on the canvas
     /// </summary>
@@ -138,6 +143,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         get => _isSelected;
         set => SetProperty(ref _isSelected, value);
     }
+
     /// <summary>
     /// Device can or can not be deleted from the canvas
     /// </summary>
@@ -329,7 +335,6 @@ public class AmbinityDevice : ObservableObject, IPositionAware
             UpdateSizeByChild(false);
             DeviceUpdate?.Invoke();
         }
-        
     }
 
     public void SetRotation(float angle)
@@ -341,7 +346,6 @@ public class AmbinityDevice : ObservableObject, IPositionAware
             UpdateSizeByChild(false);
             DeviceUpdate?.Invoke();
         }
-       
     }
 
     public void TransformLeds()
@@ -362,8 +366,8 @@ public class AmbinityDevice : ObservableObject, IPositionAware
             Layout.ApplyToDevice(this);
             DeviceUpdate?.Invoke();
         }
-     
     }
+
     public void LoadLayout(AmbinityDeviceLayout layout)
     {
         lock (Lock)
@@ -372,6 +376,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
             DeviceUpdate?.Invoke();
         }
     }
+
     /// <summary>
     /// Force device to move to specific position
     /// </summary>
@@ -398,6 +403,62 @@ public class AmbinityDevice : ObservableObject, IPositionAware
             X = (float)newBound.Left;
             Y = (float)newBound.Top;
         }
+    }
+
+    [JsonIgnore] public bool IsIdentifying { get; set; }
+
+    public async Task Ping()
+    {
+        IsIdentifying = true;
+        foreach (var led in Leds)
+        {
+            led.LED.SetColor(255, 0, 0, false);
+        }
+
+        await Task.Delay(100);
+        foreach (var led in Leds)
+        {
+            led.LED.SetColor(0, 0, 0, false);
+            ManualLedUpdate?.Invoke();
+        }
+        await Task.Delay(100);
+        foreach (var led in Leds)
+        {
+            
+            led.LED.SetColor(255, 0, 0, false);
+            ManualLedUpdate?.Invoke();
+        }
+        await Task.Delay(100);
+        foreach (var led in Leds)
+        {
+            led.LED.SetColor(0, 0, 0, false);
+            ManualLedUpdate?.Invoke();
+        }
+        // await Task.Delay(500);
+        // foreach (var led in Leds)
+        // {
+        //     led.LED.SetColor(0, 0, 255, false);
+        // }
+        //
+        // await Task.Delay(500);
+        IsIdentifying = false;
+    }
+
+    public async Task OrderCheck()
+    {
+        IsIdentifying = true;
+        foreach (var led in Leds.OrderBy(i=>i.Index).ToList())
+        {
+            led.LED.SetColor(255, 0, 0, false);
+            ManualLedUpdate?.Invoke();
+            await Task.Delay(100);
+        }
+        foreach (var led in Leds)
+        {
+            led.LED.SetColor(0, 0, 0, false);
+            ManualLedUpdate?.Invoke();
+        }
+        IsIdentifying = false;
     }
 
     #endregion

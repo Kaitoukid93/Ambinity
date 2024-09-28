@@ -112,7 +112,7 @@
     <Style Selector="Button.danger">
         <Setter Property="Background" Value="#D64848"></Setter>
     </Style>
-    
+
     <!-- <Style Selector="Button.danger:pointerover"> -->
     <!--     <Style Selector="^ /template/ controls|FABorder#Root"> -->
     <!--         <Setter Property="Background" Value="#D65757"/> -->
