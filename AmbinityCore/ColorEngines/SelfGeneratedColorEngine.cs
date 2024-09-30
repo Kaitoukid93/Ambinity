@@ -40,7 +40,7 @@ public class SelfGeneratedColorEngine : IColorEngine
         _deviceRepository = deviceRepository;
         _brightnessProviderFactory = brightnessProviderFactory;
         _brightnessProviderFactory.DefaultDeviceChanged += UpdateBrightnessProvider;
-        _deviceRepository.NewDevicesAdded += OnNewDeviceAdded;
+        _deviceRepository.DevicesListUpdated += OnDeviceListUpdated;
         _buffer = buffer;
         _lineList = new List<Point[]>();
         _colorBank = new Color[1024];
@@ -57,7 +57,7 @@ public class SelfGeneratedColorEngine : IColorEngine
         }
     }
 
-    private void OnNewDeviceAdded()
+    private void OnDeviceListUpdated()
     {
         UpdatePixelsData();
     }
@@ -245,7 +245,7 @@ public class SelfGeneratedColorEngine : IColorEngine
         _config.MotionConfigUpdated -= UpdateMotionConfig;
         _brightnessProviderFactory.DefaultDeviceChanged -= UpdateBrightnessProvider;
         _brightnessProvider.Deactivate();
-        _deviceRepository.NewDevicesAdded -= OnNewDeviceAdded;
+        _deviceRepository.DevicesListUpdated -= OnDeviceListUpdated;
         _motionConfig.Update -= UpdateBrightnessProvider;
         IsDisposed = true;
         GC.Collect();

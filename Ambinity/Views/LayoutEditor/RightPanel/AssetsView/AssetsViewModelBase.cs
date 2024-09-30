@@ -53,7 +53,8 @@ public abstract class AssetsViewModelBase : ViewModelBase
             OnPropertyChanged();
         }
     }
-
+    
+    
     private CollectableItemRepository _localRerpository;
     private OnlineItemRepository _onlineItemRepository;
     private ObservableCollection<AssetItemViewModelBase> _availableAssets;

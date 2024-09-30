@@ -72,10 +72,11 @@ namespace AmbinityCore.Models.Device;
             }
          
             var pen = new Pen(strokeBrush, thickness, DashStyle);
+            var immutablePen = pen.ToImmutable();
             Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
             dc.PushTransform(translate);
             if(IsSelectable)
-            dc.DrawRectangle(fillBrush, pen,
+            dc.DrawRectangle(fillBrush, immutablePen,
                 new Rect(new Point(X, Y), new Size(Width, Height)));
 
             // dc.Pop();

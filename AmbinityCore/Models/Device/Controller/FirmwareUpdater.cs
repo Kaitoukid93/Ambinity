@@ -40,7 +40,7 @@ public class FirmwareUpdater
         catch (Exception ex)
         {
             Log.Error(ex.ToString());
-            return false;
+            // return false;
         }
 
         Thread.Sleep(1000);
@@ -69,7 +69,7 @@ public class FirmwareUpdater
 
         else if (firmwareInformation.Tool == "RPI")
         {
-            Copyuf2Fw(fwPath, progress);
+            await Task.Run(() => CopyUf2Fw(fwPath, progress));
         }
     }
 
@@ -109,17 +109,13 @@ public class FirmwareUpdater
             if (e.Data.Contains("[2K")) //clear current line
             {
                 _currentProgress++;
-                var percent = _currentProgress * 100 / 308;
-
-                if (percent <= 80)
-                    progress.Report(new ProgressInformation("Flashing...", percent));
-                else
-                    progress.Report(new ProgressInformation("Almost done...", percent));
+                var percent = _currentProgress * 80 / 308;
+                progress.Report(new ProgressInformation("Flashing...", percent));
             }
             else
             {
                 _fwUpdateLog += Environment.NewLine + e.Data;
-                progress.Report(new ProgressInformation(e.Data, 0));
+               // progress.Report(new ProgressInformation(e.Data, 0));
                 Log.Information(e.Data);
             }
         }
@@ -141,7 +137,7 @@ public class FirmwareUpdater
         }
     }
 
-    private void Copyuf2Fw(string fwPath, IProgress<ProgressInformation> progress = null)
+    private async Task CopyUf2Fw(string fwPath, IProgress<ProgressInformation> progress = null)
     {
         progress?.Report(new ProgressInformation("Flashing uf2...", 0));
         var drive = DriveInfo.GetDrives().Where(drv => drv.VolumeLabel == "RPI-RP2").FirstOrDefault();
@@ -154,6 +150,7 @@ public class FirmwareUpdater
         string target = drive.RootDirectory.ToString();
         try
         {
+            progress?.Report(new ProgressInformation("Flashing uf2...", 50));
             File.Copy(fwPath, Path.Combine(target, Path.GetFileName(fwPath)));
         }
         catch (Exception ex)

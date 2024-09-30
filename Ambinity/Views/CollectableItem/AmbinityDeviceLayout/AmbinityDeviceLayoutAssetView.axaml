@@ -19,9 +19,9 @@
                     </TextBlock>
                 </Grid>
                 <Grid Grid.Row="3">
-                    <Button Command="{CompiledBinding ApplyLayoutCommand}" CornerRadius="3" Padding="5,3" IsVisible="{Binding !IsLocalExisted}" Margin="5,5" HorizontalAlignment="Right" Classes="chip">
+                    <Button Command="{CompiledBinding SelectItemCommand}" CornerRadius="3" Padding="5,3" IsVisible="{Binding !IsLocalExisted}" Margin="5,5" HorizontalAlignment="Right" Classes="chip">
                         <Grid ColumnDefinitions="Auto,*">
-                            <PathIcon Margin="0,0,5,0" Width="12" Height="10" Data="{DynamicResource ledsetup}"></PathIcon>
+                            <PathIcon Margin="0,0,5,0" Width="12" Height="10" Data="{DynamicResource checkBold}"></PathIcon>
                             <TextBlock Margin="0,0,0,2" Grid.Column="1" FontSize="12" Text="Apply to device"></TextBlock>
                         </Grid>
                     </Button>

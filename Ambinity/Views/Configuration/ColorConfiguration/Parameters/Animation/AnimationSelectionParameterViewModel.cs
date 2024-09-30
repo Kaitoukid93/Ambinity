@@ -20,12 +20,12 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
     private AnimationConfiguration _configuration;
     private readonly LibraryViewModelFactory _libraryViewModelFactory;
     private LibraryViewModelBase _libraryViewModel;
-    private RightPanelViewModel _rightPanelViewModel;
+    private ProfileEditorRightPanelViewModel _rightPanelViewModel;
     private readonly IWindowService _windowService;
     private readonly AnimationsRepository _repository;
 
     public AnimationSelectionParameterViewModel(AnimationConfiguration configuration,
-        RightPanelViewModel rightPanelViewModel,
+        ProfileEditorRightPanelViewModel rightPanelViewModel,
         LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService,AnimationsRepository repository)
     {
         _windowService = windowService;

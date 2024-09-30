@@ -143,6 +143,17 @@ public class SerialController : ObservableObject, IController
         TransferActiveChanged?.Invoke();
     }
 
+    public void TurnOff()
+    {
+        WorkingStateEnum = ControllerWorkingStateEnum.Off;
+        WorkingStateChanged?.Invoke();
+    }
+
+    public void TurnOn()
+    {
+        WorkingStateEnum = ControllerWorkingStateEnum.Normal;
+        WorkingStateChanged?.Invoke();
+    }
     /// <summary>
     /// Save controller data to json file
     /// </summary>

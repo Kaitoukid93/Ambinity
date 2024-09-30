@@ -11,8 +11,19 @@ public class DevicePortViewModel : ViewModelBase
         Content = output.Device.Name;
         Icon = output.Device.Icon;
         Output = output;
+        _device = output.Device;
+        _device.DeviceUpdate += OnDeviceUpdated;
     }
 
+    private void OnDeviceUpdated()
+    {
+        Content = _device.Name;
+        Icon = _device.Icon;
+        OnPropertyChanged(nameof(Icon));
+        OnPropertyChanged(nameof(Content));
+    }
+
+    private AmbinityDevice _device;
     public LEDOutput Output { get; set; }
     public event Action<DevicePortViewModel, bool> Selected;
     public string Content { get; set; }

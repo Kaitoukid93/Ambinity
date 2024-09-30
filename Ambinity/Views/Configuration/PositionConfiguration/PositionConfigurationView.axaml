@@ -34,17 +34,23 @@
     </UserControl.Styles>
     <Grid IsEnabled="{Binding IsEnabled}" MinWidth="300" RowDefinitions="Auto,*">
         <Grid>
-            <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
-                       Text="Dimensions">
-            </TextBlock>
-            <Button Click="InfoButton_OnClick"  x:Name="infoButton" Background="Transparent" BorderThickness="0" Classes="icon-button-small" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8">
-                <PathIcon Width="15" Height="15" Data="{DynamicResource infoCircle}"></PathIcon>
-            </Button>
-            <ui:TeachingTip x:Name="infoTip" 
-                            Target="{Binding #infoButton}"
-                            Title="Dimension"
-                            Subtitle="Only device can have scale and rotation property">
-            </ui:TeachingTip>
+            <StackPanel Margin="0,8" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
+                <TextBlock  VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
+                           Text="Dimensions">
+                </TextBlock>
+                <Grid>
+                    <Button Click="InfoButton_OnClick"  x:Name="infoButton" Background="Transparent" BorderThickness="0" Classes="icon-button-small" >
+                        <PathIcon Width="15" Height="15" Data="{DynamicResource infoCircle}"></PathIcon>
+                    </Button>
+                    <ui:TeachingTip x:Name="infoTip" 
+                                    Target="{Binding #infoButton}"
+                                    Title="Dimension"
+                                    Subtitle="Only device can have scale and rotation property">
+                    </ui:TeachingTip>
+                </Grid>
+            </StackPanel>
+           
+         
         </Grid>
         <Grid Row="1" ColumnDefinitions="*,20,*">
             <Grid MaxWidth="120" Column="0" RowDefinitions="*,*,*">

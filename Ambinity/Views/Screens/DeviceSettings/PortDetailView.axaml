@@ -7,23 +7,75 @@
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              x:DataType="local:PortDetailViewModel"
              x:Class="Ambinity.Views.Screens.DeviceSettings.PortDetailView">
+      <UserControl.Styles>
+        <Style Selector="FlyoutPresenter.DefaultFlyout">
+            <Setter Property="Background" Value="{DynamicResource TimePickerFlyoutPresenterBackground}" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+    </UserControl.Styles>
+    <FlyoutBase.AttachedFlyout>
+        <Flyout Closing="PopupFlyoutBase_OnClosing" FlyoutPresenterClasses="DefaultFlyout" Placement="Center">
+            <Grid>
+                <ContentControl Focusable="True" Content="{CompiledBinding FlyoutViewModel}"></ContentControl>
+                <Grid HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal"  Margin="10" Spacing="5">
+                        <!-- <Grid> -->
+                        <!--     <Button ToolTip.Tip="Add to Library" Padding="1" Background="Transparent" Width="30" Height="30" -->
+                        <!--             Classes="icon-button"> -->
+                        <!--         <PathIcon Width="15" Data="{DynamicResource plus}"></PathIcon> -->
+                        <!--     </Button> -->
+                        <!-- </Grid> -->
+                        <Grid>
+                            <Button ToolTip.Tip="Close" Padding="1" Click="Button_OnClick"
+                                    Background="Transparent" Width="30" Height="30"
+                                    Classes="icon-button">
+                                <PathIcon Margin="1,1,0,0" Width="17" Data="{DynamicResource plus}">
+                                    <PathIcon.RenderTransform>
+                                        <RotateTransform Angle="45"></RotateTransform>
+                                    </PathIcon.RenderTransform>
+                                </PathIcon>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+        </Flyout>
+    </FlyoutBase.AttachedFlyout>
     <ScrollViewer IsScrollInertiaEnabled="True">
         <StackPanel Spacing="4">
             <TextBlock Text="{Binding Name}" FontSize="20" Margin="0,0,0,10" FontWeight="SemiBold"></TextBlock>
-            <ContentControl Margin="0,10" Content="{Binding DetailViewModel}"></ContentControl>
+            <Grid ColumnDefinitions="*,Auto">
+                <ContentControl Margin="0,10" Content="{Binding DetailViewModel}"></ContentControl>
+                <Grid Column="1">
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Top" Spacing="5">
+                        <Grid>
+                            <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1"
+                                    Background="Transparent" Width="30" Height="30"
+                                    Classes="icon-button">
+                                <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon>
+                            </Button>
+                        </Grid>
+
+
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            
             <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}" Height="1"></Separator>
             <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}"  Margin="0,0" Grid.Row="1" Header="Enable"
-                                 Description="Disable this output will turn off all Leds attached"
+                                 Description="Hide this device from all profiles"
                                  IsClickEnabled="False">
                 <ui:SettingsExpander.IconSource>
                     <ui:PathIconSource Data="{DynamicResource 'disable'}"></ui:PathIconSource>
                 </ui:SettingsExpander.IconSource>
                 <ui:SettingsExpander.Footer>
-                    <ToggleSwitch></ToggleSwitch>
+                    <ToggleSwitch IsChecked="{Binding IsEnabled}"></ToggleSwitch>
                 </ui:SettingsExpander.Footer>
             </ui:SettingsExpander>
             <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}"  Height="1"></Separator>
-            <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0" Grid.Row="1" Header="Brightness limit"
+            <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0" Grid.Row="1" Header="Brightness"
 
                                  Description="Set brightness limit to prevent overloading"
                                  IsClickEnabled="False">
@@ -32,7 +84,7 @@
                 </ui:SettingsExpander.IconSource>
                 <ui:SettingsExpander.Footer>
                     <Slider IsSnapToTickEnabled="True" TickFrequency="1"
-                            Margin="0" Width="160" Value="50" Minimum="0" Maximum="100">
+                            Margin="0" Width="160" Value="{Binding Brightness}" Minimum="0" Maximum="100">
                     </Slider>
                 </ui:SettingsExpander.Footer>
             </ui:SettingsExpander>

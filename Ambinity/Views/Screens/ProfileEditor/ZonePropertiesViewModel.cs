@@ -6,6 +6,7 @@ using Ambinity.Views.LayoutEditor.RightPanel.PropertiesView;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
+using Draw2D.Core;
 
 namespace Ambinity.Views.Screens.ProfileEditor;
 
@@ -21,6 +22,8 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         Init();
     }
 
+    private Figure _selectedItem;
+
     public override void UpdateObjectProperties()
     {
         var selectedItems = _canvasViewModel.Canvas.Selection.All;
@@ -29,11 +32,26 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
             _zone = null;
             DisableEdit();
             Header = NullHeader();
+           _selectedItem = null;
             //clear view
         }
         else if (selectedItems.Count == 1)
         {
             var fig = selectedItems.First();
+
+            //selection filter to prevent race condition load
+            if (_selectedItem == null)
+                _selectedItem = fig;
+            else
+            {
+                if (_selectedItem == fig)
+                    return;
+                else
+                {
+                    _selectedItem = fig;
+                }
+            }
+
             if (fig is not ContainerFigure)
                 return;
             var zone = (fig as LightingZoneFigure)?.ChildItem as LightingZone;
@@ -63,6 +81,7 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         else
         {
             _zone = null;
+            _selectedItem = null;
             Header = MultipleSelectedHeader(selectedItems.Count);
             DisableEdit();
         }

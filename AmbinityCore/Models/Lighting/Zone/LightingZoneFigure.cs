@@ -123,6 +123,7 @@ public class LightingZoneFigure : ContainerFigure, IAssetSelectable
         }
         
         var pen = new Pen(strokeBrush, thickness, DashStyle);
+        var immutablePen = pen.ToImmutable();
         
         Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
         dc.PushTransform(translate);

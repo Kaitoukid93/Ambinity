@@ -190,6 +190,7 @@ namespace Draw2D.Core.Handles
 
                 // strokeBrush.Freeze();
                 var pen = new Pen(strokeBrush, thickness, HandleShape.DashStyle);
+                var immutablePen = pen.ToImmutable();
                 //  {
                 //  DashStyle = DashStyle
                 //  };
@@ -204,7 +205,7 @@ namespace Draw2D.Core.Handles
                 var newY = HandleShape.Y + (HandleShape.Height - HandleShape.Height * scale) / 2;
                 Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
                 dc.PushTransform(translate);
-                dc.DrawRectangle(fillBrush, pen,
+                dc.DrawRectangle(fillBrush, immutablePen,
                     new Rect(new Avalonia.Point(newX, newY), new Size(newWidth, newHeight)));
             }
         }

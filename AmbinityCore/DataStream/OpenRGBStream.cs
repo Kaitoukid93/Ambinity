@@ -197,7 +197,7 @@ public class OpenRGBStream : IDataStream
         }
     }
 
-    public void Stop()
+    public async Task Stop()
     {
         //throw new NotImplementedException();
     }

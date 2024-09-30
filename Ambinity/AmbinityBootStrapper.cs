@@ -11,8 +11,10 @@ using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Views.NonClientArea;
 using Ambinity.Views.Screens.DeviceLayout;
+using Ambinity.Views.Screens.DeviceLayout.Library;
 using Ambinity.Views.Screens.DeviceSettings;
 using Ambinity.Views.Screens.ProfileEditor;
+using Ambinity.Views.Screens.ProfileEditor.Library;
 using Ambinity.Views.SideMenu;
 using Ambinity.Views.SplashScreen;
 using Ambinity.Windows;
@@ -130,6 +132,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<DeviceSettingsDashboardViewModel>()
                 .AddSingleton<DeviceFirmwareSettingsViewModel>()
                 .AddSingleton<DeviceHardwareLightingViewModel>()
+                .AddSingleton<DeviceCoolingSettingsViewModel>()
                 .AddSingleton<DeviceConnectionSettingsViewModel>()
                 .AddSingleton<DevicePortConfigurationViewModel>()
                 .AddSingleton<DeviceSettingsInfoBarViewModel>()
@@ -144,13 +147,17 @@ public class AmbinityBootStrapper
                 .AddSingleton<DeviceLayoutEditorViewModel>()
                 .AddSingleton<ProfileEditorViewModel>()
                 .AddSingleton<LayoutCanvasViewModel>()
-                .AddSingleton<RightPanelAssetsViewModel>()
+                .AddSingleton<ProfileEditorRightPanelViewModel>()
                 .AddSingleton<ParameterViewModelFactory>()
                 .AddSingleton<ColorConfigurationViewModelFactory>()
                 .AddTransient<PositionConfigurationViewModel>()
                 .AddSingleton<ColorPaletteAssetsViewModel>()
+                .AddSingleton<LightingZonesLibraryViewModel>()
+                .AddSingleton<DeviceLayoutAssetsViewModel>()
+                .AddSingleton<LightingZoneAssetsViewModel>()
                 .AddSingleton<AnimationAssetsViewModel>()
                 .AddSingleton<ColorPalettesLibraryViewModel>()
+                .AddSingleton<DeviceLayoutsLibraryViewModel>()
                 .AddSingleton<AnimationLibraryViewModel>()
                 .AddSingleton<LibraryViewModelFactory>()
                 .AddSingleton<Draw2DCanvasInfoBarViewModel>()
@@ -184,7 +191,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<FigureContextMenuProvider>()
                 .AddSingleton<ToolsViewModel>()
                 .AddSingleton<LayersViewModel>()
-                .AddSingleton<RightPanelViewModel>()
+                .AddSingleton<DeviceLayoutRightPanelViewModel>()
                 .AddSingleton<ZonePropertiesViewModel>()
                 .AddTransient<LayersView>()
 

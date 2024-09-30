@@ -162,4 +162,16 @@ public class OpenRGBController : ObservableObject, IController
         //todo make online repo for serial controller
         return null;
     }
+
+    public void TurnOff()
+    {
+        WorkingStateEnum = ControllerWorkingStateEnum.Off;
+        WorkingStateChanged?.Invoke();
+    }
+
+    public void TurnOn()
+    {
+        WorkingStateEnum = ControllerWorkingStateEnum.Normal;
+        WorkingStateChanged?.Invoke();
+    }
 }

@@ -17,7 +17,7 @@ namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 /// and for my laziness, I also add separator viewmodel -_-
 /// </summary>
 public class ParameterViewModelFactory(
-    RightPanelViewModel rightPanelViewModel,
+    ProfileEditorRightPanelViewModel rightPanelViewModel,
     AudioCapturingService audioCapturingService,
     IWindowService windowService,
     IDialogService dialogService,

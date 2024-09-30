@@ -30,6 +30,7 @@ namespace Draw2D.Core.Shapes.Basic
             //strokeBrush.Freeze();
 
             var pen = new ImmutablePen(strokeBrush, thickness);
+            var immutablePen = pen.ToImmutable();
             //  {
             //     DashStyle = DashStyle
             // };
@@ -41,7 +42,7 @@ namespace Draw2D.Core.Shapes.Basic
             var scale = strokeThickness/1.5  ;
             dc.PushTransform(translate);
          
-            dc.DrawEllipse(fillBrush, pen, new Avalonia.Point(BoundingBox.Center.X,BoundingBox.Center.Y) , Width*scale / 2, Height*scale / 2);
+            dc.DrawEllipse(fillBrush, immutablePen, new Avalonia.Point(BoundingBox.Center.X,BoundingBox.Center.Y) , Width*scale / 2, Height*scale / 2);
 
            // dc.Pop();
         }

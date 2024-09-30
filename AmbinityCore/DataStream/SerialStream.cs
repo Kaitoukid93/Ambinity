@@ -4,6 +4,7 @@ using System.IO.Ports;
 using AmbinityCore.Enums;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Device.LED;
+using OpenRGB.NET;
 using Serilog;
 
 namespace AmbinityCore.DataStream;
@@ -21,9 +22,10 @@ internal sealed class SerialStream : IDisposable, IDataStream
     {
         ID = Controller.SerialNumber;
         Port = Controller.SerialPort;
-        Controller.WorkingStateEnum = ControllerWorkingStateEnum.Normal;
+        Controller.WorkingStateChanged += DeviceStateChanged;
         _hasPWMCOntroller = Controller.FanController != null;
         Start();
+        Controller.TurnOn();
     }
 
     //Dependency Injection//
@@ -102,8 +104,11 @@ internal sealed class SerialStream : IDisposable, IDataStream
         Controller.EnableTransfer();
     }
 
-    public void Stop()
+    public async Task Stop()
     {
+        Controller.TurnOff();
+        //wait for led to fully turn off
+        await Task.Run(() => Task.Delay(1000));
         Controller.DisableTransfer();
         Log.Information("Stop called for Serial Stream");
         if (_workerThread == null) return;
@@ -165,11 +170,11 @@ internal sealed class SerialStream : IDisposable, IDataStream
                     ReOrderSpotColor(rgbOrder, led.LED.Red, led.LED.Green, led.LED.Blue, out byte r, out byte g,
                         out byte b);
                     //get data
-                    outputStream[counter + led.Index * 3 + 0] = r;
+                    outputStream[counter + led.Index * 3 + 0] = (byte)(r *_dimFactor);
 
-                    outputStream[counter + led.Index * 3 + 1] = g;
+                    outputStream[counter + led.Index * 3 + 1] = (byte)(g*_dimFactor);
                     // green
-                    outputStream[counter + led.Index * 3 + 2] = b;
+                    outputStream[counter + led.Index * 3 + 2] = (byte)(b*_dimFactor);
                     // red
                     aliveSpotCounter++;
 

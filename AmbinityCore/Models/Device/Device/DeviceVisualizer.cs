@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Media.Immutable;
+using Draw2D.Core.Utlils;
 
 namespace Draw2D.Core.Shapes.Basic;
 
@@ -26,6 +27,7 @@ public class DeviceVisualizer : ICanvasVisualizerItem
     private bool _loading;
     private Color[] _previousState = Array.Empty<Color>();
     private AmbinityDevice? _device;
+    private readonly ImmutablePen _pen;
 
     public IPositionAware Item => _device;
 
@@ -36,6 +38,8 @@ public class DeviceVisualizer : ICanvasVisualizerItem
         _device.ManualLedUpdate += OnDeviceManualLedUpdate;
         _ledVisualizers = new List<LedVisualizer>();
         SetupForDevice();
+        var pen = new Pen(new SolidColorBrush(Colors.Black.AdjustOpacity(0.5))) { LineJoin = PenLineJoin.Round };
+        _pen = pen.ToImmutable();
     }
 
     private void OnDeviceManualLedUpdate()
@@ -97,8 +101,12 @@ public class DeviceVisualizer : ICanvasVisualizerItem
             {
                 // Apply device scale
                 // using DrawingContext.PushedState scalePush = dc.PushTransform(Matrix.CreateScale(_device.Scale, _device.Scale));
+                GeometryGroup newGroup = new GeometryGroup();
                 foreach (LedVisualizer led in _ledVisualizers)
-                    led.RenderGeometry(dc);
+                {
+                    newGroup.Children.Add(led.DisplayGeometry);
+                }
+                dc.DrawGeometry(new ImmutableSolidColorBrush(Colors.Black.AdjustOpacity(0.5)), null, newGroup);
             }
         }
         finally
@@ -106,7 +114,7 @@ public class DeviceVisualizer : ICanvasVisualizerItem
             boundsPush?.Dispose();
         }
     }
-
+  
     private async Task SetupForDevice()
     {
         lock (_ledVisualizers)

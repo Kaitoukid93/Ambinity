@@ -26,7 +26,7 @@ namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 public class FillColorSelectionViewModel : ParameterViewModelBase
 {
     public FillColorSelectionViewModel(SelfGeneratedColorConfiguration configuration,
-        RightPanelViewModel rightPanelViewModel, StaticColorsRepository staticColorsRepository, ColorPaletteRepository colorPaletteRepository,
+        ProfileEditorRightPanelViewModel rightPanelViewModel, StaticColorsRepository staticColorsRepository, ColorPaletteRepository colorPaletteRepository,
         LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService, IDialogService dialogService)
     {
         _libraryViewModelFactory = libraryViewModelFactory;
@@ -137,7 +137,7 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
 
     public ObservableCollection<SolidColorViewModel> Colors { get; set; }
     private ObservableCollection<SolidColorViewModel> _selectedColors;
-    private RightPanelViewModel _rightPanelViewModel;
+    private ProfileEditorRightPanelViewModel _rightPanelViewModel;
     private StaticColorsRepository _colorsRepository;
     private readonly SelfGeneratedColorConfiguration _configuration;
     private readonly LibraryViewModelFactory _libraryViewModelFactory;

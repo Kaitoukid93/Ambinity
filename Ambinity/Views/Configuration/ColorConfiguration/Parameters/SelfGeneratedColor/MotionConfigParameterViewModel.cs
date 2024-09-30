@@ -16,7 +16,7 @@ public class MotionConfigParameterViewModel : ParameterViewModelBase
 
     public MotionConfigParameterViewModel(SelfGeneratedColorConfiguration configuration,
         AudioCapturingService audioCapturingService,
-        RightPanelViewModel rightPanelViewModel, BrightnessProviderFactory brightnessProviderFactory
+        ProfileEditorRightPanelViewModel rightPanelViewModel, BrightnessProviderFactory brightnessProviderFactory
     )
     {
         _typeEnums.Add("Music Reactive", MotionTypeEnum.MusicReactive);
@@ -58,7 +58,7 @@ public class MotionConfigParameterViewModel : ParameterViewModelBase
         }
     }
 
-    private RightPanelViewModel _rightPanelViewModel;
+    private ProfileEditorRightPanelViewModel _rightPanelViewModel;
     private SelfGeneratedColorConfiguration _configuration;
     public List<string> AvailableMotions { get; set; }
     private string _selectedMotionConfig;

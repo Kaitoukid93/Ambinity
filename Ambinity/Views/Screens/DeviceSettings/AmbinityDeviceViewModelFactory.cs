@@ -16,4 +16,13 @@ public class AmbinityDeviceViewModelFactory
     {
         return new AmbinityDeviceDetailViewModel(device, _thumbnailService);
     }
+
+    public AmbinityDeviceDetailViewModel GetMultipleDetailViewModel(int itemCount)
+    {
+        return new AmbinityDeviceDetailViewModel(itemCount, _thumbnailService );
+    }
+    public AmbinityDeviceDetailViewModel GetNullDetailViewModel()
+    {
+        return new AmbinityDeviceDetailViewModel();
+    }
 }

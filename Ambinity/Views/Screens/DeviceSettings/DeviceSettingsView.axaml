@@ -47,6 +47,7 @@
             <Grid Margin="60,10,35,10" Row="1">
                 <StackPanel Spacing="30" >
                     <ContentControl Content="{Binding PortConfigurationViewModel}"></ContentControl>
+                    <ContentControl Content="{Binding CoolingSettingsViewModel}"></ContentControl>
                     <!-- <ContentControl Content="{Binding ConnectionSettingsViewModel}"></ContentControl> -->
                     <ContentControl Content="{Binding HardwareLightingViewModel}"></ContentControl>
                     <ContentControl Content="{Binding FirmwareSettingsViewModel}"></ContentControl>

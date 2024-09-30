@@ -19,7 +19,7 @@ namespace Ambinity.Views.Screens.ProfileEditor;
 
 public class ProfileEditorViewModel : ViewModelBase
 {
-    public ProfileEditorViewModel(LayoutCanvasViewModel layoutViewModel, RightPanelViewModel rightPanelViewModel,
+    public ProfileEditorViewModel(LayoutCanvasViewModel layoutViewModel, ProfileEditorRightPanelViewModel rightPanelViewModel,
         IMainWindowService mainWindowService, ZonePropertiesViewModel propertiesViewModel,
         ToolsViewModel toolsViewModel,
         LightingZoneRepository lightingZoneRepository,
@@ -57,7 +57,7 @@ public class ProfileEditorViewModel : ViewModelBase
     }
 
     public LayoutCanvasViewModel LayoutViewModel { get; set; }
-    public RightPanelViewModel RightPanelViewModel { get; set; }
+    public ProfileEditorRightPanelViewModel RightPanelViewModel { get; set; }
     private LightingProfile _currentProfile;
     private ZonePropertiesViewModel _propertiesViewModel;
     private readonly LightingZoneRepository _lightingZoneRepository;
@@ -105,7 +105,7 @@ public class ProfileEditorViewModel : ViewModelBase
         _toolsViewModel.InitForProfileEditor();
         RightPanelViewModel.PropertiesViewModel = _propertiesViewModel;
         //init assets
-        RightPanelViewModel.Init(_lightingZoneRepository, _lightingZoneOnlineRepository);
+        RightPanelViewModel.Init();
     }
 
     public override void Dispose()

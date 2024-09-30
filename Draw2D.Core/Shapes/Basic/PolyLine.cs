@@ -82,6 +82,7 @@ namespace Draw2D.Core.Shapes.Basic
             //strokeBrush.Freeze();
 
             var pen = new ImmutablePen(strokeBrush, thickness);
+            var immutablePen = pen.ToImmutable();
            // pen.Freeze();
 
             var geom = new StreamGeometry();
@@ -113,7 +114,7 @@ namespace Draw2D.Core.Shapes.Basic
 
             //geom.Freeze();
 
-            dc.DrawGeometry(null, pen, geom);
+            dc.DrawGeometry(null, immutablePen, geom);
         }
     }
 }

@@ -13,15 +13,15 @@ using FluentAvalonia.UI.Controls;
 
 namespace Ambinity.Views.LayoutEditor;
 
-public partial class RightPanelView : UserControl
+public partial class ProfileEditorRightPanelView : UserControl
 {
     private AppTourViewModel _appTourViewModel;
     private AppTourElementProvider _appTourElementProvider;
 
-    public RightPanelView()
+    public ProfileEditorRightPanelView()
     {
         InitializeComponent();
-        _viewModel = Ioc.Default.GetRequiredService<RightPanelViewModel>();
+        _viewModel = Ioc.Default.GetRequiredService<ProfileEditorRightPanelViewModel>();
         _viewModel.OpenFlyoutEvent += OpenFlyout;
         _viewModel.CloseFlyoutEvent += CloseFlyout;
         _appTourViewModel = Ioc.Default.GetService<AppTourViewModel>();
@@ -31,13 +31,13 @@ public partial class RightPanelView : UserControl
 
     private async void OnAppTourStepChanged(ViewModelBase element)
     {
-        if (element is RightPanelViewModel)
+        if (element is ProfileEditorRightPanelViewModel)
         {
             await ActivateGuide();
         }
     }
 
-    private RightPanelViewModel _viewModel;
+    private ProfileEditorRightPanelViewModel _viewModel;
 
     private void CloseFlyout()
     {

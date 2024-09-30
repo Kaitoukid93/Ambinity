@@ -28,7 +28,8 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         LightingProfileCategoryRepository categoryRepository, IDialogService dialogService,
         RootNavigationStores rootNavigationStores,
         SideMenuProfilePlayerViewModel profilePlayerViewModel, SideMenuViewModelFactory vmFactory,
-        ProfileEditorViewModel profileEditorViewModel, DeviceLayoutEditorViewModel deviceLayoutEditorViewModel, DeviceSettingsDashboardViewModel dashboardViewModel)
+        ProfileEditorViewModel profileEditorViewModel, DeviceLayoutEditorViewModel deviceLayoutEditorViewModel,
+        DeviceSettingsDashboardViewModel dashboardViewModel)
     {
         _dashboardViewModel = dashboardViewModel;
         _profileEditorViewModel = profileEditorViewModel;
@@ -216,9 +217,9 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
 
     private async Task GoToDeviceLayout()
     {
-        _profileEditorViewModel?.Dispose();
-        _deviceLayoutEditorViewModel.Init();
+        // _profileEditorViewModel?.Dispose();
         _rootNavigationStores.CurrentViewModel = _deviceLayoutEditorViewModel;
+        _deviceLayoutEditorViewModel.Init();
     }
 
     // private void GoToDashBoard()
@@ -230,15 +231,15 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     //todo take away items init 
     private void GoToProfileEditor(LightingProfile profile)
     {
-        _deviceLayoutEditorViewModel?.Dispose();
-        _profileEditorViewModel.Init(profile);
+        // _deviceLayoutEditorViewModel?.Dispose();
         _rootNavigationStores.CurrentViewModel = _profileEditorViewModel;
+        _profileEditorViewModel.Init(profile);
     }
 
     private void GoToDeviceSettings()
     {
-        _dashboardViewModel.Init();
         _rootNavigationStores.CurrentViewModel = _dashboardViewModel;
+        _dashboardViewModel.Init();
     }
 
     private void CatergorySelectionChanged(SideMenuProfileViewModel item)
@@ -263,8 +264,8 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
 
     public override void Dispose()
     {
-        _dashboardViewModel?.Dispose();
-        _deviceLayoutEditorViewModel?.Dispose();
+        // _dashboardViewModel?.Dispose();
+        // _deviceLayoutEditorViewModel?.Dispose();
     }
 
     #region App tour element implementations
@@ -280,8 +281,6 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     {
         //todo
         //implement app tour script
-       
-        
     }
 
     public int CurrentStep { get; set; }

@@ -28,7 +28,7 @@ public  class AssetItemViewModelFactory
         switch (item.GetType().Name)
         {
             case "AmbinityDeviceLayout":
-                return new AmbinityDeviceLayoutAssetViewModel(item,_canvasViewModel,_thumnailService);
+                return new AmbinityDeviceLayoutAssetViewModel(item,_thumnailService);
                 break;
             case "SolidColor":
                 return null;

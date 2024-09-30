@@ -166,6 +166,7 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
     {
         MainWindowClosed?.Invoke(this, EventArgs.Empty);
         await SaveRepositories();
+        _rootNavigationStores.CurrentViewModel = null;
         _sideMenu?.Dispose();
         try
         {

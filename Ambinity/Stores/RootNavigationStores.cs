@@ -16,6 +16,7 @@ public class RootNavigationStores
         }
         set
         {
+            _currentViewModel?.Dispose();
             _currentViewModel = value;
             OnCurrentViewModelChanged();
         }

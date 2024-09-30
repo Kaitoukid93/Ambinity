@@ -6,9 +6,17 @@
              xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
              x:DataType="local:AmbinityDeviceDetailViewModel"
              x:Class="Ambinity.Views.Screens.DeviceSettings.AmbinityDeviceDetailView">
-        <Grid ColumnDefinitions="Auto,10,*,Auto" Height="100">
-            <Image Width="100" Height="100" HorizontalAlignment="Left"
-                   Source="{Binding GetThumbnail^,FallbackValue=null}" VerticalAlignment="Center" Stretch="Uniform">
+    <UserControl.Styles>
+        <Style Selector="Image.thumb">
+            <Setter Property="Source" Value="{Binding GetThumbnail^,FallbackValue=null}"></Setter>
+        </Style>
+        <Style Selector="Image.thumb.multiple">
+            <Setter Property="Source" Value="/Assets/Images/multiSelect.png"></Setter>
+        </Style>
+    </UserControl.Styles>
+    <Grid ColumnDefinitions="Auto,10,*">
+            <Image RenderOptions.BitmapInterpolationMode="HighQuality"  Width="100" Height="100"
+                   Classes="thumb" Classes.multiple="{Binding IsMultipleItemsSelected}" VerticalAlignment="Center" Stretch="Uniform">
             </Image>
 
             <Grid Column="2">
@@ -21,26 +29,13 @@
                                Text="{Binding LEDsCount  }">
                     </TextBlock>
                     <TextBlock HorizontalAlignment="Left" FontSize="12" ToolTip.Tip="{Binding FilePath}"
-                               TextTrimming="CharacterEllipsis" MaxWidth="200"
+                               TextTrimming="CharacterEllipsis" MaxWidth="180"
                                Foreground="{DynamicResource ButtonForegroundDisabled}"
                                Text="{Binding FilePath  }">
                     </TextBlock>
                 </StackPanel>
 
 
-            </Grid>
-            <Grid Column="3">
-                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Top" Spacing="5">
-                    <Grid>
-                        <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1"
-                                Background="Transparent" Width="30" Height="30"
-                                Classes="icon-button">
-                            <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon>
-                        </Button>
-                    </Grid>
-
-
-                </StackPanel>
             </Grid>
         </Grid>
 </UserControl>

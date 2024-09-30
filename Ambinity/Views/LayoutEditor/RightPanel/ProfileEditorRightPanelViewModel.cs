@@ -12,22 +12,24 @@ using Draw2D.Core;
 
 namespace Ambinity.Views.LayoutEditor;
 
-public class RightPanelViewModel : ViewModelBase
+public class ProfileEditorRightPanelViewModel : ViewModelBase
 {
     public event Action OpenFlyoutEvent;
     public event Action CloseFlyoutEvent;
 
-    public RightPanelViewModel(LayersViewModel layersViewModel,
-        Draw2DCanvasViewModel canvasViewModel,
-        RightPanelAssetsViewModel assetsesViewModel
+    public ProfileEditorRightPanelViewModel(LayersViewModel layersViewModel,
+        Draw2DCanvasViewModel canvasViewModel, LibraryViewModelFactory libraryViewModelFactory
     )
     {
         LayersViewModel = layersViewModel;
         _canvasViewModel = canvasViewModel;
-        AssetsesViewModel = assetsesViewModel;
+        _libraryViewModelFactory  = libraryViewModelFactory;
        
     }
-
+    private void OnFigureRemoved(Figure obj)
+    {
+        PropertiesViewModel.DisableEdit();
+    }
     public void OpenFlyout(FlyoutContentViewModelBase flyoutViewModel)
     {
         FlyoutViewModel = flyoutViewModel;
@@ -37,11 +39,6 @@ public class RightPanelViewModel : ViewModelBase
     /// <summary>
     /// This is when user close by pressing button
     /// </summary>
-    private void OnFigureRemoved(Figure obj)
-    {
-        PropertiesViewModel.DisableEdit();
-    }
-
     public void OnFlyoutClosing()
     {
         FlyoutViewModel.Dispose();
@@ -56,17 +53,12 @@ public class RightPanelViewModel : ViewModelBase
     public FlyoutContentViewModelBase FlyoutViewModel { get; set; }
     public CanvasObjectPropertiesViewModelBase PropertiesViewModel { get; set; }
     public LayersViewModel LayersViewModel { get; set; }
-    public RightPanelAssetsViewModel AssetsesViewModel { get; set; }
     private Draw2DCanvasViewModel _canvasViewModel;
-    private CollectableItemRepository _localRepository;
-    private OnlineItemRepository _onlineItemRepository;
 
-    public void Init(CollectableItemRepository localRepo, OnlineItemRepository onlineRepo)
+    public void Init()
     {
         _canvasViewModel.SelectionChanged += OnCanvasSelectionChanged;
         _canvasViewModel.FigureRemoved += OnFigureRemoved;
-        _localRepository = localRepo;
-        _onlineItemRepository = onlineRepo;
         PropertiesViewModel.Init();
         SelectedTab = 0;
     }
@@ -83,20 +75,8 @@ public class RightPanelViewModel : ViewModelBase
             UpdateTabContent();
         }
     }
-
-    private bool _isFlyoutOpen;
-
-    public bool IsFlyoutOpen
-    {
-        get => _isFlyoutOpen;
-        set
-        {
-            _isFlyoutOpen = value;
-            OnPropertyChanged();
-        }
-    }
-
     private ViewModelBase _currentTabContent;
+    private readonly LibraryViewModelFactory _libraryViewModelFactory;
 
     public ViewModelBase CurrentTabContent
     {
@@ -119,10 +99,6 @@ public class RightPanelViewModel : ViewModelBase
             case 1:
                 LayersViewModel.Update();
                 CurrentTabContent = LayersViewModel;
-                break;
-            case 2:
-                CurrentTabContent = AssetsesViewModel;
-                await AssetsesViewModel.Init(_localRepository, _onlineItemRepository);
                 break;
         }
     }

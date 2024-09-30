@@ -7,7 +7,7 @@ namespace AmbinityCore.Repositories;
 public class AmbinityDeviceRepository
 {
     //Manage devices that being added to the system\
-    public event Action NewDevicesAdded;
+    public event Action DevicesListUpdated;
 
     public AmbinityDeviceRepository(DeviceBitmapCaptureFactory captureFactory,
         SerialControllerRepository serialControllerRepository, OpenRGBControllerRepository openRgbControllerRepository)
@@ -24,19 +24,53 @@ public class AmbinityDeviceRepository
             var controller = item as SerialController;
             OnNewControllerAdded(controller);
         }
+
+        _captures = new List<AmbinityDeviceBitmapCapture>();
     }
+
+    private List<AmbinityDeviceBitmapCapture> _captures;
 
     private void OnNewControllerAdded(IController controller)
     {
         foreach (var output in controller.LedController.Outputs)
         {
+            output.OutputEnabled += OnOutputEnabled;
+            output.OutputDisabled += OnOutputDisabled;
+            if (!output.IsEnabled)
+                continue;
             var device = output.Device;
-            _captureFactory.RegisterDevice(device);
             if (!Devices.Contains(device))
                 Devices.Add(device);
+            var capture = _captureFactory.RegisterDevice(device);
+            _captures.Add(capture);
         }
 
-        NewDevicesAdded?.Invoke();
+        DevicesListUpdated?.Invoke();
+    }
+
+    private void OnOutputDisabled(LEDOutput output)
+    {
+        if (Devices.Contains(output.Device))
+            Devices.Remove(output.Device);
+        var capture = GetCapture(output.Device);
+            capture?.Dispose();
+            _captures.Remove(capture);
+    }
+
+    private AmbinityDeviceBitmapCapture GetCapture(AmbinityDevice device)
+    {
+        if (_captures == null || _captures.Count == 0)
+            return null;
+        var capture = _captures.FirstOrDefault(c => c.Device== device);
+        return capture;
+    }
+    private void OnOutputEnabled(LEDOutput output)
+    {
+        if (Devices.Contains(output.Device))
+            return;
+        Devices.Add(output.Device);
+        var capture = _captureFactory.RegisterDevice(output.Device);
+        _captures.Add(capture);
     }
 
     public void UpdateDeviceTransform()

@@ -16,41 +16,16 @@ namespace Ambinity.Views.CollectableItem.AmbinityDeviceLayout;
 
 public class AmbinityDeviceLayoutAssetViewModel : AssetItemViewModelBase
 {
-    public AmbinityDeviceLayoutAssetViewModel(ICollectableItem item,Draw2DCanvasViewModel canvasViewModel,ThumbnailService thumbnailService)
+    public AmbinityDeviceLayoutAssetViewModel(ICollectableItem item,ThumbnailService thumbnailService) : base(item)
     {
-        _canvasViewModel = canvasViewModel;
+       
         _layout = item as AmbinityCore.Models.Device.AmbinityDeviceLayout;
         Name = _layout.Name;
         _thumbnailService = thumbnailService;
-        ApplyLayoutCommand = new RelayCommand(ApplyLayout);
     }
-
-    private void ApplyLayout()
-    {
-       //get all selected device and apply this layout
-       var figs = _canvasViewModel.Canvas.Selection.All;
-       if(figs == null || figs.Count == 0)
-           return;
-       var selectedDevices = new List<AmbinityDevice>();
-       foreach (var fig in figs)
-       {
-           var deviceContainerFigure = fig as DeviceContainerFigure;
-           if (deviceContainerFigure != null)
-           {
-               selectedDevices.Add(deviceContainerFigure.ChildItem as AmbinityDevice);
-           }
-       }
-
-       foreach (var device in selectedDevices)
-       {
-           device.LoadLayout(this._layout);
-       }
-    }
-
-
+    
     private ThumbnailService _thumbnailService;
     private AmbinityCore.Models.Device.AmbinityDeviceLayout _layout;
-    public ICommand ApplyLayoutCommand { get; set; }
     public bool IsLocalExisted { get; set; }
     public Task<Bitmap> GetThumbnail => GetThumbnailAsync();
 
@@ -60,7 +35,6 @@ public class AmbinityDeviceLayoutAssetViewModel : AssetItemViewModelBase
         return thumb;
     }
     private string _description;
-    private readonly Draw2DCanvasViewModel _canvasViewModel;
 
     public string Description
     {

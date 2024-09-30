@@ -5,6 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
              xmlns:device="clr-namespace:AmbinityCore.Models.Device;assembly=AmbinityCore"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              x:DataType="local:DevicePortConfigurationViewModel"
              x:Class="Ambinity.Views.Screens.DeviceSettings.DevicePortConfigurationView">
     <UserControl.Styles>
@@ -18,16 +19,16 @@
 
     </UserControl.Styles>
 
-    <Grid RowDefinitions="Auto,10,*">
+    <Grid RowDefinitions="Auto,10, Auto,5,*">
         <Grid>
             <TextBlock Classes="smallBold" Text="Port Configuration"></TextBlock>
         </Grid>
-
-        <Grid Row="2" ColumnDefinitions="Auto,5,500,5,*">
+        <ui:InfoBar Grid.Row="2" Title="Tips" IsOpen="True" Severity="Informational" Message="Ctrl + click to select multiple device and control them all at once." />
+        <Grid Row="4" ColumnDefinitions="Auto,5,500,5,*">
             <Grid Column="0">
                 <Border Classes="card">
                     <ScrollViewer IsScrollInertiaEnabled="True">
-                        <ItemsControl ItemsSource="{Binding Outputs}">
+                        <ItemsControl ItemsSource="{Binding Ports}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <local:DevicePortListView></local:DevicePortListView>
@@ -57,7 +58,7 @@
                                Stretch="Uniform"
                                Source="{Binding Controller.Thumbnail}">
                         </Image>
-                        <ItemsControl ItemsSource="{Binding Outputs}">
+                        <ItemsControl ItemsSource="{Binding Ports}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <Canvas Width="{Binding Controller.PhysicalWidth}"

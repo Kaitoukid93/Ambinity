@@ -29,6 +29,7 @@ namespace Draw2D.Core.Shapes.Basic
             {
                 DashStyle = DashStyle;
             }
+            var immutablePen = pen.ToImmutable();
             ;
             // pen.Freeze();
 
@@ -39,8 +40,8 @@ namespace Draw2D.Core.Shapes.Basic
             var bottomCenter = Canvas.CoordinateSystem.ToScreenSpace(BoundingBox.BottomCenter);
             var topCenter = Canvas.CoordinateSystem.ToScreenSpace(BoundingBox.TopCenter);
 
-            dc.DrawLine(pen, new Point(leftCenter[0], leftCenter[1]), new Point(rightCenter[0], rightCenter[1]));
-            dc.DrawLine(pen, new Point(bottomCenter[0], bottomCenter[1]), new Point(topCenter[0], topCenter[1]));
+            dc.DrawLine(immutablePen, new Point(leftCenter[0], leftCenter[1]), new Point(rightCenter[0], rightCenter[1]));
+            dc.DrawLine(immutablePen, new Point(bottomCenter[0], bottomCenter[1]), new Point(topCenter[0], topCenter[1]));
         }
     }
 }

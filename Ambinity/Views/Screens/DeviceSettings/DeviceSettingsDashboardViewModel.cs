@@ -37,12 +37,6 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
     private OpenRGBControllerRepository _openRgbControllerRepository;
 
     private readonly RootNavigationStores _rootNavigationStores;
-
-    private void OnDeviceClicked(DashboardDeviceViewModel device)
-    {
-        GotoDeviceControlCommand.Execute(device);
-    }
-
     public ObservableCollection<DashboardDeviceViewModel> Devices { get; set; }
     public ObservableCollection<DashboardDeviceViewModel> CoolingDevices { get; set; }
 
@@ -55,7 +49,9 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
         _openRgbControllerRepository.NewControllerAdded += OnNewControllerAdded;
         _openRgbControllerRepository.OldDeviceReconnected += OnOldControllerReconnected;
         Devices = new ObservableCollection<DashboardDeviceViewModel>();
+        OnPropertyChanged(nameof(Devices));
         CoolingDevices = new ObservableCollection<DashboardDeviceViewModel>();
+        OnPropertyChanged(nameof(CoolingDevices));
         foreach (var item in _serialControllerRepository.Items)
         {
             AddController((item as SerialController));
@@ -65,8 +61,7 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
         {
             AddController((item as OpenRGBController));
         }
-
-        CommandSetup();
+        
     }
 
     private void OnOldControllerReconnected(IController obj)
@@ -83,11 +78,7 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
             CoolingDevices.Add(deviceVm);
         InfoBarViewModel.IsOpen = false;
     }
-
-    private void CommandSetup()
-    {
-        GotoDeviceControlCommand = new RelayCommand<DashboardDeviceViewModel>(GoToDeviceControl);
-    }
+    
 
     private async void GoToDeviceControl(DashboardDeviceViewModel device)
     {
@@ -118,8 +109,6 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
-
-    public ICommand GotoDeviceControlCommand { get; set; }
     public override void Dispose()
     {
         base.Dispose();
@@ -127,6 +116,5 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
         _serialControllerRepository.OldDeviceReconnected -= OnOldControllerReconnected;
         _openRgbControllerRepository.NewControllerAdded -= OnNewControllerAdded;
         _openRgbControllerRepository.OldDeviceReconnected -= OnOldControllerReconnected;
-        _deviceSettingsViewModel?.Dispose();
     }
 }

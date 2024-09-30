@@ -19,12 +19,11 @@ namespace Ambinity.Views.Screens.DeviceLayout;
 
 public class DeviceLayoutEditorViewModel : ViewModelBase
 {
-    public DeviceLayoutEditorViewModel(LayoutCanvasViewModel layoutViewModel, DeviceLayoutRightPanelViewModel rightPanelViewModel,
+    public DeviceLayoutEditorViewModel(LayoutCanvasViewModel layoutViewModel,
+        DeviceLayoutRightPanelViewModel rightPanelViewModel,
         IMainWindowService mainWindowService, DevicePropertiesViewModel propertiesViewModel,
         ToolsViewModel toolsViewModel,
-        AmbinityDeviceLayoutRepository ambinityDeviceLayoutRepository,
-        AmbinityDeviceOnlineRepository ambinityDeviceOnlineRepository,
-        AmbinityDeviceRepository deviceRepository )
+        AmbinityDeviceRepository deviceRepository)
     {
         LayoutViewModel = layoutViewModel;
         LayoutViewModel.ItemAdded += OnItemAdded;
@@ -33,8 +32,6 @@ public class DeviceLayoutEditorViewModel : ViewModelBase
         RightPanelViewModel = rightPanelViewModel;
         _propertiesViewModel = propertiesViewModel;
         mainWindowService.MainWindowClosed += OnMainWindowClosed;
-        _ambinityDeviceLayoutRepository = ambinityDeviceLayoutRepository;
-        _ambinityDeviceOnlineRepository = ambinityDeviceOnlineRepository;
         _toolsViewModel = toolsViewModel;
     }
 
@@ -57,8 +54,6 @@ public class DeviceLayoutEditorViewModel : ViewModelBase
     public LayoutCanvasViewModel LayoutViewModel { get; set; }
     public DeviceLayoutRightPanelViewModel RightPanelViewModel { get; set; }
     private DevicePropertiesViewModel _propertiesViewModel;
-    private readonly AmbinityDeviceLayoutRepository _ambinityDeviceLayoutRepository;
-    private readonly AmbinityDeviceOnlineRepository _ambinityDeviceOnlineRepository;
     private readonly ToolsViewModel _toolsViewModel;
     private readonly AmbinityDeviceRepository _deviceRepository;
 
@@ -80,15 +75,12 @@ public class DeviceLayoutEditorViewModel : ViewModelBase
                 leds.Add(led);
             }
         }
-               
-            
-        
         //init layout canvas
         LayoutViewModel.ShoudDrawBackground = false;
         LayoutViewModel.Init(devices);
         _toolsViewModel.InitForDeviceLayout();
         RightPanelViewModel.PropertiesViewModel = _propertiesViewModel;
-         RightPanelViewModel.Init(_ambinityDeviceLayoutRepository,_ambinityDeviceOnlineRepository);
+        RightPanelViewModel.Init();
     }
 
     public override void Dispose()

@@ -1,16 +1,21 @@
+using System.Collections.Generic;
 using System.Linq;
 using Ambinity.Views.Configuration.ColorConfiguration;
 using Ambinity.Views.Configuration.PositionConfiguration;
 using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.LayoutEditor.RightPanel.PropertiesView;
+using Ambinity.Views.Screens.DeviceSettings;
 using AmbinityCore.Models.Device;
 
 namespace Ambinity.Views.Screens.DeviceLayout;
 
 public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
 {
-    public DevicePropertiesViewModel(Draw2DCanvasViewModel canvasViewModel, PositionConfigurationViewModel positionConfigurationViewModel)
+    public DevicePropertiesViewModel(Draw2DCanvasViewModel canvasViewModel,
+        PositionConfigurationViewModel positionConfigurationViewModel,
+        AmbinityDeviceViewModelFactory deviceViewModelFactory)
     {
+        _deviceViewModelFactory = deviceViewModelFactory;
         PositionConfiguration = positionConfigurationViewModel;
         _canvasViewModel = canvasViewModel;
         Init();
@@ -23,6 +28,7 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         {
             DisableEdit();
             Header = NullHeader();
+            DetailViewModel = null;
             //clear view
         }
         else if (selectedItems.Count == 1)
@@ -30,45 +36,69 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
             var fig = selectedItems.First();
             fig.PositionPropertyChanged += OnItemPositionChanged;
             var device = (fig as DeviceContainerFigure)?.ChildItem as AmbinityDevice;
-            if (device == null|| !fig.IsDragable)
+            if (device == null || !fig.IsDragable)
             {
                 DisableEdit();
                 return;
             }
-            else
-            {
-                _device = device;
-                EnableEdit();
-                PositionConfiguration.Init(device);
-            }
+
+            _selectedDevice = device;
+            EnableEdit();
+            PositionConfiguration.Init(device);
+
+
             Header = GetHeader(device);
+            DetailViewModel = _deviceViewModelFactory.GetDetailViewModel(_selectedDevice);
         }
         else
         {
             Header = MultipleSelectedHeader(selectedItems.Count);
+            _selectedDevices?.Clear();
+            foreach (var item in selectedItems)
+            {
+                var device = (item as DeviceContainerFigure)?.ChildItem as AmbinityDevice;
+                _selectedDevices.Add(device);
+            }
+
+            DetailViewModel = _deviceViewModelFactory.GetMultipleDetailViewModel(_selectedDevices.Count);
             DisableEdit();
         }
     }
 
+    private List<AmbinityDevice> _selectedDevices = new List<AmbinityDevice>();
+    private AmbinityDevice _selectedDevice;
 
     private void OnItemPositionChanged(float arg1, float arg2)
     {
         PositionConfiguration.Update();
     }
 
-    private AmbinityDevice _device;
+
     private Draw2DCanvasViewModel _canvasViewModel;
     private PositionConfigurationViewModel _positionConfiguration;
+    private AmbinityDeviceDetailViewModel _detailViewModel;
+    private readonly AmbinityDeviceViewModelFactory _deviceViewModelFactory;
+
+    public AmbinityDeviceDetailViewModel DetailViewModel
+    {
+        get => _detailViewModel;
+        set
+        {
+            _detailViewModel = value;
+            OnPropertyChanged();
+        }
+    }
 
     public override void DisableEdit()
     {
         PositionConfiguration.IsEnabled = false;
-        
     }
+
     public override void EnableEdit()
     {
         PositionConfiguration.IsEnabled = true;
     }
+
     public PositionConfigurationViewModel PositionConfiguration
     {
         get => _positionConfiguration;
@@ -78,7 +108,7 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
             OnPropertyChanged();
         }
     }
-    
+
     private ConfigurationHeaderViewModel _header;
 
     public ConfigurationHeaderViewModel Header

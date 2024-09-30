@@ -49,7 +49,7 @@ public partial class ToolsView : UserControl
         {
             await Task.Delay(100);
         }
-        _appTourViewModel.NextStep(Ioc.Default.GetRequiredService<RightPanelViewModel>());
+        _appTourViewModel.NextStep(Ioc.Default.GetRequiredService<ProfileEditorRightPanelViewModel>());
     }
 
     private void MenuFlyoutItem_OnClick(object? sender, RoutedEventArgs e)

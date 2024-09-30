@@ -22,6 +22,8 @@ public class PageFactory : INavigationPageFactory
     /// <inheritdoc />
     public Control GetPageFromObject(object target)
     {
+        if (target == null)
+            return null;
         Control control = _viewLocator.Build(target);
         control.DataContext = target;
         return control;

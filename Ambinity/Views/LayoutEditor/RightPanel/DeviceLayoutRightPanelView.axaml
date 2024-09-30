@@ -9,23 +9,65 @@
              x:DataType="local:DeviceLayoutRightPanelViewModel"
              Focusable="True"
              x:Class="Ambinity.Views.LayoutEditor.DeviceLayoutRightPanelView">
+    <UserControl.Styles>
+        <Style Selector="FlyoutPresenter.DefaultFlyout">
+            <Setter Property="Background" Value="{DynamicResource TimePickerFlyoutPresenterBackground}" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+    </UserControl.Styles>
+    <FlyoutBase.AttachedFlyout>
+        <Flyout Closing="PopupFlyoutBase_OnClosing" FlyoutPresenterClasses="DefaultFlyout" HorizontalOffset="-326"
+                VerticalOffset="-473">
+            <Grid>
+                <ContentControl Focusable="True" Content="{CompiledBinding FlyoutViewModel}"></ContentControl>
+                <Grid HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="10" Spacing="5">
+                        <!-- <Grid> -->
+                        <!--     <Button ToolTip.Tip="Add to Library" Padding="1" Background="Transparent" Width="30" Height="30" -->
+                        <!--             Classes="icon-button"> -->
+                        <!--         <PathIcon Width="15" Data="{DynamicResource plus}"></PathIcon> -->
+                        <!--     </Button> -->
+                        <!-- </Grid> -->
+                        <Grid>
+                            <Button ToolTip.Tip="Close" Padding="1" Click="Button_OnClick"
+                                    Background="Transparent" Width="30" Height="30"
+                                    Classes="icon-button">
+                                <PathIcon Margin="1,1,0,0" Width="17" Data="{DynamicResource plus}">
+                                    <PathIcon.RenderTransform>
+                                        <RotateTransform Angle="45"></RotateTransform>
+                                    </PathIcon.RenderTransform>
+                                </PathIcon>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+        </Flyout>
+    </FlyoutBase.AttachedFlyout>
     <Grid>
-        <Grid RowDefinitions="Auto,0,Auto,*">
-            <ContentControl IsVisible="{Binding !IsLocked}" Content="{Binding PropertiesViewModel}"></ContentControl>
+        <Grid RowDefinitions="Auto,20,Auto,*">
+            <ContentControl IsVisible="{Binding !IsLocked}" Content="{Binding PropertiesViewModel}">
+
+            </ContentControl>
+            <Separator Grid.Row="1" Margin="18,0"></Separator>
             <Grid IsVisible="{Binding !IsLocked}" Grid.Row="2" Margin="20,0,20,10" ColumnDefinitions="*,Auto">
-                <TextBlock HorizontalAlignment="Left" Text="Available Device Layout"></TextBlock>
-                <Grid Column="1">
-                    <Button Click="InfoButton_OnClick" x:Name="infoButton" Background="Transparent"
-                            BorderThickness="0" Classes="icon-button" HorizontalAlignment="Right"
-                            VerticalAlignment="Top" Margin="0,0">
-                        <PathIcon Width="15" Height="15" Data="{DynamicResource infoCircle}"></PathIcon>
-                    </Button>
-                    <ui:TeachingTip IsLightDismissEnabled="True" x:Name="infotip"
-                                    HeroContentPlacement="Auto"
-                                    Target="{Binding ElementName=infoButton}">
-                        <ui:TeachingTip.HeroContent>
-                            <Border CornerRadius="7,7,0,0" Background="{Binding #infotip.Background}" Padding="10">
-                                <mdxaml:MarkdownScrollViewer xml:space="preserve">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
+                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="Device Layout"></TextBlock>
+                    <Grid>
+                        <Button Click="InfoButton_OnClick" x:Name="infoButton" Background="Transparent"
+                                BorderThickness="0" Classes="icon-button-small" HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                            <PathIcon Width="15" Height="15" Data="{DynamicResource infoCircle}"></PathIcon>
+                        </Button>
+                        <ui:TeachingTip IsLightDismissEnabled="True" x:Name="infotip"
+                                        HeroContentPlacement="Auto"
+                                        Target="{Binding ElementName=infoButton}">
+                            <ui:TeachingTip.HeroContent>
+                                <Border CornerRadius="7,7,0,0" Background="{Binding #infotip.Background}"
+                                        Padding="10">
+                                    <mdxaml:MarkdownScrollViewer xml:space="preserve">
 ##### **Device Layout**
 
  * **What even is Device Layout?** 
@@ -36,13 +78,28 @@ not represent a 1:1 color to the actual device
  
 Request custom layout at [Ambino-Layout](https://ambino.vn)
                                                 </mdxaml:MarkdownScrollViewer>
-                            </Border>
-                        </ui:TeachingTip.HeroContent>
-                    </ui:TeachingTip>
+                                </Border>
+                            </ui:TeachingTip.HeroContent>
+                        </ui:TeachingTip>
+                    </Grid>
+                </StackPanel>
+
+                <Grid Column="1">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
+                        <Grid>
+                            <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1"
+                                    Background="Transparent" Width="30" Height="30"
+                                    Classes="icon-button">
+                                <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+
                 </Grid>
             </Grid>
-
-            <ContentControl Grid.Row="3" IsVisible="{Binding !IsLocked}" Content="{Binding AssetsesViewModel}"></ContentControl>
+            <ContentControl Width="300" VerticalAlignment="Top" Margin="20" Height="100" Grid.Row="3"
+                            Content="{Binding PropertiesViewModel.DetailViewModel}">
+            </ContentControl>
         </Grid>
         <Border Width="350" IsVisible="{Binding IsLocked}">
 

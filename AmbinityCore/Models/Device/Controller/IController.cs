@@ -5,7 +5,8 @@ namespace AmbinityCore.Models.Device.Controller;
 
 public interface IController: ICollectableItem
 {
-    public event Action TransferActiveChanged;
+    event Action WorkingStateChanged; 
+    event Action TransferActiveChanged;
     string Name { get; set; }
     Bitmap Thumbnail { get; }
     string SerialNumber { get; set; }
@@ -25,4 +26,6 @@ public interface IController: ICollectableItem
     bool AutoConnect { get; set; }
     void RegisterFanController();
     void RegisterLEDController();
+    void TurnOff();
+    void TurnOn();
 }

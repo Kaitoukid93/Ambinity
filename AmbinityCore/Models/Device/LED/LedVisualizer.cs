@@ -2,13 +2,14 @@ using AmbinityCore.Models.Device.LED;
 using AmbinityCore.Models.Geography;
 using Avalonia;
 using Avalonia.Media;
+using Avalonia.Media.Immutable;
 
 namespace Draw2D.Core.Shapes.Basic;
 
 public class LedVisualizer
 {
     private readonly SolidColorBrush _fillBrush;
-    private readonly Pen _pen;
+    private readonly ImmutablePen _pen;
     private readonly SolidColorBrush _penBrush;
 
     public LedVisualizer(AmbinityLED led)
@@ -17,7 +18,8 @@ public class LedVisualizer
 
         _fillBrush = new SolidColorBrush();
         _penBrush = new SolidColorBrush();
-        _pen = new Pen(_penBrush) { LineJoin = PenLineJoin.Round };
+        var pen = new Pen(_penBrush) { LineJoin = PenLineJoin.Round };
+        _pen = pen.ToImmutable();
 
         CreateLedGeometry();
     }

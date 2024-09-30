@@ -86,11 +86,15 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             else
             {
                 //Todo:Select Problem ->  isDragging
-                Unselect(canvas, canvas.Selection.All);
+                
                 if (figure is ResizeHandle)
                     Select(canvas, (figure as ResizeHandle).Owner);
                 else
+                {
+                    Unselect(canvas, canvas.Selection.All);
                     Select(canvas, figure);
+                }
+                    
             }
         }
 

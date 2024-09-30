@@ -130,7 +130,7 @@
 	    <DependentUpon>MotionConfigParameterView.axaml</DependentUpon>
 	    <SubType>Code</SubType>
 	  </Compile>
-	  <Compile Update="Views\LayoutEditor\RightPanel\RightPanelView.axaml.cs">
+	  <Compile Update="Views\LayoutEditor\RightPanel\ProfileEditorRightPanelView.axaml.cs">
 	    <DependentUpon>RightPanelView.axaml</DependentUpon>
 	    <SubType>Code</SubType>
 	  </Compile>
@@ -148,10 +148,6 @@
 	  </Compile>
 	  <Compile Update="Views\LayoutEditor\RightPanel\LayersView\LayerView.axaml.cs">
 	    <DependentUpon>LayerView.axaml</DependentUpon>
-	    <SubType>Code</SubType>
-	  </Compile>
-	  <Compile Update="Views\LayoutEditor\RightPanel\AssetsView\RightPanelAssetsView.axaml.cs">
-	    <DependentUpon>RightPanelAssetsView.axaml</DependentUpon>
 	    <SubType>Code</SubType>
 	  </Compile>
 	  <Compile Update="Views\Configuration\ColorConfiguration\Parameters\SelfGeneratedColor\MusicReactiveConfigurationView.axaml.cs">

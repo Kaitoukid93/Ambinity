@@ -16,14 +16,18 @@ public class DeviceSettingsViewModel : ViewModelBase
         DeviceFirmwareSettingsViewModel firmwareSettingsViewModel,
         DeviceHardwareLightingViewModel hardwareLightingViewModel,
         DevicePortConfigurationViewModel portConfigurationViewModel,
-        DeviceConnectionSettingsViewModel connectionSettingsViewModel)
+        DeviceConnectionSettingsViewModel connectionSettingsViewModel,
+        DeviceCoolingSettingsViewModel coolingSettingsViewModel)
     {
         _rootNavigationStores = navigationStores;
         PortConfigurationViewModel = portConfigurationViewModel;
         HardwareLightingViewModel = hardwareLightingViewModel;
         ConnectionSettingsViewModel = connectionSettingsViewModel;
         FirmwareSettingsViewModel = firmwareSettingsViewModel;
+        CoolingSettingsViewModel = coolingSettingsViewModel;
     }
+
+
 
     private RootNavigationStores _rootNavigationStores;
 
@@ -65,15 +69,16 @@ public class DeviceSettingsViewModel : ViewModelBase
 
     private void BackToDashboard()
     {
-        Dispose();
         var vm = Ioc.Default.GetRequiredService<DeviceSettingsDashboardViewModel>();
         _rootNavigationStores.CurrentViewModel = vm;
+        vm.Init();
     }
 
     public DeviceConnectionSettingsViewModel ConnectionSettingsViewModel { get; }
     public DeviceFirmwareSettingsViewModel FirmwareSettingsViewModel { get; }
     public DeviceHardwareLightingViewModel HardwareLightingViewModel { get; }
     public DevicePortConfigurationViewModel PortConfigurationViewModel { get; }
+    public DeviceCoolingSettingsViewModel CoolingSettingsViewModel { get; }
     public ICommand BackToDashboardCommand { get; set; }
     public object HardwareFanViewModel { get; }
 

@@ -12,25 +12,26 @@ namespace Ambinity.Views.Screens.DeviceSettings;
 
 public class DevicePortConfigurationViewModel : ViewModelBase
 {
-    public DevicePortConfigurationViewModel( PortDetailViewModel portDetailViewModel)
+    public DevicePortConfigurationViewModel(PortDetailViewModel portDetailViewModel)
     {
         PortDetailViewModel = portDetailViewModel;
     }
+
     private IController _controller;
     public PortDetailViewModel PortDetailViewModel { get; set; }
+
     public void Init(IController controller)
     {
         _controller = controller;
-        Outputs = new List<DevicePortViewModel>();
+        Ports = new List<DevicePortViewModel>();
         foreach (var output in controller.LedController.Outputs)
         {
             var port = new DevicePortViewModel(output);
             RegisterPort(port);
-            Outputs.Add(port);
+            Ports.Add(port);
         }
 
-        OnPortSelected(Outputs[0], false);
-
+        OnPortSelected(Ports[0], false);
     }
 
     private void RegisterPort(DevicePortViewModel port)
@@ -42,37 +43,40 @@ public class DevicePortConfigurationViewModel : ViewModelBase
     {
         port.Selected -= OnPortSelected;
     }
+
     private void OnPortSelected(DevicePortViewModel port, bool isCtrl)
     {
         if (!isCtrl)
         {
-            foreach (var output in Outputs)
+            foreach (var output in Ports)
             {
                 output.IsSelected = false;
             }
+
+            port.IsSelected = true;
         }
-
-        port.IsSelected = true;
-        SelectedPort = port;
-        Dispatcher.UIThread.Invoke(GetCurrentElementsGeometry);
-
-    }
-
-    private DevicePortViewModel _selectedPort;
-
-    public DevicePortViewModel SelectedPort
-    {
-        get => _selectedPort;
-        set
+        else
         {
-            _selectedPort = value;
-            PortDetailViewModel.Init(_selectedPort);
-            OnPropertyChanged();
+            port.IsSelected = !port.IsSelected;
         }
+
+        if (SelectedPorts.Count == 1)
+        {
+            PortDetailViewModel.Init(port);
+        }
+
+        else if (SelectedPorts.Count > 1)
+        {
+            PortDetailViewModel.Init(SelectedPorts);
+        }
+
+        Dispatcher.UIThread.Invoke(GetCurrentElementsGeometry);
     }
 
-    public List<DevicePortViewModel> Outputs { get; set; }
-    private List<DevicePortViewModel> SelectedOutputs => Outputs.Where(o => o.IsSelected).ToList();
+
+    public List<DevicePortViewModel> Ports { get; set; }
+    private List<DevicePortViewModel> SelectedPorts => Ports.Where(o => o.IsSelected).ToList();
+    private DevicePortViewModel _multiplePorts;
     public IController Controller => _controller;
     private Geometry _currentGeometry;
 
@@ -89,9 +93,9 @@ public class DevicePortConfigurationViewModel : ViewModelBase
     private void GetCurrentElementsGeometry()
     {
         GeometryGroup newGroup = new GeometryGroup();
-        foreach (var output in SelectedOutputs)
+        foreach (var output in SelectedPorts)
         {
-            if(output.Output.OutputPosition ==null)
+            if (output.Output.OutputPosition == null)
                 continue;
             var geometry = new RectangleGeometry(output.Output.OutputPosition.ToRect())
             {
@@ -101,20 +105,22 @@ public class DevicePortConfigurationViewModel : ViewModelBase
             newGroup.Children.Add(geometry);
         }
 
-        var controllerRect = new RectangleGeometry(new Rect(0, 0, _controller.PhysicalWidth, _controller.PhysicalHeight));
+        var controllerRect =
+            new RectangleGeometry(new Rect(0, 0, _controller.PhysicalWidth, _controller.PhysicalHeight));
         var geo = new CombinedGeometry(GeometryCombineMode.Exclude, controllerRect, newGroup);
         CurrentGeometry = geo;
     }
+
     public override void Dispose()
     {
         base.Dispose();
-        if (Outputs != null)
+        if (Ports != null)
         {
-            foreach (var port in Outputs)
+            foreach (var port in Ports)
             {
                 UnRegiseterPort(port);
             }
         }
-        
+        PortDetailViewModel?.Dispose();
     }
 }

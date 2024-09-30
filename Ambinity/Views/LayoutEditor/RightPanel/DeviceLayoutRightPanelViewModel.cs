@@ -1,9 +1,17 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Ambinity.ViewModels;
+using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 using Ambinity.Views.Draw2DCanvas;
+using Ambinity.Views.Screens.DeviceLayout;
+using Ambinity.Views.Screens.DeviceLayout.Library;
 using AmbinityCore.Models.Collection;
+using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Repositories;
+using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 
 namespace Ambinity.Views.LayoutEditor;
@@ -13,16 +21,55 @@ namespace Ambinity.Views.LayoutEditor;
 /// </summary>
 public class DeviceLayoutRightPanelViewModel : ViewModelBase
 {
+    public event Action OpenFlyoutEvent;
+    public event Action CloseFlyoutEvent;
+
     public DeviceLayoutRightPanelViewModel(
         Draw2DCanvasViewModel canvasViewModel,
-        RightPanelAssetsViewModel assetsesViewModel,
-        LightingProfileDecoder decoder
+        LightingProfileDecoder decoder,
+        LibraryViewModelFactory libraryViewModelFactory
     )
     {
+        _libraryViewModelFactory = libraryViewModelFactory;
         _decoder = decoder;
         _canvasViewModel = canvasViewModel;
-        AssetsesViewModel = assetsesViewModel;
-        
+        OpenLibraryCommand = new AsyncRelayCommand(OpenLibrary);
+    }
+
+    private async Task OpenLibrary()
+    {
+        _libraryViewModel = _libraryViewModelFactory.GetLibraryViewModel("DeviceLayout");
+        _libraryViewModel?.Init();
+        _libraryViewModel.ItemSelected += OnLibraryItemSelected;
+        // _libraryViewModel.ItemSelected += OnPaletteSelected;
+        OpenFlyout(_libraryViewModel);
+    }
+
+    private void OnLibraryItemSelected(ICollectableItem item)
+    {
+        ApplyLayout(item as AmbinityDeviceLayout);
+    }
+
+    private void ApplyLayout(AmbinityDeviceLayout layout)
+    {
+        //get all selected device and apply this layout
+        var figs = _canvasViewModel.Canvas.Selection.All;
+        if (figs == null || figs.Count == 0)
+            return;
+        var selectedDevices = new List<AmbinityDevice>();
+        foreach (var fig in figs)
+        {
+            var deviceContainerFigure = fig as DeviceContainerFigure;
+            if (deviceContainerFigure != null)
+            {
+                selectedDevices.Add(deviceContainerFigure.ChildItem as AmbinityDevice);
+            }
+        }
+
+        foreach (var device in selectedDevices)
+        {
+            device.LoadLayout(layout);
+        }
     }
 
     private void OnRenderingStatusChanged()
@@ -30,6 +77,19 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsLocked));
     }
 
+    public void OpenFlyout(FlyoutContentViewModelBase flyoutViewModel)
+    {
+        FlyoutViewModel = flyoutViewModel;
+        OpenFlyoutEvent?.Invoke();
+    }
+
+    public void OnFlyoutClosing()
+    {
+        FlyoutViewModel.Dispose();
+        FlyoutViewModel = null;
+    }
+
+    public FlyoutContentViewModelBase FlyoutViewModel { get; set; }
 
     /// <summary>
     /// This is when user close by pressing button
@@ -43,23 +103,19 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
     {
         PropertiesViewModel.UpdateObjectProperties();
     }
-    
-    public CanvasObjectPropertiesViewModelBase PropertiesViewModel { get; set; }
-    public RightPanelAssetsViewModel AssetsesViewModel { get; set; }
-    private Draw2DCanvasViewModel _canvasViewModel;
-    private CollectableItemRepository _localRepository;
-    private OnlineItemRepository _onlineItemRepository;
-    private readonly LightingProfileDecoder _decoder;
 
-    public async Task Init(CollectableItemRepository localRepo, OnlineItemRepository onlineRepo)
+    public DevicePropertiesViewModel PropertiesViewModel { get; set; }
+    private Draw2DCanvasViewModel _canvasViewModel;
+    private readonly LightingProfileDecoder _decoder;
+    private readonly LibraryViewModelFactory _libraryViewModelFactory;
+    private LibraryViewModelBase _libraryViewModel;
+
+    public async Task Init()
     {
         _canvasViewModel.SelectionChanged += OnCanvasSelectionChanged;
         _canvasViewModel.FigureRemoved += OnFigureRemoved;
         _decoder.RenderingStatusChanged += OnRenderingStatusChanged;
-        _localRepository = localRepo;
-        _onlineItemRepository = onlineRepo;
         PropertiesViewModel.Init();
-        await AssetsesViewModel.Init(_localRepository, _onlineItemRepository);
     }
 
     public override void Dispose()
@@ -69,4 +125,5 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
     }
 
     public bool IsLocked => _decoder.IsRendering;
+    public ICommand OpenLibraryCommand { get; }
 }

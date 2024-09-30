@@ -82,7 +82,7 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
     {
         _discoveryService.Hold();
         _serialStream = _controllerRepository.GetSerialStream(controller);
-        _serialStream?.Stop();
+        await _serialStream?.Stop();
         if (controller is OpenRGBController)
         {
             IsAvailable = false;

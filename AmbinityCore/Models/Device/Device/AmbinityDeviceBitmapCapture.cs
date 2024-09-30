@@ -22,6 +22,7 @@ public class AmbinityDeviceBitmapCapture
     private CancellationTokenSource _cancellationTokenSource;
     private Thread _workerThread;
     private float _smoothFactor = 1f;
+    public AmbinityDevice Device => _device;
 
     public void Init()
     {
@@ -70,8 +71,8 @@ public class AmbinityDeviceBitmapCapture
                                 led.LED.Red,
                                 led.LED.Green,
                                 led.LED.Blue);
-                            if(!_device.IsIdentifying)
-                            led.LED.SetColor(R, G, B, false);
+                            if (!_device.IsIdentifying)
+                                led.LED.SetColor(R, G, B, false);
                         }
                     }
                 }
@@ -90,6 +91,13 @@ public class AmbinityDeviceBitmapCapture
         }
     }
 
+    public void Dispose()
+    {
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource = null;
+        _workerThread = null;
+        GC.SuppressFinalize(this);
+    }
     private void ApplySmoothing(float r, float g, float b, out byte semifinalR, out byte semifinalG,
         out byte semifinalB,
         byte lastColorR, byte lastColorG, byte lastColorB)
@@ -113,7 +121,7 @@ public class AmbinityDeviceBitmapCapture
         for (var y = (int)spotRectangle.Top; y < spotRectangle.Bottom; y += stepy)
         {
             var index = 4 * _frame.FrameWidth * y + 4 * (int)spotRectangle.Left;
-           
+
             fixed (byte* ptr = _frame.PixelData)
             {
                 for (var i = 0; i < stepCount; i++)
@@ -124,6 +132,7 @@ public class AmbinityDeviceBitmapCapture
                     index += stepxTimes4;
                 }
             }
+
             count += stepCount;
         }
     }

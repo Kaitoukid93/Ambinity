@@ -1,3 +1,6 @@
+using Ambinity.Views.Screens.DeviceLayout.Library;
+using Ambinity.Views.Screens.ProfileEditor.Library;
+
 namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 
 /// <summary>
@@ -5,7 +8,9 @@ namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 /// </summary>
 public class LibraryViewModelFactory(
     ColorPalettesLibraryViewModel colorPalettesLibraryViewModel,
-    AnimationLibraryViewModel animationLibraryViewModel)
+    AnimationLibraryViewModel animationLibraryViewModel,
+    DeviceLayoutsLibraryViewModel deviceLayoutsLibraryViewModel,
+    LightingZonesLibraryViewModel lightingZonesLibraryViewModel)
 {
     public LibraryViewModelBase GetLibraryViewModel(string type)
     {
@@ -13,6 +18,8 @@ public class LibraryViewModelFactory(
         {
             "ColorPalette" => colorPalettesLibraryViewModel,
             "Animation" => animationLibraryViewModel,
+            "DeviceLayout" => deviceLayoutsLibraryViewModel,
+            "LightingZone" => lightingZonesLibraryViewModel,
             _ => null
         };
     }
