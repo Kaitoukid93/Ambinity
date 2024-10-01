@@ -12,12 +12,12 @@ namespace AmbinityCore.LightingEngines;
 /// </summary>
 public class MusicReactiveBrightnessProvider : IBrightnessProvider
 {
-    private AudioCapturingService _capturingService;
+    private AudioCapturingService _audioCapturingService;
     private bool _isActivated;
     private int _deviceID;
     private Thread? _workerThread;
     private bool _isActivating;
-    private readonly AudioBuffer _buffer;
+    private AudioBuffer _buffer;
     private readonly byte[] _internalBuffer;
     private readonly MusicReactiveMotionConfiguration _configuration;
     private int[] _frequencyRange;
@@ -27,20 +27,35 @@ public class MusicReactiveBrightnessProvider : IBrightnessProvider
     private int _lastSumByte;
     private NoSoundBehaviorEnum _noSoundBehavior;
     private IVisualizerStyle _visualizerStyle;
+    public event Action DefaultDeviceChanged;
 
-    public MusicReactiveBrightnessProvider(IMotionConfiguration configuration, AudioCapturingService capturingService)
+    public MusicReactiveBrightnessProvider(IMotionConfiguration configuration,
+        CapturingServiceProvider capturingServiceProvider)
     {
         _configuration = configuration as MusicReactiveMotionConfiguration;
         _configuration.FrequencyRangeUpdate += OnFrequencyRangeUpdate;
         _configuration.VisualizerStyleUpdate += OnVisualizerStyleUpdate;
         _configuration.NoSoundBehaviorUpdate += OnNoSoundBehaviorUpdate;
-        _capturingService = capturingService;
-        _deviceID = _configuration.UseDefaultDevice ? _capturingService.DefaultDeviceID : _configuration.AudioDevice.ID;
-        _buffer = _capturingService.Buffer;
+        _configuration.AudioDeviceChanged += OnDeviceChanged;
+        _audioCapturingService =
+            (AudioCapturingService)capturingServiceProvider.GetCapturingService(CapturingType.AudioCapture);
+        _audioCapturingService.DefaultDeviceChanged += OnDeviceChanged;
+        _deviceID = _configuration.UseDefaultDevice
+            ? _audioCapturingService.DefaultDeviceID
+            : _configuration.AudioDevice.ID;
+        _buffer = _audioCapturingService.Buffer;
         _internalBuffer = new byte[32];
         OnFrequencyRangeUpdate();
         OnVisualizerStyleUpdate();
         OnNoSoundBehaviorUpdate();
+    }
+
+    private void OnDeviceChanged()
+    {
+        _deviceID = _configuration.UseDefaultDevice
+            ? _audioCapturingService.DefaultDeviceID
+            : _configuration.AudioDevice.ID;
+        _buffer = _audioCapturingService.Buffer;
     }
 
     private void OnNoSoundBehaviorUpdate()
@@ -60,13 +75,13 @@ public class MusicReactiveBrightnessProvider : IBrightnessProvider
 
     public void Activate()
     {
-        _capturingService.RegisterBrightnessProvider();
+        _audioCapturingService.RegisterBrightnessProvider();
     }
 
 
     public void Deactivate()
     {
-        _capturingService.UnRegisterBrightnessProvider();
+        _audioCapturingService.UnRegisterBrightnessProvider();
     }
 
     public void Init(IMotionConfiguration config)

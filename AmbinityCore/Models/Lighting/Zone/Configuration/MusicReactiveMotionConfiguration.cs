@@ -3,6 +3,7 @@ namespace AmbinityCore.Models.Lighting.Zone.Configuration;
 public class MusicReactiveMotionConfiguration : IMotionConfiguration
 {
     public event Action Update;
+    public event Action AudioDeviceChanged;
     public event Action FrequencyRangeUpdate;
     public event Action VisualizerStyleUpdate;
     public event Action NoSoundBehaviorUpdate;
@@ -41,7 +42,7 @@ public class MusicReactiveMotionConfiguration : IMotionConfiguration
     public void SetAudioDevice(AudioDevice device)
     {
         AudioDevice = device;
-        UpdateConfig();
+        AudioDeviceChanged?.Invoke();
     }
 
     public void UpdateVisualizerStyle()
@@ -57,7 +58,7 @@ public class MusicReactiveMotionConfiguration : IMotionConfiguration
     public void AudioDeviceUseDefaultUpdate()
     {
         if (UseDefaultDevice)
-            UpdateConfig();
+            AudioDeviceChanged?.Invoke();
     }
 
     public void UpdateSoundBehavior()

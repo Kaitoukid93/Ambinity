@@ -15,14 +15,14 @@ public class MotionConfigParameterViewModel : ParameterViewModelBase
     private Dictionary<string, MotionTypeEnum> _typeEnums = new Dictionary<string, MotionTypeEnum>();
 
     public MotionConfigParameterViewModel(SelfGeneratedColorConfiguration configuration,
-        AudioCapturingService audioCapturingService,
+        CapturingServiceProvider capturingServiceProvider,
         ProfileEditorRightPanelViewModel rightPanelViewModel, BrightnessProviderFactory brightnessProviderFactory
     )
     {
         _typeEnums.Add("Music Reactive", MotionTypeEnum.MusicReactive);
         _typeEnums.Add("None", MotionTypeEnum.None);
         _typeEnums.Add("Breathing", MotionTypeEnum.Breathing);
-        _audioCapturingService = audioCapturingService;
+        _capturingServiceProvider = capturingServiceProvider;
         _configuration = configuration;
         _rightPanelViewModel = rightPanelViewModel;
         _brightnessProviderFactory = brightnessProviderFactory;
@@ -53,7 +53,7 @@ public class MotionConfigParameterViewModel : ParameterViewModelBase
             case MotionTypeEnum.Breathing:
                 return new BreathingColorConfigurationViewModel(configuration);
             case MotionTypeEnum.MusicReactive:
-                return new MusicReactiveConfigurationViewModel(configuration, _audioCapturingService);
+                return new MusicReactiveConfigurationViewModel(configuration, _capturingServiceProvider);
             default: return null;
         }
     }
@@ -62,7 +62,7 @@ public class MotionConfigParameterViewModel : ParameterViewModelBase
     private SelfGeneratedColorConfiguration _configuration;
     public List<string> AvailableMotions { get; set; }
     private string _selectedMotionConfig;
-    private readonly AudioCapturingService _audioCapturingService;
+    private readonly CapturingServiceProvider _capturingServiceProvider;
 
     public string SelectedMotionConfig
     {

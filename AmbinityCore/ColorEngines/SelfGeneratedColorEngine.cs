@@ -39,7 +39,7 @@ public class SelfGeneratedColorEngine : IColorEngine
     {
         _deviceRepository = deviceRepository;
         _brightnessProviderFactory = brightnessProviderFactory;
-        _brightnessProviderFactory.DefaultDeviceChanged += UpdateBrightnessProvider;
+        // _brightnessProviderFactory.DefaultDeviceChanged += UpdateBrightnessProvider;
         _deviceRepository.DevicesListUpdated += OnDeviceListUpdated;
         _buffer = buffer;
         _lineList = new List<Point[]>();
@@ -152,7 +152,7 @@ public class SelfGeneratedColorEngine : IColorEngine
     private void UpdateMotionConfig()
     {
         _motionConfig = _config.MotionConfig;
-        _motionConfig.Update += UpdateBrightnessProvider;
+        // _motionConfig.Update += UpdateBrightnessProvider;
         UpdateBrightnessProvider();
     }
     /// <summary>
@@ -243,13 +243,12 @@ public class SelfGeneratedColorEngine : IColorEngine
         _config.ColorsBehaviorUpdated -= UpdateColorsBehavior;
         _config.ApperanceUpdated -= UpdatePixelsData;
         _config.MotionConfigUpdated -= UpdateMotionConfig;
-        _brightnessProviderFactory.DefaultDeviceChanged -= UpdateBrightnessProvider;
+        // _brightnessProviderFactory.DefaultDeviceChanged -= UpdateBrightnessProvider;
         _brightnessProvider.Deactivate();
         _deviceRepository.DevicesListUpdated -= OnDeviceListUpdated;
         _motionConfig.Update -= UpdateBrightnessProvider;
         IsDisposed = true;
         GC.Collect();
     }
-
-    public CapturingType CaptureType => CapturingType.None;
+    
 }

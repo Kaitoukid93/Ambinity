@@ -168,6 +168,7 @@ public class AmbinityBootStrapper
                 //Capturing Service
                 .AddSingleton<ScreenCapturingService>()
                 .AddSingleton<AudioCapturingService>()
+                .AddSingleton<HWMonitorCapturingService>()
                 .AddSingleton<CapturingServiceProvider>()
                 .AddSingleton<DeviceBitmapCaptureFactory>()
                 .AddSingleton<BassAudioDeviceEnumerationService>()

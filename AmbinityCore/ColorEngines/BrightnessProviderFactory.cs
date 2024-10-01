@@ -7,24 +7,20 @@ namespace AmbinityCore.LightingEngines;
 
 public class BrightnessProviderFactory
 {
-    public event Action DefaultDeviceChanged;
+  
 
-    public BrightnessProviderFactory(AudioCapturingService capturingService)
+    public BrightnessProviderFactory(CapturingServiceProvider capturingServiceProvider)
     {
-        _capturingService = capturingService;
-        _capturingService.DefaultDeviceChanged += OnDefaultDeviceChanged;
+        _capturingServiceProvider = capturingServiceProvider;
+    
     }
+    
 
-    private void OnDefaultDeviceChanged()
-    {
-        DefaultDeviceChanged?.Invoke();
-    }
-
-    private AudioCapturingService _capturingService;
+    private CapturingServiceProvider _capturingServiceProvider;
 
     private MusicReactiveBrightnessProvider GetMusicBrightnessProvider(IMotionConfiguration config)
     {
-        var brightnessProvider = new MusicReactiveBrightnessProvider(config, _capturingService);
+        var brightnessProvider = new MusicReactiveBrightnessProvider(config, _capturingServiceProvider);
         brightnessProvider.Activate();
         return brightnessProvider;
     }

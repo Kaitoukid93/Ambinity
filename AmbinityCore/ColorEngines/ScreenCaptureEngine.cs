@@ -37,7 +37,7 @@ public class ScreenCaptureEngine : IColorEngine
 
     public void Init(LightingZone zone)
     {
-        _screenCapturingService = (ScreenCapturingService)_capturingServiceProvider.GetCapturingService(this);
+        _screenCapturingService = (ScreenCapturingService)_capturingServiceProvider.GetCapturingService(this.CaptureType);
         _zone = zone;
         _zone.UpdateFrameBuffer();
         _ledRects = new List<CaptureRect>();

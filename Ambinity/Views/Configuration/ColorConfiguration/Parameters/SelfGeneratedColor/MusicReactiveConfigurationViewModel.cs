@@ -15,9 +15,10 @@ public class MusicReactiveConfigurationViewModel : MotionConfigurationViewModelB
     private AudioBuffer _buffer;
 
     public MusicReactiveConfigurationViewModel(IMotionConfiguration config,
-        AudioCapturingService audioCapturingService)
+        CapturingServiceProvider capturingServiceProvider)
     {
-        _audioCapturingService = audioCapturingService;
+        _capturingServiceProvider = capturingServiceProvider;
+        _audioCapturingService = (AudioCapturingService)capturingServiceProvider.GetCapturingService(CapturingType.AudioCapture);
         _buffer = _audioCapturingService.Buffer;
         _audioCapturingService.VisualizerUpdate += OnDataUpdate;
         _audioCapturingService.DefaultDeviceChanged += OnDefaultDeviceChanged;
@@ -223,6 +224,7 @@ public class MusicReactiveConfigurationViewModel : MotionConfigurationViewModelB
     }
 
     private int _stopFrequency;
+    private readonly CapturingServiceProvider _capturingServiceProvider;
     private readonly AudioCapturingService _audioCapturingService;
 
     public int StopFrequency
@@ -318,5 +320,6 @@ public class MusicReactiveConfigurationViewModel : MotionConfigurationViewModelB
         }
     }
 
-    public string NoSoundTeachingTipSubTitle =>"##### How the LEDs behavior when there is no sound captured for the period of time\n * `Keep LEDs off` : The LEDs will stay off as there is no sound present\n * `Return to normal lighting` : The LEDs will show full brightness and will react to music when the sound data is available in the buffer";
+    public string NoSoundTeachingTipSubTitle =>
+        "##### How the LEDs behavior when there is no sound captured for the period of time\n * `Keep LEDs off` : The LEDs will stay off as there is no sound present\n * `Return to normal lighting` : The LEDs will show full brightness and will react to music when the sound data is available in the buffer";
 }

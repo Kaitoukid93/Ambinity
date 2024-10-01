@@ -3,7 +3,7 @@ namespace AmbinityCore.CapturingService.HWMonitorCapturing;
 public class HWMonitorCaptureDataBuffer
 {
     #region Properties & Fields
-    private byte[][] _buffer;
+    private double[][] _buffer;
     private int _capacity;
 
     public int Size => _capacity;
@@ -15,10 +15,10 @@ public class HWMonitorCaptureDataBuffer
     public HWMonitorCaptureDataBuffer(int capacity)
     {
         this._capacity = capacity;
-        _buffer = new byte[capacity][];
+        _buffer = new double[capacity][];
         for (int i = 0; i < capacity; i++)
         {
-            _buffer[i] = new byte[3]; //value, min , max
+            _buffer[i] = new double[3]; //value, min , max
         }
     }
 
@@ -26,16 +26,16 @@ public class HWMonitorCaptureDataBuffer
 
     #region Methods
 
-    public void Put(int index, byte[] data)
+    public void Put(int index, double[] data)
     {
         data.CopyTo(_buffer[index],0);
     }
 
-    public byte GetByte(int position, int index)
+    public double GetValue(int position, int index)
     {
         return _buffer[position][index];
     }
-    public void CopyInto(int index,byte[] reusableArray)
+    public void CopyInto(int index,double[] reusableArray)
     {
         _buffer[index].CopyTo(reusableArray,0);
     }

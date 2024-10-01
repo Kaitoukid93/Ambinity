@@ -18,7 +18,7 @@ namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 /// </summary>
 public class ParameterViewModelFactory(
     ProfileEditorRightPanelViewModel rightPanelViewModel,
-    AudioCapturingService audioCapturingService,
+    CapturingServiceProvider capturingServiceProvider,
     IWindowService windowService,
     IDialogService dialogService,
     GeneralSettingsManager settingsManager,
@@ -57,7 +57,7 @@ public class ParameterViewModelFactory(
         var colorAppearanceParameter = new ColorAppearanceParameterViewModel(configuration);
         parameters.Add(colorAppearanceParameter);
         parameters.Add(new SeparationParameterViewModel());
-        var motionConfigParameter = new MotionConfigParameterViewModel(configuration, audioCapturingService,
+        var motionConfigParameter = new MotionConfigParameterViewModel(configuration, capturingServiceProvider,
             rightPanelViewModel, brightnessProviderFactory);
         parameters.Add(motionConfigParameter);
         return parameters;

@@ -11,7 +11,7 @@ public enum CapturingType
     /// </summary>
     AudioCapture,
     /// <summary>
-    /// Capturing service is not required
+    /// Require Hardware capturing service
     /// </summary>
-    None
+    HWCapture,
 }

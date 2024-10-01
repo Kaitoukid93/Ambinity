@@ -24,12 +24,17 @@ public class HWMonitorCapturingService : ICapturingService
     private List<ISensor> _fanControlSensors;
     private List<ISensor> _fanSpeedSensors;
     private Motherboard _motherboard;
+    private HWMonitorCaptureDataBuffer _buffer;
+    private double[] _sensorValue = new double[3];
+    public HWMonitorCaptureDataBuffer Buffer => _buffer;
     private bool _disposed { get; set; }
     private int _userCount;
     private CancellationTokenSource _cancellationTokenSource;
+
     public void Init()
     {
-        _computer = new LibreHardwareMonitor.Hardware.Computer {
+        _computer = new LibreHardwareMonitor.Hardware.Computer
+        {
             IsCpuEnabled = true,
             IsGpuEnabled = true,
             IsMemoryEnabled = false,
@@ -37,7 +42,6 @@ public class HWMonitorCapturingService : ICapturingService
             IsControllerEnabled = true,
             IsNetworkEnabled = false,
             IsStorageEnabled = false
-
         };
         _computer.Open();
         _computer.Accept(_updateVisitor = new UpdateVisitor());
@@ -56,6 +60,7 @@ public class HWMonitorCapturingService : ICapturingService
             Log.Warning("No motherboard found");
             return;
         }
+
         if (_motherboard.SubHardware.Length > 0) // check if any subhardware in motherboard
         {
             foreach (var hardware in _motherboard.SubHardware)
@@ -67,13 +72,13 @@ public class HWMonitorCapturingService : ICapturingService
                         _fanSpeedSensors.Add(sensor);
                         Log.Information(sensor.SensorType.ToString() + " " + sensor.Name);
                     }
+
                     if (sensor.SensorType == SensorType.Control) // fan speed sensors
                     {
                         _fanControlSensors.Add(sensor);
                         Log.Information(sensor.SensorType.ToString() + " " + sensor.Name);
                     }
                 }
-                
             }
         }
 
@@ -83,6 +88,7 @@ public class HWMonitorCapturingService : ICapturingService
             return;
         }
 
+        _buffer = new HWMonitorCaptureDataBuffer(_fanControlSensors.Count);
         var thread = new Thread(() => Capture(_cancellationTokenSource.Token))
         {
             IsBackground = true,
@@ -101,35 +107,32 @@ public class HWMonitorCapturingService : ICapturingService
             {
                 for (var i = 0; i < _fanSpeedSensors.Count; i++)
                 {
-                    if (_fanSpeedSensors[i].Value == double.NaN)// this is speed target control but header is empty
+                    if (_fanSpeedSensors[i].Value == double.NaN) // this is speed target control but header is empty
                     {
                         _fanControlSensors.RemoveAt(i);
                     }
                 }
+
                 List<double> values = new List<double>();
                 foreach (var sensor in _fanControlSensors)
                 {
                     if (sensor.Value.HasValue)
-                        values.Add((double)sensor.Value);
+                    {
+                        _sensorValue[0] = sensor.Value.Value;
+                        _sensorValue[1] = sensor.Min.Value;
+                        _sensorValue[2] = sensor.Max.Value;
+                        _buffer.Put(sensor.Index, _sensorValue);
+                    }
+
+                    values.Add((double)sensor.Value);
                 }
-                var medianValue = values.Mean();
+                //get median value??
             }
             else
             {
                 Thread.Sleep(1000);
             }
         }
-    }
-
-    public IScreenCapture GetScreenCapture(int index)
-    {
-        if (index >= _screenCaptures.Count)
-        {
-            Log.Error("Display does not exist");
-            return null;
-        }
-
-        return _screenCaptures[index];
     }
 
     public void RegisterUse()
@@ -157,21 +160,7 @@ public class HWMonitorCapturingService : ICapturingService
         {
             return;
         }
-
-        if (disposing)
-        {
-            foreach (var capture in _screenCaptures)
-            {
-                capture?.Dispose();
-            }
-
-            _screenCaptureService?.Dispose();
-        }
-
-        _screenCaptures = null;
-
+        _computer?.Close();
         _disposed = true;
     }
-}
-
 }

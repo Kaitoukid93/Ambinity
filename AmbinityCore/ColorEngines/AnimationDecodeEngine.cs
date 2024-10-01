@@ -90,5 +90,5 @@ public class AnimationDecodeEngine : IColorEngine
     }
 
     public bool IsDisposed { get; }
-    public CapturingType CaptureType => CapturingType.None;
+
 }
