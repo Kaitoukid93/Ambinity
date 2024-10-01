@@ -4,6 +4,8 @@ using Ambinity.Stores;
 using Ambinity.ViewModels;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Controller;
+using AmbinityServer.OnlineItem;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
@@ -17,8 +19,9 @@ public class DeviceSettingsViewModel : ViewModelBase
         DeviceHardwareLightingViewModel hardwareLightingViewModel,
         DevicePortConfigurationViewModel portConfigurationViewModel,
         DeviceConnectionSettingsViewModel connectionSettingsViewModel,
-        DeviceCoolingSettingsViewModel coolingSettingsViewModel)
+        DeviceCoolingSettingsViewModel coolingSettingsViewModel,ThumbnailService thumbnailService)
     {
+        _thumbnailService = thumbnailService;
         _rootNavigationStores = navigationStores;
         PortConfigurationViewModel = portConfigurationViewModel;
         HardwareLightingViewModel = hardwareLightingViewModel;
@@ -28,13 +31,14 @@ public class DeviceSettingsViewModel : ViewModelBase
     }
 
 
-
     private RootNavigationStores _rootNavigationStores;
-
+    private ThumbnailService _thumbnailService;
     public async Task<bool> Init(IController controller)
     {
         Controller = controller;
-
+        Thumbnail = Controller.Thumbnail ??  _thumbnailService.GetThumbnail("null").Result;
+        HasFanControl = Controller.FanController != null;
+        OnPropertyChanged(nameof(HasFanControl));
         var result = await HardwareLightingViewModel.Init(controller);
 
         //init child viewmodel
@@ -47,6 +51,7 @@ public class DeviceSettingsViewModel : ViewModelBase
             //Dispatcher.UIThread.Invoke(BackToDashboard);
             return false;
         }
+
         return true;
     }
 
@@ -81,6 +86,8 @@ public class DeviceSettingsViewModel : ViewModelBase
     public DeviceCoolingSettingsViewModel CoolingSettingsViewModel { get; }
     public ICommand BackToDashboardCommand { get; set; }
     public object HardwareFanViewModel { get; }
+    public bool HasFanControl { get; set; }
+    public Bitmap Thumbnail { get; set; }
 
     public override void Dispose()
     {

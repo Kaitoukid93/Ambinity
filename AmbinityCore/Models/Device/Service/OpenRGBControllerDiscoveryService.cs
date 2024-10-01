@@ -37,6 +37,7 @@ public class OpenRGBControllerDiscoveryService
             controller.SerialPort = device.Location.ToValidFileName();
             controller.SerialNumber = device.Serial;
             controller.MaxLEDSupport = device.Leds.Length;
+            controller.HardwareType = device.Type;
             while (_onHold)
             {
                 await Task.Delay(100);

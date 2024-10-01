@@ -24,7 +24,7 @@
             <TextBlock Classes="smallBold" Text="Port Configuration"></TextBlock>
         </Grid>
         <ui:InfoBar Grid.Row="2" Title="Tips" IsOpen="True" Severity="Informational" Message="Ctrl + click to select multiple device and control them all at once." />
-        <Grid Row="4" ColumnDefinitions="Auto,5,500,5,*">
+        <Grid Row="4" ColumnDefinitions="250,5,500,5,*">
             <Grid Column="0">
                 <Border Classes="card">
                     <ScrollViewer IsScrollInertiaEnabled="True">

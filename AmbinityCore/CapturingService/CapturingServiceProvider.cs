@@ -1,4 +1,3 @@
-using AmbinityCore.CaptureEngines;
 using AmbinityCore.LightingEngines;
 using CommunityToolkit.Mvvm.DependencyInjection;
 
@@ -22,7 +21,6 @@ public class CapturingServiceProvider
             case CapturingType.ScreenCapture:
                 return Ioc.Default.GetRequiredService<ScreenCapturingService>();
                 break;
-
         }
 
         return null;

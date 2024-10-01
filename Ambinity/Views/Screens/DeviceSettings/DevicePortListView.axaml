@@ -22,9 +22,11 @@
             <PathIcon Margin="10,0,10,0" Data="{Binding Icon,Converter={StaticResource ResourceConverter}}"></PathIcon>
             <TextBlock Grid.Column="1" Padding="0 5"
                        FontWeight="SemiBold"
+                       ToolTip.Tip="{Binding Content}"
                        PointerPressed="InputElement_OnPointerPressed"
                        FontSize="13"
                        VerticalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"
                        Margin="0,0,10,0"
                        HorizontalAlignment="Left" Text="{Binding Content}">
             </TextBlock>

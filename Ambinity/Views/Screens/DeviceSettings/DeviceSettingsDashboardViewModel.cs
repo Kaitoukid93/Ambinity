@@ -6,6 +6,7 @@ using Ambinity.ViewModels;
 using Ambinity.Windows;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Controller;
+using AmbinityServer.OnlineItem;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData.Binding;
@@ -17,8 +18,9 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
 {
     public DeviceSettingsDashboardViewModel(RootNavigationStores rootNavigationStores,
         SerialControllerRepository serialControllerRepository, OpenRGBControllerRepository openRgbControllerRepository,
-        DeviceSettingsInfoBarViewModel infoBarViewModel, IDialogService dialogService, DeviceSettingsViewModel deviceSettingsViewModel)
+        DeviceSettingsInfoBarViewModel infoBarViewModel, IDialogService dialogService, DeviceSettingsViewModel deviceSettingsViewModel, ThumbnailService thumbnailService)
     {
+        _thumbnailService = thumbnailService;
         _deviceSettingsViewModel = deviceSettingsViewModel;
         _dialogService = dialogService;
         _rootNavigationStores = rootNavigationStores;
@@ -35,7 +37,7 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
     public DeviceSettingsInfoBarViewModel InfoBarViewModel { get; set; }
     private SerialControllerRepository _serialControllerRepository;
     private OpenRGBControllerRepository _openRgbControllerRepository;
-
+    private ThumbnailService _thumbnailService;
     private readonly RootNavigationStores _rootNavigationStores;
     public ObservableCollection<DashboardDeviceViewModel> Devices { get; set; }
     public ObservableCollection<DashboardDeviceViewModel> CoolingDevices { get; set; }
@@ -71,7 +73,7 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
 
     public void AddController(IController controller)
     {
-        var deviceVm = new DashboardDeviceViewModel(controller);
+        var deviceVm = new DashboardDeviceViewModel(controller, _thumbnailService);
         deviceVm.DeviceClicked += GoToDeviceControl;
         Devices.Add(deviceVm);
         if(controller.FanController!=null)

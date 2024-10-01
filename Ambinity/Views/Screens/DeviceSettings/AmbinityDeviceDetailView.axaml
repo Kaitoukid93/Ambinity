@@ -8,7 +8,7 @@
              x:Class="Ambinity.Views.Screens.DeviceSettings.AmbinityDeviceDetailView">
     <UserControl.Styles>
         <Style Selector="Image.thumb">
-            <Setter Property="Source" Value="{Binding GetThumbnail^,FallbackValue=null}"></Setter>
+            <Setter Property="Source" Value="{Binding GetThumbnail^}"></Setter>
         </Style>
         <Style Selector="Image.thumb.multiple">
             <Setter Property="Source" Value="/Assets/Images/multiSelect.png"></Setter>

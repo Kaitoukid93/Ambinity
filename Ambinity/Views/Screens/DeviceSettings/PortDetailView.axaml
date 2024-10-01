@@ -84,7 +84,7 @@
                 </ui:SettingsExpander.IconSource>
                 <ui:SettingsExpander.Footer>
                     <Slider IsSnapToTickEnabled="True" TickFrequency="1"
-                            Margin="0" Width="160" Value="{Binding Brightness}" Minimum="0" Maximum="100">
+                            Margin="0" Width="160" Value="{Binding Brightness}" Minimum="0" Maximum="255">
                     </Slider>
                 </ui:SettingsExpander.Footer>
             </ui:SettingsExpander>

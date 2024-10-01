@@ -45,7 +45,7 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
     {
         var dialogvm = new LoadingDialogViewModel();
         _dialogService.ShowLoadingDialog(dialogvm, "Applying");
-        var result = await _serialControllerHelpers.SendHardwareSettings(_controller);
+        var result = await _serialControllerHelpers.SendHardwareSettings(_controller as SerialController);
         if (result)
         {
             dialogvm.ShowSuccess("Settings saved to device memory");
@@ -81,17 +81,16 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
     public async Task<bool> Init(IController controller)
     {
         _discoveryService.Hold();
-        _serialStream = _controllerRepository.GetSerialStream(controller);
-        await _serialStream?.Stop();
+        _controller = controller;
         if (controller is OpenRGBController)
         {
             IsAvailable = false;
             await Task.Delay(1000);
             return true;
         }
-
-        _controller = controller as SerialController;
-        var result = await _serialControllerHelpers.GetHardwareSettings(false, _controller);
+        _serialStream = _controllerRepository.GetSerialStream(controller);
+        await _serialStream?.Stop();
+        var result = await _serialControllerHelpers.GetHardwareSettings(false, _controller as SerialController);
         if (!result)
         {
             //ShowDeviceConnectionErrorDialog();
@@ -139,7 +138,7 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
         }
     }
 
-    private SerialController _controller;
+    private IController _controller;
     private SerialLEDControllerHardwareSettings _ledHardwareSettings;
     private SerialFanControllerHardwareSettings _fanHardwareSettings;
     public SerialLEDControllerHardwareSettings LedHardwareSettings => _ledHardwareSettings;
@@ -263,7 +262,7 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
     public LibraryViewModelBase CurrentFlyoutViewModel { get; set; }
     public ICommand OpenColorPaletteLibraryCommand { get; set; }
     public ICommand ApplyHardwareSettingsCommand { get; set; }
-    public bool HasFanControl => _controller.FanController != null;
+    public bool HasFanControl => _controller.FanController != null && IsAvailable;
 
     public override void Dispose()
     {

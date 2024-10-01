@@ -28,7 +28,7 @@
         </Style>
         <Style Selector="TextBlock.connected">
             <Setter Property="Text" Value="Connected" />
-            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}"></Setter>
+            <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}"></Setter>
         </Style>
         <Style Selector="TextBlock.activateStatus">
             <Setter Property="Text" Value="Active" />
@@ -38,6 +38,14 @@
             <Setter Property="Padding" Value="5,3" />
             <Setter Property="Background">
                 <SolidColorBrush Color="MediumPurple" Opacity="0.2"></SolidColorBrush>
+            </Setter>
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+        </Style>
+        <Style Selector="Border.info">
+            <Setter Property="Padding" Value="5,3" />
+            <Setter Property="Background" Value="{DynamicResource ButtonBackgroundDisabled}">
+             
             </Setter>
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
@@ -60,7 +68,8 @@
         <Style Selector="Border.connected">
             <Setter Property="Padding" Value="5,3" />
             <Setter Property="Background">
-                <SolidColorBrush Color="{DynamicResource SystemAccentColor}" Opacity="0.2"></SolidColorBrush>
+                <SolidColorBrush Color="{CompiledBinding (SolidColorBrush).Color, Source={StaticResource AccentButtonBackground}}" Opacity="0.2">
+                </SolidColorBrush>
             </Setter>
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
@@ -91,14 +100,31 @@
                     </Button>
                 </Grid>
 
-                <Image Grid.Row="1" Margin="15" Source="{Binding Controller.Thumbnail}"></Image>
+                <Image Grid.Row="1" Margin="15" Source="{Binding Thumbnail}"></Image>
                 <!-- <TextBlock HorizontalAlignment="Right" TextTrimming="CharacterEllipsis" VerticalAlignment="Bottom" Margin="10" Grid.Row="2" -->
                 <!--            Text="{Binding Controller.SerialPort}"> -->
                 <!-- </TextBlock> -->
                 <Grid Row="2" Margin="10,10">
                     <StackPanel Orientation="Horizontal" Spacing="5">
+                        <Border IsVisible="{Binding IsOpenRGB}"
+                                ToolTip.Tip="{Binding Controller.SerialPort}" VerticalAlignment="Bottom"
+                                CornerRadius="3" HorizontalAlignment="Right"
+                                
+                                Classes="info">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <PathIcon IsVisible="{Binding IsTransferActive}"  Foreground="{DynamicResource ButtonForegroundDisabled}" Width="12" Margin="0,0,3,0"
+                                          Height="12" Data="{DynamicResource openSource}">
+                                </PathIcon>
+                                <!-- <PathIcon IsVisible="{Binding !IsTransferActive}"  Foreground="{DynamicResource ButtonForegroundDisabled}" Width="12" Margin="0,0,3,0" -->
+                                <!--           Height="12" Data="{DynamicResource disconnected}"> -->
+                                <!-- </PathIcon> -->
+                                <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="ORGB" Margin="0,0,0,2"
+                                           Grid.Column="1" FontSize="12">
+                                </TextBlock>
+                            </Grid>
+                        </Border>
                         <Border Classes.turnedOff="{Binding !IsTurnedOn}"
-                                ToolTip.Tip="{Binding Controller.SerialPort}" Grid.Row="2" VerticalAlignment="Bottom"
+                                ToolTip.Tip="{Binding Controller.SerialPort}" VerticalAlignment="Bottom"
                                 CornerRadius="3" HorizontalAlignment="Right"
                                 Classes="chip activateStatus">
                             <Grid ColumnDefinitions="Auto,*">
@@ -116,11 +142,11 @@
                         </Border>
                         <Border Classes.connected="{Binding IsTransferActive}"
                                 Classes.disconnected="{Binding !IsTransferActive}"
-                                ToolTip.Tip="{Binding Controller.SerialPort}" Grid.Row="2" VerticalAlignment="Bottom"
+                                ToolTip.Tip="{Binding Controller.SerialPort}" VerticalAlignment="Bottom"
                                 CornerRadius="3" HorizontalAlignment="Right" Classes="chip">
                             <Grid ColumnDefinitions="Auto,*">
                                 <PathIcon IsVisible="{Binding IsTransferActive}"
-                                          Foreground="{DynamicResource SystemAccentColor}" Width="12" Margin="0,0,3,0"
+                                          Foreground="{DynamicResource AccentButtonBackground}" Width="12" Margin="0,0,3,0"
                                           Height="12" Data="{DynamicResource checkIcon}">
                                 </PathIcon>
                                 <PathIcon IsVisible="{Binding !IsTransferActive}"

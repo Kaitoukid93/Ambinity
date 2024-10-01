@@ -1,4 +1,5 @@
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 
 namespace AmbinityServer.OnlineItem;
 
@@ -7,6 +8,8 @@ public sealed class ThumbnailService
     public ThumbnailService(AmbinityClient client)
     {
         _client = client;
+        var bitmap = new Bitmap(AssetLoader.Open(new Uri("avares://Ambinity/Assets/Images/generalImage.png")));
+        _cache.Add("null", bitmap);
     }
 
     private AmbinityClient _client;

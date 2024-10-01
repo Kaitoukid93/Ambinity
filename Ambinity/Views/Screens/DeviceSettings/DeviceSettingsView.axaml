@@ -16,7 +16,7 @@
                 <Grid ColumnDefinitions="Auto,*" Column="1">
                     <Grid>
                         <Image Margin="10" Height="90" Stretch="Uniform"
-                               Source="{Binding Controller.Thumbnail}">
+                               Source="{Binding Thumbnail}">
                         </Image>
                     </Grid>
                     <Grid Column="1">
@@ -31,7 +31,7 @@
                             </Grid>
                           
 
-                            <HyperlinkButton Height="25" Padding="5,2,5,0">
+                            <HyperlinkButton NavigateUri="http://ambino.vn" Height="25" Padding="5,2,5,0">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <TextBlock FontSize="13" Text="More info"></TextBlock>
                                     <PathIcon Margin="5,0,0,1" Grid.Column="1" Height="15" Width="15"
@@ -47,7 +47,7 @@
             <Grid Margin="60,10,35,10" Row="1">
                 <StackPanel Spacing="30" >
                     <ContentControl Content="{Binding PortConfigurationViewModel}"></ContentControl>
-                    <ContentControl Content="{Binding CoolingSettingsViewModel}"></ContentControl>
+                    <ContentControl IsVisible="{Binding HasFanControl }" Content="{Binding CoolingSettingsViewModel}"></ContentControl>
                     <!-- <ContentControl Content="{Binding ConnectionSettingsViewModel}"></ContentControl> -->
                     <ContentControl Content="{Binding HardwareLightingViewModel}"></ContentControl>
                     <ContentControl Content="{Binding FirmwareSettingsViewModel}"></ContentControl>

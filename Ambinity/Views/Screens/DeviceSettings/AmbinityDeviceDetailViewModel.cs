@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.ViewModels;
@@ -12,25 +13,24 @@ public class AmbinityDeviceDetailViewModel : ViewModelBase
 {
     private readonly ThumbnailService _thumbnailService;
 
-    public AmbinityDeviceDetailViewModel(AmbinityDevice device,ThumbnailService thumbnailService)
+    public AmbinityDeviceDetailViewModel(AmbinityDevice device, ThumbnailService thumbnailService)
     {
         _thumbnailService = thumbnailService;
         _device = device;
         _device.DeviceUpdate += OnDeviceUpdated;
         _layout = _device.Layout;
         Name = _device.Name;
-        Description =_device.DeviceDescription;
-        LEDsCount = "LEDs count: "+ _device.Leds.Count.ToString();
+        Description = _device.DeviceDescription;
+        LEDsCount = "LEDs count: " + _device.Leds.Count.ToString();
         FilePath = "Path: " + _device.Layout.FilePath;
-       
     }
 
     private void OnDeviceUpdated()
     {
         _layout = _device.Layout;
         Name = _device.Name;
-        Description =_device.DeviceDescription;
-        LEDsCount = "LEDs count: "+ _device.Leds.Count.ToString();
+        Description = _device.DeviceDescription;
+        LEDsCount = "LEDs count: " + _device.Leds.Count.ToString();
         FilePath = "Path: " + _device.Layout.FilePath;
         OnPropertyChanged(nameof(Name));
         OnPropertyChanged(nameof(Description));
@@ -48,9 +48,9 @@ public class AmbinityDeviceDetailViewModel : ViewModelBase
         OnPropertyChanged(nameof(Description));
         IsMultipleItemsSelected = true;
     }
+
     public AmbinityDeviceDetailViewModel()
     {
-      
     }
 
     private AmbinityCore.Models.Device.AmbinityDeviceLayout _layout;
@@ -59,9 +59,12 @@ public class AmbinityDeviceDetailViewModel : ViewModelBase
 
     private async Task<Bitmap> GetThumbnailAsync()
     {
+        if (!File.Exists(_layout.Thumbnail))
+            return await _thumbnailService.LoadThumbnail("null");
         var thumb = await _thumbnailService.LoadThumbnail(_layout.Thumbnail);
         return thumb;
     }
+
     private readonly AmbinityDevice _device;
 
     public string Description { get; set; }
@@ -69,16 +72,14 @@ public class AmbinityDeviceDetailViewModel : ViewModelBase
 
     public bool IsMultipleItemsSelected
     {
-        get=>_isMultipleItemsSelected;
+        get => _isMultipleItemsSelected;
         set
         {
-            _isMultipleItemsSelected = value;   
+            _isMultipleItemsSelected = value;
             OnPropertyChanged();
         }
-        
     }
+
     public string LEDsCount { get; set; }
     public string FilePath { get; set; }
-
-  
 }
