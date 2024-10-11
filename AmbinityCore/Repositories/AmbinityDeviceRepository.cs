@@ -10,8 +10,9 @@ public class AmbinityDeviceRepository
     public event Action DevicesListUpdated;
 
     public AmbinityDeviceRepository(DeviceBitmapCaptureFactory captureFactory,
-        SerialControllerRepository serialControllerRepository, OpenRGBControllerRepository openRgbControllerRepository)
+        SerialControllerRepository serialControllerRepository, OpenRGBControllerRepository openRgbControllerRepository, FanOutputServiceFactory fanOutputServiceFactory)
     {
+        _fanOutputServiceFactory =fanOutputServiceFactory;
         _captureFactory = captureFactory;
         _serialControllerRepository = serialControllerRepository;
         _serialControllerRepository.NewControllerAdded += OnNewControllerAdded;
@@ -43,6 +44,15 @@ public class AmbinityDeviceRepository
                 Devices.Add(device);
             var capture = _captureFactory.RegisterDevice(device);
             _captures.Add(capture);
+        }
+
+        if (controller.FanController != null)
+        {
+            foreach (var output in controller.FanController.Outputs)
+            {
+                var service = _fanOutputServiceFactory.GetFanOutputService(output);
+                service.Init();
+            }
         }
 
         DevicesListUpdated?.Invoke();
@@ -82,6 +92,7 @@ public class AmbinityDeviceRepository
     }
 
     private DeviceBitmapCaptureFactory _captureFactory;
+    private FanOutputServiceFactory _fanOutputServiceFactory;
     private SerialControllerRepository _serialControllerRepository;
     private readonly OpenRGBControllerRepository _openRGBControllerRepository;
     public List<AmbinityDevice> Devices { get; set; }

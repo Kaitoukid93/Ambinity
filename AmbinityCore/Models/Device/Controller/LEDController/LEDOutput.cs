@@ -1,7 +1,5 @@
-using System.ComponentModel;
-using Avalonia;
+using AmbinityCore.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Draw2D.Core.Geo;
 
 namespace AmbinityCore.Models.Device;
 
@@ -47,4 +45,7 @@ public class LEDOutput : ObservableObject
             return;
         Brightness = value;
     }
+   
+    public RGBLEDOrderEnum RGBOrder { get; set; }
+   
 }

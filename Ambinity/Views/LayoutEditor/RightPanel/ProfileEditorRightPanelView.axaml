@@ -15,7 +15,7 @@
         </Style>
     </UserControl.Styles>
     <FlyoutBase.AttachedFlyout>
-        <Flyout Closing="PopupFlyoutBase_OnClosing" FlyoutPresenterClasses="DefaultFlyout" HorizontalOffset="-326" VerticalOffset="-473">
+        <Flyout Closing="PopupFlyoutBase_OnClosing" FlyoutPresenterClasses="DefaultFlyout" Placement="LeftEdgeAlignedBottom" HorizontalOffset="-10">
             <Grid>
                 <ContentControl Focusable="True" Content="{CompiledBinding FlyoutViewModel}"></ContentControl>
                 <Grid HorizontalAlignment="Right" VerticalAlignment="Top">

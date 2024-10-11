@@ -9,12 +9,14 @@ namespace AmbinityCore.CapturingService;
 
 public class HWMonitorCapturingService : ICapturingService
 {
+    public event Action DataUpdate;
+
     public HWMonitorCapturingService()
     {
-        Init();
         _hardwares = new List<IHardware>();
         _fanSpeedSensors = new List<ISensor>();
         _fanControlSensors = new List<ISensor>();
+        Init();
     }
 
     public event Action<int> FrameUpdated;
@@ -22,21 +24,24 @@ public class HWMonitorCapturingService : ICapturingService
     private UpdateVisitor _updateVisitor;
     private List<IHardware> _hardwares;
     private List<ISensor> _fanControlSensors;
+    public List<ISensor> FanControlSensors => _fanControlSensors;
     private List<ISensor> _fanSpeedSensors;
     private Motherboard _motherboard;
     private HWMonitorCaptureDataBuffer _buffer;
-    private double[] _sensorValue = new double[3];
     public HWMonitorCaptureDataBuffer Buffer => _buffer;
+    private double[] _sensorValue = new double[3];
     private bool _disposed { get; set; }
-    private int _userCount;
+    private int _userCount = 0;
     private CancellationTokenSource _cancellationTokenSource;
+
+    public bool IsAvailable { get; set; }
 
     public void Init()
     {
         _computer = new LibreHardwareMonitor.Hardware.Computer
         {
             IsCpuEnabled = true,
-            IsGpuEnabled = true,
+            IsGpuEnabled = false,
             IsMemoryEnabled = false,
             IsMotherboardEnabled = true,
             IsControllerEnabled = true,
@@ -88,6 +93,7 @@ public class HWMonitorCapturingService : ICapturingService
             return;
         }
 
+        IsAvailable = true;
         _buffer = new HWMonitorCaptureDataBuffer(_fanControlSensors.Count);
         var thread = new Thread(() => Capture(_cancellationTokenSource.Token))
         {
@@ -105,6 +111,7 @@ public class HWMonitorCapturingService : ICapturingService
             //call render from engine
             if (_userCount > 0)
             {
+                _computer.Accept(_updateVisitor);
                 for (var i = 0; i < _fanSpeedSensors.Count; i++)
                 {
                     if (_fanSpeedSensors[i].Value == double.NaN) // this is speed target control but header is empty
@@ -122,11 +129,16 @@ public class HWMonitorCapturingService : ICapturingService
                         _sensorValue[1] = sensor.Min.Value;
                         _sensorValue[2] = sensor.Max.Value;
                         _buffer.Put(sensor.Index, _sensorValue);
+                      //  Log.Information(sensor.Name + ": " + "Value:" + _sensorValue[0] + ", Min:" + _sensorValue[1] +
+                                      //  ", Max:" + _sensorValue[2]);
                     }
 
                     values.Add((double)sensor.Value);
                 }
+
+                DataUpdate?.Invoke();
                 //get median value??
+                Thread.Sleep(1000);
             }
             else
             {
@@ -160,6 +172,7 @@ public class HWMonitorCapturingService : ICapturingService
         {
             return;
         }
+
         _computer?.Close();
         _disposed = true;
     }

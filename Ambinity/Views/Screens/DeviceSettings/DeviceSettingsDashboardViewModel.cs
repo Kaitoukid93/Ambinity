@@ -6,6 +6,7 @@ using Ambinity.ViewModels;
 using Ambinity.Windows;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Controller;
+using AmbinityCore.Models.Profile;
 using AmbinityServer.OnlineItem;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
@@ -18,8 +19,9 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
 {
     public DeviceSettingsDashboardViewModel(RootNavigationStores rootNavigationStores,
         SerialControllerRepository serialControllerRepository, OpenRGBControllerRepository openRgbControllerRepository,
-        DeviceSettingsInfoBarViewModel infoBarViewModel, IDialogService dialogService, DeviceSettingsViewModel deviceSettingsViewModel, ThumbnailService thumbnailService)
+        DeviceSettingsInfoBarViewModel infoBarViewModel, IDialogService dialogService, DeviceSettingsViewModel deviceSettingsViewModel, ThumbnailService thumbnailService, LightingProfileDecoder decoder)
     {
+        _decoder = decoder;
         _thumbnailService = thumbnailService;
         _deviceSettingsViewModel = deviceSettingsViewModel;
         _dialogService = dialogService;
@@ -84,6 +86,7 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
 
     private async void GoToDeviceControl(DashboardDeviceViewModel device)
     {
+        _decoder?.Stop();
         var dialogvm = new LoadingDialogViewModel();
         _dialogService.ShowLoadingDialog(dialogvm, "Loading device");
         var result = await Task.Run(() => _deviceSettingsViewModel.Init(device.Controller));
@@ -101,6 +104,7 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
     private bool _isInfoBarOpen;
     private readonly IDialogService _dialogService;
     private readonly DeviceSettingsViewModel _deviceSettingsViewModel;
+    private readonly LightingProfileDecoder _decoder;
 
     public bool IsInforBarOpen
     {

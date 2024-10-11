@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Draw2DControlLibrary", "Dra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmbinityServer", "AmbinityServer\AmbinityServer.csproj", "{0FCDB96E-36BD-4DB7-A403-C49499C32421}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ambinity.Installer", "Ambinity.Installer\Ambinity.Installer.csproj", "{44AE89A0-75E9-48DA-98B4-2E06D800523A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ambinity.Windows", "Ambinity.Windows\Ambinity.Windows.csproj", "{BF041AB6-0F22-4866-8718-CE1A1E0091DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{0FCDB96E-36BD-4DB7-A403-C49499C32421}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FCDB96E-36BD-4DB7-A403-C49499C32421}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FCDB96E-36BD-4DB7-A403-C49499C32421}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44AE89A0-75E9-48DA-98B4-2E06D800523A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44AE89A0-75E9-48DA-98B4-2E06D800523A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44AE89A0-75E9-48DA-98B4-2E06D800523A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44AE89A0-75E9-48DA-98B4-2E06D800523A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF041AB6-0F22-4866-8718-CE1A1E0091DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF041AB6-0F22-4866-8718-CE1A1E0091DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF041AB6-0F22-4866-8718-CE1A1E0091DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF041AB6-0F22-4866-8718-CE1A1E0091DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

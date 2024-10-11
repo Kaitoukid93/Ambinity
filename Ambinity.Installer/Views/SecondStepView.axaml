@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:viewModels="clr-namespace:Ambinity.Installer.ViewModels"
+             x:DataType="viewModels:SecondStepViewModel"
+             x:Class="Ambinity.Installer.Views.SecondStepView">
+    <Grid Margin="20,0" RowDefinitions="Auto,20,*">
+        <StackPanel Spacing="5">
+            <TextBlock Text="{Binding Header}" FontSize="25" FontWeight="SemiBold" HorizontalAlignment="Left"
+                       VerticalAlignment="Top" />
+            <TextBlock HorizontalAlignment="Left" MaxWidth="500" TextWrapping="Wrap" Text="{Binding SubHeader}"
+                       FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}">
+            </TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Spacing="8">
+            <TextBlock FontSize="15" FontWeight="SemiBold" Text="Downloading"></TextBlock>
+            <ProgressBar IsIndeterminate="True"></ProgressBar>
+            <TextBlock FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Downloading"></TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

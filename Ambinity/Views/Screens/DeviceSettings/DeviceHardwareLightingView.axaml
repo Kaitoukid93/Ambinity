@@ -14,16 +14,10 @@
                     <TextBlock Classes="smallBold" Text="Hardware settings"></TextBlock>
                 </Grid>
                 <Grid Margin="0,10,0,0" Row="1">
-                    <ui:InfoBar Foreground="OrangeRed" Title="Warning" IsOpen="{Binding !IsAvailable}"
+                    <ui:InfoBar Severity="Error" Title="Warning" IsOpen="{Binding !IsAvailable}"
                                 IsIconVisible="True"
                                 IsClosable="False"
                                 Message="Hardware settings for this device is not available at the moment">
-                        <ui:InfoBar.IconSource>
-                            <ui:PathIconSource Data="{DynamicResource disable}"></ui:PathIconSource>
-                        </ui:InfoBar.IconSource>
-                        <ui:InfoBar.Background>
-                            <SolidColorBrush Color="OrangeRed" Opacity="0.1"></SolidColorBrush>
-                        </ui:InfoBar.Background>
                     </ui:InfoBar>
                     <Grid>
                         <StackPanel Spacing="2">
@@ -41,6 +35,17 @@
 
                                     </ui:FAComboBox>
                                 </ui:SettingsExpander.Footer>
+                                <ui:SettingsExpanderItem MinWidth="500" Content="Max LED Support"
+                                                         IsEnabled="{Binding EnableHWLExpand}"
+                                                         Description="Maximum number of LEDs this hardware support for each output. Some hardware might only support up to 80 LEDs."
+                                                         IsClickEnabled="False">
+                                    <ui:SettingsExpanderItem.Footer>
+                                        <ui:NumberBox Margin="40,0" Minimum="1"
+                                                      Value="{Binding LedHardwareSettings.HWL_MaxLEDPerOutput}"
+                                                      Maximum="200">
+                                        </ui:NumberBox>
+                                    </ui:SettingsExpanderItem.Footer>
+                                </ui:SettingsExpanderItem>
                                 <ui:SettingsExpanderItem MinWidth="500" Content="Delay time"
                                                          IsEnabled="{Binding EnableHWLExpand}"
                                                          Description="Return to Hardware Lighting after the selected amount of seconds"
@@ -76,7 +81,7 @@
                                                          Description="Chose color for selected effect"
                                                          IsClickEnabled="False">
                                     <ui:SettingsExpanderItem.Footer>
-                                        <ui:ColorPickerButton Height="32" Margin="40,0"></ui:ColorPickerButton>
+                                        <ui:ColorPickerButton Color="{Binding SelectedColor}" Height="32" Margin="40,0"></ui:ColorPickerButton>
                                     </ui:SettingsExpanderItem.Footer>
                                 </ui:SettingsExpanderItem>
                                 <ui:SettingsExpanderItem Content="Palettes"
@@ -114,7 +119,7 @@
                                                 <FlyoutBase.AttachedFlyout>
                                                     <Flyout Closing="PopupFlyoutBase_OnClosing"
                                                             FlyoutPresenterClasses="DefaultFlyout"
-                                                            HorizontalOffset="-326" VerticalOffset="-473">
+                                                            Placement="LeftEdgeAlignedBottom" HorizontalOffset="-180">
                                                         <Grid>
                                                             <ContentControl Focusable="True"
                                                                             Content="{CompiledBinding CurrentFlyoutViewModel}">

@@ -18,6 +18,7 @@
                 <ResourceInclude Source="/Views/Generic.axaml"></ResourceInclude>
                 <ResourceInclude Source="/ControlTheme/StriplessListbox.axaml"></ResourceInclude>
                 <ResourceInclude Source="/ControlTheme/TransparrentSettingsExpander.axaml"></ResourceInclude>
+                <ResourceInclude Source="/ControlTheme/BorderlessNumberbox.axaml"></ResourceInclude>
                 <ResourceDictionary>
                     <converters:StaticResourceConverter x:Key="ResourceConverter" />
                 </ResourceDictionary>

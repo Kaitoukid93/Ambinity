@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              x:DataType="local:PortDetailViewModel"
+             PointerEntered="InputElement_OnPointerEntered"
+             PointerExited="InputElement_OnPointerExited"
              x:Class="Ambinity.Views.Screens.DeviceSettings.PortDetailView">
       <UserControl.Styles>
         <Style Selector="FlyoutPresenter.DefaultFlyout">
@@ -51,11 +53,17 @@
                 <Grid Column="1">
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Top" Spacing="5">
                         <Grid>
-                            <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1"
+                            <Button x:Name="ShowLibraryButton" Click="ShowLibraryButton_OnClick" ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1"
                                     Background="Transparent" Width="30" Height="30"
                                     Classes="icon-button">
                                 <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon>
                             </Button>
+                            
+                            <ui:TeachingTip Name="libraryTip"
+                                            Target="{Binding #ShowLibraryButton}"
+                                            Title="Library"
+                                            Subtitle="Click this button to select your device">
+                            </ui:TeachingTip>
                         </Grid>
 
 
@@ -83,7 +91,7 @@
                     <ui:PathIconSource Data="{DynamicResource 'brightness'}"></ui:PathIconSource>
                 </ui:SettingsExpander.IconSource>
                 <ui:SettingsExpander.Footer>
-                    <Slider IsSnapToTickEnabled="True" TickFrequency="1"
+                    <Slider 
                             Margin="0" Width="160" Value="{Binding Brightness}" Minimum="0" Maximum="255">
                     </Slider>
                 </ui:SettingsExpander.Footer>

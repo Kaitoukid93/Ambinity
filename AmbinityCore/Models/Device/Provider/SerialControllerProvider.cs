@@ -3,6 +3,7 @@ using AmbinityCore.Models.Device.Device;
 using AmbinityCore.Models.Device.Service;
 using AmbinityCore.Repositories;
 using Avalonia.Controls;
+using RGBLEDOrderEnum = AmbinityCore.Enums.RGBLEDOrderEnum;
 
 namespace AmbinityCore.Models.Device.Provider;
 
@@ -51,13 +52,18 @@ public class SerialControllerProvider
                 controller.DashboardHeight = 270;
                 controller.DashboardWidth = 230;
                 ledController.Outputs.Add(new LEDOutput(80, 0,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Basic 24inch", 30), 0.4f)));
+                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Basic 24inch", 30), 0.4f))
+                {
+                    RGBOrder = RGBLEDOrderEnum.GRB
+                });
                 break;
             case HardwareTypeEnum.AmbinoEDGE:
                 controller.DashboardHeight = 270;
                 controller.DashboardWidth = 230;
                 ledController.Outputs.Add(new LEDOutput(80, 0,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Basic 24inch", 48))));
+                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Basic 24inch", 48))) {
+                    RGBOrder = RGBLEDOrderEnum.GRB
+                });;
                 break;
             case HardwareTypeEnum.AmbinoFanHub:
                 controller.DashboardHeight = 270;
@@ -65,13 +71,16 @@ public class SerialControllerProvider
                 for (int i = 0; i < 10; i++)
                 {
                     ledController.Outputs.Add(new LEDOutput(80, i,
-                        new AmbinityDevice(_layoutRepository.GetLayout("Ambino Dualring Fan", 30))));
+                        new AmbinityDevice(_layoutRepository.GetLayout("Ambino Dualring Fan", 30))) {
+                        RGBOrder = RGBLEDOrderEnum.GRB
+                    });
                 }
 
                 controller.FanController = new FanController()
                 {
                     Name = "Generic PWM Fan Controller",
-                    DeviceDescription = "Ambino high performance dual mode pwm controller"
+                    DeviceDescription = "Ambino high performance dual mode pwm controller",
+                    Outputs = new List<FanOutput>(){new FanOutput("Fan Controller #1", "Ambino High Performance Fan Controller")}
                     
                 };
                 break;
@@ -82,15 +91,26 @@ public class SerialControllerProvider
                 for (int i = 0; i < 4; i++)
                 {
                     ledController.Outputs.Add(new LEDOutput(80, i,
-                        new AmbinityDevice(_layoutRepository.GetLayout("Default ARGB LED Strip", 64))));
+                        new AmbinityDevice(_layoutRepository.GetLayout("Default ARGB LED Strip", 64))) {
+                        RGBOrder = RGBLEDOrderEnum.GRB
+                    });
                 }
 
                 ledController.Outputs.Add(new LEDOutput(80, 4,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Neon 24P", 200), 0.5f)));
+                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Neon 24P", 200), 0.5f))
+                {
+                    RGBOrder = RGBLEDOrderEnum.GRB
+                });
                 ledController.Outputs.Add(new LEDOutput(80, 5,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Neon 24P", 200), 0.5f)));
+                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Neon 24P", 200), 0.5f))
+                {
+                    RGBOrder = RGBLEDOrderEnum.GRB
+                });
                 ledController.Outputs.Add(new LEDOutput(80, 6,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Default ARGB LED Strip", 64))));
+                    new AmbinityDevice(_layoutRepository.GetLayout("Default ARGB LED Strip", 64)))
+                {
+                    RGBOrder = RGBLEDOrderEnum.GRB
+                });
                 break;
         }
 

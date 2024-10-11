@@ -23,8 +23,7 @@ public class SerialControllerDiscoveryService
         _serialControllerHelpers = new SerialControllerHelpers();
     }
 
-    public bool IsRunning { get; set; }
-    private bool _openRGBIsInit = false;
+    public bool IsRunning  => _workerThread != null && _workerThread.IsAlive;
     private Thread _workerThread;
     private CancellationTokenSource _cancellationTokenSource;
     private bool _onHold;
@@ -34,8 +33,9 @@ public class SerialControllerDiscoveryService
         _onHold = true;
     }
 
-    public void Resume()
+    public async Task Resume(int afterSeconds = 0)
     {
+        await Task.Delay(afterSeconds * 1000);
         _onHold = false;
     }
 
@@ -47,7 +47,6 @@ public class SerialControllerDiscoveryService
         }
 
         _cancellationTokenSource = new CancellationTokenSource();
-        _openRGBIsInit = false;
         _workerThread = new Thread(() => Run(_cancellationTokenSource.Token))
         {
             Name = "Device Discovery",
@@ -57,9 +56,15 @@ public class SerialControllerDiscoveryService
         _workerThread.Start();
     }
 
+    // public void Stop()
+    // {
+    //     if (_workerThread == null) return;
+    //     _cancellationTokenSource?.Cancel();
+    //     _cancellationTokenSource = null;
+    // }
+
     private async void Run(CancellationToken token)
     {
-        IsRunning = true;
         while (!token.IsCancellationRequested)
         {
             try
@@ -68,7 +73,7 @@ public class SerialControllerDiscoveryService
                 // new device contains serial and openrgb devices ( Wled devices in the future)
                 if (!_onHold)
                 {
-                   await ScanSerialDevice();
+                    await ScanSerialDevice();
                 }
             }
             catch (Exception ex)
@@ -137,7 +142,7 @@ public class SerialControllerDiscoveryService
 
         if (ports.Count > 0)
         {
-           // Dispatcher.UIThread.Invoke(() => { NewComportDetected?.Invoke(ports.First()); });
+            // Dispatcher.UIThread.Invoke(() => { NewComportDetected?.Invoke(ports.First()); });
             await Task.Delay(500);
             string deviceName = null;
             string deviceID = null;

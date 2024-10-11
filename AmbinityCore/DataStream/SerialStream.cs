@@ -91,6 +91,8 @@ internal sealed class SerialStream : IDisposable, IDataStream
 
     public void Start()
     {
+        if(IsRunning)
+            return;
         Log.Information("Start called for SerialStream");
         if (_workerThread == null || !_workerThread.IsAlive)
             _workerThread = new Thread(DoWork)
@@ -106,6 +108,8 @@ internal sealed class SerialStream : IDisposable, IDataStream
 
     public async Task Stop()
     {
+        if(!IsRunning)
+            return;
         Controller.TurnOff();
         //wait for led to fully turn off
         await Task.Run(() => Task.Delay(1000));
@@ -122,7 +126,8 @@ internal sealed class SerialStream : IDisposable, IDataStream
     private (byte[] Buffer, int OutputLength) GetOutputStream(int id)
     {
         byte[] outputStream;
-        var ambinityDevice = Controller.LedController.Outputs[id].Device;
+        var output = Controller.LedController.Outputs[id];
+        var ambinityDevice = output.Device;
         int counter = _messagePreamble.Length;
         const int colorsPerLed = 3;
         const int hilocheckLenght = 3;
@@ -142,13 +147,23 @@ internal sealed class SerialStream : IDisposable, IDataStream
         outputStream[counter++] = lo;
         outputStream[counter++] = chk;
         outputStream[counter++] = (byte)id;
-        outputStream[counter++] = 200;
+        if (Controller.FanController != null)
+        {
+            //ambino fanhub current version only support single zone pwm, so we get the first output data
+            var fanOuput = Controller.FanController.Outputs[0];
+            outputStream[counter++] = (byte)(fanOuput.Speed * 255 / 100);
+        }
+        else
+        {
+            outputStream[counter++] = 0;
+        }
+
         outputStream[counter++] = 0;
 
         double brightnessCap = Controller.LedController.MaxBrightness / 100d;
         var allBlack = true;
         int aliveSpotCounter = 0;
-        var rgbOrder = ambinityDevice.RGBOrder;
+        var rgbOrder = output.RGBOrder;
         DimLED();
 
         lock (ambinityDevice.Lock)
@@ -170,11 +185,11 @@ internal sealed class SerialStream : IDisposable, IDataStream
                     ReOrderSpotColor(rgbOrder, led.LED.Red, led.LED.Green, led.LED.Blue, out byte r, out byte g,
                         out byte b);
                     //get data
-                    outputStream[counter + led.Index * 3 + 0] = (byte)(r *_dimFactor);
+                    outputStream[counter + led.Index * 3 + 0] = (byte)(r * _dimFactor);
 
-                    outputStream[counter + led.Index * 3 + 1] = (byte)(g*_dimFactor);
+                    outputStream[counter + led.Index * 3 + 1] = (byte)(g * _dimFactor);
                     // green
-                    outputStream[counter + led.Index * 3 + 2] = (byte)(b*_dimFactor);
+                    outputStream[counter + led.Index * 3 + 2] = (byte)(b * _dimFactor);
                     // red
                     aliveSpotCounter++;
 
@@ -294,9 +309,16 @@ internal sealed class SerialStream : IDisposable, IDataStream
                 {
                     if (!Controller.LedController.Outputs[i].IsEnabled)
                         continue;
-                    var (outputBuffer, streamLength) = GetOutputStream(i);
-                    Buffer.BlockCopy(outputBuffer, 0, buffer, bufferLength, streamLength);
-                    bufferLength += streamLength;
+                    var output = Controller.LedController.Outputs[i];
+                    lock (output.Device.Lock)
+                    {
+                        var (outputBuffer, streamLength) = GetOutputStream(i);
+                        Buffer.BlockCopy(outputBuffer, 0, buffer, bufferLength, streamLength);
+                        bufferLength += streamLength;
+                    }
+                    
+                   
+                    
                 }
 
                 _serialPort.Write(buffer, 0, bufferLength);

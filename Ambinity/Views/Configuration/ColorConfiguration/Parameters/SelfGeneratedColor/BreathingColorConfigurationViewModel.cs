@@ -16,6 +16,7 @@ public class BreathingColorConfigurationViewModel : MotionConfigurationViewModel
         Description = "Brightness change with sin wave";
         ShowSettingsButton = true;
         _breathingSpeed = (double)_configuration.BreathingSpeed;
+        OnPropertyChanged(nameof(BreathingSpeed));
         _isSystemSync = _configuration.IsSystemSync;
     }
 

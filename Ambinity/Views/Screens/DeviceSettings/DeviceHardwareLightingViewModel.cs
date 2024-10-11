@@ -12,6 +12,7 @@ using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Device.Service;
 using AmbinityCore.Repositories;
+using Avalonia.Media;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 
@@ -45,6 +46,7 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
     {
         var dialogvm = new LoadingDialogViewModel();
         _dialogService.ShowLoadingDialog(dialogvm, "Applying");
+        await _serialStream?.Stop();
         var result = await _serialControllerHelpers.SendHardwareSettings(_controller as SerialController);
         if (result)
         {
@@ -81,6 +83,8 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
     public async Task<bool> Init(IController controller)
     {
         _discoveryService.Hold();
+        //wait for discovery service to stop
+        await Task.Delay(1000);
         _controller = controller;
         if (controller is OpenRGBController)
         {
@@ -88,6 +92,7 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
             await Task.Delay(1000);
             return true;
         }
+
         _serialStream = _controllerRepository.GetSerialStream(controller);
         await _serialStream?.Stop();
         var result = await _serialControllerHelpers.GetHardwareSettings(false, _controller as SerialController);
@@ -112,6 +117,7 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
         }
 
         SelectedPalette = new ColorPaletteAssetViewModel(new ColorPalette(_ledHardwareSettings.HWL_palette));
+        SelectedColor = _ledHardwareSettings.HWL_singleColor;
         OnPropertyChanged(nameof(LedHardwareSettings));
         OnPropertyChanged(nameof(EnableHWLExpand));
         OnPropertyChanged(nameof(HasFanControl));
@@ -259,6 +265,19 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
         }
     }
 
+    private Color _selectedColor;
+
+    public Color SelectedColor
+    {
+        get => _selectedColor;
+        set
+        {
+            _selectedColor = value;
+            _ledHardwareSettings.HWL_singleColor = value;
+            OnPropertyChanged();
+        }
+    }
+
     public LibraryViewModelBase CurrentFlyoutViewModel { get; set; }
     public ICommand OpenColorPaletteLibraryCommand { get; set; }
     public ICommand ApplyHardwareSettingsCommand { get; set; }
@@ -266,7 +285,8 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
 
     public override void Dispose()
     {
-        //resume discovery service will eventually start the serialstream
+        //serial stream must be enabled right away
+        //re-enable discovery service after 5s to prevent user spam click
         _discoveryService.Resume();
         if (_colorPalettesLibraryViewModel != null)
             _colorPalettesLibraryViewModel.ItemSelected -= OnColorPaletteSelected;

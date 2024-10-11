@@ -13,6 +13,13 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         set => SetProperty(ref _autoStart, value);
     }
 
+    private int _autoStartDelay = 5;
+
+    public int AutoStartDelay
+    {
+        get => _autoStartDelay;
+        set => SetProperty(ref _autoStartDelay, value);
+    }
     private Color _primaryColor = Avalonia.Media.Colors.LimeGreen;
 
     public Color PrimaryColor

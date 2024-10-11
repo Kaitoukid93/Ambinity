@@ -7,8 +7,8 @@
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              x:DataType="local:DeviceSettingsViewModel"
              x:Class="Ambinity.Views.Screens.DeviceSettings.DeviceSettingsView">
-    
-        <Grid HorizontalAlignment="Stretch" RowDefinitions="Auto,*">
+    <Grid HorizontalAlignment="Center">
+            <Grid RowDefinitions="Auto,*">
             <Grid ColumnDefinitions="Auto,*">
                 <Button Command="{Binding BackToDashboardCommand}" Margin="10" Classes="icon-button">
                     <PathIcon Width="15" Height="15" Data="{DynamicResource back}"></PathIcon>
@@ -55,5 +55,7 @@
             </Grid>
             </ScrollViewer>
         </Grid>
+    </Grid>
+    
    
 </UserControl>

@@ -1,20 +1,20 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.ViewModels;
+using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
+using Ambinity.Views.Screens.ProfileEditor.Library;
 using AmbinityCore.DataBase;
+using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Flyout;
 using AmbinityCore.Models.Lighting.Zone;
-using AmbinityCore.Models.Lighting.Zone.Configuration;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Models.Toolbar;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 using Draw2D.Core.Policies.RouterPolicy;
-using Draw2D.Core.Shapes.Basic;
 
 namespace Ambinity.Views.LayoutEditor;
 
@@ -27,9 +27,12 @@ public class ToolsViewModel : ViewModelBase
     public event Action ToggleSnapToGridEvent;
     public event Action<Figure> AddFigure;
     public event Action<PolylineTool> InstallPolylineTool;
+    public event Action OpenFlyoutEvent;
+    public event Action CloseFlyoutEvent;
 
-    public ToolsViewModel(GeneralSettingsManager settingsManager,LightingZoneRepository lightingZoneRepository, LightingProfileDecoder decoder)
+    public ToolsViewModel(GeneralSettingsManager settingsManager,LightingZoneRepository lightingZoneRepository, LightingProfileDecoder decoder,LightingZonesLibraryViewModel lightingZonesLibraryViewModel)
     {
+        _lightingZonesLibraryViewModel = lightingZonesLibraryViewModel;
         ToolbarItems = new ObservableCollection<IToolbarItem>();
         _settingsManager = settingsManager;
         _lightingZoneRepository = lightingZoneRepository;
@@ -82,7 +85,26 @@ public class ToolsViewModel : ViewModelBase
         ToggleSnapToGridCommand = new RelayCommand(ToggleSnapToGrid);
         AddAnimationZoneCommand = new RelayCommand(AddAnimationZone,()=>ZoneToolsCommandCanExecute);
         AddAmbilightZoneCommand = new RelayCommand(AddAmbilightZone,()=>ZoneToolsCommandCanExecute);
+        ShowLibraryCommand = new AsyncRelayCommand(ShowLibrary);
         AddColorZoneCommand = new RelayCommand(AddColorZone,()=>ZoneToolsCommandCanExecute);
+    }
+    public LibraryViewModelBase CurrentFlyoutViewModel { get; set; }
+    private LightingZonesLibraryViewModel _lightingZonesLibraryViewModel;
+    private async Task ShowLibrary()
+    {
+        CurrentFlyoutViewModel = _lightingZonesLibraryViewModel;
+        CurrentFlyoutViewModel.ItemSelected += OnLightingZoneAssetSelected;
+        CurrentFlyoutViewModel?.Init();
+        OpenFlyoutEvent?.Invoke();
+    }
+    public void OnFlyoutClosing()
+    {
+        CurrentFlyoutViewModel.Dispose();
+        CurrentFlyoutViewModel = null;
+    }
+    private void OnLightingZoneAssetSelected(ICollectableItem obj)
+    {
+        //throw new NotImplementedException();
     }
 
     private void AddColorZone()
@@ -123,6 +145,8 @@ public class ToolsViewModel : ViewModelBase
         ToolbarItems.Add(AddAmbilightZoneTool());
         ToolbarItems.Add(AddAnimationZoneTool());
         ToolbarItems.Add(separator);
+        ToolbarItems.Add(ShowLibraryTool());
+        ToolbarItems.Add(separator);
         ToolbarItems.Add(snapToGridTools);
         ToolbarItems.Add(centerCanvasTool);
         OnRenderingStatusChanged();
@@ -149,11 +173,14 @@ public class ToolsViewModel : ViewModelBase
     {
         return new ButtonToolbarItem("Ambilight", "Add Ambilight Zone", "ambilight",Color.Parse("#d769ff"), AddAmbilightZoneCommand);
     }
+    private ButtonToolbarItem ShowLibraryTool()
+    {
+        return new ButtonToolbarItem( "Show Library", "Show Zone Library", "collection", Colors.White, ShowLibraryCommand);
+    }
     private ButtonToolbarItem AddAnimationZoneTool()
     {
-        return new ButtonToolbarItem("Animation", "Add Animation Zone", "LightingConfiguration_Animation",Color.Parse("#ffb033"), AddAnimationZoneCommand);
+        return new ButtonToolbarItem("Animation", "Add Animation Zone" ,"LightingConfiguration_Animation", Color.Parse("#ffb033"), AddAnimationZoneCommand);
     }
-
     private FlyoutButtonToolbarItem AddColorZoneTool()
     {
         
@@ -199,6 +226,7 @@ public class ToolsViewModel : ViewModelBase
 
     public override void Dispose()
     {
+        _lightingZonesLibraryViewModel.ItemSelected -= OnLightingZoneAssetSelected;
         ToolbarItems.Clear();
     }
     public RelayCommand FitCanvasToViewCommand { get; set; }
@@ -206,4 +234,5 @@ public class ToolsViewModel : ViewModelBase
     public RelayCommand AddAmbilightZoneCommand { get; set; }
     public RelayCommand AddAnimationZoneCommand { get; set; }
     public RelayCommand AddColorZoneCommand { get; set; }
+    public ICommand ShowLibraryCommand { get; set; }
 }

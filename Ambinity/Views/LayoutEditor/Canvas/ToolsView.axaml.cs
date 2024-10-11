@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Ambinity.ViewModels;
@@ -5,6 +6,7 @@ using Ambinity.Views.AppTour;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -16,12 +18,16 @@ public partial class ToolsView : UserControl
     private AppTourViewModel _appTourViewModel;
     private AppTourElementProvider _appTourElementProvider;
     private int flyoutButtonClickCount;
+    private ToolsViewModel _viewModel;
     public ToolsView()
     {
         _appTourViewModel = Ioc.Default.GetService<AppTourViewModel>();
         _appTourElementProvider = Ioc.Default.GetService<AppTourElementProvider>();
         _appTourViewModel.NextStepActivated += OnAppTourStepChanged;
         InitializeComponent();
+        _viewModel = Ioc.Default.GetRequiredService<ToolsViewModel>();
+        _viewModel.OpenFlyoutEvent += OpenFlyout;
+        _viewModel.CloseFlyoutEvent += CloseFlyout;
     }
 
     private async void OnAppTourStepChanged(ViewModelBase element)
@@ -55,5 +61,24 @@ public partial class ToolsView : UserControl
     private void MenuFlyoutItem_OnClick(object? sender, RoutedEventArgs e)
     {
         flyoutButtonClickCount++;
+    }
+    private void CloseFlyout()
+    {
+        FlyoutBase.GetAttachedFlyout(this).Hide();
+    }
+
+    private void OpenFlyout()
+    {
+        FlyoutBase.ShowAttachedFlyout(this);
+    }
+
+    private void PopupFlyoutBase_OnClosing(object? sender, CancelEventArgs e)
+    {
+        _viewModel.OnFlyoutClosing();
+    }
+
+    private void Button_OnClick(object? sender, RoutedEventArgs e)
+    {
+        FlyoutBase.GetAttachedFlyout(this).Hide();
     }
 }

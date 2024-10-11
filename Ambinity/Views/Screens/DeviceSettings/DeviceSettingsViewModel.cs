@@ -38,13 +38,16 @@ public class DeviceSettingsViewModel : ViewModelBase
         Controller = controller;
         Thumbnail = Controller.Thumbnail ??  _thumbnailService.GetThumbnail("null").Result;
         HasFanControl = Controller.FanController != null;
+       
         OnPropertyChanged(nameof(HasFanControl));
         var result = await HardwareLightingViewModel.Init(controller);
-
         //init child viewmodel
         PortConfigurationViewModel.Init(controller);
+        if(HasFanControl)
+            CoolingSettingsViewModel.Init(controller);
         ConnectionSettingsViewModel.Init(controller);
         FirmwareSettingsViewModel.Init(controller);
+        
         CommandSetup();
         if (!result)
         {
@@ -85,13 +88,13 @@ public class DeviceSettingsViewModel : ViewModelBase
     public DevicePortConfigurationViewModel PortConfigurationViewModel { get; }
     public DeviceCoolingSettingsViewModel CoolingSettingsViewModel { get; }
     public ICommand BackToDashboardCommand { get; set; }
-    public object HardwareFanViewModel { get; }
     public bool HasFanControl { get; set; }
     public Bitmap Thumbnail { get; set; }
 
     public override void Dispose()
     {
         ConnectionSettingsViewModel?.Dispose();
+        CoolingSettingsViewModel?.Dispose();
         FirmwareSettingsViewModel?.Dispose();
         HardwareLightingViewModel?.Dispose();
         PortConfigurationViewModel?.Dispose();

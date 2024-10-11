@@ -9,6 +9,42 @@
              xmlns:flyoutItem="clr-namespace:AmbinityCore.Models.Flyout;assembly=AmbinityCore"
              x:DataType="local:ToolsViewModel"
              x:Class="Ambinity.Views.LayoutEditor.ToolsView">
+     <UserControl.Styles>
+        <Style Selector="FlyoutPresenter.DefaultFlyout">
+            <Setter Property="Background" Value="{DynamicResource TimePickerFlyoutPresenterBackground}" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+    </UserControl.Styles>
+    <FlyoutBase.AttachedFlyout>
+        <Flyout Closing="PopupFlyoutBase_OnClosing" Placement="LeftEdgeAlignedBottom" HorizontalOffset="-10" FlyoutPresenterClasses="DefaultFlyout" >
+            <Grid>
+                <ContentControl Focusable="True" Content="{CompiledBinding CurrentFlyoutViewModel}"></ContentControl>
+                <Grid HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="10" Spacing="5">
+                        <!-- <Grid> -->
+                        <!--     <Button ToolTip.Tip="Add to Library" Padding="1" Background="Transparent" Width="30" Height="30" -->
+                        <!--             Classes="icon-button"> -->
+                        <!--         <PathIcon Width="15" Data="{DynamicResource plus}"></PathIcon> -->
+                        <!--     </Button> -->
+                        <!-- </Grid> -->
+                        <Grid>
+                            <Button ToolTip.Tip="Close" Padding="1" Click="Button_OnClick"
+                                    Background="Transparent" Width="30" Height="30"
+                                    Classes="icon-button">
+                                <PathIcon Margin="1,1,0,0" Width="17" Data="{DynamicResource plus}">
+                                    <PathIcon.RenderTransform>
+                                        <RotateTransform Angle="45"></RotateTransform>
+                                    </PathIcon.RenderTransform>
+                                </PathIcon>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+        </Flyout>
+    </FlyoutBase.AttachedFlyout>
     <Grid>
         <StackPanel Orientation="Horizontal" Spacing="10">
             <Border Background="#2c2c2c" CornerRadius="7" Margin="0,0,0,0" Padding="0">

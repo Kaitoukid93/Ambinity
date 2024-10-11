@@ -28,7 +28,7 @@ public class PositionConfigurationViewModel : ViewModelBase
 
     private void SetItemScale(string value)
     {
-        ScaleProperty = value;
+        ScaleProperty = double.Parse(value);
         TryUpdateItemProperty();
     }
 
@@ -40,24 +40,24 @@ public class PositionConfigurationViewModel : ViewModelBase
         CanScale = PositionAwareItem.IsScalable;
         CanRotate = PositionAwareItem.IsRotatable;
         CanResize = PositionAwareItem.IsResizeable;
-        ScaleProperty = PositionAwareItem.Scale.ToString("0.00");
-        RotationProperty = PositionAwareItem.Rotation.ToString("0.00");
-        XProperty = PositionAwareItem.X.ToString("0.00");
-        YProperty = PositionAwareItem.Y.ToString("0.00");
-        WidthProperty = PositionAwareItem.Width.ToString("0.00");
-        HeightProperty = PositionAwareItem.Height.ToString("0.00");
+        ScaleProperty = PositionAwareItem.Scale;
+        RotationProperty = PositionAwareItem.Rotation;
+        XProperty = PositionAwareItem.X;
+        YProperty = PositionAwareItem.Y;
+        WidthProperty = PositionAwareItem.Width;
+        HeightProperty = PositionAwareItem.Height;
     }
 
     public void Update()
     {
         if (IsEnabled)
         {
-            XProperty = PositionAwareItem.X.ToString("0.00");
-            YProperty = PositionAwareItem.Y.ToString("0.00");
-            WidthProperty = PositionAwareItem.Width.ToString("0.00");
-            HeightProperty = PositionAwareItem.Height.ToString("0.00");
-            ScaleProperty = PositionAwareItem.Scale.ToString("0.00");
-            RotationProperty = PositionAwareItem.Rotation.ToString("0.00");
+            XProperty = PositionAwareItem.X;
+            YProperty = PositionAwareItem.Y;
+            WidthProperty = PositionAwareItem.Width;
+            HeightProperty = PositionAwareItem.Height;
+            ScaleProperty = PositionAwareItem.Scale;
+            RotationProperty = PositionAwareItem.Rotation;
         }
     }
 
@@ -72,14 +72,14 @@ public class PositionConfigurationViewModel : ViewModelBase
         // {
         //     return;
         // }
-        if (float.Parse(WidthProperty) < _minimumWidth || float.Parse(HeightProperty) < _minimumHeight)
+        if ((float)(WidthProperty) < _minimumWidth || (float)HeightProperty < _minimumHeight)
             return;
-        PositionAwareItem.X = float.Parse(XProperty);
-        PositionAwareItem.Y = float.Parse(YProperty);
-        PositionAwareItem.Width = float.Parse(WidthProperty);
-        PositionAwareItem.Height = float.Parse(HeightProperty);
-        PositionAwareItem.SetRotation(float.Parse(RotationProperty));
-        PositionAwareItem.SetScale(float.Parse(ScaleProperty));
+        PositionAwareItem.X = (float)XProperty;
+        PositionAwareItem.Y =(float)YProperty;
+        PositionAwareItem.Width = (float)WidthProperty;
+        PositionAwareItem.Height = (float)HeightProperty;
+        PositionAwareItem.SetRotation((float)RotationProperty);
+        PositionAwareItem.SetScale((float)ScaleProperty);
         (_canvas.Canvas as Canvas).NeedsRepaint(null);
     }
 
@@ -88,100 +88,77 @@ public class PositionConfigurationViewModel : ViewModelBase
     /// <summary>
     /// abstraction for item
     /// </summary>
-    private string _xProperty;
+    private double _xProperty;
 
-    private string _yProperty;
+    private double _yProperty;
 
-    public string XProperty
+    public double XProperty
     {
         get => _xProperty;
         set
         {
-            decimal numVal = 0;
-            var canConvert = decimal.TryParse(value, out numVal);
-            if (!canConvert)
-                throw new ArgumentException(nameof(XProperty), "Invalid value");
 
             _xProperty = value;
             OnPropertyChanged();
         }
     }
 
-    public string YProperty
+    public double YProperty
     {
         get => _yProperty;
         set
         {
-            decimal numVal = 0;
-            var canConvert = decimal.TryParse(value, out numVal);
-            if (!canConvert)
-                throw new ArgumentException(nameof(YProperty), "Invalid value");
-
-
             _yProperty = value;
             OnPropertyChanged();
         }
     }
 
-    private string _widthProperty;
+    private double _widthProperty;
 
-    public string WidthProperty
+    public double WidthProperty
     {
         get => _widthProperty;
         set
         {
-            decimal numVal = 0;
-            var canConvert = decimal.TryParse(value, out numVal);
-            if (!canConvert)
-                throw new ArgumentException(nameof(WidthProperty), "Invalid value");
             _widthProperty = value;
             OnPropertyChanged();
         }
     }
 
-    private string _heightProperty;
+    private double _heightProperty;
 
-    public string HeightProperty
+    public double HeightProperty
     {
         get => _heightProperty;
         set
         {
-            decimal numVal = 0;
-            var canConvert = decimal.TryParse(value, out numVal);
-            if (!canConvert)
-                throw new ArgumentException(nameof(HeightProperty), "Invalid value");
+            
             _heightProperty = value;
             OnPropertyChanged();
         }
     }
 
-    private string _scaleProperty;
+    private double _scaleProperty;
 
-    public string ScaleProperty
+    public double ScaleProperty
     {
         get => _scaleProperty;
         set
         {
-            decimal numVal = 0;
-            var canConvert = decimal.TryParse(value, out numVal);
-            if (!canConvert)
-                throw new ArgumentException(nameof(WidthProperty), "Invalid value");
+          
             _scaleProperty = value;
             OnPropertyChanged();
         }
     }
 
-    private string _rotationProperty;
+    private double _rotationProperty;
 
-    public string RotationProperty
+    public double RotationProperty
     {
         get => _rotationProperty;
         set
         {
-            decimal numVal = 0;
-            var canConvert = decimal.TryParse(value, out numVal);
-            if (!canConvert)
-                throw new ArgumentException(nameof(RotationProperty), "Invalid value");
+            
             _rotationProperty = value;
             OnPropertyChanged();
         }

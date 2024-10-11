@@ -62,9 +62,10 @@ public class OpenRGBStream : IDataStream
     private Color[] GetOutputStream(int id)
     {
         Color[] outputStream;
+        var output = Controller.LedController.Outputs[id];
         var ambinityDevice = Controller.LedController.Outputs[id].Device;
         int ledCount = ambinityDevice.Leds.Count;
-        var rgbOrder = ambinityDevice.RGBOrder;
+        var rgbOrder = output.RGBOrder;
         outputStream = new Color[ledCount];
         int counter = 0;
         lock (ambinityDevice.Lock)

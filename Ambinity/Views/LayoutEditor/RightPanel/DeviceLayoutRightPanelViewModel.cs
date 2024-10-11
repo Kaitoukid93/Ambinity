@@ -121,6 +121,8 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
     public override void Dispose()
     {
         //todo
+        if (_libraryViewModel != null)
+            _libraryViewModel.ItemSelected -= OnLibraryItemSelected;
         _canvasViewModel.SelectionChanged -= OnCanvasSelectionChanged;
     }
 

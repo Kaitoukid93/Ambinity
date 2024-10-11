@@ -29,9 +29,6 @@
             </MenuItem>
         </MenuFlyout>
     </UserControl.Resources>
-    <UserControl.Styles>
-
-    </UserControl.Styles>
     <Grid IsEnabled="{Binding IsEnabled}" MinWidth="300" RowDefinitions="Auto,*">
         <Grid>
             <StackPanel Margin="0,8" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
@@ -58,28 +55,26 @@
                     <TextBlock Foreground="{DynamicResource TextControlForegroundDisabled}" VerticalAlignment="Center"
                                Text="W">
                     </TextBlock>
-                    <TextBox LostFocus="InputElement_OnLostFocus" HorizontalContentAlignment="Right"
-                             attachedProperties:TextBoxAssist.SuffixText="px"
-                             BorderThickness="0" Grid.Column="1" Text="{Binding WidthProperty}" Height="20"
+                    <ui:NumberBox LostFocus="InputElement_OnLostFocus" SimpleNumberFormat="F2" Width="100" Theme="{DynamicResource borderlessNumberBox}"
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding WidthProperty}"
                              Margin="5,0">
-                    </TextBox>
+                    </ui:NumberBox>
                 </Grid>
                 <Grid Margin="0,7" Row="1" ColumnDefinitions="20,*">
                     <TextBlock Foreground="{DynamicResource TextControlForegroundDisabled}" VerticalAlignment="Center"
                                Text="X">
                     </TextBlock>
-                    <TextBox LostFocus="InputElement_OnLostFocus" HorizontalContentAlignment="Right"
-                             attachedProperties:TextBoxAssist.SuffixText="px"
-                             BorderThickness="0" Grid.Column="1" Text="{Binding XProperty}" Height="20" Margin="5,0">
-                    </TextBox>
+                    <ui:NumberBox LostFocus="InputElement_OnLostFocus" SimpleNumberFormat="F2" Width="100" Theme="{DynamicResource borderlessNumberBox}"
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding XProperty}" 
+                                  Margin="5,0">
+                    </ui:NumberBox>
                 </Grid>
                 <Grid IsVisible="{CompiledBinding CanRotate}" Margin="0,7" Row="2" ColumnDefinitions="20,*">
                     <PathIcon  HorizontalAlignment="Left" Foreground="{DynamicResource ButtonForegroundDisabled}" Width="20" Height="20" Data="{DynamicResource Rotate_value}"></PathIcon>
-                    <TextBox LostFocus="InputElement_OnLostFocus" HorizontalContentAlignment="Right"
-                             attachedProperties:TextBoxAssist.SuffixText="&#186;"
-                             BorderThickness="0" Grid.Column="1" Text="{Binding RotationProperty}" Height="20"
-                             Margin="5,0">
-                    </TextBox>
+                    <ui:NumberBox LostFocus="InputElement_OnLostFocus" SimpleNumberFormat="F2" Width="100" Theme="{DynamicResource borderlessNumberBox}"
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding RotationProperty}" 
+                                  Margin="5,0">
+                    </ui:NumberBox>
                 </Grid>
             </Grid>
             <Grid MaxWidth="120" Column="2" RowDefinitions="*,*,*">
@@ -87,30 +82,27 @@
                     <TextBlock Foreground="{DynamicResource TextControlForegroundDisabled}" VerticalAlignment="Center"
                                Text="H">
                     </TextBlock>
-                    <TextBox LostFocus="InputElement_OnLostFocus" HorizontalContentAlignment="Right"
-                             attachedProperties:TextBoxAssist.SuffixText="px"
-                             BorderThickness="0" Grid.Column="1" Text="{Binding HeightProperty}" Height="20"
-                             Margin="5,0,0,0">
-                    </TextBox>
+                    <ui:NumberBox LostFocus="InputElement_OnLostFocus" Width="100" SimpleNumberFormat="F2" Theme="{DynamicResource borderlessNumberBox}"
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding HeightProperty}" 
+                                  Margin="5,0">
+                    </ui:NumberBox>
                 </Grid>
                 <Grid Margin="0,7" Row="1" ColumnDefinitions="20,*">
                     <TextBlock Foreground="{DynamicResource TextControlForegroundDisabled}" VerticalAlignment="Center"
                                Text="Y">
                     </TextBlock>
-                    <TextBox LostFocus="InputElement_OnLostFocus" HorizontalContentAlignment="Right"
-                             attachedProperties:TextBoxAssist.SuffixText="px"
-                             BorderThickness="0" Grid.Column="1" Text="{Binding YProperty}" Height="20"
-                             Margin="5,0,0,0">
-                    </TextBox>
+                    <ui:NumberBox LostFocus="InputElement_OnLostFocus" Width="100" SimpleNumberFormat="F2" Theme="{DynamicResource borderlessNumberBox}"
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding YProperty}" 
+                                  Margin="5,0">
+                    </ui:NumberBox>
                 </Grid>
                 <Grid IsVisible="{CompiledBinding CanScale}" ColumnDefinitions="20,*" Margin="0,7" Row="2">
                     <PathIcon HorizontalAlignment="Left" Foreground="{DynamicResource ButtonForegroundDisabled}" Width="15" Height="15" Data="{DynamicResource scale}"></PathIcon>
-                    <SplitButton BorderThickness="0" Height="20" Grid.Column="1" Margin="5,0,0,0"
+                    <SplitButton BorderThickness="0" Grid.Column="1" Margin="5,0,0,0" Padding="0" Width="100"
                                  Flyout="{StaticResource ScaleMenuFlyout}">
-                        <TextBox CornerRadius="4,0,0,4" Background="Transparent" LostFocus="InputElement_OnLostFocus"
-                                 HorizontalContentAlignment="Right"
-                                 BorderThickness="0" Grid.Column="1" Text="{Binding ScaleProperty}">
-                        </TextBox>
+                        <ui:NumberBox LostFocus="InputElement_OnLostFocus" Background="Transparent" SpinButtonPlacementMode="Hidden" SimpleNumberFormat="F2"  Minimum="0.2" Maximum="2"  Theme="{DynamicResource borderlessNumberBox}"
+                                      BorderThickness="0" BorderBrush="Transparent" CornerRadius="4,0,0,4" Value="{Binding ScaleProperty}">
+                        </ui:NumberBox>
                     </SplitButton>
 
                 </Grid>

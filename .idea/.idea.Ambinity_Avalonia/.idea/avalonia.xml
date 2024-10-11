@@ -3,7 +3,16 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
+        <entry key="Ambinity.Installer/App.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/AmbinityImage.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/AmbinityImageView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/FirstStepView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/MainWindow.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/SecondStepView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/ThirdStepView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/WelcomeView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
         <entry key="Ambinity/App.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/ControlTheme/BorderlessNumberbox.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/ControlTheme/LessUglyColorPicker.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/ControlTheme/StriplessListbox.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/ControlTheme/TransparrentSettingsExpander.axaml" value="Ambinity/Ambinity.csproj" />
@@ -112,9 +121,12 @@
         <entry key="Ambinity/Views/NonClientArea/NonClientAreaContent.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/NonClientArea/NonClientAreaContentView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/NonClientAreaContent/NonClientAreaContent.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Notification/NotificationInforBarView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/OnlineStore/OnlineItemAssetView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/OnlineStore/OnlineItemStoreView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Root/RootView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/AppSettings/AppSettingsVIew.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/AppSettings/AppSettingsView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/CaptureEngine/CaptureEngineWindow.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/CaptureEngine/ScreenCapturingView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/CaptureEngine/ScreenPreview.axaml" value="Ambinity/Ambinity.csproj" />
@@ -144,9 +156,13 @@
         <entry key="Ambinity/Views/Screens/DeviceSettings/DevicePortMapView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceSettingsDashboardView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceSettingsView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/FanPortView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/HWMonitorChartView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/PortDetailView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/EffectControlView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/LayersView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/ProfileEditor/Library/LightingZoneAssetsView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/ProfileEditor/Library/LightingZoneLibraryView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/ProfileEditorView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/RightPanelFlyoutView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/RightPanelView.axaml" value="Ambinity/Ambinity.csproj" />

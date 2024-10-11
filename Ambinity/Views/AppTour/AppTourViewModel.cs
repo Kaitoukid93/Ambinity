@@ -5,6 +5,9 @@ using System.Windows.Input;
 using Ambinity.Services;
 using Ambinity.ViewModels;
 using Ambinity.Views.SideMenu;
+using Ambinity.Windows;
+using AmbinityCore.DataBase;
+using AmbinityCore.Models.GeneralSetting;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -19,10 +22,13 @@ public class AppTourViewModel : ViewModelBase
 {
     public event Action<ViewModelBase> NextStepActivated;
     private readonly IMainWindowService _mainWindowService;
-    public AppTourViewModel(IMainWindowService mainWindowService)
+    private readonly IGeneralSettings _generalSettings;
+
+    public AppTourViewModel(IMainWindowService mainWindowService, GeneralSettingsManager settingsManager)
     {
         ApptourElements = new ObservableCollection<AppTourElementViewModel>();
         _mainWindowService = mainWindowService;
+        _generalSettings = settingsManager.Settings;
         _mainWindowService.MainWindowOpened += OnMainWindowOpened;
         _mainWindowService.MainWindowClosed += OnMainWindowClosed;
     }
@@ -39,13 +45,14 @@ public class AppTourViewModel : ViewModelBase
         //todo apptour condition
         _lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
         _mainWindow = _lifeTime.MainWindow;
-        Start();
+          Start();
     }
 
     private void Skip()
     {
         IsRunning = false;
         NextStepActivated = null;
+        _generalSettings.ShowAppTour = false;
         Dispose();
     }
 
@@ -71,6 +78,8 @@ public class AppTourViewModel : ViewModelBase
     //show apptour on main window
     public void Show(AppTourElementViewModel appTourElement, bool overwrite = true)
     {
+        if(!_generalSettings.ShowAppTour)
+            return;
         if (_mainWindow == null)
             return;
         SkipCommand = new RelayCommand(Skip);
@@ -93,7 +102,8 @@ public class AppTourViewModel : ViewModelBase
 
     public void NextStep(ViewModelBase vm)
     {
-        NextStepActivated?.Invoke(vm);
+        if (_generalSettings.ShowAppTour)
+            NextStepActivated?.Invoke(vm);
     }
 
     private ObservableCollection<AppTourElementViewModel> _appTourElements;

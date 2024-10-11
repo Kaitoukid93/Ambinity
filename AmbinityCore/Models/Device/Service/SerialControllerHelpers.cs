@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO.Ports;
 using System.Text;
 using System.Text.RegularExpressions;
+using AmbinityCore.DataStream;
 using AmbinityCore.Models.Device.Controller;
 using Avalonia.Media;
 using Microsoft.Win32;
@@ -379,7 +380,7 @@ public class SerialControllerHelpers
             }
             catch (TimeoutException)
             {
-                Log.Information(name.ToString(), "Unknown Hardware Lighting Version");
+                Log.Information("Unknown Hardware Lighting Version");
             }
         }
 

@@ -266,7 +266,7 @@ namespace Draw2D.Core
         {
             if (!IsDragable)
                 return;
-
+            
             AdjustPositionResult adjustmentResult = new AdjustPositionResult(dx, dy);
 
             foreach (var policy in _policies)

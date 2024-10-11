@@ -32,7 +32,7 @@ public class AmbinityDeviceBitmapCapture
         {
             IsBackground = true,
             Priority = ThreadPriority.BelowNormal,
-            Name = "DesktopDuplicatorReader"
+            Name = "BitmapCapture"
         };
         _workerThread.Start();
     }
@@ -72,7 +72,7 @@ public class AmbinityDeviceBitmapCapture
                                 led.LED.Green,
                                 led.LED.Blue);
                             if (!_device.IsIdentifying)
-                                led.LED.SetColor(R, G, B, false);
+                                led.LED.SetColor(R, G, B);
                         }
                     }
                 }

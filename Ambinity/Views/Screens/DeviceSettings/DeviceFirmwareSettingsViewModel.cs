@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Ambinity.ViewModels;
 using Ambinity.Windows;
 using AmbinityCore;
+using AmbinityCore.DataStream;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityServer.OnlineItem;
 using CommunityToolkit.Mvvm.Input;
@@ -21,9 +22,11 @@ public class DeviceFirmwareSettingsViewModel : ViewModelBase
     private List<FirmwareInformation> _availableFirmwares;
     private string _header = "You're up to date";
     private readonly IDialogService _dialogService;
-
-    public DeviceFirmwareSettingsViewModel(FirmwareService firmwareService, IDialogService dialogService)
+    private SerialControllerRepository _controllerRepository;
+    private IDataStream _serialStream;
+    public DeviceFirmwareSettingsViewModel(FirmwareService firmwareService, IDialogService dialogService,SerialControllerRepository controllerRepository)
     {
+        _controllerRepository = controllerRepository;
         _firmwareService = firmwareService;
         _dialogService = dialogService;
         CheckForUpdateCommand = new AsyncRelayCommand(CheckForUpdate);
@@ -34,6 +37,8 @@ public class DeviceFirmwareSettingsViewModel : ViewModelBase
     {
         //download selected firmware
         //get firmware file
+        _serialStream = _controllerRepository.GetSerialStream(_controller);
+        await _serialStream?.Stop();
         DownloadingFirmware = true;
         var downloadVm = new DownloadDialogViewModel("Downloading");
         _dialogService.ShowDownloadDialog(downloadVm, true);
@@ -74,7 +79,7 @@ public class DeviceFirmwareSettingsViewModel : ViewModelBase
             IsAvailable = false;
             return;
         }
-
+        _controller = controller as SerialController;
         UpdateAvailable = false;
         AvailableFirmwares = new List<FirmwareInformation>();
         _controller = controller as SerialController;

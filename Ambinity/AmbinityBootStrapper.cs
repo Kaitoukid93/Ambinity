@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Ambinity.AppResource;
 using Ambinity.Services;
 using Ambinity.Stores;
+using Ambinity.SystemUtilities;
 using Ambinity.Views.AppTour;
 using Ambinity.Views.Configuration.ColorConfiguration;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
@@ -10,6 +11,7 @@ using Ambinity.Views.Configuration.PositionConfiguration;
 using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Views.NonClientArea;
+using Ambinity.Views.Screens.AppSettings;
 using Ambinity.Views.Screens.DeviceLayout;
 using Ambinity.Views.Screens.DeviceLayout.Library;
 using Ambinity.Views.Screens.DeviceSettings;
@@ -24,6 +26,7 @@ using AmbinityCore.Colors;
 using AmbinityCore.DataBase;
 using AmbinityCore.Helpers;
 using AmbinityCore.LightingEngines;
+using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Device.Device;
 using AmbinityCore.Models.Device.Provider;
@@ -66,9 +69,14 @@ public class AmbinityBootStrapper
     public static async void Initialize(Application application)
     {
         _application = application;
+        //setup debug logging
         SetupDebugLogging();
         //register all Services and ViewModels
         ConfigureIoc();
+        //get settings
+        _generalSettingsManager = Ioc.Default.GetRequiredService<GeneralSettingsManager>();
+        //register auto start
+        ConfigureAutoStart();
         //set theme and color
         ConfigureTheme();
         //configure json settings for all Serialize and Deserialize action ( this need for legacy adrilight json)
@@ -112,11 +120,17 @@ public class AmbinityBootStrapper
 
     private static void ConfigureTheme()
     {
-        _generalSettingsManager = Ioc.Default.GetRequiredService<GeneralSettingsManager>();
         _faTheme = App.Current?.Styles[0] as FluentAvaloniaTheme;
         UpdateAppAccentColor(_generalSettingsManager.Settings.PrimaryColor);
     }
 
+    private static void ConfigureAutoStart()
+    {
+        if (_generalSettingsManager.Settings.AutoStart)
+        {
+            StartUpManager.AddApplicationToTaskScheduler("Ambinity Startup Task",_generalSettingsManager.Settings.AutoStartDelay);
+        }
+    }
     private static void ConfigureIoc()
     {
         var mainFrameBuffer = new FrameBuffer(750, 500);
@@ -128,6 +142,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<RootViewModel>()
                 .AddSingleton<GeneralSettingsManager>()
                 .AddSingleton<RootNavigationStores>()
+                .AddSingleton<AppSettingsViewModel>()
                 .AddSingleton<DeviceSettingsViewModel>()
                 .AddSingleton<DeviceSettingsDashboardViewModel>()
                 .AddSingleton<DeviceFirmwareSettingsViewModel>()
@@ -171,6 +186,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<HWMonitorCapturingService>()
                 .AddSingleton<CapturingServiceProvider>()
                 .AddSingleton<DeviceBitmapCaptureFactory>()
+                .AddSingleton<FanOutputServiceFactory>()
                 .AddSingleton<BassAudioDeviceEnumerationService>()
                 .AddSingleton<BrightnessProviderFactory>()
                 .AddSingleton<AudioDeviceNotificationClient>()

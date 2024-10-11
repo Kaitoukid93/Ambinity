@@ -5,6 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
              x:DataType="local:DeviceCoolingSettingsViewModel"
              x:Class="Ambinity.Views.Screens.DeviceSettings.DeviceCoolingSettingsView">
     <Grid RowDefinitions="Auto,*">
@@ -14,20 +15,57 @@
         <Grid Margin="0,10,0,0" Row="1">
             <StackPanel Spacing="2">
                 <ui:SettingsExpander Header="Fan control"
+                                     ItemsSource="{Binding Items}"
                                      Description="Change Fan or Pump control."
+                                     Tag="{Binding HWmonitorAvailable}"
                                      IsExpanded="True">
                     <ui:SettingsExpander.IconSource>
                         <ui:PathIconSource Data="{DynamicResource fanSpeedController}"></ui:PathIconSource>
                     </ui:SettingsExpander.IconSource>
-                    <ui:SettingsExpanderItem Content="Fan control zone 1" Description="Ambino FanHub Single cooling zone" IsClickEnabled="False">
-                        <ui:SettingsExpanderItem.Footer>
-                            <ui:FAComboBox>
-                                <ui:FAComboBoxItem>Fixed</ui:FAComboBoxItem>
-                                <ui:FAComboBoxItem>Adaptive</ui:FAComboBoxItem>
-                            </ui:FAComboBox>
-                        </ui:SettingsExpanderItem.Footer>
-                    </ui:SettingsExpanderItem>
+                    <ui:SettingsExpander.DataTemplates>
+                        <DataTemplate DataType="{x:Type local:FanPortViewModel}">
+                            <ui:SettingsExpanderItem Height="70" Content="{Binding Name}" Description="{Binding Description}" IsClickEnabled="False">
+                                <ui:SettingsExpanderItem.Footer>
+                                    <StackPanel Orientation="Horizontal" Spacing="10" >
+                                        <Slider Value="{Binding FixedSpeed}" IsVisible="{Binding ElementName=cbx,Path=!SelectedIndex}" Width="160"></Slider>
+                                        <ui:FAComboBox IsEnabled="{Binding HWMonitorAvailable}" SelectedItem="{Binding SelectedControlMode}" VerticalAlignment="Center" x:Name="cbx" Margin="40,0" ItemsSource="{Binding AvailableControlMode }">
+                                        </ui:FAComboBox>
+                                    </StackPanel>
+                                </ui:SettingsExpanderItem.Footer>
+                            </ui:SettingsExpanderItem>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type local:HWMonitorChartViewModel}">
+                            <ui:SettingsExpanderItem Content="{Binding Sensor.Name}" Description="{Binding Sensor.SensorType}" IsClickEnabled="False">
+                                <ui:SettingsExpanderItem.Footer>
+                                    <lvc:CartesianChart TooltipBackgroundPaint="{Binding ToolTipPaint}" TooltipTextSize="12" TooltipTextPaint="{Binding ToolTipTextPaint}"  Margin="10,0" Height="40" Width="200"
+                                                        SyncContext="{Binding Sync}"
+                                                        Series="{Binding Series}"
+                                                        XAxes="{Binding XAxis}"
+                                                        YAxes="{Binding YAxis}">
+                                        </lvc:CartesianChart>
+                                </ui:SettingsExpanderItem.Footer>
+                            </ui:SettingsExpanderItem>
+                        </DataTemplate>
+                    </ui:SettingsExpander.DataTemplates>
                 </ui:SettingsExpander>
+                <ui:InfoBar IsVisible="{Binding HWmonitorAvailable}" Severity="Informational" Title="Fan control modes" IsOpen="True"
+                            IsIconVisible="True"
+                            IsClosable="False"
+                            Message="Adaptive control mode will take average value of the sensors showing above to control fans that attached to this Hub, if no sensor present, the mode is [Fixed].">
+                    <!-- <ui:InfoBar.IconSource> -->
+                    <!--     <ui:PathIconSource Data="{DynamicResource infoCircle}"></ui:PathIconSource> -->
+                    <!-- </ui:InfoBar.IconSource> -->
+
+                </ui:InfoBar>
+                <ui:InfoBar IsVisible="{Binding !HWmonitorAvailable}" Severity="Error" Title="Error" IsOpen="True"
+                            IsIconVisible="True"
+                            IsClosable="False"
+                            Message="Can not read Motherboard Hardware information">
+                    <!-- <ui:InfoBar.IconSource> -->
+                    <!--     <ui:PathIconSource Data="{DynamicResource infoCircle}"></ui:PathIconSource> -->
+                    <!-- </ui:InfoBar.IconSource> -->
+
+                </ui:InfoBar>
             </StackPanel>
 
         </Grid>

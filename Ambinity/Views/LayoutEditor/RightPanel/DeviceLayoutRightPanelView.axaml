@@ -17,8 +17,7 @@
         </Style>
     </UserControl.Styles>
     <FlyoutBase.AttachedFlyout>
-        <Flyout Closing="PopupFlyoutBase_OnClosing" FlyoutPresenterClasses="DefaultFlyout" HorizontalOffset="-326"
-                VerticalOffset="-473">
+        <Flyout Closing="PopupFlyoutBase_OnClosing" FlyoutPresenterClasses="DefaultFlyout" Placement="LeftEdgeAlignedBottom" HorizontalOffset="-10">
             <Grid>
                 <ContentControl Focusable="True" Content="{CompiledBinding FlyoutViewModel}"></ContentControl>
                 <Grid HorizontalAlignment="Right" VerticalAlignment="Top">
@@ -87,7 +86,7 @@ Request custom layout at [Ambino-Layout](https://ambino.vn)
                 <Grid Column="1">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
                         <Grid>
-                            <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1"
+                            <Button x:Name="ShowLibraryButton" ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1"
                                     Background="Transparent" Width="30" Height="30"
                                     Classes="icon-button">
                                 <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon>

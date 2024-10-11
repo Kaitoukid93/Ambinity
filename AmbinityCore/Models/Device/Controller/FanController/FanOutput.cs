@@ -1,12 +1,21 @@
+using AmbinityCore.Models.Device.Controller;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
+
 namespace AmbinityCore.Models.Device;
 
-public class FanOutput
+public class FanOutput : ObservableObject
 {
-    public FanOutput(int speed, int index)
+    public FanOutput(string name, string description)
     {
-        Speed = speed;
-        Index = index;
+        Name = name;
+        Description = description;
     }
-    public int Speed { get; set; }
+
+    public FanControlModeEnum ControlMode { get; set; } = FanControlModeEnum.Adaptive;
+    public int FixedSpeed { get; set; } = 80;
+    [JsonIgnore] public int Speed { get; set; }
     public int Index { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
 }

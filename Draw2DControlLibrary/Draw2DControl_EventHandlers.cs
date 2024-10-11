@@ -302,7 +302,6 @@ namespace Draw2DControlLibrary
                 WorldMousePosY = point.Y;
 
                 Canvas?.OnMouseMove(screenPoint.X, screenPoint.Y, IsShifKeyDown(), IsControlKeyDown());
-
                 e.Handled = true;
             }
         }

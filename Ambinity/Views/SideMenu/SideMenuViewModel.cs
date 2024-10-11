@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
 using Ambinity.Views.AppTour;
+using Ambinity.Views.Screens.AppSettings;
 using Ambinity.Views.Screens.DeviceLayout;
 using Ambinity.Views.Screens.DeviceSettings;
 using Ambinity.Views.Screens.ProfileEditor;
@@ -28,9 +29,10 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         LightingProfileCategoryRepository categoryRepository, IDialogService dialogService,
         RootNavigationStores rootNavigationStores,
         SideMenuProfilePlayerViewModel profilePlayerViewModel, SideMenuViewModelFactory vmFactory,
-        ProfileEditorViewModel profileEditorViewModel, DeviceLayoutEditorViewModel deviceLayoutEditorViewModel,
+        ProfileEditorViewModel profileEditorViewModel, DeviceLayoutEditorViewModel deviceLayoutEditorViewModel,AppSettingsViewModel appSettingsViewModel,
         DeviceSettingsDashboardViewModel dashboardViewModel)
     {
+        _appSettingsViewModel = appSettingsViewModel;   
         _dashboardViewModel = dashboardViewModel;
         _profileEditorViewModel = profileEditorViewModel;
         _deviceLayoutEditorViewModel = deviceLayoutEditorViewModel;
@@ -120,6 +122,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     private readonly ProfileEditorViewModel _profileEditorViewModel;
     private readonly DeviceLayoutEditorViewModel _deviceLayoutEditorViewModel;
     private readonly DeviceSettingsDashboardViewModel _dashboardViewModel;
+    private readonly AppSettingsViewModel _appSettingsViewModel;
 
     public SideMenuProfileViewModel SelectedProfile
     {
@@ -210,7 +213,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
                 GoToDeviceSettings();
                 break;
             case "Settings":
-                //gotosettings
+                GoToAppSettings();
                 break;
         }
     }
@@ -241,7 +244,11 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         _rootNavigationStores.CurrentViewModel = _dashboardViewModel;
         _dashboardViewModel.Init();
     }
-
+    private void GoToAppSettings()
+    {
+        _rootNavigationStores.CurrentViewModel = _appSettingsViewModel;
+        _appSettingsViewModel.Init();
+    }
     private void CatergorySelectionChanged(SideMenuProfileViewModel item)
     {
         //unselect all other categories except the one that nonified

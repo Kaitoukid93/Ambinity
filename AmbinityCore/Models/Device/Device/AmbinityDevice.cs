@@ -1,22 +1,11 @@
 using System.Collections.ObjectModel;
-using AmbinityCore.Enums;
-using AmbinityCore.Models.Collection;
-using AmbinityCore.Models.Device.Device;
 using AmbinityCore.Models.Device.LED;
-using AmbinityCore.Models.GeneralSetting;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Utils;
-using AmbinityServer.OnlineItem;
 using Avalonia;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
-using Draw2D.Core;
-using Draw2D.Core.Constants;
-using Draw2D.Core.Shapes.Basic;
-using Draw2D.Core.Shapes.FigureExtensions;
 using Newtonsoft.Json;
-using SkiaSharp;
 using RGBLEDOrderEnum = AmbinityCore.Enums.RGBLEDOrderEnum;
 
 namespace AmbinityCore.Models.Device;
@@ -72,18 +61,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         get => _deviceDescription;
         set => SetProperty(ref _deviceDescription, value);
     }
-
-    private RGBLEDOrderEnum _rgbOrder;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public RGBLEDOrderEnum RGBOrder
-    {
-        get => _rgbOrder;
-        set => SetProperty(ref _rgbOrder, value);
-    }
-
+    
     /// <summary>
     /// All the leds this device contains
     /// </summary>
@@ -412,26 +390,26 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         IsIdentifying = true;
         foreach (var led in Leds)
         {
-            led.LED.SetColor(255, 0, 0, false);
+            led.LED.SetColor(255, 0, 0);
         }
 
         await Task.Delay(100);
         foreach (var led in Leds)
         {
-            led.LED.SetColor(0, 0, 0, false);
+            led.LED.SetColor(0, 0, 0);
             ManualLedUpdate?.Invoke();
         }
         await Task.Delay(100);
         foreach (var led in Leds)
         {
             
-            led.LED.SetColor(255, 0, 0, false);
+            led.LED.SetColor(255, 0, 0);
             ManualLedUpdate?.Invoke();
         }
         await Task.Delay(100);
         foreach (var led in Leds)
         {
-            led.LED.SetColor(0, 0, 0, false);
+            led.LED.SetColor(0, 0, 0);
             ManualLedUpdate?.Invoke();
         }
         // await Task.Delay(500);
@@ -449,13 +427,13 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         IsIdentifying = true;
         foreach (var led in Leds.OrderBy(i=>i.Index).ToList())
         {
-            led.LED.SetColor(255, 0, 0, false);
+            led.LED.SetColor(255, 0, 0);
             ManualLedUpdate?.Invoke();
             await Task.Delay(100);
         }
         foreach (var led in Leds)
         {
-            led.LED.SetColor(0, 0, 0, false);
+            led.LED.SetColor(0, 0, 0);
             ManualLedUpdate?.Invoke();
         }
         IsIdentifying = false;

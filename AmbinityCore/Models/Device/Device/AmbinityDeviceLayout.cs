@@ -122,6 +122,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
         {
             device.Leds.Add(led);
         }
+
         device.DeviceName = this.Name;
         device.Layout = this;
         device.UpdateSizeByChild(false);

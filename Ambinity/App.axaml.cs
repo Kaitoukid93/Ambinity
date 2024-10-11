@@ -1,5 +1,7 @@
 using System;
 using System.Threading;
+using Ambinity.SystemUtilities;
+using AmbinityCore.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -37,6 +39,9 @@ namespace Ambinity
         {
             if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return;
+            _applicationStateManager = new ApplicationStateManager(desktop.Args ?? Array.Empty<string>());
+            if(!_applicationStateManager.IsElevated)
+                Utilities.Restart(true, TimeSpan.Zero);
             BindingPlugins.DataValidators.RemoveAt(0);
             //register service and ui
             AmbinityBootStrapper.Initialize(this);
@@ -45,5 +50,6 @@ namespace Ambinity
         }
         
         private Mutex? _ambinityMutex;
+        private ApplicationStateManager _applicationStateManager;
     }
 }
