@@ -17,6 +17,12 @@ public class Draw2DCanvasInfoBarViewModel : ViewModelBase
         _decoder.RenderingStatusChanged += OnRenderingStatusChanged;
         OnRenderingStatusChanged();
         ShowCanvasLockedInfoCheck = new RelayCommand<bool>(ShowCanvasLockedInfoStatusChanged);
+        StopRenderingCommand = new RelayCommand(StopRendering);
+    }
+
+    private void StopRendering()
+    {
+        _decoder.Stop();
     }
 
     /// <summary>
@@ -49,7 +55,7 @@ public class Draw2DCanvasInfoBarViewModel : ViewModelBase
     public void ShowCanvasLockedInfo()
     {
         Message = "Canvas is locked while rendering! Please stop the profile to move, add or delete items";
-        Severity = InfoBarSeverity.Warning;
+        Severity = InfoBarSeverity.Informational;
         IsOpen = true;
     }
 
@@ -117,4 +123,5 @@ public class Draw2DCanvasInfoBarViewModel : ViewModelBase
     }
 
     public ICommand ShowCanvasLockedInfoCheck { get; set; }
+    public ICommand StopRenderingCommand { get; set; }
 }

@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using Ambinity.ViewModels;
+using AmbinityCore.DataBase;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Device.Service;
+using AmbinityCore.Models.GeneralSetting;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
@@ -12,8 +14,10 @@ namespace Ambinity.Views.Screens.DeviceSettings;
 public class DeviceSettingsInfoBarViewModel : ViewModelBase
 {
     
-    public DeviceSettingsInfoBarViewModel(SerialControllerRepository controllerRepository, SerialControllerDiscoveryService discoveryService)
+    public DeviceSettingsInfoBarViewModel(SerialControllerRepository controllerRepository, GeneralSettingsManager settingsManager,
+        SerialControllerDiscoveryService discoveryService)
     {
+        _generalSettings = settingsManager.Settings;
         _controllerRepository = controllerRepository;
         _discoveryService = discoveryService;
         _discoveryService.NewComportDetected += OnNewComPortDetected;
@@ -26,8 +30,7 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
     {
         if (IsOpen)
             IsOpen = false;
-        Avalonia.Media.Color color  = (Color)(App.Current?.Styles[0] as FluentAvaloniaTheme).CustomAccentColor;
-        Dispatcher.UIThread.Invoke(() => ForeGround = new SolidColorBrush(color));
+        Dispatcher.UIThread.Invoke(() => ForeGround = new SolidColorBrush(_generalSettings.PrimaryColor));
         Title = "Loading...";
         string content = controller.SerialPort;
         IsLoading = true;
@@ -53,8 +56,7 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
     {
         if (IsOpen)
             IsOpen = false;
-        Avalonia.Media.Color color  = (Color)(App.Current?.Styles[0] as FluentAvaloniaTheme).CustomAccentColor;
-        Dispatcher.UIThread.Invoke(() => ForeGround = new SolidColorBrush(color));
+        Dispatcher.UIThread.Invoke(() => ForeGround = new SolidColorBrush(_generalSettings.PrimaryColor));
         Title = "Connecting...";
         string content = controller.SerialPort;
         IsLoading = true;
@@ -67,8 +69,7 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
     {
         if (IsOpen)
             IsOpen = false;
-        Avalonia.Media.Color color  = (Color)(App.Current?.Styles[0] as FluentAvaloniaTheme).CustomAccentColor;
-        ForeGround = new SolidColorBrush(color);
+        ForeGround = new SolidColorBrush(_generalSettings.PrimaryColor);
         Title = "Compatible Device Detected";
         string content = port;
         IsLoading = true;
@@ -138,6 +139,7 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
     }
 
     private SolidColorBrush _foreGround = new SolidColorBrush(Colors.Red);
+    private readonly IGeneralSettings _generalSettings;
 
     public SolidColorBrush ForeGround
     {

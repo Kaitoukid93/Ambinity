@@ -10,21 +10,18 @@
              RequestedThemeVariant="Dark">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
     <Application.DataTemplates>
-        <windows:ViewLocator />
+        <local:ViewLocator />
     </Application.DataTemplates>
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="/Views/GeometryCollection/GeometryCollection.axaml" />
-                <ResourceInclude Source="/Views/Generic.axaml"></ResourceInclude>
-                <ResourceInclude Source="/ControlTheme/StriplessListbox.axaml"></ResourceInclude>
-                <ResourceInclude Source="/ControlTheme/TransparrentSettingsExpander.axaml"></ResourceInclude>
-                <ResourceInclude Source="/ControlTheme/BorderlessNumberbox.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://Ambinity/Views/GeometryCollection/GeometryCollection.axaml" />
+                <ResourceInclude Source="avares://Ambinity/Views/Generic.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://Ambinity/ControlTheme/StriplessListbox.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://Ambinity/ControlTheme/TransparrentSettingsExpander.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://Ambinity/ControlTheme/BorderlessNumberbox.axaml"></ResourceInclude>
                 <ResourceDictionary>
                     <converters:StaticResourceConverter x:Key="ResourceConverter" />
-                </ResourceDictionary>
-                <ResourceDictionary>
-                    <FontFamily x:Key="SFPro">Assets/Fonts/#SF Pro Display</FontFamily>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -35,20 +32,11 @@
     </Application.Styles>
     <TrayIcon.Icons>
         <TrayIcons>
-            <TrayIcon ToolTipText="Ambinity"  Command="{CompiledBinding OpenUiCommand}" CommandParameter="devices" Icon="/Assets/appicon.ico" >
+            <TrayIcon ToolTipText="Ambinity"  Command="{CompiledBinding OpenQuickAccessCommand}" CommandParameter="devices" Icon="/Assets/appicon.ico" >
                 <TrayIcon.Menu>
                     <NativeMenu>
                         <NativeMenuItem Header="Home" Command="{CompiledBinding OpenUiCommand}" CommandParameter="devices"  />
                         <NativeMenuItem Header="Profiles">
-                            <NativeMenu>
-                                <NativeMenuItem Header="Option 1" ToggleType="Radio" IsChecked="True" />
-                                <NativeMenuItem Header="Option 2" ToggleType="Radio" />
-                                <NativeMenuItemSeparator />
-                                <NativeMenuItem Header="Option 3" ToggleType="CheckBox" IsChecked="True" />
-                                <NativeMenuItem Icon="/Assets/avalonia-logo.ico" Header="Restore Defaults"  />
-                                <NativeMenuItem Header="Disabled option" IsEnabled="False" />
-                                <NativeMenuItem Header="Hidden option" IsVisible="False" />
-                            </NativeMenu>
                         </NativeMenuItem>
                         <NativeMenuItem Header="Exit" Command="{CompiledBinding ExitAppCommand}"  />
                     </NativeMenu>

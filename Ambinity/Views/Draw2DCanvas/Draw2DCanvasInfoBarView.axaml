@@ -7,9 +7,15 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              x:DataType="draw2DCanvas:Draw2DCanvasInfoBarViewModel"
              x:Class="Ambinity.Views.Draw2DCanvas.Draw2DCanvasInfoBarView">
-    
+
     <ui:InfoBar IsOpen="{CompiledBinding IsOpen}" Message="{Binding Message}" Title="{CompiledBinding Title }"
                 Severity="{CompiledBinding Severity}">
-        <CheckBox Command="{Binding ShowCanvasLockedInfoCheck}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" Content="Don't show again"/>
+        <Grid Margin="0,0,0,10" ColumnDefinitions="auto,*">
+            <Button Command="{Binding StopRenderingCommand}" Content="Stop"></Button>
+            <CheckBox Grid.Column="1" HorizontalAlignment="Right" Command="{Binding ShowCanvasLockedInfoCheck}"
+                      CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                      Content="Don't show again" />
+        </Grid>
+
     </ui:InfoBar>
 </UserControl>

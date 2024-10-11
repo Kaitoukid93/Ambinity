@@ -1,9 +1,9 @@
 using System.IO;
 using System.Threading.Tasks;
 using Ambinity.AppResource;
+using Ambinity.QuickAccess;
 using Ambinity.Services;
 using Ambinity.Stores;
-using Ambinity.SystemUtilities;
 using Ambinity.Views.AppTour;
 using Ambinity.Views.Configuration.ColorConfiguration;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
@@ -65,7 +65,6 @@ public class AmbinityBootStrapper
     private static IWindowService _windowService;
 
     #endregion
-
     public static async void Initialize(Application application)
     {
         _application = application;
@@ -76,7 +75,7 @@ public class AmbinityBootStrapper
         //get settings
         _generalSettingsManager = Ioc.Default.GetRequiredService<GeneralSettingsManager>();
         //register auto start
-        ConfigureAutoStart();
+       // ConfigureAutoStart();
         //set theme and color
         ConfigureTheme();
         //configure json settings for all Serialize and Deserialize action ( this need for legacy adrilight json)
@@ -120,17 +119,17 @@ public class AmbinityBootStrapper
 
     private static void ConfigureTheme()
     {
-        _faTheme = App.Current?.Styles[0] as FluentAvaloniaTheme;
+        _faTheme = _application.Styles[0] as FluentAvaloniaTheme;
         UpdateAppAccentColor(_generalSettingsManager.Settings.PrimaryColor);
     }
 
-    private static void ConfigureAutoStart()
-    {
-        if (_generalSettingsManager.Settings.AutoStart)
-        {
-            StartUpManager.AddApplicationToTaskScheduler("Ambinity Startup Task",_generalSettingsManager.Settings.AutoStartDelay);
-        }
-    }
+    // private static void ConfigureAutoStart()
+    // {
+    //     if (_generalSettingsManager.Settings.AutoStart)
+    //     {
+    //         StartUpManager.AddApplicationToTaskScheduler("Ambinity Startup Task",_generalSettingsManager.Settings.AutoStartDelay);
+    //     }
+    // }
     private static void ConfigureIoc()
     {
         var mainFrameBuffer = new FrameBuffer(750, 500);
@@ -156,6 +155,13 @@ public class AmbinityBootStrapper
                 .AddSingleton<NonClientAreaContentViewModel>()
                 .AddSingleton<AppTourViewModel>()
                 .AddSingleton<AppTourElementProvider>()
+                //system tray
+                .AddSingleton<SystemTrayFlyoutWindowViewModel>()
+                .AddSingleton<QuickAccessViewModel>()
+                .AddSingleton<QuickAccessNavigationStore>()
+                .AddSingleton<ShortcutPageViewModel>()
+                .AddSingleton<DevicesPageViewModel>()
+                .AddSingleton<QuickAccessViewModelFactory>()
                 //splash
                 .AddSingleton<SplashViewModel>()
                 //layout editor
@@ -239,6 +245,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<ResourceService>()
                 .AddSingleton<AnimationsRepository>()
                 .AddSingleton<AnimationOnlineRepository>()
+                .AddSingleton<ShortcutRepository>()
 
                 //Server
                 .AddSingleton<AmbinityClient>()
@@ -273,6 +280,7 @@ public class AmbinityBootStrapper
         var openRGBControllerRepository = Ioc.Default.GetRequiredService<OpenRGBControllerRepository>();
         var ambinityDeviceRepository = Ioc.Default.GetRequiredService<AmbinityDeviceRepository>();
         var ambinityDeviceLayoutRepository = Ioc.Default.GetRequiredService<AmbinityDeviceLayoutRepository>();
+        var shortcutRepository = Ioc.Default.GetRequiredService<ShortcutRepository>();
 
         splashViewModel.Progress = 5;
         await Task.Run(async () =>
@@ -299,6 +307,9 @@ public class AmbinityBootStrapper
             ambinityDeviceLayoutRepository.Init();
             await Task.Delay(100);
             splashViewModel.Progress = 85;
+            shortcutRepository.Init();
+            await Task.Delay(100);
+            
             serialControllerRepository.Init();
             openRGBControllerRepository.Init();
         });

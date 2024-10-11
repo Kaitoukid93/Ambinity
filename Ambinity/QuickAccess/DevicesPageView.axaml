@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local = "clr-namespace:Ambinity.QuickAccess"
+             x:DataType="local:DevicesPageViewModel"
+             x:Class="Ambinity.QuickAccess.DevicesPageView">
+    <Grid Margin="15" RowDefinitions="Auto,20,*">
+        <Grid Row="0" ColumnDefinitions="*,Auto">
+            <TextBlock FontWeight="SemiBold" FontSize="15" Text="Devices"></TextBlock>
+        </Grid>
+       <ItemsControl Grid.Row="2" ItemsSource="{Binding Devices}">
+           <ItemsControl.ItemsPanel>
+               <ItemsPanelTemplate>
+                   <StackPanel Spacing="2"></StackPanel>
+               </ItemsPanelTemplate>
+           </ItemsControl.ItemsPanel>
+       </ItemsControl>
+    </Grid>
+</UserControl>

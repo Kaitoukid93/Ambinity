@@ -1,4 +1,4 @@
-using Ambinity.SystemUtilities;
+
 using Ambinity.ViewModels;
 using AmbinityCore.DataBase;
 using Microsoft.VisualBasic;
@@ -44,12 +44,12 @@ public class AppSettingsViewModel : ViewModelBase
 
     private void RegisterStartupInformation(bool update = false)
     {
-        if (_runAtStartup)
-            StartUpManager.AddApplicationToTaskScheduler(Constants.StartupServiceName, StartupDelay, update);
-        else
-        {
-            StartUpManager.RemoveApplicationFromTaskScheduler(Constants.StartupServiceName);
-        }
+        // if (_runAtStartup)
+        //     StartUpManager.AddApplicationToTaskScheduler(Constants.StartupServiceName, StartupDelay, update);
+        // else
+        // {
+        //     StartUpManager.RemoveApplicationFromTaskScheduler(Constants.StartupServiceName);
+        // }
     }
 
     public void Init()

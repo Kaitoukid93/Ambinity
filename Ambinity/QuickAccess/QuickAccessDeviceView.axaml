@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local = "clr-namespace:Ambinity.QuickAccess"
+             x:DataType="local:QuickAccessDeviceViewModel"
+             x:Class="Ambinity.QuickAccess.QuickAccessDeviceView">
+   <Border Padding="0" Height="50">
+       <Grid ColumnDefinitions="Auto,20,*,Auto">
+           <!-- <Grid> -->
+           <!--     <Image Height="50" Margin="15,0,0,0" Source="{Binding Thumbnail}"></Image> -->
+           <!-- </Grid> -->
+           <Grid Column="2">
+               <TextBlock  FontWeight="SemiBold" VerticalAlignment="Center" Text="{Binding Controller.Name}"></TextBlock>
+           </Grid>
+           <Grid Column="3">
+               <ToggleSwitch HorizontalAlignment="Right" Margin="10,0"></ToggleSwitch>
+           </Grid>
+       </Grid>
+   </Border>
+</UserControl>

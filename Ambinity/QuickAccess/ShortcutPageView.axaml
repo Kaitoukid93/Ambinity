@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="320" d:DesignHeight="480"
+             xmlns:local="clr-namespace:Ambinity.QuickAccess"
+             x:DataType="local:ShortcutPageViewModel"
+             x:Class="Ambinity.QuickAccess.ShortcutPageView">
+
+    <Grid RowDefinitions="Auto,10,Auto,10,Auto,10,*">
+        <Grid Margin="15,15,15,10" Row="0" ColumnDefinitions="*,Auto">
+            <TextBlock FontWeight="SemiBold" FontSize="15" Text="Shortcut"></TextBlock>
+            <Button VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Right" ToolTip.Tip="Device control"
+                    Classes="icon-button" Padding="5,2,5,2" Height="25" Command="{Binding GoToDevicesPageCommand}">
+                <Grid ColumnDefinitions="Auto,8,*">
+                    <TextBlock FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Grid.Column="0"
+                               Text="Show devices">
+                    </TextBlock>
+                    <PathIcon Grid.Column="2" Height="10" Width="10" Data="{DynamicResource showMoreRight}"></PathIcon>
+                </Grid>
+
+            </Button>
+        </Grid>
+        <Grid Margin="10,0,10,0" Row="2">
+            <ItemsControl ItemsSource="{Binding Shortcuts}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="3"></UniformGrid>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+            </ItemsControl>
+        </Grid>
+        <Grid Margin="15,0,15,0" ColumnDefinitions="Auto,10,*,10,Auto" Row="4">
+
+            <PathIcon Data="{DynamicResource sun}"></PathIcon>
+
+            <Slider Grid.Column="2" HorizontalAlignment="Stretch"></Slider>
+
+            <PathIcon Grid.Column="4" Data="{DynamicResource brightness}"></PathIcon>
+
+        </Grid>
+        <Grid Row="6">
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="5">
+                <Button Height="35" Width="35" Classes="icon-button">
+                    <PathIcon Width="15" Data="{DynamicResource pencil}"></PathIcon>
+                </Button>
+                <Button Height="35" Width="35" Classes="icon-button">
+                    <PathIcon Width="15" Data="{DynamicResource settings_future}"></PathIcon>
+                </Button>
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+
+
+</UserControl>

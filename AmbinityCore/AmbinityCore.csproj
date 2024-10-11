@@ -52,7 +52,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Assets\Images\"/>
         <Folder Include="Extension\" />
         <Folder Include="Notification\" />
     </ItemGroup>

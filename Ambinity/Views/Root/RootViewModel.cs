@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Ambinity.QuickAccess;
 using Ambinity.Services;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
 using Ambinity.Views.AppTour;
 using Ambinity.Views.NonClientArea;
 using Ambinity.Views.SideMenu;
-using Ambinity.Views.SplashScreen;
 using AmbinityCore.Colors;
 using AmbinityCore.DataBase;
 using AmbinityCore.Models.Collection;
@@ -47,7 +47,7 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
         IMainWindowService mainWindowService,
         GeneralSettingsManager settingsManager,
         AmbinityClient ambinityClient, NonClientAreaContentViewModel nonClientAreaContentViewModel,
-        AppTourViewModel appTourViewModel)
+        AppTourViewModel appTourViewModel, IWindowService windowService, SystemTrayFlyoutWindowViewModel systemTrayFlyoutWindowViewModel)
     {
         _rootNavigationStores = rootNavigationStores;
         CommandSetup();
@@ -63,9 +63,11 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
             openRgbControllerRepository
         };
         SideMenu = sideMenu;
+        _systemTrayFlyoutWindowViewModel = systemTrayFlyoutWindowViewModel;
         _lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
         _settings = settingsManager.Settings;
         _ambinityClient = ambinityClient;
+        _windowService = windowService;
         mainWindowService.ConfigureMainWindowProvider(this);
         NonClientAreaContentViewModel = nonClientAreaContentViewModel;
         AppTourViewModel = appTourViewModel;
@@ -75,7 +77,7 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
             OpenMainWindow();
         }
     }
-
+    
     public AppTourViewModel AppTourViewModel { get; set; }
 
 
@@ -214,6 +216,13 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
     {
         OpenUiCommand = new RelayCommand<string>(OpenUI);
         ExitAppCommand = new RelayCommand(ExitApp);
+        OpenQuickAccessCommand = new RelayCommand(OpenQuickAccess);
+    }
+
+    private void OpenQuickAccess()
+    {
+        _windowService.ShowWindow(_systemTrayFlyoutWindowViewModel);
+        _systemTrayFlyoutWindowViewModel.Init();
     }
 
     private void OpenUI(string ui)
@@ -230,6 +239,8 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
     }
 
     private List<CollectableItemRepository> _repositories;
+    private readonly IWindowService _windowService;
+    private readonly SystemTrayFlyoutWindowViewModel _systemTrayFlyoutWindowViewModel;
 
     private async Task SaveRepositories()
     {
@@ -244,6 +255,7 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
     #region Command
 
     public ICommand OpenUiCommand { get; set; }
+    public ICommand OpenQuickAccessCommand { get; set; }
     public ICommand ExitAppCommand { get; set; }
     public NonClientAreaContentViewModel NonClientAreaContentViewModel { get; }
 

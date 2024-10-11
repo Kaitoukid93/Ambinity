@@ -12,9 +12,20 @@
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <SourceRoot Include="C:\Users\zOe\.nuget\packages\" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(Language)' == 'C#' AND '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Compile Include="$(NuGetPackageRoot)hotavalonia.extensions\1.1.1\contentFiles\cs\netstandard2.1\AvaloniaHotReloadExtensions.cs" Condition="Exists('$(NuGetPackageRoot)hotavalonia.extensions\1.1.1\contentFiles\cs\netstandard2.1\AvaloniaHotReloadExtensions.cs')">
+      <NuGetPackageId>HotAvalonia.Extensions</NuGetPackageId>
+      <NuGetPackageVersion>1.1.1</NuGetPackageVersion>
+      <NuGetItemType>Compile</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>AvaloniaHotReloadExtensions.cs</Link>
+    </Compile>
+  </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)skiasharp.nativeassets.webassembly\2.88.8\buildTransitive\netstandard1.0\SkiaSharp.NativeAssets.WebAssembly.props" Condition="Exists('$(NuGetPackageRoot)skiasharp.nativeassets.webassembly\2.88.8\buildTransitive\netstandard1.0\SkiaSharp.NativeAssets.WebAssembly.props')" />
     <Import Project="$(NuGetPackageRoot)avalonia\11.1.3\buildTransitive\Avalonia.props" Condition="Exists('$(NuGetPackageRoot)avalonia\11.1.3\buildTransitive\Avalonia.props')" />
+    <Import Project="$(NuGetPackageRoot)hotavalonia.extensions\1.1.1\build\HotAvalonia.Extensions.props" Condition="Exists('$(NuGetPackageRoot)hotavalonia.extensions\1.1.1\build\HotAvalonia.Extensions.props')" />
     <Import Project="$(NuGetPackageRoot)harfbuzzsharp.nativeassets.webassembly\7.3.0.2\buildTransitive\netstandard1.0\HarfBuzzSharp.NativeAssets.WebAssembly.props" Condition="Exists('$(NuGetPackageRoot)harfbuzzsharp.nativeassets.webassembly\7.3.0.2\buildTransitive\netstandard1.0\HarfBuzzSharp.NativeAssets.WebAssembly.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">

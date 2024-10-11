@@ -1,12 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-		<ApplicationIcon>Assets\appicon.ico</ApplicationIcon>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<DefineConstants>$(DefineConstants);ENABLE_XAML_HOT_RELOAD</DefineConstants>
@@ -77,6 +74,7 @@
 	  <AvaloniaXaml Remove="Draw2DControlLibrary\**" />
 	  <AvaloniaXaml Remove="Views\Screens\ProfileEditor\ZoneMappingView.axaml" />
 	  <AvaloniaXaml Remove="Views\Screens\DeviceLayout\DeviceLayoutView.axaml" />
+	  <AvaloniaXaml Remove="App.axaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -193,6 +191,8 @@
 	    <DependentUpon>GeometryPickerView.axaml</DependentUpon>
 	    <SubType>Code</SubType>
 	  </Compile>
+	  <Compile Remove="App.axaml.cs" />
+	  <Compile Remove="Program.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

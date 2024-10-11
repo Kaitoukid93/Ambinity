@@ -174,11 +174,11 @@ public class SideMenuProfileViewModel : ViewModelBase
         }
     }
 
-    private bool _isPlaying;
+   
     private readonly SideMenuViewModelFactory _vmFactory;
     private readonly IDialogService _dialogService;
     private readonly IWindowService _windowService;
-
+    private bool _isPlaying;
     public bool IsPlaying
     {
         get => _isPlaying;

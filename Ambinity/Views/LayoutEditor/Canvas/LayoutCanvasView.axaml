@@ -11,7 +11,7 @@
         <ContentControl Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Center"
                         Content="{Binding ToolsViewModel}">
         </ContentControl>
-        <ContentControl Content="{Binding InfoBarViewModel}" Margin="10" HorizontalAlignment="Left"
+        <ContentControl Content="{Binding InfoBarViewModel}" Margin="10" 
                         VerticalAlignment="Top">
         </ContentControl>
     </Grid>
