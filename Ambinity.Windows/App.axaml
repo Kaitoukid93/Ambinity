@@ -16,10 +16,12 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://Ambinity/Views/GeometryCollection/GeometryCollection.axaml" />
+                <ResourceInclude Source="avares://Ambinity/Views/GeometryCollection/CoolIconsCollection.axaml" />
                 <ResourceInclude Source="avares://Ambinity/Views/Generic.axaml"></ResourceInclude>
                 <ResourceInclude Source="avares://Ambinity/ControlTheme/StriplessListbox.axaml"></ResourceInclude>
                 <ResourceInclude Source="avares://Ambinity/ControlTheme/TransparrentSettingsExpander.axaml"></ResourceInclude>
                 <ResourceInclude Source="avares://Ambinity/ControlTheme/BorderlessNumberbox.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://Ambinity/ControlTheme/StriplessTextBox.axaml"></ResourceInclude>
                 <ResourceDictionary>
                     <converters:StaticResourceConverter x:Key="ResourceConverter" />
                 </ResourceDictionary>

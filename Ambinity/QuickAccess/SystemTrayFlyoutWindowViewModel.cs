@@ -16,4 +16,9 @@ public class SystemTrayFlyoutWindowViewModel : ViewModelBase
     {
         _quickAccessViewModel.Init();
     }
+
+    public override void Dispose()
+    {
+        _quickAccessViewModel?.Dispose();
+    }
 }

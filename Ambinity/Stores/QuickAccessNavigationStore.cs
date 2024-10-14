@@ -6,6 +6,7 @@ namespace Ambinity.Stores;
 public class QuickAccessNavigationStore
 {
     public event Action<ViewModelBase> CurrentViewModelChanged;
+    public event Action GoBackRequested;
     private ViewModelBase _currentViewModel;
 
     public ViewModelBase CurrentViewModel
@@ -25,5 +26,10 @@ public class QuickAccessNavigationStore
     private void OnCurrentViewModelChanged()
     {
         CurrentViewModelChanged?.Invoke(CurrentViewModel);
+    }
+
+    public void GoBack()
+    {
+        GoBackRequested?.Invoke();
     }
 }

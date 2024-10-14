@@ -27,6 +27,16 @@ public sealed class LightingProfileRepository : CollectableItemRepository
         CreateDefaultProfiles();
     }
 
+    public override bool Contains(object itemProperty)
+    {
+        foreach (LightingProfile profile in Items)
+        {
+            if (profile.ID == (Guid)itemProperty)
+                return true;
+        }
+        return false;
+    }
+
     public override void LoadFromDisk()
     {
         Items?.Clear();

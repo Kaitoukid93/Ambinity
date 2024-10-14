@@ -30,7 +30,12 @@ public class QuickAccessViewModel : ViewModelBase
 
     public void Init()
     {
-        _shortcutPageViewModel.Init();
         _navigationStore.CurrentViewModel = _shortcutPageViewModel;
+    }
+
+    public override void Dispose()
+    {
+        _shortcutPageViewModel?.Dispose();
+        _devicesPageViewModel?.Dispose();
     }
 }

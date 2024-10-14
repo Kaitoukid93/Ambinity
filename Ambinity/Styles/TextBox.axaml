@@ -16,7 +16,7 @@
                         <Border Name="PART_BorderElement"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderThickness="0"
                                 CornerRadius="{TemplateBinding CornerRadius}"
                                 MinWidth="{TemplateBinding MinWidth}"
                                 MinHeight="{TemplateBinding MinHeight}">

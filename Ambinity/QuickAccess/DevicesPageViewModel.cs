@@ -43,4 +43,8 @@ public class DevicesPageViewModel : ViewModelBase
         Devices.Add(vm);
     }
     public ObservableCollection<QuickAccessDeviceViewModel> Devices { get; }
+    public override void Dispose()
+    {
+        _serialControllerRepository.ItemAdded -= OnItemAdded;
+    }
 }

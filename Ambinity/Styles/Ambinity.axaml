@@ -28,6 +28,6 @@
     <StyleInclude Source="/Styles/Border.axaml" />
     <StyleInclude Source="/Styles/Button.axaml" />
     <StyleInclude Source="/Styles/ColorPickerButton.axaml" />
-    <StyleInclude Source="/Styles/TextBox.axaml" />
+    <!-- <StyleInclude Source="/Styles/TextBox.axaml" /> -->
     <StyleInclude Source="/Styles/TexBlock.axaml"/>
 </Styles>

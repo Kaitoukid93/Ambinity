@@ -11,6 +11,7 @@ public abstract class CollectableItemRepository : ObservableObject
     public event Action<ICollectableItem> ItemNameChaned;
     public event Action<ICollectableItem> ItemPinStatusChanged;
     public event Action<ICollectableItem> ItemCheckStatusChanged;
+    public event Action<ICollectableItem> ItemRemoved;
     public event Action<ICollectableItem> ItemAdded;
     public event Action<string> OnInitialized;
 
@@ -63,6 +64,12 @@ public abstract class CollectableItemRepository : ObservableObject
                 item.Save();
             }
         }
+    }
+
+//check if this collection contain specific item
+    public virtual bool Contains(object itemProperty)
+    {
+        return false;
     }
 
     public virtual void SaveToDisk(ICollectableItem item)
@@ -129,7 +136,8 @@ public abstract class CollectableItemRepository : ObservableObject
             Items.Remove(item);
             RemoveFromDisk(item);
         }
-       
+
+        ItemRemoved?.Invoke(item);
     }
 
     public void RemoveFromDisk(ICollectableItem item)
@@ -164,7 +172,6 @@ public abstract class CollectableItemRepository : ObservableObject
                 Items.Remove(item);
             }
         }
-        
     }
 
     /// <summary>

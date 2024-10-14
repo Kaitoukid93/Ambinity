@@ -3,11 +3,13 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace Ambinity.QuickAccess;
 
 public partial class SystemTrayFlyoutWindowView : Window
 {
+    private SystemTrayFlyoutWindowViewModel _viewModel;
     public SystemTrayFlyoutWindowView()
     {
         InitializeComponent();
@@ -16,11 +18,13 @@ public partial class SystemTrayFlyoutWindowView : Window
         Position = new PixelPoint(_screenWidth - (int)(Width + 12), _screenHeight - (int)(Height + 12));
         Topmost = true;
         this.Deactivated += OnWindowDeactivated;
+        _viewModel = Ioc.Default.GetRequiredService<SystemTrayFlyoutWindowViewModel>();
     }
 
     private void OnWindowDeactivated(object? sender, EventArgs e)
     {
-        this.Close();
+       this.Close();
+       _viewModel?.Dispose();
     }
     
 }

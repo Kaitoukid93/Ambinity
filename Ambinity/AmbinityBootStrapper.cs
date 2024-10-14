@@ -162,6 +162,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<ShortcutPageViewModel>()
                 .AddSingleton<DevicesPageViewModel>()
                 .AddSingleton<QuickAccessViewModelFactory>()
+                .AddSingleton<ShortcutEditorViewModel>()
                 //splash
                 .AddSingleton<SplashViewModel>()
                 //layout editor

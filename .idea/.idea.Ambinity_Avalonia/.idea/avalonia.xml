@@ -15,23 +15,28 @@
         <entry key="Ambinity/App.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/ControlTheme/BorderlessNumberbox.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/ControlTheme/LessUglyColorPicker.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/ControlTheme/StriplessListbox.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/ControlTheme/StriplessListbox.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/ControlTheme/StriplessTextBox.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/ControlTheme/TransparrentSettingsExpander.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/QuickAccess/Controls/CustomToggleSplitButton.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/QuickAccess/DevicesPageView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/QuickAccess/LightingProfilePlayerWidgetView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/QuickAccess/ProfileShortcutView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/QuickAccess/QuickAccessDeviceView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/QuickAccess/QuickAccessView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/QuickAccess/ShortcutEditorView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/QuickAccess/ShortcutPageView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/QuickAccess/ShortcutView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/QuickAccess/SystemTrayFlyoutWindow.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/QuickAccess/SystemTrayFlyoutWindowView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
-        <entry key="Ambinity/Styles/Ambinity.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/QuickAccess/test.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/Styles/Ambinity.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Styles/Border.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styles/BrokenState.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Styles/Button.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Styles/Button.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Styles/ColorPickerButton.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styles/TexBlock.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Styles/TextBox.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Styles/TextBox.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Styling/ControlsGalleryStyles.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styling/Resources.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/AppTour/AppTourElementView.axaml" value="Ambinity/Ambinity.csproj" />
@@ -104,8 +109,9 @@
         <entry key="Ambinity/Views/Draw2DCanvas/Draw2DCanvasView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Generic.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/GeometryCollection.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/GeometryCollection/CoolIconsCollection.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/GeometryCollection/GeometryCollection.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
-        <entry key="Ambinity/Views/GeometryCollection/GeometryPickerView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/GeometryCollection/GeometryPickerView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/GeometryPickerView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/AssetsView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/Canvas/LayoutCanvasView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
