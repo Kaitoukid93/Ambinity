@@ -46,6 +46,7 @@ public sealed class LightingProfileRepository : CollectableItemRepository
         //find download category and set the category ID, this need extra leg works
         //find config.json
         var configPath = Path.Combine(path, path);
+        //read config
         //simply copy folder to repository folder path
         LocalFileHelpers.CopyDirectory(path, LocalFolderPath, true);
         LoadFromDisk();
