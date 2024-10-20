@@ -161,6 +161,11 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
     }
 
 
+    public OnlineItemTypeEnum GetType()
+    {
+        return OnlineItemTypeEnum.DeviceLayout;
+    }
+
     /// <summary>
     /// save data to local path
     /// </summary>

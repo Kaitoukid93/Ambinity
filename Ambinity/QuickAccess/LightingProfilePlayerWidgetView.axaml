@@ -3,6 +3,120 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.QuickAccess"
+             xmlns:profile="clr-namespace:AmbinityCore.Models.Profile;assembly=AmbinityCore"
+             x:DataType="local:LightingProfilePlayerWidgetViewModel"
              x:Class="Ambinity.QuickAccess.LightingProfilePlayerWidgetView">
-    Welcome to Avalonia!
+    <UserControl.Resources>
+        <MenuFlyout x:Key="profileList" ItemsSource="{Binding AvailableLightingProfiles}">
+          
+        </MenuFlyout>
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style Selector="ContentControl.profileIconSmall" x:DataType="local:LightingProfileFlyoutItemViewModel">
+            <Setter Property="Content">
+                <Template>
+                    <PathIcon Margin="5,0" Width="30" Height="30"
+                              Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+                        <PathIcon.Foreground>
+                            <SolidColorBrush Color="{Binding IconColor}"></SolidColorBrush>
+                        </PathIcon.Foreground>
+                    </PathIcon>
+                </Template>
+            </Setter>
+        </Style>
+        
+        <Style Selector="ContentControl.profileIconSmall.imageSmall" x:DataType="local:LightingProfileFlyoutItemViewModel">
+            <Setter Property="Content">
+                <Template>
+                    <Border Margin="5,0" Width="30" Height="30" Padding="0" CornerRadius="15" ClipToBounds="True">
+                        <Image RenderOptions.BitmapInterpolationMode="HighQuality" Stretch="UniformToFill"
+                               Source="{Binding GetThumbnail^,FallbackValue=null}">
+                        </Image>
+                    </Border>
+
+                </Template>
+            </Setter>
+        </Style>
+        <Style Selector="ContentControl.profileIcon">
+            <Setter Property="Content">
+                <Template>
+                    <PathIcon Margin="5,0" Width="25" Height="25"
+                              Data="{Binding CurrentPlayingProfile.Icon,Converter={StaticResource ResourceConverter}}">
+                        <PathIcon.Foreground>
+                            <SolidColorBrush Color="{Binding CurrentPlayingProfile.IconColor}"></SolidColorBrush>
+                        </PathIcon.Foreground>
+                    </PathIcon>
+                </Template>
+            </Setter>
+        </Style>
+        
+        <Style Selector="ContentControl.profileIcon.image">
+            <Setter Property="Content">
+                <Template>
+                    <Border Margin="5,0" Width="30" Height="30" Padding="0" CornerRadius="15" ClipToBounds="True">
+                        <Image RenderOptions.BitmapInterpolationMode="HighQuality" Stretch="UniformToFill"
+                               Source="{Binding GetThumbnail^,FallbackValue=null}">
+                        </Image>
+                    </Border>
+
+                </Template>
+            </Setter>
+        </Style>
+    </UserControl.Styles>
+    <Border Background="{DynamicResource ToggleButtonBackground}" Height="50" CornerRadius="7" Padding="5" Classes="card">
+        <Grid ColumnDefinitions="Auto,15,*,Auto">
+            <Grid>
+                <ContentControl Classes="profileIcon" Classes.image="{Binding !CurrentPlayingProfile.IconType}"></ContentControl>
+            </Grid>
+            <Grid Column="2" ColumnDefinitions="Auto,8,*">
+                <TextBlock HorizontalAlignment="Left" MaxWidth="135" VerticalAlignment="Center"  TextTrimming="CharacterEllipsis" Text="{Binding CurrentPlayingProfile.Name}" FontSize="15"
+                           FontWeight="SemiBold">
+                </TextBlock>
+                <Border IsVisible="{Binding IsRendering}" Grid.Column="2" VerticalAlignment="Center"
+                        CornerRadius="3" HorizontalAlignment="Left" Classes="primaryChip">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <PathIcon
+                                  Foreground="{DynamicResource AccentButtonBackground}" Width="12" Margin="0,0,3,0"
+                                  Height="12" Data="{DynamicResource playComposition}">
+                        </PathIcon>
+                        <TextBlock Text="Playing" Margin="0,0,0,2" Foreground="{DynamicResource AccentButtonBackground}"
+                                   Grid.Column="1" FontSize="12">
+                        </TextBlock>
+                    </Grid>
+                </Border>
+            </Grid>
+            <Grid Column="3">
+                <StackPanel Margin="5,0" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
+                    <!-- <Button Flyout="{DynamicResource profileList}"  HorizontalAlignment="Right"  VerticalAlignment="Center" Padding="0" Width="23" Height="23" Classes="icon-button"> -->
+                    <!--     <Button.Styles> -->
+                    <!--         <Style Selector="MenuItem" x:DataType="local:LightingProfileFlyoutItemViewModel"> -->
+                    <!--             <Setter Property="Header" Value="{Binding Name}"/> -->
+                    <!--             <Setter Property="IsChecked" Value="{Binding IsPlaying}"></Setter> -->
+                    <!--             <Setter Property="ToggleType" Value="Radio"></Setter> -->
+                    <!--             <Setter Property="Icon"> -->
+                    <!--                 <Template> -->
+                    <!--                     <ContentControl Classes="profileIconSmall" Classes.imageSmall="{Binding !IconType}"></ContentControl> -->
+                    <!--                 </Template> -->
+                    <!--             </Setter> -->
+                    <!--             <Setter Property="Command" Value="{Binding SelectProfileCommand}"></Setter> -->
+                    <!--             <Style Selector="^:checked"> -->
+                    <!--                 <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}"></Setter> -->
+                    <!--             </Style> -->
+                    <!--         </Style> -->
+                    <!--     </Button.Styles> -->
+                    <!--     <Grid> -->
+                    <!--         <PathIcon  Width="13" Height="13" Data="{DynamicResource bullet_list__points_bullet_unordered_list_lists_bullets}"></PathIcon> -->
+                    <!--     </Grid> -->
+                    <!-- </Button> -->
+                    <Button Command="{Binding GoToProfileEditorCommand}" ToolTip.Tip="Edit"  VerticalAlignment="Center" Padding="0" Width="30" Height="30" Classes="icon-button">
+                        <Grid>
+                            <PathIcon ToolTip.Tip="Edit this profile" IsVisible="{Binding ShowEditButton}" Width="18" Height="18" Data="{DynamicResource settings_future}"></PathIcon>
+                        </Grid>
+                    </Button>
+                </StackPanel>
+               
+            </Grid>
+        </Grid>
+    </Border>
 </UserControl>

@@ -36,6 +36,9 @@
 
     <ItemGroup>
         <Compile Remove="obj\**"/>
+        <Compile Remove="Models\Geography\Group.cs" />
+        <Compile Remove="Models\Lighting\Zone\LightingZoneGroup.cs" />
+        <Compile Remove="Models\Lighting\Zone\LightingZoneGroupContainerFigure.cs" />
     </ItemGroup>
 
     <ItemGroup>

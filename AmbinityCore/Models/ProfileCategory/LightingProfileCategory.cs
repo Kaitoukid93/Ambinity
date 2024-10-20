@@ -127,6 +127,12 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
             }
         }
     }
+
+    public OnlineItemTypeEnum GetType()
+    {
+        return OnlineItemTypeEnum.Unknown;
+    }
+
     public void Save()
     {
         if (LocalPath == null || !Directory.Exists(LocalPath))

@@ -2,6 +2,7 @@ using System.ComponentModel;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Repositories;
+using AmbinityServer.OnlineItem;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -120,6 +121,12 @@ public class OpenRGBController : ObservableObject, IController
         IsTransferActive = true;
         TransferActiveChanged?.Invoke();
     }
+
+    public OnlineItemTypeEnum GetType()
+    {
+        return OnlineItemTypeEnum.Unknown;
+    }
+
     /// <summary>
     /// Save controller data to json file
     /// </summary>

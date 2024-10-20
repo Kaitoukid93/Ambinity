@@ -2,6 +2,7 @@ using System.ComponentModel;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Repositories;
+using AmbinityServer.OnlineItem;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -155,6 +156,12 @@ public class SerialController : ObservableObject, IController
         WorkingStateEnum = ControllerWorkingStateEnum.Normal;
         WorkingStateChanged?.Invoke();
     }
+
+    public OnlineItemTypeEnum GetType()
+    {
+        return OnlineItemTypeEnum.Unknown;
+    }
+
     /// <summary>
     /// Save controller data to json file
     /// </summary>

@@ -21,7 +21,7 @@ public sealed class ThumbnailService
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
-    public async Task<Bitmap> GetThumbnail(string path)
+    public async Task<Bitmap> GetThumbnail(string path, int width = 50)
     {
         Bitmap thumbnail;
 
@@ -31,7 +31,7 @@ public sealed class ThumbnailService
             _client.Init();
             await using (var stream = await _client.SftpServer.GetThumb(path))
             {
-                thumbnail = Bitmap.DecodeToWidth(stream, 70);
+                thumbnail = Bitmap.DecodeToWidth(stream, width);
             }
 
             _cache.Add(path, thumbnail);

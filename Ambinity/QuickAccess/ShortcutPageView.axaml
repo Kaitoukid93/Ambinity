@@ -7,7 +7,7 @@
              x:DataType="local:ShortcutPageViewModel"
              x:Class="Ambinity.QuickAccess.ShortcutPageView">
 
-    <Grid RowDefinitions="50,10,*,10,70,10,Auto,10,Auto">
+    <Grid RowDefinitions="50,10,*,10,70,10,50,30,Auto">
         <Grid Margin="15,15,15,10" Row="0" ColumnDefinitions="*,Auto">
             <TextBlock FontWeight="SemiBold" FontSize="15" Text="Shortcut"></TextBlock>
             <Button IsVisible="{Binding !IsInEditMode}" VerticalAlignment="Top" Grid.Column="1"
@@ -32,7 +32,9 @@
             </ItemsControl>
         </Grid>
         <Grid Row="4">
-            <Border Margin="15,0" Classes="card"></Border>
+            <ContentControl Margin="15,0" IsVisible="{Binding !IsInEditMode}"
+                            Content="{Binding WidgetViewModel}">
+            </ContentControl>
         </Grid>
         <Grid VerticalAlignment="Top" IsVisible="{Binding !IsInEditMode}" Margin="15,0,15,0"
               ColumnDefinitions="Auto,10,*,10,Auto" Row="6">
@@ -45,24 +47,44 @@
 
         </Grid>
         <Grid Row="8">
-            <Grid ColumnDefinitions="auto,10,*">
-                <Grid IsVisible="{Binding !IsInEditMode}">
-                    <Button Command="{Binding ExitAppCommand}" ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" ToolTip.Tip="Exit app" Height="35"
-                            Width="35" Classes="icon-button">
-                        <PathIcon Width="15" Data="{DynamicResource button_power_1__power_button_on_off}"></PathIcon>
-                    </Button>
-                </Grid>
-            </Grid>
+            <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Left" Orientation="Horizontal" Spacing="0"
+                        IsVisible="{Binding !IsInEditMode}">
+                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" ToolTip.HorizontalOffset="-20"
+                        Command="{Binding OpenMainWindowCommand}" CommandParameter="home" ToolTip.Tip="Home " Height="35" Width="35"
+                        Classes="icon-button">
+                    <PathIcon Width="15" Data="{DynamicResource home_3__home_house_roof_shelter}"></PathIcon>
+                </Button>
+                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" CommandParameter="devices" ToolTip.HorizontalOffset="-20"
+                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="Devices" Height="35" Width="35"
+                        Classes="icon-button">
+                    <PathIcon Width="15" Data="{DynamicResource Device_settings}"></PathIcon>
+                </Button>
+                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" CommandParameter="layout" ToolTip.HorizontalOffset="-20"
+                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="Layout" Height="35" Width="35"
+                        Classes="icon-button">
+                    <PathIcon Width="15" Data="{DynamicResource map_rounded}"></PathIcon>
+                </Button>
+                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" CommandParameter="settings" ToolTip.HorizontalOffset="-20"
+                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="Settings" Height="35" Width="35"
+                        Classes="icon-button">
+                    <PathIcon Width="15" Data="{DynamicResource General_Outline_Settings}"></PathIcon>
+                </Button>
+                <Separator Margin="2,0" Height="18" Width="2"></Separator>
+                <Button Command="{Binding ExitAppCommand}" ToolTip.Placement="Top"
+                        ToolTip.VerticalOffset="-10" ToolTip.Tip="Exit" Height="35"
+                        Width="35" Classes="icon-button danger">
+                    <PathIcon Width="15" Data="{DynamicResource button_power_1__power_button_on_off}"></PathIcon>
+                </Button>
+               
+                
+            </StackPanel>
             <StackPanel Grid.Column="2" IsVisible="{Binding !IsInEditMode}" HorizontalAlignment="Right"
                         VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="5">
-                <HyperlinkButton NavigateUri="http://ambino.vn" Content="Quick access tutorial"></HyperlinkButton>
-                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" Command="{Binding EnterEditModeCommand}" ToolTip.Tip="Add or remove shortcut" Height="35"
+                <HyperlinkButton NavigateUri="http://ambino.vn" Content="Help"></HyperlinkButton>
+                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" Command="{Binding EnterEditModeCommand}"
+                        ToolTip.Tip="Add or remove shortcut" Height="35"
                         Width="35" Classes="icon-button">
                     <PathIcon Width="15" Data="{DynamicResource application_add__application_new_add_square}"></PathIcon>
-                </Button>
-                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" ToolTip.HorizontalOffset="-20" Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="Main window" Height="35" Width="35"
-                        Classes="icon-button">
-                    <PathIcon Width="15" Data="{DynamicResource settings_future}"></PathIcon>
                 </Button>
             </StackPanel>
             <StackPanel IsVisible="{Binding IsInEditMode}" HorizontalAlignment="Center" VerticalAlignment="Bottom"

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
@@ -62,7 +63,17 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
     private LightingProfileDecoder _decoder;
     private string _content = "New Catergory";
     private bool? _isCollapsed;
-    public ObservableCollection<SideMenuProfileViewModel> Profiles { get; set; }
+    private ObservableCollection<SideMenuProfileViewModel> _profiles;
+
+    public ObservableCollection<SideMenuProfileViewModel> Profiles
+    {
+        get => _profiles;
+        set
+        {
+            _profiles = value;
+            OnPropertyChanged();
+        }
+    }
 
     /// <summary>
     /// Display Name
@@ -149,11 +160,14 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
             return;
         Content = _profileCategory.Name;
         _profileCategory.FindChild(_profileRepository.Items.ToList());
+        var profiles = new ObservableCollection<SideMenuProfileViewModel>();
         foreach (var profile in _profileCategory.Profiles)
         {
             var profileViewModel = _vmFactory.GetProfileViewModel(profile, this);
-            Profiles.Add(profileViewModel);
+            profiles.Add(profileViewModel);
         }
+
+        Profiles = new ObservableCollection<SideMenuProfileViewModel>(profiles.OrderBy(i=>i.Profile.Name).ToList());
     }
 
     private async Task ExecuteRenameCategory()
@@ -171,7 +185,6 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
             return;
         if (result == ContentDialogResult.Primary)
         {
-            //create new profile
             _profileCategory.Name = vm.UserInput;
             _profileCategory.Save();
             Content = vm.UserInput;

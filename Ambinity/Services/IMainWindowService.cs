@@ -1,4 +1,5 @@
 using System;
+using AmbinityCore.Models.Profile;
 
 namespace Ambinity.Services;
 
@@ -25,6 +26,17 @@ public interface IMainWindowService
     ///     Opens the main window if it is not already open, must be called on the UI thread
     /// </summary>
     void OpenMainWindow();
+
+    /// <summary>
+    ///     Opens the main window if it is not already open, must be called on the UI thread, with specific profile editor
+    /// </summary>
+    void OpenMainWindow(LightingProfile profile);
+
+    /// <summary>
+    /// Opens the main window if it is not already open, must be called on the UI thread, with specific screen index
+    /// </summary>
+    /// <param name="screenIndex"></param>
+    void OpenMainWindow(int screenIndex);
 
     /// <summary>
     ///     Closes the main window if it is not already closed, must be called on the UI thread

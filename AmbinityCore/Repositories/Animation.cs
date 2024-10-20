@@ -1,5 +1,6 @@
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
+using AmbinityServer.OnlineItem;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Newtonsoft.Json;
@@ -56,6 +57,11 @@ public class Animation : ObservableObject, ICollectableItem
             
         var json = File.ReadAllText(Path.Combine(LocalPath,"config.json"));
         SkottieAnimation = SkiaSharp.Skottie.Animation.Parse(json);
+    }
+
+    public OnlineItemTypeEnum GetType()
+    {
+        return OnlineItemTypeEnum.Animation;
     }
 
     public void Save()

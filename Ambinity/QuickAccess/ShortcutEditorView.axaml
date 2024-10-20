@@ -19,7 +19,7 @@
                 </StackPanel>
                 <StackPanel Spacing="8">
                     <TextBlock Text="Profile" FontSize="12" FontWeight="SemiBold"></TextBlock>
-                   <ui:FAComboBox DisplayMemberBinding="{Binding Name}" SelectedItem="{Binding SelectedProfile}" ItemsSource="{Binding AvailableLightingProfiles}" HorizontalAlignment="Stretch">
+                   <ui:FAComboBox x:Name="cbx" DisplayMemberBinding="{Binding Name}" SelectedItem="{Binding SelectedProfile}" ItemsSource="{Binding AvailableLightingProfiles}" HorizontalAlignment="Stretch">
                       
                    </ui:FAComboBox>
                 </StackPanel>

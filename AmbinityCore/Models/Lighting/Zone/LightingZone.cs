@@ -47,7 +47,7 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
 
     public void SetRotation(float angle)
     {
-       // throw new NotImplementedException();
+        // throw new NotImplementedException();
     }
 
     #region Canvas Corordinate Properties
@@ -263,7 +263,7 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
             cloneZone.Points = newPoints;
         }
 
-        var cloneContainerFigure = new LightingZoneFigure(x, y, Width, Height);
+        var cloneContainerFigure = cloneZone.GetContainer();
         cloneContainerFigure.SetChild(cloneZone);
         return cloneContainerFigure;
     }
@@ -401,18 +401,24 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
         return _displayColor;
     }
 
-    public string LocalPath { get; set; }
+    [JsonIgnore] public string LocalPath { get; set; }
+
+    public OnlineItemTypeEnum GetType()
+    {
+        return OnlineItemTypeEnum.LightingZone;
+    }
 
     public void Save()
     {
+        //todo implement profile save with icon 
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path
             var dbPath = GetLocalRepository().LocalFolderPath;
-            LocalPath = Path.Combine(dbPath,
-                Name + ".json"); // item without thumbnaill will be store in the same folder
+            LocalPath = Path.Combine(dbPath, Name);
+            Directory.CreateDirectory(LocalPath);
         }
 
-        JsonHelpers.WriteSimpleJson(this, LocalPath);
+        JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath, "config.json"));
     }
 }

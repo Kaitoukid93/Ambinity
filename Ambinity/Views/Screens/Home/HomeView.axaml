@@ -1,0 +1,122 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
+             xmlns:local="clr-namespace:Ambinity.Views.Screens.Home"
+             x:DataType="local:HomeViewModel"
+             x:Class="Ambinity.Views.Screens.Home.HomeView">
+    <Grid Margin="5,0,20,20" RowDefinitions="auto,5,*">
+        <TextBlock Margin="5,0,0,10" Text="Home" FontSize="25" FontWeight="SemiBold"></TextBlock>
+        <StackPanel Grid.Row="2" Spacing="30">
+            <Panel>
+                <ItemsControl>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Margin="5,0" Orientation="Horizontal" Spacing="10"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.Items>
+                        <Border Width="600" Height="360" CornerRadius="10" ClipToBounds="True">
+                            <Image Stretch="UniformToFill"
+                                   Source="C:\Users\zOe\Downloads\9bd238_fd1d87cbc5dd4529bfbdf7c97db1baec~mv2.webp">
+                            </Image>
+                        </Border>
+                        <Border Width="600" Height="360" CornerRadius="10" ClipToBounds="True">
+                            <Image Stretch="UniformToFill"
+                                   Source="C:\Users\zOe\Downloads\5edc62_57614561fa6a44e69f8aef29a6635553~mv2.webp">
+                            </Image>
+                        </Border>
+                        <Border Width="600" Height="360" CornerRadius="10" ClipToBounds="True">
+                            <Image Stretch="UniformToFill"
+                                   Source="C:\Users\zOe\Downloads\9bd238_fd1d87cbc5dd4529bfbdf7c97db1baec~mv2.webp">
+                            </Image>
+                        </Border>
+                    </ItemsControl.Items>
+                </ItemsControl>
+            </Panel>
+            <Grid>
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Newest profiles" Margin="5,0" HorizontalAlignment="Left" FontSize="18" FontWeight="SemiBold"></TextBlock>
+                    <ItemsControl ItemsSource="{Binding DisplayAssets}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" Columns="4"></UniformGrid>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border  Margin="5,0"  Height="150"  CornerRadius="10" Classes="card" Padding="0" ClipToBounds="True">
+                                    <Grid>
+                                        <Image Stretch="UniformToFill" Source="{Binding GetThumbnail^,FallbackValue=null}">
+                                        </Image>
+                                        <Grid Margin="10" ColumnDefinitions="*,8,Auto" VerticalAlignment="Bottom">
+                                            <Border Padding="5" MinWidth="100" HorizontalAlignment="Left" VerticalAlignment="Center" Classes="card">
+                                                <StackPanel>
+                                                    <TextBlock MaxWidth="200" TextTrimming="CharacterEllipsis" FontSize="18" FontWeight="SemiBold" Text="{Binding Name}"></TextBlock>
+                                                    <TextBlock Text="{Binding Description}" FontSize="12" FontWeight="SemiBold"></TextBlock>
+                                                </StackPanel>
+                                            </Border>
+                                            <StackPanel Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal" Spacing="8">
+                                                <Border VerticalAlignment="Bottom" IsVisible="{Binding IsLocalExisted}" Classes="chip">
+                                                    <TextBlock Text="Installed" Foreground="{DynamicResource AccentButtonBackground}" FontSize="12" FontWeight="SemiBold"></TextBlock>
+                                                </Border>
+                                                <Button Command="{Binding DownloadItemCommand}" VerticalAlignment="Bottom" Grid.Column="2" Padding="10,5" HorizontalAlignment="Right" Classes="accent">
+                                                    <PathIcon Width="15" Data="{DynamicResource Import}"></PathIcon>
+                                                </Button>
+                                            </StackPanel>
+                                           
+                                        </Grid>
+                                       
+                                       
+                                    </Grid>
+                                    
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Grid>
+            <Grid>
+                <StackPanel Spacing="10">
+                    <TextBlock Margin="5,0" Text="Tutorial - FAQ" HorizontalAlignment="Left" FontSize="18" FontWeight="SemiBold"></TextBlock>
+                        <ItemsControl>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="1" Columns="5"></UniformGrid>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.Items>
+                        <Border Margin="5,0"  Height="150" CornerRadius="10" Classes="card" ClipToBounds="True">
+                            <PathIcon Width="40"
+                                      Data="{DynamicResource button_play__button_television_buttons_movies_play_tv_video_controls}">
+                            </PathIcon>
+                        </Border>
+                        <Border  Margin="5,0"  Height="150" CornerRadius="10" Classes="card" ClipToBounds="True">
+                            <PathIcon Width="40"
+                                      Data="{DynamicResource button_play__button_television_buttons_movies_play_tv_video_controls}">
+                            </PathIcon>
+                        </Border>
+                        <Border  Margin="5,0" Height="150" CornerRadius="10" Classes="card" ClipToBounds="True">
+                            <PathIcon Width="40"
+                                      Data="{DynamicResource button_play__button_television_buttons_movies_play_tv_video_controls}">
+                            </PathIcon>
+                        </Border>
+                        <Border  Margin="5,0" Height="150" CornerRadius="10" Classes="card" ClipToBounds="True">
+                            <PathIcon Width="40"
+                                      Data="{DynamicResource button_play__button_television_buttons_movies_play_tv_video_controls}">
+                            </PathIcon>
+                        </Border>
+                        <Border  Margin="5,0"  Height="150" CornerRadius="10" Classes="card" ClipToBounds="True">
+                            <PathIcon Width="40"
+                                      Data="{DynamicResource button_play__button_television_buttons_movies_play_tv_video_controls}">
+                            </PathIcon>
+                        </Border>
+                    </ItemsControl.Items>
+                </ItemsControl>
+                </StackPanel>
+            
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

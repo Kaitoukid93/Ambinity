@@ -25,28 +25,21 @@ public  class AssetItemViewModelFactory
     }
     public  AssetItemViewModelBase GetViewModel(ICollectableItem item)
     {
-        switch (item.GetType().Name)
+        switch (item.GetType())
         {
-            case "AmbinityDeviceLayout":
+            case OnlineItemTypeEnum.DeviceLayout: 
                 return new AmbinityDeviceLayoutAssetViewModel(item,_thumnailService);
                 break;
-            case "SolidColor":
-                return null;
-                break;
-            case "ColorPalette":
+            case OnlineItemTypeEnum.ColorPalette:
                 return new ColorPaletteAssetViewModel(item);
                 break;
-            case "LightingProfile":
-                return null;
-                break;
-            case "LightingZone":
+            case OnlineItemTypeEnum.LightingZone:
                 return new LightingZoneAssetViewModel(item);
                 break;
-            case "Animation":
+            case OnlineItemTypeEnum.Animation:
                 return new AnimationAssetViewModel(item);
-                return null;
                 break;
-            case "Gif":
+            case OnlineItemTypeEnum.LightingProfile:
                 return null;
                 break;
             default:

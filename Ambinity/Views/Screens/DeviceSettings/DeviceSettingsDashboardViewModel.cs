@@ -86,7 +86,7 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
 
     private async void GoToDeviceControl(DashboardDeviceViewModel device)
     {
-        _decoder?.Stop();
+        await _decoder?.Stop();
         var dialogvm = new LoadingDialogViewModel();
         _dialogService.ShowLoadingDialog(dialogvm, "Loading device");
         var result = await Task.Run(() => _deviceSettingsViewModel.Init(device.Controller));

@@ -404,7 +404,6 @@ public class Draw2DCanvasViewModel : ViewModelBase
 
     public ICommand CopySelectedFigureCommand { get; set; }
     public ICommand PasteCommand { get; set; }
-    public ICommand GroupSelectedFigureCommand { get; set; }
 
     private void CreateCommands()
     {
@@ -427,7 +426,6 @@ public class Draw2DCanvasViewModel : ViewModelBase
         UpdateFigureData = new RelayCommand(UpdateFigure);
         CopySelectedFigureCommand = new RelayCommand(Copy, CanCopy);
         PasteCommand = new RelayCommand(Paste, CanPaste);
-        GroupSelectedFigureCommand = new RelayCommand(Group, CanGroup);
     }
 
     private async Task RemoveFigure()
@@ -499,25 +497,25 @@ public class Draw2DCanvasViewModel : ViewModelBase
         return true;
     }
 
-    private void Group()
-    {
-        var newGroup = new LightingZoneGroup();
-        foreach (ContainerFigure figure in Canvas.Selection.All)
-        {
-            newGroup.AddChild(figure.ChildItem);
-        }
-
-        newGroup.UpdateSizeByChild(true);
-        var newGroupContainer =
-            new LightingZoneGroupContainerFigure(newGroup.X, newGroup.Y, newGroup.Width, newGroup.Height);
-        AddFigure(newGroupContainer, false);
-        foreach (ContainerFigure figure in Canvas.Selection.All)
-        {
-            figure.IsDragable = false;
-            figure.IsResizable = false;
-            newGroupContainer.InstallEditPolicy(new MasterSlaveDragDropPolicy(figure));
-        }
-    }
+    // private void Group()
+    // {
+    //     var newGroup = new LightingZoneGroup();
+    //     foreach (ContainerFigure figure in Canvas.Selection.All)
+    //     {
+    //         newGroup.AddChild(figure.ChildItem);
+    //     }
+    //
+    //     newGroup.UpdateSizeByChild(true);
+    //     var newGroupContainer =
+    //         new LightingZoneGroupContainerFigure(newGroup.X, newGroup.Y, newGroup.Width, newGroup.Height);
+    //     AddFigure(newGroupContainer, false);
+    //     foreach (ContainerFigure figure in Canvas.Selection.All)
+    //     {
+    //         figure.IsDragable = false;
+    //         figure.IsResizable = false;
+    //         newGroupContainer.InstallEditPolicy(new MasterSlaveDragDropPolicy(figure));
+    //     }
+    // }
 
     private bool CanGroup()
     {

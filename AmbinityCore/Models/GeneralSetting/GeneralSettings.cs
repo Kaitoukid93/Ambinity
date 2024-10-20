@@ -36,7 +36,7 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         set => SetProperty(ref _enableSnapToGrid, value);
     }
 
-    private bool _startMinimized = true;
+    private bool _startMinimized = false;
 
     public bool StartMinimized
     {

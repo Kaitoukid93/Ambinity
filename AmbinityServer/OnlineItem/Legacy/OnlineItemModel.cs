@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace adrilight_shared.Models.Store
 {
     /// <summary>
@@ -18,6 +20,7 @@ namespace adrilight_shared.Models.Store
         public string Owner { get; set; } // the name of creator
         public string Type { get; set; } // ledsetup or color palette
         public string Description { get; set; }
+        [JsonIgnore]
         public string Path { get; set; }
         public string MarkDownDescription { get; set; }
         public string Version { get; set; }

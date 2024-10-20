@@ -65,15 +65,6 @@
             <Setter Property="Text" Value="Disconnected" />
             <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundDisabled}"></Setter>
         </Style>
-        <Style Selector="Border.connected">
-            <Setter Property="Padding" Value="5,3" />
-            <Setter Property="Background">
-                <SolidColorBrush Color="{CompiledBinding (SolidColorBrush).Color, Source={StaticResource AccentButtonBackground}}" Opacity="0.2">
-                </SolidColorBrush>
-            </Setter>
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
-        </Style>
         <Style Selector="Border.disconnected">
             <Setter Property="Padding" Value="5,3" />
             <Setter Property="Background" Value="{DynamicResource ButtonBackgroundDisabled}" />
@@ -140,7 +131,7 @@
                                 </TextBlock>
                             </Grid>
                         </Border>
-                        <Border Classes.connected="{Binding IsTransferActive}"
+                        <Border Classes.primaryChip="{Binding IsTransferActive}"
                                 Classes.disconnected="{Binding !IsTransferActive}"
                                 ToolTip.Tip="{Binding Controller.SerialPort}" VerticalAlignment="Bottom"
                                 CornerRadius="3" HorizontalAlignment="Right" Classes="chip">

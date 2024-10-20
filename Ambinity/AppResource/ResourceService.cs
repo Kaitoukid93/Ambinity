@@ -16,13 +16,16 @@ public class ResourceService
 {
     private string ImagesLocalFolderPath => Path.Combine(Constants.AppDataFolder, "Images");
     private string AmbinityDeviceFolderPath => Path.Combine(Constants.AppDataFolder, "AmbinityDevices");
+    private string ProfileFolderPath => Path.Combine(Constants.ModelDataFolder, "Profiles");
     public string ImageRemotePath;
     public string DeviceRemotePath;
+    public string ProfileRemotePath;
 
     public ResourceService(AmbinityClient client, DownloadService downloadService)
     {
         ImageRemotePath = client.HomeAddress + "ftp/files/Resources/Thumbs";
         DeviceRemotePath = client.HomeAddress + "ftp/files/Resources/AmbinityDevices";
+        ProfileRemotePath = client.HomeAddress+"ftp/files/Resources/LightingProfiles";
         _downloadService = downloadService;
     }
 
@@ -40,5 +43,9 @@ public class ResourceService
         if (!Directory.Exists(ImagesLocalFolderPath))
             await _downloadService.DownloadDirectory(ImageRemotePath, ImagesLocalFolderPath, progress);
         //download profiles
+        //clear cache
+        if (!Directory.Exists(ProfileFolderPath))
+            await _downloadService.DownloadDirectory(ProfileRemotePath, ProfileFolderPath, progress);
+        
     }
 }

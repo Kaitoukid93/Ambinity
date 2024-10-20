@@ -12,6 +12,8 @@ public static class Constants
         Environment.SpecialFolder.LocalApplicationData);
     public static readonly string AppDataFolder =
         Path.Combine(BaseFolder, "Ambinity\\");
+    public static readonly string ModelDataFolder =
+        Path.Combine(BaseFolder, "Ambinity\\Data\\");
 
     #region database local folder paths
 

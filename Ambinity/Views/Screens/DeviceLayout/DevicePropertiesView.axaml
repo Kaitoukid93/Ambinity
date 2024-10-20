@@ -12,7 +12,7 @@
         </Grid>
         <Separator Margin="0" Grid.Row="1" Height="1"></Separator>
         <Grid Row="2">
-                <ContentControl Content="{Binding PositionConfiguration}"></ContentControl>
+                <ContentControl IsEnabled="{Binding EnablePositionEdit}" Content="{Binding PositionConfiguration}"></ContentControl>
         </Grid>
         
     </Grid>

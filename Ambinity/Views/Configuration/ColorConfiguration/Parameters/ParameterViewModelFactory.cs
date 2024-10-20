@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Ambinity.Services;
+using Ambinity.Views.AmbinityStore;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Windows;
 using AmbinityCore.CapturingService;
@@ -28,7 +29,8 @@ public class ParameterViewModelFactory(
     LibraryViewModelFactory libraryViewModelFactory,
     BrightnessProviderFactory brightnessProviderFactory,
     ScreenCapturingService screenCapturingService,
-    LightingProfileDecoder decoder)
+    LightingProfileDecoder decoder,
+    AmbinityStoreItemExportViewModel exportViewModel)
 {
     public List<ParameterViewModelBase> CreateParameterViewModels(ILightingConfiguration config)
     {
@@ -46,7 +48,7 @@ public class ParameterViewModelFactory(
         if (config is not SelfGeneratedColorConfiguration configuration)
             return null;
         var colorSelectorParameter = new FillColorSelectionViewModel(configuration, rightPanelViewModel,
-            colorsRepository, colorPaletteRepository, libraryViewModelFactory, windowService, dialogService);
+            colorsRepository, colorPaletteRepository, libraryViewModelFactory, windowService, dialogService,exportViewModel);
         parameters.Add(colorSelectorParameter);
 
         parameters.Add(new SeparationParameterViewModel());

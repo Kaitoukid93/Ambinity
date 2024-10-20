@@ -13,8 +13,9 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
 {
     public DevicePropertiesViewModel(Draw2DCanvasViewModel canvasViewModel,
         PositionConfigurationViewModel positionConfigurationViewModel,
-        AmbinityDeviceViewModelFactory deviceViewModelFactory)
+        AmbinityDeviceViewModelFactory deviceViewModelFactory, ConfigurationHeaderViewModel headerViewModel)
     {
+        _headerViewModel = headerViewModel;
         _deviceViewModelFactory = deviceViewModelFactory;
         PositionConfiguration = positionConfigurationViewModel;
         _canvasViewModel = canvasViewModel;
@@ -24,12 +25,13 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
     public override void UpdateObjectProperties()
     {
         var selectedItems = _canvasViewModel.Canvas.Selection.All;
+        _headerViewModel.Init(selectedItems);
+        OnPropertyChanged(nameof(Header));
         if (selectedItems.Count == 0)
         {
-            DisableEdit();
-            Header = NullHeader();
-            DetailViewModel = null;
             //clear view
+            DisableEdit();
+            DetailViewModel = null;
         }
         else if (selectedItems.Count == 1)
         {
@@ -38,25 +40,21 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
             var device = (fig as DeviceContainerFigure)?.ChildItem as AmbinityDevice;
             if (device == null || !fig.IsDragable)
             {
-                DisableEdit();
+                EnablePositionEdit = false;
                 return;
             }
 
-            _selectedDevice = device;
             EnableEdit();
+            _selectedDevice = device;
             PositionConfiguration.Init(device);
-
-
-            Header = GetHeader(device);
             DetailViewModel = _deviceViewModelFactory.GetDetailViewModel(_selectedDevice);
         }
         else
         {
-            Header = MultipleSelectedHeader(selectedItems.Count);
             _selectedDevices?.Clear();
-            foreach (var item in selectedItems)
+            foreach (var device in selectedItems.Select(item =>
+                         (item as DeviceContainerFigure)?.ChildItem as AmbinityDevice))
             {
-                var device = (item as DeviceContainerFigure)?.ChildItem as AmbinityDevice;
                 _selectedDevices.Add(device);
             }
 
@@ -65,16 +63,17 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         }
     }
 
-    private List<AmbinityDevice> _selectedDevices = new List<AmbinityDevice>();
+    private List<AmbinityDevice> _selectedDevices = [];
     private AmbinityDevice _selectedDevice;
 
     private void OnItemPositionChanged(float arg1, float arg2)
     {
-        PositionConfiguration.Update();
+        if (EnablePositionEdit)
+            PositionConfiguration.Update();
     }
 
-
-    private Draw2DCanvasViewModel _canvasViewModel;
+    private ConfigurationHeaderViewModel _headerViewModel;
+    private readonly Draw2DCanvasViewModel _canvasViewModel;
     private PositionConfigurationViewModel _positionConfiguration;
     private AmbinityDeviceDetailViewModel _detailViewModel;
     private readonly AmbinityDeviceViewModelFactory _deviceViewModelFactory;
@@ -89,16 +88,6 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         }
     }
 
-    public override void DisableEdit()
-    {
-        PositionConfiguration.IsEnabled = false;
-    }
-
-    public override void EnableEdit()
-    {
-        PositionConfiguration.IsEnabled = true;
-    }
-
     public PositionConfigurationViewModel PositionConfiguration
     {
         get => _positionConfiguration;
@@ -109,35 +98,28 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         }
     }
 
-    private ConfigurationHeaderViewModel _header;
+    public ConfigurationHeaderViewModel Header => _headerViewModel;
 
-    public ConfigurationHeaderViewModel Header
+    public override void DisableEdit()
     {
-        get => _header;
+        EnablePositionEdit = false;
+        DetailViewModel?.Dispose();
+    }
+
+    public override void EnableEdit()
+    {
+        EnablePositionEdit = true;
+    }
+
+    private bool _enablePositionEdit;
+
+    public bool EnablePositionEdit
+    {
+        get => _enablePositionEdit;
         set
         {
-            _header = value;
+            _enablePositionEdit = value;
             OnPropertyChanged();
         }
-    }
-
-    private ConfigurationHeaderViewModel GetHeader(AmbinityDevice device)
-    {
-        var header = new ConfigurationHeaderViewModel(null, "null");
-
-        header.Icon = "slaveDevice";
-        header.Header = device.DeviceName;
-
-        return header;
-    }
-
-    private ConfigurationHeaderViewModel NullHeader()
-    {
-        return new ConfigurationHeaderViewModel("Select an item to begin", "void_selected");
-    }
-
-    private ConfigurationHeaderViewModel MultipleSelectedHeader(int count)
-    {
-        return new ConfigurationHeaderViewModel(count + " " + "items selected", "Zones");
     }
 }

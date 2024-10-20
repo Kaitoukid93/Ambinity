@@ -9,6 +9,7 @@ using Ambinity.Views.AppTour;
 using Ambinity.Views.Screens.AppSettings;
 using Ambinity.Views.Screens.DeviceLayout;
 using Ambinity.Views.Screens.DeviceSettings;
+using Ambinity.Views.Screens.Home;
 using Ambinity.Views.Screens.ProfileEditor;
 using Ambinity.Windows;
 using AmbinityCore.Models.Collection;
@@ -29,10 +30,12 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         LightingProfileCategoryRepository categoryRepository, IDialogService dialogService,
         RootNavigationStores rootNavigationStores,
         SideMenuProfilePlayerViewModel profilePlayerViewModel, SideMenuViewModelFactory vmFactory,
-        ProfileEditorViewModel profileEditorViewModel, DeviceLayoutEditorViewModel deviceLayoutEditorViewModel,AppSettingsViewModel appSettingsViewModel,
-        DeviceSettingsDashboardViewModel dashboardViewModel)
+        ProfileEditorViewModel profileEditorViewModel, DeviceLayoutEditorViewModel deviceLayoutEditorViewModel,
+        AppSettingsViewModel appSettingsViewModel,
+        DeviceSettingsDashboardViewModel dashboardViewModel, HomeViewModel homeViewModel)
     {
-        _appSettingsViewModel = appSettingsViewModel;   
+        _homeViewModel = homeViewModel;
+        _appSettingsViewModel = appSettingsViewModel;
         _dashboardViewModel = dashboardViewModel;
         _profileEditorViewModel = profileEditorViewModel;
         _deviceLayoutEditorViewModel = deviceLayoutEditorViewModel;
@@ -123,6 +126,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     private readonly DeviceLayoutEditorViewModel _deviceLayoutEditorViewModel;
     private readonly DeviceSettingsDashboardViewModel _dashboardViewModel;
     private readonly AppSettingsViewModel _appSettingsViewModel;
+    private readonly HomeViewModel _homeViewModel;
 
     public SideMenuProfileViewModel SelectedProfile
     {
@@ -148,12 +152,31 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         }
     }
 
-    public void Init()
+    public void Init(LightingProfile profile = null)
     {
         //configure side menu
         ConfigureSideMenuItem();
         //select dashboard
-        SelectedScreen = ScreenMenuItems[0];
+        if (profile != null)
+        {
+            GoToProfileEditor(profile);
+        }
+        else
+        {
+            SelectedScreen = ScreenMenuItems[0];
+        }
+
+        _isInit = true;
+    }
+
+    public void Init(int screenIndex)
+    {
+        //configure side menu
+        ConfigureSideMenuItem();
+        //select dashboard
+        if (screenIndex >= ScreenMenuItems.Count)
+            SelectedScreen = ScreenMenuItems[0];
+        SelectedScreen = ScreenMenuItems[screenIndex];
         _isInit = true;
     }
 
@@ -161,9 +184,11 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     {
         ScreenMenuItems = new ObservableCollection<SideMenuScreenViewModel>();
         ProfileCategorymenuItems = new ObservableCollection<SideMenuProfileCategoryViewModel>();
+        var homeMenu = new SideMenuScreenViewModel("Home", "home_3__home_house_roof_shelter");
         var deviceSettingsMenu = new SideMenuScreenViewModel("Devices", "Device_settings");
         var deviceLayoutMenu = new SideMenuScreenViewModel("Layout", "map_rounded");
         var settingsMenu = new SideMenuScreenViewModel("Settings", "General_Outline_Settings");
+        ScreenMenuItems.Add(homeMenu);
         ScreenMenuItems.Add(deviceSettingsMenu);
         ScreenMenuItems.Add(deviceLayoutMenu);
         ScreenMenuItems.Add(settingsMenu);
@@ -203,9 +228,9 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         SelectedProfile = null;
         switch (screen.Content)
         {
-            // case "Dashboard":
-            //     GoToDashBoard();
-            //     break;
+            case "Home":
+                GoHome();
+                break;
             case "Layout":
                 GoToDeviceLayout();
                 break;
@@ -216,6 +241,12 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
                 GoToAppSettings();
                 break;
         }
+    }
+
+    private async Task GoHome()
+    {
+        _rootNavigationStores.CurrentViewModel = _homeViewModel;
+        _homeViewModel.Init();
     }
 
     private async Task GoToDeviceLayout()
@@ -244,11 +275,13 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         _rootNavigationStores.CurrentViewModel = _dashboardViewModel;
         _dashboardViewModel.Init();
     }
+
     private void GoToAppSettings()
     {
         _rootNavigationStores.CurrentViewModel = _appSettingsViewModel;
         _appSettingsViewModel.Init();
     }
+
     private void CatergorySelectionChanged(SideMenuProfileViewModel item)
     {
         //unselect all other categories except the one that nonified

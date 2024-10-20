@@ -32,13 +32,14 @@ public class LightingZoneRepository : CollectableItemRepository
     public override void LoadFromDisk()
     {
         Items?.Clear();
-        string[] files = Directory.GetFiles(FolderPath);
-        foreach (var file in files)
+        string[] directories = Directory.GetDirectories(FolderPath);
+        foreach (var dir in directories)
         {
-            var zone = JsonHelpers.DeserializeJson<LightingZone>(file);
+
+            var zone = JsonHelpers.DeserializeJson<LightingZone>(Path.Combine(dir,"config.json"));
             if (zone == null)
                 continue;
-            zone.LocalPath = file;
+            zone.LocalPath = dir;
             AddItem(zone);
         }
     }

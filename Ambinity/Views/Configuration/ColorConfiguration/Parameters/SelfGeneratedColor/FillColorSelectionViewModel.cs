@@ -1,23 +1,19 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Services;
+using Ambinity.Views.AmbinityStore;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Windows;
 using AmbinityCore.Colors;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
-using AmbinityCore.Models.Profile;
 using AmbinityCore.Repositories;
 using Avalonia.Media;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
-using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
 using Serilog;
 
@@ -27,8 +23,9 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
 {
     public FillColorSelectionViewModel(SelfGeneratedColorConfiguration configuration,
         ProfileEditorRightPanelViewModel rightPanelViewModel, StaticColorsRepository staticColorsRepository, ColorPaletteRepository colorPaletteRepository,
-        LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService, IDialogService dialogService)
+        LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService, IDialogService dialogService, AmbinityStoreItemExportViewModel itemExportViewModel)
     {
+        _itemExportViewModel = itemExportViewModel;
         _libraryViewModelFactory = libraryViewModelFactory;
         _colorsRepository = staticColorsRepository;
         _configuration = configuration;
@@ -44,7 +41,7 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
         }
 
         ImportPaletteCommand = new AsyncRelayCommand(ImportPalette);
-        ExportPaletteCommand = new AsyncRelayCommand(ExportPalette);
+        ExportPaletteCommand = new RelayCommand(ExportPalette);
         AddPaletteToLibraryCommand = new AsyncRelayCommand(AddPaletteToLibrary);
         SelectedColors = new ObservableCollection<SolidColorViewModel>();
         AddColorCommand = new RelayCommand<Color>(AddColor);
@@ -74,21 +71,13 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
         }
     }
 
-    private async Task ExportPalette()
+    private void  ExportPalette()
     {
-        string? result = await _windowService.CreateSaveFileDialog()
-            .HavingFilter(f => f.WithExtension("json"))
-            .WithInitialFileName("My Palette")
-            .ShowAsync();
-        if (result == null)
-            return;
-        if(File.Exists(result))
-            File.Delete(result);
-        var fileName = Path.GetFileNameWithoutExtension(result);
-        var palette = new ColorPalette(fileName, _configuration.Colors.ToArray());
-        JsonHelpers.WriteSimpleJson(palette,result);
-        Log.Information("Palette exported to " + result);
+        var palette = new ColorPalette("New Color Palette", _configuration.Colors.ToArray());
+        _itemExportViewModel.Init(palette);
+        var window = _windowService.ShowWindow(_itemExportViewModel);
     }
+
 
     private void OnPaletteSelected(ICollectableItem obj)
     {
@@ -145,6 +134,7 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
     private readonly IWindowService _windowService;
     private readonly IDialogService _dialogService;
     private readonly ColorPaletteRepository _colorPaletteRepository;
+    private readonly AmbinityStoreItemExportViewModel _itemExportViewModel;
 
     public ObservableCollection<SolidColorViewModel> SelectedColors
     {

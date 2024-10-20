@@ -50,15 +50,12 @@ public class PositionConfigurationViewModel : ViewModelBase
 
     public void Update()
     {
-        if (IsEnabled)
-        {
-            XProperty = PositionAwareItem.X;
-            YProperty = PositionAwareItem.Y;
-            WidthProperty = PositionAwareItem.Width;
-            HeightProperty = PositionAwareItem.Height;
-            ScaleProperty = PositionAwareItem.Scale;
-            RotationProperty = PositionAwareItem.Rotation;
-        }
+        XProperty = PositionAwareItem.X;
+        YProperty = PositionAwareItem.Y;
+        WidthProperty = PositionAwareItem.Width;
+        HeightProperty = PositionAwareItem.Height;
+        ScaleProperty = PositionAwareItem.Scale;
+        RotationProperty = PositionAwareItem.Rotation;
     }
 
     public void TryUpdateItemProperty()
@@ -75,7 +72,7 @@ public class PositionConfigurationViewModel : ViewModelBase
         if ((float)(WidthProperty) < _minimumWidth || (float)HeightProperty < _minimumHeight)
             return;
         PositionAwareItem.X = (float)XProperty;
-        PositionAwareItem.Y =(float)YProperty;
+        PositionAwareItem.Y = (float)YProperty;
         PositionAwareItem.Width = (float)WidthProperty;
         PositionAwareItem.Height = (float)HeightProperty;
         PositionAwareItem.SetRotation((float)RotationProperty);
@@ -97,7 +94,6 @@ public class PositionConfigurationViewModel : ViewModelBase
         get => _xProperty;
         set
         {
-
             _xProperty = value;
             OnPropertyChanged();
         }
@@ -132,7 +128,6 @@ public class PositionConfigurationViewModel : ViewModelBase
         get => _heightProperty;
         set
         {
-            
             _heightProperty = value;
             OnPropertyChanged();
         }
@@ -145,7 +140,6 @@ public class PositionConfigurationViewModel : ViewModelBase
         get => _scaleProperty;
         set
         {
-          
             _scaleProperty = value;
             OnPropertyChanged();
         }
@@ -158,7 +152,6 @@ public class PositionConfigurationViewModel : ViewModelBase
         get => _rotationProperty;
         set
         {
-            
             _rotationProperty = value;
             OnPropertyChanged();
         }
@@ -200,17 +193,6 @@ public class PositionConfigurationViewModel : ViewModelBase
         }
     }
 
-    private bool _isEnabled = true;
-
-    public bool IsEnabled
-    {
-        get => _isEnabled;
-        set
-        {
-            _isEnabled = value;
-            OnPropertyChanged();
-        }
-    }
     private bool _isVisible = true;
 
     public bool IsVisible
@@ -222,6 +204,7 @@ public class PositionConfigurationViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
     public ICommand SetItemScaleCommand { get; set; }
 
     public void Reset()

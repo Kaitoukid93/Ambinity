@@ -6,7 +6,7 @@ namespace AmbinityCore.Repositories;
 
 public class AmbinityDeviceRepository
 {
-    //Manage devices that being added to the system\
+    //Manage devices that being added to the system
     public event Action DevicesListUpdated;
 
     public AmbinityDeviceRepository(DeviceBitmapCaptureFactory captureFactory,
@@ -83,13 +83,13 @@ public class AmbinityDeviceRepository
         _captures.Add(capture);
     }
 
-    public void UpdateDeviceTransform()
-    {
-        foreach (var device in Devices)
-        {
-            device.TransformLeds();
-        }
-    }
+    // public void UpdateDeviceTransform()
+    // {
+    //     foreach (var device in Devices)
+    //     {
+    //         device.TransformLeds();
+    //     }
+    // }
 
     private DeviceBitmapCaptureFactory _captureFactory;
     private FanOutputServiceFactory _fanOutputServiceFactory;

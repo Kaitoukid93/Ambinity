@@ -28,6 +28,7 @@
                     <TextBlock>I'm in a panel yo!</TextBlock>
                 </StackPanel>
             </Border>
+            
         </StackPanel>
     </Design.PreviewWith>
     
@@ -85,6 +86,15 @@
         <Setter Property="Padding" Value="5,3" />
         <Setter Property="Background">
             <SolidColorBrush Color="{DynamicResource SystemAccentColor}" Opacity="0.2"></SolidColorBrush>
+        </Setter>
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+    </Style>
+    <Style Selector="Border.primaryChip">
+        <Setter Property="Padding" Value="5,3" />
+        <Setter Property="Background">
+            <SolidColorBrush Color="{CompiledBinding (SolidColorBrush).Color, Source={StaticResource AccentButtonBackground}}" Opacity="0.2">
+            </SolidColorBrush>
         </Setter>
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />

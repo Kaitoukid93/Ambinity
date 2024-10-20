@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Services;
 using Ambinity.ViewModels;
+using Ambinity.Views.AmbinityStore;
 using Ambinity.Windows;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Profile;
@@ -21,8 +22,9 @@ public class SideMenuProfileViewModel : ViewModelBase
 {
     public SideMenuProfileViewModel(LightingProfile profile, SideMenuProfileCategoryViewModel category,
         LightingProfileDecoder decoder, ThumbnailService thumbnailService, IDialogService dialogService,
-        SideMenuViewModelFactory vmFactory, IWindowService windowService)
+        SideMenuViewModelFactory vmFactory, IWindowService windowService, AmbinityStoreItemExportViewModel exportViewModel)
     {
+        _exportViewModel = exportViewModel;
         _vmFactory = vmFactory;
         Profile = profile;
         Profile.IconChanged += OnIconChanged;
@@ -44,17 +46,8 @@ public class SideMenuProfileViewModel : ViewModelBase
 
     private async Task ExportProfile()
     {
-        string? result = await _windowService.CreateSaveFileDialog()
-            .HavingFilter(f => f.WithExtension("zip"))
-            .WithInitialFileName(Content)
-            .ShowAsync();
-        if (result == null)
-            return;
-        Profile.Save();
-        if(File.Exists(result))
-            File.Delete(result);
-        ZipFile.CreateFromDirectory(Profile.LocalPath, result);
-        Log.Information("Profile exported to " + result);
+        _exportViewModel.Init(Profile);
+        var window =  _windowService.ShowWindow(_exportViewModel);
         //zip
         //save
     }
@@ -179,6 +172,8 @@ public class SideMenuProfileViewModel : ViewModelBase
     private readonly IDialogService _dialogService;
     private readonly IWindowService _windowService;
     private bool _isPlaying;
+    private readonly AmbinityStoreItemExportViewModel _exportViewModel;
+
     public bool IsPlaying
     {
         get => _isPlaying;
@@ -206,26 +201,27 @@ public class SideMenuProfileViewModel : ViewModelBase
 
     private void CommandSetup()
     {
-        TogglePlayPauseProfileCommand = new RelayCommand(TogglePlayPause);
+        TogglePlayPauseProfileCommand = new AsyncRelayCommand(TogglePlayPause);
     }
 
-    private void TogglePlayPause()
+    private async Task TogglePlayPause()
     {
-        IsPlaying = !IsPlaying;
-        if (!IsPlaying)
-        {
-            _decoder.Stop();
-        }
-        else
-        {
-            if (this.Profile == _decoder.CurrentPlayingProfile)
-                _decoder.Resume();
-            else
-            {
-                _decoder.Stop();
-                _decoder.Init(this.Profile);
-            }
-        }
+        await _decoder.Toggle(this.Profile.ID);
+        // IsPlaying = !IsPlaying;
+        // if (!IsPlaying)
+        // {
+        //     _decoder.Stop();
+        // }
+        // else
+        // {
+        //     if (this.Profile == _decoder.CurrentPlayingProfile)
+        //         _decoder.Resume();
+        //     else
+        //     {
+        //         await _decoder.Stop();
+        //         _decoder.Init(this.Profile);
+        //     }
+        // }
     }
 
     public Task<Bitmap> GetThumbnail => GetThumbnailAsync();

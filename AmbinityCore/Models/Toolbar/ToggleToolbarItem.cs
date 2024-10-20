@@ -14,6 +14,7 @@ public class ToggleToolbarItem : ObservableObject, IToolbarItem
 
     public string Name { get; set; }
     public string ToolTip { get; set; }
+    public string DisabledToolTip => "Tool is disabled while rendering";
     public string Icon { get; set; }
     public ICommand Command { get; set; }
     private bool _isChecked;

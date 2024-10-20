@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
              x:DataType="local:MusicReactiveConfigurationViewModel"
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
-             xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia.Tight"
+             xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia"
              Background="Transparent"
 
              x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.MusicReactiveConfigurationView">

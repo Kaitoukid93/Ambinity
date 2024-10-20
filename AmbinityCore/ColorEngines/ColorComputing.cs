@@ -41,7 +41,7 @@ public static class ColorComputing
  /// <param name="greenValue"></param>
  /// <param name="blueValue"></param>
  public static void SetLineColor(FrameBuffer _imageBuffer, int lineX, int lineY, int lineWidth, byte redValue,
- byte greenValue, byte blueValue)
+ byte greenValue, byte blueValue, byte alphaValue = 255)
  {
      
      int start = (_imageBuffer.FrameWidth * 4) * lineY + lineX * 4;
@@ -50,7 +50,7 @@ public static class ColorComputing
          _imageBuffer.PixelData[i +start] = blueValue;
          _imageBuffer.PixelData[i + 1 + start] = greenValue;
          _imageBuffer.PixelData[i + 2 + start] = redValue;
-         _imageBuffer.PixelData[i + 3 + start] = 255;
+         _imageBuffer.PixelData[i + 3 + start] = alphaValue;
 
      }
  }

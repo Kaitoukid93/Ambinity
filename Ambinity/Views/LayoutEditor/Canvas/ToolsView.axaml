@@ -9,7 +9,23 @@
              xmlns:flyoutItem="clr-namespace:AmbinityCore.Models.Flyout;assembly=AmbinityCore"
              x:DataType="local:ToolsViewModel"
              x:Class="Ambinity.Views.LayoutEditor.ToolsView">
-     <UserControl.Styles>
+    <UserControl.Styles>
+        <Style Selector="Button.Tool" x:DataType="toolbarItem:ButtonToolbarItem">
+            <Setter Property="ToolTip.Tip" Value="{Binding ToolTip}"></Setter>
+            <Setter Property="Foreground" Value="{Binding FillColor}"></Setter>
+            <Style Selector="^:disabled">
+                <Setter Property="ToolTip.Tip" Value="{Binding DisabledToolTip}"></Setter>
+                <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundDisabled}"></Setter>
+            </Style>
+        </Style>
+        <Style Selector="Button.flyoutTool" x:DataType="toolbarItem:FlyoutButtonToolbarItem">
+            <Setter Property="ToolTip.Tip" Value="{Binding ToolTip}"></Setter>
+            <Setter Property="Foreground" Value="{Binding FillColor}"></Setter>
+            <Style Selector="^:disabled">
+                <Setter Property="ToolTip.Tip" Value="{Binding DisabledToolTip}"></Setter>
+                <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundDisabled}"></Setter>
+            </Style>
+        </Style>
         <Style Selector="FlyoutPresenter.DefaultFlyout">
             <Setter Property="Background" Value="{DynamicResource TimePickerFlyoutPresenterBackground}" />
             <Setter Property="CornerRadius" Value="4" />
@@ -17,7 +33,8 @@
         </Style>
     </UserControl.Styles>
     <FlyoutBase.AttachedFlyout>
-        <Flyout Closing="PopupFlyoutBase_OnClosing" Placement="LeftEdgeAlignedBottom" HorizontalOffset="-10" FlyoutPresenterClasses="DefaultFlyout" >
+        <Flyout Closing="PopupFlyoutBase_OnClosing" Placement="LeftEdgeAlignedBottom" HorizontalOffset="-10"
+                FlyoutPresenterClasses="DefaultFlyout">
             <Grid>
                 <ContentControl Focusable="True" Content="{CompiledBinding CurrentFlyoutViewModel}"></ContentControl>
                 <Grid HorizontalAlignment="Right" VerticalAlignment="Top">
@@ -64,21 +81,18 @@
                                           Padding="0" Margin="5,5">
                                 <PathIcon Width="18" Height="18"
                                           Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
-                                 
+
                                 </PathIcon>
                             </ToggleButton>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type toolbarItem:ButtonToolbarItem}">
-                            <Button CornerRadius="4" Classes="icon-button" ToolTip.Tip="{Binding ToolTip}"
+                            <Button CornerRadius="4" Classes="icon-button Tool" ToolTip.ShowOnDisabled="True"
                                     Background="Transparent" Width="40" Height="40"
                                     BorderThickness="0"
                                     Command="{Binding Command}"
                                     Padding="0" Margin="5,5">
                                 <PathIcon Width="18" Height="18"
                                           Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
-                                    <PathIcon.Foreground>
-                                        <SolidColorBrush Color="{Binding FillColor }"></SolidColorBrush>
-                                    </PathIcon.Foreground>
                                 </PathIcon>
                             </Button>
                         </DataTemplate>
@@ -86,21 +100,20 @@
                             <Separator Width="1" Height="35" Margin="5"></Separator>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type toolbarItem:FlyoutButtonToolbarItem}">
-                            <Button BorderThickness="0" Command="{CompiledBinding Command}" CornerRadius="4"
-                                    ToolTip.Tip="{Binding ToolTip}" Width="40" Height="40" Padding="0" Margin="5,5"
-                                    Classes="icon-button">
+                            <Button ToolTip.ShowOnDisabled="True" BorderThickness="0"
+                                    Command="{Binding Command}" CornerRadius="4"
+                                     Width="40" Height="40" Padding="0" Margin="5,5"
+                                    Classes="icon-button flyoutTool">
                                 <PathIcon
                                     Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
-                                    <PathIcon.Foreground>
-                                        <SolidColorBrush Color="{Binding FillColor }"></SolidColorBrush>
-                                    </PathIcon.Foreground>
                                 </PathIcon>
                                 <Button.Flyout>
                                     <ui:FAMenuFlyout VerticalOffset="-10" Placement="Top"
                                                      ItemsSource="{Binding FlyoutItems}">
                                         <ui:FAMenuFlyout.ItemTemplate>
                                             <DataTemplate DataType="{x:Type flyoutItem:FlyoutItem}">
-                                                <ui:MenuFlyoutItem Click="MenuFlyoutItem_OnClick" Command="{Binding Command}" Text="{Binding Content}">
+                                                <ui:MenuFlyoutItem Click="MenuFlyoutItem_OnClick"
+                                                                   Command="{Binding Command}" Text="{Binding Content}">
                                                     <ui:MenuFlyoutItem.IconSource>
                                                         <ui:PathIconSource
                                                             Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
@@ -117,8 +130,9 @@
                     </ItemsControl.DataTemplates>
                 </ItemsControl>
             </Border>
-            <Border IsVisible="{Binding  ShowLockSymbol}" Width="50"  Background="#2c2c2c" CornerRadius="7" Margin="0,0,0,0"  Padding="0">
-                <PathIcon Foreground="OrangeRed" ToolTip.Tip="Canvas is locked"  Data="{DynamicResource lock}"></PathIcon>
+            <Border IsVisible="{Binding  ShowLockSymbol}" Width="50" Background="#2c2c2c" CornerRadius="7"
+                    Margin="0,0,0,0" Padding="0">
+                <PathIcon Foreground="OrangeRed" ToolTip.Tip="Canvas is locked" Data="{DynamicResource lock}"></PathIcon>
             </Border>
         </StackPanel>
 

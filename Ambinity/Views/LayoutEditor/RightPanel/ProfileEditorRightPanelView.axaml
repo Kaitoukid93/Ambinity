@@ -8,8 +8,7 @@
              Focusable="True"
              x:Class="Ambinity.Views.LayoutEditor.ProfileEditorRightPanelView">
     <UserControl.Styles>
-        <Style Selector="FlyoutPresenter.DefaultFlyout">
-            <Setter Property="Background" Value="{DynamicResource TimePickerFlyoutPresenterBackground}" />
+        <Style Selector="FlyoutPresenter.DefaultFlyout"><Setter Property="Background" Value="{DynamicResource TimePickerFlyoutPresenterBackground}" />
             <Setter Property="CornerRadius" Value="4" />
             <Setter Property="Padding" Value="0" />
         </Style>
@@ -63,7 +62,6 @@
                             Background="{Binding $parent[TabStripItem].Background}">
                         <Panel>
                             <Grid ColumnDefinitions="Auto,*">
-                                <PathIcon Margin="10,0" Width="18" Height="18" Data="{DynamicResource Assets}"></PathIcon>
                                 <ContentPresenter Grid.Column="1" Name="PART_ContentPresenter"
                                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                                   Content="{TemplateBinding Content}"
@@ -82,7 +80,7 @@
                                        VerticalAlignment="Bottom"
                                        IsVisible="False"
                                        Height="{DynamicResource TabItemPipeThickness}"
-                                       Margin="10 0 0 2"
+                                       Margin="0,0,0,10"
                                        HorizontalAlignment="Center" />
                         </Panel>
                     </Border>
@@ -141,7 +139,6 @@
                             Background="{Binding $parent[TabStripItem].Background}">
                         <Panel>
                             <Grid ColumnDefinitions="Auto,*">
-                                <PathIcon Margin="10,0" Width="18" Height="18" Data="{DynamicResource Properties}"></PathIcon>
                                 <ContentPresenter Grid.Column="1" Name="PART_ContentPresenter"
                                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                                   Content="{TemplateBinding Content}"
@@ -159,8 +156,8 @@
                                        VerticalAlignment="Bottom"
                                        IsVisible="False"
                                        Width="20"
+                                       Margin="0,0,0,5"
                                        Height="{DynamicResource TabItemPipeThickness}"
-                                       Margin="10 0 0 2"
                                        HorizontalAlignment="Center" />
                         </Panel>
                     </Border>
@@ -219,7 +216,6 @@
                             Background="{Binding $parent[TabStripItem].Background}">
                         <Panel>
                             <Grid ColumnDefinitions="Auto,*">
-                                <PathIcon Margin="10,0" Width="18" Height="18" Data="{DynamicResource layers}"></PathIcon>
                                 <ContentPresenter Grid.Column="1" Name="PART_ContentPresenter"
                                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                                   Content="{TemplateBinding Content}"
@@ -235,10 +231,10 @@
                                        RadiusX="2"
                                        RadiusY="2"
                                        VerticalAlignment="Bottom"
+                                       Margin="0,0,0,5"
                                        IsVisible="False"
                                        Width="20"
                                        Height="{DynamicResource TabItemPipeThickness}"
-                                       Margin="10 0 0 2"
                                        HorizontalAlignment="Center" />
                         </Panel>
                     </Border>
@@ -285,7 +281,7 @@
     </UserControl.Styles>
     <Grid RowDefinitions="Auto,10,*">
         <TabStrip SelectedIndex="{Binding SelectedTab }">
-            <TabStripItem Margin="5,5" Theme="{DynamicResource propertiesTabStripItem}" Content="Properties">
+            <TabStripItem Margin="10,5" Theme="{DynamicResource propertiesTabStripItem}" Content="Properties">
             </TabStripItem>
             <TabStripItem Margin="10,5" Theme="{DynamicResource layersTabStripItem}" Content="Layers">
             </TabStripItem>

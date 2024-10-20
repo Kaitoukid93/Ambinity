@@ -1,14 +1,15 @@
+using System.IO.Compression;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Repositories;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace AmbinityCore.Models.Profile;
 
 public sealed class LightingProfileRepository : CollectableItemRepository
 {
-
     private string dbPath => Path.Combine(Constants.AppDataFolder, "Data");
     private string FolderPath => Path.Combine(dbPath, "Profiles");
     private LightingZoneRepository _zoneRepository;
@@ -18,7 +19,6 @@ public sealed class LightingProfileRepository : CollectableItemRepository
         LocalFolderPath = FolderPath;
         _zoneRepository = zoneRepository;
         Name = "Lighting Profiles";
-
     }
 
 
@@ -34,11 +34,27 @@ public sealed class LightingProfileRepository : CollectableItemRepository
             if (profile.ID == (Guid)itemProperty)
                 return true;
         }
+
         return false;
     }
-
+    /// <summary>
+    /// Import from download cache
+    /// </summary>
+    /// <param name="path"></param>
+    public override void ImportItem(string path)
+    {
+        //find download category and set the category ID, this need extra leg works
+        //find config.json
+        var configPath = Path.Combine(path, path);
+        //simply copy folder to repository folder path
+        LocalFileHelpers.CopyDirectory(path, LocalFolderPath, true);
+        LoadFromDisk();
+        //update the collection
+    }
     public override void LoadFromDisk()
     {
+        //this step is for first time downloading profile is in zip format
+        LoadZipProfileIfExist();
         Items?.Clear();
         string[] files = Directory.GetDirectories(FolderPath);
         foreach (var file in files)
@@ -50,6 +66,74 @@ public sealed class LightingProfileRepository : CollectableItemRepository
             profile.LocalPath = profilePath;
             AddItem(profile);
         }
+    }
+
+    private void LoadZipProfileIfExist()
+    {
+        //import zip if exist
+        string[] files = Directory.GetFiles(FolderPath);
+        foreach (var file in files)
+        {
+            if (file.EndsWith(".zip"))
+            {
+                try
+                {
+                    ImportZipProfile(file);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e, "Failed to load ZIP profile");
+                    continue;
+                }
+                // we need to remove zip file or next step will throw, im too lazy to implement a switch 
+                File.Delete(file);
+            }
+        }
+    }
+
+    //todo make this block of code reusable
+    /// <summary>
+    /// A task for importing downloaded profile from zip file
+    /// </summary>
+    /// <param name="importFilePath"></param>
+    private async Task ImportZipProfile(string importFilePath)
+    {
+        if (!Directory.Exists(Constants.CacheFolderPath))
+            Directory.CreateDirectory(Constants.CacheFolderPath);
+        ZipFile.ExtractToDirectory(importFilePath, Constants.CacheFolderPath, true);
+        var cacheConfig = Path.Combine(Constants.CacheFolderPath, "profile.json");
+        if (!File.Exists(cacheConfig))
+        {
+            Log.Error("Profile is corrupted or not supported");
+            return;
+        }
+
+        var profile = JsonHelpers.DeserializeJson<LightingProfile>(cacheConfig);
+        if (profile == null)
+        {
+            Log.Error("Profile parse error: " + cacheConfig);
+            return;
+        }
+
+        if (profile.ID == null)
+        {
+            profile.ID = Guid.NewGuid();
+        }
+        //this step will do both save to disk and add to collection
+        AddItem(profile);
+        //copy icon
+        var _iconPath = Path.Combine(Constants.CacheFolderPath, "icon.png");
+        if (!File.Exists(_iconPath))
+            return;
+        File.Copy(_iconPath, Path.Combine(profile.LocalPath, "icon.png"), true);
+        //clear cache
+        ClearCache();
+    }
+
+    private void ClearCache()
+    {
+        if (Directory.Exists(Constants.CacheFolderPath))
+            Directory.Delete(Constants.CacheFolderPath, true);
     }
 
     /// <summary>
@@ -74,37 +158,39 @@ public sealed class LightingProfileRepository : CollectableItemRepository
             ID = Guid.NewGuid(),
             IsDefault = true
         };
-        var colorPaletteProfile  = new LightingProfile()
+        var colorPaletteProfile = new LightingProfile()
         {
             Name = "Color palette",
             Icon = "solidrect",
             ID = Guid.NewGuid(),
             IsDefault = true
         };
-        var musicReactive  = new LightingProfile()
+        var musicReactive = new LightingProfile()
         {
             Name = "Music Reactive",
             Icon = "solidrect",
             ID = Guid.NewGuid(),
             IsDefault = true
         };
-        var animation  = new LightingProfile()
+        var animation = new LightingProfile()
         {
             Name = "Animation",
             Icon = "solidrect",
             ID = Guid.NewGuid(),
             IsDefault = true
         };
-        ambinoMixProfile.Zones.Add(_zoneRepository.GetDefaultAmbilightZone("Big Ambilight",30,177,140,90,0));
-        ambinoMixProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Retro Palette",495,155,75,180,DefaultColorPalettes.RetroPalette()));
-        ambinoMixProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Red",29,400,542,58,Avalonia.Media.Colors.Red));
+        ambinoMixProfile.Zones.Add(_zoneRepository.GetDefaultAmbilightZone("Big Ambilight", 30, 177, 140, 90, 0));
+        ambinoMixProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Retro Palette", 495, 155, 75, 180,
+            DefaultColorPalettes.RetroPalette()));
+        ambinoMixProfile.Zones.Add(
+            _zoneRepository.GetDefaultSolidColorZone("Solid Red", 29, 400, 542, 58, Avalonia.Media.Colors.Red));
         // solidColorProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Red",0,0,200,200,Avalonia.Media.Colors.Red));
         // solidColorProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Greed",0,0,100,100,Avalonia.Media.Colors.GreenYellow));
         // colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Retro Palette",0,0,200,100,DefaultColorPalettes.RetroPalette()));
         // colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Red Palette",0,0,100,200,DefaultColorPalettes.RetroPalette()));
         // colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultAnimationZone("Demo",100,100,200,100,null));
         AddItem(ambinoMixProfile);
-        
+
         //todo download default profile
         //write this to disk
     }

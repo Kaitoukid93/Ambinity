@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
              xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties"
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
-             xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia.Tight"
+             xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia"
              x:DataType="local:BlackBarDetectionParameterViewModel"
              x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.BlackBarDetectionParameterView">
     <Grid RowDefinitions="Auto,10,*">

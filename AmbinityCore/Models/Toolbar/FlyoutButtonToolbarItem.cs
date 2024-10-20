@@ -7,7 +7,7 @@ namespace AmbinityCore.Models.Toolbar;
 
 public class FlyoutButtonToolbarItem : ObservableObject, IToolbarItem
 {
-    public FlyoutButtonToolbarItem(string name, string toolTip, string icon, Color fillColor, ICommand command)
+    public FlyoutButtonToolbarItem(string name, string toolTip, string icon, SolidColorBrush fillColor, ICommand command)
     {
         Name = name;
         ToolTip = toolTip;
@@ -19,8 +19,9 @@ public class FlyoutButtonToolbarItem : ObservableObject, IToolbarItem
 
     public string Name { get; set; }
     public string ToolTip { get; set; }
+    public string DisabledToolTip => "Tool is disabled while rendering";
     public string Icon { get; set; }
     public List<IFlyoutItem> FlyoutItems { get; set; }
     public ICommand Command { get; set; }
-    public Color FillColor { get; set; }
+    public SolidColorBrush FillColor { get; set; }
 }

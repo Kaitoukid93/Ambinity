@@ -26,6 +26,7 @@
                     <ToggleButton
                         IsEnabled="{Binding !IsInEditMode}"
                         Classes="ActivateButton"
+                        IsChecked="{Binding IsActivated}"
                         Command="{Binding ShortcutToggleCommand}"
                         Classes.Error="{Binding !CanExecute}"
                         ToolTip.ShowOnDisabled="True"

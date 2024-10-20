@@ -22,25 +22,17 @@ public class LightingProfileDecoder
 {
     public event Action RenderingStatusChanged;
     public event Action FrameUpdate;
+    private float _bitmapDimFactor;
 
 
     public LightingProfileDecoder(LightingProfileRepository repository, ColorEngineProvider colorEngineProvider,
-        FrameBuffer buffer, AmbinityDeviceRepository deviceRepository, GeneralSettingsManager generalSettingsManager)
+        FrameBuffer buffer, GeneralSettingsManager generalSettingsManager)
     {
-        _deviceRepository = deviceRepository;
         _colorEngineProvider = colorEngineProvider;
         _repository = repository;
         _buffer = buffer;
         _generalSettings = generalSettingsManager?.Settings;
         _engines = new List<IColorEngine>();
-        //only play if app tour is not activated, app tour is designed to work with nothing is playing,
-        //so it can show user how to press the play button to render a profile
-        if (!_generalSettings.ShowAppTour)
-        {
-            LoadLastProfile();
-            Resume();
-        }
-     
     }
 
     private LightingProfileRepository _repository;
@@ -57,6 +49,8 @@ public class LightingProfileDecoder
 
     private void LoadLastProfile()
     {
+        if (_repository.Items == null || _repository.Items.Count == 0)
+            return;
         if (_generalSettings.LastPlayedProfileID == null)
             return;
         var lastPlayedProfile =
@@ -71,30 +65,40 @@ public class LightingProfileDecoder
     /// Init a profle ready to play
     /// </summary>
     /// <param name="profile"></param>
-    public void Init(LightingProfile profile)
+    // public void Init(LightingProfile profile)
+    // {
+    //     //create list engines for managing
+    //     if (profile == null)
+    //         return;
+    //     _currentPlayingProfile = profile;
+    //     Log.Information("Init profile: " + profile.Name);
+    //     if (profile.Zones.Count == 0)
+    //     {
+    //         Log.Warning("Profile contains 0 zones!");
+    //         //return;
+    //     }
+    //
+    //     Resume();
+    // }
+    public void Init()
     {
-        //create list engines for managing
-        if (profile == null)
-            return;
-        _currentPlayingProfile = profile;
-        Log.Information("Init profile: " + profile.Name);
-        if (profile.Zones.Count == 0)
+        //only play if app tour is not activated, app tour is designed to work with nothing is playing,
+        //so it can show user how to press the play button to render a profile
+        if (!_generalSettings.ShowAppTour)
         {
-            Log.Warning("Profile contains 0 zones!");
-            //return;
+            LoadLastProfile();
+            Resume();
         }
-        Resume();
     }
 
     /// <summary>
     /// Replay the profile
     /// </summary>
-    public void Resume()
+    private void Resume()
     {
         //todo reuse engines
         if (CurrentPlayingProfile == null)
             return;
-        _deviceRepository.UpdateDeviceTransform();
         var isRunning = _tokenSource != null && _isRendering;
         if (isRunning)
             return;
@@ -117,10 +121,10 @@ public class LightingProfileDecoder
         RenderingStatusChanged?.Invoke();
     }
 
-    public void Toggle()
+    public async Task Toggle()
     {
         if (_isRendering)
-            Stop();
+            await Stop();
         else
         {
             Resume();
@@ -128,29 +132,74 @@ public class LightingProfileDecoder
     }
 
     /// <summary>
+    /// Toggle specific profile
+    /// </summary>
+    /// <param name="profileID"></param>
+    public async Task Toggle(Guid profileID)
+    {
+        if (_isRendering && _currentPlayingProfile.ID == profileID)
+            await Stop();
+        else
+        {
+            await Stop();
+            if (_currentPlayingProfile != null && _currentPlayingProfile.ID == profileID)
+            {
+            }
+            else
+            {
+                if (_repository.Items
+                        .FirstOrDefault(i => (i as LightingProfile).ID == profileID) is not LightingProfile
+                    targetProfile)
+                    return;
+                _currentPlayingProfile = targetProfile;
+            }
+
+            Resume();
+        }
+    }
+
+    /// <summary>
     /// stop signal, call init to play again
     /// </summary>
-    public void Stop()
+    public async Task Stop()
     {
         if (_currentPlayingProfile == null)
             return;
-        //clear buffer
-        lock (_buffer.FrameLock)
-        {
-            _buffer.PixelData = new byte[_buffer.FrameWidth * _buffer.FrameHeight * 4];
-        }
-
-        foreach (var engine in _engines)
-        {
-            engine.Dispose();
-        }
-        _engines.Clear();
-        _currentPlayingProfile.IsPlaying = false;
         if (!_isRendering)
             return;
-        _tokenSource?.Cancel();
+        //dim the bitmap 
+
+
+        // for (int j = 0; j < 100; j++)
+        // {
+        //     lock (_buffer.FrameLock)
+        //     {
+        //         _bitmapDimFactor -= 0.01f;
+        //         for (int i = 0; i < _buffer.PixelData.Length; i += 4)
+        //         {
+        //             _buffer.PixelData[i + 0] = (byte)(_buffer.PixelData[i + 0] * _bitmapDimFactor);
+        //             _buffer.PixelData[i + 1] = (byte)(_buffer.PixelData[i + 1] * _bitmapDimFactor);
+        //             _buffer.PixelData[i + 2] = (byte)(_buffer.PixelData[i + 2] * _bitmapDimFactor);
+        //             _buffer.PixelData[i + 3] = 255;
+        //         }
+        //     }
+        //
+        //     await Task.Delay(10);
+        // }
+
+
+        //clear buffer
+
+        _engines.Clear();
+        _currentPlayingProfile.IsPlaying = false;
+        await _tokenSource?.CancelAsync();
         _tokenSource = null;
         _isRendering = false;
+        // lock (_buffer.FrameLock)
+        // {
+        //     _buffer.PixelData = new byte[_buffer.FrameWidth * _buffer.FrameHeight * 4];
+        // }
+
         RenderingStatusChanged?.Invoke();
     }
 

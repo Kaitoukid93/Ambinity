@@ -1,4 +1,5 @@
 using System;
+using AmbinityCore.Models.Profile;
 
 namespace Ambinity.Services;
 
@@ -98,7 +99,14 @@ internal class MainWindowService : IMainWindowService
     {
         _mainWindowManager?.OpenMainWindow();
     }
-
+    public void OpenMainWindow(LightingProfile profile)
+    {
+        _mainWindowManager?.OpenMainWindow(profile);
+    }
+    public void OpenMainWindow(int screenIndex)
+    {
+        _mainWindowManager?.OpenMainWindow(screenIndex);
+    }
     public void CloseMainWindow()
     {
         _mainWindowManager?.CloseMainWindow();

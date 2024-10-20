@@ -22,26 +22,33 @@ public class ShortcutViewModel : ViewModelBase
         _shortcutEditorViewModel = shortcutEditorViewModel;
         _navigationStore = navigationStore;
         _decoder = decoder;
+        _decoder.RenderingStatusChanged += OnRenderingStatusChanged;
         _shortcut = shortcut;
         ShortcutToggleCommand = new RelayCommand(ToggleShortcut, () => CanExecute);
         SelfRemovedCommand = new RelayCommand(SelfRemove);
         GoToShortcutEditorPageCommand = new RelayCommand(GoToShortcutEditorPage);
     }
 
+    private void OnRenderingStatusChanged()
+    {
+        OnPropertyChanged(nameof(IsActivated));
+    }
+
     private void SelfRemove()
     {
+        _decoder.RenderingStatusChanged -= OnRenderingStatusChanged;
         SelfRemoved?.Invoke(this);
     }
 
     private void ToggleShortcut()
     {
-        //throw new NotImplementedException();
+        _decoder.Toggle(_shortcut.LightingProfileID);
     }
 
     private void GoToShortcutEditorPage()
     {
-        _shortcutEditorViewModel.Init(this);
         _navigationStore.CurrentViewModel = _shortcutEditorViewModel;
+        _shortcutEditorViewModel.Init(this);
     }
 
     public void Init()
@@ -148,7 +155,7 @@ public class ShortcutViewModel : ViewModelBase
 
     public int ItemHeight
     {
-        get=> _itemHeight;
+        get => _itemHeight;
         set
         {
             _itemHeight = value;
@@ -158,13 +165,14 @@ public class ShortcutViewModel : ViewModelBase
 
     public int ItemWidth
     {
-        get=> _itemWidth;
+        get => _itemWidth;
         set
         {
             _itemWidth = value;
             OnPropertyChanged();
         }
     }
+
     private CornerRadius _itemCornerradius = new(4, 0, 0, 4);
 
     public CornerRadius ItemCornerRadius
@@ -176,4 +184,6 @@ public class ShortcutViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
+    public bool IsActivated => _decoder.IsRendering && _decoder.CurrentPlayingProfile.ID == _shortcut.LightingProfileID;
 }

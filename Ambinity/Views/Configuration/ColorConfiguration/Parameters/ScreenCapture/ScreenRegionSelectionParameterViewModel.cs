@@ -85,6 +85,8 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
     {
         _shouldShowImage = true;
         _screenCapture = _capturingService.GetScreenCapture(_config.DisplayIndex);
+        if(_screenCapture ==null)
+            return;
         _capturingService.RegisterUse();
         if (_captureZone != null)
             _screenCapture?.UnregisterCaptureZone(_captureZone);

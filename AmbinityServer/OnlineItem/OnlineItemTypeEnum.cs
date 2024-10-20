@@ -7,5 +7,6 @@ public enum OnlineItemTypeEnum
     Animation,
     Gif,
     DeviceLayout,
+    LightingZone,
     Unknown,
 }

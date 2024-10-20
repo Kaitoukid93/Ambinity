@@ -29,4 +29,9 @@ public class QuickAccessViewModelFactory
     {
         return new QuickAccessDeviceViewModel(controller,_thumbnailService);
     }
+
+    public LightingProfileFlyoutItemViewModel GetFlyoutLightingProfileViewModel(LightingProfile profile)
+    {
+        return new LightingProfileFlyoutItemViewModel(profile,_thumbnailService,_decoder);
+    }
 }

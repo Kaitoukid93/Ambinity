@@ -1,11 +1,9 @@
-using System.Text.Json.Serialization;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
-using AmbinityCore.Models.Profile;
 using AmbinityServer.OnlineItem;
 using Avalonia.Media;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace AmbinityCore.Repositories;
 
@@ -15,10 +13,10 @@ public class ColorPalette : FillColorBase, ICollectableItem
     public event Action<ICollectableItem>? ItemPinStatusChanged;
     public event Action<ICollectableItem>? ItemCheckStatusChanged;
     public string Name { get; set; }
-    [JsonIgnore] public bool IsSelected { get; set; }
-    [JsonIgnore] public bool IsEditing { get; set; }
-    [JsonIgnore] public bool IsChecked { get; set; }
-    [JsonIgnore] public bool IsPinned { get; set; }
+    [System.Text.Json.Serialization.JsonIgnore] public bool IsSelected { get; set; }
+    [System.Text.Json.Serialization.JsonIgnore] public bool IsEditing { get; set; }
+    [System.Text.Json.Serialization.JsonIgnore] public bool IsChecked { get; set; }
+    [System.Text.Json.Serialization.JsonIgnore] public bool IsPinned { get; set; }
 
     public CollectableItemRepository GetLocalRepository()
     {
@@ -31,7 +29,7 @@ public class ColorPalette : FillColorBase, ICollectableItem
         return null;
     }
 
-    public string LocalPath { get; set; }
+    [JsonIgnore] public string LocalPath { get; set; }
     public Color[] Colors { get; set; }
 
     public override List<Brush> GetBrush()
@@ -60,9 +58,13 @@ public class ColorPalette : FillColorBase, ICollectableItem
         Colors = colors;
     }
 
+    public OnlineItemTypeEnum GetType()
+    {
+        return OnlineItemTypeEnum.ColorPalette;
+    }
+
     public void Save()
     {
-        //todo implement profile save with icon 
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path
@@ -73,6 +75,7 @@ public class ColorPalette : FillColorBase, ICollectableItem
 
         JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath, "config.json"), new HexColorConverter());
     }
+
     public Color[] Resize(int numColor)
     {
         int w1 = Colors.Length;

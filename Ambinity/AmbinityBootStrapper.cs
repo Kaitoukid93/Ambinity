@@ -4,17 +4,20 @@ using Ambinity.AppResource;
 using Ambinity.QuickAccess;
 using Ambinity.Services;
 using Ambinity.Stores;
+using Ambinity.Views.AmbinityStore;
 using Ambinity.Views.AppTour;
 using Ambinity.Views.Configuration.ColorConfiguration;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 using Ambinity.Views.Configuration.PositionConfiguration;
 using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.LayoutEditor;
+using Ambinity.Views.LayoutEditor.RightPanel.PropertiesView;
 using Ambinity.Views.NonClientArea;
 using Ambinity.Views.Screens.AppSettings;
 using Ambinity.Views.Screens.DeviceLayout;
 using Ambinity.Views.Screens.DeviceLayout.Library;
 using Ambinity.Views.Screens.DeviceSettings;
+using Ambinity.Views.Screens.Home;
 using Ambinity.Views.Screens.ProfileEditor;
 using Ambinity.Views.Screens.ProfileEditor.Library;
 using Ambinity.Views.SideMenu;
@@ -144,6 +147,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<AppSettingsViewModel>()
                 .AddSingleton<DeviceSettingsViewModel>()
                 .AddSingleton<DeviceSettingsDashboardViewModel>()
+                .AddSingleton<HomeViewModel>()
                 .AddSingleton<DeviceFirmwareSettingsViewModel>()
                 .AddSingleton<DeviceHardwareLightingViewModel>()
                 .AddSingleton<DeviceCoolingSettingsViewModel>()
@@ -163,6 +167,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<DevicesPageViewModel>()
                 .AddSingleton<QuickAccessViewModelFactory>()
                 .AddSingleton<ShortcutEditorViewModel>()
+                .AddSingleton<LightingProfilePlayerWidgetViewModel>()
                 //splash
                 .AddSingleton<SplashViewModel>()
                 //layout editor
@@ -185,6 +190,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<Draw2DCanvasInfoBarViewModel>()
                 .AddSingleton<AssetItemViewModelFactory>()
                 .AddSingleton<DeviceLayoutRightPanelViewModel>()
+                .AddSingleton<ConfigurationHeaderViewModel>()
                 //device layout
                 .AddSingleton<DevicePropertiesViewModel>()
                 //Capturing Service
@@ -241,6 +247,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<AmbinityDeviceLayoutRepository>()
                 .AddSingleton<AmbinityDeviceOnlineRepository>()
                 .AddSingleton<LightingZoneOnlineRepository>()
+                .AddSingleton<LightingProfileOnlineRepository>()
                 .AddSingleton<ColorPaletteOnlineRepository>()
                 .AddSingleton<AmbinityDeviceRepository>()
                 .AddSingleton<ResourceService>()
@@ -253,6 +260,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<ThumbnailService>()
                 .AddSingleton<DownloadService>()
                 .AddSingleton<FirmwareService>()
+                .AddSingleton<AmbinityStoreItemExportViewModel>()
                 .BuildServiceProvider());
     }
 
@@ -316,6 +324,7 @@ public class AmbinityBootStrapper
         });
         //run the profile decoder for rendering to device
         var profileDecoder = Ioc.Default.GetRequiredService<LightingProfileDecoder>();
+        profileDecoder.Init();
         //start Serial controller repository to load controllers and devices
         await Task.Delay(1000);
         splashViewModel.Progress = 100;

@@ -3,6 +3,7 @@ using Ambinity.Views.Configuration.ColorConfiguration;
 using Ambinity.Views.Configuration.PositionConfiguration;
 using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.LayoutEditor.RightPanel.PropertiesView;
+using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
@@ -14,25 +15,27 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
 {
     public ZonePropertiesViewModel(Draw2DCanvasViewModel canvasViewModel,
         ColorConfigurationViewModelFactory colorConfigurationViewModelFactory,
-        PositionConfigurationViewModel positionConfigurationViewModel)
+        PositionConfigurationViewModel positionConfigurationViewModel, ConfigurationHeaderViewModel headerViewModel)
     {
+        _headerViewModel = headerViewModel;
         PositionConfiguration = positionConfigurationViewModel;
         _canvasViewModel = canvasViewModel;
         _colorConfigurationViewModelFactory = colorConfigurationViewModelFactory;
         Init();
     }
 
-    private Figure _selectedItem;
+    private Figure _selectedFigure;
 
     public override void UpdateObjectProperties()
     {
         var selectedItems = _canvasViewModel.Canvas.Selection.All;
+         _headerViewModel.Init(selectedItems);
+        OnPropertyChanged(nameof(Header));
         if (selectedItems.Count == 0)
         {
             _zone = null;
             DisableEdit();
-            Header = NullHeader();
-           _selectedItem = null;
+            _selectedFigure = null;
             //clear view
         }
         else if (selectedItems.Count == 1)
@@ -40,15 +43,15 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
             var fig = selectedItems.First();
 
             //selection filter to prevent race condition load
-            if (_selectedItem == null)
-                _selectedItem = fig;
+            if (_selectedFigure == null)
+                _selectedFigure = fig;
             else
             {
-                if (_selectedItem == fig)
+                if (_selectedFigure == fig)
                     return;
                 else
                 {
-                    _selectedItem = fig;
+                    _selectedFigure = fig;
                 }
             }
 
@@ -63,7 +66,7 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
                 return;
             if (!fig.IsResizable)
             {
-                PositionConfiguration.IsEnabled = false;
+                DisableEdit();
             }
 
             else
@@ -76,13 +79,11 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
             //show full view
             ColorConfiguration?.Dispose();
             ColorConfiguration = _colorConfigurationViewModelFactory.GetColorConfiguration(zone.LightingConfiguration);
-            Header = GetHeader(zone.LightingConfiguration);
         }
         else
         {
             _zone = null;
-            _selectedItem = null;
-            Header = MultipleSelectedHeader(selectedItems.Count);
+            _selectedFigure = null;
             DisableEdit();
         }
     }
@@ -90,24 +91,29 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
 
     private void OnItemPositionChanged(float arg1, float arg2)
     {
-        PositionConfiguration.Update();
+        if (EnablePositionEdit)
+            PositionConfiguration.Update();
     }
 
     private LightingZone _zone;
     private Draw2DCanvasViewModel _canvasViewModel;
     private PositionConfigurationViewModel _positionConfiguration;
+
     private ColorConfigurationViewModelFactory _colorConfigurationViewModelFactory;
+
+    //make header reusable by set it up as singleton
+    private ConfigurationHeaderViewModel _headerViewModel;
 
     public override void DisableEdit()
     {
-        PositionConfiguration.IsEnabled = false;
+        EnablePositionEdit = false;
         ColorConfiguration?.Dispose();
         ColorConfiguration = new NullColorConfigurationViewModel();
     }
 
     public override void EnableEdit()
     {
-        PositionConfiguration.IsEnabled = true;
+        EnablePositionEdit = true;
     }
 
     public PositionConfigurationViewModel PositionConfiguration
@@ -132,32 +138,17 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         }
     }
 
-    private ConfigurationHeaderViewModel _header;
+    private bool _enablePositionEdit;
 
-    public ConfigurationHeaderViewModel Header
+    public bool EnablePositionEdit
     {
-        get => _header;
+        get => _enablePositionEdit;
         set
         {
-            _header = value;
+            _enablePositionEdit = value;
             OnPropertyChanged();
         }
     }
 
-    private ConfigurationHeaderViewModel GetHeader(ILightingConfiguration config)
-    {
-        var header = new ConfigurationHeaderViewModel(_zone.Shape.ToString() + " - " + _zone.LightingConfiguration.Name,
-            _zone.Icon);
-        return header;
-    }
-
-    private ConfigurationHeaderViewModel NullHeader()
-    {
-        return new ConfigurationHeaderViewModel("Please select an item to begin", "void_selected", true);
-    }
-
-    private ConfigurationHeaderViewModel MultipleSelectedHeader(int count)
-    {
-        return new ConfigurationHeaderViewModel(count + " " + "items selected", "Zones");
-    }
+    public ConfigurationHeaderViewModel Header => _headerViewModel;
 }

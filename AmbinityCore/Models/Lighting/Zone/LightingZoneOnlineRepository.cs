@@ -9,5 +9,6 @@ public class LightingZoneOnlineRepository : OnlineItemRepository
 {
     public LightingZoneOnlineRepository(AmbinityClient _client) : base(_client)
     {
+        ResourceAddress = _client.HomeAddress+ "/ftp/files/LightingZones";
     }
 }

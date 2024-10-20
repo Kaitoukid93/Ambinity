@@ -20,6 +20,12 @@ public class ScreenCaptureEngine : IColorEngine
         _buffer = buffer;
         _capturingServiceProvider = capturingServiceProvider;
         _deviceRepository = deviceRepository;
+        _deviceRepository.DevicesListUpdated += OnDeviceListUpdated;
+    }
+
+    private void OnDeviceListUpdated()
+    {
+        UpdatePixelData();
     }
 
     public LightingZone Zone => _zone;
@@ -33,11 +39,13 @@ public class ScreenCaptureEngine : IColorEngine
     private List<CaptureRect> _ledRects;
     private ScreenCaptureConfiguration _config;
     private ScreenCapturingService _screenCapturingService;
+    private object renderingLock = new object();
     private Rect _captureZoneRect => new Rect(_captureZone.X, _captureZone.Y, _captureZone.Width, _captureZone.Height);
 
     public void Init(LightingZone zone)
     {
-        _screenCapturingService = (ScreenCapturingService)_capturingServiceProvider.GetCapturingService(this.CaptureType);
+        _screenCapturingService =
+            (ScreenCapturingService)_capturingServiceProvider.GetCapturingService(this.CaptureType);
         _zone = zone;
         _zone.UpdateFrameBuffer();
         _ledRects = new List<CaptureRect>();
@@ -46,12 +54,10 @@ public class ScreenCaptureEngine : IColorEngine
         _screenCapturingService.RegisterUse();
         //get screen index this zone desired
         OnCaptureAreaUpdated();
-        
     }
 
     private void OnCaptureAreaUpdated()
     {
-        
         var displayIndex = _config.DisplayIndex;
         _screenCapture = _screenCapturingService.GetScreenCapture(displayIndex);
         if (_screenCapture == null)
@@ -76,24 +82,30 @@ public class ScreenCaptureEngine : IColorEngine
             Log.Error(ex.ToString());
             return;
         }
+
         _reusableRow = new byte[(int)_zone.Width * 4];
         UpdatePixelData();
     }
 
     private void UpdatePixelData()
     {
-        foreach (var device in _deviceRepository.Devices)
+        lock (renderingLock)
         {
-            var rect = _zone.ZoneBound.Intersect(device.Bound);
-            if (rect == default)
-                continue;
-            foreach (var led in device.Leds)
+            foreach (var device in _deviceRepository.Devices)
             {
-                var intersect = _zone.ZoneBound.Intersect(led.TransformedRect);
-                if (intersect != led.TransformedRect)
+                var rect = _zone.ZoneBound.Intersect(device.Bound);
+                if (rect == default)
                     continue;
-                var translatedRect = RectCalculation.TranslateRect(led.TransformedRect, _zone.Bound, _captureZoneRect);
-                _ledRects.Add(new CaptureRect(led.TransformedRect, translatedRect));
+
+                foreach (var led in device.Leds)
+                {
+                    var intersect = _zone.ZoneBound.Intersect(led.TransformedRect);
+                    if (intersect != led.TransformedRect)
+                        continue;
+                    var translatedRect =
+                        RectCalculation.TranslateRect(led.TransformedRect, _zone.Bound, _captureZoneRect);
+                    _ledRects.Add(new CaptureRect(led.TransformedRect, translatedRect));
+                }
             }
         }
     }
@@ -116,16 +128,19 @@ public class ScreenCaptureEngine : IColorEngine
             // }
 
             //render rect only
-            foreach (var rect in _ledRects)
+            lock (renderingLock)
             {
-                //translate rect to image coordinate system
-                //  var translatedRect = RectCalculation.TranslateRect(rect, _zone.Bound, _captureZoneRect);
-                IImage subImage = image[(int)rect.TranslatedRect.X, (int)rect.TranslatedRect.Y,
-                    (int)rect.TranslatedRect.Width,
-                    (int)rect.TranslatedRect.Height];
-                //render sub image at led rect position
-                var col = subImage.Average();
-                ColorComputing.SetBlockColor(_buffer, rect.OriginalRect, col.R, col.G, col.B);
+                foreach (var rect in _ledRects)
+                {
+                    //translate rect to image coordinate system
+                    //  var translatedRect = RectCalculation.TranslateRect(rect, _zone.Bound, _captureZoneRect);
+                    IImage subImage = image[(int)rect.TranslatedRect.X, (int)rect.TranslatedRect.Y,
+                        (int)rect.TranslatedRect.Width,
+                        (int)rect.TranslatedRect.Height];
+                    //render sub image at led rect position
+                    var col = subImage.Average();
+                    ColorComputing.SetBlockColor(_buffer, rect.OriginalRect, col.R, col.G, col.B);
+                }
             }
         }
     }

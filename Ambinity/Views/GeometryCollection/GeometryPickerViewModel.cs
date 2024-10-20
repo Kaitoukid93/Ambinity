@@ -19,7 +19,7 @@ public class GeometryPickerViewModel : WindowDialogViewModelBase
         _editorViewModel = editorViewModel;
         AvailableIcons = new List<string>();
         var dicts = Application.Current.Resources.MergedDictionaries;
-        var geometriesDict = dicts[0] as ResourceDictionary;
+        var geometriesDict = dicts[1] as ResourceDictionary;
         foreach (var key in geometriesDict.Keys)
         {
             AvailableIcons.Add(key as string);

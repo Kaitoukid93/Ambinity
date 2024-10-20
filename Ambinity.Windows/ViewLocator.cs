@@ -1,7 +1,7 @@
 using System;
+using Ambinity.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Ambinity.Windows.ViewModels;
 
 namespace Ambinity.Windows;
 

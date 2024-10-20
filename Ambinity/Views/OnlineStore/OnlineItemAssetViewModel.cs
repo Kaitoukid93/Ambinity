@@ -19,10 +19,12 @@ namespace Ambinity.Views.OnlineStore;
 public class OnlineItemAssetViewModel : AssetItemViewModelBase
 {
     private static bool _canDownload = true;
-    public OnlineItemAssetViewModel(OnlineItem item, DownloadService downloadService, CollectableItemRepository localRepository)
+    private int _thumbnailWidth;
+    public OnlineItemAssetViewModel(OnlineItem item, DownloadService downloadService, CollectableItemRepository localRepository,int thumbnailWidth =50)
     {
         _localRepository = localRepository;
         _downloadService = downloadService;
+        _thumbnailWidth = thumbnailWidth;
         _item = item;
         Name = _item.Name;
         Description = _item.Description;
@@ -73,7 +75,7 @@ public class OnlineItemAssetViewModel : AssetItemViewModelBase
 
     private async Task<Bitmap> GetThumbnailAsync()
     {
-        var thumb = await _thumbnailService.GetThumbnail(_item.ThumbnailPath);
+        var thumb = await _thumbnailService.GetThumbnail(_item.ThumbnailPath,_thumbnailWidth);
         return thumb;
     }
 

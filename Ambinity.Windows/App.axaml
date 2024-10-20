@@ -38,8 +38,6 @@
                 <TrayIcon.Menu>
                     <NativeMenu>
                         <NativeMenuItem Header="Home" Command="{CompiledBinding OpenUiCommand}" CommandParameter="devices"  />
-                        <NativeMenuItem Header="Profiles">
-                        </NativeMenuItem>
                         <NativeMenuItem Header="Exit" Command="{CompiledBinding ExitAppCommand}"  />
                     </NativeMenu>
                 </TrayIcon.Menu>

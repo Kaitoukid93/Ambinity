@@ -1,5 +1,6 @@
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
+using AmbinityServer.OnlineItem;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Newtonsoft.Json;
@@ -21,7 +22,7 @@ public class Shortcut : ObservableObject, ICollectableItem
 
     public CollectableItemRepository GetLocalRepository()
     {
-        return Ioc.Default.GetRequiredService<AnimationsRepository>();
+        return Ioc.Default.GetRequiredService<ShortcutRepository>();
     }
 
     public OnlineItemRepository GetOnlineRerpository()
@@ -44,6 +45,11 @@ public class Shortcut : ObservableObject, ICollectableItem
     }
     public Guid LightingProfileID { get; set; }
     public bool IsDefault { get; set; }
+    public OnlineItemTypeEnum GetType()
+    {
+        return OnlineItemTypeEnum.Unknown;
+    }
+
     public void Save()
     {
         if (LocalPath == null || !Directory.Exists(LocalPath))

@@ -46,26 +46,39 @@ public class ScreenCapturingService : ICapturingService
 
     public void CaptureScreen(IScreenCapture screenCapture)
     {
-        while (true)
+        try
         {
-            //call render from engine
-            if (_userCount > 0)
+            while (true)
             {
-                // _paletteEngine.Render(zone, _imageBuffer, colorBank)
-                screenCapture.CaptureScreen();
-                FrameUpdated?.Invoke(screenCapture.Display.Index);
-                Thread.Sleep(1000 / 30);
+                //call render from engine
+                if (_userCount > 0)
+                {
+                    // _paletteEngine.Render(zone, _imageBuffer, colorBank)
+
+                    screenCapture.CaptureScreen();
+                    FrameUpdated?.Invoke(screenCapture.Display.Index);
+                    Thread.Sleep(1000 / 30);
+                }
+                else
+                {
+                    Thread.Sleep(1000);
+                }
             }
-            else
-            {
-                Thread.Sleep(1000);
-            }
-            
+        }
+        catch (Exception e)
+        {
+            Log.Error(e.ToString());
+        }
+        finally
+        {
+            Dispose();
         }
     }
 
     public IScreenCapture GetScreenCapture(int index)
     {
+        if (_screenCaptures == null)
+            return null;
         if (index >= _screenCaptures.Count)
         {
             Log.Error("Display does not exist");

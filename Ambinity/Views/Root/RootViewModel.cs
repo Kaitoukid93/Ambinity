@@ -47,7 +47,8 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
         IMainWindowService mainWindowService,
         GeneralSettingsManager settingsManager,
         AmbinityClient ambinityClient, NonClientAreaContentViewModel nonClientAreaContentViewModel,
-        AppTourViewModel appTourViewModel, IWindowService windowService, SystemTrayFlyoutWindowViewModel systemTrayFlyoutWindowViewModel)
+        AppTourViewModel appTourViewModel, IWindowService windowService,
+        SystemTrayFlyoutWindowViewModel systemTrayFlyoutWindowViewModel, ShortcutRepository shortcutRepository)
     {
         _rootNavigationStores = rootNavigationStores;
         CommandSetup();
@@ -60,7 +61,8 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
             lightingProfileRepository,
             lightingProfileCategoryRepository,
             serialControllerRepository,
-            openRgbControllerRepository
+            openRgbControllerRepository,
+            shortcutRepository,
         };
         SideMenu = sideMenu;
         _systemTrayFlyoutWindowViewModel = systemTrayFlyoutWindowViewModel;
@@ -77,7 +79,7 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
             OpenMainWindow();
         }
     }
-    
+
     public AppTourViewModel AppTourViewModel { get; set; }
 
 
@@ -92,6 +94,38 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
     /// <inheritdoc />
     public bool IsMainWindowFocused { get; private set; }
 
+    public void OpenMainWindow(LightingProfile profile)
+    {
+        if (profile == null)
+            return;
+        if (_lifeTime.MainWindow == null)
+        {
+            _lifeTime.MainWindow = new MainWindow { DataContext = this };
+            _lifeTime.MainWindow.Show();
+            _lifeTime.MainWindow.Closing += CurrentMainWindowOnClosing;
+        }
+
+        _lifeTime.MainWindow.Activate();
+        if (_lifeTime.MainWindow.WindowState == WindowState.Minimized)
+            _lifeTime.MainWindow.WindowState = WindowState.Normal;
+        SideMenu.Init(profile);
+        OnMainWindowOpened();
+    }
+    public void OpenMainWindow(int index)
+    {
+        if (_lifeTime.MainWindow == null)
+        {
+            _lifeTime.MainWindow = new MainWindow { DataContext = this };
+            _lifeTime.MainWindow.Show();
+            _lifeTime.MainWindow.Closing += CurrentMainWindowOnClosing;
+        }
+
+        _lifeTime.MainWindow.Activate();
+        if (_lifeTime.MainWindow.WindowState == WindowState.Minimized)
+            _lifeTime.MainWindow.WindowState = WindowState.Normal;
+        SideMenu.Init(index);
+        OnMainWindowOpened();
+    }
     public void OpenMainWindow()
     {
         if (_lifeTime.MainWindow == null)
@@ -219,10 +253,18 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
         OpenQuickAccessCommand = new RelayCommand(OpenQuickAccess);
     }
 
+    private Window _quickAccessWindow;
+
     private void OpenQuickAccess()
     {
-        _windowService.ShowWindow(_systemTrayFlyoutWindowViewModel);
+        _quickAccessWindow = _windowService.ShowWindow(_systemTrayFlyoutWindowViewModel);
+        _quickAccessWindow.Closing += OnQuickAccessWindowClosing;
         _systemTrayFlyoutWindowViewModel.Init();
+    }
+
+    private void OnQuickAccessWindowClosing(object? sender, WindowClosingEventArgs e)
+    {
+        SaveRepositories();
     }
 
     private void OpenUI(string ui)

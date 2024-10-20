@@ -154,6 +154,11 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     public ObservableCollection<LightingZone> Zones { get; set; }
     private ColorEngineProvider _colorEngineProvider;
 
+    public OnlineItemTypeEnum GetType()
+    {
+        return OnlineItemTypeEnum.LightingProfile;
+    }
+
     /// <summary>
     /// save configuration to disk
     /// </summary>

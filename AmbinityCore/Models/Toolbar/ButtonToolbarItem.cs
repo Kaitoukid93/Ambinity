@@ -6,7 +6,7 @@ namespace AmbinityCore.Models.Toolbar;
 
 public class ButtonToolbarItem : ObservableObject, IToolbarItem
 {
-    public ButtonToolbarItem(string name, string toolTip, string icon,Color fillColor, ICommand command)
+    public ButtonToolbarItem(string name, string toolTip, string icon,SolidColorBrush fillColor, ICommand command)
     {
         Name = name;
         ToolTip = toolTip;
@@ -21,7 +21,8 @@ public class ButtonToolbarItem : ObservableObject, IToolbarItem
     }
     public string Name { get; set; }
     public string ToolTip { get; set; }
+    public string DisabledToolTip => "Tool is disabled while rendering";
     public string Icon { get; set; }
     public ICommand Command { get; set; }
-    public Color FillColor { get; set; }
+    public SolidColorBrush FillColor { get; set; }
 }

@@ -1,4 +1,5 @@
 using System;
+using AmbinityCore.Models.Profile;
 
 namespace Ambinity.Services;
 
@@ -18,6 +19,17 @@ public interface IMainWindowProvider
     ///     Opens the main window
     /// </summary>
     void OpenMainWindow();
+
+    /// <summary>
+    ///     Opens the main window and navigate to profile editor
+    /// </summary>
+    void OpenMainWindow(LightingProfile profile);
+
+    /// <summary>
+    /// Opens the main window and navigate to screen with index
+    /// </summary>
+    /// <param name="screenIndex"></param>
+    void OpenMainWindow(int screenIndex);
 
     /// <summary>
     ///     Closes the main window

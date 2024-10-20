@@ -15,6 +15,7 @@ public interface ICollectableItem : INotifyPropertyChanged
     bool IsChecked { get; set; }
     bool IsPinned { get; set; }
     string LocalPath { get; set; }
+    OnlineItemTypeEnum GetType();
     void Save();
     /// <summary>
     /// get co-responding local repository for this item

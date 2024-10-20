@@ -26,10 +26,10 @@ public class ShortcutEditorViewModel : ViewModelBase
             AvailableIcons.Add(key as string);
         }
 
-        ApplySettingsCommand = new RelayCommand(ApplySettings);
+        ApplySettingsCommand = new RelayCommand(ApplySettings,()=> NullProfileAlert);
     }
 
-    public ICommand ApplySettingsCommand { get; set; }
+    public RelayCommand ApplySettingsCommand { get; set; }
 
     private void ApplySettings()
     {
@@ -52,10 +52,10 @@ public class ShortcutEditorViewModel : ViewModelBase
 
         ShortcutViewModel = shortcut;
         Icon = AvailableIcons.Where(i => i == shortcut.Icon).FirstOrDefault();
-        _selectedProfile =
+        SelectedProfile =
             ShortcutViewModel.Shortcut.LightingProfileID == null ||
             ShortcutViewModel.Shortcut.LightingProfileID == Guid.Empty
-                ? AvailableLightingProfiles.First()
+                ? null
                 : AvailableLightingProfiles.Where(p => p.ID == ShortcutViewModel.Shortcut.LightingProfileID)
                     .FirstOrDefault();
     }
@@ -94,8 +94,10 @@ public class ShortcutEditorViewModel : ViewModelBase
         set
         {
             _selectedProfile = value;
+            ApplySettingsCommand.NotifyCanExecuteChanged();
             OnPropertyChanged();
         }
     }
 
+    public bool NullProfileAlert => SelectedProfile != null;
 }

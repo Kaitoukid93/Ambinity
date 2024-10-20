@@ -27,15 +27,16 @@
                             <ui:SettingsExpanderItem Height="70" Content="{Binding Name}" Description="{Binding Description}" IsClickEnabled="False">
                                 <ui:SettingsExpanderItem.Footer>
                                     <StackPanel Orientation="Horizontal" Spacing="10" >
-                                        <Slider Value="{Binding FixedSpeed}" IsVisible="{Binding ElementName=cbx,Path=!SelectedIndex}" Width="160"></Slider>
-                                        <ui:FAComboBox IsEnabled="{Binding HWMonitorAvailable}" SelectedItem="{Binding SelectedControlMode}" VerticalAlignment="Center" x:Name="cbx" Margin="40,0" ItemsSource="{Binding AvailableControlMode }">
+                                        <Slider Value="{Binding FixedSpeed}" VerticalAlignment="Center" IsVisible="{Binding ElementName=cbx,Path=!SelectedIndex}" Width="200"></Slider>
+                                        <ui:RangeSlider StepFrequency="1" MinimumRange="20" VerticalAlignment="Center" IsVisible="{Binding ElementName=cbx,Path=SelectedIndex}" Width="200" Minimum="0" Maximum="100"></ui:RangeSlider>
+                                        <ui:FAComboBox Width="140" IsEnabled="{Binding HWMonitorAvailable}" SelectedItem="{Binding SelectedControlMode}" VerticalAlignment="Center" x:Name="cbx" Margin="40,0" ItemsSource="{Binding AvailableControlMode }">
                                         </ui:FAComboBox>
                                     </StackPanel>
                                 </ui:SettingsExpanderItem.Footer>
                             </ui:SettingsExpanderItem>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type local:HWMonitorChartViewModel}">
-                            <ui:SettingsExpanderItem Content="{Binding Sensor.Name}" Description="{Binding Sensor.SensorType}" IsClickEnabled="False">
+                            <ui:SettingsExpanderItem IsEnabled="False" Content="{Binding Sensor.Name}" Description="{Binding Sensor.SensorType}" IsClickEnabled="False">
                                 <ui:SettingsExpanderItem.Footer>
                                     <lvc:CartesianChart TooltipBackgroundPaint="{Binding ToolTipPaint}" TooltipTextSize="12" TooltipTextPaint="{Binding ToolTipTextPaint}"  Margin="10,0" Height="40" Width="200"
                                                         SyncContext="{Binding Sync}"
