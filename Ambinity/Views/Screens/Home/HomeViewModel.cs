@@ -1,11 +1,15 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Ambinity.Services;
 using Ambinity.ViewModels;
+using Ambinity.Views.AmbinityStore;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Views.OnlineStore;
 using AmbinityCore.Models.Profile;
 using AmbinityServer.OnlineItem;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Ambinity.Views.Screens.Home;
 
@@ -14,14 +18,30 @@ public class HomeViewModel : ViewModelBase
     private readonly LightingProfileOnlineRepository _profileOnlineRepository;
     private readonly LightingProfileRepository _profileLocalRepository;
     private readonly DownloadService _downloadService;
+    private HomeViewModelFactory _factory;
 
-    public HomeViewModel(LightingProfileOnlineRepository lightingProfileOnlineRepository, DownloadService downloadService, LightingProfileRepository lightingProfileRepository)
+    public HomeViewModel(LightingProfileOnlineRepository lightingProfileOnlineRepository,
+        DownloadService downloadService, LightingProfileRepository lightingProfileRepository,
+        IWindowService windowService, ProfileStoreViewModel profileStoreViewModel, HomeViewModelFactory factory,
+        TutorialsOnlineRepository tutorialsOnlineRepository)
     {
+        _tutorialRepository = tutorialsOnlineRepository;
+        _profileStoreViewModel = profileStoreViewModel;
+        _factory = factory;
+        _windowService = windowService;
         _downloadService = downloadService;
         _profileOnlineRepository = lightingProfileOnlineRepository;
         _profileLocalRepository = lightingProfileRepository;
         AvailableAssets = [];
         DisplayAssets = [];
+        AvailableTutorials = [];
+        ShowProfileLibraryCommand = new AsyncRelayCommand<AssetItemViewModelBase>(ShowProfileLibrary);
+    }
+
+    private async Task ShowProfileLibrary(AssetItemViewModelBase item = null)
+    {
+        var window = _windowService.ShowWindow(_profileStoreViewModel);
+        await _profileStoreViewModel.Init(item);
     }
 
     public async Task Init()
@@ -31,7 +51,7 @@ public class HomeViewModel : ViewModelBase
         await Task.Run(() => _profileOnlineRepository.Init());
         foreach (var item in _profileOnlineRepository.Items)
         {
-            var asset = new OnlineItemAssetViewModel(item, _downloadService, _profileLocalRepository,150);
+            var asset = new OnlineItemAssetViewModel(item, _downloadService, _profileLocalRepository, 300);
             RegisterAsset(asset);
             await Task.Run(() => Task.Delay(20));
             AvailableAssets.Add(asset);
@@ -40,8 +60,23 @@ public class HomeViewModel : ViewModelBase
         foreach (var asset in AvailableAssets.Take(8))
         {
             DisplayAssets.Add(asset);
+            asset.ItemSelected += OnProfileSelected;
         }
+//load tutorials if any
+        _tutorialRepository.Init();
+        foreach (var item in _tutorialRepository.Items)
+        {
+            AvailableTutorials.Add(_factory.GetHyperLinkViewModel(item));
+        }
+       
     }
+
+    private async void OnProfileSelected(AssetItemViewModelBase item)
+    {
+        var window = _windowService.ShowWindow(_profileStoreViewModel);
+        await _profileStoreViewModel.Init(item);
+    }
+
     private ObservableCollection<OnlineItemAssetViewModel> _availableAssets;
 
     public ObservableCollection<OnlineItemAssetViewModel> AvailableAssets
@@ -53,7 +88,24 @@ public class HomeViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
+    private ObservableCollection<HyperLinkHomeViewModel> _availableTutorials;
+
+    public ObservableCollection<HyperLinkHomeViewModel> AvailableTutorials
+    {
+        get => _availableTutorials;
+        set
+        {
+            _availableTutorials = value;
+            OnPropertyChanged();
+        }
+    }
+
     private ObservableCollection<OnlineItemAssetViewModel> _displayAssets;
+    private readonly IWindowService _windowService;
+    private readonly ProfileStoreViewModel _profileStoreViewModel;
+    private readonly TutorialsOnlineRepository _tutorialRepository;
+
     public ObservableCollection<OnlineItemAssetViewModel> DisplayAssets
     {
         get => _displayAssets;
@@ -63,6 +115,9 @@ public class HomeViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
+    public ICommand ShowProfileLibraryCommand { get; }
+
     private void RegisterAsset(AssetItemViewModelBase asset)
     {
         asset.ItemSelected += OnAssetSelected;

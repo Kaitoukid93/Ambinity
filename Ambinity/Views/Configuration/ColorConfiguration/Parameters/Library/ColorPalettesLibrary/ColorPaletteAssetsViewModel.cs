@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Services;
 using Ambinity.Views.LayoutEditor;
+using AmbinityCore.Models.Collection;
+using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
 using CommunityToolkit.Mvvm.Input;
 
@@ -18,6 +20,11 @@ public class ColorPaletteAssetsViewModel : AssetsViewModelBase
 
         _windowService = windowService;
     }
-    
+    public override async Task Init(CollectableItemRepository localRepo, OnlineItemRepository onlineRepo)
+    {
+        await base.Init(localRepo, onlineRepo);
+        //for now just show online repo
+        SelectedRepository = "Local";
+    }
   //  public ICommand ImportPaletteCommand { get; set; }
 }

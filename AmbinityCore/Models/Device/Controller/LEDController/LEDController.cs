@@ -60,7 +60,20 @@ public class LEDController : ObservableObject
         var layout = AmbinoDefaultLayout.GetDefaultLayout(HardwareSettings.HardwareType);
         foreach (var output in Outputs)
         {
-            output.Device.ForceTranslate(layout[output.Index].X, layout[output.Index].Y);
+            //gonna clarify or devices will collapse
+            if (output.Devices.Count > 1)
+            {
+                foreach (var device in output.Devices)
+                {
+                    //todo spread device horizontal if there is more than one device
+                    device.ForceTranslate(layout[output.Index].X, layout[output.Index].Y);
+                }
+            }
+            else
+            {
+                output.Devices[0].ForceTranslate(layout[output.Index].X, layout[output.Index].Y);
+            }
+            
         }
     }
 

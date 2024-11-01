@@ -8,11 +8,20 @@ public class DevicePortViewModel : ViewModelBase
 {
     public DevicePortViewModel(LEDOutput output)
     {
-        Content = output.Device.Name;
-        Icon = output.Device.Icon;
+        for (int i=0;i<output.Devices.Count;i++)
+        {
+            if(i<output.Devices.Count -1)
+            Content += output.Devices[i].Name + " + ";
+            else
+            {
+                Content += output.Devices[i].Name;
+            }
+            
+        }
+        Icon = output.Devices.Count>1? "daisy_chain" :output.Devices[0].Icon;
         Output = output;
-        _device = output.Device;
-        _device.DeviceUpdate += OnDeviceUpdated;
+       // _device = output.Device;
+       // _device.DeviceUpdate += OnDeviceUpdated;
     }
 
     private void OnDeviceUpdated()

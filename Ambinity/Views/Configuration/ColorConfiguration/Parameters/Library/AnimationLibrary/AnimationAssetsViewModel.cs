@@ -1,4 +1,7 @@
+using System.Threading.Tasks;
 using Ambinity.Views.LayoutEditor;
+using AmbinityCore.Models.Collection;
+using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
 
 namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
@@ -9,5 +12,10 @@ public class AnimationAssetsViewModel : AssetsViewModelBase
         AssetItemViewModelFactory assetItemViewModelFactory) : base(downloadService, assetItemViewModelFactory)
     {
     }
-    
+    public override async Task Init(CollectableItemRepository localRepo, OnlineItemRepository onlineRepo)
+    {
+        await base.Init(localRepo, onlineRepo);
+        //for now just show online repo
+        SelectedRepository = "Local";
+    }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.ViewModels;
+using Ambinity.Views.CollectableItem.AmbinityDeviceLayout;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.Screens.DeviceLayout;
@@ -45,9 +46,14 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
         OpenFlyout(_libraryViewModel);
     }
 
-    private void OnLibraryItemSelected(ICollectableItem item)
+    private void OnLibraryItemSelected(AssetItemViewModelBase item)
     {
-        ApplyLayout(item as AmbinityDeviceLayout);
+        if (item is AmbinityDeviceLayoutAssetViewModel)
+        {
+            var deviceLayoutAsset = item as AmbinityDeviceLayoutAssetViewModel;
+            ApplyLayout(deviceLayoutAsset.Item as AmbinityDeviceLayout);
+        }
+        
     }
 
     private void ApplyLayout(AmbinityDeviceLayout layout)
@@ -115,7 +121,7 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
         _canvasViewModel.SelectionChanged += OnCanvasSelectionChanged;
         _canvasViewModel.FigureRemoved += OnFigureRemoved;
         _decoder.RenderingStatusChanged += OnRenderingStatusChanged;
-        PropertiesViewModel.Init();
+        PropertiesViewModel.UpdateObjectProperties();
     }
 
     public override void Dispose()

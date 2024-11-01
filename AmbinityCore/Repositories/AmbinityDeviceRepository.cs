@@ -10,9 +10,10 @@ public class AmbinityDeviceRepository
     public event Action DevicesListUpdated;
 
     public AmbinityDeviceRepository(DeviceBitmapCaptureFactory captureFactory,
-        SerialControllerRepository serialControllerRepository, OpenRGBControllerRepository openRgbControllerRepository, FanOutputServiceFactory fanOutputServiceFactory)
+        SerialControllerRepository serialControllerRepository, OpenRGBControllerRepository openRgbControllerRepository,
+        FanOutputServiceFactory fanOutputServiceFactory)
     {
-        _fanOutputServiceFactory =fanOutputServiceFactory;
+        _fanOutputServiceFactory = fanOutputServiceFactory;
         _captureFactory = captureFactory;
         _serialControllerRepository = serialControllerRepository;
         _serialControllerRepository.NewControllerAdded += OnNewControllerAdded;
@@ -37,13 +38,16 @@ public class AmbinityDeviceRepository
         {
             output.OutputEnabled += OnOutputEnabled;
             output.OutputDisabled += OnOutputDisabled;
+            output.DevicesUpdated += OnDevicesUpdated;
             if (!output.IsEnabled)
                 continue;
-            var device = output.Device;
-            if (!Devices.Contains(device))
-                Devices.Add(device);
-            var capture = _captureFactory.RegisterDevice(device);
-            _captures.Add(capture);
+            foreach (var device in output.Devices)
+            {
+                if (!Devices.Contains(device))
+                    Devices.Add(device);
+                var capture = _captureFactory.RegisterDevice(device);
+                _captures.Add(capture);
+            }
         }
 
         if (controller.FanController != null)
@@ -58,29 +62,59 @@ public class AmbinityDeviceRepository
         DevicesListUpdated?.Invoke();
     }
 
-    private void OnOutputDisabled(LEDOutput output)
+//todo implement device remove
+    private void OnDevicesUpdated(LEDOutput output)
     {
-        if (Devices.Contains(output.Device))
-            Devices.Remove(output.Device);
-        var capture = GetCapture(output.Device);
+        //remove all devices that attached to this output
+        foreach (var device in output.Devices)
+        {
+            if (Devices.Contains(device))
+                Devices.Remove(device);
+            var capture = GetCapture(device);
             capture?.Dispose();
             _captures.Remove(capture);
+        }
+
+        foreach (var device in output.Devices)
+        {
+            if (!Devices.Contains(device))
+                Devices.Add(device);
+            var capture = _captureFactory.RegisterDevice(device);
+            _captures.Add(capture);
+        }
+        //reload
+    }
+
+    private void OnOutputDisabled(LEDOutput output)
+    {
+        foreach (var device in output.Devices)
+        {
+            if (Devices.Contains(device))
+                Devices.Remove(device);
+            var capture = GetCapture(device);
+            capture?.Dispose();
+            _captures.Remove(capture);
+        }
     }
 
     private AmbinityDeviceBitmapCapture GetCapture(AmbinityDevice device)
     {
         if (_captures == null || _captures.Count == 0)
             return null;
-        var capture = _captures.FirstOrDefault(c => c.Device== device);
+        var capture = _captures.FirstOrDefault(c => c.Device == device);
         return capture;
     }
+
     private void OnOutputEnabled(LEDOutput output)
     {
-        if (Devices.Contains(output.Device))
-            return;
-        Devices.Add(output.Device);
-        var capture = _captureFactory.RegisterDevice(output.Device);
-        _captures.Add(capture);
+        foreach (var device in output.Devices)
+        {
+            if (Devices.Contains(device))
+                return;
+            Devices.Add(device);
+            var capture = _captureFactory.RegisterDevice(device);
+            _captures.Add(capture);
+        }
     }
 
     // public void UpdateDeviceTransform()

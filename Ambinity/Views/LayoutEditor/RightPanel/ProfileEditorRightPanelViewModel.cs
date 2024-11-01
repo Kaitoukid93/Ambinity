@@ -59,7 +59,6 @@ public class ProfileEditorRightPanelViewModel : ViewModelBase
     {
         _canvasViewModel.SelectionChanged += OnCanvasSelectionChanged;
         _canvasViewModel.FigureRemoved += OnFigureRemoved;
-        PropertiesViewModel.Init();
         SelectedTab = 0;
     }
 
@@ -93,7 +92,7 @@ public class ProfileEditorRightPanelViewModel : ViewModelBase
         switch (SelectedTab)
         {
             case 0:
-                PropertiesViewModel.Init();
+                PropertiesViewModel.UpdateObjectProperties();
                 CurrentTabContent = PropertiesViewModel;
                 break;
             case 1:

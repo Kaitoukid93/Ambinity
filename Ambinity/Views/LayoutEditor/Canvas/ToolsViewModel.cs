@@ -103,7 +103,7 @@ public class ToolsViewModel : ViewModelBase
         CurrentFlyoutViewModel.Dispose();
         CurrentFlyoutViewModel = null;
     }
-    private void OnLightingZoneAssetSelected(ICollectableItem obj)
+    private void OnLightingZoneAssetSelected(AssetItemViewModelBase item)
     {
         //throw new NotImplementedException();
     }

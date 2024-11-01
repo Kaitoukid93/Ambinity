@@ -92,4 +92,31 @@ public class DownloadService
 
         return null;
     }
+    /// <summary>
+    /// get item screenshot
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    // public async Task<List<BitmapImage>> GetItemScreenShots(OnlineItemModel item)
+    // {
+    //     var screenShots = new List<BitmapImage>();
+    //     var screenshotsPath = item.Path + "/screenshots";
+    //     foreach (var file in _ftpServer.GetAllFilesAddressInFolder(screenshotsPath).Result)
+    //     {
+    //         var img = await _ftpServer.GetScreenShot(file);
+    //         screenShots.Add(img);
+    //     }
+    //     return screenShots;
+    // }
+    /// <summary>
+    /// get item markdown description
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    public async Task<string> GetItemDescription(OnlineItem item)
+    {
+        var descriptionPath = item.Path + "/description.md";
+        var description = await _sftpServer.GetStringContent(descriptionPath);
+        return description;
+    }
 }

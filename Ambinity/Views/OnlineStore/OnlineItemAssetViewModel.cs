@@ -20,7 +20,7 @@ public class OnlineItemAssetViewModel : AssetItemViewModelBase
 {
     private static bool _canDownload = true;
     private int _thumbnailWidth;
-    public OnlineItemAssetViewModel(OnlineItem item, DownloadService downloadService, CollectableItemRepository localRepository,int thumbnailWidth =50)
+    public OnlineItemAssetViewModel(OnlineItem item, DownloadService downloadService, CollectableItemRepository localRepository,int thumbnailWidth =50) : base()
     {
         _localRepository = localRepository;
         _downloadService = downloadService;
@@ -28,12 +28,23 @@ public class OnlineItemAssetViewModel : AssetItemViewModelBase
         _item = item;
         Name = _item.Name;
         Description = _item.Description;
-        LastUpdate = item.LastUpdate;
+        // LastUpdate = item.LastUpdate;
+        LastUpdate = _item.LastUpdate;
+        FileSize = _item.FileSize;
         DownloadItemCommand = new AsyncRelayCommand(Download);
         _thumbnailService = Ioc.Default.GetRequiredService<ThumbnailService>();
         _downloadProgress = new Progress<DownloadProgress>((p) => { CurrentDownloadProgress = p.Progress; });
     }
-
+   
+    ~OnlineItemAssetViewModel()
+    {
+        
+    }
+    public string Tags => String.Join(" - ", OnlineItemData.Tags);
+    public async Task<String> GetMarkdownDescription()
+    {
+        return await _downloadService.GetItemDescription(_item);
+    }
     private bool CanDownload()
     {
         return _canDownload;
@@ -69,6 +80,7 @@ public class OnlineItemAssetViewModel : AssetItemViewModelBase
     }
     private IProgress<DownloadProgress> _downloadProgress;
     private ThumbnailService _thumbnailService;
+    public OnlineItem OnlineItemData => _item;
     private OnlineItem _item;
     public bool IsLocalExisted => _localRepository.Items.Any(i => i.Name == _item.Name);
     public Task<Bitmap> GetThumbnail => GetThumbnailAsync();
@@ -91,7 +103,6 @@ public class OnlineItemAssetViewModel : AssetItemViewModelBase
             OnPropertyChanged();
         }
     }
-
     private int _currentDownloadProgress;
 
     public int CurrentDownloadProgress
@@ -116,7 +127,7 @@ public class OnlineItemAssetViewModel : AssetItemViewModelBase
             OnPropertyChanged();
         }
     }
-
-    public DateTime LastUpdate { get; set; }
+    public string FileSize { get; set; }
+    public string LastUpdate { get; set; }
     public ICommand DownloadItemCommand { get; set; }
 }

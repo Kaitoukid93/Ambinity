@@ -8,7 +8,7 @@
              x:Class="Ambinity.Views.Screens.ProfileEditor.Library.LightingZoneAssetsView">
        <Grid RowDefinitions="50,10,5,Auto,*">
         <Grid ColumnDefinitions="Auto,*,40">
-            <ListBox SelectedItem="{Binding SelectedRepository}" ItemContainerTheme="{DynamicResource _striplessListboxItem}"
+            <ListBox IsEnabled="{Binding !IsLoading}" SelectedItem="{Binding SelectedRepository}" ItemContainerTheme="{DynamicResource _striplessListboxItem}"
                      ItemsSource="{Binding Tabs}"
                      Padding="1" VerticalAlignment="Center" Margin="10,0,0,0" HorizontalAlignment="Left">
                 <ListBox.ItemsPanel>

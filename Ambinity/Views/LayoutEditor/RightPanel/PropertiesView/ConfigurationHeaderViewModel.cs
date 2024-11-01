@@ -31,6 +31,7 @@ public class ConfigurationHeaderViewModel : ViewModelBase
         {
             Header = "Select an item to begin";
             Icon = "arrow_cursor_2__mouse_select_cursor";
+            CanExport = false;
         }
 
         //null
@@ -52,11 +53,13 @@ public class ConfigurationHeaderViewModel : ViewModelBase
                     Icon = "page_setting__page_setting_square_triangle_circle_line_combination_variation";
                     break;
             }
+            CanExport = true;
         }
         else
         {
             Header = figures.Count.ToString() + " items selected";
             Icon = "layers_1__design_layer_layers_pile_stack_align";
+            CanExport = false;
         }
     }
 
@@ -90,15 +93,15 @@ public class ConfigurationHeaderViewModel : ViewModelBase
         }
     }
 
-    private bool _visibility = true;
+    private bool _canExport;
     private readonly AmbinityStoreItemExportViewModel _exportViewModel;
 
-    public bool Visibility
+    public bool CanExport
     {
-        get => _visibility;
+        get => _canExport;
         set
         {
-            _visibility = value;
+            _canExport = value;
             OnPropertyChanged();
         }
     }

@@ -91,7 +91,7 @@ internal sealed class SerialStream : IDisposable, IDataStream
 
     public void Start()
     {
-        if(IsRunning)
+        if (IsRunning)
             return;
         Log.Information("Start called for SerialStream");
         if (_workerThread == null || !_workerThread.IsAlive)
@@ -108,7 +108,7 @@ internal sealed class SerialStream : IDisposable, IDataStream
 
     public async Task Stop()
     {
-        if(!IsRunning)
+        if (!IsRunning)
             return;
         Controller.TurnOff();
         //wait for led to fully turn off
@@ -127,12 +127,17 @@ internal sealed class SerialStream : IDisposable, IDataStream
     {
         byte[] outputStream;
         var output = Controller.LedController.Outputs[id];
-        var ambinityDevice = output.Device;
+        var devices = output.Devices;
         int counter = _messagePreamble.Length;
         const int colorsPerLed = 3;
         const int hilocheckLenght = 3;
         const int extraHeader = 3;
-        int ledCount = ambinityDevice.Leds.Count;
+        int ledCount = 0;
+        foreach (var device in devices)
+        {
+            ledCount += device.Leds.Count;
+        }
+
         int bufferLength = _messagePreamble.Length + hilocheckLenght + extraHeader + (ledCount * colorsPerLed);
 
         outputStream = ArrayPool<byte>.Shared.Rent(bufferLength);
@@ -163,41 +168,47 @@ internal sealed class SerialStream : IDisposable, IDataStream
         double brightnessCap = Controller.LedController.MaxBrightness / 100d;
         var allBlack = true;
         int aliveSpotCounter = 0;
-        var rgbOrder = output.RGBOrder;
         DimLED();
-
-        lock (ambinityDevice.Lock)
+        int offset = 0;
+        foreach (var device in devices)
         {
-            if (ambinityDevice.Leds.Count == 0) //this could be PID has removed all items add 1 dummy
+            lock (device.Lock)
             {
-                outputStream[counter++] = 0; // blue
-                outputStream[counter++] = 0; // green
-                outputStream[counter++] = 0; // red
-            }
-            else
-            {
-                foreach (AmbinityLED led in ambinityDevice.Leds)
+                if (device.Leds.Count == 0) //this could be PID has removed all items add 1 dummy
                 {
-                    ApplyColorWhitebalance(led.LED.Red, led.LED.Green, led.LED.Blue,
-                        ambinityDevice.RedScale, ambinityDevice.GreenScale,
-                        ambinityDevice.BlueScale,
-                        out byte FinalR, out byte FinalG, out byte FinalB);
-                    ReOrderSpotColor(rgbOrder, led.LED.Red, led.LED.Green, led.LED.Blue, out byte r, out byte g,
-                        out byte b);
-                    //get data
-                    outputStream[counter + led.Index * 3 + 0] = (byte)(r * _dimFactor);
+                    outputStream[counter++] = 0; // blue
+                    outputStream[counter++] = 0; // green
+                    outputStream[counter++] = 0; // red
+                }
+                else
+                {
+                    var rgbOrder = device.RGBOrder;
+                    foreach (AmbinityLED led in device.Leds)
+                    {
+                        ApplyColorWhitebalance(led.LED.Red, led.LED.Green, led.LED.Blue,
+                            device.RedScale, device.GreenScale,
+                            device.BlueScale,
+                            out byte FinalR, out byte FinalG, out byte FinalB);
+                        ReOrderSpotColor(rgbOrder, led.LED.Red, led.LED.Green, led.LED.Blue, out byte r, out byte g,
+                            out byte b);
+                        //get data
+                        outputStream[counter + (led.Index +offset) * 3 + 0] = (byte)(r * _dimFactor);
 
-                    outputStream[counter + led.Index * 3 + 1] = (byte)(g * _dimFactor);
-                    // green
-                    outputStream[counter + led.Index * 3 + 2] = (byte)(b * _dimFactor);
-                    // red
-                    aliveSpotCounter++;
+                        outputStream[counter +  (led.Index +offset) * 3 + 1] = (byte)(g * _dimFactor);
+                        // green
+                        outputStream[counter +  (led.Index +offset) * 3 + 2] = (byte)(b * _dimFactor);
+                        // red
+                        aliveSpotCounter++;
 
+                        
+                        allBlack = allBlack && led.LED.Red == 0 && led.LED.Green == 0 && led.LED.Blue == 0;
+                    }
 
-                    allBlack = allBlack && led.LED.Red == 0 && led.LED.Green == 0 && led.LED.Blue == 0;
+                    offset += device.Leds.Count;
                 }
             }
         }
+
 
         for (int i = counter + aliveSpotCounter * 3; i < bufferLength; i++)
         {
@@ -309,16 +320,9 @@ internal sealed class SerialStream : IDisposable, IDataStream
                 {
                     if (!Controller.LedController.Outputs[i].IsEnabled)
                         continue;
-                    var output = Controller.LedController.Outputs[i];
-                    lock (output.Device.Lock)
-                    {
-                        var (outputBuffer, streamLength) = GetOutputStream(i);
-                        Buffer.BlockCopy(outputBuffer, 0, buffer, bufferLength, streamLength);
-                        bufferLength += streamLength;
-                    }
-                    
-                   
-                    
+                    var (outputBuffer, streamLength) = GetOutputStream(i);
+                    Buffer.BlockCopy(outputBuffer, 0, buffer, bufferLength, streamLength);
+                    bufferLength += streamLength;
                 }
 
                 _serialPort.Write(buffer, 0, bufferLength);

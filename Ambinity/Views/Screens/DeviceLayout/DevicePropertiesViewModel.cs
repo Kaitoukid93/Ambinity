@@ -19,7 +19,7 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         _deviceViewModelFactory = deviceViewModelFactory;
         PositionConfiguration = positionConfigurationViewModel;
         _canvasViewModel = canvasViewModel;
-        Init();
+        
     }
 
     public override void UpdateObjectProperties()

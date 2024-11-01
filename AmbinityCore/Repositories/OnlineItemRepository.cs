@@ -1,4 +1,5 @@
 using adrilight_shared.Models.Store;
+using AmbinityCore.Extension;
 using AmbinityCore.Models.Collection;
 using AmbinityServer;
 using AmbinityServer.OnlineItem;
@@ -72,34 +73,48 @@ public abstract class OnlineItemRepository : ObservableObject
             Log.Information("Folder is empty: " + ResourceAddress);
             return;
         }
-        
+
         Log.Information("Updating collection: " + ResourceAddress);
         foreach (var url in itemsFolder)
         {
             //get name
-            if(!_client.SftpServer.IsFolder(url))
+            if (!_client.SftpServer.IsFolder(url))
                 continue;
-            var itemName = _client.SftpServer.GetFileOrFolderName(url).Name;
-            //get description content
-            var descriptionPath = url + "/description.md";
-            var description = await _client.SftpServer.GetStringContent(descriptionPath);
-            var itemList = new List<OnlineItemModel>();
             var infoPath = url + "/info.json";
-            var info = _client.SftpServer.GetFiles<OnlineItemModel>(infoPath).Result;
-            info.Path = url;
-            var item = Convert(info);
+            var contentPath = url + "/content/";
+            var item = _client.SftpServer.GetFiles<OnlineItem>(infoPath).Result;
+            item.Path = url;
+            //var item = Convert(info);
             item.ThumbnailPath = url + "/thumb.png";
-            item.LastUpdate = _client.SftpServer.GetFileAttributes(infoPath).LastWriteTime;
+            item.LastUpdate = _client.SftpServer.GetFileAttributes(infoPath).LastWriteTime.ToString("MMMM dd, yyyy");
+            try
+            {
+                var contents = await _client.SftpServer.GetAllFilesAddressInFolder(contentPath);
+                long fileSize = 0;
+                foreach (var file in contents)
+                {
+                    fileSize += _client.SftpServer.GetFileAttributes(file).Size;
+                }
+
+                item.FileSize = fileSize.ToSize(FileExtension.SizeUnits.KB) + " KB";
+            }
+            catch (Exception e)
+            {
+               Log.Warning("No content found");
+                
+            }
+
             AddItem(item);
         }
 
         await GetFilters();
         Log.Information("Collection updated: Items count = " + itemsFolder.Count);
     }
+
     private async Task GetFilters()
     {
         var filterPath = ResourceAddress + "/filters.json";
-        if(!_client.SftpServer.IsExist(filterPath))
+        if (!_client.SftpServer.IsExist(filterPath))
             return;
         var filters = await Task.Run(() => _client.SftpServer.GetFiles<List<StoreFilterModel>>(filterPath).Result);
         foreach (var fil in filters)

@@ -173,7 +173,7 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
             Directory.CreateDirectory(LocalPath);
         }
 
-        JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath, "profile.json"));
+        JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath, "config.json"));
     }
 
     /// <summary>
@@ -182,7 +182,7 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     /// <param name="path"></param>
     public void SaveTo(string path)
     {
-        JsonHelpers.WriteSimpleJson(this, Path.Combine(path, "profile.json"));
+        JsonHelpers.WriteSimpleJson(this, Path.Combine(path, "config.json"));
     }
 
     /// <summary>

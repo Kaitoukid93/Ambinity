@@ -4,41 +4,76 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Ambinity.ViewModels;
+using Ambinity.Views.CollectableItem.AmbinityDeviceLayout;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Views.Screens.DeviceLayout.Library;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
+using DynamicData;
 
 namespace Ambinity.Views.Screens.DeviceSettings;
 
 public class PortDetailViewModel : ViewModelBase
 {
-    public ICommand OpenLibraryCommand { get; set; }
+    public ICommand AddNewDaisyChainDeviceCommand { get; }
     public event Action OpenFlyoutEvent;
     public event Action CloseFlyoutEvent;
-    public PortDetailViewModel(AmbinityDeviceViewModelFactory deviceViewModelFactory, DeviceLayoutsLibraryViewModel layoutsLibraryViewModel)
+    public bool IsMultiplePortsSelected => _selectedPorts.Count > 1;
+    private AmbinityDeviceDaisyChainElementViewModel _selectedDevice;
+
+    public PortDetailViewModel(AmbinityDeviceViewModelFactory deviceViewModelFactory,
+        DeviceLayoutsLibraryViewModel layoutsLibraryViewModel)
     {
         _layoutsLibraryViewModel = layoutsLibraryViewModel;
         _deviceViewModelFactory = deviceViewModelFactory;
-        OpenLibraryCommand = new RelayCommand(OpenDeviceLibrary);
+        AddNewDaisyChainDeviceCommand = new RelayCommand(AddNewDaisyChainDevice);
     }
-    public FlyoutContentViewModelBase FlyoutViewModel { get; set; }
-    private void OpenDeviceLibrary()
+    
+
+    private void AddNewDaisyChainDevice()
     {
-        _layoutsLibraryViewModel?.Init();
-        _layoutsLibraryViewModel.ItemSelected += OnLibraryItemSelected;
-        OpenFlyout(_layoutsLibraryViewModel);
+        //if chain contains any device, take last device and clone then add to bottom of the chain
+        //at the moment the chain will never zero count, because the output always being init with default device, see SerialControllerProvider
+        //or OpenRGBControllerProvider for further details
+        //only single port selection can daisychain
+        if (_selectedPorts.Count > 1)
+            return;
+        //simply add new device to output devices and re-init the viewmodel
+        var selectedPort = _selectedPorts.First();
+        if (selectedPort != null)
+        {
+            var bottomDevice = (Devices.Last() as AmbinityDeviceDaisyChainElementViewModel).Device;
+            var newDevice = new AmbinityDevice(bottomDevice.Layout);
+            newDevice.LoadLayout();
+            selectedPort.Output.AddDeviceToOutputChain(newDevice);
+        }
+
+        //add device to reposiitory
+        //reload view 
+        LoadDevices();
+        //create new device with the layout
+        //if chain contains no device, take default device, not using for now
     }
 
-    private void OnLibraryItemSelected(ICollectableItem item)
+    public FlyoutContentViewModelBase FlyoutViewModel { get; set; }
+    
+
+    private void OnLibraryItemSelected(AssetItemViewModelBase item)
     {
-        foreach (var port in _selectedPorts)
+        if (item is AmbinityDeviceLayoutAssetViewModel layoutAsset)
         {
-            var device = port.Output.Device;
-            device.LoadLayout(item as AmbinityDeviceLayout);
+            var layout = layoutAsset.Item as AmbinityDeviceLayout;
+            foreach (var port in _selectedPorts)
+            {
+                foreach (var device in port.Output.Devices)
+                {
+                    device.LoadLayout(layout);
+                }
+            }
         }
+
         //apply layout
     }
 
@@ -53,17 +88,71 @@ public class PortDetailViewModel : ViewModelBase
         FlyoutViewModel.Dispose();
         FlyoutViewModel = null;
     }
+
     public void Init(DevicePortViewModel port)
     {
-        _selectedPorts = new List<DevicePortViewModel>();
-        _selectedPorts.Add(port);
+        _selectedPorts =
+        [
+            port
+        ];
         Name = "Chanel " + (port.Output.Index + 1).ToString();
         Brightness = port.Output.Brightness;
         IsEnabled = port.Output.IsEnabled;
         OnPropertyChanged(nameof(Name));
-        DetailViewModel = _deviceViewModelFactory.GetDetailViewModel(port.Output.Device);
+        OnPropertyChanged(nameof(IsMultiplePortsSelected));
+        LoadDevices();
     }
-    
+
+    private void LoadDevices()
+    {
+        if (_selectedPorts.Count != 1)
+            return;
+
+        Devices?.Clear();
+        for (int i = 0; i < _selectedPorts[0].Output.Devices.Count; i++)
+        {
+            var deviceElement =
+                _deviceViewModelFactory.GetDeviceDaisyChainElementViewModel(_selectedPorts[0].Output.Devices[i]);
+            deviceElement.Selected += OnDeviceSelected;
+            deviceElement.Detach += OnDeviceDetach;
+            deviceElement.ChangeDevice += OnChangeDeviceRequest;
+            Devices.Add(deviceElement);
+            if (i < _selectedPorts[0].Output.Devices.Count - 1)
+            {
+                Devices.Add(new DaisyChainPlusSymbolViewModel());
+            }
+        }
+    }
+
+    private void OnDeviceDetach(AmbinityDeviceDaisyChainElementViewModel device)
+    {
+      
+        if (_selectedPorts.Count > 1)
+            return;
+        //simply add new device to output devices and re-init the viewmodel
+        var selectedPort = _selectedPorts.First();
+        if (selectedPort != null)
+        {
+            selectedPort.Output.RemoveDeviceFromOutputChain(device.Device);
+        }
+        
+        LoadDevices();
+
+        
+    }
+
+    private void OnChangeDeviceRequest(AmbinityDeviceDaisyChainElementViewModel obj)
+    {
+        _layoutsLibraryViewModel?.Init();
+        _layoutsLibraryViewModel.ItemSelected += OnLibraryItemSelected;
+        OpenFlyout(_layoutsLibraryViewModel);
+    }
+
+    private void OnDeviceSelected(AmbinityDeviceDaisyChainElementViewModel device)
+    {
+        _selectedDevice = device;
+    }
+
     public void Init(List<DevicePortViewModel> ports)
     {
         _selectedPorts = ports;
@@ -73,19 +162,23 @@ public class PortDetailViewModel : ViewModelBase
         IsEnabled = true;
         //brightness will be default
         Brightness = 153;
-        DetailViewModel = _deviceViewModelFactory.GetMultipleDetailViewModel(_selectedPorts.Count);
+        OnPropertyChanged(nameof(IsMultiplePortsSelected));
+        // DetailViewModel = _deviceViewModelFactory.GetMultipleDetailViewModel(_selectedPorts.Count);
     }
 
     private List<DevicePortViewModel> _selectedPorts;
-    private AmbinityDeviceDetailViewModel _detailViewModel;
+
+    private ObservableCollection<DaisyChainItemViewModelBase> _devices =
+        [];
+
     private readonly AmbinityDeviceViewModelFactory _deviceViewModelFactory;
 
-    public AmbinityDeviceDetailViewModel DetailViewModel
+    public ObservableCollection<DaisyChainItemViewModelBase> Devices
     {
-        get => _detailViewModel;
+        get => _devices;
         set
         {
-            _detailViewModel = value;
+            _devices = value;
             OnPropertyChanged();
         }
     }
@@ -126,6 +219,7 @@ public class PortDetailViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
 
     public override void Dispose()
     {

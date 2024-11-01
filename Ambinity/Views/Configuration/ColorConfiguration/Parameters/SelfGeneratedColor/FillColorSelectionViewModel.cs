@@ -79,9 +79,14 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
     }
 
 
-    private void OnPaletteSelected(ICollectableItem obj)
+    private void OnPaletteSelected(AssetItemViewModelBase item)
     {
-        ApplyPalette(obj as ColorPalette);
+        if (item is ColorPaletteAssetViewModel)
+        {
+            var colorPaletteAsset = item as ColorPaletteAssetViewModel;
+            ApplyPalette(colorPaletteAsset.Item as ColorPalette);
+        }
+     
     }
 
     private async Task ImportPalette()

@@ -57,17 +57,17 @@
                     <ToggleButton ToolTip.Tip="Reverse direction" BorderThickness="0" IsChecked="{Binding IsReverse}"
                                   Background="Transparent" Width="30" Height="30" Grid.Column="1"
                                   HorizontalAlignment="Right">
-                        <PathIcon Width="16" Margin="0,1,0,0" Data="{DynamicResource 'flip_horizontal'}"></PathIcon>
+                        <PathIcon Width="16" Margin="0,0,0,0" Data="{DynamicResource 'flip_horizontal'}"></PathIcon>
                     </ToggleButton>
                     <ToggleButton ToolTip.Tip="System sync" BorderThickness="0"
                                   Background="Transparent" Width="30" Height="30" Grid.Column="1"
                                   HorizontalAlignment="Right">
-                        <PathIcon Width="16" Margin="0,1,0,0" Data="{DynamicResource 'time_sync'}"></PathIcon>
+                        <PathIcon Width="16" Margin="0,0,0,0" Data="{DynamicResource 'time_sync'}"></PathIcon>
                     </ToggleButton>
                         <ToggleButton IsChecked="{Binding IsColorMoving}" BorderThickness="0"
                                       ToolTip.Tip="Cycle colors" Padding="1"
                                       Background="Transparent" Width="30" Height="30">
-                            <PathIcon Width="16" Margin="1,0,0,0"
+                            <PathIcon Width="16" Margin="0,0,0,0"
                                       Data="{DynamicResource cycle}">
                             </PathIcon>
                         </ToggleButton>

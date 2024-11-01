@@ -8,5 +8,6 @@ public enum OnlineItemTypeEnum
     Gif,
     DeviceLayout,
     LightingZone,
+    ARGBLEDSlaveDevice,
     Unknown,
 }

@@ -300,7 +300,10 @@ public class AmbinityDevice : ObservableObject, IPositionAware
 
     public byte GreenScale { get; set; }
     public byte BlueScale { get; set; }
-
+    /// <summary>
+    /// RGB order
+    /// </summary>
+    public RGBLEDOrderEnum RGBOrder { get; set; }
 
     #region Methods
 

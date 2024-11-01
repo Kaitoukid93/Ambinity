@@ -1,7 +1,9 @@
 using System.IO.Compression;
+using adrilight_shared.Models.Store;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Lighting.Zone;
+using AmbinityCore.Models.ProfileCategory;
 using AmbinityCore.Repositories;
 using Newtonsoft.Json;
 using Serilog;
@@ -10,6 +12,9 @@ namespace AmbinityCore.Models.Profile;
 
 public sealed class LightingProfileRepository : CollectableItemRepository
 {
+    //we will not use base class ItemAdded event because it will trigger circle dependency
+    //this event simply tell side menu to update
+    public event Action<LightingProfile> ItemDownloaded;
     private string dbPath => Path.Combine(Constants.AppDataFolder, "Data");
     private string FolderPath => Path.Combine(dbPath, "Profiles");
     private LightingZoneRepository _zoneRepository;
@@ -20,13 +25,6 @@ public sealed class LightingProfileRepository : CollectableItemRepository
         _zoneRepository = zoneRepository;
         Name = "Lighting Profiles";
     }
-
-
-    public override void CreateDefault()
-    {
-        CreateDefaultProfiles();
-    }
-
     public override bool Contains(object itemProperty)
     {
         foreach (LightingProfile profile in Items)
@@ -37,21 +35,21 @@ public sealed class LightingProfileRepository : CollectableItemRepository
 
         return false;
     }
+
+    //todo import thumbnail also
     /// <summary>
-    /// Import from download cache
+    /// Import from download cache, this should be call from download action only
+    /// if not, please dont raise isDownloaded
     /// </summary>
     /// <param name="path"></param>
     public override void ImportItem(string path)
     {
-        //find download category and set the category ID, this need extra leg works
-        //find config.json
-        var configPath = Path.Combine(path, path);
-        //read config
-        //simply copy folder to repository folder path
-        LocalFileHelpers.CopyDirectory(path, LocalFolderPath, true);
-        LoadFromDisk();
-        //update the collection
+        var itemFolder = Directory.GetDirectories(path).First();
+        if (itemFolder == null)
+            return;
+        ImportProfile(itemFolder, true);
     }
+
     public override void LoadFromDisk()
     {
         //this step is for first time downloading profile is in zip format
@@ -60,7 +58,7 @@ public sealed class LightingProfileRepository : CollectableItemRepository
         string[] files = Directory.GetDirectories(FolderPath);
         foreach (var file in files)
         {
-            var profilePath = Path.Combine(file, "profile.json");
+            var profilePath = Path.Combine(file, "config.json");
             var profile = JsonHelpers.DeserializeJson<LightingProfile>(profilePath);
             if (profile == null)
                 continue;
@@ -79,7 +77,7 @@ public sealed class LightingProfileRepository : CollectableItemRepository
             {
                 try
                 {
-                    ImportZipProfile(file);
+                    ImportZipProfile(file, null, true);
                 }
                 catch (Exception e)
                 {
@@ -92,42 +90,62 @@ public sealed class LightingProfileRepository : CollectableItemRepository
         }
     }
 
-    //todo make this block of code reusable
+    /// <summary>
+    /// import profile from directory, contains conig, thumb, or assets
+    /// </summary>
+    private void ImportProfile(string path, bool isDownloaded = false, LightingProfileCategory category = null,
+        bool isDefault = false)
+    {
+        //find config
+        var configPath = Path.Combine(path, "config.json");
+        if (!File.Exists(configPath))
+        {
+            //search for profile.json
+            configPath = Path.Combine(path, "profile.json");
+            if (!File.Exists(configPath))
+                return;
+        }
+
+        //deserialize this config to localize it
+        var profile = JsonHelpers.DeserializeJson<LightingProfile>(configPath);
+        if (profile == null)
+            return;
+        var matchedItems = Items.Where(x => x.Name.Contains(profile.Name));
+        //rename if match
+        if (matchedItems != null && matchedItems.Count() > 0)
+        {
+            profile.Name = profile.Name + "(" + matchedItems.Count() + ")";
+            Log.Information("Profile existed, rename new profile to " + profile.Name);
+        }
+
+        profile.ID = Guid.NewGuid();
+        profile.IsDefault = isDefault; // import profile can not be default
+        if (category != null)
+            profile.CategoryID = category.ID;
+        AddItem(profile);
+        //copy assets and icon if exist
+        var iconPath = Path.Combine(path, "icon.png");
+        if (File.Exists(iconPath))
+            File.Copy(iconPath, Path.Combine(profile.LocalPath, "icon.png"));
+        var assetsPath = Path.Combine(path, "assets");
+        if (Directory.Exists(assetsPath))
+            LocalFileHelpers.CopyDirectory(assetsPath, profile.LocalPath, true);
+
+        //notify side menu
+        if (isDownloaded)
+            ItemDownloaded?.Invoke(profile);
+    }
+
     /// <summary>
     /// A task for importing downloaded profile from zip file
     /// </summary>
     /// <param name="importFilePath"></param>
-    private async Task ImportZipProfile(string importFilePath)
+    public void ImportZipProfile(string importFilePath, LightingProfileCategory category = null, bool isDefault = false)
     {
         if (!Directory.Exists(Constants.CacheFolderPath))
             Directory.CreateDirectory(Constants.CacheFolderPath);
         ZipFile.ExtractToDirectory(importFilePath, Constants.CacheFolderPath, true);
-        var cacheConfig = Path.Combine(Constants.CacheFolderPath, "profile.json");
-        if (!File.Exists(cacheConfig))
-        {
-            Log.Error("Profile is corrupted or not supported");
-            return;
-        }
-
-        var profile = JsonHelpers.DeserializeJson<LightingProfile>(cacheConfig);
-        if (profile == null)
-        {
-            Log.Error("Profile parse error: " + cacheConfig);
-            return;
-        }
-
-        if (profile.ID == null)
-        {
-            profile.ID = Guid.NewGuid();
-        }
-        //this step will do both save to disk and add to collection
-        AddItem(profile);
-        //copy icon
-        var _iconPath = Path.Combine(Constants.CacheFolderPath, "icon.png");
-        if (!File.Exists(_iconPath))
-            return;
-        File.Copy(_iconPath, Path.Combine(profile.LocalPath, "icon.png"), true);
-        //clear cache
+        ImportProfile(Constants.CacheFolderPath, false, category, isDefault);
         ClearCache();
     }
 
@@ -136,63 +154,5 @@ public sealed class LightingProfileRepository : CollectableItemRepository
         if (Directory.Exists(Constants.CacheFolderPath))
             Directory.Delete(Constants.CacheFolderPath, true);
     }
-
-    /// <summary>
-    /// create default Profile Categories
-    /// </summary>
-    private void CreateDefaultProfiles()
-    {
-        //create default ambilight profile
-        var ambinoMixProfile = new LightingProfile()
-        {
-            Name = "Ambino Mix Profile",
-            Icon = "Youtube",
-            ID = Guid.NewGuid(),
-            IsDefault = true,
-            IconType = IconTypeEnum.Geometry,
-            Description = "Default profile for Ambino devices only"
-        };
-        var solidColorProfile = new LightingProfile()
-        {
-            Name = "Solid Green",
-            Icon = "solidrect",
-            ID = Guid.NewGuid(),
-            IsDefault = true
-        };
-        var colorPaletteProfile = new LightingProfile()
-        {
-            Name = "Color palette",
-            Icon = "solidrect",
-            ID = Guid.NewGuid(),
-            IsDefault = true
-        };
-        var musicReactive = new LightingProfile()
-        {
-            Name = "Music Reactive",
-            Icon = "solidrect",
-            ID = Guid.NewGuid(),
-            IsDefault = true
-        };
-        var animation = new LightingProfile()
-        {
-            Name = "Animation",
-            Icon = "solidrect",
-            ID = Guid.NewGuid(),
-            IsDefault = true
-        };
-        ambinoMixProfile.Zones.Add(_zoneRepository.GetDefaultAmbilightZone("Big Ambilight", 30, 177, 140, 90, 0));
-        ambinoMixProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Retro Palette", 495, 155, 75, 180,
-            DefaultColorPalettes.RetroPalette()));
-        ambinoMixProfile.Zones.Add(
-            _zoneRepository.GetDefaultSolidColorZone("Solid Red", 29, 400, 542, 58, Avalonia.Media.Colors.Red));
-        // solidColorProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Red",0,0,200,200,Avalonia.Media.Colors.Red));
-        // solidColorProfile.Zones.Add(_zoneRepository.GetDefaultSolidColorZone("Solid Greed",0,0,100,100,Avalonia.Media.Colors.GreenYellow));
-        // colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Retro Palette",0,0,200,100,DefaultColorPalettes.RetroPalette()));
-        // colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultColorPaletteZone("Red Palette",0,0,100,200,DefaultColorPalettes.RetroPalette()));
-        // colorPaletteProfile.Zones.Add(_zoneRepository.GetDefaultAnimationZone("Demo",100,100,200,100,null));
-        AddItem(ambinoMixProfile);
-
-        //todo download default profile
-        //write this to disk
-    }
+    
 }

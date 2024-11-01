@@ -17,7 +17,7 @@ public abstract class AssetItemViewModelBase : ViewModelBase
 
     public AssetItemViewModelBase()
     {
-        
+        SelectItemCommand = new RelayCommand(SelectItem);
     }
     public event Action<AssetItemViewModelBase> ItemSelected;
     private string _name;

@@ -9,7 +9,8 @@
              PointerEntered="InputElement_OnPointerEntered"
              PointerExited="InputElement_OnPointerExited"
              x:Class="Ambinity.Views.Screens.DeviceSettings.PortDetailView">
-      <UserControl.Styles>
+ 
+    <UserControl.Styles>
         <Style Selector="FlyoutPresenter.DefaultFlyout">
             <Setter Property="Background" Value="{DynamicResource TimePickerFlyoutPresenterBackground}" />
             <Setter Property="CornerRadius" Value="4" />
@@ -21,7 +22,7 @@
             <Grid>
                 <ContentControl Focusable="True" Content="{CompiledBinding FlyoutViewModel}"></ContentControl>
                 <Grid HorizontalAlignment="Right" VerticalAlignment="Top">
-                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal"  Margin="10" Spacing="5">
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="10" Spacing="5">
                         <!-- <Grid> -->
                         <!--     <Button ToolTip.Tip="Add to Library" Padding="1" Background="Transparent" Width="30" Height="30" -->
                         <!--             Classes="icon-button"> -->
@@ -47,32 +48,33 @@
     </FlyoutBase.AttachedFlyout>
     <ScrollViewer IsScrollInertiaEnabled="True">
         <StackPanel Spacing="4">
-            <TextBlock Text="{Binding Name}" FontSize="20" Margin="0,0,0,10" FontWeight="SemiBold"></TextBlock>
-            <Grid ColumnDefinitions="*,Auto">
-                <ContentControl Margin="0,10" Content="{Binding DetailViewModel}"></ContentControl>
-                <Grid Column="1">
-                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Top" Spacing="5">
-                        <Grid>
-                            <Button x:Name="ShowLibraryButton" Click="ShowLibraryButton_OnClick" ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1"
-                                    Background="Transparent" Width="30" Height="30"
-                                    Classes="icon-button">
-                                <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon>
-                            </Button>
-                            
-                            <ui:TeachingTip Name="libraryTip"
-                                            Target="{Binding #ShowLibraryButton}"
-                                            Title="Library"
-                                            Subtitle="Click this button to select your device">
-                            </ui:TeachingTip>
-                        </Grid>
+            <TextBlock Text="{Binding Name}" FontSize="20" Margin="0,0,0,20" FontWeight="SemiBold"></TextBlock>
+            <!-- <Grid ColumnDefinitions="*,Auto"> -->
+            <!--     <ContentControl Margin="0,10" Content="{Binding DetailViewModel}"></ContentControl> -->
+            <!--     <Grid Column="1"> -->
+            <!--         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Top" Spacing="5"> -->
+            <!--             <Grid> -->
+            <!--                 <Button x:Name="ShowLibraryButton" Click="ShowLibraryButton_OnClick" ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1" -->
+            <!--                         Background="Transparent" Width="30" Height="30" -->
+            <!--                         Classes="icon-button"> -->
+            <!--                     <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon> -->
+            <!--                 </Button> -->
+            <!--                  -->
+            <!--                 <ui:TeachingTip Name="libraryTip" -->
+            <!--                                 Target="{Binding #ShowLibraryButton}" -->
+            <!--                                 Title="Library" -->
+            <!--                                 Subtitle="Click this button to select your device"> -->
+            <!--                 </ui:TeachingTip> -->
+            <!--             </Grid> -->
+            <!-- -->
+            <!-- -->
+            <!--         </StackPanel> -->
+            <!--     </Grid> -->
+            <!-- </Grid> -->
 
-
-                    </StackPanel>
-                </Grid>
-            </Grid>
-            
             <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}" Height="1"></Separator>
-            <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}"  Margin="0,0" Grid.Row="1" Header="Enable"
+            <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0" Grid.Row="1"
+                                 Header="Enable"
                                  Description="Hide this device from all profiles"
                                  IsClickEnabled="False">
                 <ui:SettingsExpander.IconSource>
@@ -82,8 +84,9 @@
                     <ToggleSwitch IsChecked="{Binding IsEnabled}"></ToggleSwitch>
                 </ui:SettingsExpander.Footer>
             </ui:SettingsExpander>
-            <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}"  Height="1"></Separator>
-            <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0" Grid.Row="1" Header="Brightness"
+            <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}" Height="1"></Separator>
+            <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0" Grid.Row="1"
+                                 Header="Brightness"
 
                                  Description="Set brightness limit to prevent overloading"
                                  IsClickEnabled="False">
@@ -91,13 +94,51 @@
                     <ui:PathIconSource Data="{DynamicResource 'brightness'}"></ui:PathIconSource>
                 </ui:SettingsExpander.IconSource>
                 <ui:SettingsExpander.Footer>
-                    <Slider 
-                            Margin="0" Width="160" Value="{Binding Brightness}" Minimum="0" Maximum="255">
+                    <Slider
+                        Margin="0" Width="160" Value="{Binding Brightness}" Minimum="0" Maximum="255">
                     </Slider>
                 </ui:SettingsExpander.Footer>
             </ui:SettingsExpander>
+            <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}" Height="1"></Separator>
+            <ui:SettingsExpander IsVisible="{Binding !IsMultiplePortsSelected}" IsExpanded="True" Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0"
+                                 Grid.Row="1" Header="Devices"
+
+                                 Description="You can daisy chain by adding more devices to the port">
+                <ui:SettingsExpander.IconSource>
+                    <ui:PathIconSource Data="{DynamicResource 'ports'}"></ui:PathIconSource>
+                </ui:SettingsExpander.IconSource>
+                <ui:SettingsExpanderItem Background="Transparent">
+                    <StackPanel Spacing="10">
+                        <Button Command="{Binding AddNewDaisyChainDeviceCommand}">
+                            <Grid ColumnDefinitions="Auto,8,*">
+                                <PathIcon Data="{DynamicResource plus}" Width="15" Height="15"></PathIcon>
+                                <Grid Column="2">
+                                    <TextBlock ToolTip.Tip="Add same device to bottom of the chain" Text="Add device" FontSize="12" FontWeight="SemiBold"></TextBlock>
+                                </Grid>
+                            </Grid>
+
+                        </Button>
+                        <ItemsControl ItemsSource="{Binding Devices}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"></WrapPanel>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.DataTemplates>
+                                <DataTemplate DataType="{x:Type local:DaisyChainPlusSymbolViewModel}" >
+                                    <PathIcon Data="{DynamicResource right_arrow}" Width="15" Height="15" Margin="5,0"></PathIcon>
+                                </DataTemplate>
+                            </ItemsControl.DataTemplates>
+                        </ItemsControl>
+                    </StackPanel>
+                 
+
+
+                </ui:SettingsExpanderItem>
+            </ui:SettingsExpander>
+
         </StackPanel>
     </ScrollViewer>
-   
-  
+
+
 </UserControl>

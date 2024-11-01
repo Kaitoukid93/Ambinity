@@ -63,32 +63,40 @@ public class OpenRGBStream : IDataStream
     {
         Color[] outputStream;
         var output = Controller.LedController.Outputs[id];
-        var ambinityDevice = Controller.LedController.Outputs[id].Device;
-        int ledCount = ambinityDevice.Leds.Count;
-        var rgbOrder = output.RGBOrder;
+        var devices = Controller.LedController.Outputs[id].Devices;
+        int ledCount = 0;
+        foreach (var device in devices)
+        {
+            ledCount += device.Leds.Count;
+        }
+
         outputStream = new Color[ledCount];
         int counter = 0;
-        lock (ambinityDevice.Lock)
+        foreach (var device in devices)
         {
-            if (ambinityDevice.Leds.Count == 0) //this could be PID has removed all items add 1 dummy
+            lock (device.Lock)
             {
-                outputStream[counter++] = new Color(0, 0, 0);
-
-            }
-            else
-            {
-                foreach (AmbinityLED led in ambinityDevice.Leds)
+                if (device.Leds.Count == 0) //this could be PID has removed all items add 1 dummy
                 {
-                    ApplyColorWhitebalance(led.LED.Red, led.LED.Green, led.LED.Blue,
-                        ambinityDevice.RedScale, ambinityDevice.GreenScale,
-                        ambinityDevice.BlueScale,
-                        out byte FinalR, out byte FinalG, out byte FinalB);
-                    ReOrderSpotColor(rgbOrder, FinalR, FinalG, FinalB, out byte r, out byte g, out byte b);
-                    //get data
-                    outputStream[counter++] = new Color(led.LED.Red, led.LED.Green, led.LED.Blue);
+                    outputStream[counter++] = new Color(0, 0, 0);
+                }
+                else
+                {
+                    var rgbOrder = device.RGBOrder;
+                    foreach (AmbinityLED led in device.Leds)
+                    {
+                        ApplyColorWhitebalance(led.LED.Red, led.LED.Green, led.LED.Blue,
+                            device.RedScale, device.GreenScale,
+                            device.BlueScale,
+                            out byte FinalR, out byte FinalG, out byte FinalB);
+                        ReOrderSpotColor(rgbOrder, FinalR, FinalG, FinalB, out byte r, out byte g, out byte b);
+                        //get data
+                        outputStream[counter++] = new Color(led.LED.Red, led.LED.Green, led.LED.Blue);
+                    }
                 }
             }
         }
+
 
         return outputStream;
     }
@@ -144,10 +152,10 @@ public class OpenRGBStream : IDataStream
 
     public void Start()
     {
-        if(!Controller.AutoConnect)
+        if (!Controller.AutoConnect)
             return;
         Log.Information("Start called for SerialStream");
-        if(!_client.IsInitialized)
+        if (!_client.IsInitialized)
             return;
         GetDeviceIndex();
         if (!_isDeviceValid)
@@ -170,23 +178,24 @@ public class OpenRGBStream : IDataStream
         {
             var cancellationToken = (CancellationToken)tokenObject;
             var ledCount = _client.OpenRGBClient.GetControllerData(_deviceIndex).Leds.Count();
-            
+
             while (!cancellationToken.IsCancellationRequested)
             {
                 //send frame data
                 var outputColor = new List<Color>();
-                for (int i = 0; i < Controller.LedController.Outputs.Count; i++)
+                for (var i = 0; i < Controller.LedController.Outputs.Count; i++)
                 {
                     var stream = GetOutputStream(i);
                     outputColor.AddRange(stream);
                 }
+
                 lock (_client.Lock)
                 {
                     if (_client.IsInitialized)
                         _client.OpenRGBClient.UpdateLeds(_deviceIndex, outputColor.Take(ledCount).ToArray());
                 }
+
                 Thread.Sleep(1000 / 30);
-            
             }
         }
         catch (Exception e)

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.ViewModels;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
+using Ambinity.Views.LayoutEditor;
 using Ambinity.Windows;
 using AmbinityCore.DataStream;
 using AmbinityCore.Models.Collection;
@@ -72,12 +73,15 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
         CurrentFlyoutViewModel = null;
     }
 
-    private void OnColorPaletteSelected(ICollectableItem item)
+    private void OnColorPaletteSelected(AssetItemViewModelBase item)
     {
-        var palette = item as ColorPalette;
-        var usableColor = palette.Resize(8);
-        SelectedPalette = new ColorPaletteAssetViewModel(new ColorPalette(usableColor));
-        _ledHardwareSettings.HWL_palette = SelectedPalette.Colors.ToArray();
+        if (item is AssetItemViewModelBase paletteAsset)
+        {
+            var palette = paletteAsset.Item as ColorPalette;
+            var usableColor = palette.Resize(8);
+            SelectedPalette = new ColorPaletteAssetViewModel(new ColorPalette(usableColor));
+            _ledHardwareSettings.HWL_palette = SelectedPalette.Colors.ToArray();
+        }
     }
 
     public async Task<bool> Init(IController controller)

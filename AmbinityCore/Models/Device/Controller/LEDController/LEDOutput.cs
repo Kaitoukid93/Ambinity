@@ -7,17 +7,18 @@ public class LEDOutput : ObservableObject
 {
     public event Action<LEDOutput>  OutputDisabled;
     public event Action<LEDOutput> OutputEnabled;
+    public event Action<LEDOutput> DevicesUpdated;
 
     public LEDOutput(int maxLed, int index, AmbinityDevice device)
     {
         MaxLED = maxLed;
         Index = index;
-        Device = device;
+        Devices = [device];
     }
 
     public int MaxLED { get; set; }
     public int Index { get; set; }
-    public AmbinityDevice Device { get; set; }
+    public List<AmbinityDevice> Devices { get; set; }
     private bool _isEnabled = true;
 
     public bool IsEnabled
@@ -45,7 +46,20 @@ public class LEDOutput : ObservableObject
             return;
         Brightness = value;
     }
-   
-    public RGBLEDOrderEnum RGBOrder { get; set; }
+
+    public void AddDeviceToOutputChain(AmbinityDevice device)
+    {
+        Devices.Add(device);
+        DevicesUpdated?.Invoke(this);
+    }
+    public void RemoveDeviceFromOutputChain(AmbinityDevice device)
+    {
+        if (Devices.Contains(device))
+        {
+            Devices.Remove(device);
+            DevicesUpdated?.Invoke(this);
+        }
+        
+    }
    
 }

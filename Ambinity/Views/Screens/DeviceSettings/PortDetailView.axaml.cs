@@ -46,7 +46,7 @@ public partial class PortDetailView : UserControl
     {
         if (shouldShowTip)
         {
-            libraryTip.IsOpen = true;
+           // libraryTip.IsOpen = true;
             shouldShowTip = false;
         }
         
@@ -54,11 +54,11 @@ public partial class PortDetailView : UserControl
 
     private void ShowLibraryButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        libraryTip.IsOpen = false;
+        //libraryTip.IsOpen = false;
     }
 
     private void InputElement_OnPointerExited(object? sender, PointerEventArgs e)
     {
-        libraryTip.IsOpen = false;
+       // libraryTip.IsOpen = false;
     }
 }

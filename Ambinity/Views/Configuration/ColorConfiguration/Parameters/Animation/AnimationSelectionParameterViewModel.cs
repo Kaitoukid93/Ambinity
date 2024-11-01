@@ -77,9 +77,14 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
         
     }
 
-    private void OnAnimationSelected(ICollectableItem item)
+    private void OnAnimationSelected(AssetItemViewModelBase item)
     {
-        _configuration.ChangeAnimation(item as AmbinityCore.Repositories.Animation);
+        if (item is AnimationAssetViewModel)
+        {
+            var animationAsset = item as AnimationAssetViewModel;
+            _configuration.ChangeAnimation(animationAsset.Item as AmbinityCore.Repositories.Animation);
+        }
+        
     }
 
     public ICommand OpenLibraryCommand { get; }

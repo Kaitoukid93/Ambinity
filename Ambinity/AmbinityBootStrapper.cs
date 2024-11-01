@@ -13,6 +13,7 @@ using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Views.LayoutEditor.RightPanel.PropertiesView;
 using Ambinity.Views.NonClientArea;
+using Ambinity.Views.OnlineStore.Library;
 using Ambinity.Views.Screens.AppSettings;
 using Ambinity.Views.Screens.DeviceLayout;
 using Ambinity.Views.Screens.DeviceLayout.Library;
@@ -77,7 +78,7 @@ public class AmbinityBootStrapper
         ConfigureIoc();
         //get settings
         _generalSettingsManager = Ioc.Default.GetRequiredService<GeneralSettingsManager>();
-        //register auto start
+        //register auto starts
        // ConfigureAutoStart();
         //set theme and color
         ConfigureTheme();
@@ -147,6 +148,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<AppSettingsViewModel>()
                 .AddSingleton<DeviceSettingsViewModel>()
                 .AddSingleton<DeviceSettingsDashboardViewModel>()
+                .AddSingleton<HomeViewModelFactory>()
                 .AddSingleton<HomeViewModel>()
                 .AddSingleton<DeviceFirmwareSettingsViewModel>()
                 .AddSingleton<DeviceHardwareLightingViewModel>()
@@ -183,9 +185,11 @@ public class AmbinityBootStrapper
                 .AddSingleton<DeviceLayoutAssetsViewModel>()
                 .AddSingleton<LightingZoneAssetsViewModel>()
                 .AddSingleton<AnimationAssetsViewModel>()
+                .AddSingleton<LightingProfileAssetsViewModel>()
                 .AddSingleton<ColorPalettesLibraryViewModel>()
                 .AddSingleton<DeviceLayoutsLibraryViewModel>()
                 .AddSingleton<AnimationLibraryViewModel>()
+                .AddSingleton<LightingProfileLibraryViewModel>()
                 .AddSingleton<LibraryViewModelFactory>()
                 .AddSingleton<Draw2DCanvasInfoBarViewModel>()
                 .AddSingleton<AssetItemViewModelFactory>()
@@ -230,6 +234,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<LightingProfileDecoder>()
                 .AddSingleton<ColorEngineProvider>()
                 //Repository singleton
+                .AddSingleton<TutorialsOnlineRepository>()
                 .AddSingleton<StaticColorsRepository>()
                 .AddSingleton<ColorPaletteRepository>()
                 .AddSingleton<AnimationsRepository>()
@@ -261,6 +266,10 @@ public class AmbinityBootStrapper
                 .AddSingleton<DownloadService>()
                 .AddSingleton<FirmwareService>()
                 .AddSingleton<AmbinityStoreItemExportViewModel>()
+                .AddSingleton<ProfileStoreViewModel>()
+                .AddSingleton<ProfileStoreNonClientAreaContentViewModel>()
+                .AddSingleton<AmbinityStoreNavigation>()
+                .AddSingleton<AmbinityStoreDetailViewModel>()
                 .BuildServiceProvider());
     }
 

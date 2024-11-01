@@ -19,6 +19,7 @@ using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using MathNet.Numerics.Distributions;
+using Newtonsoft.Json;
 using Serilog;
 
 namespace Ambinity.Views.SideMenu;
@@ -40,6 +41,7 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         _vmFactory = vmFactory;
         _thumbnailService = thumbnailService;
         _profileRepository = profileRepository;
+        _profileRepository.ItemDownloaded += OnNewProfileDownloaded;
         _profileCategory = category;
         Content = _profileCategory.Name;
         _dialogService = dialogService;
@@ -55,6 +57,23 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         RenameCategory = new AsyncRelayCommand(ExecuteRenameCategory);
         DeleteCategory = new AsyncRelayCommand(ExecuteDeleteCategory);
         Init();
+    }
+
+    /// <summary>
+    /// import or update an item from downloaded path
+    /// </summary>
+    /// <param name="path"></param>
+    private void OnNewProfileDownloaded(LightingProfile profile)
+    {
+        if (this.Category.Name != "Download")
+            return;
+
+        //write new file
+        var profileVm = _vmFactory.GetProfileViewModel(profile, this);
+        _profileCategory.AddProfile(profile);
+        Profiles.Add(profileVm);
+        profile.UpdateIcon();
+        Log.Information("Successfully downloaded" + " " + profile.Name + "!");
     }
 
     public LightingProfileCategory Category => _profileCategory;
@@ -167,7 +186,7 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
             profiles.Add(profileViewModel);
         }
 
-        Profiles = new ObservableCollection<SideMenuProfileViewModel>(profiles.OrderBy(i=>i.Profile.Name).ToList());
+        Profiles = new ObservableCollection<SideMenuProfileViewModel>(profiles.OrderBy(i => i.Profile.Name).ToList());
     }
 
     private async Task ExecuteRenameCategory()
@@ -246,58 +265,20 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// import from zip executed from side menu, profile need category information
+    /// </summary>
     private async Task ExecuteImportProfile()
     {
         string[]? result = await _windowService.CreateOpenFileDialog()
             .HavingFilter(f => f.WithExtension("zip").WithName("Zip archive"))
             .ShowAsync();
-
         if (result == null)
             return;
         var importFilePath = result.First();
-        // var profileName = Path.GetFileNameWithoutExtension(importFilePath);
-        if (!Directory.Exists(Constants.CacheFolderPath))
-            Directory.CreateDirectory(Constants.CacheFolderPath);
-        ZipFile.ExtractToDirectory(importFilePath, Constants.CacheFolderPath, true);
-        var cacheConfig = Path.Combine(Constants.CacheFolderPath, "profile.json");
-        if (!File.Exists(cacheConfig))
-        {
-            Log.Error("Profile is corrupted or not supported");
-            return;
-        }
-
-        var profile = JsonHelpers.DeserializeJson<LightingProfile>(cacheConfig);
-        if (profile == null)
-        {
-            Log.Error("Profile parse error: " + cacheConfig);
-            return;
-        }
-
-        if (profile.ID == null)
-        {
-            profile.ID = Guid.NewGuid();
-        }
-
-        profile.CategoryID = this.Category.ID;
-        profile.Category = this.Category;
-        profile.IsDefault = false;
-        var profileViewModel = _vmFactory.GetProfileViewModel(profile, this);
-        Profiles.Add(profileViewModel);
-        _profileRepository.AddItem(profile);
-        //copy icon
-        var _iconPath = Path.Combine(Constants.CacheFolderPath, "icon.png");
-        if (!File.Exists(_iconPath))
-            return;
-        File.Copy(_iconPath, Path.Combine(profile.LocalPath,"icon.png"), true);
-        //clear cache
-        ClearCache();
-        profile.UpdateIcon();
-    }
-
-    public void ClearCache()
-    {
-        if (Directory.Exists(Constants.CacheFolderPath))
-            Directory.Delete(Constants.CacheFolderPath, true);
+        _profileRepository.ImportZipProfile(importFilePath,this.Category);
+        //reload item
+        Init();
     }
 
     private void ExecuteToggleSuspended()

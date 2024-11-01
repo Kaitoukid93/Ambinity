@@ -9,48 +9,67 @@
              x:Class="Ambinity.Views.OnlineStore.OnlineItemAssetView">
     <UserControl.Styles>
         <Style Selector="TextBlock.downloadButton">
-            <Setter Property="Text" Value="Downloading"/>
+            <Setter Property="Text" Value="Downloading" />
         </Style>
     </UserControl.Styles>
     <Button Margin=" 0,5" HorizontalContentAlignment="Stretch" Padding="0" HorizontalAlignment="Stretch">
         <Grid ColumnDefinitions="70,*" Height="100">
-            <ui:ProgressRing Grid.Column="1" IsVisible="{CompiledBinding IsDownloading}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10"  IsIndeterminate="True"/>
+            <ui:ProgressRing Grid.Column="1" IsVisible="{CompiledBinding IsDownloading}" HorizontalAlignment="Right"
+                             VerticalAlignment="Top" Margin="10" IsIndeterminate="True" />
             <Image Margin="15" Width="70" HorizontalAlignment="Left"
                    Source="{Binding GetThumbnail^,FallbackValue=null}" Stretch="Uniform">
             </Image>
             <Grid Column="1" RowDefinitions="Auto,30,*,Auto">
-                <TextBlock ToolTip.Tip="{Binding Name}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis" MaxWidth="150" Grid.Row="0" Margin="0,10,0,0" FontWeight="SemiBold" Text="{Binding Name}"></TextBlock>
+                <TextBlock ToolTip.Tip="{Binding Name}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"
+                           MaxWidth="150" Grid.Row="0" Margin="0,10,0,0" FontWeight="SemiBold" Text="{Binding Name}">
+                </TextBlock>
                 <Grid Row="1" RowDefinitions="*,*">
-                    <TextBlock  FontSize="12"  Foreground="{DynamicResource ButtonForegroundDisabled}"
+                    <TextBlock HorizontalAlignment="Left" TextTrimming="CharacterEllipsis" FontSize="12" MaxWidth="150"
+                               Foreground="{DynamicResource ButtonForegroundDisabled}"
                                Text="{Binding Description }">
                     </TextBlock>
-                    <TextBlock  Margin="0,0,15,0" HorizontalAlignment="Left" Grid.Row="1" FontSize="12" Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding LastUpdate}"></TextBlock>
+                    <TextBlock Margin="0,0,15,0" HorizontalAlignment="Left" Grid.Row="1" FontSize="12"
+                               Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding LastUpdate}">
+                    </TextBlock>
                 </Grid>
                 <Grid Grid.Row="3">
-                    <StackPanel HorizontalAlignment="Right" IsVisible="{Binding IsLocalExisted}" Spacing="0" Orientation="Horizontal">
-                        <Button Command="{Binding DownloadItemCommand}" CornerRadius="3" Padding="5,3"  Margin="5,5" HorizontalAlignment="Right" Classes="chip">
+                    <StackPanel HorizontalAlignment="Right" IsVisible="{Binding IsLocalExisted}" Spacing="0"
+                                Orientation="Horizontal">
+                        <Button Command="{Binding DownloadItemCommand}" CornerRadius="3" Padding="5,3" Margin="5,5"
+                                HorizontalAlignment="Right" Classes="chip">
                             <Grid ColumnDefinitions="Auto,*">
                                 <PathIcon Margin="0,0,5,0" Width="12" Height="10" Data="{DynamicResource download}"></PathIcon>
-                                <TextBlock Classes.downloadButton="{Binding IsDownloading}" Margin="0,0,0,2" Grid.Column="1" FontSize="12" Text="Reinstall"></TextBlock>
+                                <TextBlock Classes.downloadButton="{Binding IsDownloading}" Margin="0,0,0,2"
+                                           Grid.Column="1" FontSize="12" Text="Reinstall">
+                                </TextBlock>
                             </Grid>
-                   
+
                         </Button>
-                        <Border CornerRadius="3"  Margin="5,5" HorizontalAlignment="Right" Classes="chip">
+                        <Border CornerRadius="3" Margin="5,5" HorizontalAlignment="Right" Classes="chip">
                             <Grid ColumnDefinitions="Auto,*">
-                                <PathIcon Foreground="{DynamicResource SystemAccentColor}" Width="12"  Margin="0,0,3,0"  Height="12" Data="{DynamicResource checkIcon}"></PathIcon>
-                                <TextBlock Margin="0,0,0,2" Grid.Column="1" Foreground="{DynamicResource SystemAccentColor}" FontSize="12" Text="Installed"></TextBlock>
+                                <PathIcon Foreground="{DynamicResource SystemAccentColor}" Width="12" Margin="0,0,3,0"
+                                          Height="12" Data="{DynamicResource checkIcon}">
+                                </PathIcon>
+                                <TextBlock Margin="0,0,0,2" Grid.Column="1"
+                                           Foreground="{DynamicResource SystemAccentColor}" FontSize="12"
+                                           Text="Installed">
+                                </TextBlock>
                             </Grid>
                         </Border>
                     </StackPanel>
-                   
-                    <Button Command="{Binding DownloadItemCommand}" CornerRadius="3" Padding="5,3" IsVisible="{Binding !IsLocalExisted}" Margin="5,5" HorizontalAlignment="Right" Classes="chip">
+
+                    <Button Command="{Binding DownloadItemCommand}" CornerRadius="3" Padding="5,3"
+                            IsVisible="{Binding !IsLocalExisted}" Margin="5,5" HorizontalAlignment="Right"
+                            Classes="chip">
                         <Grid ColumnDefinitions="Auto,*">
                             <PathIcon Margin="0,0,5,0" Width="12" Height="10" Data="{DynamicResource download}"></PathIcon>
-                            <TextBlock Classes.downloadButton="{Binding IsDownloading}" Margin="0,0,0,2" Grid.Column="1" FontSize="12" Text="Install"></TextBlock>
+                            <TextBlock Classes.downloadButton="{Binding IsDownloading}" Margin="0,0,0,2"
+                                       Grid.Column="1" FontSize="12" Text="Install">
+                            </TextBlock>
                         </Grid>
-                   
+
                     </Button>
-                  
+
                 </Grid>
             </Grid>
 

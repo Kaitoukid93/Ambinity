@@ -97,6 +97,7 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
         profile.CategoryID = ID;
         Profiles.Add(profile);
         OnPropertyChanged(nameof(Profiles));
+        profile.Save();
         Save();
     }
 

@@ -1,3 +1,4 @@
+using Ambinity.Views.OnlineStore.Library;
 using Ambinity.Views.Screens.DeviceLayout.Library;
 using Ambinity.Views.Screens.ProfileEditor.Library;
 
@@ -10,7 +11,7 @@ public class LibraryViewModelFactory(
     ColorPalettesLibraryViewModel colorPalettesLibraryViewModel,
     AnimationLibraryViewModel animationLibraryViewModel,
     DeviceLayoutsLibraryViewModel deviceLayoutsLibraryViewModel,
-    LightingZonesLibraryViewModel lightingZonesLibraryViewModel)
+    LightingZonesLibraryViewModel lightingZonesLibraryViewModel, LightingProfileLibraryViewModel lightingProfilesLibraryViewModel)
 {
     public LibraryViewModelBase GetLibraryViewModel(string type)
     {
@@ -20,6 +21,7 @@ public class LibraryViewModelFactory(
             "Animation" => animationLibraryViewModel,
             "DeviceLayout" => deviceLayoutsLibraryViewModel,
             "LightingZone" => lightingZonesLibraryViewModel,
+            "LightingProfile" => lightingProfilesLibraryViewModel,
             _ => null
         };
     }

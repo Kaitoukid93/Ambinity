@@ -21,7 +21,7 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         PositionConfiguration = positionConfigurationViewModel;
         _canvasViewModel = canvasViewModel;
         _colorConfigurationViewModelFactory = colorConfigurationViewModelFactory;
-        Init();
+       
     }
 
     private Figure _selectedFigure;

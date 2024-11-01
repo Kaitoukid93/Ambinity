@@ -40,7 +40,6 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         _profileEditorViewModel = profileEditorViewModel;
         _deviceLayoutEditorViewModel = deviceLayoutEditorViewModel;
         _vmFactory = vmFactory;
-        _profileRepository = profileRepository;
         _categoryRepository = categoryRepository;
         _categoryRepository.ItemAdded += OnNewCategoryAdded;
         _rootNavigationStores = rootNavigationStores;
@@ -87,8 +86,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
             _categoryRepository.AddItem(category);
         }
     }
-
-    private LightingProfileRepository _profileRepository;
+    
     private LightingProfileCategoryRepository _categoryRepository;
     private ObservableCollection<SideMenuScreenViewModel> _screenMenuItems;
     private IDialogService _dialogService;

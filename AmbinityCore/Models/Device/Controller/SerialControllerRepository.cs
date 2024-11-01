@@ -140,7 +140,10 @@ public class SerialControllerRepository : CollectableItemRepository
             controller.LocalPath = controllerPath;
             foreach (var output in controller.LedController.Outputs)
             {
-                output.Device.LoadLayout();
+                foreach (var device in output.Devices)
+                {
+                    device.LoadLayout();
+                }
             }
 
             controller.RegisterLEDController();

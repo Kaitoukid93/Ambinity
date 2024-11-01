@@ -70,6 +70,8 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
         _onlineItem.Owner = Author;
         _onlineItem.Version = Version;
         _onlineItem.Description = Description;
+        _onlineItem.Tags = Tags.Split(',');
+        _onlineItem.Type = _item.GetType();
         _item.Save();
     }
 
@@ -118,7 +120,7 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
         var screenshotsDir = Path.Combine(workingDir, "screenshots");
         var descriptionDir = Path.Combine(workingDir, "description.md");
         var infoDir = Path.Combine(workingDir, "info.json");
-        var thumbnailDir = Path.Combine(workingDir, "thumbnails.png");
+        var thumbnailDir = Path.Combine(workingDir, "thumb.png");
         Directory.CreateDirectory(workingDir);
         Directory.CreateDirectory(contentDir);
         Directory.CreateDirectory(screenshotsDir);
@@ -173,7 +175,17 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+    private string _tags;
 
+    public string Tags
+    {
+        get => _tags;
+        set
+        {
+            _tags = value;
+            OnPropertyChanged();
+        }
+    }
     private string _mdText =
         "This is a multi-line display\n    that has returns in it.\n    The text block respects the line breaks\n    as set out in XAML.";
 

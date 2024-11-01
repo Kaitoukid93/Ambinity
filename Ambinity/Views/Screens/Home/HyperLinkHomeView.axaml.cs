@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Ambinity.Views.Screens.Home;
 
-public partial class ProfileHomeView : UserControl
+public partial class HyperLinkHomeView : UserControl
 {
-    public ProfileHomeView()
+    public HyperLinkHomeView()
     {
         InitializeComponent();
     }

@@ -19,11 +19,13 @@ namespace Ambinity.Views.LayoutEditor;
 /// </summary>
 public abstract class AssetsViewModelBase : ViewModelBase
 {
+    public event Action LoadingChanged;
     public AssetsViewModelBase(DownloadService downloadService, AssetItemViewModelFactory assetItemViewModelFactory)
     {
         _assetItemViewModelFactory = assetItemViewModelFactory;
         _downloadService = downloadService;
         Tabs = ["Local", "Online"];
+        
     }
 
     private string[] _filters;
@@ -90,6 +92,7 @@ public abstract class AssetsViewModelBase : ViewModelBase
         set
         {
             _isloading = value;
+            LoadingChanged?.Invoke();
             OnPropertyChanged();
         }
     }
@@ -102,11 +105,9 @@ public abstract class AssetsViewModelBase : ViewModelBase
         get => _selectedRepository;
         set
         {
-            if (_selectedRepository == value)
-                return;
             _selectedRepository = value;
             OnPropertyChanged();
-            UpdateAssets();
+            UpdateAssets(_selectedRepository);
         }
     }
 
@@ -125,23 +126,26 @@ public abstract class AssetsViewModelBase : ViewModelBase
 
     public bool ShowNoResult => !IsLoading && DisplayAssets.Count == 0;
 
-    public async Task UpdateAssets()
+    public async Task UpdateAssets(string repo = null, bool isBackground=false)
     {
-        if(IsLoading)
-            return;
         IsLoading = true;
         DisplayAssets?.Clear();
         AvailableAssets?.Clear();
         SearchContent = string.Empty;
-        switch (_selectedRepository)
+        switch (repo)
         {
             case "Local":
                 foreach (var item in _localRerpository.Items)
                 {
                     await Task.Run(() => Task.Delay(20));
                     var asset = _assetItemViewModelFactory.GetViewModel(item);
+                    if (asset==null)
+                    {
+                        continue;
+                    }
                     RegisterAsset(asset);
                     AvailableAssets.Add(asset);
+                    if(!isBackground)
                     DisplayAssets.Add(asset);
                     //todo filter? at the moment, download items is too small in quantity to actually need a filter system
                 }
@@ -154,6 +158,7 @@ public abstract class AssetsViewModelBase : ViewModelBase
                     RegisterAsset(asset);
                     await Task.Run(() => Task.Delay(20));
                     AvailableAssets.Add(asset);
+                    if(!isBackground)
                     DisplayAssets.Add(asset);
                 }
                 Filters = _onlineItemRepository.Filters.ToArray();
@@ -163,20 +168,12 @@ public abstract class AssetsViewModelBase : ViewModelBase
         IsLoading = false;
     }
 
-    public async Task Init(CollectableItemRepository localRepo, OnlineItemRepository onlineRepo)
+    public virtual async Task Init(CollectableItemRepository localRepo, OnlineItemRepository onlineRepo)
     {
         _localRerpository = localRepo;
         _onlineItemRepository = onlineRepo;
-        DisplayAssets = new ObservableCollection<AssetItemViewModelBase>();
-        AvailableAssets = new ObservableCollection<AssetItemViewModelBase>();
-        //show local repo
-        _selectedRepository = "Local";
-        await UpdateAssets();
-    }
-
-    private void UnRegisterAsset(AssetItemViewModelBase asset)
-    {
-        asset.ItemSelected -= OnAssetSelected;
+        DisplayAssets = [];
+        AvailableAssets = [];
     }
     private void FilterItem(string filter)
     {
@@ -192,7 +189,7 @@ public abstract class AssetsViewModelBase : ViewModelBase
 
         OnPropertyChanged(nameof(ShowNoResult));
     }
-
+    
     private void RegisterAsset(AssetItemViewModelBase asset)
     {
         asset.ItemSelected += OnAssetSelected;

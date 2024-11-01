@@ -10,7 +10,16 @@ namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 
 public class LibraryViewModelBase : FlyoutContentViewModelBase
 {
-    public event Action<ICollectableItem> ItemSelected;
+    
+    /// <summary>
+    /// Library base viewmodel for all collectable item that require a library view
+    /// Requirements:
+    /// Local Repository: repository for local storage
+    /// Online Repository : repository for seeking online item
+    /// AssetsViewModel : the viewmodel for displaying tabs, handling tab switch and display logic
+    /// todo DetailsViewModel: detail when click item
+    /// </summary>
+    public event Action<AssetItemViewModelBase> ItemSelected;
     public LibraryViewModelBase(CollectableItemRepository localRepository,
         OnlineItemRepository onlineItemRepository,
         AssetsViewModelBase localAssetsViewModel)
@@ -19,25 +28,25 @@ public class LibraryViewModelBase : FlyoutContentViewModelBase
         _onlineItemRepository = onlineItemRepository;
         AssetsViewModel = localAssetsViewModel;
         AssetsViewModel.ItemSelected += OnItemSelected;
-        UpdateContent();
+        
     }
 
     private void OnItemSelected(AssetItemViewModelBase obj)
     {
-        ItemSelected?.Invoke(obj.Item);
+        ItemSelected?.Invoke(obj);
     }
 
     private CollectableItemRepository _localRepository;
     private OnlineItemRepository _onlineItemRepository;
     public AssetsViewModelBase AssetsViewModel { get;}
-    private ViewModelBase _currentTabContent;
+    private ViewModelBase _currentViewContent;
 
-    public ViewModelBase CurrentTabContent
+    public ViewModelBase CurrentViewContent
     {
-        get => _currentTabContent;
+        get => _currentViewContent;
         set
         {
-            _currentTabContent = value;
+            _currentViewContent = value;
             OnPropertyChanged();
         }
     }
@@ -46,12 +55,14 @@ public class LibraryViewModelBase : FlyoutContentViewModelBase
 
     public async Task Init()
     {
+        CurrentViewContent = AssetsViewModel;
         await AssetsViewModel.Init(_localRepository, _onlineItemRepository);
+        
     }
 
     private void UpdateContent()
     {
-        CurrentTabContent = AssetsViewModel;
+        CurrentViewContent = AssetsViewModel;
         AssetsViewModel.Init(_localRepository, _onlineItemRepository);
     }
 
