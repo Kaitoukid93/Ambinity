@@ -23,6 +23,7 @@ using Draw2D.Core.Policies.FigurePolicy;
 using Draw2D.Core.Policies.RouterPolicy;
 using Draw2D.Core.Shapes.Basic;
 using Draw2D.Core.Shapes.FigureExtensions;
+using FluentAvalonia.UI.Controls;
 using Canvas = Draw2D.Core.Canvas;
 using Grid = Draw2D.Core.Grid;
 using Size = Avalonia.Size;
@@ -431,10 +432,19 @@ public class Draw2DCanvasViewModel : ViewModelBase
     private async Task RemoveFigure()
     {
         //show dialogvar vm = new InputDialogContentViewModel();
-        var vm = new InputDialogContentViewModel();
-        await _dialogService.ShowInputDialog(vm, "Rename", "Ok", "Cancel");
-        var result = vm.UserInput;
-        if (result == "OK")
+        var vm = new DeleteDialogContentViewModel();
+        vm.DialogClosed += OnDeleteDialogClosed;
+        await _dialogService.ShowDeleteDialog(vm,"Do you want to remove selected zones?","Remove", "Cancel" );
+        
+    }
+
+    private void OnDeleteDialogClosed(object? sender, EventArgs e)
+    {
+        var vm = sender as DeleteDialogContentViewModel;
+        var result = (e as ContentDialogClosedEventArgs).Result;
+        if (result == ContentDialogResult.Secondary || result == ContentDialogResult.None)
+            return;
+        if (result == ContentDialogResult.Primary)
         {
             foreach (var figure in Canvas.Selection.All)
             {
@@ -444,6 +454,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
             Canvas.RemoveSelected();
             UpdateFigure();
         }
+       
     }
 
     /// <summary>
