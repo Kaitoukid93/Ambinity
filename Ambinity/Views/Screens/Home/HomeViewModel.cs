@@ -47,6 +47,7 @@ public class HomeViewModel : ViewModelBase
     public async Task Init()
     {
         AvailableAssets?.Clear();
+        AvailableTutorials?.Clear();
         DisplayAssets?.Clear();
         await Task.Run(() => _profileOnlineRepository.Init());
         foreach (var item in _profileOnlineRepository.Items)
@@ -62,7 +63,7 @@ public class HomeViewModel : ViewModelBase
             DisplayAssets.Add(asset);
             asset.ItemSelected += OnProfileSelected;
         }
-//load tutorials if any
+         //load tutorials if any
         _tutorialRepository.Init();
         foreach (var item in _tutorialRepository.Items)
         {
