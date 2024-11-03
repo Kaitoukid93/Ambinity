@@ -165,7 +165,7 @@ internal sealed class SerialStream : IDisposable, IDataStream
 
         outputStream[counter++] = 0;
 
-        double brightnessCap = Controller.LedController.MaxBrightness / 100d;
+        double brightnessCap = output.Brightness / 255d;
         var allBlack = true;
         int aliveSpotCounter = 0;
         DimLED();

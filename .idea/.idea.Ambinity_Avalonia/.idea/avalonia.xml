@@ -193,7 +193,7 @@
         <entry key="Ambinity/Views/Screens/ProfileEditor/Library/LightingZoneAssetsView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/Library/LightingZoneLibraryView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/Library/LightingZonesLibraryView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
-        <entry key="Ambinity/Views/Screens/ProfileEditor/ProfileEditorView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/ProfileEditor/ProfileEditorView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/RightPanelFlyoutView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/RightPanelView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/ProfileEditor/RightPanelViewModel.axaml" value="Ambinity/Ambinity.csproj" />

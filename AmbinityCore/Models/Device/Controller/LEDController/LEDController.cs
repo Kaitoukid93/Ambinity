@@ -45,8 +45,6 @@ public class LEDController : ObservableObject
         get => _hardwareSettings;
         set => SetProperty(ref _hardwareSettings, value);
     }
-
-    public byte MaxBrightness { get; set; }
     private List<LEDOutput> _outputs;
 
     public List<LEDOutput> Outputs

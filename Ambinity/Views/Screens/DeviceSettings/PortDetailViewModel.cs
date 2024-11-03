@@ -30,7 +30,7 @@ public class PortDetailViewModel : ViewModelBase
         _deviceViewModelFactory = deviceViewModelFactory;
         AddNewDaisyChainDeviceCommand = new RelayCommand(AddNewDaisyChainDevice);
     }
-    
+
 
     private void AddNewDaisyChainDevice()
     {
@@ -58,7 +58,7 @@ public class PortDetailViewModel : ViewModelBase
     }
 
     public FlyoutContentViewModelBase FlyoutViewModel { get; set; }
-    
+
 
     private void OnLibraryItemSelected(AssetItemViewModelBase item)
     {
@@ -126,7 +126,6 @@ public class PortDetailViewModel : ViewModelBase
 
     private void OnDeviceDetach(AmbinityDeviceDaisyChainElementViewModel device)
     {
-      
         if (_selectedPorts.Count > 1)
             return;
         //simply add new device to output devices and re-init the viewmodel
@@ -135,10 +134,8 @@ public class PortDetailViewModel : ViewModelBase
         {
             selectedPort.Output.RemoveDeviceFromOutputChain(device.Device);
         }
-        
-        LoadDevices();
 
-        
+        LoadDevices();
     }
 
     private void OnChangeDeviceRequest(AmbinityDeviceDaisyChainElementViewModel obj)
@@ -187,6 +184,7 @@ public class PortDetailViewModel : ViewModelBase
 
     private int _brightness;
 
+    //todo implement port identify by toggling all led attached to the port
     public int Brightness
     {
         get => _brightness;
