@@ -124,11 +124,11 @@ public class ToolsViewModel : ViewModelBase
 
     private void AddAnimationZone()
     {
-        var zone = _lightingZoneRepository.GetDefaultAnimationZone("new zone", 100, 100, 100, 100);
-        zone.Shape = ZoneShapeEnum.Rectangle;
-        var figure = zone.GetContainer();
-        figure.SetChild(zone);
-        AddFigure?.Invoke(figure);
+        // var zone = _lightingZoneRepository.GetDefaultAnimationZone("new zone", 100, 100, 100, 100);
+        // zone.Shape = ZoneShapeEnum.Rectangle;
+        // var figure = zone.GetContainer();
+        // figure.SetChild(zone);
+        // AddFigure?.Invoke(figure);
     }
 
     /// <summary>

@@ -27,16 +27,16 @@ public static class AmbinoDefaultLayout
     public static List<Point> DefaultAmbinoFanHUBZone()
     {
         var points = new List<Point>();
-        var output0 = new Point(500, 160);
-        var output1 = new Point(500, 195);
-        var output2 = new Point(500, 230);
-        var output3 = new Point(500, 265);
-        var output4 = new Point(500, 300);
-        var output5 = new Point(535, 160);
-        var output6 = new Point(535, 195);
-        var output7 = new Point(535, 230);
-        var output8 = new Point(535, 265);
-        var output9 = new Point(535, 300);
+        var output0 = new Point(535, 275);
+        var output1 = new Point(535, 240);
+        var output2 = new Point(535, 205);
+        var output3 = new Point(485, 155);
+        var output4 = new Point(450, 155);
+        var output5 = new Point(415, 155);
+        var output6 = new Point(365, 205);
+        var output7 = new Point(415, 320);
+        var output8 = new Point(450, 320);
+        var output9 = new Point(485, 320);
         points.Add(output0);
         points.Add(output1);
         points.Add(output2);
@@ -56,8 +56,8 @@ public static class AmbinoDefaultLayout
         var output1 = new Point(34, 421);
         var output2 = new Point(34, 436);
         var output3 = new Point(34, 451);
-        var output4 = new Point(372, 203);
-        var output5 = new Point(372, 241);
+        var output4 = new Point(408, 229);
+        var output5 = new Point(408, 257);
         var output6 = new Point(34, 466);
         points.Add(output0);
         points.Add(output1);

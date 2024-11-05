@@ -37,6 +37,8 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
     [JsonIgnore] public List<AmbinityLEDLayout> Leds { get; }
     [JsonIgnore] public Uri? Image { get; private set; }
     [JsonIgnore] public string Thumbnail { get; private set; }
+    [JsonIgnore] public float ImageWidth { get; private set; }
+    [JsonIgnore] public float ImageHeight { get; private set; }
 
     private void LoadLayout()
     {
@@ -47,6 +49,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
             {
                 var json = File.ReadAllText(Path.Combine(FilePath, "config.json"));
                 var legacyDevice = JsonConvert.DeserializeObject<ARGBLEDSlaveDevice>(json);
+                var image = legacyDevice?.Image;
                 if (legacyDevice == null)
                     return;
                 foreach (var zone in legacyDevice.ControlableZones)
@@ -56,9 +59,15 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
                         var led = new AmbinityLEDLayout((float)spot.Left + (float)zone.Left,
                             (float)spot.Top + (float)zone.Top, (float)spot.Width,
                             (float)spot.Height, spot.Geometry, spot.Index);
-                        
+
                         Leds.Add(led);
                     }
+                }
+
+                if (Image != null)
+                {
+                    ImageWidth = (float)image.Width;
+                    ImageHeight = (float)image.Height;
                 }
 
                 Image = new Uri(Path.Combine(FilePath, "thumbnail.png"), UriKind.Absolute);
@@ -113,7 +122,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
             led.Height = ledLayout.Height;
             led.Index = ledLayout.Index;
             led.Geometry = ledLayout.Geometry;
-            
+
             usableLeds.Add(led);
         }
 
@@ -138,7 +147,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
     /// <param name="height"></param>
     /// <param name="scale"></param>
     /// <returns></returns>
-    public RenderTargetBitmap RenderLayout(int width, int height, int scale = 2)
+    public RenderTargetBitmap RenderLayout(int width, int height, int scale = 4)
     {
         string? path = Image?.LocalPath;
 

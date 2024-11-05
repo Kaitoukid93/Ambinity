@@ -104,28 +104,31 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
         {
             //ShowDeviceConnectionErrorDialog();
             IsAvailable = false;
-            return false;
         }
-
-        IsAvailable = true;
-        _ledHardwareSettings = _controller.LedController.HardwareSettings as SerialLEDControllerHardwareSettings;
-        if (HasFanControl)
-            _fanHardwareSettings = _controller.FanController.HardwareSettings;
-        if (!_ledHardwareSettings.HWL_enable)
-            _selectedHWLMode = AvailableHWLModes.Where(m => GetHWLMode(m) == 3)
-                .FirstOrDefault();
         else
         {
-            SelectedHWLMode = AvailableHWLModes.Where(m => GetHWLMode(m) == _ledHardwareSettings.HWL_effectMode)
-                .FirstOrDefault();
-        }
+            IsAvailable = true;
+            _ledHardwareSettings = _controller.LedController.HardwareSettings as SerialLEDControllerHardwareSettings;
+            if (HasFanControl)
+                _fanHardwareSettings = _controller.FanController.HardwareSettings;
+            if (!_ledHardwareSettings.HWL_enable)
+                _selectedHWLMode = AvailableHWLModes.Where(m => GetHWLMode(m) == 3)
+                    .FirstOrDefault();
+            else
+            {
+                SelectedHWLMode = AvailableHWLModes.Where(m => GetHWLMode(m) == _ledHardwareSettings.HWL_effectMode)
+                    .FirstOrDefault();
+            }
 
-        SelectedPalette = new ColorPaletteAssetViewModel(new ColorPalette(_ledHardwareSettings.HWL_palette));
-        SelectedColor = _ledHardwareSettings.HWL_singleColor;
+            SelectedPalette = new ColorPaletteAssetViewModel(new ColorPalette(_ledHardwareSettings.HWL_palette));
+            SelectedColor = _ledHardwareSettings.HWL_singleColor;
+        }
+        
         OnPropertyChanged(nameof(LedHardwareSettings));
         OnPropertyChanged(nameof(EnableHWLExpand));
         OnPropertyChanged(nameof(HasFanControl));
-        return true;
+        _serialStream.Init();
+        return IsAvailable;
     }
 
     private void ShowDeviceConnectionErrorDialog()

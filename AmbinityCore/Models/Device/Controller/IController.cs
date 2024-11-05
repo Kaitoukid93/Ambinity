@@ -18,6 +18,7 @@ public interface IController: ICollectableItem
     double PhysicalWidth { get; set; }
     double PhysicalHeight { get; set; }
     ControllerWorkingStateEnum WorkingStateEnum { get; set; }
+     HardwareTypeEnum HardwareType { get; set; }
     void EnableTransfer();
     void DisableTransfer();
     LEDController LedController { get; set; }

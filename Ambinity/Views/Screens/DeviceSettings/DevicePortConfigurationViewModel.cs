@@ -31,6 +31,7 @@ public class DevicePortConfigurationViewModel : ViewModelBase
             Ports.Add(port);
         }
 
+        controller.LedController.ApplyOutputMapping(OutputMappingProvider.GetOutputMapping(controller));
         OnPortSelected(Ports[0], false);
     }
 
@@ -42,6 +43,7 @@ public class DevicePortConfigurationViewModel : ViewModelBase
     private void UnRegiseterPort(DevicePortViewModel port)
     {
         port.Selected -= OnPortSelected;
+        port.Dispose();
     }
 
     private void OnPortSelected(DevicePortViewModel port, bool isCtrl)
@@ -121,6 +123,7 @@ public class DevicePortConfigurationViewModel : ViewModelBase
                 UnRegiseterPort(port);
             }
         }
+
         PortDetailViewModel?.Dispose();
     }
 }

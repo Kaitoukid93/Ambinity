@@ -110,6 +110,10 @@ public class AmbinityDeviceBitmapCapture
                                 led.LED.Blue);
                             if (!_device.IsIdentifying)
                                 led.LED.SetColor((byte)(R*_dimFactor), (byte)(G*_dimFactor), (byte)(B*_dimFactor));
+                            // else
+                            // {
+                            //     led.LED.SetColor(255, 0, 0);
+                            // }
                         }
                     }
                 }

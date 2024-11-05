@@ -34,6 +34,7 @@ public class ARGBLEDSlaveDevice
     public RGBLEDOrderEnum RGBLEDOrder { get; set; }
     public string Description { get; set; }
     public ObservableCollection<LEDSetup> ControlableZones { get; set; }
+    public ImageVisual Image { get; set; }
     public int WhiteBalanceRed { get; set; }
 
 

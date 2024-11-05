@@ -174,6 +174,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
 
     public ContainerFigure GetContainer()
     {
+        
         return new DeviceContainerFigure(X, Y, Width, Height)
         {
             IsResizable = this.IsResizeable,
@@ -376,6 +377,10 @@ public class AmbinityDevice : ObservableObject, IPositionAware
             rects.Add(led.RelativeRectangle);
         }
 
+        if (Layout != null)
+        {
+            rects.Add(new Rect(0,0,Layout.ImageWidth,Layout.ImageHeight));
+        }
         var newBound = RectCalculation.GetBound(rects.ToArray());
         Width = (float)newBound.Width;
         Height = (float)newBound.Height;
@@ -395,21 +400,21 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         {
             led.LED.SetColor(255, 0, 0);
         }
-
-        await Task.Delay(100);
+        
+        await Task.Delay(200);
         foreach (var led in Leds)
         {
             led.LED.SetColor(0, 0, 0);
             ManualLedUpdate?.Invoke();
         }
-        await Task.Delay(100);
+        await Task.Delay(200);
         foreach (var led in Leds)
         {
             
             led.LED.SetColor(255, 0, 0);
             ManualLedUpdate?.Invoke();
         }
-        await Task.Delay(100);
+        await Task.Delay(200);
         foreach (var led in Leds)
         {
             led.LED.SetColor(0, 0, 0);
@@ -423,6 +428,9 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         //
         // await Task.Delay(500);
         IsIdentifying = false;
+        // IsIdentifying = true;
+        // await Task.Delay(2000);
+        // IsIdentifying = false;
     }
 
     public async Task OrderCheck()

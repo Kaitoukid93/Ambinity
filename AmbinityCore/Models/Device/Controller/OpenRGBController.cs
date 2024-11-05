@@ -26,7 +26,7 @@ public class OpenRGBController : ObservableObject, IController
     {
     }
 
-    public DeviceType HardwareType { get; set; }
+    public HardwareTypeEnum HardwareType { get; set; }
     public bool AutoConnect { get; set; } = true;
     private string _firmwareVersion;
 

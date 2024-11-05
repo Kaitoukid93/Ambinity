@@ -179,7 +179,7 @@
         <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceHardwareLightingView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DevicePortConfigurationView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DevicePortListView.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Views/Screens/DeviceSettings/DevicePortMapView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/DevicePortMapView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceSettingsDashboardView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceSettingsView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/FanPortView.axaml" value="Ambinity/Ambinity.csproj" />

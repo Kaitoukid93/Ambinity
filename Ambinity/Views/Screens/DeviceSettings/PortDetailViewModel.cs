@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.ViewModels;
 using Ambinity.Views.CollectableItem.AmbinityDeviceLayout;
@@ -29,8 +30,41 @@ public class PortDetailViewModel : ViewModelBase
         _layoutsLibraryViewModel = layoutsLibraryViewModel;
         _deviceViewModelFactory = deviceViewModelFactory;
         AddNewDaisyChainDeviceCommand = new RelayCommand(AddNewDaisyChainDevice);
+        PingOutputCommand = new AsyncRelayCommand(PingOutput);
     }
 
+    private async Task PingOutput()
+    {
+        if (_selectedPorts.Count != 1)
+            return;
+        IsPingingOutput = true;
+        foreach (var port in _selectedPorts)
+        {
+            if (!port.IsEnabled)
+                continue;
+
+            port.IsPinging = true;
+
+            await _selectedPorts[0].Output.PingOutputChain();
+            port.IsPinging = false;
+        }
+
+        IsPingingOutput = false;
+    }
+
+    public ICommand PingOutputCommand { get; }
+
+    private bool _isPingingOutput = false;
+
+    public bool IsPingingOutput
+    {
+        get => _isPingingOutput;
+        set
+        {
+            _isPingingOutput = value;
+            OnPropertyChanged();
+        }
+    }
 
     private void AddNewDaisyChainDevice()
     {
@@ -96,10 +130,12 @@ public class PortDetailViewModel : ViewModelBase
             port
         ];
         Name = "Chanel " + (port.Output.Index + 1).ToString();
+        LEDsCount = port.Output.Devices.Count + " devices attached " + "-" + " LEDs count: " + port.Output.LEDsCount.ToString();
         Brightness = port.Output.Brightness;
         IsEnabled = port.Output.IsEnabled;
         OnPropertyChanged(nameof(Name));
         OnPropertyChanged(nameof(IsMultiplePortsSelected));
+        OnPropertyChanged(nameof(LEDsCount));
         LoadDevices();
     }
 
@@ -154,7 +190,9 @@ public class PortDetailViewModel : ViewModelBase
     {
         _selectedPorts = ports;
         Name = ports.Count.ToString() + " Chanel selected ";
+        LEDsCount = null;
         OnPropertyChanged(nameof(Name));
+        OnPropertyChanged(nameof(LEDsCount));
         //port will be reenabled when select multiple
         IsEnabled = true;
         //brightness will be default
@@ -181,6 +219,7 @@ public class PortDetailViewModel : ViewModelBase
     }
 
     public string Name { get; set; }
+    public string LEDsCount { get; set; }
 
     private int _brightness;
 

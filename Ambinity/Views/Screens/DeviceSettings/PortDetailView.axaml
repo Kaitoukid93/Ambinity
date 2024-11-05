@@ -9,8 +9,13 @@
              PointerEntered="InputElement_OnPointerEntered"
              PointerExited="InputElement_OnPointerExited"
              x:Class="Ambinity.Views.Screens.DeviceSettings.PortDetailView">
- 
     <UserControl.Styles>
+        <Style Selector="TextBlock.pingButton">
+            <Setter Property="Text" Value="Ping" />
+            <Style Selector="^.isPinging">
+                <Setter Property="Text" Value="Signal sent" />
+            </Style>
+        </Style>
         <Style Selector="FlyoutPresenter.DefaultFlyout">
             <Setter Property="Background" Value="{DynamicResource TimePickerFlyoutPresenterBackground}" />
             <Setter Property="CornerRadius" Value="4" />
@@ -48,7 +53,37 @@
     </FlyoutBase.AttachedFlyout>
     <ScrollViewer IsScrollInertiaEnabled="True">
         <StackPanel Spacing="4">
-            <TextBlock Text="{Binding Name}" FontSize="20" Margin="0,0,0,20" FontWeight="SemiBold"></TextBlock>
+            <Grid ColumnDefinitions="*,10,Auto">
+                <Grid Column="0">
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" FontSize="20" Margin="0,0,0,0" FontWeight="SemiBold"></TextBlock>
+                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding LEDsCount}"></TextBlock>
+                        <Grid Height="20"></Grid>
+                    </StackPanel>
+                   
+                </Grid>
+               
+                <Grid Column="2">
+                    <Button Command="{Binding PingOutputCommand}"
+                            CornerRadius="3" Padding="5,3"
+                            HorizontalAlignment="Right" VerticalAlignment="Top"
+                            Classes="accent">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <PathIcon IsVisible="{Binding !IsPingingOutput}" Margin="0,0,5,0" Width="15" Height="15"
+                                      Data="{DynamicResource search}">
+                            </PathIcon>
+                            <PathIcon IsVisible="{Binding IsPingingOutput}" Width="15" Margin="0,0,3,0"
+                                      Height="15" Data="{DynamicResource checkIcon}">
+                            </PathIcon>
+                            <TextBlock Classes="pingButton" Classes.isPinging="{Binding IsPingingOutput}"
+                                       Margin="0,0,0,2" FontWeight="SemiBold"
+                                       Grid.Column="1" FontSize="12">
+                            </TextBlock>
+                        </Grid>
+                    </Button>
+                </Grid>
+            </Grid>
+           
             <!-- <Grid ColumnDefinitions="*,Auto"> -->
             <!--     <ContentControl Margin="0,10" Content="{Binding DetailViewModel}"></ContentControl> -->
             <!--     <Grid Column="1"> -->

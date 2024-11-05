@@ -25,7 +25,6 @@ internal sealed class SerialStream : IDisposable, IDataStream
         Controller.WorkingStateChanged += DeviceStateChanged;
         _hasPWMCOntroller = Controller.FanController != null;
         Start();
-        Controller.TurnOn();
     }
 
     //Dependency Injection//
@@ -104,6 +103,7 @@ internal sealed class SerialStream : IDisposable, IDataStream
         _cancellationTokenSource = new CancellationTokenSource();
         _workerThread.Start(_cancellationTokenSource.Token);
         Controller.EnableTransfer();
+        Controller.TurnOn();
     }
 
     public async Task Stop()
@@ -167,7 +167,6 @@ internal sealed class SerialStream : IDisposable, IDataStream
 
         double brightnessCap = output.Brightness / 255d;
         var allBlack = true;
-        int aliveSpotCounter = 0;
         DimLED();
         int offset = 0;
         foreach (var device in devices)
@@ -183,6 +182,10 @@ internal sealed class SerialStream : IDisposable, IDataStream
                 else
                 {
                     var rgbOrder = device.RGBOrder;
+                    if (device.IsIdentifying)
+                    {
+                        //
+                    }
                     foreach (AmbinityLED led in device.Leds)
                     {
                         ApplyColorWhitebalance(led.LED.Red, led.LED.Green, led.LED.Blue,
@@ -192,27 +195,20 @@ internal sealed class SerialStream : IDisposable, IDataStream
                         ReOrderSpotColor(rgbOrder, led.LED.Red, led.LED.Green, led.LED.Blue, out byte r, out byte g,
                             out byte b);
                         //get data
-                        outputStream[counter + (led.Index +offset) * 3 + 0] = (byte)(r * _dimFactor);
+                        outputStream[counter + (led.Index + offset) * 3 + 0] = (byte)(r * _dimFactor * brightnessCap);
 
-                        outputStream[counter +  (led.Index +offset) * 3 + 1] = (byte)(g * _dimFactor);
+                        outputStream[counter + (led.Index + offset) * 3 + 1] = (byte)(g * _dimFactor * brightnessCap);
                         // green
-                        outputStream[counter +  (led.Index +offset) * 3 + 2] = (byte)(b * _dimFactor);
+                        outputStream[counter + (led.Index + offset) * 3 + 2] = (byte)(b * _dimFactor * brightnessCap);
                         // red
-                        aliveSpotCounter++;
 
-                        
+
                         allBlack = allBlack && led.LED.Red == 0 && led.LED.Green == 0 && led.LED.Blue == 0;
                     }
 
                     offset += device.Leds.Count;
                 }
             }
-        }
-
-
-        for (int i = counter + aliveSpotCounter * 3; i < bufferLength; i++)
-        {
-            outputStream[i] = 0;
         }
 
         return (outputStream, bufferLength);

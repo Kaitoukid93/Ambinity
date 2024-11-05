@@ -85,14 +85,7 @@ public class DeviceVisualizer : ICanvasVisualizerItem
                 dc.PushTransform(Matrix.CreateTranslation(_device.X / _device.Scale, _device.Y / _device.Scale));
             using DrawingContext.PushedState rotationPush =
                 dc.PushTransform(Matrix.CreateRotation(Matrix.ToRadians(_device.Rotation)));
-            // Render device and LED images 
-            if (_deviceImage != null)
-            {
-                if (_device.IsDraggable)
-                    dc.DrawImage(_deviceImage, new Rect(_deviceImage.Size),
-                        new Rect(0, 0, _device.Width, _device.Height));
-            }
-            // 
+
 
             // if (!ShowColors)
             //     return;
@@ -106,6 +99,17 @@ public class DeviceVisualizer : ICanvasVisualizerItem
                 {
                     newGroup.Children.Add(led.DisplayGeometry);
                 }
+
+                var bound = newGroup.Bounds;
+                // Render device and LED images 
+                if (_deviceImage != null)
+                {
+                    if (_device.IsDraggable)
+                        dc.DrawImage(_deviceImage, new Rect(_deviceImage.Size),
+                            new Rect(0, 0, _device.Layout.ImageWidth, _device.Layout.ImageHeight));
+                }
+
+                // 
                 dc.DrawGeometry(new ImmutableSolidColorBrush(Colors.Black.AdjustOpacity(0.5)), null, newGroup);
             }
         }
@@ -114,7 +118,7 @@ public class DeviceVisualizer : ICanvasVisualizerItem
             boundsPush?.Dispose();
         }
     }
-  
+
     private async Task SetupForDevice()
     {
         lock (_ledVisualizers)

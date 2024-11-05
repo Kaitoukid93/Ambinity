@@ -5,7 +5,7 @@ namespace AmbinityCore.Models.Device;
 
 public class LEDOutput : ObservableObject
 {
-    public event Action<LEDOutput>  OutputDisabled;
+    public event Action<LEDOutput> OutputDisabled;
     public event Action<LEDOutput> OutputEnabled;
     public event Action<LEDOutput> DevicesUpdated;
 
@@ -52,6 +52,7 @@ public class LEDOutput : ObservableObject
         Devices.Add(device);
         DevicesUpdated?.Invoke(this);
     }
+
     public void RemoveDeviceFromOutputChain(AmbinityDevice device)
     {
         if (Devices.Contains(device))
@@ -59,7 +60,30 @@ public class LEDOutput : ObservableObject
             Devices.Remove(device);
             DevicesUpdated?.Invoke(this);
         }
-        
     }
-   
+
+    /// <summary>
+    /// ping the output to locate 
+    /// </summary>
+    public async Task PingOutputChain()
+    {
+        foreach (var device in Devices)
+        {
+            await device.Ping();
+        }
+    }
+
+    public int LEDsCount => GetLEDsCount();
+
+    private int GetLEDsCount()
+    {
+        int ledCount = 0;
+        foreach (var device in Devices)
+        {
+            ledCount += device.Leds.Count;
+            
+        }
+
+        return ledCount;
+    }
 }

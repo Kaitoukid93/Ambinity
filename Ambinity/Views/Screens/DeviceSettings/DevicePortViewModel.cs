@@ -20,8 +20,16 @@ public class DevicePortViewModel : ViewModelBase
         }
         Icon = output.Devices.Count>1? "daisy_chain" :output.Devices[0].Icon;
         Output = output;
-       // _device = output.Device;
-       // _device.DeviceUpdate += OnDeviceUpdated;
+        Output.OutputEnabled += OnOutputEnabledChanged;
+        Output.OutputDisabled += OnOutputEnabledChanged;
+        OnOutputEnabledChanged(Output);
+        // _device = output.Device;
+        // _device.DeviceUpdate += OnDeviceUpdated;
+    }
+
+    private void OnOutputEnabledChanged(LEDOutput output)
+    {
+        IsEnabled = output.IsEnabled;
     }
 
     private void OnDeviceUpdated()
@@ -50,7 +58,7 @@ public class DevicePortViewModel : ViewModelBase
         {
             _isMouseOver = value;
             OnPropertyChanged(nameof(IsMouseOver));
-            OnPropertyChanged(nameof(ShowButtons));
+          
         }
     }
 
@@ -63,11 +71,34 @@ public class DevicePortViewModel : ViewModelBase
         {
             _isSelected = value;
             OnPropertyChanged();
-            OnPropertyChanged(nameof(ShowButtons));
+          
+        }
+    }
+    private bool _isEnabled;
+
+    public bool IsEnabled
+    {
+        get => _isEnabled;
+        set
+        {
+            _isEnabled = value;
+            OnPropertyChanged();
+           
+        }
+    }
+    private bool _isPinging;
+
+    public bool IsPinging
+    {
+        get => _isPinging;
+        set
+        {
+            _isPinging = value;
+            OnPropertyChanged();
+           
         }
     }
     public string Icon { get; set; }
-    public bool ShowButtons => IsSelected || IsMouseOver;
     public void Update()
     {
         // Name = _zoneFigure.Zone.Name;
@@ -77,5 +108,10 @@ public class DevicePortViewModel : ViewModelBase
     public void OnLayerPointerPress(bool isCtrl)
     {
         Selected?.Invoke(this, isCtrl);
+    }
+
+    public override void Dispose()
+    {
+        Output.OutputEnabled -= OnOutputEnabledChanged;
     }
 }

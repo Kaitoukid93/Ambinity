@@ -90,7 +90,7 @@ public class SerialControllerProvider
             case HardwareTypeEnum.AmbinoHUBV3:
                 controller.DashboardHeight = 270;
                 controller.DashboardWidth = 290;
-
+              
                 for (int i = 0; i < 4; i++)
                 {
                     ledController.Outputs.Add(new LEDOutput(80, i,
@@ -119,10 +119,7 @@ public class SerialControllerProvider
         }
 
         ledController.HardwareSettings.HardwareType = controller.HardwareType;
-        ledController.ApplyOutputMapping(OutputMappingProvider.GetOutputMapping(controller.HardwareType));
         ledController.PopulateDefaultLayout();
-        controller.PhysicalHeight = 317;
-        controller.PhysicalWidth = 500;
         controller.LedController = ledController;
         controller.RegisterLEDController();
         controller.RegisterFanController();
