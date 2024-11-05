@@ -51,7 +51,7 @@
                     <Grid>
 
                     </Grid>
-                </StackPanel>S
+                </StackPanel>
             </Grid>
         </Grid>
         <StackPanel IsVisible="{Binding ShowOptions}" Grid.Row="1" Spacing="10">
