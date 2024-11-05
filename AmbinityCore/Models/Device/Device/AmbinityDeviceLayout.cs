@@ -1,3 +1,4 @@
+using adrilight_shared.Enums;
 using adrilight_shared.Models.Device.SlaveDevice;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
@@ -73,6 +74,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
                 Image = new Uri(Path.Combine(FilePath, "thumbnail.png"), UriKind.Absolute);
                 Thumbnail = Path.Combine(FilePath, "colored_thumbnail.png");
                 Name = legacyDevice.Name;
+                LayoutType = LayoutTypeConverter(legacyDevice.DeviceType);
             }
             catch (Exception ex)
             {
@@ -202,10 +204,27 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
         return Ioc.Default.GetRequiredService<AmbinityDeviceOnlineRepository>();
     }
 
+    private DeviceLayoutType LayoutTypeConverter(SlaveDeviceTypeEnum legacyType)
+    {
+        switch (legacyType)
+        {
+            case SlaveDeviceTypeEnum.FanLED:
+                return DeviceLayoutType.FanLED;
+            case SlaveDeviceTypeEnum.LEDFrame:
+                return DeviceLayoutType.ScreenBackLight;
+            case SlaveDeviceTypeEnum.LEDStrip:
+                return DeviceLayoutType.LEDStrip;
+            case SlaveDeviceTypeEnum.Matrix:
+                return DeviceLayoutType.Matrix;
+            default: return DeviceLayoutType.Unknown;
+        }
+    }
+
     public event Action<ICollectableItem>? ItemNameChanged;
     public event Action<ICollectableItem>? ItemPinStatusChanged;
     public event Action<ICollectableItem>? ItemCheckStatusChanged;
     public string Name { get; set; }
+    public DeviceLayoutType LayoutType { get; set; }
     [JsonIgnore] public bool IsSelected { get; set; }
     [JsonIgnore] public bool IsEditing { get; set; }
     [JsonIgnore] public bool IsChecked { get; set; }

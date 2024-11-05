@@ -7,5 +7,6 @@ public enum HardwareTypeEnum
     AmbinoFanHub,
     AmbinoHUBV3,
     AmbinoHUBV2,
+    
     Unknown,
 }

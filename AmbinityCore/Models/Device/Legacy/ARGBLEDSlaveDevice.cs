@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using adrilight_shared.Enums;
 using adrilight_shared.Models.Device.Zone;
 using adrilight_shared.Models.Device.Zone.Spot;
 using AmbinityCore.Enums;
@@ -62,4 +63,5 @@ public class ARGBLEDSlaveDevice
 
 
     public string Version { get; set; }
+    public SlaveDeviceTypeEnum DeviceType { get; set; }
 }

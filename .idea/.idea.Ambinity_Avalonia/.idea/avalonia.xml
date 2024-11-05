@@ -88,12 +88,12 @@
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/ScreenCaptureRegionSelectionView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/ScreenRegionSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenRegionSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/BreathingColorConfigurationView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/BreathingColorConfigurationView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/ColorAppearanceParameterView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/ColorBehaviorParameterView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/ColorsLibraryView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/FillColorSelectionView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
-        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/MotionConfigParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/MotionConfigParameterView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/MusicReactiveConfigurationView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/PaletteAppearanceParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/PaletteBlendModeParameterView.axaml" value="Ambinity/Ambinity.csproj" />
@@ -124,6 +124,7 @@
         <entry key="Ambinity/Views/LayoutEditor/AssetsView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/Canvas/LayoutCanvasView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/Canvas/ToolsView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/Views/LayoutEditor/DevicePropertiesView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/LayerView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/LayersView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/LayoutCanvasView.axaml" value="Ambinity/Ambinity.csproj" />

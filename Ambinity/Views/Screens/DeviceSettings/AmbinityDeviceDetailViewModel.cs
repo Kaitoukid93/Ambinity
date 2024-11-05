@@ -1,8 +1,10 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.ViewModels;
 using AmbinityCore.Models.Device;
+using AmbinityCore.Models.Device.Device;
 using AmbinityServer.OnlineItem;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
@@ -23,6 +25,12 @@ public class AmbinityDeviceDetailViewModel : ViewModelBase
         Description = _device.DeviceDescription;
         LEDsCount = "LEDs count: " + _device.Leds.Count.ToString();
         FilePath = "Path: " + _device.Layout.FilePath;
+        if (_layout.LayoutType == DeviceLayoutType.FanLED|| _layout.LayoutType == DeviceLayoutType.ScreenBackLight)
+            ShowOptions = true;
+        else
+        {
+            ShowOptions = false;
+        }
     }
 
     private void OnDeviceUpdated()
@@ -47,6 +55,7 @@ public class AmbinityDeviceDetailViewModel : ViewModelBase
         LEDsCount = "Settings will apply to all selected items";
         OnPropertyChanged(nameof(Description));
         IsMultipleItemsSelected = true;
+        ShowOptions = false;
     }
 
     public AmbinityDeviceDetailViewModel()
@@ -55,7 +64,9 @@ public class AmbinityDeviceDetailViewModel : ViewModelBase
 
     private AmbinityCore.Models.Device.AmbinityDeviceLayout _layout;
     public Task<Bitmap> GetThumbnail => GetThumbnailAsync();
+    public Task<Bitmap> LayoutImage => GetLayoutImageAsync();
     public string Name { get; set; }
+    public bool ShowOptions { get; set; }
 
     private async Task<Bitmap> GetThumbnailAsync()
     {
@@ -64,7 +75,13 @@ public class AmbinityDeviceDetailViewModel : ViewModelBase
         var thumb = await _thumbnailService.LoadThumbnail(_layout.Thumbnail);
         return thumb;
     }
-
+    private async Task<Bitmap> GetLayoutImageAsync()
+    {
+        if (!File.Exists(_layout.Image.LocalPath))
+            return await _thumbnailService.LoadThumbnail("null");
+        var thumb = await _thumbnailService.LoadThumbnail(_layout.Image.LocalPath);
+        return thumb;
+    }
     private readonly AmbinityDevice _device;
 
     public string Description { get; set; }
