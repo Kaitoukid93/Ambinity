@@ -29,19 +29,22 @@ namespace Draw2D.Core
 
         public List<Figure> All => _all;
 
-        public void Add(Figure figure)
+        //notify will update canvas selection event, in case of multiple selection,
+        //only update last item to prevent rapid loading
+        public void Add(Figure figure, bool notify = true)
         {
             if (figure != null && !_all.Contains(figure))
             {
                 _all.Add(figure);
                 Primary = figure;
+                if(notify)
                 _canvas.OnSelectionChanged(figure);
             }
         }
 
-        public Selection Remove(Figure figure)
+        public Selection Remove(Figure figure, bool notify =true)
         {
-            var isRemoved =_all.Remove(figure);
+            var isRemoved = _all.Remove(figure);
 
             if (Primary == figure)
             {
@@ -50,7 +53,7 @@ namespace Draw2D.Core
 
             if (isRemoved)
             {
-                _canvas.OnSelectionChanged(figure);
+                _canvas.OnSelectionChanged(figure,notify);
             }
 
             return this;
@@ -60,11 +63,12 @@ namespace Draw2D.Core
         {
             if (checkDescendant)
             {
-                if (_all.Any(figureToCheck => figureToCheck==figure || figureToCheck.Contains(figure)))
+                if (_all.Any(figureToCheck => figureToCheck == figure || figureToCheck.Contains(figure)))
                 {
                     return true;
-                }    
+                }
             }
+
             return _all.Contains(figure);
         }
 

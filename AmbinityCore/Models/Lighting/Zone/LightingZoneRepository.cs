@@ -29,6 +29,15 @@ public class LightingZoneRepository : CollectableItemRepository
         CreateDefaultLightingZone();
     }
 
+    public override void ImportItem(string path)
+    {
+        
+       // LocalFileHelpers.CopyDirectory(path,LocalFolderPath,true);
+      //  LoadFromDisk();
+        //todo resolve item dependencies 
+        //update the collection
+    }
+
     public override void LoadFromDisk()
     {
         Items?.Clear();
@@ -87,7 +96,7 @@ public class LightingZoneRepository : CollectableItemRepository
     {
         var animationZone = new LightingZone(x, y, width, height);
         animationZone.Name = name;
-        var animation = _animationsRepository.Items.First();
+        var animation = _animationsRepository.Items.Count > 0 ? _animationsRepository.Items.First() : null;
         animationZone.LightingConfiguration = new AnimationConfiguration(animation as Animation);
         
         return animationZone;

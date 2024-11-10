@@ -23,7 +23,7 @@ namespace Draw2D.Core.Shapes.Composites
             return this;
         }
 
-        public override Figure Select(bool showHandles = true, bool repaint = true)
+        public override Figure Select(bool showHandles = true, bool repaint = true, bool notify = true)
         {
             base.Select(showHandles);
 

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Services;
+using Ambinity.Views.AmbinityStore;
 using Ambinity.Views.LayoutEditor;
 using AmbinityCore.Colors;
 using AmbinityCore.Helpers;
@@ -23,11 +24,13 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
     private ProfileEditorRightPanelViewModel _rightPanelViewModel;
     private readonly IWindowService _windowService;
     private readonly AnimationsRepository _repository;
+    private readonly AmbinityStoreItemExportViewModel _itemExportViewModel;
 
     public AnimationSelectionParameterViewModel(AnimationConfiguration configuration,
         ProfileEditorRightPanelViewModel rightPanelViewModel,
-        LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService,AnimationsRepository repository)
+        LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService,AnimationsRepository repository,AmbinityStoreItemExportViewModel itemExportViewModel)
     {
+        _itemExportViewModel = itemExportViewModel;
         _windowService = windowService;
         _repository = repository;
         _libraryViewModelFactory = libraryViewModelFactory;
@@ -38,8 +41,16 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
         _configuration?.Animation?.LoadAnimation();
         OnAnimationChanged();
         ImportAnimationCommand = new AsyncRelayCommand(ImportAnimation);
+        ExportAnimationCommand = new AsyncRelayCommand(ExportAnimation);
     }
-    
+
+    private async Task ExportAnimation()
+    {
+       
+        _itemExportViewModel.Init(_configuration.Animation);
+        var window = _windowService.ShowWindow(_itemExportViewModel);
+    }
+
     private void OnAnimationChanged()
     {
         if(_configuration.Animation!=null)
@@ -103,5 +114,5 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
     } 
 
     public AnimationConfiguration Configuration => _configuration;
-
+    public ICommand ExportAnimationCommand { get; }
 }

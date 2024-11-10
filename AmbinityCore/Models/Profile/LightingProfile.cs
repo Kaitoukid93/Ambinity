@@ -151,6 +151,10 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     }
 
     public bool IsDefault { get; set; }
+    /// <summary>
+    /// Assets required to run this profile
+    /// </summary>
+    public List<LightingProfileAsset> LightingProfileAssets { get; set; }
     public ObservableCollection<LightingZone> Zones { get; set; }
     private ColorEngineProvider _colorEngineProvider;
 

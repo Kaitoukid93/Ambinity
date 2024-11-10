@@ -10,7 +10,7 @@
 
         void Show(Canvas canvas);
         void Hide(Canvas canvas);
-        void ForceTranslate(float dx, float dy);
+        void ForceTranslate(float dx, float dy, bool notify);
         bool HitTest(float x, float y);
       
         void Update();

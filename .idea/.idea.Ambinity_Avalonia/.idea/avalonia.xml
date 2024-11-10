@@ -54,7 +54,7 @@
         <entry key="Ambinity/Views/CollectableItem/DeviceLayout/AmbinityDeviceLayoutAssetView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/CollectableItem/LightingZone/LightingZoneAssetView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/ColorConfigurationView.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Animation/AnimationSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/Animation/AnimationSelectionParameterView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/AnimationAssetView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/AnimationAssetsView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/AnimationLibraryView.axaml" value="Ambinity/Ambinity.csproj" />

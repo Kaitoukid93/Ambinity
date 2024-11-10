@@ -86,7 +86,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             else
             {
                 //Todo:Select Problem ->  isDragging
-                
+
                 if (figure is ResizeHandle)
                     Select(canvas, (figure as ResizeHandle).Owner);
                 else
@@ -94,7 +94,6 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                     Unselect(canvas, canvas.Selection.All);
                     Select(canvas, figure);
                 }
-                    
             }
         }
 
@@ -142,7 +141,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                         dy = delta.Y;
                     }
 
-                    canvas.Selection.All.ToList().ForEach(f => f.Translate(dx, dy));
+                    canvas.Selection.All.ToList().ForEach(f => f.Translate(dx, dy,canvas.Selection.All.Count==1));
                 }
             }
         }
@@ -296,7 +295,34 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             canvas.Selection.Primary = figure;
         }
 
-        public override void Unselect(Canvas canvas, Figure figure)
+        public override void Select(Canvas canvas, List<Figure> figures)
+        {
+            if (figures == null || canvas == null)
+                return;
+            var touchable = new List<Figure>();
+            foreach (var figure in figures)
+            {
+                if (figure.IsSelectable && !canvas.Selection.Contains(figure))
+                    touchable.Add(figure);
+            }
+
+            //only notify when last figure is selected
+            for (int i = 0; i < touchable.Count; i++)
+            {
+                if (i == touchable.Count - 1)
+                {
+                    touchable[i].Select(true, false);
+                }
+                else
+                {
+                    touchable[i].Select(true, false, false);
+                }
+            }
+
+            //canvas.Selection.Primary = touchable?[0];
+        }
+
+        public override void Unselect(Canvas canvas, Figure figure, bool notify = true)
         {
             if (figure == null)
                 return;
@@ -304,7 +330,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             if (!figure.IsSelectable)
                 return;
 
-            canvas.Selection.Remove(figure);
+            canvas.Selection.Remove(figure, notify);
             figure.Unselect();
         }
 
@@ -312,9 +338,9 @@ namespace Draw2D.Core.Policies.CanvasPolicy
         {
             var newList = new List<Figure>(all);
 
-            foreach (var figure in newList)
+            for (var i = 0; i < newList.Count; i++)
             {
-                Unselect(canvas, figure);
+                Unselect(canvas, newList[i], i >= newList.Count - 1);
             }
         }
 

@@ -81,7 +81,7 @@ public class ParameterViewModelFactory(
             return null;
         var animationSelectionParameter = new AnimationSelectionParameterViewModel(
             configuration, rightPanelViewModel, libraryViewModelFactory, windowService,
-            animationsRepository);
+            animationsRepository,exportViewModel);
         return [animationSelectionParameter];
     }
 }

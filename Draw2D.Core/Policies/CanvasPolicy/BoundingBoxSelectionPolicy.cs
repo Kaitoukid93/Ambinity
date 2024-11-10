@@ -7,7 +7,6 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 {
     public class MousePanPolicy : CanvasPolicy
     {
-        
     }
 
     public class BoundingBoxSelectionPolicy : SingleSelectionPolicy
@@ -18,7 +17,8 @@ namespace Draw2D.Core.Policies.CanvasPolicy
         private Geo.Rectangle _absoluteBoundingBox;
         private List<Figure> _figuresInside;
 
-        public override void OnMouseDrag(Canvas canvas, float dxSum, float dySum, float dx, float dy, bool isShiftKey, bool isCtrlKey)
+        public override void OnMouseDrag(Canvas canvas, float dxSum, float dySum, float dx, float dy, bool isShiftKey,
+            bool isCtrlKey)
         {
             if (canvas == null || _selectBox == null)
             {
@@ -33,9 +33,8 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
             _selectBox.ForceSetDimensions(normalized);
 
-            _figuresInside = canvas.GetBestFigures(normalized, new List<Type> { typeof(Selectionbox), typeof(IHandle) }, new List<Type>());
-
-            
+            _figuresInside = canvas.GetBestFigures(normalized, new List<Type> { typeof(Selectionbox), typeof(IHandle) },
+                new List<Type>());
         }
 
         public override void OnDragEnd(Canvas canvas, bool isShiftKey, bool isCtrlKey)
@@ -55,11 +54,10 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                     .ToList()
                     .ForEach(f => Unselect(canvas, f));
 
-                foreach (var figure in _figuresInside.Where(f => f.IsSelectable))
-                {
-                    Select(canvas, figure);
-                }
+
+                Select(canvas, _figuresInside.Where(f => f.IsSelectable).ToList());
             }
+
             base.OnDragEnd(canvas, isShiftKey, isCtrlKey);
         }
 
@@ -86,9 +84,5 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
             canvas.AddAdornerFigure(_selectBox);
         }
-
-
-
-
     }
 }

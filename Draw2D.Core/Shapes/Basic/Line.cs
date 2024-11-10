@@ -197,7 +197,7 @@ namespace Draw2D.Core.Shapes.Basic
             return this;
         }
 
-        public override void Translate(float dx, float dy)
+        public override void Translate(float dx, float dy,bool notify = true)
         {
             if (!IsDragable)
                 return;
@@ -216,10 +216,10 @@ namespace Draw2D.Core.Shapes.Basic
             if (adjustmentResult.Dx != 0 || adjustmentResult.Dy != 0)
             {
                 var offset = new Point(adjustmentResult.Dx, adjustmentResult.Dy);
-                ForceTranslate(offset);
+                ForceTranslate(offset,notify);
             }
         }
-        public void ForceTranslate(Point offset)
+        public void ForceTranslate(Point offset,bool notify)
         {
             for (int i = 0; i < _points.Count; i++)
             {
@@ -232,6 +232,7 @@ namespace Draw2D.Core.Shapes.Basic
             }
 
             BoundingBox = CalculateBoundingBox();
+            if(notify)
             Canvas?.OnFigureTranslated(this);
 
             

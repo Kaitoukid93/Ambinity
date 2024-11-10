@@ -22,6 +22,14 @@
                         </Button>
                     </Grid>
                     <Grid>
+                        <Button Width="30" Height="30" Command="{Binding ExportAnimationCommand}"
+                                Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Export this animation"
+                                Classes="icon-button">
+                            <PathIcon Width="15" Data="{DynamicResource Export}"></PathIcon>
+                        </Button>
+                    </Grid>
+                   
+                    <Grid>
                         <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1"
                                 Background="Transparent" Width="30" Height="30"
                                 Classes="icon-button">

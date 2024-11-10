@@ -42,7 +42,7 @@
                                 HorizontalAlignment="Right" Classes="chip">
                             <Grid ColumnDefinitions="Auto,*">
                                 <PathIcon Margin="0,0,5,0" Width="12" Height="10" Data="{DynamicResource download}"></PathIcon>
-                                <TextBlock Classes.downloadButton="{Binding IsDownloading}" Margin="0,0,0,2"
+                                <TextBlock Text="Reinstall" Margin="0,0,0,2"
                                            Grid.Column="1" FontSize="12">
                                 </TextBlock>
                             </Grid>

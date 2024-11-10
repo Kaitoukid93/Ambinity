@@ -36,7 +36,7 @@ namespace Draw2D.Core
         private float _width;
         private float _height;
         private Color _strokeColor;
-      
+
         private readonly List<PolicyBase> _policies = new List<PolicyBase>();
         private SnapTargets _currentSnapTargets = SnapTargets.Center | SnapTargets.Vertices | SnapTargets.MidPoints;
         private ICoordinateSystem _coordinateSystem;
@@ -54,7 +54,7 @@ namespace Draw2D.Core
         {
             get { return _policies.Where(p => p.Enabled); }
         }
- 
+
 
         public Geo.Rectangle Size
         {
@@ -95,7 +95,7 @@ namespace Draw2D.Core
 
         public event EventHandler<EventArgs> SceneChanged;
         public event EventHandler<FigureClickEventArgs> FigureRightClicked;
-        public event EventHandler<CanvasClickEventArgs>CanvasRightClicked; 
+        public event EventHandler<CanvasClickEventArgs> CanvasRightClicked;
         public event EventHandler<ConnectionCreatedEventArgs> ConnectionCreated;
         public event EventHandler<SelectionChangedEventArgs> SelectionChanged;
 
@@ -251,11 +251,11 @@ namespace Draw2D.Core
                 _lastHoverFigure.IsMouseOver = false;
                 _lastHoverFigure = figure;
             }
+
             figure.IsMouseOver = true;
             _lastHoverFigure = figure;
             var eventArgs = new HoverChangedEventArgs(figure, true);
-            FigureHoverChanged?.Invoke(this,eventArgs);
-
+            FigureHoverChanged?.Invoke(this, eventArgs);
         }
 
         public void UnHoverAll()
@@ -266,8 +266,9 @@ namespace Draw2D.Core
                 NeedsRepaint(_lastHoverFigure);
                 _lastHoverFigure = null;
             }
+
             var eventArgs = new HoverChangedEventArgs(null, false);
-            FigureHoverChanged?.Invoke(this,eventArgs);
+            FigureHoverChanged?.Invoke(this, eventArgs);
         }
 
         public void OnMouseLeftDown(double x, double y, bool isShiftKey, bool isCtrlKey)
@@ -378,6 +379,7 @@ namespace Draw2D.Core
                 {
                     OnCanvasRightClicked(new CanvasClickEventArgs(this, worldPoint.X, worldPoint.Y));
                 }
+
                 foreach (var policy in Policies.OfType<IMouseAware>())
                 {
                     policy.OnMouseRightDown(this, worldPoint.X, worldPoint.Y, isShiftKey, isCtrlKey);
@@ -594,7 +596,11 @@ namespace Draw2D.Core
 
             ActiveTool = tool;
 
-            tool.OnDone = (toolBase) => { ActiveTool = null; onDone.Invoke(null); };
+            tool.OnDone = (toolBase) =>
+            {
+                ActiveTool = null;
+                onDone.Invoke(null);
+            };
         }
 
         public void UnInstallCurrentTool()
@@ -627,8 +633,10 @@ namespace Draw2D.Core
             {
                 figure.Unselect();
             }
+
             _figures.Clear();
         }
+
         public void StartBulkEdit()
         {
             _bulkEditCount++;
@@ -648,14 +656,15 @@ namespace Draw2D.Core
 
         public ConnectionRouter ConnectionRouter { get; set; }
 
-        public void OnSelectionChanged(Figure figure)
+        public void OnSelectionChanged(Figure figure, bool notify = true)
         {
             foreach (var policy in Policies.OfType<SelectFeedbackPolicy>())
             {
                 policy.OnSelectionChanged(this, figure);
             }
 
-            OnSelectionChanged();
+            if (notify)
+                OnSelectionChanged();
         }
 
 
@@ -735,6 +744,7 @@ namespace Draw2D.Core
         {
             FigureRightClicked?.Invoke(this, e);
         }
+
         protected virtual void OnCanvasRightClicked(CanvasClickEventArgs e)
         {
             CanvasRightClicked?.Invoke(this, e);

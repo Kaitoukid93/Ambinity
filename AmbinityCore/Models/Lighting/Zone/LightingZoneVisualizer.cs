@@ -31,7 +31,6 @@ public class LightingZoneVisualizer : ICanvasVisualizerItem
         SetupZone();
     }
 
-  
 
     private void OnZoneSizeChanged()
     {
@@ -41,9 +40,10 @@ public class LightingZoneVisualizer : ICanvasVisualizerItem
 
     private void OnZoneLocationChanged()
     {
-        SetupZone();
+        //SetupZone();
         ItemUpdated?.Invoke();
     }
+
     public void UpdateContainerOffset(float dx, float dy)
     {
         _zone.X += dx;
@@ -53,14 +53,14 @@ public class LightingZoneVisualizer : ICanvasVisualizerItem
             var newPoints = new List<Point>();
             foreach (var point in _zone.Points)
             {
-                var newPoint = new Point(point.X + dx, point.Y+dy);
+                var newPoint = new Point(point.X + dx, point.Y + dy);
                 newPoints.Add(newPoint);
             }
 
             _zone.Points = newPoints;
         }
-       
-        _zoneBounds = MeasureZone();
+
+        // _zoneBounds = MeasureZone();
     }
 
     public void UpdateContainerSize(float x, float y)
@@ -89,8 +89,8 @@ public class LightingZoneVisualizer : ICanvasVisualizerItem
             using DrawingContext.PushedState rotationPush =
                 dc.PushTransform(Matrix.CreateRotation(Matrix.ToRadians(_zone.Rotation)));
             //render zone bitmap and info
-            
-            
+
+
             // todo: render zone info 
         }
         finally
@@ -108,7 +108,6 @@ public class LightingZoneVisualizer : ICanvasVisualizerItem
         _loading = false;
     }
 
-    
 
     private Rect MeasureZone()
     {
@@ -126,7 +125,7 @@ public class LightingZoneVisualizer : ICanvasVisualizerItem
                 new TranslateTransform(_zone.X, _zone.Y)
             }
         };
-        
+
         return geometry.Bounds;
     }
 }

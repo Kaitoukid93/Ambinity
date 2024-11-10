@@ -16,7 +16,7 @@ namespace Draw2D.Core
     }
 
 
-    public abstract class Figure 
+    public abstract class Figure
     {
         private readonly List<PolicyBase> _policies = new List<PolicyBase>();
         readonly List<IHandle> _handles = new List<IHandle>();
@@ -45,9 +45,11 @@ namespace Draw2D.Core
                 Canvas?.NeedsRepaint(this);
             }
         }
-        public event Action<float,float> PositionPropertyChanged;
+
+        public event Action<float, float> PositionPropertyChanged;
         public event Action<float, float> SizePropertyChanged;
         public event Action<bool> MouseOverChanged;
+
         public int ZOrder
         {
             get { return _zOrder; }
@@ -178,11 +180,10 @@ namespace Draw2D.Core
             //Todo: Children checks...
         }
 
-        public virtual Figure Select(bool showHandles = true, bool repaint = true)
+        public virtual Figure Select(bool showHandles = true, bool repaint = true, bool notify = true)
         {
             BringToFront();
-
-            Canvas?.Selection.Add(this);
+            Canvas?.Selection.Add(this, notify);
 
             foreach (var policy in _policies.OfType<SelectionFeedbackPolicy>())
             {
@@ -201,8 +202,9 @@ namespace Draw2D.Core
             {
                 policy.GetLinkedFigures().ToList().ForEach(s => s.BringToFront());
             }
-           if(repaint)
-            Canvas?.NeedsRepaint(this);
+
+            if (repaint)
+                Canvas?.NeedsRepaint(this);
 
             return this;
         }
@@ -262,11 +264,11 @@ namespace Draw2D.Core
             }
         }
 
-        public virtual void Translate(float dx, float dy)
+        public virtual void Translate(float dx, float dy, bool notify = true)
         {
             if (!IsDragable)
                 return;
-            
+
             AdjustPositionResult adjustmentResult = new AdjustPositionResult(dx, dy);
 
             foreach (var policy in _policies)
@@ -281,22 +283,23 @@ namespace Draw2D.Core
 
             if (adjustmentResult.Dx != 0 || adjustmentResult.Dy != 0)
             {
-                ForceTranslate(adjustmentResult.Dx, adjustmentResult.Dy);
+                ForceTranslate(adjustmentResult.Dx, adjustmentResult.Dy, notify);
             }
         }
 
-        public virtual void ForceTranslate(float dx, float dy)
+        public virtual void ForceTranslate(float dx, float dy, bool notify = true)
         {
             X += dx;
             Y += dy;
-            PositionPropertyChanged?.Invoke(dx,dy);
+            PositionPropertyChanged?.Invoke(dx, dy);
 
             foreach (var handle in _handles)
             {
                 handle.Update();
             }
 
-            Canvas?.OnFigureTranslated(this);
+            if (notify)
+                Canvas?.OnFigureTranslated(this);
 
 
             Canvas?.NeedsRepaint(this);
@@ -306,7 +309,7 @@ namespace Draw2D.Core
         {
             if (!IsResizable)
                 return;
-            
+
             var adjustSizeResult = new AdjustSizeResult(dTop, dRight, dBottom, dLeft);
 
             foreach (var policy in _policies.OfType<IAdjustPositionAndSize>())
@@ -324,7 +327,7 @@ namespace Draw2D.Core
                 {
                     handle.Update();
                 }
-               
+
 
                 Canvas?.NeedsRepaint(this);
             }
@@ -340,8 +343,8 @@ namespace Draw2D.Core
                 Width += dRight;
                 X += dLeft;
                 Width -= dLeft;
-                SizePropertyChanged?.Invoke(this.Width,this.Height);
-                PositionPropertyChanged?.Invoke(dLeft,0);
+                SizePropertyChanged?.Invoke(this.Width, this.Height);
+                PositionPropertyChanged?.Invoke(dLeft, 0);
             }
 
             if (box.Height >= MinHeight)
@@ -349,12 +352,12 @@ namespace Draw2D.Core
                 Y += dBottom;
                 Height += dTop;
                 Height -= dBottom;
-                SizePropertyChanged?.Invoke(this.Width,this.Height);
-                PositionPropertyChanged?.Invoke(0,dBottom);
+                SizePropertyChanged?.Invoke(this.Width, this.Height);
+                PositionPropertyChanged?.Invoke(0, dBottom);
             }
-            
+
             Canvas?.OnFigureTranslated(this);
-             
+
 
             Canvas?.NeedsRepaint(this);
         }
@@ -569,7 +572,7 @@ namespace Draw2D.Core
 
         public void ShowHandles(Canvas canvas)
         {
-            if(!IsResizable)
+            if (!IsResizable)
                 return;
             foreach (var handle in Handles)
             {

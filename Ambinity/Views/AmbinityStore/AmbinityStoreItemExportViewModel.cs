@@ -70,7 +70,7 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
         _onlineItem.Owner = Author;
         _onlineItem.Version = Version;
         _onlineItem.Description = Description;
-        _onlineItem.Tags = Tags.Split(',');
+        _onlineItem.Tags = Tags?.Split(',');
         _onlineItem.Type = _item.GetType();
         _item.Save();
     }

@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets\**"/>
+        <AvaloniaResource Remove="ViewModels\Test\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -35,5 +36,25 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AmbinityServer\AmbinityServer.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaXaml Remove="ViewModels\Test\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="ViewModels\Test\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="ViewModels\Test\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Remove="ViewModels\Test\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="ViewModels\Test\**" />
     </ItemGroup>
 </Project>

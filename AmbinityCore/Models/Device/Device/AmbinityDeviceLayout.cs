@@ -149,7 +149,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
     /// <param name="height"></param>
     /// <param name="scale"></param>
     /// <returns></returns>
-    public RenderTargetBitmap RenderLayout(int width, int height, int scale = 4)
+    public RenderTargetBitmap RenderLayout(int width, int height, int scale = 1)
     {
         string? path = Image?.LocalPath;
 

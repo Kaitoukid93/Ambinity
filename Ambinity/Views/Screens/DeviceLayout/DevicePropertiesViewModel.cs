@@ -19,7 +19,6 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         _deviceViewModelFactory = deviceViewModelFactory;
         PositionConfiguration = positionConfigurationViewModel;
         _canvasViewModel = canvasViewModel;
-        
     }
 
     public override void UpdateObjectProperties()
@@ -52,12 +51,14 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         else
         {
             _selectedDevices?.Clear();
-            foreach (var device in selectedItems.Select(item =>
+            foreach (var device in selectedItems.Where(i=>i.IsDragable).Select(item =>
                          (item as DeviceContainerFigure)?.ChildItem as AmbinityDevice))
             {
                 _selectedDevices.Add(device);
             }
 
+            if (_selectedDevices.Count == 0)
+                return;
             DetailViewModel = _deviceViewModelFactory.GetMultipleDetailViewModel(_selectedDevices.Count);
             DisableEdit();
         }
