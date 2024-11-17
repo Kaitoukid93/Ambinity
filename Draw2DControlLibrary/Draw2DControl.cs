@@ -72,7 +72,6 @@ namespace Draw2DControlLibrary
                 DrawGrid(dc);
             //var vectorFigures = Canvas.Figures.OfType<VectorFigure>().Where(f => f.IsVisible).ToList();
 
-         
 
             List<VectorFigure> vectorFigures = Canvas.GetRenderableFigures();
 
@@ -83,7 +82,7 @@ namespace Draw2DControlLibrary
                 var vectorFigure = figure;
                 vectorFigure.Render(dc, _globalBorderThickness, Canvas.StrokeColor);
             }
-            
+
             ///render image on top
             if (Canvas.BackgroundImageBuffer != null && Canvas.ShouldDrawBackgroundImage)
             {
@@ -94,11 +93,12 @@ namespace Draw2DControlLibrary
                         Marshal.Copy(Canvas.BackgroundImageBuffer.PixelData, 0, frameBuffer.Address,
                             Canvas.BackgroundImageBuffer.PixelData.Length);
                     }
-                    
-                    dc.PushOpacity(0.5d);
+
+                    dc.PushOpacity(0.5d * Canvas.BackgroundImageBuffer.BrightnessFactor);
                     dc.DrawImage(_reusableBitmap, new Rect(0, 0, Canvas.Width, Canvas.Height));
                 }
             }
+
             base.Render(dc);
         }
 

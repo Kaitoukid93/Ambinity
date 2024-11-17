@@ -61,20 +61,20 @@ public class LightingZoneFigure : ContainerFigure, IAssetSelectable
         Y = ChildItem.Y;
         Width = ChildItem.Width;
         Height = ChildItem.Height;
-        UpdateBitmap();
+        //UpdateBitmap();
         Canvas.NeedsRepaint(this);
         Canvas.NeedsRepaint(this);
     }
 
-    private void UpdateBitmap()
-    {
-        Vector dpi = new Vector(96, 96);
-        _zoneReusableBitmap = new WriteableBitmap(
-            new PixelSize((int)ChildItem.Width, (int)ChildItem.Height),
-            dpi,
-            PixelFormat.Bgra8888,
-            AlphaFormat.Premul);
-    }
+    // private void UpdateBitmap()
+    // {
+    //     Vector dpi = new Vector(96, 96);
+    //     _zoneReusableBitmap = new WriteableBitmap(
+    //         new PixelSize((int)ChildItem.Width, (int)ChildItem.Height),
+    //         dpi,
+    //         PixelFormat.Bgra8888,
+    //         AlphaFormat.Premul);
+    // }
 
     public override void Render(DrawingContext dc, double strokeThickness, Color strokeColor)
     {

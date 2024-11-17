@@ -1,5 +1,6 @@
 using System;
 using System.Security.Principal;
+using AmbinityCore;
 using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
 
@@ -15,10 +16,9 @@ public static class StartUpManager
         if (ts.GetTask(taskName) != null && !update)
             return;
         TaskDefinition td = ts.NewTask();
-        td.Principal.RunLevel = TaskRunLevel.Highest;
+        //td.Principal.RunLevel = TaskRunLevel.Highest;
         //td.Triggers.AddNew(TaskTriggerType.Logon);          
-        string program_path =
-            @"D:\AmbinityAvalonia\Ambinity_Avalonia\Ambinity\bin\Debug\net8.0\Ambinity.exe"; // you can have it dynamic
+        string program_path = Constants.ExecutablePath; // you can have it dynamic
         LogonTrigger lg = new LogonTrigger { UserId = WindowsIdentity.GetCurrent().Name };
         lg.Delay = TimeSpan.FromSeconds(delaySecond);
         td.Triggers.Add(lg); //even of user choice giving an interface in win-form or wpf application

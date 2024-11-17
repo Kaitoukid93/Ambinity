@@ -55,10 +55,7 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
     /// </summary>
     [JsonIgnore] public bool IsPinned { get; set; }
     
-    public CollectableItemRepository GetLocalRepository()
-    {
-        return Ioc.Default.GetRequiredService<LightingProfileCategoryRepository>();
-    }
+    [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
     public OnlineItemRepository GetOnlineRerpository()
     {
@@ -139,7 +136,7 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path
-            var dbPath = GetLocalRepository().LocalFolderPath;
+            var dbPath = LocalRepository.LocalFolderPath;
             LocalPath = Path.Combine(dbPath, Name + ".json"); // item without thumbnaill will be store in the same folder
         }
         JsonHelpers.WriteSimpleJson(this, LocalPath);

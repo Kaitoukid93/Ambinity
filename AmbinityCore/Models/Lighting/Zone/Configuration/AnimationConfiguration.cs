@@ -12,13 +12,13 @@ public class AnimationConfiguration : ObservableObject, ILightingConfiguration
 
     public AnimationConfiguration(Animation animation)
     {
-        Animation = animation;
+        if(animation!=null)
+        AnimationUID = animation.UID;
     }
 
     public event Action AnimationChanged;
     public ConfigurationType Type => ConfigurationType.Animation;
     public string Name => "Animation";
-    public string AnimationFilePath => Path.Combine(Animation.LocalPath, "config.json");
     public string Icon => "LightingConfiguration_Animation";
 
     public string? GetInfo()
@@ -43,10 +43,9 @@ public class AnimationConfiguration : ObservableObject, ILightingConfiguration
 
     public void ChangeAnimation(Animation animation)
     {
-        Animation = animation;
-        OnPropertyChanged(nameof(AnimationFilePath));
+        AnimationUID = animation.UID;
         AnimationChanged?.Invoke();
     }
 
-    public Animation Animation { get; set; }
+    public Guid AnimationUID { get; set; }
 }

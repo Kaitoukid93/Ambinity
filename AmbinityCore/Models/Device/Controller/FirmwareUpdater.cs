@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.IO.Ports;
 using AmbinityCore.Models.Ultilities;
+using AmbinityServer;
+using AmbinityServer.OnlineItem;
 using Serilog;
 
 namespace AmbinityCore.Models.Device.Controller;
@@ -9,13 +11,17 @@ public class FirmwareUpdater
 {
     public event Action<bool, string> FirmwareUpdateFinish;
 
-    public FirmwareUpdater()
+    public FirmwareUpdater(DownloadService downloadService, AmbinityClient ambinityClient)
     {
+        _ambinityClient = ambinityClient;
+        _downloadService = downloadService;
     }
 
     private string _fwUpdateLog;
     private SerialController _controller;
     private int _currentProgress;
+    private readonly DownloadService _downloadService;
+    private readonly AmbinityClient _ambinityClient;
 
     //prepare controller for firmware updating
     public async Task<bool> Init(SerialController controller)
@@ -61,9 +67,15 @@ public class FirmwareUpdater
         {
             return;
         }
-
         if (firmwareInformation.Tool == "Ch55x")
         {
+            //check for existence of firmware tool
+            if (!Directory.Exists(Constants.FirmwareToolsFolderPath))
+            {
+                FirmwareUpdateFinish?.Invoke(false, "Firmware tools not found for this device!!!");
+                progress.Report(new ProgressInformation("Firmware tools not found for this device!!!", 100));
+                return;
+            }
             StartCh55xFWTool(fwPath, progress);
         }
 
@@ -77,7 +89,7 @@ public class FirmwareUpdater
     {
         var startInfo = new System.Diagnostics.ProcessStartInfo
         {
-            WorkingDirectory = Constants.ToolsFolderPath,
+            WorkingDirectory = Constants.FirmwareToolsFolderPath,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             CreateNoWindow = true,

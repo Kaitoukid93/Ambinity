@@ -86,6 +86,7 @@ public class AmbinityDeviceBitmapCapture
                     lock (_frame.FrameLock)
                     {
                         DimLED();
+                        var bitmapBrightness = _frame.BrightnessFactor;
                         foreach (var led in _device.Leds)
                         {
                             const int numberOfSteps = 15;
@@ -109,7 +110,7 @@ public class AmbinityDeviceBitmapCapture
                                 led.LED.Green,
                                 led.LED.Blue);
                             if (!_device.IsIdentifying)
-                                led.LED.SetColor((byte)(R*_dimFactor), (byte)(G*_dimFactor), (byte)(B*_dimFactor));
+                                led.LED.SetColor((byte)(R*_dimFactor*bitmapBrightness), (byte)(G*_dimFactor*bitmapBrightness), (byte)(B*_dimFactor*bitmapBrightness));
                             // else
                             // {
                             //     led.LED.SetColor(255, 0, 0);

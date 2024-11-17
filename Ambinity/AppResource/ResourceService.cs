@@ -17,16 +17,18 @@ public class ResourceService
     private string ImagesLocalFolderPath => Path.Combine(Constants.AppDataFolder, "Images");
     private string AmbinityDeviceFolderPath => Path.Combine(Constants.AppDataFolder, "AmbinityDevices");
     private string ProfileFolderPath => Path.Combine(Constants.ModelDataFolder, "Profiles");
-    public string ImageRemotePath;
-    public string DeviceRemotePath;
-    public string ProfileRemotePath;
+    private string ImageRemotePath;
+    private string DeviceRemotePath;
+    private string ProfileRemotePath;
+    private string FirmwareToolsRemotePath;
 
     public ResourceService(AmbinityClient client, DownloadService downloadService)
     {
+        _downloadService = downloadService;
         ImageRemotePath = client.HomeAddress + "ftp/files/Resources/Thumbs";
         DeviceRemotePath = client.HomeAddress + "ftp/files/Resources/AmbinityDevices";
-        ProfileRemotePath = client.HomeAddress+"ftp/files/Resources/LightingProfiles";
-        _downloadService = downloadService;
+        ProfileRemotePath = client.HomeAddress + "ftp/files/Resources/LightingProfiles";
+        FirmwareToolsRemotePath = client.HomeAddress + "/ftp/files/Firmwares/Tools";
     }
 
     private DownloadService _downloadService;
@@ -46,6 +48,12 @@ public class ResourceService
         //clear cache
         if (!Directory.Exists(ProfileFolderPath))
             await _downloadService.DownloadDirectory(ProfileRemotePath, ProfileFolderPath, progress);
-        
+        //download tools
+        if (!Directory.Exists(Constants.FirmwareToolsFolderPath))
+        {
+            //download from server
+            Directory.CreateDirectory(Constants.FirmwareToolsFolderPath);
+            await _downloadService.DownloadDirectory(FirmwareToolsRemotePath, Constants.FirmwareToolsFolderPath, null);
+        }
     }
 }

@@ -26,7 +26,7 @@
                                 <ui:SettingsExpander MinWidth="500" Header="Auto-run on startup"
                                                      Description="Personalize device lighting when application is not running, click for more settings.">
                                     <ui:SettingsExpander.IconSource>
-                                        <ui:PathIconSource Data="{DynamicResource power}"></ui:PathIconSource>
+                                        <ui:PathIconSource Data="{DynamicResource button_power_1__power_button_on_off}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
                                         <ToggleSwitch IsChecked="{Binding RunAtStartup}" x:Name="Switch"></ToggleSwitch>
@@ -36,7 +36,7 @@
                                                              Description="The app will run in silent on Window's startup."
                                                              IsClickEnabled="False">
                                         <ui:SettingsExpanderItem.Footer>
-                                            <ToggleSwitch Margin="40,0"></ToggleSwitch>
+                                            <ToggleSwitch IsChecked="{Binding EnableMica}" Margin="40,0"></ToggleSwitch>
                                         </ui:SettingsExpanderItem.Footer>
                                     </ui:SettingsExpanderItem>
                                     <ui:SettingsExpanderItem MinWidth="500" Content="Startup delay"
@@ -55,16 +55,16 @@
                                 <ui:SettingsExpander MinWidth="500" Header="Enable Mica"
                                                      Description="Mica is an opaque, dynamic material that incorporates theme and desktop wallpaper to paint the background">
                                     <ui:SettingsExpander.Footer>
-                                        <ToggleSwitch Margin="40,0"></ToggleSwitch>
+                                        <ToggleSwitch IsChecked="{Binding EnableMica}" Margin="40,0"></ToggleSwitch>
                                     </ui:SettingsExpander.Footer>
                                     <ui:SettingsExpander.IconSource>
-                                        <ui:PathIconSource Data="{DynamicResource mica}"></ui:PathIconSource>
+                                        <ui:PathIconSource Data="{DynamicResource enable_mica}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander MinWidth="500" Header="Theme"
                                                      Description="Change accent color and theme settings">
                                     <ui:SettingsExpander.Footer>
-                                        <ui:FAComboBox x:Name="customTheme">
+                                        <ui:FAComboBox SelectedIndex="{Binding !UseSystemTheme}" x:Name="customTheme">
                                             <ui:FAComboBoxItem> Use system theme</ui:FAComboBoxItem>
                                             <ui:FAComboBoxItem> Custom</ui:FAComboBoxItem>
                                         </ui:FAComboBox>
@@ -77,7 +77,7 @@
                                                              Description="Choose primary color"
                                                              IsClickEnabled="False">
                                         <ui:SettingsExpanderItem.Footer>
-                                            <ui:ColorPickerButton Margin="40,0"></ui:ColorPickerButton>
+                                            <ui:ColorPickerButton Color="{Binding CurrentAppAccentColor}" Margin="40,0"></ui:ColorPickerButton>
                                         </ui:SettingsExpanderItem.Footer>
                                     </ui:SettingsExpanderItem>
                                     <ui:SettingsExpanderItem MinWidth="500" Content="Mode"
@@ -85,9 +85,7 @@
                                                              Description="Choose between dark and light mode "
                                                              IsClickEnabled="False">
                                         <ui:SettingsExpanderItem.Footer>
-                                            <ui:FAComboBox Margin="40,0">
-                                                <ui:FAComboBoxItem>Dark</ui:FAComboBoxItem>
-                                                <ui:FAComboBoxItem>Light</ui:FAComboBoxItem>
+                                            <ui:FAComboBox SelectedItem="{Binding CurrentAppTheme}" ItemsSource="{Binding AvailableAppThemes}" Margin="40,0">
                                             </ui:FAComboBox>
                                         </ui:SettingsExpanderItem.Footer>
                                     </ui:SettingsExpanderItem>
@@ -111,7 +109,7 @@
                                 <ui:SettingsExpander MinWidth="500" Header="Screen capture" 
                                                      Description="Enable screen capture plugin. This plugin is required for ambilight effect.">
                                     <ui:SettingsExpander.IconSource>
-                                        <ui:PathIconSource Data="{DynamicResource record}"></ui:PathIconSource>
+                                        <ui:PathIconSource Data="{DynamicResource desktopCapture}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
                                         <ToggleSwitch x:Name="ambilightEnable"></ToggleSwitch>
@@ -145,7 +143,7 @@
                                 <ui:SettingsExpander MinWidth="500" Header="Audio capture"
                                                      Description="Enable Audio capture plugin. This plugin is required for music reactive effect.">
                                     <ui:SettingsExpander.IconSource>
-                                        <ui:PathIconSource Data="{DynamicResource audiosettings}"></ui:PathIconSource>
+                                        <ui:PathIconSource Data="{DynamicResource audioCapture}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
                                         <ToggleSwitch Margin="40,0" x:Name="audioEnable"></ToggleSwitch>
@@ -154,7 +152,7 @@
                                 <ui:SettingsExpander MinWidth="500" Header="Hardware monitor"
                                                      Description="Enable Hardware monitor plugin. This plugin is required for adaptive fan control mode.">
                                     <ui:SettingsExpander.IconSource>
-                                        <ui:PathIconSource Data="{DynamicResource temperature}"></ui:PathIconSource>
+                                        <ui:PathIconSource Data="{DynamicResource wave_signal__heart_line_beat_square_graph_stats}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
                                         <ToggleSwitch Margin="40,0" x:Name="hwMonitorEnable"></ToggleSwitch>
@@ -163,7 +161,7 @@
                                 <ui:SettingsExpander MinWidth="500" Header="OpenRGB"
                                                      Description="Enable OpenRGB plugin. This plugin is required for controlling 3rd party devices">
                                     <ui:SettingsExpander.IconSource>
-                                        <ui:PathIconSource Data="{DynamicResource openSource}"></ui:PathIconSource>
+                                        <ui:PathIconSource Data="{DynamicResource plugin}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
                                         <ToggleSwitch Margin="40,0" x:Name="ORGBoutline"></ToggleSwitch>
@@ -188,7 +186,7 @@
                                 <ui:SettingsExpander MinWidth="500" Header="Target frame rate"
                                                      Description="Change the frame rate that of the bitmap rendering method">
                                     <ui:SettingsExpander.IconSource>
-                                        <ui:PathIconSource Data="{DynamicResource stop_clock}"></ui:PathIconSource>
+                                        <ui:PathIconSource Data="{DynamicResource flash}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
                                             <ui:FAComboBox Margin="40,0">
@@ -202,7 +200,7 @@
                                 <ui:SettingsExpander MinWidth="500" Header="Target bitmap size"
                                                      Description="Change size of the target bitmap if you find the default value is too small for your device layout">
                                     <ui:SettingsExpander.IconSource>
-                                        <ui:PathIconSource Data="{DynamicResource rendersize}"></ui:PathIconSource>
+                                        <ui:PathIconSource Data="{DynamicResource bitmapSize}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
                                         <ui:FAComboBox Margin="40,0">

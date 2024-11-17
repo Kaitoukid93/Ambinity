@@ -4,6 +4,7 @@ using Ambinity.AppResource;
 using Ambinity.QuickAccess;
 using Ambinity.Services;
 using Ambinity.Stores;
+using Ambinity.SystemUtilities;
 using Ambinity.Views.AmbinityStore;
 using Ambinity.Views.AppTour;
 using Ambinity.Views.Configuration.ColorConfiguration;
@@ -63,7 +64,7 @@ public class AmbinityBootStrapper
 
     private static KnownTypesBinder _knownTypeBinders { get; set; }
     private static GeneralSettingsManager _generalSettingsManager;
-    private static FluentAvaloniaTheme _faTheme;
+    
     private IDialogService _dialogService;
     private static Application? _application;
     private static IWindowService _windowService;
@@ -123,8 +124,10 @@ public class AmbinityBootStrapper
 
     private static void ConfigureTheme()
     {
-        _faTheme = _application.Styles[0] as FluentAvaloniaTheme;
-        UpdateAppAccentColor(_generalSettingsManager.Settings.PrimaryColor);
+        AppThemeManager.UpdateAppAccentColor(_generalSettingsManager.Settings.PrimaryColor);
+        AppThemeManager.SetAppTheme(_generalSettingsManager.Settings.SelectedTheme);
+        
+        
     }
 
     // private static void ConfigureAutoStart()
@@ -266,6 +269,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<DownloadService>()
                 .AddSingleton<FirmwareService>()
                 .AddSingleton<AmbinityStoreItemExportViewModel>()
+                .AddSingleton<RepositoryHelpers>()
                 .AddSingleton<ProfileStoreViewModel>()
                 .AddSingleton<ProfileStoreNonClientAreaContentViewModel>()
                 .AddSingleton<AmbinityStoreNavigation>()
@@ -273,10 +277,7 @@ public class AmbinityBootStrapper
                 .BuildServiceProvider());
     }
 
-    private static void UpdateAppAccentColor(Color? color)
-    {
-        _faTheme.CustomAccentColor = color;
-    }
+    
 
     private static async Task ConfigureCoreService(SplashViewModel splashViewModel)
     {

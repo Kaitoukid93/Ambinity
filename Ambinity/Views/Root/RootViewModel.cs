@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.QuickAccess;
@@ -21,6 +23,7 @@ using AmbinityServer;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Themes.Fluent;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;
@@ -68,6 +71,7 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
         _systemTrayFlyoutWindowViewModel = systemTrayFlyoutWindowViewModel;
         _lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
         _settings = settingsManager.Settings;
+        _settings.PropertyChanged += OnGeneralSettingsChanged;
         _ambinityClient = ambinityClient;
         _windowService = windowService;
         mainWindowService.ConfigureMainWindowProvider(this);
@@ -80,8 +84,30 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
         }
     }
 
-    public AppTourViewModel AppTourViewModel { get; set; }
+    private void OnGeneralSettingsChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            case nameof(_settings.EnableMica):
+                ChangeWindowTransparencyLevel(_settings.EnableMica);
+                break;
+        }
+    }
 
+    private void ChangeWindowTransparencyLevel(bool value)
+    {
+        if (value && TransparencyLevel.Contains(WindowTransparencyLevel.Mica))
+            return;
+
+        TransparencyLevel = value
+            ? [WindowTransparencyLevel.Mica]
+            : [];
+        OnPropertyChanged(nameof(TransparencyLevel));
+        // Application.Current!.Resources["TransparencyEnabled"] = value;
+    }
+    public IReadOnlyList<WindowTransparencyLevel>  TransparencyLevel { get; set; } =[WindowTransparencyLevel.Mica];
+    public AppTourViewModel AppTourViewModel { get; set; }
+     
 
     private bool ShouldShowUI()
     {

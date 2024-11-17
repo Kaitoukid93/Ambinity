@@ -24,7 +24,7 @@ public sealed class LightingProfileCategoryRepository : CollectableItemRepositor
     public override void LoadFromDisk()
     {
         Items?.Clear();
-        string[] files = Directory.GetFiles(FolderPath);
+        string[] files = Directory.GetFiles(LocalFolderPath);
         foreach (var file in files)
         {
 

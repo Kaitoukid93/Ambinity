@@ -5,8 +5,49 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
              xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              x:DataType="local:AnimationSelectionParameterViewModel"
              x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.AnimationSelectionParameterView">
+    <UserControl.Styles>
+         <Style Selector="DataValidationErrors">
+           <Setter Property="Template">
+               <ControlTemplate>
+                   <DockPanel LastChildFill="True">
+                       <ContentControl DockPanel.Dock="Right"
+                                       ContentTemplate="{TemplateBinding ErrorTemplate}"
+                                       DataContext="{TemplateBinding Owner}"
+                                       Content="{Binding (DataValidationErrors.Errors)}"
+                                       IsVisible="{Binding (DataValidationErrors.HasErrors)}"/>
+                       <ContentPresenter Name="PART_ContentPresenter"
+                                         Background="{TemplateBinding Background}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         ContentTemplate="{TemplateBinding ContentTemplate}"
+                                         Content="{TemplateBinding Content}"
+                                         Padding="{TemplateBinding Padding}"/>
+                   </DockPanel>
+               </ControlTemplate>
+           </Setter>
+           <Setter Property="ErrorTemplate">
+               <DataTemplate x:DataType="{x:Type x:Object}">
+                   <Canvas Width="3" Height="30" Margin="5 0 1 0" 
+                           Background="Transparent">
+                       <Canvas.Styles>
+                           <Style Selector="ToolTip">
+                               <Setter Property="Background" Value="IndianRed"/>
+                               <Setter Property="BorderBrush" Value="Red"/>
+                           </Style>
+                       </Canvas.Styles>
+                       <ToolTip.Tip>
+                           <ItemsControl ItemsSource="{Binding}"/>
+                       </ToolTip.Tip>
+                       <Rectangle Canvas.Left="0" Canvas.Top="1" Height="28" RadiusX="3" RadiusY="3" Width="3" Fill="Red"></Rectangle>
+                   </Canvas>
+               </DataTemplate>
+           </Setter>
+       </Style>
+    </UserControl.Styles>
     <Grid RowDefinitions="Auto,10,*">
         <Grid Row="0" ColumnDefinitions="Auto,*">
             <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
@@ -18,14 +59,14 @@
                         <Button Width="30" Height="30" Command="{Binding ImportAnimationCommand}"
                                 Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Import animation"
                                 Classes="icon-button">
-                            <PathIcon Width="15" Data="{DynamicResource Import}"></PathIcon>
+                            <PathIcon Width="16" Data="{DynamicResource Import}"></PathIcon>
                         </Button>
                     </Grid>
                     <Grid>
                         <Button Width="30" Height="30" Command="{Binding ExportAnimationCommand}"
                                 Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Export this animation"
                                 Classes="icon-button">
-                            <PathIcon Width="15" Data="{DynamicResource Export}"></PathIcon>
+                            <PathIcon Width="16" Data="{DynamicResource Export}"></PathIcon>
                         </Button>
                     </Grid>
                    
@@ -33,7 +74,7 @@
                         <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1"
                                 Background="Transparent" Width="30" Height="30"
                                 Classes="icon-button">
-                            <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon>
+                            <PathIcon Width="16" Data="{DynamicResource collection}"></PathIcon>
                         </Button>
                     </Grid>
                 </StackPanel>
@@ -57,7 +98,9 @@
 
                         </Grid>
                         <Grid Column="2">
-                            <NumericUpDown BorderThickness="0" Minimum="1" Maximum="5" FormatString="0" Increment="1" VerticalAlignment="Center" Value="{Binding FrameRate}"></NumericUpDown>
+                            <ui:NumberBox  Theme="{DynamicResource borderlessNumberBox}"  BorderThickness="0" Minimum="1" Maximum="5"  SpinButtonPlacementMode="Compact" VerticalAlignment="Center" Value="{Binding FrameRate}">
+                               
+                            </ui:NumberBox>
 
 
                         </Grid>
@@ -70,32 +113,32 @@
                     <Grid Row="2" ColumnDefinitions="Auto,10,*">
                         <Grid>
                             <Border Classes="card" BorderThickness="1" Padding="0" Width="100" Height="100" CornerRadius="7">
-                                <Lottie Margin="5" Path="{Binding Configuration.AnimationFilePath}"></Lottie>
+                                <Lottie Margin="5" Path="{Binding AnimationFilePath}"></Lottie>
                             </Border>
                         </Grid>
                         <StackPanel Grid.Column="2" Spacing="2">
                             <Grid ColumnDefinitions="Auto, *">
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Duration: "></TextBlock>
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1"
-                                           Text="{Binding Animation.Duration}">
+                                           Text="{Binding SelectedAnimation.SkottieAnimation.Duration}">
                                 </TextBlock>
                             </Grid>
                             <Grid ColumnDefinitions="Auto, *">
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Fps: "></TextBlock>
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1"
-                                           Text="{Binding Animation.Fps}">
+                                           Text="{Binding SelectedAnimation.SkottieAnimation.Fps}">
                                 </TextBlock>
                             </Grid>
                             <Grid ColumnDefinitions="Auto, *">
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Version: "></TextBlock>
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1"
-                                           Text="{Binding Animation.Version}">
+                                           Text="{Binding SelectedAnimation.SkottieAnimation.Version}">
                                 </TextBlock>
                             </Grid>
                             <Grid ColumnDefinitions="Auto, *">
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Size: "></TextBlock>
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1"
-                                           Text="{Binding Animation.Size}">
+                                           Text="{Binding SelectedAnimation.SkottieAnimation.Size}">
                                 </TextBlock>
                             </Grid>
                         </StackPanel>

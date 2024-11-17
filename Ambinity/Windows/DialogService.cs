@@ -49,7 +49,7 @@ public class DialogService : IDialogService
         _lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
         _mainWindow = _lifeTime.MainWindow;
         if (showCancelButton)
-            td.Buttons = new List<TaskDialogButton>() { TaskDialogButton.CancelButton };
+            td.Buttons = new List<TaskDialogButton>() { TaskDialogButton.CloseButton };
         vm.Init(td);
         td.Content = new DownloadDialogContent()
         {
@@ -59,7 +59,25 @@ public class DialogService : IDialogService
         var result = await td.ShowAsync();
     }
 
-    public async Task ShowDeleteDialog(DeleteDialogContentViewModel vm, string title, string primaryButtonText,
+    // public async Task ShowDeleteDialog(DeleteDialogContentViewModel vm, string title, string primaryButtonText,
+    //     string closeButtonText)
+    // {
+    //     var dialog = new ContentDialog()
+    //     {
+    //         Title = title,
+    //         PrimaryButtonText = primaryButtonText,
+    //         IsSecondaryButtonEnabled = false,
+    //         CloseButtonText = closeButtonText
+    //     };
+    //     vm.Init(dialog);
+    //     dialog.Content = new DeleteDialogContent()
+    //     {
+    //         DataContext = vm
+    //     };
+    //
+    //     var result = await dialog.ShowAsync();
+    // }
+    public async Task ShowConfirmationDialog(ConfirmationDialogContentViewModel vm, string title, string primaryButtonText,
         string closeButtonText)
     {
         var dialog = new ContentDialog()
@@ -70,14 +88,13 @@ public class DialogService : IDialogService
             CloseButtonText = closeButtonText
         };
         vm.Init(dialog);
-        dialog.Content = new DeleteDialogContent()
+        dialog.Content = new ConfirmationDialogContent()
         {
             DataContext = vm
         };
 
         var result = await dialog.ShowAsync();
     }
-
     public async Task ShowErrorDialog(ErrorDialogViewModel vm, string title,
         string closeButtonText)
     {

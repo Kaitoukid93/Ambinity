@@ -23,7 +23,7 @@ public class ColorPaletteRepository : CollectableItemRepository
     public override void LoadFromDisk()
     {
         Items?.Clear();
-        string[] directories = Directory.GetDirectories(FolderPath);
+        string[] directories = Directory.GetDirectories(LocalFolderPath);
         var hexConverter = new HexColorConverter();
         foreach (var dir in directories)
         {

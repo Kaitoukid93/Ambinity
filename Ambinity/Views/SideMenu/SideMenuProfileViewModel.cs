@@ -46,6 +46,8 @@ public class SideMenuProfileViewModel : ViewModelBase
 
     private async Task ExportProfile()
     {
+        //prepare profile for exporting
+        // copy asset if any zone required it to asset folder
         _exportViewModel.Init(Profile);
         var window =  _windowService.ShowWindow(_exportViewModel);
         //zip
@@ -192,6 +194,10 @@ public class SideMenuProfileViewModel : ViewModelBase
     {
         if (Profile == null)
             return;
+        foreach (var zone in Profile.Zones)
+        {
+            zone.ParentProfile = Profile;
+        }
         Content = Profile.Name;
         _icon = Profile.Icon;
         _iconColor = Profile.IconColor;

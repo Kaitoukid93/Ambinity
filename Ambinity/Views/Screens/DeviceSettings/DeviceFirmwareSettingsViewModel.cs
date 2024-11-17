@@ -8,6 +8,7 @@ using Ambinity.Windows;
 using AmbinityCore;
 using AmbinityCore.DataStream;
 using AmbinityCore.Models.Device.Controller;
+using AmbinityCore.Models.Device.Service;
 using AmbinityServer.OnlineItem;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;
@@ -26,6 +27,7 @@ public class DeviceFirmwareSettingsViewModel : ViewModelBase
     private IDataStream _serialStream;
     public DeviceFirmwareSettingsViewModel(FirmwareService firmwareService, IDialogService dialogService,SerialControllerRepository controllerRepository)
     {
+        _serialControllerHelpers = new SerialControllerHelpers();
         _controllerRepository = controllerRepository;
         _firmwareService = firmwareService;
         _dialogService = dialogService;
@@ -44,6 +46,12 @@ public class DeviceFirmwareSettingsViewModel : ViewModelBase
         _dialogService.ShowDownloadDialog(downloadVm, true);
         var fwPath = await _firmwareService.DownloadFirmware(firmwareInformation);
         await _firmwareService.UpdateFirmware(fwPath, firmwareInformation, _controller, downloadVm.ProgressInformation);
+        //update info
+        var result = await _serialControllerHelpers.GetHardwareSettings(false, _controller);
+        if (!result)
+        {
+            //device could need repower
+        }
         DownloadingFirmware = false;
         UpdateAvailable = false;
     }
@@ -65,8 +73,7 @@ public class DeviceFirmwareSettingsViewModel : ViewModelBase
             UpdateAvailable = false;
         }
 
-        AvailableFirmwares = availableFirmwares;
-        AvailableFirmwares?.Reverse();
+        AvailableFirmwares = availableFirmwares.OrderByDescending(f=>f.ReleaseDate).ToList();
 
         Header = "You're up to date";
         CheckingForUpdate = false;
@@ -140,6 +147,7 @@ public class DeviceFirmwareSettingsViewModel : ViewModelBase
     }
 
     private bool _downloadingFirmware;
+    private readonly SerialControllerHelpers _serialControllerHelpers;
 
     public bool DownloadingFirmware
     {

@@ -7,6 +7,7 @@ using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
+using AmbinityCore.Models.Lighting.Zone.Configuration;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 
@@ -46,14 +47,16 @@ public class ConfigurationHeaderViewModel : ViewModelBase
                     _item = zone;
                     Header = zone.Shape.ToString() + " - " + zone.LightingConfiguration.Name;
                     Icon = zone.Icon;
+                    CanExport = zone.LightingConfiguration.Type != ConfigurationType.Animation;
                     break;
                 case AmbinityDevice device:
                     _item = device.Layout;
                     Header = device.DeviceName;
                     Icon = "page_setting__page_setting_square_triangle_circle_line_combination_variation";
+                    CanExport = true;
                     break;
             }
-            CanExport = true;
+           
         }
         else
         {

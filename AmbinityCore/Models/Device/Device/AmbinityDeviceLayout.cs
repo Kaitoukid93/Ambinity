@@ -40,6 +40,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
     [JsonIgnore] public string Thumbnail { get; private set; }
     [JsonIgnore] public float ImageWidth { get; private set; }
     [JsonIgnore] public float ImageHeight { get; private set; }
+    [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
     private void LoadLayout()
     {

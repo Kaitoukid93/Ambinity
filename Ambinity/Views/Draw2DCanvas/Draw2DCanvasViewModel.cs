@@ -432,9 +432,10 @@ public class Draw2DCanvasViewModel : ViewModelBase
     private async Task RemoveFigure()
     {
         //show dialogvar vm = new InputDialogContentViewModel();
-        var vm = new DeleteDialogContentViewModel();
+        var vm = new ConfirmationDialogContentViewModel();
         vm.DialogClosed += OnDeleteDialogClosed;
-        await _dialogService.ShowDeleteDialog(vm,"Do you want to remove selected zones?","Remove", "Cancel" );
+        vm.Content = "This action cannot be undone";
+        await _dialogService.ShowConfirmationDialog(vm,"Delete selected zones?","Remove", "Cancel" );
         
     }
 
@@ -552,6 +553,10 @@ public class Draw2DCanvasViewModel : ViewModelBase
     {
         // var regionPolicy =
         //     new RegionDragDropEditPolicy(new Draw2D.Core.Geo.Rectangle(0, 0, Canvas.Width, Canvas.Height));
+        if (figure is LightingZoneFigure)
+        {
+            
+        }
         if (figure.IsResizable)
             figure.AddHandlesAllDirections(Canvas, HandleSizes.Tiny, HandleShapeType.Square);
         if (figure.IsSelectable)

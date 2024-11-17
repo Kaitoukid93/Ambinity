@@ -2,7 +2,6 @@ using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityServer.OnlineItem;
 using Avalonia.Media;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace AmbinityCore.Repositories;
@@ -13,15 +12,12 @@ public class ColorPalette : FillColorBase, ICollectableItem
     public event Action<ICollectableItem>? ItemPinStatusChanged;
     public event Action<ICollectableItem>? ItemCheckStatusChanged;
     public string Name { get; set; }
-    [System.Text.Json.Serialization.JsonIgnore] public bool IsSelected { get; set; }
-    [System.Text.Json.Serialization.JsonIgnore] public bool IsEditing { get; set; }
-    [System.Text.Json.Serialization.JsonIgnore] public bool IsChecked { get; set; }
-    [System.Text.Json.Serialization.JsonIgnore] public bool IsPinned { get; set; }
+    [JsonIgnore] public bool IsSelected { get; set; }
+    [JsonIgnore] public bool IsEditing { get; set; }
+    [JsonIgnore] public bool IsChecked { get; set; }
+    [JsonIgnore] public bool IsPinned { get; set; }
 
-    public CollectableItemRepository GetLocalRepository()
-    {
-        return Ioc.Default.GetRequiredService<ColorPaletteRepository>();
-    }
+    [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
     public OnlineItemRepository GetOnlineRerpository()
     {
@@ -68,7 +64,7 @@ public class ColorPalette : FillColorBase, ICollectableItem
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path
-            var dbPath = GetLocalRepository().LocalFolderPath;
+            var dbPath = LocalRepository.LocalFolderPath;
             LocalPath = Path.Combine(dbPath, Name);
             Directory.CreateDirectory(LocalPath);
         }

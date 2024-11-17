@@ -75,11 +75,11 @@ public class SelfGeneratedColorEngine : IColorEngine
                 //get color at this index
                 int position = (int)_startIndex + (int)(l * _colorResolution);
                 position %= _colorBank.Length;
-                float brightness = _brightnessData[l] / 255f;
-                var r = _colorBank[position].R * brightness;
-                var g = _colorBank[position].G * brightness;
+                float brightnessProviderData = _brightnessData[l] / 255f;
+                var r = _colorBank[position].R * brightnessProviderData;
+                var g = _colorBank[position].G * brightnessProviderData;
 
-                var b = _colorBank[position].B * brightness;
+                var b = _colorBank[position].B * brightnessProviderData;
                 lock (_buffer.FrameLock)
                 {
                     for (int i = 0; i < line.Length; i++)
@@ -136,7 +136,7 @@ public class SelfGeneratedColorEngine : IColorEngine
         _config.ColorsBehaviorUpdated += UpdateColorsBehavior;
         _config.ApperanceUpdated += UpdatePixelsData;
         _config.MotionConfigUpdated += UpdateMotionConfig;
-     
+
         // get the zone shape data
         _zonePoly = zone.GetPoints().ToArray();
         if (_zonePoly.Length == 0)
@@ -155,6 +155,7 @@ public class SelfGeneratedColorEngine : IColorEngine
         // _motionConfig.Update += UpdateBrightnessProvider;
         UpdateBrightnessProvider();
     }
+
     /// <summary>
     /// update list of leds that this zone care about 
     /// </summary>
@@ -250,5 +251,4 @@ public class SelfGeneratedColorEngine : IColorEngine
         IsDisposed = true;
         GC.Collect();
     }
-    
 }

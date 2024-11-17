@@ -7,6 +7,7 @@ using AmbinityCore.CapturingService;
 using AmbinityCore.Colors;
 using AmbinityCore.DataBase;
 using AmbinityCore.LightingEngines;
+using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Repositories;
@@ -32,20 +33,20 @@ public class ParameterViewModelFactory(
     LightingProfileDecoder decoder,
     AmbinityStoreItemExportViewModel exportViewModel)
 {
-    public List<ParameterViewModelBase> CreateParameterViewModels(ILightingConfiguration config)
+    public List<ParameterViewModelBase> CreateParameterViewModels(LightingZone zone)
     {
-        return config.Type switch
+        return zone.LightingConfiguration.Type switch
         {
-            ConfigurationType.Animation => GetAnimationParameters(config),
-            ConfigurationType.ScreenCapture => GetScreenCaptureParameters(config),
-            ConfigurationType.SelfGeneratedColor => GetSelfGeneratedColorParameters(config)
+            ConfigurationType.Animation => GetAnimationParameters(zone),
+            ConfigurationType.ScreenCapture => GetScreenCaptureParameters(zone),
+            ConfigurationType.SelfGeneratedColor => GetSelfGeneratedColorParameters(zone)
         };
     }
 
-    private List<ParameterViewModelBase>? GetSelfGeneratedColorParameters(ILightingConfiguration config)
+    private List<ParameterViewModelBase>? GetSelfGeneratedColorParameters(LightingZone zone)
     {
         var parameters = new List<ParameterViewModelBase>();
-        if (config is not SelfGeneratedColorConfiguration configuration)
+        if (zone.LightingConfiguration is not SelfGeneratedColorConfiguration configuration)
             return null;
         var colorSelectorParameter = new FillColorSelectionViewModel(configuration, rightPanelViewModel,
             colorsRepository, colorPaletteRepository, libraryViewModelFactory, windowService, dialogService,exportViewModel);
@@ -65,9 +66,9 @@ public class ParameterViewModelFactory(
         return parameters;
     }
 
-    private List<ParameterViewModelBase>? GetScreenCaptureParameters(ILightingConfiguration config)
+    private List<ParameterViewModelBase>? GetScreenCaptureParameters(LightingZone zone)
     {
-        if (config is not ScreenCaptureConfiguration configuration)
+        if (zone.LightingConfiguration is not ScreenCaptureConfiguration configuration)
             return null;
         var captureParameter = new ScreenRegionSelectionParameterViewModel(configuration,
             windowService, settingsManager, screenCapturingService,decoder);
@@ -75,13 +76,13 @@ public class ParameterViewModelFactory(
         return [captureParameter, new SeparationParameterViewModel(), blackBarDetectionParameter];
     }
 
-    private List<ParameterViewModelBase>? GetAnimationParameters(ILightingConfiguration config)
+    private List<ParameterViewModelBase>? GetAnimationParameters(LightingZone zone)
     {
-        if (config is not AnimationConfiguration configuration)
+        if (zone.LightingConfiguration is not AnimationConfiguration configuration)
             return null;
         var animationSelectionParameter = new AnimationSelectionParameterViewModel(
-            configuration, rightPanelViewModel, libraryViewModelFactory, windowService,
-            animationsRepository,exportViewModel);
+            zone, rightPanelViewModel, libraryViewModelFactory, windowService,
+            animationsRepository,exportViewModel,dialogService);
         return [animationSelectionParameter];
     }
 }

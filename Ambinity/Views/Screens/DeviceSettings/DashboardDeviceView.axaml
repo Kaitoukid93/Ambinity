@@ -28,16 +28,16 @@
         </Style>
         <Style Selector="TextBlock.connected">
             <Setter Property="Text" Value="Connected" />
-            <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}"></Setter>
+            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}"></Setter>
         </Style>
         <Style Selector="TextBlock.activateStatus">
             <Setter Property="Text" Value="Active" />
-            <Setter Property="Foreground" Value="MediumPurple"></Setter>
+            <Setter Property="Foreground" Value="LimeGreen"></Setter>
         </Style>
         <Style Selector="Border.chip.activateStatus">
             <Setter Property="Padding" Value="5,3" />
             <Setter Property="Background">
-                <SolidColorBrush Color="MediumPurple" Opacity="0.2"></SolidColorBrush>
+                <SolidColorBrush Color="LimeGreen" Opacity="0.2"></SolidColorBrush>
             </Setter>
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
@@ -137,7 +137,7 @@
                                 CornerRadius="3" HorizontalAlignment="Right" Classes="chip">
                             <Grid ColumnDefinitions="Auto,*">
                                 <PathIcon IsVisible="{Binding IsTransferActive}"
-                                          Foreground="{DynamicResource AccentButtonBackground}" Width="12" Margin="0,0,3,0"
+                                          Foreground="{DynamicResource SystemAccentColor}" Width="12" Margin="0,0,3,0"
                                           Height="12" Data="{DynamicResource checkIcon}">
                                 </PathIcon>
                                 <PathIcon IsVisible="{Binding !IsTransferActive}"

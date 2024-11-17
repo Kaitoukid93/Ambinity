@@ -11,7 +11,7 @@ namespace Ambinity.Views.CollectableItem.LightingZone;
 
 public class LightingZoneAssetViewModel : AssetItemViewModelBase
 {
-    public LightingZoneAssetViewModel(ICollectableItem item)
+    public LightingZoneAssetViewModel(ICollectableItem item) : base(item)
     {
         _item = item as AmbinityCore.Models.Lighting.Zone.LightingZone;
         Name = _item.Name;

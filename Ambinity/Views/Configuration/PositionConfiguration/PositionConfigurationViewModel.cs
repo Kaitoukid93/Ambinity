@@ -23,13 +23,13 @@ public class PositionConfigurationViewModel : ViewModelBase
         SetItemScaleCommand = new RelayCommand<string>(SetItemScale);
     }
 
-    private int _minimumWidth = 5;
-    private int _minimumHeight = 5;
-
+    private int _minimumWidth = 2;
+    public int MinimumWidth => _minimumWidth;
+    private int _minimumHeight = 2;
+    public int MinimumHeight => _minimumHeight;
     private void SetItemScale(string value)
     {
         ScaleProperty = double.Parse(value);
-        TryUpdateItemProperty();
     }
 
     private Draw2DCanvasViewModel _canvas;
@@ -58,28 +58,6 @@ public class PositionConfigurationViewModel : ViewModelBase
         RotationProperty = PositionAwareItem.Rotation;
     }
 
-    public void TryUpdateItemProperty()
-    {
-        //check valid
-        // var rect = new Rect(float.Parse(XProperty), float.Parse(YProperty), float.Parse(WidthProperty)* float.Parse(ScaleProperty),
-        //     float.Parse(HeightProperty)* float.Parse(ScaleProperty));
-        //
-        // var canvasRect = new Rect(0, 0, _canvas.Canvas.Width, _canvas.Canvas.Height);
-        // if (canvasRect.Intersect(rect) != rect)
-        // {
-        //     return;
-        // }
-        if ((float)(WidthProperty) < _minimumWidth || (float)HeightProperty < _minimumHeight)
-            return;
-        PositionAwareItem.X = (float)XProperty;
-        PositionAwareItem.Y = (float)YProperty;
-        PositionAwareItem.Width = (float)WidthProperty;
-        PositionAwareItem.Height = (float)HeightProperty;
-        PositionAwareItem.SetRotation((float)RotationProperty);
-        PositionAwareItem.SetScale((float)ScaleProperty);
-        (_canvas.Canvas as Canvas).NeedsRepaint(null);
-    }
-
     private IPositionAware PositionAwareItem;
 
     /// <summary>
@@ -94,8 +72,18 @@ public class PositionConfigurationViewModel : ViewModelBase
         get => _xProperty;
         set
         {
-            _xProperty = value;
-            OnPropertyChanged();
+            if (Double.IsNaN(value))
+            {
+                throw new ArgumentNullException(nameof(XProperty), "Invalid value");
+            }
+            else
+            {
+                _xProperty = value;
+                PositionAwareItem.X = (float)XProperty;
+                OnPropertyChanged();
+            }
+            
+            
         }
     }
 
@@ -104,8 +92,17 @@ public class PositionConfigurationViewModel : ViewModelBase
         get => _yProperty;
         set
         {
-            _yProperty = value;
-            OnPropertyChanged();
+            if (Double.IsNaN(value))
+            {
+                throw new ArgumentNullException(nameof(YProperty), "Invalid value");
+            }
+            else
+            {
+                _yProperty = value;
+                PositionAwareItem.Y = (float)YProperty;
+                OnPropertyChanged();
+            }
+           
         }
     }
 
@@ -116,8 +113,18 @@ public class PositionConfigurationViewModel : ViewModelBase
         get => _widthProperty;
         set
         {
-            _widthProperty = value;
-            OnPropertyChanged();
+            if (Double.IsNaN(value) || value<MinimumWidth)
+            {
+                throw new ArgumentNullException(nameof(WidthProperty), "Invalid Width");
+            }
+            else
+            {
+                _widthProperty = value;
+                PositionAwareItem.Width = (float)WidthProperty;
+                (_canvas.Canvas as Canvas).NeedsRepaint(null);
+                OnPropertyChanged();
+            }
+            
         }
     }
 
@@ -128,8 +135,18 @@ public class PositionConfigurationViewModel : ViewModelBase
         get => _heightProperty;
         set
         {
-            _heightProperty = value;
-            OnPropertyChanged();
+            if (Double.IsNaN(value) ||value<MinimumHeight)
+            {
+                throw new ArgumentNullException(nameof(HeightProperty), "Invalid Height");
+            }
+            else
+            {
+                _heightProperty = value;
+                PositionAwareItem.Height = (float)HeightProperty;
+                (_canvas.Canvas as Canvas).NeedsRepaint(null);
+                OnPropertyChanged();
+            }
+           
         }
     }
 
@@ -140,9 +157,19 @@ public class PositionConfigurationViewModel : ViewModelBase
         get => _scaleProperty;
         set
         {
-            _scaleProperty = value;
-            OnPropertyChanged();
-        }
+            if (Double.IsNaN(value))
+            {
+                throw new ArgumentNullException(nameof(ScaleProperty), "Invalid value");
+            }
+            else
+            {
+                _scaleProperty = value;
+                PositionAwareItem.SetScale((float)ScaleProperty);
+                (_canvas.Canvas as Canvas).NeedsRepaint(null);
+                OnPropertyChanged();
+            }
+            }
+         
     }
 
     private double _rotationProperty;
@@ -152,8 +179,18 @@ public class PositionConfigurationViewModel : ViewModelBase
         get => _rotationProperty;
         set
         {
-            _rotationProperty = value;
-            OnPropertyChanged();
+            if (Double.IsNaN(value))
+            {
+                throw new ArgumentNullException(nameof(RotationProperty), "Invalid value");
+            }
+            else
+            {
+                _rotationProperty = value;
+                PositionAwareItem.SetRotation((float)RotationProperty);
+                (_canvas.Canvas as Canvas).NeedsRepaint(null);
+                OnPropertyChanged();
+            }
+           
         }
     }
 

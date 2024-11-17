@@ -14,14 +14,7 @@ public partial class PositionConfigurationView : UserControl
         InitializeComponent();
         var nm = this.FindControl<NumberBox>("scaleNumberBox");
     }
-
-    private void InputElement_OnLostFocus(object? sender, RoutedEventArgs e)
-    {
-        var vm = this.DataContext as PositionConfigurationViewModel;
-        if(vm == null)
-            return;
-        vm.TryUpdateItemProperty();
-    }
+    
 
     private void InfoButton_OnClick(object? sender, RoutedEventArgs e)
     {

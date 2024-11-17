@@ -8,6 +8,7 @@ public class FrameBuffer
 {
     public event Action FrameUpdated; 
     public object FrameLock;
+    public double  BrightnessFactor { get; set; }
     public FrameBuffer(int frameWidth, int frameHeight)
     {
         FrameWidth = frameWidth;

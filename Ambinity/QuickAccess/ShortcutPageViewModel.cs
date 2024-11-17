@@ -25,9 +25,11 @@ public class ShortcutPageViewModel : ViewModelBase
 
     public ShortcutPageViewModel(DevicesPageViewModel devicesPageViewModel, QuickAccessNavigationStore navigationStore,
         QuickAccessViewModelFactory factory, LightingProfileRepository profileRepository,
-        ShortcutRepository shortcutRepository, IMainWindowService mainWindowService,LightingProfilePlayerWidgetViewModel widgetViewModel)
+        ShortcutRepository shortcutRepository, IMainWindowService mainWindowService,LightingProfilePlayerWidgetViewModel widgetViewModel, LightingProfileDecoder decoder)
     {
         WidgetViewModel = widgetViewModel;
+        _decoder = decoder;
+        _decoder.CurrentPlayingProfileChanged += OnCurrentPlayingProfileChanged;
         _lightingProfileRepository = profileRepository;
         _lightingProfileRepository.ItemRemoved += OnLightingProfileRemoved;
         _factory = factory;
@@ -44,6 +46,11 @@ public class ShortcutPageViewModel : ViewModelBase
         AddShortcutCommand = new RelayCommand(AddShortcut, CanAdd);
         ExitAppCommand = new RelayCommand(RequestAppExit);
         Shortcuts = new ObservableCollection<ShortcutViewModel>();
+    }
+
+    private void OnCurrentPlayingProfileChanged(LightingProfile profile)
+    {
+        ProfileBrightness = profile.Brightness;
     }
 
     public LightingProfilePlayerWidgetViewModel WidgetViewModel { get; set; }
@@ -196,6 +203,19 @@ public class ShortcutPageViewModel : ViewModelBase
 
     public RelayCommand AddShortcutCommand { get; }
     public ICommand ExitAppCommand { get; }
+    private int _profileBrightness = 80;
+    private readonly LightingProfileDecoder _decoder;
+
+    public int ProfileBrightness
+    {
+        get => _profileBrightness;
+        set
+        {
+            _profileBrightness = value;
+            _decoder.CurrentPlayingProfile.Brightness = value;
+            OnPropertyChanged();
+        }
+    }
 
     public override void Dispose()
     {

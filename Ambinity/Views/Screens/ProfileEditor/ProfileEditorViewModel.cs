@@ -36,6 +36,7 @@ public class ProfileEditorViewModel : ViewModelBase
         _lightingZoneOnlineRepository = lightingZoneOnlineRepository;
         mainWindowService.MainWindowClosed += OnMainWindowClosed;
         _toolsViewModel = toolsViewModel;
+        
     }
 
     private void OnItemRemoved(Figure item)
@@ -102,7 +103,7 @@ public class ProfileEditorViewModel : ViewModelBase
         //init layout canvas
         LayoutViewModel.ShoudDrawBackground = true;
         LayoutViewModel.Init(items);
-        _toolsViewModel.InitForProfileEditor();
+        _toolsViewModel.InitForProfileEditor(profile);
         RightPanelViewModel.PropertiesViewModel = _propertiesViewModel;
         //init assets
         RightPanelViewModel.Init();

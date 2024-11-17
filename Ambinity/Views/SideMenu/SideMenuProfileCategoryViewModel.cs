@@ -212,10 +212,10 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
 
     private async Task ExecuteDeleteCategory()
     {
-        var vm = new DeleteDialogContentViewModel();
+        var vm = new ConfirmationDialogContentViewModel();
         vm.DialogClosed += OnDeleteDialogClosed;
         vm.Content = "Do you want to delete this category and it's profiles?";
-        await _dialogService.ShowDeleteDialog(vm, "Delete", "Ok", "Cancel");
+        await _dialogService.ShowConfirmationDialog(vm, "Delete", "Ok", "Cancel");
     }
 
     private void OnDeleteDialogClosed(object? sender, EventArgs e)

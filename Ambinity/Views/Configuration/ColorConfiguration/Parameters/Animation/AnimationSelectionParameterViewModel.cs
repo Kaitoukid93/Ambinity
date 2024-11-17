@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -5,13 +6,17 @@ using System.Windows.Input;
 using Ambinity.Services;
 using Ambinity.Views.AmbinityStore;
 using Ambinity.Views.LayoutEditor;
+using Ambinity.Windows;
 using AmbinityCore.Colors;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
+using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
 using AmbinityCore.Repositories;
 using CommunityToolkit.Mvvm.Input;
+using FluentAvalonia.UI.Controls;
 using Serilog;
+using Tmds.DBus.Protocol;
 using Animation = SkiaSharp.Skottie.Animation;
 
 namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
@@ -25,20 +30,40 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
     private readonly IWindowService _windowService;
     private readonly AnimationsRepository _repository;
     private readonly AmbinityStoreItemExportViewModel _itemExportViewModel;
+    private AmbinityCore.Repositories.Animation _selectedAnimation;
+    private LightingZone _zone;
+    private AnimationsRepository _internalRepository => _zone?.ParentProfile?.AnimationRepository;
 
-    public AnimationSelectionParameterViewModel(AnimationConfiguration configuration,
-        ProfileEditorRightPanelViewModel rightPanelViewModel,
-        LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService,AnimationsRepository repository,AmbinityStoreItemExportViewModel itemExportViewModel)
+    public AmbinityCore.Repositories.Animation SelectedAnimation
     {
+        get => _selectedAnimation;
+        set
+        {
+            _selectedAnimation = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public AnimationSelectionParameterViewModel(LightingZone zone,
+        ProfileEditorRightPanelViewModel rightPanelViewModel,
+        LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService, AnimationsRepository repository,
+        AmbinityStoreItemExportViewModel itemExportViewModel, IDialogService dialogService)
+    {
+        _dialogService = dialogService;
         _itemExportViewModel = itemExportViewModel;
         _windowService = windowService;
         _repository = repository;
+        //prepare internal repository for any animation selection
+        if(_internalRepository == null)
+            zone.ParentProfile.UpdateRepository(ConfigurationType.Animation);
         _libraryViewModelFactory = libraryViewModelFactory;
         _rightPanelViewModel = rightPanelViewModel;
-        _configuration = configuration;
+        _zone = zone;
+        _configuration = _zone.LightingConfiguration as AnimationConfiguration;
         _configuration.AnimationChanged += OnAnimationChanged;
         OpenLibraryCommand = new RelayCommand(OpenLibrary);
-        _configuration?.Animation?.LoadAnimation();
+        SelectedAnimation = _internalRepository?.FindAnimation(_configuration.AnimationUID) ??
+                            _repository?.FindAnimation(_configuration.AnimationUID);
         OnAnimationChanged();
         ImportAnimationCommand = new AsyncRelayCommand(ImportAnimation);
         ExportAnimationCommand = new AsyncRelayCommand(ExportAnimation);
@@ -46,15 +71,15 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
 
     private async Task ExportAnimation()
     {
-       
-        _itemExportViewModel.Init(_configuration.Animation);
+        _itemExportViewModel.Init(SelectedAnimation);
         var window = _windowService.ShowWindow(_itemExportViewModel);
     }
 
     private void OnAnimationChanged()
     {
-        if(_configuration.Animation!=null)
-        Animation = _configuration.Animation.SkottieAnimation;
+        SelectedAnimation = _repository.FindAnimation(_configuration.AnimationUID) ??
+                            _internalRepository?.FindAnimation(_configuration.AnimationUID);
+        OnPropertyChanged(nameof(AnimationFilePath));
     }
 
     private async Task ImportAnimation()
@@ -66,14 +91,61 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
             return;
         var importFilePath = result.First();
         var filename = Path.GetFileNameWithoutExtension(importFilePath);
+        if (_internalRepository.Items.Any(i => i.Name == filename))
+        {
+            var existed = _internalRepository.FindAnimation(filename);
+            existed.LoadAnimation();
+            _configuration.ChangeAnimation(existed);
+            return;
+        }
+
         var animation = new AmbinityCore.Repositories.Animation(filename);
-        _repository.AddItem(animation);
+        _internalRepository.AddItem(animation);
         animation.Save();
         //rename json to config and copy to folder
-        File.Copy(importFilePath, Path.Combine(animation.LocalPath,"config.json"),true);
+        File.Copy(importFilePath, Path.Combine(animation.LocalPath, "config.json"), true);
         animation.LoadAnimation();
         _configuration.ChangeAnimation(animation);
+        //ask if user want to add to library
+        var confirmationDialogVm = new ConfirmationDialogContentViewModel();
+        confirmationDialogVm.DialogClosed += OnConfirmationDialogClosed;
+        confirmationDialogVm.Content = "Do you want to add this animation to animation library?";
+        await _dialogService.ShowConfirmationDialog(confirmationDialogVm, "New animation imported", "Add",
+            "No");
     }
+
+    private void OnConfirmationDialogClosed(object? sender, EventArgs e)
+    {
+        Log.Information("Adding item to system library");
+        var vm = sender as ConfirmationDialogContentViewModel;
+        var result = (e as ContentDialogClosedEventArgs).Result;
+        if (result == ContentDialogResult.Secondary || result == ContentDialogResult.None)
+            return;
+        if (result == ContentDialogResult.Primary)
+        {
+            //copy current selected animation to system library
+            var selectedAnimation = _internalRepository.FindAnimation(_configuration.AnimationUID);
+            if (selectedAnimation == null)
+            {
+                Log.Information("Item not found, aborting...");
+                return;
+            }
+              
+            if (_repository.Items.Any(i => i.Name == selectedAnimation.Name))
+            {
+                Log.Information("Item existed, aborting...");
+                return;
+            }
+
+            Directory.CreateDirectory(Path.Combine(_repository.LocalFolderPath, _selectedAnimation.Name));
+            LocalFileHelpers.CopyDirectory(selectedAnimation.LocalPath,
+                Path.Combine(_repository.LocalFolderPath, _selectedAnimation.Name), true);
+            Log.Information("Item added to system library, reloading assets...");
+            //reload item
+            _repository.LoadFromDisk();
+        }
+    }
+
     private void OpenLibrary()
     {
         _libraryViewModel = _libraryViewModelFactory.GetLibraryViewModel("Animation");
@@ -81,11 +153,11 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
         _libraryViewModel.ItemSelected += OnAnimationSelected;
         _rightPanelViewModel.OpenFlyout(_libraryViewModel);
     }
+
     public override void Dispose()
     {
-        if(_libraryViewModel!=null)
-        _libraryViewModel.ItemSelected -= OnAnimationSelected;
-        
+        if (_libraryViewModel != null)
+            _libraryViewModel.ItemSelected -= OnAnimationSelected;
     }
 
     private void OnAnimationSelected(AssetItemViewModelBase item)
@@ -93,26 +165,36 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
         if (item is AnimationAssetViewModel)
         {
             var animationAsset = item as AnimationAssetViewModel;
+            //add this to internal repo by copying item
+            LocalFileHelpers.CopyDirectory(animationAsset.Item.LocalPath,
+                Path.Combine(_internalRepository.LocalFolderPath, animationAsset.Item.Name), true);
+            //reload item
+            _internalRepository.LoadFromDisk();
             _configuration.ChangeAnimation(animationAsset.Item as AmbinityCore.Repositories.Animation);
         }
-        
     }
 
     public ICommand OpenLibraryCommand { get; }
     public ICommand ImportAnimationCommand { get; }
-    public Animation Animation { get; set; }
     private int _frameRate;
+    private readonly IDialogService _dialogService;
+
     public int FrameRate
     {
         get => _frameRate;
         set
         {
+            if (value < 0)
+                value = 0;
+            if (value > 5)
+                value = 5;
             _configuration.FrameRate = value;
             _frameRate = value;
             OnPropertyChanged();
         }
-    } 
+    }
 
+    public string AnimationFilePath => Path.Combine(SelectedAnimation.LocalPath, "config.json");
     public AnimationConfiguration Configuration => _configuration;
     public ICommand ExportAnimationCommand { get; }
 }

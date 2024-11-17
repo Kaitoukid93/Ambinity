@@ -3,8 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         ExtendClientAreaToDecorationsHint="True"
-        TransparencyLevelHint="Mica"
-        Background="Transparent"
+        TransparencyLevelHint="{Binding TransparencyLevel}"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         Width="1600"
         Height="900"
@@ -16,6 +15,7 @@
         xmlns:root="clr-namespace:Ambinity.Views.Root"
         xmlns:nonclientarea="clr-namespace:Ambinity.Views.NonClientArea"
         xmlns:sideMenu="clr-namespace:Ambinity.Views.SideMenu"
+        xmlns:views="clr-namespace:Ambinity.Views"
         Icon="/Assets/appicon.ico"
         Title="Ambinity">
     <Window.Styles>

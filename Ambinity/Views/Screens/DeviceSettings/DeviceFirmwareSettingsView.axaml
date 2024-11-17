@@ -79,7 +79,7 @@
                     <ui:SettingsExpander.ItemTemplate>
                         <DataTemplate>
                             <ui:SettingsExpanderItem Content="{Binding Version}"
-                                                     Description="{Binding ReleaseDate}">
+                                                     Description="{Binding Description}">
                                 <ui:SettingsExpanderItem.Footer>
                                     <Button
                                         Command="{Binding $parent[ui:SettingsExpander].((local:DeviceFirmwareSettingsViewModel)DataContext).UpdateDeviceFirmwareCommand}"

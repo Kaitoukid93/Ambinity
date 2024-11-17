@@ -183,6 +183,7 @@ public abstract class CollectableItemRepository : ObservableObject
         item.ItemNameChanged += OnItemNameChanged;
         item.ItemPinStatusChanged += OnItemPinStatusChanged;
         item.PropertyChanged += OnItemPropertyChanged;
+        item.LocalRepository = this;
     }
 
     private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)

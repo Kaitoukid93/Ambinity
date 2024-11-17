@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Serilog;
 using SkiaSharp;
 using SkiaSharp.Skottie;
+
 namespace AmbinityCore.Repositories;
 
 public class Animation : ObservableObject, ICollectableItem
@@ -20,10 +21,8 @@ public class Animation : ObservableObject, ICollectableItem
     [JsonIgnore] public bool IsChecked { get; set; }
     [JsonIgnore] public bool IsPinned { get; set; }
 
-    public CollectableItemRepository GetLocalRepository()
-    {
-        return Ioc.Default.GetRequiredService<AnimationsRepository>();
-    }
+    [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
+
 
     public OnlineItemRepository GetOnlineRerpository()
     {
@@ -31,12 +30,17 @@ public class Animation : ObservableObject, ICollectableItem
         return null;
     }
 
-    public string LocalPath { get; set; }
+    [JsonIgnore] public string LocalPath { get; set; }
+
     public string Description { get; set; }
+
+    //uid will be used for resolve animation when profile is loaded
+    public Guid UID { get; set; }
 
     public Animation(string name)
     {
         Name = name;
+        UID = Guid.NewGuid();
     }
 
     public Animation()
@@ -51,11 +55,11 @@ public class Animation : ObservableObject, ICollectableItem
         if (!File.Exists(Path.Combine(LocalPath, "config.json")))
         {
             //todo revert to default animation
-            Log.Error("Animation file not found: " + Path.Combine(LocalPath,"config.json"));
+            Log.Error("Animation file not found: " + Path.Combine(LocalPath, "config.json"));
             return;
         }
-            
-        var json = File.ReadAllText(Path.Combine(LocalPath,"config.json"));
+
+        var json = File.ReadAllText(Path.Combine(LocalPath, "config.json"));
         SkottieAnimation = SkiaSharp.Skottie.Animation.Parse(json);
     }
 
@@ -66,14 +70,10 @@ public class Animation : ObservableObject, ICollectableItem
 
     public void Save()
     {
-        if (LocalPath == null || !Directory.Exists(LocalPath))
-        {
-            //create local path
-            var dbPath = GetLocalRepository().LocalFolderPath;
-            LocalPath = Path.Combine(dbPath, Name);
-            Directory.CreateDirectory(LocalPath);
-        }
-
+        //create local path
+        var dbPath = LocalRepository.LocalFolderPath;
+        LocalPath = Path.Combine(dbPath, Name);
+        Directory.CreateDirectory(LocalPath);
         JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath, "animation.json"));
     }
 
@@ -81,5 +81,6 @@ public class Animation : ObservableObject, ICollectableItem
     {
         JsonHelpers.WriteSimpleJson(this, path);
     }
+
     [JsonIgnore] public SkiaSharp.Skottie.Animation SkottieAnimation { get; set; }
 }

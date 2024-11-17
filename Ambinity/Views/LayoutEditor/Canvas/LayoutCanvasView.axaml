@@ -8,7 +8,7 @@
              x:Class="Ambinity.Views.LayoutEditor.LayoutCanvasView">
     <Grid>
         <ContentControl Content="{CompiledBinding CanvasViewModel}"></ContentControl>
-        <ContentControl Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+        <ContentControl Margin="10" 
                         Content="{Binding ToolsViewModel}">
         </ContentControl>
         <ContentControl Content="{Binding InfoBarViewModel}" Margin="10" 

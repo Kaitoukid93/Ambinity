@@ -136,7 +136,7 @@ public class OpenRGBController : ObservableObject, IController
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path
-            var dbPath = GetLocalRepository().LocalFolderPath;
+            var dbPath =LocalRepository.LocalFolderPath;
             LocalPath = Path.Combine(dbPath, Name + "-" + SerialPort);
             Directory.CreateDirectory(LocalPath);
         }
@@ -159,10 +159,7 @@ public class OpenRGBController : ObservableObject, IController
             return bitmap;
         }
     }
-    public CollectableItemRepository GetLocalRepository()
-    {
-        return Ioc.Default.GetRequiredService<OpenRGBControllerRepository>();
-    }
+    [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
     public OnlineItemRepository GetOnlineRerpository()
     {

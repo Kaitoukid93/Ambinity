@@ -5,6 +5,7 @@ using AmbinityServer.OnlineItem;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace AmbinityCore.Repositories;
 
@@ -19,10 +20,7 @@ public class SolidColor : FillColorBase, ICollectableItem
     public bool IsChecked { get; set; }
     public bool IsPinned { get; set; }
 
-    public CollectableItemRepository GetLocalRepository()
-    {
-        return Ioc.Default.GetRequiredService<StaticColorsRepository>();
-    }
+    [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
     public OnlineItemRepository GetOnlineRerpository()
     {
@@ -58,7 +56,7 @@ public class SolidColor : FillColorBase, ICollectableItem
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path
-            var dbPath = GetLocalRepository().LocalFolderPath;
+            var dbPath = LocalRepository.LocalFolderPath;
             LocalPath = Path.Combine(dbPath, Name + ".json"); // item without thumbnaill will be store in the same folder
         }
         JsonHelpers.WriteSimpleJson(this, LocalPath);

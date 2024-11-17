@@ -41,7 +41,7 @@
 
             <PathIcon Data="{DynamicResource sun}"></PathIcon>
 
-            <Slider Grid.Column="2" HorizontalAlignment="Stretch"></Slider>
+            <Slider Grid.Column="2" Value="{Binding ProfileBrightness}" HorizontalAlignment="Stretch"></Slider>
 
             <PathIcon Grid.Column="4" Data="{DynamicResource brightness}"></PathIcon>
 

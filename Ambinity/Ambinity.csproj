@@ -45,10 +45,11 @@
 		<PackageReference Include="HotAvalonia.Extensions" Version="1.1.1" />
 		<PackageReference Include="Markdown.Avalonia" Version="11.0.3-a1" />
 		<PackageReference Include="Material.Icons.Avalonia" Version="2.1.10" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.5.24306.7" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Ambinity.Installer\Ambinity.Installer.csproj" />
 	  <ProjectReference Include="..\AmbinityCore\AmbinityCore.csproj" />
 	  <ProjectReference Include="..\AmbinityServer\AmbinityServer.csproj" />
 	  <ProjectReference Include="..\Draw2D.Core\Draw2D.Core.csproj" />

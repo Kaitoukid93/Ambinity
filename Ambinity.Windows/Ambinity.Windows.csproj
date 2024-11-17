@@ -12,6 +12,7 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets\**"/>
+        <AvaloniaResource Remove="obj\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -62,5 +63,25 @@
       <Content Include="obj\Debug\net8.0\Avalonia\Ambinity.Windows.dll" />
       <Content Include="obj\Debug\net8.0\Avalonia\Ambinity.Windows.pdb" />
       <Content Include="obj\Debug\net8.0\Avalonia\references" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaXaml Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="obj\**" />
     </ItemGroup>
 </Project>

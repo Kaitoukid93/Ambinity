@@ -42,8 +42,8 @@ public partial class App : Application
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
         _applicationStateManager = new ApplicationStateManager(desktop.Args ?? Array.Empty<string>());
-       // if(!_applicationStateManager.IsElevated)
-        //    Utilities.Restart(true, TimeSpan.Zero);
+       //if(!_applicationStateManager.IsElevated)
+        //Utilities.Restart(true, TimeSpan.Zero);
         BindingPlugins.DataValidators.RemoveAt(0);
         //register service and ui
         AmbinityBootStrapper.Initialize(this);

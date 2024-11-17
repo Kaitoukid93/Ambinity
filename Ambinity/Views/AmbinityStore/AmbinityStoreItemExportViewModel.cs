@@ -21,8 +21,9 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
     private IWindowService _windowService;
     public string Type => _onlineItem.Type.ToString();
 
-    public AmbinityStoreItemExportViewModel(IWindowService windowService)
+    public AmbinityStoreItemExportViewModel(IWindowService windowService, RepositoryHelpers repositoryHelpers)
     {
+        _repositoryHelpers = repositoryHelpers;
         _windowService = windowService;
         MDText = "[%{color:red}Đây là văn bản mẫu, chỉnh sửa lại cho phù hợp với tài nguyên%]\n\n" +
                  "##### **Cách sử dụng [Tên tài nguyên]**\n\n" +
@@ -72,7 +73,11 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
         _onlineItem.Description = Description;
         _onlineItem.Tags = Tags?.Split(',');
         _onlineItem.Type = _item.GetType();
-        _item.Save();
+        //there still item without local repository such as lighting zone
+        // to make sure local repository is set before export ( to harness the save method without rewriting)
+        //we call a helper class to resolve the local repository based on item type,
+        // or we can simply resolve inside model using Ioc.GetRequiredService?
+        _repositoryHelpers.AddItemToRepository(_item);
     }
 
     private async Task ExportLocally()
@@ -84,7 +89,7 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
             .ShowAsync();
         if (result == null)
             return;
-        if(File.Exists(result))
+        if (File.Exists(result))
             File.Delete(result);
         ZipFile.CreateFromDirectory(_item.LocalPath, result);
         Log.Information("Item exported to " + result);
@@ -100,6 +105,7 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
             Type = _item.GetType()
         };
     }
+
     private async Task ExportItemForServer()
     {
         SaveItemData();
@@ -125,21 +131,21 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
         Directory.CreateDirectory(contentDir);
         Directory.CreateDirectory(screenshotsDir);
         //write content
-        LocalFileHelpers.CopyDirectory(_item.LocalPath, contentDir,true);
+        LocalFileHelpers.CopyDirectory(_item.LocalPath, contentDir, true);
         //copy screenshots
         foreach (var screenShot in ScreenShots)
         {
             try
             {
-                File.Copy(screenShot,Path.Combine(screenshotsDir,Path.GetFileName(screenShot)));
+                File.Copy(screenShot, Path.Combine(screenshotsDir, Path.GetFileName(screenShot)));
             }
             catch (Exception e)
             {
                 Log.Warning(e.Message);
                 throw;
             }
-            
         }
+
         //write description
         await File.WriteAllTextAsync(descriptionDir, MDText);
         //write info
@@ -149,6 +155,7 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
         {
             File.Copy(Thumbnail, thumbnailDir);
         }
+
         Log.Information("Item exported to " + result);
     }
 
@@ -175,6 +182,7 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
     private string _tags;
 
     public string Tags
@@ -186,6 +194,7 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
     private string _mdText =
         "This is a multi-line display\n    that has returns in it.\n    The text block respects the line breaks\n    as set out in XAML.";
 
@@ -236,6 +245,7 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
     }
 
     private string _name;
+    private readonly RepositoryHelpers _repositoryHelpers;
 
     public string Name
     {
@@ -246,6 +256,7 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
     public ICommand ExportItemForServerCommand { get; set; }
     public ICommand OpenThumbnailPickerCommand { get; }
     public ICommand OpenScreenShotsPickerCommand { get; }

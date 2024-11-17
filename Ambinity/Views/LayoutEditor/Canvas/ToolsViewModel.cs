@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.ViewModels;
@@ -15,6 +17,8 @@ using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 using Draw2D.Core.Policies.RouterPolicy;
+using DynamicData;
+using Canvas = Avalonia.Controls.Canvas;
 
 namespace Ambinity.Views.LayoutEditor;
 
@@ -33,7 +37,8 @@ public class ToolsViewModel : ViewModelBase
     public ToolsViewModel(GeneralSettingsManager settingsManager,LightingZoneRepository lightingZoneRepository, LightingProfileDecoder decoder,LightingZonesLibraryViewModel lightingZonesLibraryViewModel)
     {
         _lightingZonesLibraryViewModel = lightingZonesLibraryViewModel;
-        ToolbarItems = new ObservableCollection<IToolbarItem>();
+        ZoneTools = new ObservableCollection<IToolbarItem>();
+        CanvasTools = new ObservableCollection<IToolbarItem>();
         _settingsManager = settingsManager;
         _lightingZoneRepository = lightingZoneRepository;
         _decoder = decoder;
@@ -49,6 +54,7 @@ public class ToolsViewModel : ViewModelBase
     {
         ZoneToolsCommandCanExecute = !_decoder.IsRendering;
         ShowLockSymbol = _decoder.IsRendering;
+        OnPropertyChanged(nameof(IsRendering));
         AddAmbilightZoneCommand.NotifyCanExecuteChanged();
         AddAnimationZoneCommand.NotifyCanExecuteChanged();
         AddColorZoneCommand.NotifyCanExecuteChanged();
@@ -68,10 +74,12 @@ public class ToolsViewModel : ViewModelBase
         }
     }
     public bool ZoneToolsCommandCanExecute { get; set; }
-    public ObservableCollection<IToolbarItem> ToolbarItems { get; set; }
+    public ObservableCollection<IToolbarItem> ZoneTools { get; set; }
+    public ObservableCollection<IToolbarItem> CanvasTools { get; set; }
     private GeneralSettingsManager _settingsManager;
     private readonly LightingZoneRepository _lightingZoneRepository;
     private LightingProfileDecoder _decoder;
+    private LightingProfile _currentProfile;
 
     /// <summary>
     /// update tools based on selected item and state
@@ -88,7 +96,20 @@ public class ToolsViewModel : ViewModelBase
         AddAmbilightZoneCommand = new RelayCommand(AddAmbilightZone,()=>ZoneToolsCommandCanExecute);
         ShowLibraryCommand = new AsyncRelayCommand(ShowLibrary,()=>ZoneToolsCommandCanExecute);
         AddColorZoneCommand = new RelayCommand(AddColorZone,()=>ZoneToolsCommandCanExecute);
+        TogglePlayPauseCommand = new RelayCommand(TogglePlayPause);
+        ShowDiagCommand = new RelayCommand(ToggleShowDiag);
     }
+
+    private void ToggleShowDiag()
+    {
+        ShowDiag = !ShowDiag;
+    }
+
+    private void TogglePlayPause()
+    {
+        _decoder.Toggle(_currentProfile.ID);
+    }
+
     public LibraryViewModelBase CurrentFlyoutViewModel { get; set; }
     private LightingZonesLibraryViewModel _lightingZonesLibraryViewModel;
     private async Task ShowLibrary()
@@ -105,7 +126,7 @@ public class ToolsViewModel : ViewModelBase
     }
     private void OnLightingZoneAssetSelected(AssetItemViewModelBase item)
     {
-        //throw new NotImplementedException();
+        AddAsset(item.Item as LightingZone);
     }
 
     private void AddColorZone()
@@ -134,34 +155,43 @@ public class ToolsViewModel : ViewModelBase
     /// <summary>
     /// init startup tools
     /// </summary>
-    public void InitForProfileEditor()
+    public void InitForProfileEditor( LightingProfile profile)
     {
-        ToolbarItems.Clear();
+        _currentProfile = profile;
+        Brightness = _currentProfile.Brightness;
+        _decoder.FrameUpdate += OnFrameUpdated;
+        ZoneTools.Clear();
+        CanvasTools.Clear();
         var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
         snapToGridTools.Command = ToggleSnapToGridCommand;
         var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas", new SolidColorBrush(Colors.White), FitCanvasToViewCommand);
+        var showDiagTool = new ToggleToolbarItem("Info", "Show stats","wave_signal__heart_line_beat_square_graph_stats");
+        showDiagTool.IsChecked = _showDiag;
+        showDiagTool.Command = ShowDiagCommand;
         var separator = new SeparatorToolbarItem();
-        ToolbarItems.Add(_addColorZoneTools);
-        ToolbarItems.Add(AddAmbilightZoneTool());
-        ToolbarItems.Add(AddAnimationZoneTool());
-        ToolbarItems.Add(separator);
-        ToolbarItems.Add(ShowLibraryTool());
-        ToolbarItems.Add(separator);
-        ToolbarItems.Add(snapToGridTools);
-        ToolbarItems.Add(centerCanvasTool);
+        ZoneTools.Add(_addColorZoneTools);
+        ZoneTools.Add(AddAmbilightZoneTool());
+        ZoneTools.Add(AddAnimationZoneTool());
+        ZoneTools.Add(separator);
+        ZoneTools.Add(ShowLibraryTool());
+
+        CanvasTools.Add(snapToGridTools);
+        CanvasTools.Add(centerCanvasTool);
+        CanvasTools.Add(showDiagTool);
         OnRenderingStatusChanged();
     }
 
     public void InitForDeviceLayout()
     {
-        ToolbarItems.Clear();
+        ZoneTools.Clear();
+        CanvasTools.Clear();
         var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
         snapToGridTools.Command = ToggleSnapToGridCommand;
         var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",new SolidColorBrush(Colors.White),  FitCanvasToViewCommand);
-        ToolbarItems.Add(snapToGridTools);
-        ToolbarItems.Add(centerCanvasTool);
+        CanvasTools.Add(snapToGridTools);
+        CanvasTools.Add(centerCanvasTool);
         OnRenderingStatusChanged();
     }
 
@@ -215,6 +245,13 @@ public class ToolsViewModel : ViewModelBase
         AddFigure?.Invoke(figure);
     }
 
+    private void AddAsset(LightingZone zone)
+    {
+        var cloneFigure = zone.Clone(100f,
+            100f);
+        AddFigure?.Invoke(cloneFigure);
+    }
+
     private void FitCanvasToView()
     {
         FitCanvasToViewEvent?.Invoke();
@@ -228,12 +265,58 @@ public class ToolsViewModel : ViewModelBase
     public override void Dispose()
     {
         _lightingZonesLibraryViewModel.ItemSelected -= OnLightingZoneAssetSelected;
-        ToolbarItems.Clear();
+        _decoder.FrameUpdate -= OnFrameUpdated;
+        ZoneTools.Clear();
+        CanvasTools.Clear();
+    }
+
+    private void OnFrameUpdated()
+    {
+        FrameTime = _decoder.FramesTime.ToList();
+    }
+
+    private List<double> _frameTime;
+
+    public List<double> FrameTime
+    {
+        get => _frameTime;
+        set
+        {
+            _frameTime = value;
+            OnPropertyChanged();
+        }
     }
     public RelayCommand FitCanvasToViewCommand { get; set; }
     public RelayCommand ToggleSnapToGridCommand { get; set; }
     public RelayCommand AddAmbilightZoneCommand { get; set; }
     public RelayCommand AddAnimationZoneCommand { get; set; }
     public RelayCommand AddColorZoneCommand { get; set; }
+    public RelayCommand ShowDiagCommand { get; set; }
     public AsyncRelayCommand ShowLibraryCommand { get; set; }
+    public bool IsRendering => _decoder.IsRendering && _decoder.CurrentPlayingProfile.ID == _currentProfile.ID;
+    public ICommand TogglePlayPauseCommand { get; set; }
+    private int _brightness;
+
+    public int Brightness
+    {
+        get => _brightness;
+        set
+        {
+            _brightness = value;
+            _currentProfile.Brightness = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _showDiag;
+
+    public bool ShowDiag
+    {
+        get => _showDiag;
+        set
+        {
+            _showDiag = value;
+            OnPropertyChanged();
+        }
+    }
 }

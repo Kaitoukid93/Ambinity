@@ -52,7 +52,7 @@ public class FirmwareService
             return;
         }
            
-        var updater = new FirmwareUpdater();
+        var updater = new FirmwareUpdater(_downloadService,_client);
         var result = await updater.Init(controller);
         Log.Information("FirmwareService: Device DFU Mode switch signal is sent");
         //device could already in the dfu mode already, just continue anyway and let updater handle the error
@@ -98,6 +98,7 @@ public class FirmwareService
         {
             var infoPath = file + "/" + "info.json";
             var firmwareInfo = await _client.SftpServer.GetFiles<FirmwareInformation>(infoPath);
+            firmwareInfo.ReleaseDate = _client.SftpServer.GetFileAttributes(infoPath).LastWriteTime;
             firmwareInfo.Path = file;
             availableFirmwareInfo.Add(firmwareInfo);
             Log.Information("Firmware available: " + firmwareInfo.Version);

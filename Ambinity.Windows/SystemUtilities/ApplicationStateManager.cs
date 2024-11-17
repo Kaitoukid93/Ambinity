@@ -87,8 +87,8 @@ public class ApplicationStateManager
         // }
 
         // Lets try a graceful shutdown, PowerShell will kill if needed
-        if (Application.Current?.ApplicationLifetime is IControlledApplicationLifetime controlledApplicationLifetime)
-            Dispatcher.UIThread.Post(() => controlledApplicationLifetime.Shutdown());
+        // if (Application.Current?.ApplicationLifetime is IControlledApplicationLifetime controlledApplicationLifetime)
+        //     Dispatcher.UIThread.Post(() => controlledApplicationLifetime.Shutdown());
     }
 
     private void UtilitiesOnUpdateRequested(object? sender, UpdateEventArgs e)

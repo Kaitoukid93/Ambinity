@@ -3,6 +3,7 @@ using AmbinityCore.LightingEngines;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
+using AmbinityCore.Models.Profile;
 using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
 using Avalonia;
@@ -270,10 +271,7 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
 
     public Rect Bound => ZoneBound;
 
-    public CollectableItemRepository GetLocalRepository()
-    {
-        return Ioc.Default.GetRequiredService<LightingZoneRepository>();
-    }
+    [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
     public OnlineItemRepository GetOnlineRerpository()
     {
@@ -401,6 +399,7 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
         return _displayColor;
     }
 
+    [JsonIgnore] public LightingProfile ParentProfile { get; set; }
     [JsonIgnore] public string LocalPath { get; set; }
 
     public OnlineItemTypeEnum GetType()
@@ -414,7 +413,7 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path
-            var dbPath = GetLocalRepository().LocalFolderPath;
+            var dbPath = LocalRepository.LocalFolderPath;
             LocalPath = Path.Combine(dbPath, Name);
             Directory.CreateDirectory(LocalPath);
         }

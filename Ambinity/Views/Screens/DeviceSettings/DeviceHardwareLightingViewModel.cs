@@ -45,6 +45,7 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
 
     private async Task ApplyHardwareSettings()
     {
+        _serialStream?.Stop();
         var dialogvm = new LoadingDialogViewModel();
         _dialogService.ShowLoadingDialog(dialogvm, "Applying");
         await _serialStream?.Stop();
@@ -57,6 +58,7 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
         {
             dialogvm.ShowError("Error when applying hardware settings");
         }
+        _serialStream.Init();
     }
 
     private async Task OpenColorPaletteLibrary()

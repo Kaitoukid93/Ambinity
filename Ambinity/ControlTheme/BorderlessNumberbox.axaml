@@ -177,7 +177,6 @@
                                  FontWeight="{TemplateBinding FontWeight}"
                                  FontFamily="{TemplateBinding FontFamily}"
                                  TextAlignment="{TemplateBinding TextAlignment}"
-                                 Classes="clearButton"
                                  BorderThickness="0"
                                  Theme="{StaticResource NumberBoxTextBoxStyle}"
                                  CornerRadius="{TemplateBinding CornerRadius}"/>

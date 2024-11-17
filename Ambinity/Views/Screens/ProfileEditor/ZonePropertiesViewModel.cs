@@ -35,6 +35,7 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         {
             _zone = null;
             DisableEdit();
+            ColorConfiguration?.Dispose();
             _selectedFigure = null;
             //clear view
         }
@@ -78,11 +79,12 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
             _zone = zone;
             //show full view
             ColorConfiguration?.Dispose();
-            ColorConfiguration = _colorConfigurationViewModelFactory.GetColorConfiguration(zone.LightingConfiguration);
+            ColorConfiguration = _colorConfigurationViewModelFactory.GetColorConfiguration(zone);
         }
         else
         {
             _zone = null;
+            ColorConfiguration?.Dispose();
             _selectedFigure = null;
             DisableEdit();
         }

@@ -20,10 +20,7 @@ public class Shortcut : ObservableObject, ICollectableItem
     [JsonIgnore] public bool IsChecked { get; set; }
     [JsonIgnore] public bool IsPinned { get; set; }
 
-    public CollectableItemRepository GetLocalRepository()
-    {
-        return Ioc.Default.GetRequiredService<ShortcutRepository>();
-    }
+    [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
     public OnlineItemRepository GetOnlineRerpository()
     {
@@ -55,7 +52,7 @@ public class Shortcut : ObservableObject, ICollectableItem
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path
-            var dbPath = GetLocalRepository().LocalFolderPath;
+            var dbPath = LocalRepository.LocalFolderPath;
             LocalPath = Path.Combine(dbPath, Name);
             Directory.CreateDirectory(LocalPath);
         }

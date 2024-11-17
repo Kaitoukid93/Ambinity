@@ -16,7 +16,7 @@ public class LightingZoneRepository : CollectableItemRepository
     private string dbPath => Path.Combine(Constants.AppDataFolder, "Data");
     private string FolderPath => Path.Combine(dbPath, "Zones");
 
-    public LightingZoneRepository( AnimationsRepository animationsRepository)
+    public LightingZoneRepository(AnimationsRepository animationsRepository)
     {
         _animationsRepository = animationsRepository;
         LocalFolderPath = FolderPath;
@@ -29,13 +29,11 @@ public class LightingZoneRepository : CollectableItemRepository
         CreateDefaultLightingZone();
     }
 
+    //todo also import attached files
     public override void ImportItem(string path)
     {
-        
-       // LocalFileHelpers.CopyDirectory(path,LocalFolderPath,true);
-      //  LoadFromDisk();
-        //todo resolve item dependencies 
-        //update the collection
+         LocalFileHelpers.CopyDirectory(path,LocalFolderPath,true);
+          LoadFromDisk();
     }
 
     public override void LoadFromDisk()
@@ -44,8 +42,7 @@ public class LightingZoneRepository : CollectableItemRepository
         string[] directories = Directory.GetDirectories(FolderPath);
         foreach (var dir in directories)
         {
-
-            var zone = JsonHelpers.DeserializeJson<LightingZone>(Path.Combine(dir,"config.json"));
+            var zone = JsonHelpers.DeserializeJson<LightingZone>(Path.Combine(dir, "config.json"));
             if (zone == null)
                 continue;
             zone.LocalPath = dir;
@@ -58,15 +55,15 @@ public class LightingZoneRepository : CollectableItemRepository
     /// </summary>
     private void CreateDefaultLightingZone()
     {
-        AddItem(GetDefaultAmbilightZone("Big Ambilight",0,0,200,100,0));
-        AddItem(GetDefaultAmbilightZone("Smalll Ambilight",0,0,50,50,1));
-        AddItem(GetDefaultSolidColorZone("Solid Red",0,0,200,200,Avalonia.Media.Colors.Red));
-        AddItem(GetDefaultSolidColorZone("Solid Greed",0,0,100,100,Avalonia.Media.Colors.GreenYellow));
-        AddItem(GetDefaultColorPaletteZone("Retro Palette",0,0,200,100,DefaultColorPalettes.RetroPalette()));
-        AddItem(GetDefaultColorPaletteZone("Red Palette",0,0,100,200,DefaultColorPalettes.RetroPalette()));
+        AddItem(GetDefaultAmbilightZone("Big Ambilight", 0, 0, 200, 100, 0));
+        AddItem(GetDefaultAmbilightZone("Smalll Ambilight", 0, 0, 50, 50, 1));
+        AddItem(GetDefaultSolidColorZone("Solid Red", 0, 0, 200, 200, Avalonia.Media.Colors.Red));
+        AddItem(GetDefaultSolidColorZone("Solid Greed", 0, 0, 100, 100, Avalonia.Media.Colors.GreenYellow));
+        AddItem(GetDefaultColorPaletteZone("Retro Palette", 0, 0, 200, 100, DefaultColorPalettes.RetroPalette()));
+        AddItem(GetDefaultColorPaletteZone("Red Palette", 0, 0, 100, 200, DefaultColorPalettes.RetroPalette()));
     }
 
-    public LightingZone GetDefaultAmbilightZone(string name,int x, int y, int width, int height, int screenIndex)
+    public LightingZone GetDefaultAmbilightZone(string name, int x, int y, int width, int height, int screenIndex)
     {
         var fullScreenAmbilightZone = new LightingZone(x, y, width, height);
         fullScreenAmbilightZone.Name = name;
@@ -77,28 +74,33 @@ public class LightingZoneRepository : CollectableItemRepository
             false);
         return fullScreenAmbilightZone;
     }
-   
-    public LightingZone GetDefaultSolidColorZone(string name,int x, int y, int width, int height, Color color)
+
+    public LightingZone GetDefaultSolidColorZone(string name, int x, int y, int width, int height, Color color)
     {
         var solidRedZone = new LightingZone(x, y, width, height);
         solidRedZone.Name = name;
-        solidRedZone.LightingConfiguration = new SelfGeneratedColorConfiguration( new List<Color>(){color}, new NoneMotionConfiguration());
+        solidRedZone.LightingConfiguration =
+            new SelfGeneratedColorConfiguration(new List<Color>() { color }, new NoneMotionConfiguration());
         return solidRedZone;
     }
-    public LightingZone GetDefaultColorPaletteZone(string name,int x, int y, int width, int height, ColorPalette palette)
+
+    public LightingZone GetDefaultColorPaletteZone(string name, int x, int y, int width, int height,
+        ColorPalette palette)
     {
         var solidRedZone = new LightingZone(x, y, width, height);
         solidRedZone.Name = name;
-        solidRedZone.LightingConfiguration = new SelfGeneratedColorConfiguration( palette.Colors.ToList(), new NoneMotionConfiguration());
+        solidRedZone.LightingConfiguration =
+            new SelfGeneratedColorConfiguration(palette.Colors.ToList(), new NoneMotionConfiguration());
         return solidRedZone;
     }
-    public LightingZone GetDefaultAnimationZone(string name,int x, int y, int width, int height)
+
+    public LightingZone GetDefaultAnimationZone(string name, int x, int y, int width, int height)
     {
         var animationZone = new LightingZone(x, y, width, height);
         animationZone.Name = name;
         var animation = _animationsRepository.Items.Count > 0 ? _animationsRepository.Items.First() : null;
         animationZone.LightingConfiguration = new AnimationConfiguration(animation as Animation);
-        
+
         return animationZone;
     }
 }

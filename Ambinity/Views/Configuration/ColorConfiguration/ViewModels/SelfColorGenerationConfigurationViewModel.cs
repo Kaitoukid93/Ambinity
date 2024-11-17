@@ -1,5 +1,6 @@
 using System.Windows.Input;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
+using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
@@ -8,22 +9,23 @@ namespace Ambinity.Views.Configuration.ColorConfiguration;
 
 public class SelfColorGenerationConfigurationViewModel : ColorConfigurationViewModelBase
 {
-    public SelfColorGenerationConfigurationViewModel(SelfGeneratedColorConfiguration configuration,
+    public SelfColorGenerationConfigurationViewModel(LightingZone zone,
         ParameterViewModelFactory parameterViewModelFactory)
     {
+        _zone = zone;
         _parameterViewModelFactory = parameterViewModelFactory;
-        _configuration = configuration;
+        
         Init();
     }
 
-
-    private SelfGeneratedColorConfiguration _configuration;
+    
     private readonly ParameterViewModelFactory _parameterViewModelFactory;
+    private readonly LightingZone _zone;
 
     public override void Init()
     {
         
-        foreach (var param in _parameterViewModelFactory.CreateParameterViewModels(_configuration))
+        foreach (var param in _parameterViewModelFactory.CreateParameterViewModels(_zone))
         {
             Parameters.Add(param);
         }

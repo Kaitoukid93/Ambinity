@@ -139,7 +139,8 @@ public class ScreenCaptureEngine : IColorEngine
                         (int)rect.TranslatedRect.Height];
                     //render sub image at led rect position
                     var col = subImage.Average();
-                    ColorComputing.SetBlockColor(_buffer, rect.OriginalRect, col.R, col.G, col.B);
+                    ColorComputing.SetBlockColor(_buffer, rect.OriginalRect, (byte)(col.R), (byte)(col.G),
+                        (byte)(col.B));
                 }
             }
         }
@@ -151,9 +152,21 @@ public class ScreenCaptureEngine : IColorEngine
     {
         IsDisposed = true;
         if (_captureZone != null)
-            _screenCapture.UnregisterCaptureZone(_captureZone);
+        {
+            try
+            {
+                _screenCapture.UnregisterCaptureZone(_captureZone);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.ToString());
+                return;
+            }
+            
+        }
+            
         _screenCapturingService.UnregisterUse();
-        GC.Collect();
+        GC.SuppressFinalize(this);
     }
 
     public CapturingType CaptureType { get; set; }

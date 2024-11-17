@@ -171,7 +171,7 @@ public class SerialController : ObservableObject, IController
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path
-            var dbPath = GetLocalRepository().LocalFolderPath;
+            var dbPath = LocalRepository.LocalFolderPath;
             LocalPath = Path.Combine(dbPath, Name + "-" + SerialPort);
             Directory.CreateDirectory(LocalPath);
         }
@@ -197,11 +197,7 @@ public class SerialController : ObservableObject, IController
         }
     }
 
-    public CollectableItemRepository GetLocalRepository()
-    {
-        return Ioc.Default.GetRequiredService<SerialControllerRepository>();
-    }
-
+    [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
     public OnlineItemRepository GetOnlineRerpository()
     {
         //todo make online repo for serial controller

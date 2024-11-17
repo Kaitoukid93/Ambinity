@@ -69,5 +69,6 @@ public class LibraryViewModelBase : FlyoutContentViewModelBase
     public override void Dispose()
     {
         AssetsViewModel?.Dispose();
+        ItemSelected = null;
     }
 }

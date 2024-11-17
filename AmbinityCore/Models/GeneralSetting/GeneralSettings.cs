@@ -21,13 +21,27 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         set => SetProperty(ref _autoStartDelay, value);
     }
     private Color _primaryColor = Color.Parse("#1ac35f");
+    
 
     public Color PrimaryColor
     {
         get => _primaryColor;
         set => SetProperty(ref _primaryColor, value);
     }
+    private bool _enableMica = true;
 
+    public bool EnableMica
+    {
+        get => _enableMica;
+        set => SetProperty(ref _enableMica, value);
+    }
+    private string _selectedTheme = "System";
+
+    public string SelectedTheme
+    {
+        get => _selectedTheme;
+        set => SetProperty(ref _selectedTheme, value);
+    }
     private bool _enableSnapToGrid = true;
 
     public bool EnableSnapToGrid

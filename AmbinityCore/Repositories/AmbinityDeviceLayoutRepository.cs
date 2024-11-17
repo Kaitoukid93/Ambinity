@@ -49,7 +49,7 @@ public class AmbinityDeviceLayoutRepository : CollectableItemRepository
     public override void LoadFromDisk()
     {
         Items?.Clear();
-        string[] directories = Directory.GetDirectories(FolderPath);
+        string[] directories = Directory.GetDirectories(LocalFolderPath);
         foreach (var dir in directories)
         {
             var layout = new AmbinityDeviceLayout(dir);

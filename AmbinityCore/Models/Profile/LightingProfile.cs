@@ -5,14 +5,17 @@ using AmbinityCore.LightingEngines;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Lighting.Zone;
+using AmbinityCore.Models.Lighting.Zone.Configuration;
 using AmbinityCore.Models.ProfileCategory;
 using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Newtonsoft.Json;
+using OpenRGB.NET;
+using Serilog;
+using Color = Avalonia.Media.Color;
 
 
 namespace AmbinityCore.Models.Profile;
@@ -62,8 +65,14 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     /// Display Icon of this profile
     /// </summary>
     public string Icon { get; set; }
-    
+
     public Color IconColor { get; set; }
+
+    /// <summary>
+    /// Brightness for each profile, this will not override device brightness but
+    /// instead apply a factor
+    /// </summary>
+    public int Brightness { get; set; } = 100;
 
     public void UpdateIcon()
     {
@@ -139,10 +148,7 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     [JsonIgnore]
     public bool Disposed { get; set; }
 
-    public CollectableItemRepository GetLocalRepository()
-    {
-        return Ioc.Default.GetRequiredService<LightingProfileRepository>();
-    }
+    [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
     public OnlineItemRepository GetOnlineRerpository()
     {
@@ -151,10 +157,6 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     }
 
     public bool IsDefault { get; set; }
-    /// <summary>
-    /// Assets required to run this profile
-    /// </summary>
-    public List<LightingProfileAsset> LightingProfileAssets { get; set; }
     public ObservableCollection<LightingZone> Zones { get; set; }
     private ColorEngineProvider _colorEngineProvider;
 
@@ -172,7 +174,7 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path
-            var dbPath = GetLocalRepository().LocalFolderPath;
+            var dbPath = LocalRepository.LocalFolderPath;
             LocalPath = Path.Combine(dbPath, ID.ToString());
             Directory.CreateDirectory(LocalPath);
         }
@@ -194,8 +196,24 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     /// </summary>
     public void AddLightingZone(LightingZone zone)
     {
+        zone.ParentProfile = this;
+        //create repository if needed
+        UpdateRepository(zone.LightingConfiguration.Type);
         Zones.Add(zone);
         LightingZoneAdded?.Invoke(zone);
+    }
+
+    public void UpdateRepository(ConfigurationType type)
+    {
+        if (Assets == null)
+            Assets = new List<CollectableItemRepository>();
+        switch (type)
+        {
+            case ConfigurationType.Animation:
+                if (AnimationRepository == null)
+                    Assets.Add(new AnimationsRepository(Path.Combine(_assetPath, "animations")));
+                break;
+        }
     }
 
     private void ZonePropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -213,9 +231,32 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
         LightingZoneRemoved?.Invoke(zone);
     }
 
-    public void TogglePlayPause()
+    public string AssetPath => _assetPath;
+    private string _assetPath => Path.Combine(LocalPath, "assets");
+
+    public void LoadAssets()
     {
-        IsPlaying = !IsPlaying;
+        Assets = [];
+        if (!Directory.Exists(_assetPath))
+        {
+            Log.Information("Profile has no assets");
+            return;
+        }
+
+        string[] directories = Directory.GetDirectories(_assetPath);
+        foreach (var dir in directories)
+        {
+            var dirName = Path.GetFileName(dir);
+            switch (dirName)
+            {
+                case "animations":
+                    var repo = new AnimationsRepository(dir);
+                    repo.LoadFromDisk();
+                    Assets.Add(repo);
+                    Log.Information("Animation asset loaded");
+                    break;
+            }
+        }
     }
 
     protected virtual void Dispose(bool disposing)
@@ -233,4 +274,10 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
         Dispose(true);
         GC.SuppressFinalize(this);
     }
+
+    [JsonIgnore] public List<CollectableItemRepository> Assets { get; set; }
+
+    [JsonIgnore]
+    public AnimationsRepository AnimationRepository =>
+        Assets?.Where(a => a.Name == "Animation").FirstOrDefault() as AnimationsRepository;
 }

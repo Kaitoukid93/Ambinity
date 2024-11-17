@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using AmbinityCore.DataBase;
 using AmbinityCore.LightingEngines;
@@ -21,6 +22,7 @@ namespace AmbinityCore.Models.Profile;
 public class LightingProfileDecoder
 {
     public event Action RenderingStatusChanged;
+    public event Action<LightingProfile> CurrentPlayingProfileChanged;
     public event Action FrameUpdate;
     private float _bitmapDimFactor;
 
@@ -46,6 +48,7 @@ public class LightingProfileDecoder
     private FrameBuffer _buffer;
     private List<IColorEngine> _engines;
     private readonly AmbinityDeviceRepository _deviceRepository;
+    public double[] FramesTime;
 
     private void LoadLastProfile()
     {
@@ -97,7 +100,7 @@ public class LightingProfileDecoder
     private void Resume()
     {
         //todo reuse engines
-        if (CurrentPlayingProfile == null)
+        if (_currentPlayingProfile == null)
             return;
         var isRunning = _tokenSource != null && _isRendering;
         if (isRunning)
@@ -110,9 +113,13 @@ public class LightingProfileDecoder
             _buffer.PixelData = new byte[_buffer.FrameWidth * _buffer.FrameHeight * 4];
         }
 
-        foreach (var zone in CurrentPlayingProfile.Zones)
+        _currentPlayingProfile.LoadAssets();
+        FramesTime = new Double[_currentPlayingProfile.Zones.Count];
+        int count = 0;
+        foreach (var zone in _currentPlayingProfile.Zones)
         {
-            RegisterZone(zone);
+            zone.ParentProfile = _currentPlayingProfile;
+            RegisterZone(zone, count++);
         }
 
         _currentPlayingProfile.IsPlaying = true;
@@ -155,6 +162,7 @@ public class LightingProfileDecoder
             }
 
             Resume();
+            CurrentPlayingProfileChanged?.Invoke(_currentPlayingProfile);
         }
     }
 
@@ -207,11 +215,11 @@ public class LightingProfileDecoder
     /// get corresponding lighting engine
     /// </summary>
     /// <param name="zone"></param>
-    private void RegisterZone(LightingZone zone)
+    private void RegisterZone(LightingZone zone, int index)
     {
         var engine = _colorEngineProvider.GetEngine(zone);
         engine.Init(zone);
-        var thread = new Thread(() => Render(engine, _tokenSource.Token))
+        var thread = new Thread(() => Render(engine, _tokenSource.Token, index))
         {
             IsBackground = true,
             Priority = ThreadPriority.BelowNormal,
@@ -232,15 +240,30 @@ public class LightingProfileDecoder
     /// <summary>
     /// render activated child to canvas
     /// </summary>
-    private void Render(IColorEngine engine, CancellationToken token)
+    private void Render(IColorEngine engine, CancellationToken token, int index)
     {
         try
         {
+            Stopwatch sw = new Stopwatch();
+            Stopwatch reportStopwatch = new Stopwatch();
+            reportStopwatch.Start();
+            long totalFrameTime = 0;
             while (!token.IsCancellationRequested)
             {
+                sw.Restart();
+                var brightness = _currentPlayingProfile.Brightness / 100d;
+                _buffer.BrightnessFactor = brightness;
                 engine.Render();
-                Thread.Sleep(1000 / 30);
+                sw.Stop();
+                totalFrameTime = sw.ElapsedMilliseconds; // Accumulate the elapsed time
+                if (reportStopwatch.ElapsedMilliseconds >= 100)
+                {
+                    reportStopwatch.Restart();
+                    FramesTime[index] = Math.Round((double)totalFrameTime, 5);
+                }
+
                 FrameUpdate?.Invoke();
+                Thread.Sleep(1000 / 30);
             }
         }
         catch (Exception ex)

@@ -17,11 +17,12 @@ public interface ICollectableItem : INotifyPropertyChanged
     string LocalPath { get; set; }
     OnlineItemTypeEnum GetType();
     void Save();
+
     /// <summary>
     /// get co-responding local repository for this item
     /// </summary>
     /// <returns></returns>
-    CollectableItemRepository GetLocalRepository();
+    CollectableItemRepository LocalRepository { get; set; }
     /// <summary>
     /// get co-responding online repository for this item
     /// </summary>

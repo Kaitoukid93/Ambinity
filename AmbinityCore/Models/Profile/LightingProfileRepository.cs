@@ -129,7 +129,7 @@ public sealed class LightingProfileRepository : CollectableItemRepository
             File.Copy(iconPath, Path.Combine(profile.LocalPath, "icon.png"));
         var assetsPath = Path.Combine(path, "assets");
         if (Directory.Exists(assetsPath))
-            LocalFileHelpers.CopyDirectory(assetsPath, profile.LocalPath, true);
+            LocalFileHelpers.CopyDirectory(assetsPath, profile.AssetPath, true);
 
         //notify side menu
         if (isDownloaded)
