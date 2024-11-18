@@ -77,6 +77,7 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
         mainWindowService.ConfigureMainWindowProvider(this);
         NonClientAreaContentViewModel = nonClientAreaContentViewModel;
         AppTourViewModel = appTourViewModel;
+        ChangeWindowTransparencyLevel(_settings.EnableMica);
         //show UI if requested
         if (ShouldShowUI())
         {

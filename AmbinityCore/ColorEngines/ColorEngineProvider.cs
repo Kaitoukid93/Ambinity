@@ -16,6 +16,8 @@ public class ColorEngineProvider
     }
 
     private CapturingServiceProvider _capturingServiceProvider;
+    private readonly ScreenCapturingService _screenCapturingService;
+
     public IColorEngine GetEngine(LightingZone zone)
     {
         switch (zone.LightingConfiguration.Type)

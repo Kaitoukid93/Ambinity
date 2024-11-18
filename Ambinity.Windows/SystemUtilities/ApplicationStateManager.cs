@@ -52,7 +52,7 @@ public class ApplicationStateManager
         string args = argsList.Any() ? "-ArgumentList " + string.Join(',', argsList) : "";
         string command =
             $"-Command \"& {{Start-Sleep -Milliseconds {(int) e.Delay.TotalMilliseconds}; " +
-            "(Get-Process 'Ambinity').kill(); " +
+            "(Get-Process 'Ambinity.Windows').kill(); " +
             $"Start-Process -FilePath '{Constants.ExecutablePath}' -WorkingDirectory '{Constants.ApplicationFolder}' {args}}}\"";
         // Elevated always runs with RunAs
         if (e.Elevate)

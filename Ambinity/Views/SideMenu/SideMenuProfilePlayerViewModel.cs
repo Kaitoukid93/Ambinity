@@ -6,6 +6,8 @@ using Ambinity.Services;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
 using Ambinity.Views.Root;
+using AmbinityCore.DataBase;
+using AmbinityCore.Models.GeneralSetting;
 using AmbinityCore.Models.Profile;
 using Avalonia;
 using Avalonia.Media.Imaging;
@@ -23,8 +25,9 @@ public class SideMenuProfilePlayerViewModel : ViewModelBase
     private bool _shouldShowImage;
 
     public SideMenuProfilePlayerViewModel(LightingProfileDecoder decoder, RootNavigationStores rootNavigationStores,
-        FrameBuffer frame, IMainWindowService windowService)
+        FrameBuffer frame, IMainWindowService windowService,GeneralSettingsManager generalSettingsManager)
     {
+        _generalSettings = generalSettingsManager.Settings;
         _decoder = decoder;
         _frame = frame;
         _decoder.RenderingStatusChanged += OnRenderingStatusChanged;
@@ -62,8 +65,8 @@ public class SideMenuProfilePlayerViewModel : ViewModelBase
             return;
         if (_reusableBitmap == null)
         {
-            int width = 750;
-            int height = 500;
+            int width = _frame.FrameWidth;
+            int height = _frame.FrameHeight;
             PixelFormat pixelFormat = PixelFormat.Bgra8888;
             AlphaFormat alphaFormat = AlphaFormat.Premul;
             _reusableBitmap = new WriteableBitmap(
@@ -132,6 +135,7 @@ public class SideMenuProfilePlayerViewModel : ViewModelBase
     private WriteableBitmap? _profileBitmap;
     private readonly FrameBuffer _frame;
     private readonly IMainWindowService _windowService;
+    private readonly IGeneralSettings _generalSettings;
 
     public WriteableBitmap? ProfileBitmap
     {

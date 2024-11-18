@@ -44,4 +44,5 @@ public static class AppThemeManager
         var _faTheme = Application.Current.Styles[0] as FluentAvaloniaTheme;
         _faTheme.CustomAccentColor = color;
     }
+    
 }

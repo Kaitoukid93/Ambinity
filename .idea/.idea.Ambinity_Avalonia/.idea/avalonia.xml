@@ -89,7 +89,7 @@
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SaturationParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/BlackBarDetectionParameterView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/ScreenCaptureRegionSelectionView.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/ScreenRegionSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/ScreenRegionSelectionParameterView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenRegionSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/BreathingColorConfigurationView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/ColorAppearanceParameterView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />

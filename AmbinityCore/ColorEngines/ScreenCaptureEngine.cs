@@ -20,7 +20,7 @@ public class ScreenCaptureEngine : IColorEngine
         _buffer = buffer;
         _capturingServiceProvider = capturingServiceProvider;
         _deviceRepository = deviceRepository;
-        _deviceRepository.DevicesListUpdated += OnDeviceListUpdated;
+        
     }
 
     private void OnDeviceListUpdated()
@@ -28,6 +28,7 @@ public class ScreenCaptureEngine : IColorEngine
         UpdatePixelData();
     }
 
+    public bool IsAvailable { get; private set; } = true;
     public LightingZone Zone => _zone;
     private LightingZone _zone;
     private readonly FrameBuffer _buffer;
@@ -46,6 +47,13 @@ public class ScreenCaptureEngine : IColorEngine
     {
         _screenCapturingService =
             (ScreenCapturingService)_capturingServiceProvider.GetCapturingService(this.CaptureType);
+        if (!_screenCapturingService.IsEnabled)
+        {
+            Log.Information("ScreenCapturingService is required but plugin is not enabled");
+            IsAvailable = false;
+            return;
+        }
+        _deviceRepository.DevicesListUpdated += OnDeviceListUpdated;
         _zone = zone;
         _zone.UpdateFrameBuffer();
         _ledRects = new List<CaptureRect>();
@@ -112,6 +120,8 @@ public class ScreenCaptureEngine : IColorEngine
 
     public void Render()
     {
+        if(_captureZone ==null)
+            return;
         using (_captureZone.Lock())
         {
             IImage image = _captureZone.Image;
@@ -162,9 +172,8 @@ public class ScreenCaptureEngine : IColorEngine
                 Log.Error(e.ToString());
                 return;
             }
-            
         }
-            
+
         _screenCapturingService.UnregisterUse();
         GC.SuppressFinalize(this);
     }

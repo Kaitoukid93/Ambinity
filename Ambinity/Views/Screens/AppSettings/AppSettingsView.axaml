@@ -36,7 +36,7 @@
                                                              Description="The app will run in silent on Window's startup."
                                                              IsClickEnabled="False">
                                         <ui:SettingsExpanderItem.Footer>
-                                            <ToggleSwitch IsChecked="{Binding EnableMica}" Margin="40,0"></ToggleSwitch>
+                                            <ToggleSwitch IsChecked="{Binding StartMinimized}" Margin="40,0"></ToggleSwitch>
                                         </ui:SettingsExpanderItem.Footer>
                                     </ui:SettingsExpanderItem>
                                     <ui:SettingsExpanderItem MinWidth="500" Content="Startup delay"
@@ -106,13 +106,16 @@
                         <!-- </ui:InfoBar> -->
                         <Grid>
                             <StackPanel Spacing="2">
+                                <ui:InfoBar IsOpen="{Binding ShowPluginInfoBar,Mode=TwoWay}" Severity="Warning" Message="Restart is require for changes to take effect" Title="Settings changed">
+                                    <Button Command="{Binding RequestRestartApplicationCommand}" Margin="0,0,0,10" Content="Restart now"></Button>
+                                </ui:InfoBar>
                                 <ui:SettingsExpander MinWidth="500" Header="Screen capture" 
                                                      Description="Enable screen capture plugin. This plugin is required for ambilight effect.">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource desktopCapture}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                        <ToggleSwitch x:Name="ambilightEnable"></ToggleSwitch>
+                                        <ToggleSwitch IsChecked="{Binding GeneralSettings.EnableScreenCapture}" x:Name="ambilightEnable"></ToggleSwitch>
                                     </ui:SettingsExpander.Footer>
                                     <ui:SettingsExpanderItem MinWidth="500" Content="Scaling factor"
                                                              IsEnabled="{Binding ElementName=ambilightEnable,Path=IsChecked}"
@@ -146,7 +149,7 @@
                                         <ui:PathIconSource Data="{DynamicResource audioCapture}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                        <ToggleSwitch Margin="40,0" x:Name="audioEnable"></ToggleSwitch>
+                                        <ToggleSwitch IsChecked="{Binding GeneralSettings.EnableAudioCapture}" Margin="40,0" x:Name="audioEnable"></ToggleSwitch>
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander MinWidth="500" Header="Hardware monitor"
@@ -155,7 +158,7 @@
                                         <ui:PathIconSource Data="{DynamicResource wave_signal__heart_line_beat_square_graph_stats}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                        <ToggleSwitch Margin="40,0" x:Name="hwMonitorEnable"></ToggleSwitch>
+                                        <ToggleSwitch IsChecked="{Binding GeneralSettings.EnableHWMonitor}" Margin="40,0" x:Name="hwMonitorEnable"></ToggleSwitch>
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander MinWidth="500" Header="OpenRGB"
@@ -167,6 +170,7 @@
                                         <ToggleSwitch Margin="40,0" x:Name="ORGBoutline"></ToggleSwitch>
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
+                              
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -183,17 +187,17 @@
                         <!-- </ui:InfoBar> -->
                         <Grid>
                             <StackPanel Spacing="2">
+                                <ui:InfoBar IsOpen="{Binding ShowRenderingInfoBar,Mode=TwoWay}" Severity="Warning" Message="Restart is require for changes to take effect" Title="Settings changed">
+                                    <Button Command="{Binding RequestRestartApplicationCommand}" Margin="0,0,0,10" Content="Restart now"></Button>
+                                </ui:InfoBar>
                                 <ui:SettingsExpander MinWidth="500" Header="Target frame rate"
                                                      Description="Change the frame rate that of the bitmap rendering method">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource flash}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                            <ui:FAComboBox Margin="40,0">
-                                                <ui:FAComboBoxItem>30 FPS</ui:FAComboBoxItem>
-                                                <ui:FAComboBoxItem>60 FPS</ui:FAComboBoxItem>
-                                                <ui:FAComboBoxItem>100 FPS</ui:FAComboBoxItem>
-                                                <ui:FAComboBoxItem>144 FPS</ui:FAComboBoxItem>
+                                            <ui:FAComboBox ItemsSource="{Binding AvailableFrameRates}" SelectedItem="{Binding TargetFramerate}" Margin="40,0">
+                                                
                                             </ui:FAComboBox>
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
@@ -203,11 +207,8 @@
                                         <ui:PathIconSource Data="{DynamicResource bitmapSize}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                        <ui:FAComboBox Margin="40,0">
-                                            <ui:FAComboBoxItem>400 * 320 px</ui:FAComboBoxItem>
-                                            <ui:FAComboBoxItem>750 * 500 px (default)</ui:FAComboBoxItem>
-                                            <ui:FAComboBoxItem>800 * 600 px</ui:FAComboBoxItem>
-                                            <ui:FAComboBoxItem>1024 * 768 px (more cpu usage)</ui:FAComboBoxItem>
+                                        <ui:FAComboBox ItemsSource="{Binding AvailableBitmapSize}" SelectedItem="{Binding TargetBitmapSize}" Margin="40,0">
+                                            
                                         </ui:FAComboBox>
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>

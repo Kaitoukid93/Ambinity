@@ -25,6 +25,6 @@ public class GifxelationEngine : IColorEngine
         IsDisposed = true;
         GC.Collect();
     }
-    
+    public bool IsAvailable { get; private set; }
     public CapturingType CaptureType { get; set; }
 }

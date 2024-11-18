@@ -74,6 +74,9 @@
             <Grid Row="1">
                 <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" IsVisible="{Binding !EnableEdit}" Foreground="DarkOrange" Text="Please stop current playing profile before changing screen capture area"></TextBlock>
             </Grid>
+            <!-- <Grid Row="1"> -->
+            <!--     <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" IsVisible="{Binding !EnableEdit}" Foreground="Red" Text="{Binding ErrorMessage}"></TextBlock> -->
+            <!-- </Grid> -->
                 <!--<Grid Column="4">
                 <Button ToolTip.Tip="Setting" Background="Transparent" Width="30" Height="30" Classes="icon-button" >
                     <PathIcon Width="15" Data="{DynamicResource Zone_layer_icon}"></PathIcon>

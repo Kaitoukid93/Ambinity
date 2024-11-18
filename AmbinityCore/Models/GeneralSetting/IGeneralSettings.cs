@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Avalonia;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -16,4 +17,12 @@ public interface IGeneralSettings : INotifyPropertyChanged
     Guid LastPlayedProfileID { get; set; }
     bool EnableMica { get; set; }
     string SelectedTheme { get; set; }
+    
+    bool EnableAudioCapture { get; set; }
+    bool EnableScreenCapture { get; set; }
+    bool EnableHWMonitor { get; set; }
+    bool EnableOpenRGB { get; set; }
+    int CanvasWidth { get; set; }
+    int CanvasHeight { get; set; }
+    int TargetFramerate { get; set; }
 }

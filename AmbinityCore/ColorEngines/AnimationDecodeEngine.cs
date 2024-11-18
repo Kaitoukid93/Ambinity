@@ -16,7 +16,7 @@ public class AnimationDecodeEngine : IColorEngine
     private int _startIndex = 0;
     public LightingZone Zone => _zone;
     private LightingZone _zone;
-
+    public bool IsAvailable { get; private set; } = true;
     private FrameBuffer _buffer;
 
     // private string _animationFilePath = "C:\\Users\\AMBINO\\Downloads\\moving circle.json";

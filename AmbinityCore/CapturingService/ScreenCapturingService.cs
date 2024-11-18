@@ -1,3 +1,6 @@
+using System.ComponentModel;
+using AmbinityCore.DataBase;
+using AmbinityCore.Models.GeneralSetting;
 using ScreenCapture.NET;
 using Serilog;
 
@@ -5,11 +8,15 @@ namespace AmbinityCore.CapturingService;
 
 public class ScreenCapturingService : ICapturingService
 {
-    public ScreenCapturingService()
+    public ScreenCapturingService(GeneralSettingsManager settingsManager)
     {
+        _generalSettings = settingsManager.Settings;
+        IsEnabled = _generalSettings.EnableScreenCapture;
         Init();
     }
 
+
+    public bool IsEnabled { get; private set; }
     public event Action<int> FrameUpdated;
 
     private IScreenCaptureService _screenCaptureService;
@@ -18,9 +25,12 @@ public class ScreenCapturingService : ICapturingService
     public List<Display> AvailableScreens => _availableScreen;
     private List<Display> _availableScreen;
     private int _userCount;
+    private readonly IGeneralSettings _generalSettings;
 
     public void Init()
     {
+        if (!IsEnabled)
+            return;
         _screenCaptureService?.Dispose();
         _screenCaptureService ??= new DX11ScreenCaptureService();
         IEnumerable<GraphicsCard> graphicsCards = _screenCaptureService.GetGraphicsCards();

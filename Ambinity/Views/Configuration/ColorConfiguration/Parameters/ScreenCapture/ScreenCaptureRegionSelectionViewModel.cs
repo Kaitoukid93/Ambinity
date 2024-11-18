@@ -25,8 +25,10 @@ public class ScreenCaptureRegionSelectionViewModel : ViewModelBase
     private IClassicDesktopStyleApplicationLifetime desktop;
     private int _currentScreenIndex;
     private readonly IWindowService _windowService;
+
     private Window _currentWindow;
 
+//todo poptrait mode
     public ScreenCaptureRegionSelectionViewModel(Draw2DCanvasViewModel canvasViewModel,
         ScreenCaptureConfiguration config, List<ScreenRegionSelectionParameterViewModel.ScreenDataDisplay> screens,
         IWindowService windowService)
@@ -133,7 +135,7 @@ public class ScreenCaptureRegionSelectionViewModel : ViewModelBase
         var size = selectedScreen.Bounds.Size;
         var captureArea = new CaptureArea(_rect.X / size.Width, _rect.Y / size.Height, _rect.Width / size.Width,
             _rect.Height / size.Height);
-        _config.UpdateCaptureArea(captureArea,_currentScreenIndex);
+        _config.UpdateCaptureArea(captureArea, _currentScreenIndex);
         _currentWindow?.Close();
         CloseMe?.Invoke();
     }

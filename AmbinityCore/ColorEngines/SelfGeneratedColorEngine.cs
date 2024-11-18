@@ -33,7 +33,7 @@ public class SelfGeneratedColorEngine : IColorEngine
     private readonly BrightnessProviderFactory _brightnessProviderFactory;
     private float[] _brightnessData;
     private object renderingLock = new object();
-
+    public bool IsAvailable { get; private set; } = true;
     public SelfGeneratedColorEngine(FrameBuffer buffer, AmbinityDeviceRepository deviceRepository,
         BrightnessProviderFactory brightnessProviderFactory)
     {

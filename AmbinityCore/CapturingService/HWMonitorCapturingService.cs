@@ -1,4 +1,5 @@
 using AmbinityCore.CapturingService.HWMonitorCapturing;
+using AmbinityCore.DataBase;
 using LibreHardwareMonitor.Hardware;
 using LibreHardwareMonitor.Hardware.Motherboard;
 using MathNet.Numerics.Statistics;
@@ -11,14 +12,15 @@ public class HWMonitorCapturingService : ICapturingService
 {
     public event Action DataUpdate;
 
-    public HWMonitorCapturingService()
+    public HWMonitorCapturingService(GeneralSettingsManager settingsManager)
     {
+        IsEnabled = settingsManager.Settings.EnableHWMonitor;
         _hardwares = new List<IHardware>();
         _fanSpeedSensors = new List<ISensor>();
         _fanControlSensors = new List<ISensor>();
         Init();
     }
-
+    public bool IsEnabled { get; private set; }
     public event Action<int> FrameUpdated;
     private Computer _computer;
     private UpdateVisitor _updateVisitor;
@@ -38,6 +40,8 @@ public class HWMonitorCapturingService : ICapturingService
 
     public void Init()
     {
+        if(!IsEnabled)
+            return;
         _computer = new LibreHardwareMonitor.Hardware.Computer
         {
             IsCpuEnabled = true,

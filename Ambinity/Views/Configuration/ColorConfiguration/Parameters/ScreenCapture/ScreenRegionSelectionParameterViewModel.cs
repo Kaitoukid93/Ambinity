@@ -41,6 +41,12 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
         _settingsManager = settingsManager;
         OpenRegionSelectionCommand = new RelayCommand(OpenScreenRegionSelection);
         _capturingService = capturingService;
+        _screenCapture = _capturingService.IsEnabled ? _capturingService.GetScreenCapture(_config.DisplayIndex) : null;
+        if (_screenCapture == null)
+        {
+            ErrorMessage = "ScreenCapturingService for this display is not available";
+            return;
+        }
         _capturingService.FrameUpdated += OnFrameUpdate;
         _decoder.RenderingStatusChanged += OnRenderingStatusChanged;
         OnRenderingStatusChanged();
@@ -51,11 +57,6 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
                 screen.Index);
             AvailableScreen.Add(dataDisplay);
         }
-
-        // _captureAreaInformation =
-        //     "Display" + " " + (_config.DisplayIndex + 1) + ": " + _config.ScreenCaptureArea.ToString() + "-" +
-        //     "Click to customize";
-        // _selectedScreen = AvailableScreen.Where(s => s.Index == config.DisplayIndex).FirstOrDefault();
         //todo move init to background task
         Init();
     }
@@ -81,12 +82,10 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
             OnPropertyChanged();
         }
     }
+
     private void Init()
     {
         _shouldShowImage = true;
-        _screenCapture = _capturingService.GetScreenCapture(_config.DisplayIndex);
-        if(_screenCapture ==null)
-            return;
         _capturingService.RegisterUse();
         if (_captureZone != null)
             _screenCapture?.UnregisterCaptureZone(_captureZone);
@@ -104,7 +103,6 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
         {
             Log.Error(ex.ToString());
         }
-
     }
 
     private void OpenScreenRegionSelection()
@@ -160,16 +158,17 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
     {
         if (!_shouldShowImage)
             return;
-        if(index!=_config.DisplayIndex)
+        if (index != _config.DisplayIndex)
             return;
-        if(_captureZone==null)
+        if (_captureZone == null)
             return;
         using (_captureZone.Lock())
         {
             IImage image = _captureZone.Image;
             Span<byte> row = _reusableRow;
             // check if image dimesion is match
-            if (_reusableBitmap == null|| _reusableBitmap.Size.Width!=image.Width|| _reusableBitmap.Size.Height!=image.Height)
+            if (_reusableBitmap == null || _reusableBitmap.Size.Width != image.Width ||
+                _reusableBitmap.Size.Height != image.Height)
             {
                 int width = image.Width;
                 int height = image.Height;
@@ -194,25 +193,25 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
                     Marshal.Copy(_reusableRow, 0, ptr, image.Width * 4); // Assuming 24bpp RGB data
                     ptr += stride;
                 }
+
                 PreviewImage = _reusableBitmap;
             }
-           
         }
 
-       
+
         //Dispatcher.UIThread.Invoke(() =>
-       // {
-            
-            // ProfilePictureUpdated?.Invoke();
-       // });
+        // {
+
+        // ProfilePictureUpdated?.Invoke();
+        // });
     }
 
     public override void Dispose()
     {
         //base.Dispose();
         _shouldShowImage = false;
-        if(_captureZone!=null)
-        _screenCapture?.UnregisterCaptureZone(_captureZone);
+        if (_captureZone != null)
+            _screenCapture?.UnregisterCaptureZone(_captureZone);
         _capturingService.FrameUpdated -= OnFrameUpdate;
         _capturingService.UnregisterUse();
     }

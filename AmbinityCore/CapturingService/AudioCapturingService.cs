@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using AmbinityCore.CapturingService.AudioCapturing;
+using AmbinityCore.DataBase;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
 using ManagedBass;
 using ManagedBass.Wasapi;
@@ -10,6 +11,7 @@ namespace AmbinityCore.CapturingService;
 public class AudioCapturingService : ICapturingService
 {
     public event Action DefaultDeviceChanged;
+    public bool IsEnabled { get; private set; }
     private bool _bassInitialized;
     private int _defaultDeviceID;
     private WasapiProcedure? _process;
@@ -24,8 +26,10 @@ public class AudioCapturingService : ICapturingService
     public event Action VisualizerUpdate;
     public List<AudioCaptureBasic> AvalableAudioCaptures => _availableAudioCapture;
 
-    public AudioCapturingService(BassAudioDeviceEnumerationService enumerationService)
+    public AudioCapturingService(BassAudioDeviceEnumerationService enumerationService,
+        GeneralSettingsManager settingsManager)
     {
+        IsEnabled = settingsManager.Settings.EnableAudioCapture;
         _enumerationService = enumerationService;
         _availableAudioCapture = new List<AudioCaptureBasic>();
         _process = new WasapiProcedure(Process);
@@ -117,6 +121,8 @@ public class AudioCapturingService : ICapturingService
 
     public void Init()
     {
+        if (!IsEnabled)
+            return;
         BASSInit();
         var devices = _enumerationService.GetAvailableAudioDevices();
         UpdateDefaultEndpoint();

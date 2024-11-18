@@ -1,11 +1,14 @@
-using Avalonia.Media;
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Color = Avalonia.Media.Color;
 
 namespace AmbinityCore.Models.GeneralSetting;
 
 public class GeneralSettings : ObservableObject, IGeneralSettings
 {
     private bool _autoStart = true;
+
+    #region General
 
     public bool AutoStart
     {
@@ -20,14 +23,16 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         get => _autoStartDelay;
         set => SetProperty(ref _autoStartDelay, value);
     }
+
     private Color _primaryColor = Color.Parse("#1ac35f");
-    
+
 
     public Color PrimaryColor
     {
         get => _primaryColor;
         set => SetProperty(ref _primaryColor, value);
     }
+
     private bool _enableMica = true;
 
     public bool EnableMica
@@ -35,6 +40,7 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         get => _enableMica;
         set => SetProperty(ref _enableMica, value);
     }
+
     private string _selectedTheme = "System";
 
     public string SelectedTheme
@@ -42,6 +48,11 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         get => _selectedTheme;
         set => SetProperty(ref _selectedTheme, value);
     }
+
+    #endregion
+
+    #region Canvas
+
     private bool _enableSnapToGrid = true;
 
     public bool EnableSnapToGrid
@@ -66,18 +77,88 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         set => SetProperty(ref _showCanvasLockedInfo, value);
     }
 
+    #endregion
+
+    #region Plugin
+
+    private bool _enableScreenCapture = true;
+
+    public bool EnableScreenCapture
+    {
+        get => _enableScreenCapture;
+        set => SetProperty(ref _enableScreenCapture, value);
+    }
+
+    private bool _enableAudioCapture = true;
+
+    public bool EnableAudioCapture
+    {
+        get => _enableAudioCapture;
+        set => SetProperty(ref _enableAudioCapture, value);
+    }
+
+    private bool _enableHWMonitor = true;
+
+    public bool EnableHWMonitor
+    {
+        get => _enableHWMonitor;
+        set => SetProperty(ref _enableHWMonitor, value);
+    }
+
+    private bool _enableOpenRGB = true;
+
+    public bool EnableOpenRGB
+    {
+        get => _enableOpenRGB;
+        set => SetProperty(ref _enableOpenRGB, value);
+    }
+
+    #endregion
+
+
+    #region Profile
+
+    private int _canvasWidth =750;
+
+    public int CanvasWidth
+    {
+        get =>_canvasWidth ;
+        set => SetProperty(ref _canvasWidth, value);
+    }
+    private int _canvasHeight =500;
+
+    public int CanvasHeight
+    {
+        get =>_canvasHeight ;
+        set => SetProperty(ref _canvasHeight, value);
+    }
+    private int _targetFramerate = 30;
+
+    public int TargetFramerate
+    {
+        get => _targetFramerate;
+        set => SetProperty(ref _targetFramerate, value);
+    }
+
+    private Guid _lastPlayedProfileID;
+
+    public Guid LastPlayedProfileID
+    {
+        get => _lastPlayedProfileID;
+        set => SetProperty(ref _lastPlayedProfileID, value);
+    }
+
+    #endregion
+
+    #region First Time
+
     private bool _showApptour = true;
+
     public bool ShowAppTour
     {
         get => _showApptour;
         set => SetProperty(ref _showApptour, value);
-
     }
 
-    private Guid _lastPlayedProfileID;
-    public Guid LastPlayedProfileID  {
-        get => _lastPlayedProfileID;
-        set => SetProperty(ref _lastPlayedProfileID, value);
-
-    }
+    #endregion
 }

@@ -10,5 +10,6 @@ public interface IColorEngine
     void Init(LightingZone zone);
     void Dispose();
     bool IsDisposed { get; }
+    bool IsAvailable { get; }
     LightingZone Zone { get;}
 }

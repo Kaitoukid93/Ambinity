@@ -139,6 +139,7 @@ public class AmbinityBootStrapper
     // }
     private static void ConfigureIoc()
     {
+        //create default frame buffer
         var mainFrameBuffer = new FrameBuffer(750, 500);
         Ioc.Default.ConfigureServices(
             new ServiceCollection()
@@ -281,6 +282,14 @@ public class AmbinityBootStrapper
 
     private static async Task ConfigureCoreService(SplashViewModel splashViewModel)
     {
+        //Update framebuffer value from settings before any service run
+        var framebuffer = Ioc.Default.GetRequiredService<FrameBuffer>();
+        framebuffer.FrameWidth =(int) _generalSettingsManager.Settings.CanvasWidth>=400?(int) _generalSettingsManager.Settings.CanvasWidth:400;
+        framebuffer.FrameHeight = (int)_generalSettingsManager.Settings.CanvasHeight>=320?(int) _generalSettingsManager.Settings.CanvasHeight:320;
+        //update setting incase size mismatch
+        _generalSettingsManager.Settings.CanvasWidth = framebuffer.FrameWidth;
+        _generalSettingsManager.Settings.CanvasHeight = framebuffer.FrameHeight;
+        framebuffer.UpdatePixelData();
         //Try download assets from server
         var resourceService = Ioc.Default.GetRequiredService<ResourceService>();
         await Task.Run(async () =>

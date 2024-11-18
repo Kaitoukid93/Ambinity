@@ -25,6 +25,7 @@ public class LightingProfileDecoder
     public event Action<LightingProfile> CurrentPlayingProfileChanged;
     public event Action FrameUpdate;
     private float _bitmapDimFactor;
+    private int _framerate;
 
 
     public LightingProfileDecoder(LightingProfileRepository repository, ColorEngineProvider colorEngineProvider,
@@ -100,6 +101,9 @@ public class LightingProfileDecoder
     private void Resume()
     {
         //todo reuse engines
+        _framerate = _generalSettings.TargetFramerate;
+        if (_framerate < 24)
+            _framerate = 24;
         if (_currentPlayingProfile == null)
             return;
         var isRunning = _tokenSource != null && _isRendering;
@@ -244,6 +248,8 @@ public class LightingProfileDecoder
     {
         try
         {
+            if (!engine.IsAvailable)
+                return;
             Stopwatch sw = new Stopwatch();
             Stopwatch reportStopwatch = new Stopwatch();
             reportStopwatch.Start();
@@ -263,7 +269,7 @@ public class LightingProfileDecoder
                 }
 
                 FrameUpdate?.Invoke();
-                Thread.Sleep(1000 / 30);
+                Thread.Sleep(1000 / _framerate);
             }
         }
         catch (Exception ex)

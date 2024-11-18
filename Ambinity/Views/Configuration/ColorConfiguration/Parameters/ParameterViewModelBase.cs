@@ -21,6 +21,10 @@ public abstract class ParameterViewModelBase : ViewModelBase
     /// Description to display
     /// </summary>
     public string Description { get; set; }
+    /// <summary>
+    /// error message if available
+    /// </summary>
+    public string ErrorMessage { get; set; }
 
     private bool _isEnabled = true;
 

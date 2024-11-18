@@ -4,13 +4,16 @@ using System.Linq;
 using Ambinity.ViewModels;
 using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.Screens.ProfileEditor;
+using AmbinityCore.DataBase;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Controller;
+using AmbinityCore.Models.GeneralSetting;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Profile;
 using Avalonia;
 using Draw2D.Core;
+using Draw2D.Core.Graphic;
 using Draw2D.Core.Policies.FigurePolicy;
 using Draw2D.Core.Policies.RouterPolicy;
 using Draw2D.Core.Shapes.Basic;
@@ -19,12 +22,15 @@ namespace Ambinity.Views.LayoutEditor;
 
 public class LayoutCanvasViewModel : ViewModelBase
 {
+    private readonly IGeneralSettings _generalSettings;
+    private readonly FrameBuffer _buffer;
     public event Action<Figure> ItemAdded;
     public event Action<Figure> ItemRemoved;
 
     public LayoutCanvasViewModel(Draw2DCanvasViewModel canvasViewModel,
-        ToolsViewModel toolsViewModel, Draw2DCanvasInfoBarViewModel infoBarViewModel)
+        ToolsViewModel toolsViewModel, Draw2DCanvasInfoBarViewModel infoBarViewModel, FrameBuffer buffer)
     {
+        _buffer = buffer;
         CanvasViewModel = canvasViewModel;
         ToolsViewModel = toolsViewModel;
         InfoBarViewModel = infoBarViewModel;
@@ -78,7 +84,7 @@ public class LayoutCanvasViewModel : ViewModelBase
         ToolsViewModel.AddFigure += OnFigureAddedFromTool;
         CanvasViewModel.FigureAdded += OnFigureAdded;
         CanvasViewModel.FigureRemoved += OnFigureRemoved;
-        CanvasViewModel.Init(new Size(750, 500));
+        CanvasViewModel.Init(new Size(_buffer.FrameWidth,_buffer.FrameHeight));
         CanvasViewModel.Canvas.ShouldDrawBackgroundImage = ShoudDrawBackground;
         //resolve list figures
         var zones = new List<ContainerFigure>();
