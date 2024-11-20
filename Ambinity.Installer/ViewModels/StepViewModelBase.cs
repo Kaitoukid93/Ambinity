@@ -10,5 +10,6 @@ public abstract class StepViewModelBase : ViewModelBase
     public bool CanBack { get; set; }
     public bool CanCancel { get; set; }
     public bool CanForward { get; set; }
+    public bool IsBusy { get; set; }
     
 }

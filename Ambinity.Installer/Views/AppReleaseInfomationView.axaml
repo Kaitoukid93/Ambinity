@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm = "clr-namespace:Ambinity.Installer.ViewModels"
+             x:DataType="vm:AppReleaseInfomationViewModel"
+             x:Class="Ambinity.Installer.Views.AppReleaseInfomationView">
+    <UserControl.Styles>
+        <StyleInclude Source="/Styles/Button.axaml" />
+    </UserControl.Styles>
+    <Button Command="{Binding SelectReleaseCommand}" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" CornerRadius="5" Padding="10" Classes="icon-button">
+        <Grid ColumnDefinitions="Auto,20,*">
+            <Grid>
+                <RadioButton GroupName="release" IsChecked="{Binding IsSelected}"></RadioButton>
+            </Grid>
+            <Grid RowDefinitions="*,8,*" Column="2">
+                <Grid Row="2">
+                    <TextBlock HorizontalAlignment="Left" FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding ReleaseDate}"></TextBlock>
+                </Grid>
+                <Grid>
+                    <TextBlock HorizontalAlignment="Left" Text="{Binding Version}" FontSize="15" FontWeight="SemiBold"></TextBlock>
+                </Grid>
+                <Grid Row="1">
+                    <Separator Height="1" HorizontalAlignment="Stretch"></Separator>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Button>
+   
+</UserControl>

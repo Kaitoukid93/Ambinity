@@ -1,4 +1,4 @@
-using Ambinity.Installer;
+
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Styling;

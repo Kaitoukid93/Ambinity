@@ -4,12 +4,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
-using AmbinityCore;
+using Ambinity.Events;
+using Ambinity.Utils;
 using AmbinityCore.Events;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Serilog;
 
 namespace Ambinity.Windows.SystemUtilities;
@@ -27,9 +27,9 @@ public class ApplicationStateManager
         StartupArguments = startupArguments;
         IsElevated = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
 
-        AmbinityCore.Utils.Utilities.ShutdownRequested += UtilitiesOnShutdownRequested;
-        AmbinityCore.Utils.Utilities.RestartRequested += UtilitiesOnRestartRequested;
-        AmbinityCore.Utils.Utilities.UpdateRequested += UtilitiesOnUpdateRequested;
+        Utilities.ShutdownRequested += UtilitiesOnShutdownRequested;
+        Utilities.RestartRequested += UtilitiesOnRestartRequested;
+        Utilities.UpdateRequested += UtilitiesOnUpdateRequested;
 
         // On Windows shutdown dispose the IOC container just so device providers get a chance to clean up
         if (Application.Current?.ApplicationLifetime is IControlledApplicationLifetime controlledApplicationLifetime)

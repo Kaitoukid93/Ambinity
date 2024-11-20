@@ -1,4 +1,7 @@
-namespace AmbinityCore.Events;
+using System;
+using System.Collections.Generic;
+
+namespace Ambinity.Events;
 
 /// <summary>
 ///     Provides data about application restart events

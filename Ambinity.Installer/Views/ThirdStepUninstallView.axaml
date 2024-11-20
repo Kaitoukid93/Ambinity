@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:viewModels="clr-namespace:Ambinity.Installer.ViewModels"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:DataType="viewModels:ThirdStepUninstallViewModel"
+             x:Class="Ambinity.Installer.Views.ThirdStepUninstallView">
+    <UserControl.Resources>
+        <GeometryGroup x:Key="installed">
+            <Geometry>
+                M6.5 13C10.0899 13 13 10.0898 13 6.5C13 2.91016 10.0899 0 6.5 0C2.91015 0 0 2.91016 0 6.5C0 10.0898 2.91015 13 6.5 13ZM10.3357 4.21855C10.5944 3.8951 10.542 3.42314 10.2185 3.16438C9.89514 2.90562 9.42314 2.95805 9.16434 3.28151L5.61851 7.71384L4.20004 6.65002C3.86868 6.40154 3.39857 6.46863 3.15005 6.80003C2.90151 7.13142 2.96867 7.60153 3.30004 7.85004L5.30004 9.35004C5.62411 9.59312 6.08263 9.53484 6.33569 9.21854L10.3357 4.21855Z
+            </Geometry>
+        </GeometryGroup>
+    </UserControl.Resources>
+    <Grid Margin="20,0" RowDefinitions="Auto,20,*">
+        <StackPanel Spacing="5">
+            <TextBlock Text="{Binding Header}" FontSize="25" FontWeight="SemiBold" HorizontalAlignment="Left"
+                       VerticalAlignment="Top" />
+            <TextBlock HorizontalAlignment="Left" MaxWidth="500" TextWrapping="Wrap" Text="{Binding SubHeader}"
+                       FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}">
+            </TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Spacing="8">
+            <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding InstallationInformation}"></TextBlock>
+           
+            <Grid  ColumnDefinitions="*,10,Auto">
+                <ProgressBar Value="{Binding CurrentProgress}" Minimum="0" Maximum="100" IsIndeterminate="False"></ProgressBar>   
+                <PathIcon IsVisible="{Binding UninstallationFinished}" Grid.Column="2" Width="20" Height="20" Foreground="{DynamicResource AccentButtonBackground}" Data="{DynamicResource installed}"></PathIcon>
+                <ui:ProgressRing IsVisible="{Binding !UninstallationFinished}"  Grid.Column="2" Width="20" Height="20"  Foreground="{DynamicResource AccentButtonBackground}" IsIndeterminate="True"/>
+            </Grid>
+            
+            <TextBlock FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding InstallationSubInformation}"></TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

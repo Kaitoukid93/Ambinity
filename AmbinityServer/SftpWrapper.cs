@@ -186,6 +186,11 @@ public class SftpWrapper
     {
         return sFTP.Exists(path);
     }
+    /// <summary>
+    /// download with internal progress
+    /// </summary>
+    /// <param name="remotePath"></param>
+    /// <param name="localPath"></param>
     public void DownloadFile(string remotePath, string localPath)
     {
         if (File.Exists(localPath))
@@ -209,7 +214,35 @@ public class SftpWrapper
             Log.Warning(ex.ToString());
         }
     }
- 
+    /// <summary>
+    /// download with external progress
+    /// </summary>
+    /// <param name="remotePath"></param>
+    /// <param name="localPath"></param>
+    public void DownloadFile(string remotePath, string localPath, IProgress<int> progress)
+    {
+        _progress = progress;
+        if (File.Exists(localPath))
+            return;
+
+        try
+        {
+            using (var s = System.IO.File.Create(localPath))
+            {
+                _itemSize = GetFileAttributes(remotePath).Size;
+                _itemName = remotePath;
+                sFTP.DownloadFile(remotePath, s, DownloadProgres);
+            }
+        }
+        catch (System.IO.IOException ex)
+        {
+            Log.Warning(ex.ToString());
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex.ToString());
+        }
+    }
     public async Task DownloadDirectory(string sourceRemotePath, string destLocalPath,
         IProgress<DownloadProgress> progress = null)
     {

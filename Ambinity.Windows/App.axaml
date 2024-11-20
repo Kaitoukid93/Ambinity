@@ -5,7 +5,7 @@
              xmlns:sty="using:FluentAvalonia.Styling"
              xmlns:root = "using:Ambinity.Views.Root"
              x:DataType="root:RootViewModel"
-             xmlns:converters ="clr-namespace:AmbinityCore.Converters;assembly=AmbinityCore"
+             xmlns:converters ="clr-namespace:Ambinity.Windows.Converters"
              xmlns:windows="clr-namespace:Ambinity.Windows">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
     <Application.DataTemplates>

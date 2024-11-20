@@ -1,7 +1,10 @@
+using System;
 using System.Diagnostics;
+using System.Linq;
+using Ambinity.Events;
 using AmbinityCore.Events;
 
-namespace AmbinityCore.Utils;
+namespace Ambinity.Utils;
 
 /// <summary>
 /// provide some method for controlling application, some part of the code taken from Artemis
@@ -81,14 +84,7 @@ public static class Utilities
     ///     Occurs when the core has requested a pending application update to be applied
     /// </summary>
     public static event EventHandler<UpdateEventArgs>? UpdateRequested;
-    /// <summary>
-    ///     Gets the current application location
-    /// </summary>
-    /// <returns></returns>
-    internal static string GetCurrentLocation()
-    {
-        return Process.GetCurrentProcess().MainModule!.FileName!;
-    }
+ 
 
     private static void OnRestartRequested(RestartEventArgs e)
     {

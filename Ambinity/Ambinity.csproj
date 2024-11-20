@@ -49,7 +49,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Ambinity.Installer\Ambinity.Installer.csproj" />
 	  <ProjectReference Include="..\AmbinityCore\AmbinityCore.csproj" />
 	  <ProjectReference Include="..\AmbinityServer\AmbinityServer.csproj" />
 	  <ProjectReference Include="..\Draw2D.Core\Draw2D.Core.csproj" />

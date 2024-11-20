@@ -4,12 +4,23 @@
     <option name="projectPerEditor">
       <map>
         <entry key="Ambinity.Installer/App.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Styles/Button.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
         <entry key="Ambinity.Installer/Views/AmbinityImage.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
         <entry key="Ambinity.Installer/Views/AmbinityImageView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/AppReleaseInfomationView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/FirstStepModifyView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/FirstStepUninstallView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
         <entry key="Ambinity.Installer/Views/FirstStepView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/InstallView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
         <entry key="Ambinity.Installer/Views/MainWindow.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/ModifyView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/RootView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/SecondStepUninstallView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
         <entry key="Ambinity.Installer/Views/SecondStepView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/SelectVersionView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/ThirdStepUninstallView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
         <entry key="Ambinity.Installer/Views/ThirdStepView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.Installer/Views/UninstallView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
         <entry key="Ambinity.Installer/Views/WelcomeView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
         <entry key="Ambinity.Windows/App.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/App.axaml" value="Ambinity/Ambinity.csproj" />

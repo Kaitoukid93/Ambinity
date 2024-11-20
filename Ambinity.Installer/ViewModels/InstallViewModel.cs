@@ -1,18 +1,27 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
-using Avalonia;
+using Ambinity.Installer.Models;
+using Ambinity.Installer.Services;
+using Ambinity.Installer.Utilities;
+using AmbinityServer.AppRelease;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.Styling;
+using Newtonsoft.Json;
 
 namespace Ambinity.Installer.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase
+public class InstallViewModel : ViewModelBase
 {
-    public MainWindowViewModel(SecondStepViewModel secondStepViewModel,FirstStepViewModel firstStepViewModel,WelcomeViewModel welcomeViewModel,ThirdStepViewModel thirdStepViewModel)
+    public InstallViewModel(SecondStepViewModel secondStepViewModel, FirstStepViewModel firstStepViewModel,
+        WelcomeViewModel welcomeViewModel, ThirdStepViewModel thirdStepViewModel, PostInstallationSettings settings,
+        InstallationService installationService)
     {
+        _installationService = installationService;
+        _postInstallationSettings = settings;
         Header = "Ambinity Installer";
         NextButtonContent = "Next";
         NextCommand = new RelayCommand(NexStep);
@@ -20,6 +29,8 @@ public class MainWindowViewModel : ViewModelBase
         FinishCommand = new RelayCommand(FinishSetup);
         BackCommand = new RelayCommand(PreviousStep);
         thirdStepViewModel.AccentColorChanged += OnAccentColorChanged;
+        secondStepViewModel.AccentColorChanged += OnAccentColorChanged;
+        //init steps based on parameter
         Steps =
         [
             welcomeViewModel,
@@ -27,8 +38,9 @@ public class MainWindowViewModel : ViewModelBase
             secondStepViewModel,
             thirdStepViewModel
         ];
-        
     }
+    public event Action CloseWindowRequested;
+    private PostInstallationSettings _postInstallationSettings;
 
     public void Init()
     {
@@ -76,21 +88,69 @@ public class MainWindowViewModel : ViewModelBase
 
     private void FinishSetup()
     {
-        //
+        SaveInitialAppSettings();
+        if (_postInstallationSettings.CreateDesktopShortcut)
+            _installationService.CreateDesktopShortcut();
+        if (_postInstallationSettings.OpenAfterFinish)
+        {
+            string executable = Path.Combine(_installationService.InstallationDirectory, "Ambinity.Windows.exe");
+            ProcessUtilities.RunAsDesktopUser(executable);
+        }
+
+        CloseWindowRequested?.Invoke();
     }
 
-
+    public void InstallCustomVersion(AppReleaseInformation versionInfomation)
+    {
+        CurrentView = Steps[2];
+        (_currentView as SecondStepViewModel).Init(versionInfomation);
+        
+    }
     private void CancelSetup()
     {
-        //dispose and close
+        CloseWindowRequested?.Invoke();
     }
 
+    private void SaveInitialAppSettings()
+    {
+        try
+        {
+            var initialSettings = new GeneralSettings();
+            initialSettings.AutoStart = _postInstallationSettings.AutoStart;
+            initialSettings.PrimaryColor = _postInstallationSettings.PrimaryColor;
+            var json = JsonConvert.SerializeObject(initialSettings,
+                new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
+            File.WriteAllText(Constants.GeneralSettingsFilePath, json);
+        }
+        catch (Exception ex)
+        {
+            //log
+        }
+    }
+
+    //minimal requirement for general settings
+    public class GeneralSettings
+    {
+        public bool AutoStart { get; set; }
+        public Color PrimaryColor { get; set; }
+        public string SelectedTheme { get; set; }
+        public bool EnableMica { get; set; } = false;
+    }
 
     private void NexStep()
     {
         if (CurrentView.StepIndex == Steps.Count - 1)
             return;
         CurrentView = Steps[CurrentView.StepIndex + 1];
+        if (CurrentView is SecondStepViewModel secondStepViewModel)
+        {
+            secondStepViewModel.Init();
+        }
+
+        if (CurrentView is ThirdStepViewModel thirdStepViewModel)
+        {
+            thirdStepViewModel.Init();
+        }
     }
 
     private void PreviousStep()
@@ -104,6 +164,7 @@ public class MainWindowViewModel : ViewModelBase
     public string NextButtonContent { get; }
     private StepViewModelBase _currentView;
     private FluentAvaloniaTheme? _faTheme;
+    private readonly InstallationService _installationService;
 
     public StepViewModelBase CurrentView
     {

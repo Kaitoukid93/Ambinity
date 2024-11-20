@@ -33,7 +33,7 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         set => SetProperty(ref _primaryColor, value);
     }
 
-    private bool _enableMica = true;
+    private bool _enableMica = false;
 
     public bool EnableMica
     {

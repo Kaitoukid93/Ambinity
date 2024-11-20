@@ -110,9 +110,9 @@
         </StackPanel>
         <Grid Row="2" RowDefinitions="Auto,10,*">
             <StackPanel Spacing="10">
-                <CheckBox Content="Auto run on Windows startup"></CheckBox>
-                <CheckBox Content="Create desktop shortcut"></CheckBox>
-                <CheckBox Content="Open Ambinity after installation"></CheckBox>
+                <CheckBox IsChecked="{Binding AutoStart}" Content="Auto run on Windows startup"></CheckBox>
+                <CheckBox IsChecked="{Binding CreateDesktopShortcut}" Content="Create desktop shortcut"></CheckBox>
+                <CheckBox IsChecked="{Binding OpenAfterFinish}" Content="Open Ambinity after installation"></CheckBox>
             </StackPanel>
             <Grid Row="2" RowDefinitions="Auto,8,*">
                     <TextBlock Text="Select your color" FontWeight="SemiBold" FontSize="13"></TextBlock>

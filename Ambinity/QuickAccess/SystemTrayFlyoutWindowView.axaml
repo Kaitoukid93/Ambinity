@@ -10,16 +10,27 @@
         CanResize="False"
         Topmost="False"
         SystemDecorations="None"
-        TransparencyLevelHint="Mica"
+        TransparencyLevelHint="{Binding TransparencyLevel}"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="-1"
-        Background="Transparent"
         UseLayoutRounding="False"
         Width="360"
         Height="512"
         CornerRadius="8 8 8 8"
         WindowStartupLocation="Manual"
         Title="SystemTrayFlyoutWindow">
-    <ContentControl Padding="10" Content="{Binding QuickAccessViewModel}"></ContentControl>
+    <Panel>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+        <ContentControl Padding="10" Content="{Binding QuickAccessViewModel}"></ContentControl>
+    </Panel>
+  
 </Window>

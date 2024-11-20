@@ -9,46 +9,14 @@
         Height="450"
         CanResize="False"
         xmlns:viewModels="clr-namespace:Ambinity.Installer.ViewModels"
-        x:DataType="viewModels:MainWindowViewModel"
+        x:DataType="viewModels:RootViewModel"
         WindowStartupLocation="CenterScreen"
         x:Class="Ambinity.Installer.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/installerApp.ico"
         Title="Ambinity Installer">
 
     <!-- <TextBlock Text="{Binding Header}" FontSize="25" Margin="20" FontWeight="SemiBold" HorizontalAlignment="Left" -->
     <!--            VerticalAlignment="Top" /> -->
-    <Grid ColumnDefinitions="Auto,*">
-        <ContentControl Content="{Binding AmbinityImage}"></ContentControl>
-        <Grid Column="1" RowDefinitions="*,20,Auto">
-            <ContentControl Grid.Column="1" Margin="20,40,20,10" Content="{Binding CurrentView}"></ContentControl>
-            <Grid Margin="20,0,20,20" Row="2">
- 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-                    <Button IsVisible="{Binding !CurrentView.CanForward}"
-                            Command="{Binding FinishCommand}"
-                            Classes="accent"
-                            Click="Button_OnClick"
-                            Content="Finish">
-                    </Button>
-                    <Button IsVisible="{Binding CurrentView.CanBack}"
-                            Command="{Binding BackCommand}"
-                            Classes="accent"
-                            Content="Back">
-                    </Button>
-                    <Button IsVisible="{Binding CurrentView.CanCancel}"
-                            Command="{Binding CancelCommand}"
-                            Content="Cancel">
-                    </Button>
-                    <Button Classes="accent" IsVisible="{Binding CurrentView.CanForward}"
-                            Background="{DynamicResource AccentButtonBackground}"
-                            Command="{Binding NextCommand}"
-                            Content="{Binding NextButtonContent}">
-                    </Button>
-
-                </StackPanel>
-
-            </Grid>
-        </Grid>
-    </Grid>
+    <ContentControl Content="{Binding}"></ContentControl>
 
 </Window>

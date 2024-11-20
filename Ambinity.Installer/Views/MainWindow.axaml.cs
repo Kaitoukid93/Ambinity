@@ -7,12 +7,16 @@ namespace Ambinity.Installer.Views;
 
 public partial class MainWindow : Window
 {
+    private RootViewModel viewModel;
     public MainWindow()
     {
         InitializeComponent();
+        viewModel = Ioc.Default.GetRequiredService<RootViewModel>();
+        viewModel.Close += OnCloseWindowRequested;
+
     }
-    
-    private void Button_OnClick(object? sender, RoutedEventArgs e)
+
+    private void OnCloseWindowRequested()
     {
         this.Close();
     }

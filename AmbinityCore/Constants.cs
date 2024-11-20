@@ -10,8 +10,10 @@ public static class Constants
     /// </summary>
     private static readonly string BaseFolder = Environment.GetFolderPath(
         Environment.SpecialFolder.LocalApplicationData);
+
     public static readonly string AppDataFolder =
         Path.Combine(BaseFolder, "Ambinity\\");
+
     public static readonly string ModelDataFolder =
         Path.Combine(BaseFolder, "Ambinity\\Data\\");
 
@@ -23,7 +25,17 @@ public static class Constants
     public static readonly string FirmwareToolsFolderPath = Path.Combine(ToolsFolderPath, "FirmwareTools");
     public const string StartupServiceName = "Ambinity Startup Task";
     public static readonly string ApplicationFolder = Path.GetDirectoryName(typeof(Constants).Assembly.Location)!;
-    public static readonly string ExecutablePath = Utilities.GetCurrentLocation();
-    public static readonly string UpdatingFolder =  Path.Combine(AppDataFolder, "updating");
+    public static readonly string ExecutablePath = GetCurrentLocation();
+    public static readonly string UpdatingFolder = Path.Combine(AppDataFolder, "updating");
+
     #endregion
+
+    /// <summary>
+    ///     Gets the current application location
+    /// </summary>
+    /// <returns></returns>
+    internal static string GetCurrentLocation()
+    {
+        return Process.GetCurrentProcess().MainModule!.FileName!;
+    }
 }

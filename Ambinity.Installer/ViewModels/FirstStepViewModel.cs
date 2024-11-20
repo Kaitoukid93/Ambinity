@@ -5,7 +5,7 @@ public class FirstStepViewModel : StepViewModelBase
     public FirstStepViewModel()
     {
         Header="Installation information";
-        SubHeader="Ambinity requires internet connection to download the core services and content, click continue to get started";
+        SubHeader="Ambinity requires internet connection to download the core services and content, click Next to get started";
         StepIndex = 1;
         InstallationDirectory = @"C:\Program Files\Ambinity";
         CanBack = true;
