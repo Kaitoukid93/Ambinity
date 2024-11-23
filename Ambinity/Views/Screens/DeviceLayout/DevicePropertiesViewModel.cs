@@ -51,7 +51,7 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         else
         {
             _selectedDevices?.Clear();
-            foreach (var device in selectedItems.Where(i=>i.IsDragable).Select(item =>
+            foreach (var device in selectedItems.Where(i => i.IsDragable).Select(item =>
                          (item as DeviceContainerFigure)?.ChildItem as AmbinityDevice))
             {
                 _selectedDevices.Add(device);

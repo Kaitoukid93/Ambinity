@@ -173,9 +173,11 @@ public class SelfGeneratedColorEngine : IColorEngine
             //get all led inside zone
             foreach (var device in _deviceRepository.Devices)
             {
+               
                 var rect = _zone.ZoneBound.Intersect(device.Bound);
                 if (rect == default)
                     continue;
+                device.TransformLeds();
                 foreach (var led in device.Leds)
                 {
                     var intersect = _zone.ZoneBound.Intersect(led.TransformedRect);

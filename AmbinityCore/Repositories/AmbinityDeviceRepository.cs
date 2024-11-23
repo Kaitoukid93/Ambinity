@@ -63,26 +63,25 @@ public class AmbinityDeviceRepository
     }
 
 //todo implement device remove
-    private void OnDevicesUpdated(LEDOutput output)
+    private void OnDevicesUpdated(string action, AmbinityDevice device)
     {
+        switch (action)
+        {
+            case "Remove":
+                if (Devices.Contains(device))
+                    Devices.Remove(device);
+                var capture = GetCapture(device);
+                capture?.Dispose();
+                _captures.Remove(capture);
+                break;
+            case "Add":
+                if (!Devices.Contains(device))
+                    Devices.Add(device);
+                var cpt = _captureFactory.RegisterDevice(device);
+                _captures.Add(cpt);
+                break;
+        }
         //remove all devices that attached to this output
-        foreach (var device in output.Devices)
-        {
-            if (Devices.Contains(device))
-                Devices.Remove(device);
-            var capture = GetCapture(device);
-            capture?.Dispose();
-            _captures.Remove(capture);
-        }
-
-        foreach (var device in output.Devices)
-        {
-            if (!Devices.Contains(device))
-                Devices.Add(device);
-            var capture = _captureFactory.RegisterDevice(device);
-            _captures.Add(capture);
-        }
-        //reload
     }
 
     private void OnOutputDisabled(LEDOutput output)

@@ -1,20 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Ambinity.Services;
 using Ambinity.SystemUtilities;
 using Ambinity.Utils;
 using Ambinity.ViewModels;
 using AmbinityCore.DataBase;
 using AmbinityCore.Models.GeneralSetting;
 using AmbinityCore.Utils;
+using AmbinityServer.AppRelease;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.Styling;
 using Microsoft.VisualBasic;
+using Serilog;
 using Constants = AmbinityCore.Constants;
 
 namespace Ambinity.Views.Screens.AppSettings;
@@ -26,12 +32,14 @@ public class AppSettingsViewModel : ViewModelBase
     private const string _light = "Light";
     private readonly GeneralSettingsManager _settingsManager;
     private IGeneralSettings _generalSettings;
+    private UpdateService _updateService;
     public IGeneralSettings GeneralSettings => _generalSettings;
+    private IProgress<int> _updatingProgress;
 
-    public AppSettingsViewModel(GeneralSettingsManager settingsManager)
+    public AppSettingsViewModel(GeneralSettingsManager settingsManager, UpdateService updateService)
     {
         _settingsManager = settingsManager;
-
+        _updateService = updateService;
         var settings = _settingsManager.Settings;
         _generalSettings = settings;
         _generalSettings.PropertyChanged += OnGeneralSettingsPropertyChanged;
@@ -43,12 +51,138 @@ public class AppSettingsViewModel : ViewModelBase
         _startMinimized = _generalSettings.StartMinimized;
         AvailableFrameRates = ["24 FPS", "30 FPS", "60 FPS", "100 FPS", "144 FPS"];
         AvailableBitmapSize = ["400 * 320 px", "750 * 500 px", "800 * 600 px", "1024 * 768 px"];
-        _targetBitmapSize = AvailableBitmapSize.Where(f => f.Contains(_generalSettings.CanvasWidth.ToString()) && f.Contains(_generalSettings.CanvasHeight.ToString()))
+        _targetBitmapSize = AvailableBitmapSize.Where(f =>
+                f.Contains(_generalSettings.CanvasWidth.ToString()) &&
+                f.Contains(_generalSettings.CanvasHeight.ToString()))
             .First();
         _targetFramerate = AvailableFrameRates.Where(f => f.Contains(_generalSettings.TargetFramerate.ToString()))
             .First();
         RequestRestartApplicationCommand = new RelayCommand(RequestRestartApplication);
+        CheckForAppUpdateCommand = new AsyncRelayCommand(CheckForAppUpdate);
+        var assemblyVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
+        CurrentReleaseInformation = new AppReleaseInformation(assemblyVersion, DateTime.Now);
+        InstallUpdateCommand = new AsyncRelayCommand(InstallUpdate);
+        _updatingProgress = new Progress<int>((p) => { CurrentUpdateProgress = p; });
     }
+
+    private int _currentUpdateProgress;
+
+    public int CurrentUpdateProgress
+    {
+        get => _currentUpdateProgress;
+        set
+        {
+            _currentUpdateProgress = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// updating process learning from ArtemisRGB
+    /// </summary>
+    private async Task InstallUpdate()
+    {
+        IsUpdating = true;
+        //download release
+        CurrentUpdatingStatus = "Downloading update...";
+        var (zipFile, release) = await _updateService.DownloadRelease(_updatingProgress);
+        //extract release
+        CurrentUpdatingStatus = "Extracting...";
+        await _updateService.ExtractRelease(zipFile, _updatingProgress);
+        // Remove the installer archive
+        File.Delete(zipFile);
+        //copy script file
+        // var dir = Directory.GetParent(Assembly.GetEntryAssembly().Location).FullName;
+        // var scriptDir = Path.Combine(dir, "Scripts", "update.ps1");
+        // if (!File.Exists(scriptDir))
+        // {
+        //     Log.Error("Script file not found, aborting...");
+        //     CurrentUpdatingStatus = "Script file not found, aborting...";
+        //     return;
+        // }
+        //
+        // Directory.CreateDirectory(Path.Combine(Constants.UpdatingFolder, "installing", "scripts"));
+        // File.Copy(scriptDir, Path.Combine(Constants.UpdatingFolder, "installing", "scripts", "update.ps1"));
+        //restart app for updating with script
+        CurrentUpdatingStatus = "Restarting...";
+        Utilities.ApplyUpdate(true);
+        IsUpdating = false;
+    }
+
+    private async Task CheckForAppUpdate()
+    {
+        IsCheckingForUpdate = true;
+        UpdateAvailable = false;
+        // check for last update, gotta fake delay cuz this thing run too fast
+        await Task.Delay(2000);
+        var assemblyVersion = Assembly.GetEntryAssembly().GetName().Version;
+        var latestRelease = await _updateService.GetLatestRelease();
+        if (latestRelease != null)
+        {
+            if (assemblyVersion < new Version(latestRelease.Version))
+            {
+                UpdateAvailable = true;
+                UpdateInformation = latestRelease;
+            }
+            else
+            {
+                UpdateAvailable = false;
+                UpdateInformation = null;
+            }
+        }
+
+        IsCheckingForUpdate = false;
+    }
+
+    private AppReleaseInformation _currentReleaseInformation;
+
+    public AppReleaseInformation CurrentReleaseInformation
+    {
+        get => _currentReleaseInformation;
+        set
+        {
+            _currentReleaseInformation = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private AppReleaseInformation _updateInformation;
+
+    public AppReleaseInformation UpdateInformation
+    {
+        get => _updateInformation;
+        set
+        {
+            _updateInformation = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _updateAvailable;
+
+    public bool UpdateAvailable
+    {
+        get => _updateAvailable;
+        set
+        {
+            _updateAvailable = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _isCheckingForUpdate;
+
+    public bool IsCheckingForUpdate
+    {
+        get => _isCheckingForUpdate;
+        set
+        {
+            _isCheckingForUpdate = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public AsyncRelayCommand CheckForAppUpdateCommand { get; set; }
 
     private void RequestRestartApplication()
     {
@@ -242,6 +376,7 @@ public class AppSettingsViewModel : ViewModelBase
                 return 30;
         }
     }
+
     private string _targetBitmapSize;
 
     public string TargetBitmapSize
@@ -268,25 +403,51 @@ public class AppSettingsViewModel : ViewModelBase
         }
     }
 
+    public ICommand InstallUpdateCommand { get; set; }
+    private string _currentUpdatingStatus;
+
+    public string CurrentUpdatingStatus
+    {
+        get => _currentUpdatingStatus;
+        set
+        {
+            _currentUpdatingStatus = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _isUpdating;
+
+    public bool IsUpdating
+    {
+        get => _isUpdating;
+        set
+        {
+            _isUpdating = value;
+            OnPropertyChanged();
+        }
+    }
+
     private Size BitmapSizeConverter(string size)
     {
         switch (size)
         {
             case "400 * 320 px":
-                return new Size(400,320);
+                return new Size(400, 320);
             case "750 * 500 px":
-                return new Size(750,500);
+                return new Size(750, 500);
                 break;
             case "800 * 600 px":
-                return new Size(800,600);
+                return new Size(800, 600);
                 break;
             case "1024 * 768 px":
-                return new Size(1024,768);
+                return new Size(1024, 768);
                 break;
             default:
-                return new Size(750,500);
+                return new Size(750, 500);
         }
     }
+
     public void Init()
     {
     }

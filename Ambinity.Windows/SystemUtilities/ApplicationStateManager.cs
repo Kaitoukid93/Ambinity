@@ -34,7 +34,7 @@ public class ApplicationStateManager
         // On Windows shutdown dispose the IOC container just so device providers get a chance to clean up
         if (Application.Current?.ApplicationLifetime is IControlledApplicationLifetime controlledApplicationLifetime)
             controlledApplicationLifetime.Exit += ControlledApplicationLifetimeOnExit;
-
+        //
         // Inform the Core about elevation status
        // container.Resolve<ICoreService>().IsElevated = IsElevated;
     }
@@ -101,7 +101,7 @@ public class ApplicationStateManager
         string script = Path.Combine(Constants.UpdatingFolder, "installing", "scripts", "update.ps1");
         string source = $"-sourceDirectory \"'{Path.Combine(Constants.UpdatingFolder, "installing")}'\"";
         string destination = $"-destinationDirectory \"'{Constants.ApplicationFolder}'\"";
-        string args = argsList.Any() ? $"-artemisArgs \"'{string.Join(' ', argsList)}'\"" : "";
+        string args = argsList.Any() ? $"-ambinityArgs \"'{string.Join(' ', argsList)}'\"" : "";
 
         RunScriptWithOutputFile(script, $"{source} {destination} {args}", Path.Combine(Constants.AppDataFolder, "update-log.txt"));
 

@@ -206,7 +206,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         {
             _x = value;
             OnPropertyChanged();
-            DeviceUpdate?.Invoke();
+            //DeviceUpdate?.Invoke();
         }
     }
 
@@ -217,7 +217,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         {
             _y = value;
             OnPropertyChanged();
-            DeviceUpdate?.Invoke();
+            //DeviceUpdate?.Invoke();
         }
     }
 
@@ -231,7 +231,6 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         {
             _width = value;
             OnPropertyChanged();
-            DeviceUpdate?.Invoke();
         }
     }
 
@@ -242,7 +241,6 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         {
             _height = value;
             OnPropertyChanged();
-            DeviceUpdate?.Invoke();
         }
     }
 
@@ -312,17 +310,68 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     {
         lock (Lock)
         {
+            if(Scale==scale)
+                return;
             Scale = scale;
             TransformLeds();
             UpdateSizeByChild(false);
             DeviceUpdate?.Invoke();
         }
     }
-
+    public void SetX(float x)
+    {
+        lock (Lock)
+        {
+            if(X==x)
+                return;
+            X = x;
+            TransformLeds();
+            UpdateSizeByChild(false);
+            DeviceUpdate?.Invoke();
+        }
+    }
+    public void SetY(float y)
+    {
+        lock (Lock)
+        {
+            if(Y==y)
+                return;
+            Y = y;
+            TransformLeds();
+            UpdateSizeByChild(false);
+            DeviceUpdate?.Invoke();
+        }
+    }
+    public void SetWidth(float width)
+    {
+        lock (Lock)
+        {
+            if(Width ==width)
+                return;
+            Width = width;
+            TransformLeds();
+            UpdateSizeByChild(false);
+            DeviceUpdate?.Invoke();
+        }
+    }
+    public void SetHeight(float height)
+    {
+        lock (Lock)
+        {
+            if(Height==height)
+                return;
+            Height = height;
+            TransformLeds();
+            UpdateSizeByChild(false);
+            DeviceUpdate?.Invoke();
+        }
+    }
     public void SetRotation(float angle)
     {
         lock (Lock)
         {
+            if(Rotation ==angle)
+                return;
             Rotation = angle;
             TransformLeds();
             UpdateSizeByChild(false);

@@ -5,6 +5,8 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+		<AssemblyVersion>6.0.1</AssemblyVersion>
+		<FileVersion>6.0.1</FileVersion>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<DefineConstants>$(DefineConstants);ENABLE_XAML_HOT_RELOAD</DefineConstants>

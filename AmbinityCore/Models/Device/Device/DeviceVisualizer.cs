@@ -50,7 +50,7 @@ public class DeviceVisualizer : ICanvasVisualizerItem
     private void OnDeviceUpdate()
     {
         _deviceBounds = MeasureDevice();
-       // SetupForDevice();
+        SetupForDevice();
         ItemUpdated?.Invoke();
     }
 
@@ -58,7 +58,7 @@ public class DeviceVisualizer : ICanvasVisualizerItem
     {
         _device.X += dx;
         _device.Y += dy;
-       // _deviceBounds = MeasureDevice();
+        // _deviceBounds = MeasureDevice();
     }
 
     public void UpdateContainerSize(float width, float height)

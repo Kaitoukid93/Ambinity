@@ -6,6 +6,8 @@ public class AppReleaseInformation
 {
     public AppReleaseInformation(string version, DateTime releaseDate)
     {
+        Version = version;
+        ReleaseDate = releaseDate;
     }
 
     public AppReleaseInformation(string version)

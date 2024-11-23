@@ -150,6 +150,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<GeneralSettingsManager>()
                 .AddSingleton<RootNavigationStores>()
                 .AddSingleton<AppSettingsViewModel>()
+                .AddSingleton<UpdateService>()
                 .AddSingleton<DeviceSettingsViewModel>()
                 .AddSingleton<DeviceSettingsDashboardViewModel>()
                 .AddSingleton<HomeViewModelFactory>()

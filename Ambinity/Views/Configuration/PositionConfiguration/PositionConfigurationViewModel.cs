@@ -27,6 +27,7 @@ public class PositionConfigurationViewModel : ViewModelBase
     public int MinimumWidth => _minimumWidth;
     private int _minimumHeight = 2;
     public int MinimumHeight => _minimumHeight;
+
     private void SetItemScale(string value)
     {
         ScaleProperty = double.Parse(value);
@@ -79,11 +80,9 @@ public class PositionConfigurationViewModel : ViewModelBase
             else
             {
                 _xProperty = value;
-                PositionAwareItem.X = (float)XProperty;
+                PositionAwareItem.SetX((float)XProperty);
                 OnPropertyChanged();
             }
-            
-            
         }
     }
 
@@ -99,10 +98,9 @@ public class PositionConfigurationViewModel : ViewModelBase
             else
             {
                 _yProperty = value;
-                PositionAwareItem.Y = (float)YProperty;
+                PositionAwareItem.SetY((float)YProperty);
                 OnPropertyChanged();
             }
-           
         }
     }
 
@@ -113,18 +111,17 @@ public class PositionConfigurationViewModel : ViewModelBase
         get => _widthProperty;
         set
         {
-            if (Double.IsNaN(value) || value<MinimumWidth)
+            if (Double.IsNaN(value) || value < MinimumWidth)
             {
                 throw new ArgumentNullException(nameof(WidthProperty), "Invalid Width");
             }
             else
             {
                 _widthProperty = value;
-                PositionAwareItem.Width = (float)WidthProperty;
+                PositionAwareItem.SetWidth((float)WidthProperty);
                 (_canvas.Canvas as Canvas).NeedsRepaint(null);
                 OnPropertyChanged();
             }
-            
         }
     }
 
@@ -135,18 +132,17 @@ public class PositionConfigurationViewModel : ViewModelBase
         get => _heightProperty;
         set
         {
-            if (Double.IsNaN(value) ||value<MinimumHeight)
+            if (Double.IsNaN(value) || value < MinimumHeight)
             {
                 throw new ArgumentNullException(nameof(HeightProperty), "Invalid Height");
             }
             else
             {
                 _heightProperty = value;
-                PositionAwareItem.Height = (float)HeightProperty;
+                PositionAwareItem.SetHeight((float)HeightProperty);
                 (_canvas.Canvas as Canvas).NeedsRepaint(null);
                 OnPropertyChanged();
             }
-           
         }
     }
 
@@ -168,8 +164,7 @@ public class PositionConfigurationViewModel : ViewModelBase
                 (_canvas.Canvas as Canvas).NeedsRepaint(null);
                 OnPropertyChanged();
             }
-            }
-         
+        }
     }
 
     private double _rotationProperty;
@@ -190,7 +185,6 @@ public class PositionConfigurationViewModel : ViewModelBase
                 (_canvas.Canvas as Canvas).NeedsRepaint(null);
                 OnPropertyChanged();
             }
-           
         }
     }
 

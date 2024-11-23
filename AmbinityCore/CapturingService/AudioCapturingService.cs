@@ -212,7 +212,7 @@ public class AudioCapturingService : ICapturingService
         //Bass.BASS_Free();
         if (_bassInitialized)
             return;
-        Bass.Configure(Configuration.UpdateThreads, false);
+         Bass.Configure(Configuration.UpdateThreads, false);
         Bass.Configure(Configuration.IncludeDefaultDevice, true);
         BassWasapi.SetNotify(_notifyProc, IntPtr.Zero);
         var result = Bass.Init(0, 44100, DeviceInitFlags.Default, IntPtr.Zero);

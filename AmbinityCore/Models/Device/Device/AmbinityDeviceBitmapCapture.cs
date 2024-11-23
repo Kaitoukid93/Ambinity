@@ -23,7 +23,7 @@ public class AmbinityDeviceBitmapCapture
     private void OnRenderingStatusChanged()
     {
         //dim led
-        _device.TransformLeds();
+       // _device.TransformLeds();
         _dimMode = _decoder.IsRendering ? DimMode.Up : DimMode.Down;
     }
 

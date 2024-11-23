@@ -104,7 +104,7 @@ public class ScreenCaptureEngine : IColorEngine
                 var rect = _zone.ZoneBound.Intersect(device.Bound);
                 if (rect == default)
                     continue;
-
+                device.TransformLeds();
                 foreach (var led in device.Leds)
                 {
                     var intersect = _zone.ZoneBound.Intersect(led.TransformedRect);

@@ -84,5 +84,9 @@ public interface IPositionAware
     void SetScale(float scale);
     Color? GetDisplayColor();
     void SetRotation(float angle);
+    void SetX(float x);
+    void SetY(float y);
+    void SetWidth(float width);
+    void SetHeight(float height);
 
 }

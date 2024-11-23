@@ -85,7 +85,8 @@
                                                              Description="Choose between dark and light mode "
                                                              IsClickEnabled="False">
                                         <ui:SettingsExpanderItem.Footer>
-                                            <ui:FAComboBox SelectedItem="{Binding CurrentAppTheme}" ItemsSource="{Binding AvailableAppThemes}" Margin="40,0">
+                                            <ui:FAComboBox SelectedItem="{Binding CurrentAppTheme}"
+                                                           ItemsSource="{Binding AvailableAppThemes}" Margin="40,0">
                                             </ui:FAComboBox>
                                         </ui:SettingsExpanderItem.Footer>
                                     </ui:SettingsExpanderItem>
@@ -106,16 +107,22 @@
                         <!-- </ui:InfoBar> -->
                         <Grid>
                             <StackPanel Spacing="2">
-                                <ui:InfoBar IsOpen="{Binding ShowPluginInfoBar,Mode=TwoWay}" Severity="Warning" Message="Restart is require for changes to take effect" Title="Settings changed">
-                                    <Button Command="{Binding RequestRestartApplicationCommand}" Margin="0,0,0,10" Content="Restart now"></Button>
+                                <ui:InfoBar IsOpen="{Binding ShowPluginInfoBar,Mode=TwoWay}" Severity="Warning"
+                                            Message="Restart is require for changes to take effect"
+                                            Title="Settings changed">
+                                    <Button Command="{Binding RequestRestartApplicationCommand}" Margin="0,0,0,10"
+                                            Content="Restart now">
+                                    </Button>
                                 </ui:InfoBar>
-                                <ui:SettingsExpander MinWidth="500" Header="Screen capture" 
+                                <ui:SettingsExpander MinWidth="500" Header="Screen capture"
                                                      Description="Enable screen capture plugin. This plugin is required for ambilight effect.">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource desktopCapture}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                        <ToggleSwitch IsChecked="{Binding GeneralSettings.EnableScreenCapture}" x:Name="ambilightEnable"></ToggleSwitch>
+                                        <ToggleSwitch IsChecked="{Binding GeneralSettings.EnableScreenCapture}"
+                                                      x:Name="ambilightEnable">
+                                        </ToggleSwitch>
                                     </ui:SettingsExpander.Footer>
                                     <ui:SettingsExpanderItem MinWidth="500" Content="Scaling factor"
                                                              IsEnabled="{Binding ElementName=ambilightEnable,Path=IsChecked}"
@@ -149,16 +156,22 @@
                                         <ui:PathIconSource Data="{DynamicResource audioCapture}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                        <ToggleSwitch IsChecked="{Binding GeneralSettings.EnableAudioCapture}" Margin="40,0" x:Name="audioEnable"></ToggleSwitch>
+                                        <ToggleSwitch IsChecked="{Binding GeneralSettings.EnableAudioCapture}"
+                                                      Margin="40,0" x:Name="audioEnable">
+                                        </ToggleSwitch>
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander MinWidth="500" Header="Hardware monitor"
                                                      Description="Enable Hardware monitor plugin. This plugin is required for adaptive fan control mode.">
                                     <ui:SettingsExpander.IconSource>
-                                        <ui:PathIconSource Data="{DynamicResource wave_signal__heart_line_beat_square_graph_stats}"></ui:PathIconSource>
+                                        <ui:PathIconSource
+                                            Data="{DynamicResource wave_signal__heart_line_beat_square_graph_stats}">
+                                        </ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                        <ToggleSwitch IsChecked="{Binding GeneralSettings.EnableHWMonitor}" Margin="40,0" x:Name="hwMonitorEnable"></ToggleSwitch>
+                                        <ToggleSwitch IsChecked="{Binding GeneralSettings.EnableHWMonitor}"
+                                                      Margin="40,0" x:Name="hwMonitorEnable">
+                                        </ToggleSwitch>
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander MinWidth="500" Header="OpenRGB"
@@ -170,12 +183,12 @@
                                         <ToggleSwitch Margin="40,0" x:Name="ORGBoutline"></ToggleSwitch>
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
-                              
+
                             </StackPanel>
                         </Grid>
                     </Grid>
                 </Grid>
-                   <Grid RowDefinitions="Auto,*">
+                <Grid RowDefinitions="Auto,*">
                     <Grid>
                         <TextBlock Classes="smallBold" Text="Rendering"></TextBlock>
                     </Grid>
@@ -187,8 +200,12 @@
                         <!-- </ui:InfoBar> -->
                         <Grid>
                             <StackPanel Spacing="2">
-                                <ui:InfoBar IsOpen="{Binding ShowRenderingInfoBar,Mode=TwoWay}" Severity="Warning" Message="Restart is require for changes to take effect" Title="Settings changed">
-                                    <Button Command="{Binding RequestRestartApplicationCommand}" Margin="0,0,0,10" Content="Restart now"></Button>
+                                <ui:InfoBar IsOpen="{Binding ShowRenderingInfoBar,Mode=TwoWay}" Severity="Warning"
+                                            Message="Restart is require for changes to take effect"
+                                            Title="Settings changed">
+                                    <Button Command="{Binding RequestRestartApplicationCommand}" Margin="0,0,0,10"
+                                            Content="Restart now">
+                                    </Button>
                                 </ui:InfoBar>
                                 <ui:SettingsExpander MinWidth="500" Header="Target frame rate"
                                                      Description="Change the frame rate that of the bitmap rendering method">
@@ -196,9 +213,10 @@
                                         <ui:PathIconSource Data="{DynamicResource flash}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                            <ui:FAComboBox ItemsSource="{Binding AvailableFrameRates}" SelectedItem="{Binding TargetFramerate}" Margin="40,0">
-                                                
-                                            </ui:FAComboBox>
+                                        <ui:FAComboBox ItemsSource="{Binding AvailableFrameRates}"
+                                                       SelectedItem="{Binding TargetFramerate}" Margin="40,0">
+
+                                        </ui:FAComboBox>
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander MinWidth="500" Header="Target bitmap size"
@@ -207,110 +225,104 @@
                                         <ui:PathIconSource Data="{DynamicResource bitmapSize}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                        <ui:FAComboBox ItemsSource="{Binding AvailableBitmapSize}" SelectedItem="{Binding TargetBitmapSize}" Margin="40,0">
-                                            
+                                        <ui:FAComboBox ItemsSource="{Binding AvailableBitmapSize}"
+                                                       SelectedItem="{Binding TargetBitmapSize}" Margin="40,0">
+
                                         </ui:FAComboBox>
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
-                                </StackPanel>
-                            </Grid>
+                            </StackPanel>
                         </Grid>
-                     </Grid>
-                 <Grid RowDefinitions="Auto,*">
+                    </Grid>
+                </Grid>
+                <Grid RowDefinitions="Auto,*">
                     <Grid>
                         <TextBlock Classes="smallBold" Text="Update"></TextBlock>
                     </Grid>
                     <Grid Margin="0,10,0,0" Row="1">
-                        <!-- <ui:InfoBar Severity="Error" Title="Warning" IsOpen="True" -->
-                        <!--             IsIconVisible="True" -->
-                        <!--             IsClosable="False" -->
-                        <!--             Message="Hardware settings for this device is not available at the moment"> -->
-                        <!-- </ui:InfoBar> -->
-                        <Grid>
-                            <StackPanel Spacing="2">
-                                 <Grid Margin="0,10,0,0" Row="1">
-            <StackPanel Spacing="2">
-                <Grid Margin="0,10,0,20" ColumnDefinitions="Auto,10,*, Auto">
-                    <Image Width="50" Source="/Assets/Images/uptodate.png"></Image>
-                    <Grid Column="2">
-                        <StackPanel Margin="10,0" Spacing="2">
-                            <TextBlock FontSize="18" FontWeight="SemiBold" Text="You're up to date"></TextBlock>
-                            <Grid>
-                                <TextBlock  Classes="smallSecondary"
-                                           Text="Last checked: 12:33">
-                                </TextBlock>
-                            </Grid>
-                            <ProgressBar IsIndeterminate="True" IsVisible="False"></ProgressBar>
-                        </StackPanel>
+                        <StackPanel Spacing="2">
+                            <Grid Margin="0,10,0,0">
+                                <!-- <Image Width="50" Source="/Assets/Images/uptodate.png"></Image> -->
+                                <!-- <Grid Column="2"> -->
+                                <!--     <StackPanel Margin="10,0" Spacing="10"> -->
+                                <!--         <TextBlock FontSize="18" FontWeight="SemiBold" Text="{Binding CurrentReleaseInformation.Version}"></TextBlock> -->
+                                <!--         <Grid> -->
+                                <!--             <StackPanel Orientation="Horizontal" Spacing="2"> -->
+                                <!--                 <TextBlock  Classes="smallSecondary" -->
+                                <!--                             Text="Last checked: "> -->
+                                <!--                 </TextBlock> -->
+                                <!--                 <TextBlock  Classes="smallSecondary" -->
+                                <!--                             Text="{Binding CurrentReleaseInformation.ReleaseDate}"> -->
+                                <!--                 </TextBlock> -->
+                                <!--             </StackPanel> -->
+                                <!--             -->
+                                <!--         </Grid> -->
+                                <!--         <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsCheckingForUpdate}"></ProgressBar> -->
+                                <!--     </StackPanel> -->
+                                <!-- -->
+                                <!-- </Grid> -->
+                                <!-- <Grid Column="3"> -->
+                                <!--     <Button IsEnabled="True" -->
+                                <!--             Command="{Binding CheckForAppUpdateCommand}" -->
+                                <!--             Content="Check for update" Classes="accent"> -->
+                                <!--     </Button> -->
+                                <!-- </Grid> -->
+                                <ui:SettingsExpander MinWidth="500"
+                                                     Header="{Binding CurrentReleaseInformation.Version}"
+                                                     Description="{Binding CurrentReleaseInformation.ReleaseDate}">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource app_update}"></ui:PathIconSource>
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <StackPanel Margin="40,0" Orientation="Horizontal" Spacing="10">
+                                            <ui:ProgressRing IsIndeterminate="True"
+                                                             IsVisible="{Binding IsCheckingForUpdate}"
+                                                             Width="32" Height="32">
+                                            </ui:ProgressRing>
+                                            <Button IsEnabled="True"
+                                                    Command="{Binding CheckForAppUpdateCommand}"
+                                                    Content="Check for updates">
+                                            </Button>
+                                        </StackPanel>
 
-                    </Grid>
-                    <Grid Column="3">
-                        <Button IsEnabled="True"
-                                Content="Check for update" Classes="accent">
-                        </Button>
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                            </Grid>
+
+                            <ui:InfoBar Title="Update available" Severity="Success"
+                                        IsOpen="{Binding UpdateAvailable}" IsIconVisible="True"
+                                        IsClosable="False"
+                                        Message="{Binding UpdateInformation.Version}">
+                                <ui:InfoBar.IconSource>
+                                    <ui:PathIconSource
+                                        Foreground="{DynamicResource AccentButtonBackground}"
+                                        Data="{DynamicResource Import}">
+                                    </ui:PathIconSource>
+                                </ui:InfoBar.IconSource>
+                                <Grid>
+                                    <StackPanel Spacing="10" Orientation="Horizontal">
+                                        <Button Command="{Binding InstallUpdateCommand}"
+                                                Margin="0,0,0,20"
+                                                Content="Install now">
+                                        </Button>
+                                        <ProgressBar IsVisible="{Binding IsUpdating}"
+                                                     IsIndeterminate="False"
+                                                     Value="{Binding CurrentUpdateProgress}"
+                                                     Margin="0,0,0,20">
+                                        </ProgressBar>
+                                        <TextBlock VerticalAlignment="Center"
+                                                   IsVisible="{Binding IsUpdating}"
+                                                   Text="{Binding CurrentUpdatingStatus}" Margin="0,0,0,20">
+                                        </TextBlock>
+                                    </StackPanel>
+
+                                </Grid>
+                            </ui:InfoBar>
+                            
+                        </StackPanel>
                     </Grid>
                 </Grid>
 
-                <!-- <ui:SettingsExpander MinWidth="500" Margin="0,2" Grid.Row="1" Header="Current Firmware" -->
-                <!--                      Description="Current version of the firmware" -->
-                <!--                      IsClickEnabled="False"> -->
-                <!--     <ui:SettingsExpander.IconSource> -->
-                <!--         <ui:PathIconSource Data="{DynamicResource update}"></ui:PathIconSource> -->
-                <!--     </ui:SettingsExpander.IconSource> -->
-                <!--     <ui:SettingsExpander.Footer> -->
-                <!--         <Button Command="{Binding CheckForUpdateCommand}" Content="Check for update"></Button> -->
-                <!--     </ui:SettingsExpander.Footer> -->
-                <!-- </ui:SettingsExpander> -->
-                <ui:InfoBar Title="Update available" Severity="Success"
-                            IsOpen="True" IsIconVisible="True" IsClosable="False"
-                            Message="6.0.1">
-                    <ui:InfoBar.IconSource>
-                        <ui:PathIconSource Foreground="{DynamicResource AccentButtonBackground}"
-                                           Data="{DynamicResource Import}">
-                        </ui:PathIconSource>
-                    </ui:InfoBar.IconSource>
-                    <Grid>
-                        <Button 
-                                Margin="0,0,0,20"
-                                Content="Download and install">
-                        </Button>
-                    </Grid>
-                </ui:InfoBar>
-                <!-- <ui:InfoBar Foreground="Orange" Title="Warning" IsOpen="True" -->
-                <!--             IsIconVisible="True" -->
-                <!--             IsClosable="True" -->
-                <!--             Message="Upgrade custom firmware could brick your device, use at your own risk !!!"> -->
-                <!--     <ui:InfoBar.IconSource> -->
-                <!--         <ui:PathIconSource Data="{DynamicResource warning_Fill}"></ui:PathIconSource> -->
-                <!--     </ui:InfoBar.IconSource> -->
-                <!--     <ui:InfoBar.Background> -->
-                <!--         <SolidColorBrush Color="Orange" Opacity="0.1"></SolidColorBrush> -->
-                <!--     </ui:InfoBar.Background> -->
-                <!-- </ui:InfoBar> -->
-                <ui:SettingsExpander x:Name="Expander"  Tag="{Binding}"
-                                     MinWidth="500" Margin="0,2" Grid.Row="1" Header="Version history"
-                                     Description="You can roll back to previous version by selecting and install one of the version below">
-                    <ui:SettingsExpander.IconSource>
-                        <ui:PathIconSource Data="{DynamicResource history}"></ui:PathIconSource>
-                    </ui:SettingsExpander.IconSource>
-                    <!-- <ui:SettingsExpander.ItemTemplate> -->
-                    <!--     <DataTemplate> -->
-                    <!--         <ui:SettingsExpanderItem Content="{Binding Version}" -->
-                    <!--                                  Description="{Binding ReleaseDate}"> -->
-                    <!--             <ui:SettingsExpanderItem.Footer> -->
-                    <!--                 <Button -->
-                    <!--                     CommandParameter="{Binding }" Content="Download and install" /> -->
-                    <!--             </ui:SettingsExpanderItem.Footer> -->
-                    <!--         </ui:SettingsExpanderItem> -->
-                    <!--     </DataTemplate> -->
-                    <!-- </ui:SettingsExpander.ItemTemplate> -->
-                </ui:SettingsExpander>
-            </StackPanel>
-        </Grid>
-                                </StackPanel>
-                            </Grid>
-                        </Grid>
-                     </Grid>
             </StackPanel>
         </Grid>
     </ScrollViewer>

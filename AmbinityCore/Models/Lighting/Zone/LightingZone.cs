@@ -51,6 +51,30 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
         // throw new NotImplementedException();
     }
 
+    public void SetX(float x)
+    {
+        if (X != x)
+            X = x;
+    }
+
+    public void SetY(float y)
+    {
+        if (Y != y)
+            Y = y;
+    }
+
+    public void SetWidth(float width)
+    {
+        if (Width != width)
+            Width = width;
+    }
+
+    public void SetHeight(float height)
+    {
+        if (Height != height)
+            Height = height;
+    }
+
     #region Canvas Corordinate Properties
 
     private bool _isRendering;

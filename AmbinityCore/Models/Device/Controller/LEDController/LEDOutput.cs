@@ -7,7 +7,7 @@ public class LEDOutput : ObservableObject
 {
     public event Action<LEDOutput> OutputDisabled;
     public event Action<LEDOutput> OutputEnabled;
-    public event Action<LEDOutput> DevicesUpdated;
+    public event Action<string,AmbinityDevice> DevicesUpdated;
 
     public LEDOutput(int maxLed, int index, AmbinityDevice device)
     {
@@ -50,7 +50,7 @@ public class LEDOutput : ObservableObject
     public void AddDeviceToOutputChain(AmbinityDevice device)
     {
         Devices.Add(device);
-        DevicesUpdated?.Invoke(this);
+        DevicesUpdated?.Invoke("Add",device);
     }
 
     public void RemoveDeviceFromOutputChain(AmbinityDevice device)
@@ -58,7 +58,7 @@ public class LEDOutput : ObservableObject
         if (Devices.Contains(device))
         {
             Devices.Remove(device);
-            DevicesUpdated?.Invoke(this);
+            DevicesUpdated?.Invoke("Remove",device);
         }
     }
 
