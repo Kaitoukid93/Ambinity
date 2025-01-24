@@ -6,14 +6,6 @@
              xmlns:local="clr-namespace:Ambinity.Views.Screens.Home"
              x:DataType="local:HomeViewModel"
              x:Class="Ambinity.Views.Screens.Home.HomeView">
-    <UserControl.Styles>
-        <Style Selector=":is(Grid).downloadZone">
-            <Setter Property="IsVisible" Value="False" />
-        </Style>
-        <Style Selector="Button#itemButton:pointerover :is(Grid).downloadZone">
-            <Setter Property="IsVisible" Value="True" />
-        </Style>
-    </UserControl.Styles>
     <Grid Margin="5,0,20,20" RowDefinitions="auto,5,*">
         <TextBlock Margin="5,0,0,10" Text="Home" FontSize="25" FontWeight="SemiBold"></TextBlock>
         <StackPanel Grid.Row="2" Spacing="30">

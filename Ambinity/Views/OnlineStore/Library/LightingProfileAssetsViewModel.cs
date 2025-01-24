@@ -22,9 +22,11 @@ public class LightingProfileAssetsViewModel : AssetsViewModelBase
         await UpdateAssets("Online",true);
     }
 
-    public void FilterItem(string[] filters)
+    public async Task FilterItem(string[] filters)
     {
+        //await UpdateAssets("Online",true);
         DisplayAssets?.Clear();
+        SearchContent = null;
         foreach (var item in AvailableAssets)
         {
             if (item is OnlineItemAssetViewModel onlineAsset)

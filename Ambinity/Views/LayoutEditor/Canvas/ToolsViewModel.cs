@@ -34,7 +34,8 @@ public class ToolsViewModel : ViewModelBase
     public event Action OpenFlyoutEvent;
     public event Action CloseFlyoutEvent;
 
-    public ToolsViewModel(GeneralSettingsManager settingsManager,LightingZoneRepository lightingZoneRepository, LightingProfileDecoder decoder,LightingZonesLibraryViewModel lightingZonesLibraryViewModel)
+    public ToolsViewModel(GeneralSettingsManager settingsManager, LightingZoneRepository lightingZoneRepository,
+        LightingProfileDecoder decoder, LightingZonesLibraryViewModel lightingZonesLibraryViewModel)
     {
         _lightingZonesLibraryViewModel = lightingZonesLibraryViewModel;
         ZoneTools = new ObservableCollection<IToolbarItem>();
@@ -50,6 +51,7 @@ public class ToolsViewModel : ViewModelBase
     private FlyoutButtonToolbarItem _addColorZoneTools;
     private FlyoutButtonToolbarItem _addAmbilightZoneTools;
     private FlyoutButtonToolbarItem _addAnimationZoneTools;
+
     private void OnRenderingStatusChanged()
     {
         ZoneToolsCommandCanExecute = !_decoder.IsRendering;
@@ -59,7 +61,6 @@ public class ToolsViewModel : ViewModelBase
         AddAnimationZoneCommand.NotifyCanExecuteChanged();
         AddColorZoneCommand.NotifyCanExecuteChanged();
         ShowLibraryCommand.NotifyCanExecuteChanged();
-
     }
 
     private bool _showLockSymbol;
@@ -73,6 +74,7 @@ public class ToolsViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
     public bool ZoneToolsCommandCanExecute { get; set; }
     public ObservableCollection<IToolbarItem> ZoneTools { get; set; }
     public ObservableCollection<IToolbarItem> CanvasTools { get; set; }
@@ -92,10 +94,10 @@ public class ToolsViewModel : ViewModelBase
     {
         FitCanvasToViewCommand = new RelayCommand(FitCanvasToView);
         ToggleSnapToGridCommand = new RelayCommand(ToggleSnapToGrid);
-        AddAnimationZoneCommand = new RelayCommand(AddAnimationZone,()=>ZoneToolsCommandCanExecute);
-        AddAmbilightZoneCommand = new RelayCommand(AddAmbilightZone,()=>ZoneToolsCommandCanExecute);
-        ShowLibraryCommand = new AsyncRelayCommand(ShowLibrary,()=>ZoneToolsCommandCanExecute);
-        AddColorZoneCommand = new RelayCommand(AddColorZone,()=>ZoneToolsCommandCanExecute);
+        AddAnimationZoneCommand = new RelayCommand(AddAnimationZone, () => ZoneToolsCommandCanExecute);
+        AddAmbilightZoneCommand = new RelayCommand(AddAmbilightZone, () => ZoneToolsCommandCanExecute);
+        ShowLibraryCommand = new AsyncRelayCommand(ShowLibrary, () => ZoneToolsCommandCanExecute);
+        AddColorZoneCommand = new RelayCommand(AddColorZone, () => ZoneToolsCommandCanExecute);
         TogglePlayPauseCommand = new RelayCommand(TogglePlayPause);
         ShowDiagCommand = new RelayCommand(ToggleShowDiag);
     }
@@ -107,11 +109,13 @@ public class ToolsViewModel : ViewModelBase
 
     private void TogglePlayPause()
     {
-        _decoder.Toggle(_currentProfile.ID);
+        if (_currentProfile != null)
+            _decoder.Toggle(_currentProfile.ID);
     }
 
     public LibraryViewModelBase CurrentFlyoutViewModel { get; set; }
     private LightingZonesLibraryViewModel _lightingZonesLibraryViewModel;
+
     private async Task ShowLibrary()
     {
         CurrentFlyoutViewModel = _lightingZonesLibraryViewModel;
@@ -119,11 +123,13 @@ public class ToolsViewModel : ViewModelBase
         CurrentFlyoutViewModel?.Init();
         OpenFlyoutEvent?.Invoke();
     }
+
     public void OnFlyoutClosing()
     {
         CurrentFlyoutViewModel.Dispose();
         CurrentFlyoutViewModel = null;
     }
+
     private void OnLightingZoneAssetSelected(AssetItemViewModelBase item)
     {
         AddAsset(item.Item as LightingZone);
@@ -136,7 +142,7 @@ public class ToolsViewModel : ViewModelBase
 
     private void AddAmbilightZone()
     {
-        var zone = _lightingZoneRepository.GetDefaultAmbilightZone("new zone", 100, 100, 100, 100,0);
+        var zone = _lightingZoneRepository.GetDefaultAmbilightZone("new zone", 100, 100, 100, 100, 0);
         zone.Shape = ZoneShapeEnum.Rectangle;
         var figure = zone.GetContainer();
         figure.SetChild(zone);
@@ -155,7 +161,7 @@ public class ToolsViewModel : ViewModelBase
     /// <summary>
     /// init startup tools
     /// </summary>
-    public void InitForProfileEditor( LightingProfile profile)
+    public void InitForProfileEditor(LightingProfile profile)
     {
         _currentProfile = profile;
         Brightness = _currentProfile.Brightness;
@@ -165,8 +171,10 @@ public class ToolsViewModel : ViewModelBase
         var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
         snapToGridTools.Command = ToggleSnapToGridCommand;
-        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas", new SolidColorBrush(Colors.White), FitCanvasToViewCommand);
-        var showDiagTool = new ToggleToolbarItem("Info", "Show stats","wave_signal__heart_line_beat_square_graph_stats");
+        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",
+            new SolidColorBrush(Colors.White), FitCanvasToViewCommand);
+        var showDiagTool =
+            new ToggleToolbarItem("Info", "Show stats", "wave_signal__heart_line_beat_square_graph_stats");
         showDiagTool.IsChecked = _showDiag;
         showDiagTool.Command = ShowDiagCommand;
         var separator = new SeparatorToolbarItem();
@@ -184,12 +192,15 @@ public class ToolsViewModel : ViewModelBase
 
     public void InitForDeviceLayout()
     {
+        _currentProfile = _decoder.CurrentPlayingProfile;
+        Brightness = _currentProfile.Brightness;
         ZoneTools.Clear();
         CanvasTools.Clear();
         var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
         snapToGridTools.Command = ToggleSnapToGridCommand;
-        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",new SolidColorBrush(Colors.White),  FitCanvasToViewCommand);
+        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",
+            new SolidColorBrush(Colors.White), FitCanvasToViewCommand);
         CanvasTools.Add(snapToGridTools);
         CanvasTools.Add(centerCanvasTool);
         OnRenderingStatusChanged();
@@ -197,25 +208,33 @@ public class ToolsViewModel : ViewModelBase
 
     private void AddPolyline(FlyoutItem obj)
     {
-       InstallPolylineTool?.Invoke(new PolylineTool());
+        InstallPolylineTool?.Invoke(new PolylineTool());
     }
 
     private ButtonToolbarItem AddAmbilightZoneTool()
     {
-        return new ButtonToolbarItem("Ambilight", "Add Ambilight Zone", "expand__big_bigger_design_expand_larger_resize_size_square",new SolidColorBrush(Color.Parse("#d769ff")), AddAmbilightZoneCommand);
+        return new ButtonToolbarItem("Ambilight", "Add Ambilight Zone",
+            "expand__big_bigger_design_expand_larger_resize_size_square", new SolidColorBrush(Color.Parse("#d769ff")),
+            AddAmbilightZoneCommand);
     }
+
     private ButtonToolbarItem ShowLibraryTool()
     {
-        return new ButtonToolbarItem( "Show Library", "Show Zone Library", "collection", new SolidColorBrush(Colors.White), ShowLibraryCommand);
+        return new ButtonToolbarItem("Show Library", "Show Zone Library", "collection",
+            new SolidColorBrush(Colors.White), ShowLibraryCommand);
     }
+
     private ButtonToolbarItem AddAnimationZoneTool()
     {
-        return new ButtonToolbarItem("Animation", "Add Animation Zone" ,"LightingConfiguration_Animation", new SolidColorBrush(Color.Parse("#ffb033")), AddAnimationZoneCommand);
+        return new ButtonToolbarItem("Animation", "Add Animation Zone", "LightingConfiguration_Animation",
+            new SolidColorBrush(Color.Parse("#ffb033")), AddAnimationZoneCommand);
     }
+
     private FlyoutButtonToolbarItem AddColorZoneTool()
     {
-        
-        var addZonetools = new FlyoutButtonToolbarItem("Add", "Add new color zone", "paint_bucket__bucket_color_colors_design_paint_painting",new SolidColorBrush(Color.Parse("#33bbff")) , AddColorZoneCommand);
+        var addZonetools = new FlyoutButtonToolbarItem("Add", "Add new color zone",
+            "paint_bucket__bucket_color_colors_design_paint_painting", new SolidColorBrush(Color.Parse("#33bbff")),
+            AddColorZoneCommand);
         FlyoutItem addRectangle = new FlyoutItem("Rectangle", "CanvasTool_Rectangle");
         addRectangle.FlyoutItemSelected += AddRectangle;
         FlyoutItem addEllipse = new FlyoutItem("Ellipse", "CanvasTool_Ellipse");
@@ -227,6 +246,7 @@ public class ToolsViewModel : ViewModelBase
         addZonetools.FlyoutItems.Add(addPolyline);
         return addZonetools;
     }
+
     private void AddEllipse(FlyoutItem obj)
     {
         var zone = _lightingZoneRepository.GetDefaultSolidColorZone("new zone", 100, 100, 100, 100, Colors.Aqua);
@@ -286,6 +306,7 @@ public class ToolsViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
     public RelayCommand FitCanvasToViewCommand { get; set; }
     public RelayCommand ToggleSnapToGridCommand { get; set; }
     public RelayCommand AddAmbilightZoneCommand { get; set; }

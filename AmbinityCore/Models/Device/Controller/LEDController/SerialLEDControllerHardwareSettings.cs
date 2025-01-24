@@ -56,7 +56,7 @@ public class SerialLEDControllerHardwareSettings : ObservableObject, ILEDControl
     private HardwareTypeEnum _hardwareType = HardwareTypeEnum.Unknown;
 
     /// <summary>
-    /// Hardware type translate from device name
+    /// Hardware type inherit from parent controller
     /// </summary>
     public HardwareTypeEnum HardwareType
     {

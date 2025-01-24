@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.CodeDom;
 using System.Diagnostics;
 using AmbinityCore.Enums;
 using AmbinityCore.Helpers;
@@ -28,14 +29,70 @@ public class OpenRGBStream : IDataStream
     private CancellationTokenSource _cancellationTokenSource;
 
     private Thread _workerThread;
+    private bool _isInitializing;
 
     public void Init()
     {
+        if (_isInitializing)
+            return;
+        _isInitializing = true;
         ID = Controller.SerialNumber;
         Port = Controller.SerialPort;
         Controller.WorkingStateEnum = ControllerWorkingStateEnum.Normal;
         // _hasPWMCOntroller = Controller.FanController != null;
         Start();
+        _isInitializing = false;
+    }
+
+    private double _dimFactor;
+
+    private enum DimMode
+    {
+        Up,
+        Down
+    };
+
+    private DimMode _dimMode;
+
+    private void DimLED()
+    {
+        if (_dimMode == DimMode.Down)
+        {
+            if (_dimFactor >= 0.01)
+                _dimFactor -= 0.01;
+            if (_dimFactor < 0.01)
+                _dimFactor = 0;
+            // if (_dimFactor < 0.1)
+            //  _dimMode = DimMode.Up;
+        }
+        else if (_dimMode == DimMode.Up)
+        {
+            if (_dimFactor <= 0.99)
+                _dimFactor += 0.01;
+            //_dimMode = DimMode.Down;
+        }
+    }
+
+    private void DeviceStateChanged()
+    {
+        if (Controller.WorkingStateEnum == ControllerWorkingStateEnum.Normal)
+        {
+            _dimMode = DimMode.Up;
+            _dimFactor = 0.00;
+        }
+        else if (Controller.WorkingStateEnum == ControllerWorkingStateEnum.Off)
+        {
+            _dimMode = DimMode.Down;
+            _dimFactor = 1.00;
+        }
+    }
+
+    /// <summary>
+    /// Refresh incase of index change
+    /// </summary>
+    public void Refresh()
+    {
+        GetDeviceIndex();
     }
 
     private void GetDeviceIndex()
@@ -70,7 +127,9 @@ public class OpenRGBStream : IDataStream
             ledCount += device.Leds.Count;
         }
 
+        double brightnessCap = output.Brightness / 255d;
         outputStream = new Color[ledCount];
+        DimLED();
         int counter = 0;
         foreach (var device in devices)
         {
@@ -91,7 +150,9 @@ public class OpenRGBStream : IDataStream
                             out byte FinalR, out byte FinalG, out byte FinalB);
                         ReOrderSpotColor(rgbOrder, FinalR, FinalG, FinalB, out byte r, out byte g, out byte b);
                         //get data
-                        outputStream[counter++] = new Color(led.LED.Red, led.LED.Green, led.LED.Blue);
+                        outputStream[counter++] = new Color((byte)(led.LED.Red * _dimFactor * brightnessCap),
+                            (byte)(led.LED.Green * _dimFactor * brightnessCap),
+                            (byte)(led.LED.Blue * _dimFactor * brightnessCap));
                     }
                 }
             }
@@ -152,9 +213,11 @@ public class OpenRGBStream : IDataStream
 
     public void Start()
     {
+        if (IsRunning)
+            return;
         if (!Controller.AutoConnect)
             return;
-        Log.Information("Start called for SerialStream");
+        Log.Information("Start called for OpenRGBStream");
         if (!_client.IsInitialized)
             return;
         GetDeviceIndex();
@@ -170,6 +233,7 @@ public class OpenRGBStream : IDataStream
         _cancellationTokenSource = new CancellationTokenSource();
         _workerThread.Start(_cancellationTokenSource.Token);
         Controller.EnableTransfer();
+        Controller.TurnOn();
     }
 
     private void DoWork(object tokenObject)
@@ -191,7 +255,7 @@ public class OpenRGBStream : IDataStream
 
                 lock (_client.Lock)
                 {
-                    if (_client.IsInitialized)
+                    if (_client.IsInitialized && _isDeviceValid)
                         _client.OpenRGBClient.UpdateLeds(_deviceIndex, outputColor.Take(ledCount).ToArray());
                 }
 
@@ -209,7 +273,16 @@ public class OpenRGBStream : IDataStream
 
     public async Task Stop()
     {
-        //throw new NotImplementedException();
+        if (!IsRunning)
+            return;
+        Controller.TurnOff();
+        //wait for led to fully turn off
+        await Task.Run(() => Task.Delay(1000));
+        Controller.DisableTransfer();
+        Log.Information("Stop called for OpenRGB Stream");
+        if (_workerThread == null) return;
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource = null;
     }
 
     public bool IsValid()

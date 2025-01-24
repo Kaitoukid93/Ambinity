@@ -29,7 +29,7 @@
         <entry key="Ambinity/ControlTheme/SmallIconSettingsExpander.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/ControlTheme/StriplessListbox.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/ControlTheme/StriplessTextBox.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
-        <entry key="Ambinity/ControlTheme/TransparrentSettingsExpander.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/ControlTheme/TransparrentSettingsExpander.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/QuickAccess/Controls/CustomToggleSplitButton.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/QuickAccess/DevicesPageView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/QuickAccess/LightingProfileFlyoutItemView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
@@ -48,10 +48,10 @@
         <entry key="Ambinity/Styles/Border.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Styles/BrokenState.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styles/Button.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
-        <entry key="Ambinity/Styles/ColorPickerButton.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Styles/ColorPickerButton.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Styles/SettingsExpander.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Styles/SettingsExpanderItemStyles.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
-        <entry key="Ambinity/Styles/TexBlock.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Styles/TexBlock.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Styles/TextBox.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Styling/ControlsGalleryStyles.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Styling/Resources.axaml" value="Ambinity/Ambinity.csproj" />
@@ -99,7 +99,7 @@
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/PaletteSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SaturationParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/BlackBarDetectionParameterView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
-        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/ScreenCaptureRegionSelectionView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/ScreenCaptureRegionSelectionView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenCapture/ScreenRegionSelectionParameterView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/ScreenRegionSelectionParameterView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Configuration/ColorConfiguration/Parameters/SelfGeneratedColor/BreathingColorConfigurationView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
@@ -129,7 +129,7 @@
         <entry key="Ambinity/Views/DeviceControl/DeviceControlView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Draw2DCanvas/Draw2DCanvasInfoBarView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Draw2DCanvas/Draw2DCanvasView.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Views/Generic.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Generic.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/GeometryCollection.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/GeometryCollection/CoolIconsCollection.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/GeometryCollection/GeometryCollection.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
@@ -139,6 +139,8 @@
         <entry key="Ambinity/Views/LayoutEditor/Canvas/LayoutCanvasView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/Canvas/ToolsView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/DevicePropertiesView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/Views/LayoutEditor/LEDLayoutEditor/ColorTestingView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/Views/LayoutEditor/LEDLayoutEditor/LEDLayoutEditorView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/LayerView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/LayersView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/LayoutEditor/LayoutCanvasView.axaml" value="Ambinity/Ambinity.csproj" />
@@ -157,7 +159,7 @@
         <entry key="Ambinity/Views/LayoutEditor/ToolsView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/MainWindow.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/NonClientArea/NonClientAreaContent.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Views/NonClientArea/NonClientAreaContentView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/NonClientArea/NonClientAreaContentView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/NonClientAreaContent/NonClientAreaContent.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Notification/NotificationInforBarView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/OnlineStore/Library/LightingProfileAssetsView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
@@ -193,7 +195,7 @@
         <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceHardwareFanView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceHardwareLightingView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DevicePortConfigurationView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
-        <entry key="Ambinity/Views/Screens/DeviceSettings/DevicePortListView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Screens/DeviceSettings/DevicePortListView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DevicePortMapView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceSettingsDashboardView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Screens/DeviceSettings/DeviceSettingsView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
@@ -228,10 +230,10 @@
         <entry key="Ambinity/Views/SideMenu/SideMenuProfilePlayerView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/SideMenu/SideMenuProfileView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/SideMenu/SideMenuScreenVIew.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Views/SideMenu/SideMenuScreenView.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Views/SideMenu/SideMenuView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/SideMenu/SideMenuScreenView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/Views/SideMenu/SideMenuView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/SplashScreen/SplashScreenView.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Views/SplashScreen/SplashView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/SplashScreen/SplashView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/SystemTrayContextMenu/SystemTrayContextMenuView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/UserControls/SimpleColorPicker.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Window1.axaml" value="Ambinity/Ambinity.csproj" />

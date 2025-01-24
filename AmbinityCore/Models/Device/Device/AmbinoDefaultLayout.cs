@@ -21,6 +21,13 @@ public static class AmbinoDefaultLayout
                 return DefaultAmbinoHUBV3Zone();
             case HardwareTypeEnum.AmbinoHUBV2:
                 return DefaultAmbinoHUBV3Zone();
+            case HardwareTypeEnum.Motherboard:
+                return DefaultMotherboardZone();
+            case HardwareTypeEnum.Dram:
+                return DefaultDramZone();
+            case HardwareTypeEnum.Mouse:
+                return DefaultMouseZone();
+                
             default: return new List<Point>() { new Point(0, 0) };
         }
     }
@@ -66,6 +73,34 @@ public static class AmbinoDefaultLayout
         points.Add(output4);
         points.Add(output5);
         points.Add(output6);
+        return points;
+    }
+    public static List<Point> DefaultMotherboardZone()
+    {
+        var points = new List<Point>();
+        var output0 = new Point(34, 406);
+        points.Add(output0);
+        return points;
+    }
+    public static List<Point> DefaultMouseZone()
+    {
+        var points = new List<Point>();
+        var output0 = new Point(282, 316);
+        points.Add(output0);
+        return points;
+    }
+    public static List<Point> DefaultKeyboardZone()
+    {
+        var points = new List<Point>();
+        var output0 = new Point(34, 406);
+        points.Add(output0);
+        return points;
+    }
+    public static List<Point> DefaultDramZone()
+    {
+        var points = new List<Point>();
+        var output0 = new Point(358, 233);
+        points.Add(output0);
         return points;
     }
     public static List<Point> DefaultAmbinoBasicZone()

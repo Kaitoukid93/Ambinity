@@ -6,8 +6,17 @@
              xmlns:local="clr-namespace:Ambinity.Views.AmbinityStore"
              xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia"
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:gif="clr-namespace:Avalonia.Gif;assembly=Avalonia.Gif"
              x:DataType="local:AmbinityStoreDetailViewModel"
              x:Class="Ambinity.Views.AmbinityStore.AmbinityStoreDetailView">
+    <UserControl.Styles>
+        <Style Selector=":is(Grid).gifImage">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Button#playButton:pointerover :is(Grid).gifImage">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </UserControl.Styles>
     <Border Padding="0">
         <StackPanel Spacing="10">
             <Border Margin="10"  Padding="0">
@@ -136,19 +145,24 @@
 
                 <StackPanel Margin="10,0" Spacing="10">
                     <TextBlock Text="{Binding Item.OnlineItemData.Description}"></TextBlock>
-                    <Separator Height="1" HorizontalAlignment="Stretch" ></Separator>
-                    <TextBlock FontWeight="SemiBold" FontSize="15" Text="Screenshots"></TextBlock>
-                    <Border BorderBrush="{DynamicResource ButtonBorderBrush}" Height="400" CornerRadius="5"
+                    <Separator IsVisible="{Binding AvailableScreenshots.Count}" Height="1" HorizontalAlignment="Stretch" ></Separator>
+                    <TextBlock IsVisible="{Binding AvailableScreenshots.Count}" FontWeight="SemiBold" FontSize="15" Text="Screenshots"></TextBlock>
+                    <Border IsVisible="{Binding AvailableScreenshots.Count}" BorderBrush="{DynamicResource ButtonBorderBrush}" Height="400" CornerRadius="5"
                             BorderThickness="1">
                         <Grid>
                             <Border ClipToBounds="True" CornerRadius="2" Margin="5">
-                                <Image Stretch="UniformToFill"
-                                       RenderOptions.BitmapInterpolationMode="HighQuality">
-                                </Image>
+                                <Grid>
+                                    <Image IsVisible="{Binding !CurrentScreenshot.IsAnimated}" Stretch="Uniform" Source="{Binding CurrentScreenshot.Image}"
+                                           RenderOptions.BitmapInterpolationMode="HighQuality">
+                                    </Image>
+                                    <gif:GifImage IsVisible="{Binding CurrentScreenshot.IsAnimated}" Stretch="Uniform" SourceStream="{Binding CurrentScreenshot.AnimatedStream}"></gif:GifImage>
+                                </Grid>
+                             
+                                
                             </Border>
 
                             <Button Padding="0" Margin="5" BorderThickness="1" Background="Transparent"
-                                    HorizontalAlignment="Left" Height="30" Width="30" CornerRadius="15">
+                                    HorizontalAlignment="Left" Command="{Binding PrevImageCommand}" Height="30" Width="30" CornerRadius="15">
                                 <Border BorderThickness="1"
                                         BorderBrush="{DynamicResource ButtonBorderBrush}"
                                         Width="30" Height="30" CornerRadius="15" Margin="0" Padding="0"
@@ -159,7 +173,7 @@
                                 </Border>
 
                             </Button>
-                            <Button Padding="0" Margin="5" BorderThickness="1" Background="Transparent"
+                            <Button Command="{Binding NextImageCommand}" Padding="0" Margin="5" BorderThickness="1" Background="Transparent"
                                     HorizontalAlignment="Right" Height="30" Width="30" CornerRadius="15">
                                 <Border BorderThickness="1"
                                         BorderBrush="{DynamicResource ButtonBorderBrush}"
@@ -173,20 +187,24 @@
                             </Button>
                         </Grid>
                     </Border>
-                    <ItemsControl HorizontalAlignment="Center">
+                    <ItemsControl ItemsSource="{Binding AvailableScreenshots}" HorizontalAlignment="Center">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Spacing="5" Orientation="Horizontal"></StackPanel>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
-                        <ItemsControl.Items>
-                            <PathIcon VerticalAlignment="Center" Width="7" Data="{DynamicResource dot}"></PathIcon>
-                            <PathIcon VerticalAlignment="Center" Width="10"
-                                      Data="{DynamicResource selectedDot}">
-                            </PathIcon>
-                            <PathIcon VerticalAlignment="Center" Width="7" Data="{DynamicResource dot}"></PathIcon>
-                            <PathIcon Width="7" Data="{DynamicResource dot}"></PathIcon>
-                        </ItemsControl.Items>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <PathIcon IsVisible="{Binding !IsSelected}" VerticalAlignment="Center" Width="7" Data="{DynamicResource dot}"></PathIcon>
+                                    <PathIcon IsVisible="{Binding IsSelected}" VerticalAlignment="Center" Width="10"
+                                              Data="{DynamicResource selectedDot}">
+                                    </PathIcon>
+                                    
+                                </Grid>
+                               
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
                     </ItemsControl>
                     <Separator Height="1" HorizontalAlignment="Stretch" ></Separator>
                     <StackPanel Spacing="15">

@@ -8,8 +8,6 @@
         xmlns:local="clr-namespace:Ambinity.Views.AmbinityStore"
         xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia"
         ExtendClientAreaToDecorationsHint="True"
-        Background="Transparent"
-        TransparencyLevelHint="Mica"
         RequestedThemeVariant="Dark"
         CanResize="False"
         x:DataType="local:AmbinityStoreItemExportViewModel"

@@ -2,10 +2,13 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Ambinity.Services;
 using Ambinity.ViewModels;
+using Ambinity.Views.LayoutEditor.LEDLayoutEditor;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Device;
 using AmbinityServer.OnlineItem;
+using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 
@@ -14,9 +17,10 @@ namespace Ambinity.Views.Screens.DeviceSettings;
 public class AmbinityDeviceDetailViewModel : ViewModelBase
 {
     private readonly ThumbnailService _thumbnailService;
-
-    public AmbinityDeviceDetailViewModel(AmbinityDevice device, ThumbnailService thumbnailService)
+    public AmbinityDevice Device => _device;
+    public AmbinityDeviceDetailViewModel(AmbinityDevice device, ThumbnailService thumbnailService,IWindowService windowService)
     {
+        _windowService = windowService;
         _thumbnailService = thumbnailService;
         _device = device;
         _device.DeviceUpdate += OnDeviceUpdated;
@@ -25,12 +29,22 @@ public class AmbinityDeviceDetailViewModel : ViewModelBase
         Description = _device.DeviceDescription;
         LEDsCount = "LEDs count: " + _device.Leds.Count.ToString();
         FilePath = "Path: " + _device.Layout.FilePath;
-        if (_layout.LayoutType == DeviceLayoutType.FanLED|| _layout.LayoutType == DeviceLayoutType.ScreenBackLight)
+        // if (_layout.LayoutType == DeviceLayoutType.FanLED|| _layout.LayoutType == DeviceLayoutType.ScreenBackLight)
             ShowOptions = true;
-        else
-        {
-            ShowOptions = false;
-        }
+        // else
+        // {
+        //     ShowOptions = false;
+        // }
+
+        OpenLEDOrderEditWindowCommand = new RelayCommand(OpenLEDOrderEditWindow);
+    }
+
+    private void OpenLEDOrderEditWindow()
+    {
+        _ledLayoutEditorViewModel = new LEDLayoutEditorViewModel(_device,_windowService);
+       
+        var ledLayoutWindow = _windowService.ShowWindow(_ledLayoutEditorViewModel);
+        _ledLayoutEditorViewModel.SetWindow(ledLayoutWindow);
     }
 
     private void OnDeviceUpdated()
@@ -86,6 +100,11 @@ public class AmbinityDeviceDetailViewModel : ViewModelBase
 
     public string Description { get; set; }
     private bool _isMultipleItemsSelected;
+    private readonly IWindowService _windowService;
+  
+    private  LEDLayoutEditorViewModel _ledLayoutEditorViewModel;
+   
+    
 
     public bool IsMultipleItemsSelected
     {
@@ -99,4 +118,5 @@ public class AmbinityDeviceDetailViewModel : ViewModelBase
 
     public string LEDsCount { get; set; }
     public string FilePath { get; set; }
+    public ICommand OpenLEDOrderEditWindowCommand { get; }
 }

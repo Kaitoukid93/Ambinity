@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Ambinity.Views.LayoutEditor.LEDLayoutEditor.ColorTestingView"
+        xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor.LEDLayoutEditor"
+        x:DataType="local:ColorTestingViewModel"
+        ExtendClientAreaToDecorationsHint="True"
+        RequestedThemeVariant="Dark"
+        ExtendClientAreaChromeHints="NoChrome"
+        Width="800"
+        SizeToContent="Height"
+        MinHeight="200"
+        WindowStartupLocation="CenterScreen"
+        Padding="20"
+        Title="Color testing">
+    <Grid>
+        <Viewbox>
+            <ItemsControl ItemsSource="{Binding LEDs}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Width="{Binding Device.Width}" Height="{Binding Device.Height}">
+                        </Canvas>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Styles>
+                    <Style Selector="ContentPresenter" x:DataType="local:AmbinityLEDViewModel">
+                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                    </Style>
+                </ItemsControl.Styles>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Path Fill="{Binding AvaloniaColor }"
+                                  ToolTip.Tip="{Binding Index}"
+                                  Data="{Binding Geometry}"
+                                  Width="{Binding Width}" Height="{Binding Height}">
+                            </Path>
+                            <Viewbox IsHitTestVisible="False" IsVisible="{Binding IsIndexVisible}" Width="{Binding Width}" Height="{Binding Height}">
+                                <TextBlock Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Index}"></TextBlock>
+                            </Viewbox>
+                        </Grid>
+                            
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Viewbox>
+    </Grid>
+   
+</Window>

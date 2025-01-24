@@ -88,7 +88,16 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
         _shouldShowImage = true;
         _capturingService.RegisterUse();
         if (_captureZone != null)
-            _screenCapture?.UnregisterCaptureZone(_captureZone);
+        {
+            try
+            {
+                _screenCapture?.UnregisterCaptureZone(_captureZone);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToString());
+            }
+        }
         try
         {
             var left = _config.ScreenCaptureArea.RatioX * _screenCapture.Display.Width;
@@ -211,7 +220,17 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
         //base.Dispose();
         _shouldShowImage = false;
         if (_captureZone != null)
-            _screenCapture?.UnregisterCaptureZone(_captureZone);
+        {
+            try
+            {
+                _screenCapture?.UnregisterCaptureZone(_captureZone);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToString());
+            }
+        }
+            
         _capturingService.FrameUpdated -= OnFrameUpdate;
         _capturingService.UnregisterUse();
     }

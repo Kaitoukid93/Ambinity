@@ -22,7 +22,7 @@ public class ProfileStoreViewModel : ViewModelBase
         _detailViewModel = detailViewModel;
         _storeNavigation = storeNavigation;
         _libraryViewModel = profileLibraryViewModel;
-        _libraryViewModel.ItemSelected += OnStoreItemSelected;
+        
         NonClientAreaContent = nonClientAreaContentViewModel;
         //init categories
         var colorPaletteProfilesCategory = new ProfileStoreSideMenuItemViewModel()
@@ -77,6 +77,7 @@ public class ProfileStoreViewModel : ViewModelBase
         }
     }
 
+
     public ProfileStoreNonClientAreaContentViewModel NonClientAreaContent { get; set; }
 
     public List<ProfileStoreSideMenuItemViewModel> SideMenuItems { get; set; }
@@ -92,9 +93,13 @@ public class ProfileStoreViewModel : ViewModelBase
         set
         {
             _selectedFilter = value;
-            (_libraryViewModel.AssetsViewModel as LightingProfileAssetsViewModel).FilterItem(_selectedFilter.Filter);
-            if (_storeNavigation.CurrentViewModel != _libraryViewModel)
+            if (_selectedFilter != null)
+            {
+                (_libraryViewModel.AssetsViewModel as LightingProfileAssetsViewModel)
+                    .FilterItem(_selectedFilter.Filter);
                 _storeNavigation.CurrentViewModel = _libraryViewModel;
+            }
+
             OnPropertyChanged();
         }
     }
@@ -103,12 +108,19 @@ public class ProfileStoreViewModel : ViewModelBase
 
     public async Task Init(AssetItemViewModelBase item = null)
     {
+        SelectedFilter = null;
         await _libraryViewModel.Init();
+        _libraryViewModel.ItemSelected += OnStoreItemSelected;
         if (item != null)
         {
             OnStoreItemSelected(item);
         }
         else
             SelectedFilter = SideMenuItems.First();
+    }
+
+    public override void Dispose()
+    {
+        _libraryViewModel?.Dispose();
     }
 }

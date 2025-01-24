@@ -99,22 +99,26 @@ public class ScreenCaptureEngine : IColorEngine
     {
         lock (renderingLock)
         {
-            foreach (var device in _deviceRepository.Devices)
+            lock (_deviceRepository.Lock)
             {
-                var rect = _zone.ZoneBound.Intersect(device.Bound);
-                if (rect == default)
-                    continue;
-                device.TransformLeds();
-                foreach (var led in device.Leds)
+                foreach (var device in _deviceRepository.Devices)
                 {
-                    var intersect = _zone.ZoneBound.Intersect(led.TransformedRect);
-                    if (intersect != led.TransformedRect)
+                    var rect = _zone.ZoneBound.Intersect(device.Bound);
+                    if (rect == default)
                         continue;
-                    var translatedRect =
-                        RectCalculation.TranslateRect(led.TransformedRect, _zone.Bound, _captureZoneRect);
-                    _ledRects.Add(new CaptureRect(led.TransformedRect, translatedRect));
+                    device.TransformLeds();
+                    foreach (var led in device.Leds)
+                    {
+                        var intersect = _zone.ZoneBound.Intersect(led.TransformedRect);
+                        if (intersect != led.TransformedRect)
+                            continue;
+                        var translatedRect =
+                            RectCalculation.TranslateRect(led.TransformedRect, _zone.Bound, _captureZoneRect);
+                        _ledRects.Add(new CaptureRect(led.TransformedRect, translatedRect));
+                    }
                 }
             }
+         
         }
     }
 

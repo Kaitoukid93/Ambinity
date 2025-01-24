@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Draw2D.Core;
+using DynamicData;
 
 namespace Ambinity.Views.Screens.DeviceSettings;
 
@@ -107,6 +108,11 @@ public class DevicePortConfigurationViewModel : ViewModelBase
             newGroup.Children.Add(geometry);
         }
 
+        if (newGroup.Children.Count == 0)
+        {
+            newGroup.Children.Add(
+                new RectangleGeometry(new Rect(0, 0, _controller.PhysicalWidth, _controller.PhysicalHeight)));
+        }
         var controllerRect =
             new RectangleGeometry(new Rect(0, 0, _controller.PhysicalWidth, _controller.PhysicalHeight));
         var geo = new CombinedGeometry(GeometryCombineMode.Exclude, controllerRect, newGroup);

@@ -49,10 +49,26 @@ internal class WindowService : IWindowService
         Window window = (Window)Activator.CreateInstance(type)!;
         window.DataContext = viewModel;
         window.Show();
-
+      
         return window;
     }
 
+    public async Task<Window> ShowDialogWindow(object viewModel,Window owner)
+    {
+        string name = viewModel.GetType().FullName!.Split('`')[0].Replace("ViewModel", "View");
+        Type? type = viewModel.GetType().Assembly.GetType(name);
+
+        if (type == null)
+            throw new Exception($"Failed to find a window named {name}.");
+
+        if (!type.IsAssignableTo(typeof(Window)))
+            throw new Exception($"Type {name} is not a window.");
+
+        Window window = (Window)Activator.CreateInstance(type)!;
+        window.DataContext = viewModel;
+        window.ShowDialog(owner);
+        return window;
+    }
     public Window ShowWindow(object viewModel, int screen)
     {
         string name = viewModel.GetType().FullName!.Split('`')[0].Replace("ViewModel", "View");

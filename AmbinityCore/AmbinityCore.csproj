@@ -53,6 +53,7 @@
     <ItemGroup>
         <ProjectReference Include="..\AmbinityServer\AmbinityServer.csproj" />
         <ProjectReference Include="..\Draw2D.Core\Draw2D.Core.csproj"/>
+        <ProjectReference Include="..\OpenRGB.NET\OpenRGB.NET.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -7,6 +7,11 @@ public enum HardwareTypeEnum
     AmbinoFanHub,
     AmbinoHUBV3,
     AmbinoHUBV2,
-    
+    Dram,
+    Motherboard,
+    Gpu,
+    Mouse,
+    Keyboard,
+    Speaker,
     Unknown,
 }

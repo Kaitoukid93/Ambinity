@@ -23,12 +23,11 @@ public class OpenRGBControllerDiscoveryService
     public OpenRGBControllerDiscoveryService(AmbinityOpenRGBClient client)
     {
         _client = client;
+        _client.DeviceListUpdated += UpdateDeviceList;
     }
 
-    private async Task UpdateDeviceList()
+    private async void UpdateDeviceList()
     {
-        //update device list here
-        await _client.Init();
         var devices = _client.OpenRGBClient.GetAllControllerData();
         foreach (var device in devices)
         {
@@ -37,7 +36,7 @@ public class OpenRGBControllerDiscoveryService
             controller.SerialPort = device.Location.ToValidFileName();
             controller.SerialNumber = device.Serial;
             controller.MaxLEDSupport = device.Leds.Length;
-            //controller.HardwareType = device.Type;
+            controller.HardwareType = GetNativeHardwareType(device);
             while (_onHold)
             {
                 await Task.Delay(100);
@@ -66,8 +65,31 @@ public class OpenRGBControllerDiscoveryService
 
     public async Task Start()
     {
-        await UpdateDeviceList();
+        await _client.Init();
+        UpdateDeviceList();
     }
-
-  
+/// <summary>
+/// Convert OpenRGB Hardware to native Ambinity hardware
+/// </summary>
+/// <param name="device"></param>
+/// <returns></returns>
+    private HardwareTypeEnum GetNativeHardwareType(global::OpenRGB.NET.Device device)
+    {
+        switch (device.Type)
+        {
+            case DeviceType.Dram:
+                return HardwareTypeEnum.Dram;
+            case DeviceType.Motherboard:
+                return HardwareTypeEnum.Motherboard;
+            case DeviceType.Gpu:
+                return HardwareTypeEnum.Gpu;
+            case DeviceType.Mouse:
+                return HardwareTypeEnum.Mouse;
+            case DeviceType.Keyboard:
+                return HardwareTypeEnum.Keyboard;
+            case DeviceType.Speaker:
+                return HardwareTypeEnum.Speaker;
+            default: return HardwareTypeEnum.Unknown;
+        }
+    }
 }

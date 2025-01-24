@@ -171,21 +171,25 @@ public class SelfGeneratedColorEngine : IColorEngine
 
             _ledRects = new List<Rect>();
             //get all led inside zone
-            foreach (var device in _deviceRepository.Devices)
+            lock (_deviceRepository.Lock)
             {
-               
-                var rect = _zone.ZoneBound.Intersect(device.Bound);
-                if (rect == default)
-                    continue;
-                device.TransformLeds();
-                foreach (var led in device.Leds)
+                foreach (var device in _deviceRepository.Devices)
                 {
-                    var intersect = _zone.ZoneBound.Intersect(led.TransformedRect);
-                    if (intersect == default)
+               
+                    var rect = _zone.ZoneBound.Intersect(device.Bound);
+                    if (rect == default)
                         continue;
-                    _ledRects.Add(led.TransformedRect);
+                    device.TransformLeds();
+                    foreach (var led in device.Leds)
+                    {
+                        var intersect = _zone.ZoneBound.Intersect(led.TransformedRect);
+                        if (intersect == default)
+                            continue;
+                        _ledRects.Add(led.TransformedRect);
+                    }
                 }
             }
+          
 
             _lineList = GetPixels(_colorApperance);
             if (_isReverse)

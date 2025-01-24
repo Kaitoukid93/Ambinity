@@ -39,6 +39,14 @@
                                     </PathIcon>
                                 </Grid>
                             </HyperlinkButton>
+                            <HyperlinkButton ToolTip.Tip="Update device setup and image from server" Height="25" Padding="5,2,5,0">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock FontSize="13" Text="Update Device Setup"></TextBlock>
+                                    <PathIcon Margin="5,0,0,1" Grid.Column="1" Height="15" Width="15"
+                                              Data="{DynamicResource update_server}">
+                                    </PathIcon>
+                                </Grid>
+                            </HyperlinkButton>
                         </StackPanel>
                     </Grid>
                 </Grid>

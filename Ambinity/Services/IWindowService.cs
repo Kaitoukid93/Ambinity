@@ -25,6 +25,7 @@ public interface IWindowService
     /// <returns></returns>
     Window ShowWindow(object viewModel, int monitor);
 
+    Task<Window> ShowDialogWindow(object viewModel, Window owner);
     /// <summary>
     /// Show a window from specific location and size with a given ViewModel
     /// </summary>

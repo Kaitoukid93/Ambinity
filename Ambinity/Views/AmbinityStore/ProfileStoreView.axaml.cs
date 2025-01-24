@@ -7,7 +7,7 @@ using FluentAvalonia.UI.Navigation;
 
 namespace Ambinity.Views.AmbinityStore;
 
-public partial class ProfileStoreView : Window
+public partial class ProfileStoreView : UserControl
 {
     private AmbinityStoreNavigation _storeNavigation;
     public ProfileStoreView()
@@ -27,7 +27,7 @@ public partial class ProfileStoreView : Window
 
     private void OnFrameNavigated(object sender, NavigationEventArgs e)
     {
-        throw new System.NotImplementedException();
+       // throw new System.NotImplementedException();
     }
 
     private void FrameNavigate(ViewModelBase vm)

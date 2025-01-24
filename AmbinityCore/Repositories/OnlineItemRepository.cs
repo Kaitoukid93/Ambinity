@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using adrilight_shared.Models.Store;
 using AmbinityCore.Extension;
 using AmbinityCore.Models.Collection;
@@ -15,11 +16,12 @@ namespace AmbinityCore.Repositories;
 public abstract class OnlineItemRepository : ObservableObject
 {
     public event EventHandler? ServerConnectFailedEvent;
+    private int _currentDisplayItemsCount;
 
     public OnlineItemRepository(AmbinityClient client)
     {
         _client = client;
-        Items = new List<OnlineItem>();
+        Items = new ObservableCollection<OnlineItem>();
         Filters = new List<string>();
     }
 
@@ -34,7 +36,7 @@ public abstract class OnlineItemRepository : ObservableObject
     /// <summary>
     /// Available items loaded from server
     /// </summary>
-    public List<OnlineItem> Items { get; set; }
+    public ObservableCollection<OnlineItem> Items { get; set; }
 
     /// <summary>
     /// Name of the repository
@@ -48,6 +50,7 @@ public abstract class OnlineItemRepository : ObservableObject
     {
         //check server connection
         Items?.Clear();
+        _currentDisplayItemsCount = 0;
         var result = await _client.Init();
         if (!result)
         {
@@ -57,16 +60,16 @@ public abstract class OnlineItemRepository : ObservableObject
         }
 
         if (ResourceAddress != null)
-            await UpdateCollection();
+        {
+            LoadAvailableAssets();
+        }
+
+        await UpdateCollection("");
     }
 
-    /// <summary>
-    /// Update available items from resource address
-    /// this is made virtual because not all item are legacy,
-    /// so we override when needed
-    /// </summary>
-    private async Task UpdateCollection()
+    private async Task LoadAvailableAssets()
     {
+        AvailableAssetsPaths?.Clear();
         var itemsFolder = await _client.SftpServer.GetAllFilesAddressInFolder(ResourceAddress);
         if (itemsFolder == null)
         {
@@ -74,12 +77,83 @@ public abstract class OnlineItemRepository : ObservableObject
             return;
         }
 
-        Log.Information("Updating collection: " + ResourceAddress);
-        foreach (var url in itemsFolder)
+        foreach (var folder in itemsFolder)
         {
-            //get name
-            if (!_client.SftpServer.IsFolder(url))
+            if (!_client.SftpServer.IsFolder(folder))
                 continue;
+            AvailableAssetsPaths.Add(folder);
+        }
+
+        await GetFilters();
+        Log.Information("Collection updated: Items count = " + AvailableAssetsPaths.Count);
+    }
+
+    private List<string> AvailableAssetsPaths { get; set; } = [];
+
+    private string _currentFilter = "";
+    // public async Task UpdateCollection()
+    // {
+    //     if (_currentDisplayItemsCount == AvailableAssetsPaths.Count-1)
+    //         return;
+    //     Log.Information("Updating collection: " + ResourceAddress);
+    //     foreach (var url in AvailableAssetsPaths.Take(new Range(_currentDisplayItemsCount,
+    //                  _currentDisplayItemsCount + 10)))
+    //     {
+    //         var infoPath = url + "/info.json";
+    //         var contentPath = url + "/content/";
+    //         var item = _client.SftpServer.GetFiles<OnlineItem>(infoPath).Result;
+    //         item.Path = url;
+    //         //var item = Convert(info);
+    //         item.ThumbnailPath = url + "/thumb.png";
+    //         item.LastUpdate = _client.SftpServer.GetFileAttributes(infoPath).LastWriteTime.ToString("MMMM dd, yyyy");
+    //         try
+    //         {
+    //             var contents = await _client.SftpServer.GetAllFilesAddressInFolder(contentPath);
+    //             long fileSize = 0;
+    //             foreach (var file in contents)
+    //             {
+    //                 fileSize += _client.SftpServer.GetFileAttributes(file).Size;
+    //             }
+    //
+    //             item.FileSize = fileSize.ToSize(FileExtension.SizeUnits.KB) + " KB";
+    //         }
+    //         catch (Exception e)
+    //         {
+    //             Log.Warning("No content found");
+    //         }
+    //
+    //         AddItem(item);
+    //         _currentDisplayItemsCount ++;
+    //     }
+    //
+    //     
+    // }
+
+    public async Task UpdateCollection(string filter)
+    {
+        //clear collection each time user search
+        if (_currentFilter != filter)
+        {
+            _currentFilter = filter;
+            _currentDisplayItemsCount = 0;
+            Items?.Clear();
+        }
+        var filteredFolder = new List<string>();
+        if (_currentFilter != null && _currentFilter != string.Empty)
+        {
+            Log.Information("Updating collection: " + _currentFilter);
+            filteredFolder = AvailableAssetsPaths
+                .Where(i => i.ToLower().Contains(_currentFilter))
+                .ToList();
+        }
+        else
+        {
+            filteredFolder = AvailableAssetsPaths;
+        }
+
+        foreach (var url in filteredFolder.Take(new Range(_currentDisplayItemsCount,
+                     _currentDisplayItemsCount + 10)))
+        {
             var infoPath = url + "/info.json";
             var contentPath = url + "/content/";
             var item = _client.SftpServer.GetFiles<OnlineItem>(infoPath).Result;
@@ -100,15 +174,12 @@ public abstract class OnlineItemRepository : ObservableObject
             }
             catch (Exception e)
             {
-               Log.Warning("No content found");
-                
+                Log.Warning("No content found");
             }
 
             AddItem(item);
+            _currentDisplayItemsCount++;
         }
-
-        await GetFilters();
-        Log.Information("Collection updated: Items count = " + itemsFolder.Count);
     }
 
     private async Task GetFilters()

@@ -17,6 +17,8 @@ public class DeviceLayoutAssetsViewModel : AssetsViewModelBase
 
         _windowService = windowService;
     }
+    
+
     public override async Task Init(CollectableItemRepository localRepo, OnlineItemRepository onlineRepo)
     {
         await base.Init(localRepo, onlineRepo);

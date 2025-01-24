@@ -99,13 +99,9 @@ public class PortDetailViewModel : ViewModelBase
         if (item is AmbinityDeviceLayoutAssetViewModel layoutAsset)
         {
             var layout = layoutAsset.Item as AmbinityDeviceLayout;
-            foreach (var port in _selectedPorts)
-            {
-                foreach (var device in port.Output.Devices)
-                {
-                    device.LoadLayout(layout);
-                }
-            }
+
+            _selectedDaisyChainElement.Device.LoadLayout(layout);
+
         }
 
         //apply layout
@@ -139,8 +135,10 @@ public class PortDetailViewModel : ViewModelBase
         LoadDevices();
     }
 
+    
     private void LoadDevices()
     {
+        Dispose();
         if (_selectedPorts.Count != 1)
             return;
 
@@ -148,10 +146,12 @@ public class PortDetailViewModel : ViewModelBase
         for (int i = 0; i < _selectedPorts[0].Output.Devices.Count; i++)
         {
             var deviceElement =
-                _deviceViewModelFactory.GetDeviceDaisyChainElementViewModel(_selectedPorts[0].Output.Devices[i]);
+                _deviceViewModelFactory.GetDeviceDaisyChainElementViewModel(_selectedPorts[0].Output.Devices[i],_selectedPorts[0],i);
             deviceElement.Selected += OnDeviceSelected;
             deviceElement.Detach += OnDeviceDetach;
             deviceElement.ChangeDevice += OnChangeDeviceRequest;
+            // deviceElement.MoveDownRequested += OnElementMoveDownRequest;
+            // deviceElement.MoveUpRequested += OnElementMoveUpRequest;
             Devices.Add(deviceElement);
             if (i < _selectedPorts[0].Output.Devices.Count - 1)
             {
@@ -159,6 +159,18 @@ public class PortDetailViewModel : ViewModelBase
             }
         }
     }
+
+    // private void OnElementMoveUpRequest(AmbinityDeviceDaisyChainElementViewModel element)
+    // {
+    //     var currentIndex = Devices.IndexOf(element);
+    //     Devices.Insert(currentIndex-2,element);
+    // }
+    //
+    // private void OnElementMoveDownRequest(AmbinityDeviceDaisyChainElementViewModel element)
+    // {
+    //     var currentIndex = Devices.IndexOf(element);
+    //     Devices.Insert(currentIndex+1,element);
+    // }
 
     private void OnDeviceDetach(AmbinityDeviceDaisyChainElementViewModel device)
     {
@@ -170,12 +182,14 @@ public class PortDetailViewModel : ViewModelBase
         {
             selectedPort.Output.RemoveDeviceFromOutputChain(device.Device);
         }
-
+        
         LoadDevices();
     }
 
+    private AmbinityDeviceDaisyChainElementViewModel _selectedDaisyChainElement;
     private void OnChangeDeviceRequest(AmbinityDeviceDaisyChainElementViewModel obj)
     {
+        _selectedDaisyChainElement = obj;
         _layoutsLibraryViewModel?.Init();
         _layoutsLibraryViewModel.ItemSelected += OnLibraryItemSelected;
         OpenFlyout(_layoutsLibraryViewModel);
@@ -257,9 +271,21 @@ public class PortDetailViewModel : ViewModelBase
         }
     }
 
-
+    
     public override void Dispose()
     {
         _layoutsLibraryViewModel.ItemSelected -= OnLibraryItemSelected;
+        if(Devices.Count ==0|| Devices ==null)
+            return;
+        foreach (var device in Devices)
+        {
+            if (device is AmbinityDeviceDaisyChainElementViewModel deviceElement)
+            {
+                deviceElement.Selected += OnDeviceSelected;
+                deviceElement.Detach += OnDeviceDetach;
+                deviceElement.ChangeDevice += OnChangeDeviceRequest;
+            }
+            
+        }
     }
 }

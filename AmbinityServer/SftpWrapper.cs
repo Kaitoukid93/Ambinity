@@ -16,7 +16,9 @@ public class SftpWrapper
     private const string host = @"103.148.57.184";
     private CancellationTokenSource _cancellationTokenSource;
     public SftpClient sFTP { get; set; }
-
+    private static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings() { 
+        TypeNameHandling = TypeNameHandling.None
+    };
     public SftpWrapper(string userName, string password)
     {
         developer_User_Login_Name = userName;
@@ -78,7 +80,8 @@ public class SftpWrapper
         try
         {
             var files = sFTP.ListDirectory(folderPath);
-
+            if (files == null && !files.Any())
+                return null;
             foreach (var file in files.Where(i => i.Name != "." && i.Name != ".."))
             {
                 listFilesAddress.Add(folderPath + "/" + file.Name);
@@ -119,7 +122,7 @@ public class SftpWrapper
         try
         {
             var files = sFTP.ListDirectory(folderPath);
-
+            
             var file = files.Where(i => i.Name.Contains(fileName)).FirstOrDefault();
 
             return await Task.FromResult(file);
@@ -185,6 +188,10 @@ public class SftpWrapper
     public bool IsExist(string path)
     {
         return sFTP.Exists(path);
+    }
+    public async Task DownloadFile(string path, Stream output)
+    {
+          sFTP.DownloadFile(path,output);
     }
     /// <summary>
     /// download with internal progress
@@ -295,7 +302,7 @@ public class SftpWrapper
             {
                 var textReader = new System.IO.StreamReader(remoteFileStream);
                 string s = textReader.ReadToEnd();
-                file = JsonConvert.DeserializeObject<T>(s);
+                file = JsonConvert.DeserializeObject<T>(s,jsonSerializerSettings);
             }
 
             return await Task.FromResult(file);

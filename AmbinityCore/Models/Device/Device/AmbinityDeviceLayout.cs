@@ -33,6 +33,8 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
         LoadLayout();
     }
 
+    //if this is null, index will be applied from layout
+    public int[] CustomIndex { get; set; }
     public string Description { get; set; }
     public string FilePath { get; }
     [JsonIgnore] public List<AmbinityLEDLayout> Leds { get; }
@@ -100,22 +102,41 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
         if (Leds.Count <= 0)
             return;
         var usableLeds = new List<AmbinityLED>();
+        int ledCount = 0;
         foreach (var ledLayout in Leds)
         {
             var led = device.Leds.Where(l => l.Index == ledLayout.Index).FirstOrDefault();
             //add led if missing
             if (led == null)
             {
+                int index = 0;
+                if (CustomIndex != null)
+                {
+                    if (CustomIndex.Length > ledCount)
+                    {
+                        index = CustomIndex[ledCount];
+                    }
+                    else
+                    {
+                        //set this led to first led since customIndex is not set
+                        index = 0;
+                    }
+                }
+                else
+                {
+                    index = ledLayout.Index;
+                }
+
                 var missingLED = new AmbinityLED(new ArgbLed(), device,
                     ledLayout.X,
                     ledLayout.Y,
                     ledLayout.Width,
                     ledLayout.Height,
-                    ledLayout.Index,
+                    index,
                     true,
                     ledLayout.Geometry);
-                device.Leds.Add(missingLED);
                 usableLeds.Add(missingLED);
+                ledCount++;
                 continue;
             }
 
@@ -123,10 +144,12 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
             led.RelativeY = ledLayout.Y;
             led.Width = ledLayout.Width;
             led.Height = ledLayout.Height;
-            led.Index = ledLayout.Index;
+
+
             led.Geometry = ledLayout.Geometry;
 
             usableLeds.Add(led);
+            
         }
 
         device.Leds.Clear();

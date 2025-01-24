@@ -17,8 +17,10 @@ public class AmbinityOpenRGBClient
     private bool _isInitialize;
     public event Action DeviceListUpdated;
     public object Lock { get; } = new object();
-    public AmbinityOpenRGBClient()
+
+    public AmbinityOpenRGBClient(OpenRGBService service)
     {
+        _openRGBService = service;
         _retryPolicy = Policy
             .Handle<Exception>()
             .WaitAndRetryAsync(10, _ => TimeSpan.FromSeconds(5));
@@ -31,6 +33,7 @@ public class AmbinityOpenRGBClient
     }
 
     private bool _isInitializing;
+    private readonly OpenRGBService _openRGBService;
 
     public bool IsInitializing
     {
@@ -42,7 +45,6 @@ public class AmbinityOpenRGBClient
     {
         //this client is being hold by another process
         if (IsInitializing) return;
-
         //turn on this flag to preven multiple thread access
         IsInitializing = true;
 
@@ -52,14 +54,16 @@ public class AmbinityOpenRGBClient
             //check if OpenRGB process is alive
             if (!isRunning("OpenRGB"))
             {
-                // LaunchOpenRGBProcess();
+                //start openRGB process
+                _openRGBService.StartOpenRGBProcess();
+                //wait for openRGB to start
                 await Task.Delay(5000);
             }
 
             try
             {
                 await _retryPolicy.ExecuteAsync(async () => await Connect());
-                OnDeviceListUpdated(this, EventArgs.Empty);
+                //OnDeviceListUpdated(this, EventArgs.Empty);
                 IsInitialized = true;
                 IsInitializing = false;
             }
@@ -93,19 +97,50 @@ public class AmbinityOpenRGBClient
         if (_client != null)
         {
             _client.Dispose();
-            _client.DeviceListUpdated -= OnDeviceListUpdated;
+            _client.DeviceListUpdated -= OnDeviceListUpdatedFromServer;
         }
 
         _client = new OpenRgbClient(name: "Ambinity", timeoutMs: 1000, autoConnect: false);
-        _client.DeviceListUpdated += OnDeviceListUpdated;
-        _client.Connect();
+        _client.DeviceListUpdated += OnDeviceListUpdatedFromServer;
+        try
+        {
+            _client.Connect();
+        }
+        catch (Exception e)
+        {
+            Log.Error(e.ToString());
+            throw;
+        }
     }
 
-    private void OnDeviceListUpdated(object? sender, EventArgs e)
+    private int _eventCounter;
+    private bool _isUpdatingDeviceList;
+
+    private async void OnDeviceListUpdate()
     {
+        if (_isUpdatingDeviceList)
+        {
+            Log.Information("Race condition: " + (_eventCounter));
+            return;
+        }
+
+        _isUpdatingDeviceList = true;
+        Log.Information("Event count: " + _eventCounter);
+        var counter = _eventCounter;
+        await Task.Run(() => Task.Delay(2000));
+        //could be user change, process event
+        Log.Information("Updating device list... ");
+        _eventCounter = 0;
         DeviceListUpdated?.Invoke();
+        _isUpdatingDeviceList = false;
     }
-    
+
+    private void OnDeviceListUpdatedFromServer(object? sender, EventArgs e)
+    {
+        _eventCounter++;
+        OnDeviceListUpdate();
+    }
+
     private static bool isRunning(string name)
     {
         try

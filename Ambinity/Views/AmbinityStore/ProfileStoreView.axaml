@@ -1,27 +1,20 @@
-<Window xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="800"
-        Width="900"
-        Height="800"
         xmlns:local="clr-namespace:Ambinity.Views.AmbinityStore"
         xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
         xmlns:ambinity="clr-namespace:Ambinity"
         x:DataType="local:ProfileStoreViewModel"
-        ExtendClientAreaToDecorationsHint="True"
         Background="Transparent"
-        TransparencyLevelHint="Mica"
-        RequestedThemeVariant="Dark"
-        CanResize="False"
-        Title="Profile gallery"
         x:Class="Ambinity.Views.AmbinityStore.ProfileStoreView">
-    <Window.Styles>
-        <Style Selector="Window[WindowState=Maximized]">
-            <Setter Property="Padding" Value="8" />
-        </Style>
-    </Window.Styles>
-    <Window.Resources>
+    <!-- <Window.Styles> -->
+    <!--     <Style Selector="Window[WindowState=Maximized]"> -->
+    <!--         <Setter Property="Padding" Value="8" /> -->
+    <!--     </Style> -->
+    <!-- </Window.Styles> -->
+    <UserControl.Resources>
         <ControlTheme TargetType="ListBoxItem" x:Key="_sideMenuListBoxItem">
             <Setter Property="FontFamily" Value="{DynamicResource ContentControlThemeFontFamily}" />
             <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
@@ -149,11 +142,12 @@
                 </Style>
             </Style>
         </ControlTheme>
-    </Window.Resources>
-    <Grid RowDefinitions="Auto,*">
-        <Grid Row="0">
+    </UserControl.Resources>
+    <Grid Margin="5,0,20,20" RowDefinitions="auto,5,Auto,*">
+        <TextBlock Margin="5,0,0,10" Text="Ambinity store" FontSize="25" FontWeight="SemiBold"></TextBlock>
+        <Grid HorizontalAlignment="Right" Row="0">
             <Grid Margin="7,7,7,7" ColumnDefinitions="Auto,8,*">
-                <Button VerticalAlignment="Top" HorizontalAlignment="Left" Classes="icon-button" Padding="0"
+                <Button VerticalAlignment="Top" HorizontalAlignment="Right" Classes="icon-button" Padding="0"
                         Height="30" Width="30"
                         Command="{Binding #StoreNavigationFrame.GoBack}"
                         IsVisible="{Binding #StoreNavigationFrame.CanGoBack}">
@@ -163,7 +157,7 @@
             </Grid>
 
         </Grid>
-        <Grid Row="1" ColumnDefinitions="Auto,*">
+        <Grid Row="3" ColumnDefinitions="Auto,*">
             <Grid Column="0">
                 <ListBox Margin="5" Padding="0" HorizontalAlignment="Center" SelectedItem="{Binding SelectedFilter}"
                          ItemContainerTheme="{DynamicResource _sideMenuListBoxItem}"
@@ -186,4 +180,4 @@
         </Grid>
 
     </Grid>
-</Window>
+</UserControl>

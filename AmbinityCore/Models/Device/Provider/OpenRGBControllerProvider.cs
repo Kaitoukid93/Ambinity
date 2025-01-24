@@ -1,7 +1,10 @@
+using System.IO.Compression;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Device.Service;
 using AmbinityCore.Repositories;
+using AmbinityServer;
 using OpenRGB.NET;
+using Serilog;
 
 namespace AmbinityCore.Models.Device.Provider;
 
@@ -12,8 +15,9 @@ public class OpenRGBControllerProvider
     public event Action<OpenRGBController> NewDeviceFound;
 
     public OpenRGBControllerProvider(OpenRGBControllerDiscoveryService discoveryService,
-        AmbinityDeviceLayoutRepository layoutRepository)
+        AmbinityDeviceLayoutRepository layoutRepository, AmbinityClient client)
     {
+        _client = client;
         _discoveryService = discoveryService;
         _discoveryService.NewDevicesFound += OnNewDevicesFound;
         _layoutRepository = layoutRepository;
@@ -33,14 +37,15 @@ public class OpenRGBControllerProvider
     /// Build fully functional controller from core
     /// </summary>
     /// <returns></returns>
-    private void  BuildController(OpenRGBController controller)
+    private async Task BuildController(OpenRGBController controller)
     {
         var ledController = new LEDController();
         controller.DashboardHeight = 270;
         controller.DashboardWidth = 230;
+        //create a blank device first to make sure it's working, device setup and thumbnail will be later download from server
         ledController.Outputs.Add(new LEDOutput(controller.MaxLEDSupport, 0,
             new AmbinityDevice(_layoutRepository.GetLayout(controller.Name, controller.MaxLEDSupport), 0.4f)));
-        ledController.PopulateDefaultLayout();
+        ledController.HardwareSettings.HardwareType = controller.HardwareType;
         controller.LedController = ledController;
         controller.RegisterLEDController();
         controller.RegisterFanController();
@@ -60,4 +65,5 @@ public class OpenRGBControllerProvider
     }
 
     private bool _isBusy;
+    private readonly AmbinityClient _client;
 }

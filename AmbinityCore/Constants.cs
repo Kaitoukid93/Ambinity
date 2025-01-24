@@ -27,6 +27,7 @@ public static class Constants
     public static readonly string ApplicationFolder = Path.GetDirectoryName(typeof(Constants).Assembly.Location)!;
     public static readonly string ExecutablePath = GetCurrentLocation();
     public static readonly string UpdatingFolder = Path.Combine(AppDataFolder, "updating");
+    public static readonly string ImageResourceFolder = Path.Combine(AppDataFolder, "Images");
 
     #endregion
 

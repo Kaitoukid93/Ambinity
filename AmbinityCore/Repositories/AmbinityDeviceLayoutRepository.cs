@@ -98,6 +98,7 @@ public class AmbinityDeviceLayoutRepository : CollectableItemRepository
         var configPath = Path.Combine(LocalFolderPath, name, "config.json");
         JsonHelpers.WriteSimpleJson(device, configPath);
         var layout = new AmbinityDeviceLayout(Path.Combine(LocalFolderPath, name));
+        layout.Name = name;
         AddItem(layout);
         return layout;
     }

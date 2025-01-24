@@ -76,7 +76,7 @@
             <Setter Property="Content">
                 <Template>
                     <Border Margin="5,0,7,0" Width="18" Height="18" Padding="0" CornerRadius="9" ClipToBounds="True">
-                        <Image RenderOptions.BitmapInterpolationMode="HighQuality" Stretch="UniformToFill"
+                        <Image RenderOptions.BitmapInterpolationMode="HighQuality" Stretch="Fill"
                                Source="{Binding GetThumbnail^,FallbackValue=null}">
                         </Image>
                     </Border>

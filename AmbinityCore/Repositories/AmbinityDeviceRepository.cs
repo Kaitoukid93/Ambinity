@@ -31,35 +31,39 @@ public class AmbinityDeviceRepository
     }
 
     private List<AmbinityDeviceBitmapCapture> _captures;
-
+    public object Lock { get; }= new object();
     private void OnNewControllerAdded(IController controller)
     {
-        foreach (var output in controller.LedController.Outputs)
+        lock (Lock)
         {
-            output.OutputEnabled += OnOutputEnabled;
-            output.OutputDisabled += OnOutputDisabled;
-            output.DevicesUpdated += OnDevicesUpdated;
-            if (!output.IsEnabled)
-                continue;
-            foreach (var device in output.Devices)
+            foreach (var output in controller.LedController.Outputs)
             {
-                if (!Devices.Contains(device))
-                    Devices.Add(device);
-                var capture = _captureFactory.RegisterDevice(device);
-                _captures.Add(capture);
+                output.OutputEnabled += OnOutputEnabled;
+                output.OutputDisabled += OnOutputDisabled;
+                output.DevicesUpdated += OnDevicesUpdated;
+                if (!output.IsEnabled)
+                    continue;
+                foreach (var device in output.Devices)
+                {
+                    if (!Devices.Contains(device))
+                        Devices.Add(device);
+                    var capture = _captureFactory.RegisterDevice(device);
+                    _captures.Add(capture);
+                }
             }
-        }
 
-        if (controller.FanController != null)
-        {
-            foreach (var output in controller.FanController.Outputs)
+            if (controller.FanController != null)
             {
-                var service = _fanOutputServiceFactory.GetFanOutputService(output);
-                service.Init();
+                foreach (var output in controller.FanController.Outputs)
+                {
+                    var service = _fanOutputServiceFactory.GetFanOutputService(output);
+                    service.Init();
+                }
             }
-        }
 
-        DevicesListUpdated?.Invoke();
+            DevicesListUpdated?.Invoke();
+        }
+      
     }
 
 //todo implement device remove

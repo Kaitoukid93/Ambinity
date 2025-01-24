@@ -25,21 +25,21 @@
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
             </Grid>
-            <Grid RowDefinitions="Auto,0,*">
-                <TextBlock Margin="10,0" Text="Cooling Devices" Classes="smallBold"></TextBlock>
-                <ItemsControl Grid.Row="2" IsEnabled="{Binding !InfoBarViewModel.IsOpen}" ItemsSource="{Binding CoolingDevices}">
-                    <ItemsControl.DataTemplates>
-                        <DataTemplate DataType="{x:Type local:DashboardDeviceViewModel}">
-                            <local:DashboardDeviceView></local:DashboardDeviceView>
-                        </DataTemplate>
-                    </ItemsControl.DataTemplates>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal"></WrapPanel>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </Grid>
+            <!-- <Grid RowDefinitions="Auto,0,*"> -->
+            <!--     <TextBlock Margin="10,0" Text="Cooling Devices" Classes="smallBold"></TextBlock> -->
+            <!--     <ItemsControl Grid.Row="2" IsEnabled="{Binding !InfoBarViewModel.IsOpen}" ItemsSource="{Binding CoolingDevices}"> -->
+            <!--         <ItemsControl.DataTemplates> -->
+            <!--             <DataTemplate DataType="{x:Type local:DashboardDeviceViewModel}"> -->
+            <!--                 <local:DashboardDeviceView></local:DashboardDeviceView> -->
+            <!--             </DataTemplate> -->
+            <!--         </ItemsControl.DataTemplates> -->
+            <!--         <ItemsControl.ItemsPanel> -->
+            <!--             <ItemsPanelTemplate> -->
+            <!--                 <WrapPanel Orientation="Horizontal"></WrapPanel> -->
+            <!--             </ItemsPanelTemplate> -->
+            <!--         </ItemsControl.ItemsPanel> -->
+            <!--     </ItemsControl> -->
+            <!-- </Grid> -->
         </StackPanel>
        
         <Grid Row="2">

@@ -1,8 +1,9 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Services;
+using Ambinity.Stores;
 using Ambinity.ViewModels;
 using Ambinity.Views.AmbinityStore;
 using Ambinity.Views.LayoutEditor;
@@ -10,6 +11,7 @@ using Ambinity.Views.OnlineStore;
 using AmbinityCore.Models.Profile;
 using AmbinityServer.OnlineItem;
 using CommunityToolkit.Mvvm.Input;
+using Task = System.Threading.Tasks.Task;
 
 namespace Ambinity.Views.Screens.Home;
 
@@ -19,16 +21,15 @@ public class HomeViewModel : ViewModelBase
     private readonly LightingProfileRepository _profileLocalRepository;
     private readonly DownloadService _downloadService;
     private HomeViewModelFactory _factory;
+    public event Action<AssetItemViewModelBase> ShowAllProfileRequested;
 
     public HomeViewModel(LightingProfileOnlineRepository lightingProfileOnlineRepository,
-        DownloadService downloadService, LightingProfileRepository lightingProfileRepository,
-        IWindowService windowService, ProfileStoreViewModel profileStoreViewModel, HomeViewModelFactory factory,
+        DownloadService downloadService, LightingProfileRepository lightingProfileRepository, ProfileStoreViewModel profileStoreViewModel, HomeViewModelFactory factory,
         TutorialsOnlineRepository tutorialsOnlineRepository)
     {
         _tutorialRepository = tutorialsOnlineRepository;
         _profileStoreViewModel = profileStoreViewModel;
         _factory = factory;
-        _windowService = windowService;
         _downloadService = downloadService;
         _profileOnlineRepository = lightingProfileOnlineRepository;
         _profileLocalRepository = lightingProfileRepository;
@@ -40,8 +41,7 @@ public class HomeViewModel : ViewModelBase
 
     private async Task ShowProfileLibrary(AssetItemViewModelBase item = null)
     {
-        var window = _windowService.ShowWindow(_profileStoreViewModel);
-        await _profileStoreViewModel.Init(item);
+        ShowAllProfileRequested?.Invoke(item);
     }
 
     public async Task Init()
@@ -74,8 +74,7 @@ public class HomeViewModel : ViewModelBase
 
     private async void OnProfileSelected(AssetItemViewModelBase item)
     {
-        var window = _windowService.ShowWindow(_profileStoreViewModel);
-        await _profileStoreViewModel.Init(item);
+        ShowAllProfileRequested?.Invoke(item);
     }
 
     private ObservableCollection<OnlineItemAssetViewModel> _availableAssets;
@@ -106,6 +105,7 @@ public class HomeViewModel : ViewModelBase
     private readonly IWindowService _windowService;
     private readonly ProfileStoreViewModel _profileStoreViewModel;
     private readonly TutorialsOnlineRepository _tutorialRepository;
+    private readonly RootNavigationStores _rootNavigationStore;
 
     public ObservableCollection<OnlineItemAssetViewModel> DisplayAssets
     {

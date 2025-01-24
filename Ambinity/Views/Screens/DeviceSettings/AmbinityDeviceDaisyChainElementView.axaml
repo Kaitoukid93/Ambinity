@@ -21,6 +21,18 @@
                     <PathIcon Data="{DynamicResource cut}"></PathIcon>
                 </MenuItem.Icon>
             </MenuItem>
+            <!-- <MenuItem  Command="{Binding MoveUpCommand}" -->
+            <!--            Header="Move up"> -->
+            <!--     <MenuItem.Icon> -->
+            <!--         <PathIcon Data="{DynamicResource Move_up}"></PathIcon> -->
+            <!--     </MenuItem.Icon> -->
+            <!-- </MenuItem> -->
+            <!-- <MenuItem  Command="{Binding MoveDownCommand}" -->
+            <!--            Header="Move down"> -->
+            <!--     <MenuItem.Icon> -->
+            <!--         <PathIcon Data="{DynamicResource Move_down}"></PathIcon> -->
+            <!--     </MenuItem.Icon> -->
+            <!-- </MenuItem> -->
         </MenuFlyout>
     
     </UserControl.Resources>

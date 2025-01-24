@@ -250,6 +250,7 @@ public class AmbinityBootStrapper
                 .AddSingleton<SerialControllerProvider>()
                 .AddSingleton<SerialControllerRepository>()
                 .AddSingleton<OpenRGBControllerRepository>()
+                .AddSingleton<OpenRGBService>()
                 .AddSingleton<OpenRGBControllerProvider>()
                 .AddSingleton<OpenRGBControllerDiscoveryService>()
                 .AddSingleton<DataStreamProvider>()

@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
+using Ambinity.Views.AmbinityStore;
 using Ambinity.Views.AppTour;
+using Ambinity.Views.LayoutEditor;
 using Ambinity.Views.Screens.AppSettings;
 using Ambinity.Views.Screens.DeviceLayout;
 using Ambinity.Views.Screens.DeviceSettings;
@@ -32,8 +34,9 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         SideMenuProfilePlayerViewModel profilePlayerViewModel, SideMenuViewModelFactory vmFactory,
         ProfileEditorViewModel profileEditorViewModel, DeviceLayoutEditorViewModel deviceLayoutEditorViewModel,
         AppSettingsViewModel appSettingsViewModel,
-        DeviceSettingsDashboardViewModel dashboardViewModel, HomeViewModel homeViewModel)
+        DeviceSettingsDashboardViewModel dashboardViewModel, HomeViewModel homeViewModel, ProfileStoreViewModel storeViewModel)
     {
+        _storeViewModel = storeViewModel;
         _homeViewModel = homeViewModel;
         _appSettingsViewModel = appSettingsViewModel;
         _dashboardViewModel = dashboardViewModel;
@@ -46,6 +49,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         _dialogService = dialogService;
         ProfilePlayerViewModel = profilePlayerViewModel;
         ProfilePlayerViewModel.PlayingButtonClicked += OnPlayingButtonClicked;
+        _homeViewModel.ShowAllProfileRequested += GotoAmbinityStore;
         CreateNewCategoryCommand = new AsyncRelayCommand(OpenCreateNewProfileDialog);
     }
 
@@ -125,6 +129,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     private readonly DeviceSettingsDashboardViewModel _dashboardViewModel;
     private readonly AppSettingsViewModel _appSettingsViewModel;
     private readonly HomeViewModel _homeViewModel;
+    private readonly ProfileStoreViewModel _storeViewModel;
 
     public SideMenuProfileViewModel SelectedProfile
     {
@@ -185,8 +190,10 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         var homeMenu = new SideMenuScreenViewModel("Home", "home_3__home_house_roof_shelter");
         var deviceSettingsMenu = new SideMenuScreenViewModel("Devices", "Device_settings");
         var deviceLayoutMenu = new SideMenuScreenViewModel("Layout", "map_rounded");
-        var settingsMenu = new SideMenuScreenViewModel("Settings", "General_Outline_Settings");
+        var ambinityStore = new SideMenuScreenViewModel("Store", "onlineStore");
+        var settingsMenu = new SideMenuScreenViewModel("Settings", "settings_future");
         ScreenMenuItems.Add(homeMenu);
+        ScreenMenuItems.Add(ambinityStore);
         ScreenMenuItems.Add(deviceSettingsMenu);
         ScreenMenuItems.Add(deviceLayoutMenu);
         ScreenMenuItems.Add(settingsMenu);
@@ -238,6 +245,9 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
             case "Settings":
                 GoToAppSettings();
                 break;
+            case "Store":
+                GotoAmbinityStore(null);
+                break;
         }
     }
 
@@ -278,6 +288,12 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     {
         _rootNavigationStores.CurrentViewModel = _appSettingsViewModel;
         _appSettingsViewModel.Init();
+    }
+
+    private async void GotoAmbinityStore(AssetItemViewModelBase item)
+    {
+        _rootNavigationStores.CurrentViewModel = _storeViewModel;
+        await _storeViewModel.Init(item);
     }
 
     private void CatergorySelectionChanged(SideMenuProfileViewModel item)

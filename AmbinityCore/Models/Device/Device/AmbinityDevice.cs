@@ -61,7 +61,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         get => _deviceDescription;
         set => SetProperty(ref _deviceDescription, value);
     }
-    
+
     /// <summary>
     /// All the leds this device contains
     /// </summary>
@@ -73,6 +73,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     /// </summary>
     public AmbinityDeviceLayout Layout { get; set; }
 
+    
 
     #region Iposition aware implement
 
@@ -174,7 +175,6 @@ public class AmbinityDevice : ObservableObject, IPositionAware
 
     public ContainerFigure GetContainer()
     {
-        
         return new DeviceContainerFigure(X, Y, Width, Height)
         {
             IsResizable = this.IsResizeable,
@@ -299,6 +299,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
 
     public byte GreenScale { get; set; }
     public byte BlueScale { get; set; }
+
     /// <summary>
     /// RGB order
     /// </summary>
@@ -310,7 +311,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     {
         lock (Lock)
         {
-            if(Scale==scale)
+            if (Scale == scale)
                 return;
             Scale = scale;
             TransformLeds();
@@ -318,11 +319,12 @@ public class AmbinityDevice : ObservableObject, IPositionAware
             DeviceUpdate?.Invoke();
         }
     }
+
     public void SetX(float x)
     {
         lock (Lock)
         {
-            if(X==x)
+            if (X == x)
                 return;
             X = x;
             TransformLeds();
@@ -330,11 +332,12 @@ public class AmbinityDevice : ObservableObject, IPositionAware
             DeviceUpdate?.Invoke();
         }
     }
+
     public void SetY(float y)
     {
         lock (Lock)
         {
-            if(Y==y)
+            if (Y == y)
                 return;
             Y = y;
             TransformLeds();
@@ -342,11 +345,12 @@ public class AmbinityDevice : ObservableObject, IPositionAware
             DeviceUpdate?.Invoke();
         }
     }
+
     public void SetWidth(float width)
     {
         lock (Lock)
         {
-            if(Width ==width)
+            if (Width == width)
                 return;
             Width = width;
             TransformLeds();
@@ -354,11 +358,12 @@ public class AmbinityDevice : ObservableObject, IPositionAware
             DeviceUpdate?.Invoke();
         }
     }
+
     public void SetHeight(float height)
     {
         lock (Lock)
         {
-            if(Height==height)
+            if (Height == height)
                 return;
             Height = height;
             TransformLeds();
@@ -366,11 +371,12 @@ public class AmbinityDevice : ObservableObject, IPositionAware
             DeviceUpdate?.Invoke();
         }
     }
+
     public void SetRotation(float angle)
     {
         lock (Lock)
         {
-            if(Rotation ==angle)
+            if (Rotation == angle)
                 return;
             Rotation = angle;
             TransformLeds();
@@ -428,8 +434,9 @@ public class AmbinityDevice : ObservableObject, IPositionAware
 
         if (Layout != null)
         {
-            rects.Add(new Rect(0,0,Layout.ImageWidth,Layout.ImageHeight));
+            rects.Add(new Rect(0, 0, Layout.ImageWidth, Layout.ImageHeight));
         }
+
         var newBound = RectCalculation.GetBound(rects.ToArray());
         Width = (float)newBound.Width;
         Height = (float)newBound.Height;
@@ -449,26 +456,28 @@ public class AmbinityDevice : ObservableObject, IPositionAware
         {
             led.LED.SetColor(255, 0, 0);
         }
-        
+
         await Task.Delay(200);
         foreach (var led in Leds)
         {
             led.LED.SetColor(0, 0, 0);
             ManualLedUpdate?.Invoke();
         }
+
         await Task.Delay(200);
         foreach (var led in Leds)
         {
-            
             led.LED.SetColor(255, 0, 0);
             ManualLedUpdate?.Invoke();
         }
+
         await Task.Delay(200);
         foreach (var led in Leds)
         {
             led.LED.SetColor(0, 0, 0);
             ManualLedUpdate?.Invoke();
         }
+
         // await Task.Delay(500);
         // foreach (var led in Leds)
         // {
@@ -485,17 +494,19 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     public async Task OrderCheck()
     {
         IsIdentifying = true;
-        foreach (var led in Leds.OrderBy(i=>i.Index).ToList())
+        foreach (var led in Leds.OrderBy(i => i.Index).ToList())
         {
             led.LED.SetColor(255, 0, 0);
             ManualLedUpdate?.Invoke();
             await Task.Delay(100);
         }
+
         foreach (var led in Leds)
         {
             led.LED.SetColor(0, 0, 0);
             ManualLedUpdate?.Invoke();
         }
+
         IsIdentifying = false;
     }
 
