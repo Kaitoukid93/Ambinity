@@ -44,7 +44,7 @@ public class AmbinityOpenRGBClient
     public async Task Init()
     {
         //this client is being hold by another process
-        if (IsInitializing) return;
+        if (IsInitializing||OperatingSystem.IsMacOS()) return;
         //turn on this flag to preven multiple thread access
         IsInitializing = true;
 

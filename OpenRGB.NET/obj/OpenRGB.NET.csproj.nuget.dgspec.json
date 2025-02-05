@@ -1,33 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\OpenRGB.NET\\OpenRGB.NET.csproj": {}
+    "/Users/chul-sookim/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj": {}
   },
   "projects": {
-    "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\OpenRGB.NET\\OpenRGB.NET.csproj": {
+    "/Users/chul-sookim/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj": {
       "version": "3.1.1",
       "restore": {
-        "projectUniqueName": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\OpenRGB.NET\\OpenRGB.NET.csproj",
+        "projectUniqueName": "/Users/chul-sookim/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
         "projectName": "OpenRGB.NET",
-        "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\OpenRGB.NET\\OpenRGB.NET.csproj",
-        "packagesPath": "C:\\Users\\zOe\\.nuget\\packages\\",
-        "outputPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\OpenRGB.NET\\obj\\",
+        "projectPath": "/Users/chul-sookim/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
+        "packagesPath": "/Users/chul-sookim/.nuget/packages/",
+        "outputPath": "/Users/chul-sookim/RiderProjects/Ambinity/OpenRGB.NET/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\zOe\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/chul-sookim/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\OpenRGB.NET\\bin\\Release": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -44,18 +36,28 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
+          "auditMode": "direct"
         }
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Microsoft.NET.ILLink.Tasks": {
+            "ErrorProne.NET.CoreAnalyzers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.11, )",
-              "autoReferenced": true
+              "version": "[0.4.0-beta.1, )"
+            },
+            "ErrorProne.NET.Structs": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.4.0-beta.1, )"
+            },
+            "NonCopyableAnalyzer": {
+              "target": "Package",
+              "version": "[0.7.0, )"
             }
           },
           "imports": [
@@ -74,12 +76,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "win-x64": {
-          "#import": []
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.405/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

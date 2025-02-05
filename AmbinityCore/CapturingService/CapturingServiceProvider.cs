@@ -1,12 +1,13 @@
 using AmbinityCore.LightingEngines;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AmbinityCore.CapturingService;
 
 public class CapturingServiceProvider(
-    AudioCapturingService audioCapturingService,
-    ScreenCapturingService screenCapturingService,
-    HWMonitorCapturingService hwMonitorCapturingService)
+    [FromKeyedServices("AudioCapturing")] ICapturingService audioCapturingService,
+    [FromKeyedServices("ScreenCapturing")] ICapturingService screenCapturingService,
+    [FromKeyedServices("HWCapturing")] ICapturingService hwMonitorCapturingService)
 {
     /// <summary>
     /// provide capturing service for  <param name="engine"></param>
@@ -19,13 +20,13 @@ public class CapturingServiceProvider(
         {
             case CapturingType.ScreenCapture:
                 return screenCapturingService;
-                break;
+               
             case CapturingType.AudioCapture:
                 return audioCapturingService;
-                break;
+                
             case CapturingType.HWCapture:
                 return hwMonitorCapturingService;
-                break;
+                
         }
 
         return null;

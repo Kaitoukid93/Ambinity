@@ -14,7 +14,7 @@ public class HWMonitorCapturingService : ICapturingService
 
     public HWMonitorCapturingService(GeneralSettingsManager settingsManager)
     {
-        IsEnabled = settingsManager.Settings.EnableHWMonitor;
+        IsEnabled = settingsManager.Settings.EnableHWMonitor&& !OperatingSystem.IsMacOS();
         _hardwares = new List<IHardware>();
         _fanSpeedSensors = new List<ISensor>();
         _fanControlSensors = new List<ISensor>();

@@ -11,7 +11,7 @@ public class ScreenCapturingService : ICapturingService
     public ScreenCapturingService(GeneralSettingsManager settingsManager)
     {
         _generalSettings = settingsManager.Settings;
-        IsEnabled = _generalSettings.EnableScreenCapture;
+        IsEnabled = _generalSettings.EnableScreenCapture&&!OperatingSystem.IsMacOS();
         Init();
     }
 
@@ -32,7 +32,7 @@ public class ScreenCapturingService : ICapturingService
         if (!IsEnabled)
             return;
         _screenCaptureService?.Dispose();
-        _screenCaptureService ??= new DX11ScreenCaptureService();
+        _screenCaptureService ??= OperatingSystem.IsMacOS()?null: new DX11ScreenCaptureService();
         IEnumerable<GraphicsCard> graphicsCards = _screenCaptureService.GetGraphicsCards();
         _availableScreen = _screenCaptureService.GetDisplays(graphicsCards.First()).ToList();
         _screenCaptures = new List<IScreenCapture>();

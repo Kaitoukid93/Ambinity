@@ -35,7 +35,7 @@ public class OpenRGBControllerRepository : CollectableItemRepository
     public override void Init()
     {
         base.Init();
-        _controllerProvider.Init();
+        //_controllerProvider.Init();
     }
 
     private async void OnNewDeviceFound(OpenRGBController controller)

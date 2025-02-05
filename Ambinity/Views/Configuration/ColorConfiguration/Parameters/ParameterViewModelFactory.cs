@@ -11,6 +11,7 @@ using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 
@@ -29,7 +30,7 @@ public class ParameterViewModelFactory(
     AnimationsRepository animationsRepository,
     LibraryViewModelFactory libraryViewModelFactory,
     BrightnessProviderFactory brightnessProviderFactory,
-    ScreenCapturingService screenCapturingService,
+    [FromKeyedServices("ScreenCapturing")] ICapturingService screenCapturingService,
     LightingProfileDecoder decoder,
     AmbinityStoreItemExportViewModel exportViewModel)
 {

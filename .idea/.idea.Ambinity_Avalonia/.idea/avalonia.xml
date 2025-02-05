@@ -22,6 +22,7 @@
         <entry key="Ambinity.Installer/Views/ThirdStepView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
         <entry key="Ambinity.Installer/Views/UninstallView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
         <entry key="Ambinity.Installer/Views/WelcomeView.axaml" value="Ambinity.Installer/Ambinity.Installer.csproj" />
+        <entry key="Ambinity.MacOs/App.axaml" value="Ambinity.MacOs/Ambinity.MacOs.csproj" />
         <entry key="Ambinity.Windows/App.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/App.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/ControlTheme/BorderlessNumberbox.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />

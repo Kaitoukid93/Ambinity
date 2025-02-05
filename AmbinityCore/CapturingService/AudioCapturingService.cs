@@ -1,9 +1,8 @@
-using System.Text.RegularExpressions;
+
 using AmbinityCore.CapturingService.AudioCapturing;
 using AmbinityCore.DataBase;
-using AmbinityCore.Models.Lighting.Zone.Configuration;
 using ManagedBass;
-using ManagedBass.Wasapi;
+//
 using Serilog;
 
 namespace AmbinityCore.CapturingService;
@@ -14,8 +13,8 @@ public class AudioCapturingService : ICapturingService
     public bool IsEnabled { get; private set; }
     private bool _bassInitialized;
     private int _defaultDeviceID;
-    private WasapiProcedure? _process;
-    private WasapiNotifyProcedure? _notifyProc;
+   // private WasapiProcedure? _process;
+   // private WasapiNotifyProcedure? _notifyProc;
     private List<AudioCaptureBasic> _availableAudioCapture;
     public int DefaultDeviceID => _defaultDeviceID;
     public AudioBuffer Buffer => _buffer;
@@ -29,11 +28,11 @@ public class AudioCapturingService : ICapturingService
     public AudioCapturingService(BassAudioDeviceEnumerationService enumerationService,
         GeneralSettingsManager settingsManager)
     {
-        IsEnabled = settingsManager.Settings.EnableAudioCapture;
+        IsEnabled = settingsManager.Settings.EnableAudioCapture&&!OperatingSystem.IsMacOS();
         _enumerationService = enumerationService;
         _availableAudioCapture = new List<AudioCaptureBasic>();
-        _process = new WasapiProcedure(Process);
-        _notifyProc = new WasapiNotifyProcedure(WasapiNotifyProc);
+       // _process = new WasapiProcedure(Process);
+       // _notifyProc = new WasapiNotifyProcedure(WasapiNotifyProc);
         Init();
     }
 
@@ -42,7 +41,7 @@ public class AudioCapturingService : ICapturingService
         return length;
     }
 
-    private void WasapiNotifyProc(WasapiNotificationType notify, int device, IntPtr user)
+   /* private void WasapiNotifyProc(WasapiNotificationType notify, int device, IntPtr user)
     {
         switch (notify)
         {
@@ -75,7 +74,7 @@ public class AudioCapturingService : ICapturingService
                 Log.Information("Wasapi device - Unknown notification: " + notify);
                 break;
         }
-    }
+    }*/
 
     private bool _handlingDeviceChanged;
 
@@ -111,8 +110,8 @@ public class AudioCapturingService : ICapturingService
             Init();
             DefaultDeviceChanged?.Invoke();
             _handlingDeviceChanged = false;
-            Log.Information("Done!" + " New default device ID is: " + _defaultDeviceID + " " +
-                            BassWasapi.GetDeviceInfo(_defaultDeviceID).Name);
+           // Log.Information("Done!" + " New default device ID is: " + _defaultDeviceID + " " +
+                           // BassWasapi.GetDeviceInfo(_defaultDeviceID).Name);
         });
     }
 
@@ -127,7 +126,7 @@ public class AudioCapturingService : ICapturingService
         var devices = _enumerationService.GetAvailableAudioDevices();
         UpdateDefaultEndpoint();
 
-        _buffer = new AudioBuffer(BassWasapi.DeviceCount);
+       // _buffer = new AudioBuffer(BassWasapi.DeviceCount);
         _availableAudioCapture.Clear();
         foreach (var device in devices)
         {
@@ -173,7 +172,7 @@ public class AudioCapturingService : ICapturingService
         //todo lock until all device is init
         foreach (var device in _availableAudioCapture)
         {
-            device.Init(_process);
+            //device.Init(_process);
         }
 
         while (!token.IsCancellationRequested)
@@ -214,7 +213,7 @@ public class AudioCapturingService : ICapturingService
             return;
          Bass.Configure(Configuration.UpdateThreads, false);
         Bass.Configure(Configuration.IncludeDefaultDevice, true);
-        BassWasapi.SetNotify(_notifyProc, IntPtr.Zero);
+        //BassWasapi.SetNotify(_notifyProc, IntPtr.Zero);
         var result = Bass.Init(0, 44100, DeviceInitFlags.Default, IntPtr.Zero);
         if (result)
         {

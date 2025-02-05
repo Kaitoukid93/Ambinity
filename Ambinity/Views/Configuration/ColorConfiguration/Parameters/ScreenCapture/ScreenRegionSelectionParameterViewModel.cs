@@ -14,6 +14,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using CommunityToolkit.Mvvm.Input;
 using HPPH;
+using Microsoft.Extensions.DependencyInjection;
 using ScreenCapture.NET;
 using Serilog;
 
@@ -33,14 +34,14 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
     public event Action PreviewImageUpdated;
 
     public ScreenRegionSelectionParameterViewModel(ScreenCaptureConfiguration config, IWindowService windowService,
-        GeneralSettingsManager settingsManager, ScreenCapturingService capturingService, LightingProfileDecoder decoder)
+        GeneralSettingsManager settingsManager, ICapturingService screenCapturingService, LightingProfileDecoder decoder)
     {
         _decoder = decoder;
         _config = config;
         _windowService = windowService;
         _settingsManager = settingsManager;
         OpenRegionSelectionCommand = new RelayCommand(OpenScreenRegionSelection);
-        _capturingService = capturingService;
+        _capturingService = screenCapturingService as ScreenCapturingService;
         _screenCapture = _capturingService.IsEnabled ? _capturingService.GetScreenCapture(_config.DisplayIndex) : null;
         if (_screenCapture == null)
         {
