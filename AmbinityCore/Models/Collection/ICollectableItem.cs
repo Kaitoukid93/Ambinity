@@ -10,6 +10,7 @@ public interface ICollectableItem : INotifyPropertyChanged
     event Action<ICollectableItem> ItemPinStatusChanged;
     event Action<ICollectableItem> ItemCheckStatusChanged;
     string Name { get; set; }
+    string Description { get; set; }
     bool IsSelected { get; set; }
     bool IsEditing { get; set; }
     bool IsChecked { get; set; }

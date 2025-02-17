@@ -55,6 +55,8 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
         string[]? result = await _windowService.CreateOpenFileDialog()
             .HavingFilter(f => f.WithExtension("png").WithName("png image"))
             .HavingFilter(f => f.WithExtension("jpg").WithName("jpg image"))
+            .HavingFilter(f => f.WithExtension("gif").WithName("gif image"))
+            .HavingFilter(f => f.WithExtension("GIF").WithName("GIF image"))
             .ShowAsync();
         if (result == null)
             return;
@@ -99,6 +101,8 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
     {
         _item = item;
         Name = _item.Name;
+        Description = item.Description;
+        ScreenShots?.Clear();
         _onlineItem = new OnlineItem
         {
             Name = _item.Name,

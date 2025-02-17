@@ -57,6 +57,7 @@
         <entry key="Ambinity/Styling/Resources.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/AmbinityStore/AmbinityStoreDetailView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/AmbinityStore/AmbinityStoreItemExportView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/Views/AmbinityStore/LightingProfileItemView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/AmbinityStore/ProfileStoreNonClientAreaContentView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/AmbinityStore/ProfileStoreSideMenuItemView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/AmbinityStore/ProfileStoreView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
@@ -128,7 +129,7 @@
         <entry key="Ambinity/Views/DashboardView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/DeviceControl/DeviceControlView.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/Draw2DCanvas/Draw2DCanvasInfoBarView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
-        <entry key="Ambinity/Views/Draw2DCanvas/Draw2DCanvasView.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Views/Draw2DCanvas/Draw2DCanvasView.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/Generic.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Views/GeometryCollection.axaml" value="Ambinity/Ambinity.csproj" />
         <entry key="Ambinity/Views/GeometryCollection/CoolIconsCollection.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
@@ -240,10 +241,12 @@
         <entry key="Ambinity/Windows/ConfirmationDialogContent.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Windows/DeleteDialogContent.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Windows/DialogWindow.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Windows/DownloadDialogContent.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Windows/ErrorDialogContent.axaml" value="Ambinity/Ambinity.csproj" />
-        <entry key="Ambinity/Windows/InputDialogContent.axaml" value="Ambinity/Ambinity.csproj" />
+        <entry key="Ambinity/Windows/DownloadDialogContent.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/Windows/ErrorDialogContent.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/Windows/InputDialogContent.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="Ambinity/Windows/LoadingDialogContent.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/Windows/NewProfileDIalogContent.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
+        <entry key="Ambinity/Windows/NewProfileDialogContent.axaml" value="Ambinity.Windows/Ambinity.Windows.csproj" />
         <entry key="AvaloniaApplication1/Ambinity.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
         <entry key="AvaloniaApplication1/App.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
         <entry key="AvaloniaApplication1/Styles/Ambinity.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />

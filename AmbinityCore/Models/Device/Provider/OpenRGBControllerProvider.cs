@@ -44,7 +44,7 @@ public class OpenRGBControllerProvider
         controller.DashboardWidth = 230;
         //create a blank device first to make sure it's working, device setup and thumbnail will be later download from server
         ledController.Outputs.Add(new LEDOutput(controller.MaxLEDSupport, 0,
-            new AmbinityDevice(_layoutRepository.GetLayout(controller.Name, controller.MaxLEDSupport), 0.4f)));
+            new AmbinityDevice(_layoutRepository.GetLayout(controller.Name,"Generic "+controller.HardwareType, controller.MaxLEDSupport), 0.4f)));
         ledController.HardwareSettings.HardwareType = controller.HardwareType;
         controller.LedController = ledController;
         controller.RegisterLEDController();

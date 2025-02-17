@@ -18,7 +18,6 @@ public sealed class LightingProfileRepository : CollectableItemRepository
     private string dbPath => Path.Combine(Constants.AppDataFolder, "Data");
     private string FolderPath => Path.Combine(dbPath, "Profiles");
     private LightingZoneRepository _zoneRepository;
-
     public LightingProfileRepository(LightingZoneRepository zoneRepository)
     {
         LocalFolderPath = FolderPath;

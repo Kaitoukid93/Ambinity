@@ -242,7 +242,7 @@ public class OpenRGBStream : IDataStream
         {
             var cancellationToken = (CancellationToken)tokenObject;
             var ledCount = _client.OpenRGBClient.GetControllerData(_deviceIndex).Leds.Count();
-
+            
             while (!cancellationToken.IsCancellationRequested)
             {
                 //send frame data
@@ -252,7 +252,16 @@ public class OpenRGBStream : IDataStream
                     var stream = GetOutputStream(i);
                     outputColor.AddRange(stream);
                 }
-
+                //add led with same color if missing
+                if (outputColor.Count < ledCount)
+                {
+                    var numLedMissing = ledCount - outputColor.Count;
+                    var lastLEDColor = outputColor.Last();
+                    for (int i = 0; i < numLedMissing; i++)
+                    {
+                        outputColor.Add(lastLEDColor);
+                    }
+                }
                 lock (_client.Lock)
                 {
                     if (_client.IsInitialized && _isDeviceValid)

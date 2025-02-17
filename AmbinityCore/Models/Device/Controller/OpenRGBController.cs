@@ -73,6 +73,7 @@ public class OpenRGBController : ObservableObject, IController
     public event Action<ICollectableItem>? ItemPinStatusChanged;
     public event Action<ICollectableItem>? ItemCheckStatusChanged;
     public string Name { get; set; }
+    public string Description { get; set; }
     [JsonIgnore] public bool IsSelected { get; set; }
     [JsonIgnore] public bool IsEditing { get; set; }
     [JsonIgnore] public bool IsChecked { get; set; }
@@ -144,7 +145,7 @@ public class OpenRGBController : ObservableObject, IController
     }
     public Bitmap Thumbnail => LoadFromFile(File.Exists(Path.Combine(resourcePath, Name + ".png"))
         ? Path.Combine(resourcePath, Name + ".png")
-        : Path.Combine(resourcePath, HardwareType.ToString() + ".png"));
+        : Path.Combine(resourcePath, "Generic " + HardwareType.ToString() + ".png"));
 
     private Bitmap LoadFromFile(string file)
     {

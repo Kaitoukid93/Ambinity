@@ -118,7 +118,7 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
 
     #region Profile
 
-    private int _canvasWidth =750;
+    private int _canvasWidth =1000;
 
     public int CanvasWidth
     {

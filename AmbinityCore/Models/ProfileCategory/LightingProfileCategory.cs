@@ -34,7 +34,7 @@ public class LightingProfileCategory : ObservableObject, ICollectableItem
             OnPropertyChanged();
         }
     }
-
+    public string Description { get; set; }
     /// <summary>
     /// Indicate Item is selected by user
     /// </summary>

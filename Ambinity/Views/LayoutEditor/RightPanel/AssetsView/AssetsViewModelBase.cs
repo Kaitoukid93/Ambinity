@@ -86,7 +86,7 @@ public abstract class AssetsViewModelBase : ViewModelBase
         }
     }
 
-    private string _searchContent;
+    private string _searchContent="";
 
     public string SearchContent
     {
@@ -184,7 +184,7 @@ public abstract class AssetsViewModelBase : ViewModelBase
         if (_selectedRepository == "Local")
             return;
         IsLoading = true;
-        await _onlineItemRepository.UpdateCollection(SearchContent.ToLower());
+        await _onlineItemRepository.UpdateCollection(SearchContent ==null?string.Empty:SearchContent.ToLower());
         IsLoading = false;
     }
 

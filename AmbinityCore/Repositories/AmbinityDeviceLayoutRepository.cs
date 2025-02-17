@@ -31,16 +31,24 @@ public class AmbinityDeviceLayoutRepository : CollectableItemRepository
     {
     }
 
-    public AmbinityDeviceLayout GetLayout(string name, int numLED)
+    public AmbinityDeviceLayout GetLayout(string name, string alternativeName, int numLED)
     {
         var match = Items.Where(i => i.Name == name).FirstOrDefault();
+        var alternativeMatch = Items.Where(i => i.Name == alternativeName).FirstOrDefault();
         if (match != null)
         {
             var layout = new AmbinityDeviceLayout(match.LocalPath);
             return layout;
         }
+
+        else if (alternativeMatch != null)
+        {
+            var layout = new AmbinityDeviceLayout(alternativeMatch.LocalPath);
+            return layout;
+        }
         else
         {
+            //check for generic
             //construct new layout match the led number
             return CreateLayout(name, numLED);
         }

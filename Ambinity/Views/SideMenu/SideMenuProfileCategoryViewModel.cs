@@ -166,8 +166,8 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         clone.IsPlaying = false;
         clone.Name = profile.Profile.Name + " -copy";
         clone.ID = Guid.NewGuid();
-        _profileCategory.AddProfile(clone);
         _profileRepository.AddItem(clone);
+        _profileCategory.AddProfile(clone);
         var cloneVm = _vmFactory.GetProfileViewModel(clone, this);
         Profiles.Add(cloneVm);
         Log.Information("Successfully clone" + " " + profile.Profile.Name + "!");
@@ -233,31 +233,30 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
 
     private async Task ExecuteAddProfile()
     {
-        var vm = new InputDialogContentViewModel();
+        //load available template from resource
+        var vm = new NewProfileDialogContentViewModel();
         vm.DialogClosed += OnCreateNewProfileDialogClosed;
-        await _dialogService.ShowInputDialog(vm, "New profile", "Ok", "Cancel");
+        await _dialogService.ShowCreateNewProfileDialog(vm);
     }
 
     private void OnCreateNewProfileDialogClosed(object? sender, EventArgs e)
     {
-        var vm = sender as InputDialogContentViewModel;
+        var vm = sender as NewProfileDialogContentViewModel;
         var result = (e as ContentDialogClosedEventArgs).Result;
         if (result == ContentDialogResult.Secondary || result == ContentDialogResult.None)
             return;
         if (result == ContentDialogResult.Primary)
         {
             //create new profile
-            var profile = new LightingProfile();
+            var template = vm.AvailableTemplates.Where(t => t.IsSelected).FirstOrDefault();
+            if(template==null)
+                return;
+            var profile = template.Profile;
             profile.Name = vm.UserInput;
             profile.IsDefault = false;
             profile.ID = Guid.NewGuid();
             profile.CategoryID = this.Category.ID;
             profile.Category = this.Category;
-            profile.IconType = IconTypeEnum.Geometry;
-            profile.Icon = "genericCircle";
-            var random = new Random();
-            var index = random.Next(DefaultSolidColors.Colors.Count);
-            profile.IconColor = DefaultSolidColors.Colors[index];
             //add to repo
             var profileViewModel = _vmFactory.GetProfileViewModel(profile, this);
             Profiles.Add(profileViewModel);

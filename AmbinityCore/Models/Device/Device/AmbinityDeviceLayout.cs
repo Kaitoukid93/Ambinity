@@ -68,7 +68,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
                     }
                 }
 
-                if (Image != null)
+                if (image != null)
                 {
                     ImageWidth = (float)image.Width;
                     ImageHeight = (float)image.Height;

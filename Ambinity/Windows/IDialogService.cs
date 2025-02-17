@@ -8,6 +8,7 @@ public interface IDialogService
 {
     Task ShowInputDialog(InputDialogContentViewModel vm, string title, string primaryButtonText,
         string closeButtonText);
+    Task ShowCreateNewProfileDialog(NewProfileDialogContentViewModel vm);
     Task ShowDownloadDialog(DownloadDialogViewModel vm,bool showCancelButton );
     Task ShowConfirmationDialog(ConfirmationDialogContentViewModel vm, string title, string primaryButtonText,
         string closeButtonText);

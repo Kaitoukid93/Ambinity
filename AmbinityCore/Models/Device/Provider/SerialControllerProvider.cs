@@ -52,7 +52,7 @@ public class SerialControllerProvider
                 controller.DashboardHeight = 270;
                 controller.DashboardWidth = 230;
                 ledController.Outputs.Add(new LEDOutput(80, 0,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Basic 24inch", 30), 0.4f)
+                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Basic 24inch","Default ARGB LED Strip", 30), 0.4f)
                     {
                         RGBOrder = RGBLEDOrderEnum.GRB
                     })
@@ -63,7 +63,7 @@ public class SerialControllerProvider
                 controller.DashboardHeight = 270;
                 controller.DashboardWidth = 230;
                 ledController.Outputs.Add(new LEDOutput(80, 0,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Basic 24inch", 48))
+                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Edge 1m2", "Default ARGB LED Strip",20))
                     {
                         RGBOrder = RGBLEDOrderEnum.GRB
                     }));
@@ -74,7 +74,7 @@ public class SerialControllerProvider
                 for (var i = 0; i < 10; i++)
                 {
                     ledController.Outputs.Add(new LEDOutput(80, i,
-                        new AmbinityDevice(_layoutRepository.GetLayout("Ambino Dualring Fan", 30))
+                        new AmbinityDevice(_layoutRepository.GetLayout("Ambino Dualring Fan"," ", 30))
                         {
                             RGBOrder = RGBLEDOrderEnum.GRB
                         }));
@@ -94,29 +94,86 @@ public class SerialControllerProvider
                 for (int i = 0; i < 4; i++)
                 {
                     ledController.Outputs.Add(new LEDOutput(80, i,
-                        new AmbinityDevice(_layoutRepository.GetLayout("Default ARGB LED Strip", 64))
+                        new AmbinityDevice(_layoutRepository.GetLayout("Default ARGB LED Strip","", 64))
                         {
                             RGBOrder = RGBLEDOrderEnum.GRB
                         }));
                 }
 
                 ledController.Outputs.Add(new LEDOutput(80, 4,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Neon 24P", 200), 0.5f)
+                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Neon 24P","", 200), 0.5f)
                     {
                         RGBOrder = RGBLEDOrderEnum.GRB
                     }));
                 ledController.Outputs.Add(new LEDOutput(80, 5,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Neon 24P", 200), 0.5f)
+                    new AmbinityDevice(_layoutRepository.GetLayout("Ambino Neon 24P","", 200), 0.5f)
                     {
                         RGBOrder = RGBLEDOrderEnum.GRB
                     }));
                 ledController.Outputs.Add(new LEDOutput(80, 6,
-                    new AmbinityDevice(_layoutRepository.GetLayout("Default ARGB LED Strip", 64))
+                    new AmbinityDevice(_layoutRepository.GetLayout("Default ARGB LED Strip","", 64))
                     {
                         RGBOrder = RGBLEDOrderEnum.GRB
                     }));
                 break;
+            // non ambino device, for testing
+            case HardwareTypeEnum.Dram:
+                controller.DashboardHeight = 270;
+                controller.DashboardWidth = 230;
+                ledController.Outputs.Add(new LEDOutput(8, 0,
+                    new AmbinityDevice(_layoutRepository.GetLayout("Generic Dram","Default ARGB LED Strip", 8), 0.4f)
+                    {
+                        RGBOrder = RGBLEDOrderEnum.GRB
+                    })
+                {
+                });
+                break;
+            case HardwareTypeEnum.Motherboard:
+                controller.DashboardHeight = 270;
+                controller.DashboardWidth = 230;
+                ledController.Outputs.Add(new LEDOutput(8, 0,
+                    new AmbinityDevice(_layoutRepository.GetLayout("Generic Motherboard","Default ARGB LED Strip", 8), 0.4f)
+                    {
+                        RGBOrder = RGBLEDOrderEnum.GRB
+                    })
+                {
+                });
+                break;
+            case HardwareTypeEnum.Speaker:
+                controller.DashboardHeight = 270;
+                controller.DashboardWidth = 230;
+                ledController.Outputs.Add(new LEDOutput(8, 0,
+                    new AmbinityDevice(_layoutRepository.GetLayout("Generic Speaker","Default ARGB LED Strip", 8), 0.4f)
+                    {
+                        RGBOrder = RGBLEDOrderEnum.GRB
+                    })
+                {
+                });
+                break;
+            case HardwareTypeEnum.Gpu:
+                controller.DashboardHeight = 270;
+                controller.DashboardWidth = 230;
+                ledController.Outputs.Add(new LEDOutput(8, 0,
+                    new AmbinityDevice(_layoutRepository.GetLayout("Generic Gpu","Default ARGB LED Strip", 8), 0.4f)
+                    {
+                        RGBOrder = RGBLEDOrderEnum.GRB
+                    })
+                {
+                });
+                break;
+            case HardwareTypeEnum.Keyboard:
+                controller.DashboardHeight = 270;
+                controller.DashboardWidth = 400;
+                ledController.Outputs.Add(new LEDOutput(8, 0,
+                    new AmbinityDevice(_layoutRepository.GetLayout("Generic Keyboard","Default ARGB LED Strip", 8), 0.4f)
+                    {
+                        RGBOrder = RGBLEDOrderEnum.GRB
+                    })
+                {
+                });
+                break;
         }
+        
 
         ledController.HardwareSettings.HardwareType = controller.HardwareType;
         ledController.PopulateDefaultLayout();

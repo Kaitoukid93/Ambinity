@@ -30,7 +30,7 @@ public class ProfileStoreViewModel : ViewModelBase
             Name = "Colors",
             Description = "All profiles using color palette",
             Icon = "paint_bucket__bucket_color_colors_design_paint_painting",
-            Filter = ["palette", "Colors", "colors", "rainbow"]
+            Filter = ["palette", "Colors", "colors", "color"]
         };
         var musicReactiveProfilesCategory = new ProfileStoreSideMenuItemViewModel()
         {

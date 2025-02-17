@@ -10,7 +10,7 @@
              x:Class="Ambinity.Views.OnlineStore.Library.LightingProfileAssetsView">
     <UserControl.Resources>
         <DataTemplate x:Key="onlineProfileTemplate" x:DataType="onlineStore:OnlineItemAssetViewModel">
-            <Button VerticalAlignment="Top" Margin="7,5,7,25" Command="{Binding SelectItemCommand}" HorizontalContentAlignment="Stretch" Padding="0" HorizontalAlignment="Stretch">
+            <Button VerticalAlignment="Top" Margin="7,5,7,25" Width="270" Command="{Binding SelectItemCommand}" HorizontalContentAlignment="Stretch" Padding="0" HorizontalAlignment="Stretch">
                 <Grid RowDefinitions="120,10,30,10,*">
                     <!-- <ui:ProgressRing Grid.Column="1" IsVisible="{CompiledBinding IsDownloading}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10"  IsIndeterminate="True"/> -->
                     <Border ClipToBounds="True"  CornerRadius="4,4,0,0">
@@ -63,15 +63,16 @@
         </DataTemplate>
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer Padding="0,0,10,10">
+        <ScrollViewer PointerWheelChanged="InputElement_OnPointerWheelChanged" Padding="0,0,10,10">
             <Grid>
                 <ItemsControl ItemTemplate="{DynamicResource onlineProfileTemplate}"
                               ItemsSource="{Binding DisplayAssets}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Columns="4"></UniformGrid>
+                            <WrapPanel Orientation="Horizontal"></WrapPanel>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
+                    
 
                 </ItemsControl>
                 <Grid RowDefinitions="*,Auto,*" IsVisible="{Binding ShowNoResult}">

@@ -374,6 +374,7 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
     [JsonIgnore] public Rect ZoneBound => new Rect(X, Y, Width, Height);
     [JsonIgnore] public Point Center => new Point(X + Width / 2, Y + Height / 2);
     public string Name { get; set; }
+    public string Description { get; set; }
     [JsonIgnore] public bool IsSelected { get; set; }
     [JsonIgnore] public bool IsEditing { get; set; }
     [JsonIgnore] public bool IsChecked { get; set; }

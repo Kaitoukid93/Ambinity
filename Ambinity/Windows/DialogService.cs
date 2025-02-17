@@ -36,7 +36,25 @@ public class DialogService : IDialogService
 
         var result = await dialog.ShowAsync();
     }
-
+    
+    public async Task ShowCreateNewProfileDialog(NewProfileDialogContentViewModel viewModel)
+    {
+        var dialog = new ContentDialog()
+        {
+            Title = "New Profile",
+            PrimaryButtonText = "Ok",
+            IsSecondaryButtonEnabled = false,
+            CloseButtonText = "Cancel"
+        };
+       
+        viewModel.Init(dialog);
+        dialog.Content = new NewProfileDialogContent()
+        {
+            DataContext = viewModel
+        };
+        
+        var result = await dialog.ShowAsync();
+    }
     public async Task ShowDownloadDialog(DownloadDialogViewModel vm, bool showCancelButton)
     {
         var td = new TaskDialog

@@ -81,7 +81,8 @@
                                             </Grid>
 
                                         </Border>
-                                        <Grid Row="2" RowDefinitions="Auto,*">
+                                        <Grid Row="2" ColumnDefinitions="*,10,Auto">
+                                             <Grid RowDefinitions="Auto,*">
                                             <TextBlock MaxWidth="200" ToolTip.Tip="{Binding Description}" Margin="5,0"
                                                        TextTrimming="CharacterEllipsis"
                                                        FontSize="18" FontWeight="SemiBold"
@@ -95,7 +96,7 @@
                                                        FontWeight="SemiBold">
                                             </TextBlock>
                                         </Grid>
-                                        <Grid Classes="downloadZone" Background="Transparent" Row="2">
+                                        <Grid Column="2" Classes="downloadZone" Background="Transparent">
                                             <StackPanel HorizontalAlignment="Right"
                                                         VerticalAlignment="Bottom"
                                                         IsVisible="{Binding IsLocalExisted}" Spacing="5"
@@ -144,6 +145,8 @@
                                                 </Grid>
                                             </Button>
                                         </Grid>
+                                        </Grid>
+                                       
                                     </Grid>
                                 </Button>
 

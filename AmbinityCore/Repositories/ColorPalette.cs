@@ -12,6 +12,7 @@ public class ColorPalette : FillColorBase, ICollectableItem
     public event Action<ICollectableItem>? ItemPinStatusChanged;
     public event Action<ICollectableItem>? ItemCheckStatusChanged;
     public string Name { get; set; }
+    public string Description { get; set; }
     [JsonIgnore] public bool IsSelected { get; set; }
     [JsonIgnore] public bool IsEditing { get; set; }
     [JsonIgnore] public bool IsChecked { get; set; }

@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Windows"
+             x:DataType="local:NewProfileDialogContentViewModel"
+             x:Class="Ambinity.Windows.NewProfileDialogContent">
+   <Grid>
+       <StackPanel Spacing="10" MinWidth="400">
+           <TextBlock>Enter profile name(you can change it later)</TextBlock>
+           <AutoCompleteBox FilterMode="StartsWithOrdinal"
+                            Text="{CompiledBinding UserInput}"
+                            ItemsSource="{Binding AvailableKeyWords}"
+                            AttachedToVisualTree="InputField_OnAttachedToVisualTree" />
+           <Separator Height="1" Margin="5"></Separator>
+           <Grid>
+               <StackPanel Spacing="10">
+                   <TextBlock FontWeight="SemiBold" FontSize="13" Text="Templates">
+                       
+                   </TextBlock>
+                 <ItemsControl ItemsSource="{Binding AvailableTemplates}">
+                     <ItemsControl.ItemsPanel>
+                         <ItemsPanelTemplate>
+                             <StackPanel Spacing="10"></StackPanel>
+                         </ItemsPanelTemplate>
+                     </ItemsControl.ItemsPanel>
+                     <ItemsControl.ItemTemplate>
+                         <DataTemplate>
+                             <RadioButton IsChecked="{Binding IsSelected}" GroupName="template">
+                                 <Grid>
+                                     <StackPanel Spacing="8">
+                                         <TextBlock Text="{Binding Name}" VerticalAlignment="Center" ></TextBlock>
+                                         <TextBlock Text="{Binding Description}" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource ButtonForegroundDisabled}"></TextBlock>
+                                     </StackPanel>
+                                 </Grid>
+                             </RadioButton>
+                         </DataTemplate>
+                     </ItemsControl.ItemTemplate>
+                 </ItemsControl>
+               </StackPanel>
+           </Grid>
+           <!-- <Separator Height="1" Margin="5"></Separator> -->
+           <!-- <Grid> -->
+           <!--     <StackPanel Spacing="10"> -->
+           <!--         <Grid> -->
+           <!--             <StackPanel Spacing="8"> -->
+           <!--                 <TextBlock FontWeight="SemiBold" FontSize="13" Text="Template information"> -->
+           <!--              -->
+           <!--                 </TextBlock> -->
+           <!--                 <TextBlock FontSize="12" Foreground="{DynamicResource ButtonForegroundDisabled}"   Text="Add default zone for devices selected below"></TextBlock> -->
+           <!--             </StackPanel> -->
+           <!--         </Grid> -->
+           <!--        <Grid> -->
+           <!--            <ItemsControl> -->
+           <!--                <ItemsControl.ItemsPanel> -->
+           <!--                    <ItemsPanelTemplate> -->
+           <!--                        <WrapPanel Orientation="Horizontal"></WrapPanel> -->
+           <!--                    </ItemsPanelTemplate> -->
+           <!--                </ItemsControl.ItemsPanel> -->
+           <!--                <CheckBox Content="Ambino Basic"></CheckBox> -->
+           <!--                <CheckBox Content="Ambino Rainpow"></CheckBox> -->
+           <!--                <CheckBox Content="Ambino Neon"></CheckBox> -->
+           <!--                <CheckBox Content="Ambino EDGE"></CheckBox> -->
+           <!--                <CheckBox Content="Mouse"></CheckBox> -->
+           <!--                <CheckBox Content="Keyboard"></CheckBox> -->
+           <!--                <CheckBox Content="DRam"></CheckBox> -->
+           <!--                <CheckBox Content="Fan Hub"></CheckBox> -->
+           <!--                 -->
+           <!--            </ItemsControl> -->
+           <!--        </Grid> -->
+           <!--     </StackPanel> -->
+           <!-- </Grid> -->
+       </StackPanel>
+   </Grid>
+</UserControl>

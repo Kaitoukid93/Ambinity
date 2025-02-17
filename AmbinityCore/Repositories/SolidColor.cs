@@ -15,6 +15,7 @@ public class SolidColor : FillColorBase, ICollectableItem
     public event Action<ICollectableItem>? ItemPinStatusChanged;
     public event Action<ICollectableItem>? ItemCheckStatusChanged;
     public string Name { get; set; }
+    public string Description { get; set; }
     public bool IsSelected { get; set; }
     public bool IsEditing { get; set; }
     public bool IsChecked { get; set; }

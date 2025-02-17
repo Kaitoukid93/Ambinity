@@ -50,7 +50,7 @@ public class AppSettingsViewModel : ViewModelBase
         _enableMica = _generalSettings.EnableMica;
         _startMinimized = _generalSettings.StartMinimized;
         AvailableFrameRates = ["24 FPS", "30 FPS", "60 FPS", "100 FPS", "144 FPS"];
-        AvailableBitmapSize = ["400 * 320 px", "750 * 500 px", "800 * 600 px", "1024 * 768 px"];
+        AvailableBitmapSize = ["400 * 320 px", "750 * 500 px", "800 * 600 px", "1024 * 768 px", "1200 * 600 px", "1000 * 500 px"];
         _targetBitmapSize = AvailableBitmapSize.Where(f =>
                 f.Contains(_generalSettings.CanvasWidth.ToString()) &&
                 f.Contains(_generalSettings.CanvasHeight.ToString()))
@@ -442,6 +442,12 @@ public class AppSettingsViewModel : ViewModelBase
                 break;
             case "1024 * 768 px":
                 return new Size(1024, 768);
+                break;
+            case "1200 * 600 px":
+                return new Size(1200, 600);
+                break;
+            case "1000 * 500 px":
+                return new Size(1000, 500);
                 break;
             default:
                 return new Size(750, 500);

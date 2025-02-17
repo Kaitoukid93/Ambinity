@@ -15,7 +15,7 @@
         <!-- </Grid> -->
         <Grid  ColumnDefinitions="Auto,*">
             <StackPanel Grid.Column="1" Spacing="2">
-                <TextBox Height="25"
+                <TextBox Height="25" IsVisible="{Binding SearchEnable}"
                          x:Name="searchBox"
                          Margin="20,0,20,0"
                          VerticalContentAlignment="Center"

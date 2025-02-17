@@ -15,6 +15,18 @@ public class LightingProfileAssetsViewModel : AssetsViewModelBase
     {
     }
 
+    private int _itemsRows;
+
+    public int ItemsRows
+    {
+        get => _itemsRows;
+        set
+        {
+            _itemsRows = value;
+            OnPropertyChanged();
+        }
+    }
+
     public override async Task Init(CollectableItemRepository localRepo, OnlineItemRepository onlineRepo)
     {
         await base.Init(localRepo, onlineRepo);
