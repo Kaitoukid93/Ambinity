@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/chul-sookim/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj": {}
+    "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj": {}
   },
   "projects": {
-    "/Users/chul-sookim/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj": {
+    "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj": {
       "version": "3.1.1",
       "restore": {
-        "projectUniqueName": "/Users/chul-sookim/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
+        "projectUniqueName": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
         "projectName": "OpenRGB.NET",
-        "projectPath": "/Users/chul-sookim/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
-        "packagesPath": "/Users/chul-sookim/.nuget/packages/",
-        "outputPath": "/Users/chul-sookim/RiderProjects/Ambinity/OpenRGB.NET/obj/",
+        "projectPath": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
+        "packagesPath": "/Users/zoe/.nuget/packages/",
+        "outputPath": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/chul-sookim/.nuget/NuGet/NuGet.Config"
+          "/Users/zoe/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -36,8 +36,9 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "direct"
-        }
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -76,7 +77,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.405/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/Users/zoe/.dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
