@@ -180,7 +180,7 @@
                                         <ui:PathIconSource Data="{DynamicResource plugin}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                        <ToggleSwitch Margin="40,0" x:Name="ORGBoutline"></ToggleSwitch>
+                                        <ToggleSwitch IsChecked="{Binding GeneralSettings.EnableOpenRGB}" Margin="40,0" x:Name="ORGBoutline"></ToggleSwitch>
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
 

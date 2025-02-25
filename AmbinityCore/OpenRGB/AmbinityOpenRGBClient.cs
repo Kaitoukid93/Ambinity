@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using AmbinityCore.DataBase;
+using AmbinityCore.Models.GeneralSetting;
 using OpenRGB.NET;
 using Polly;
 using Polly.Retry;

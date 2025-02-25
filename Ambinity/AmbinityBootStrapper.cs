@@ -341,6 +341,7 @@ public class AmbinityBootStrapper
             await Task.Delay(100);
             
             serialControllerRepository.Init();
+            if(_generalSettingsManager.Settings.EnableOpenRGB)
             openRGBControllerRepository.Init();
         });
         //run the profile decoder for rendering to device
