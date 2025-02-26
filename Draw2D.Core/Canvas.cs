@@ -190,6 +190,9 @@ namespace Draw2D.Core
 
         public Figure BringToFront(Figure figure)
         {
+            //why mac os throw on this one, I dont know...
+            if(Figures.Count()==0)
+            return null;
             var maxZOrder = Figures.Max(f => f.ZOrder);
             if (figure.ZOrder <= maxZOrder)
             {

@@ -181,6 +181,7 @@ public class SerialControllerProvider
         controller.RegisterLEDController();
         controller.RegisterFanController();
         NewDeviceFound?.Invoke(controller);
+        _discoveryService.PortInUse.Add(controller.SerialPort);
     }
 
     public void Hold()

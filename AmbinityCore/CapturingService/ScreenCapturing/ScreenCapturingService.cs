@@ -32,9 +32,9 @@ public class ScreenCapturingService : ICapturingService
         if (!IsEnabled)
             return;
         _screenCaptureService?.Dispose();
-        _screenCaptureService ??= new DX11ScreenCaptureService();
-        IEnumerable<GraphicsCard> graphicsCards = _screenCaptureService.GetGraphicsCards();
-        _availableScreen = _screenCaptureService.GetDisplays(graphicsCards.First()).ToList();
+        _screenCaptureService ??= new SCKScreenCaptureService();
+        var graphicsCards = new GraphicsCard();
+        _availableScreen = _screenCaptureService.GetDisplays(graphicsCards).ToList();
         _screenCaptures = new List<IScreenCapture>();
         foreach (var display in _availableScreen)
         {
@@ -117,7 +117,7 @@ public class ScreenCapturingService : ICapturingService
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    protected void Dispose(bool disposing)
     {
         if (_disposed)
         {

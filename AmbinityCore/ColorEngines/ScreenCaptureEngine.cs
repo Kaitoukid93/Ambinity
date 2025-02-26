@@ -20,7 +20,7 @@ public class ScreenCaptureEngine : IColorEngine
         _buffer = buffer;
         _capturingServiceProvider = capturingServiceProvider;
         _deviceRepository = deviceRepository;
-        
+
     }
 
     private void OnDeviceListUpdated()
@@ -30,6 +30,10 @@ public class ScreenCaptureEngine : IColorEngine
 
     public bool IsAvailable { get; private set; } = true;
     public LightingZone Zone => _zone;
+    /// <summary>
+    /// SCK capture use scaling factor of it's own
+    /// </summary>
+    private double _displayScalingFactor = 1.0f;
     private LightingZone _zone;
     private readonly FrameBuffer _buffer;
     private readonly CapturingServiceProvider _capturingServiceProvider;
@@ -73,25 +77,26 @@ public class ScreenCaptureEngine : IColorEngine
             Log.Error("Screen Capture Engine Init Failed");
             return;
         }
-
-        var left = _config.ScreenCaptureArea.RatioX * _screenCapture.Display.Width;
-        var top = _config.ScreenCaptureArea.RatioY * _screenCapture.Display.Height;
-        var width = _config.ScreenCaptureArea.RatioWidth * _screenCapture.Display.Width;
-        var height = _config.ScreenCaptureArea.RatioHeight * _screenCapture.Display.Height;
+        if (_screenCapture is SCKScreenCapture sckScreenCapture)
+        {
+            _displayScalingFactor = sckScreenCapture.ScalingFactor;
+        }
+        var left = _config.ScreenCaptureArea.RatioX * _screenCapture.Display.Width * _displayScalingFactor;
+        var top = _config.ScreenCaptureArea.RatioY * _screenCapture.Display.Height * _displayScalingFactor;
+        var width = _config.ScreenCaptureArea.RatioWidth * _screenCapture.Display.Width * _displayScalingFactor;
+        var height = _config.ScreenCaptureArea.RatioHeight * _screenCapture.Display.Height * _displayScalingFactor;
         if (_captureZone != null)
             _screenCapture?.UnregisterCaptureZone(_captureZone);
         try
         {
             _captureZone = _screenCapture.RegisterCaptureZone((int)left, (int)top, (int)width,
-                (int)height, downscaleLevel: 3);
+                (int)height, downscaleLevel: 1);
         }
         catch (Exception ex)
         {
             Log.Error(ex.ToString());
             return;
         }
-
-        _reusableRow = new byte[(int)_zone.Width * 4];
         UpdatePixelData();
     }
 
@@ -118,17 +123,21 @@ public class ScreenCaptureEngine : IColorEngine
                     }
                 }
             }
-         
+
         }
     }
 
     public void Render()
     {
-        if(_captureZone ==null)
+        if (_captureZone == null)
             return;
         using (_captureZone.Lock())
         {
             IImage image = _captureZone.Image;
+            if (_reusableRow == null)
+            {
+                _reusableRow = new byte[image.Width * 4];
+            }
             Span<byte> row = _reusableRow;
             //render whole image
 

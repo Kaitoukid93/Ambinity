@@ -29,7 +29,7 @@ public class AudioCapturingService : ICapturingService
     public AudioCapturingService(BassAudioDeviceEnumerationService enumerationService,
         GeneralSettingsManager settingsManager)
     {
-        IsEnabled = settingsManager.Settings.EnableAudioCapture;
+        IsEnabled = settingsManager.Settings.EnableAudioCapture && !OperatingSystem.IsMacOS();
         _enumerationService = enumerationService;
         _availableAudioCapture = new List<AudioCaptureBasic>();
         _process = new WasapiProcedure(Process);
@@ -212,7 +212,7 @@ public class AudioCapturingService : ICapturingService
         //Bass.BASS_Free();
         if (_bassInitialized)
             return;
-         Bass.Configure(Configuration.UpdateThreads, false);
+        Bass.Configure(Configuration.UpdateThreads, false);
         Bass.Configure(Configuration.IncludeDefaultDevice, true);
         BassWasapi.SetNotify(_notifyProc, IntPtr.Zero);
         var result = Bass.Init(0, 44100, DeviceInitFlags.Default, IntPtr.Zero);

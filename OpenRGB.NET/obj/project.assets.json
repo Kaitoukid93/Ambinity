@@ -2,108 +2,97 @@
   "version": 3,
   "targets": {
     "net8.0": {
-      "Microsoft.NET.ILLink.Tasks/8.0.11": {
-        "type": "package",
-        "build": {
-          "build/Microsoft.NET.ILLink.Tasks.props": {}
-        }
-      }
-    },
-    "net8.0/win-x64": {
-      "Microsoft.NET.ILLink.Tasks/8.0.11": {
-        "type": "package",
-        "build": {
-          "build/Microsoft.NET.ILLink.Tasks.props": {}
-        }
+      "ErrorProne.NET.CoreAnalyzers/0.4.0-beta.1": {
+        "type": "package"
+      },
+      "ErrorProne.NET.Structs/0.4.0-beta.1": {
+        "type": "package"
+      },
+      "NonCopyableAnalyzer/0.7.0": {
+        "type": "package"
       }
     }
   },
   "libraries": {
-    "Microsoft.NET.ILLink.Tasks/8.0.11": {
-      "sha512": "zk5lnZrYJgtuJG8L4v17Ej8rZ3PUcR2iweNV08BaO5LbYHIi2wNaVNcJoLxvqgQdnjLlKnCCfVGLDr6QHeAarQ==",
+    "ErrorProne.NET.CoreAnalyzers/0.4.0-beta.1": {
+      "sha512": "jW7IDd7xMJoz2IyhyI2NE7JB5o+mH9AuLHDh4I79dL/WpbLRhPGXlcK1GmZa2HjSXEl2a9zXQ4/Hyo9lOaNq1g==",
       "type": "package",
-      "path": "microsoft.net.illink.tasks/8.0.11",
+      "path": "errorprone.net.coreanalyzers/0.4.0-beta.1",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "Icon.png",
-        "LICENSE.TXT",
-        "Sdk/Sdk.props",
-        "THIRD-PARTY-NOTICES.TXT",
-        "analyzers/dotnet/cs/ILLink.CodeFixProvider.dll",
-        "analyzers/dotnet/cs/ILLink.RoslynAnalyzer.dll",
-        "build/Microsoft.NET.ILLink.Analyzers.props",
-        "build/Microsoft.NET.ILLink.Tasks.props",
-        "build/Microsoft.NET.ILLink.targets",
-        "microsoft.net.illink.tasks.8.0.11.nupkg.sha512",
-        "microsoft.net.illink.tasks.nuspec",
-        "tools/net472/ILLink.Tasks.dll",
-        "tools/net472/ILLink.Tasks.dll.config",
-        "tools/net472/Mono.Cecil.Mdb.dll",
-        "tools/net472/Mono.Cecil.Pdb.dll",
-        "tools/net472/Mono.Cecil.Rocks.dll",
-        "tools/net472/Mono.Cecil.dll",
-        "tools/net472/Sdk/Sdk.props",
-        "tools/net472/System.Buffers.dll",
-        "tools/net472/System.Collections.Immutable.dll",
-        "tools/net472/System.Memory.dll",
-        "tools/net472/System.Numerics.Vectors.dll",
-        "tools/net472/System.Reflection.Metadata.dll",
-        "tools/net472/System.Runtime.CompilerServices.Unsafe.dll",
-        "tools/net472/build/Microsoft.NET.ILLink.Analyzers.props",
-        "tools/net472/build/Microsoft.NET.ILLink.Tasks.props",
-        "tools/net472/build/Microsoft.NET.ILLink.targets",
-        "tools/net8.0/ILLink.Tasks.deps.json",
-        "tools/net8.0/ILLink.Tasks.dll",
-        "tools/net8.0/Mono.Cecil.Mdb.dll",
-        "tools/net8.0/Mono.Cecil.Pdb.dll",
-        "tools/net8.0/Mono.Cecil.Rocks.dll",
-        "tools/net8.0/Mono.Cecil.dll",
-        "tools/net8.0/Sdk/Sdk.props",
-        "tools/net8.0/build/Microsoft.NET.ILLink.Analyzers.props",
-        "tools/net8.0/build/Microsoft.NET.ILLink.Tasks.props",
-        "tools/net8.0/build/Microsoft.NET.ILLink.targets",
-        "tools/net8.0/illink.deps.json",
-        "tools/net8.0/illink.dll",
-        "tools/net8.0/illink.runtimeconfig.json",
-        "useSharedDesignerContext.txt"
+        "analyzers/dotnet/cs/ErrorProne.NET.Core.dll",
+        "analyzers/dotnet/cs/ErrorProne.Net.CoreAnalyzers.CodeFixes.dll",
+        "analyzers/dotnet/cs/ErrorProne.Net.CoreAnalyzers.dll",
+        "analyzers/dotnet/cs/RuntimeContracts.dll",
+        "errorprone.net.coreanalyzers.0.4.0-beta.1.nupkg.sha512",
+        "errorprone.net.coreanalyzers.nuspec",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
+      ]
+    },
+    "ErrorProne.NET.Structs/0.4.0-beta.1": {
+      "sha512": "3cTaYc/hcDJumpCTjYNu+X0IEyTFRKHsIlsHwDjju1rGpH7/9dcostXJlRtmIIno6PgRWIh5ZalHDq76QYUA2w==",
+      "type": "package",
+      "path": "errorprone.net.structs/0.4.0-beta.1",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "analyzers/dotnet/cs/ErrorProne.NET.Core.dll",
+        "analyzers/dotnet/cs/ErrorProne.Net.StructAnalyzers.CodeFixes.dll",
+        "analyzers/dotnet/cs/ErrorProne.Net.StructAnalyzers.dll",
+        "analyzers/dotnet/cs/RuntimeContracts.dll",
+        "errorprone.net.structs.0.4.0-beta.1.nupkg.sha512",
+        "errorprone.net.structs.nuspec",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
+      ]
+    },
+    "NonCopyableAnalyzer/0.7.0": {
+      "sha512": "G2vRegGULhvTQ3/LzI0bC7nSSoEGtuvr1LJSWSoLmdVuJn5YNlMtTBAF/O0Rl1Acf2w8QjLuzoxiGagjvglicQ==",
+      "type": "package",
+      "path": "noncopyableanalyzer/0.7.0",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "analyzers/dotnet/cs/NonCopyable.dll",
+        "noncopyableanalyzer.0.7.0.nupkg.sha512",
+        "noncopyableanalyzer.nuspec",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
       ]
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "Microsoft.NET.ILLink.Tasks >= 8.0.11"
+      "ErrorProne.NET.CoreAnalyzers >= 0.4.0-beta.1",
+      "ErrorProne.NET.Structs >= 0.4.0-beta.1",
+      "NonCopyableAnalyzer >= 0.7.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\zOe\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/Users/zoe/.nuget/packages/": {}
   },
   "project": {
     "version": "3.1.1",
     "restore": {
-      "projectUniqueName": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\OpenRGB.NET\\OpenRGB.NET.csproj",
+      "projectUniqueName": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
       "projectName": "OpenRGB.NET",
-      "projectPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\OpenRGB.NET\\OpenRGB.NET.csproj",
-      "packagesPath": "C:\\Users\\zOe\\.nuget\\packages\\",
-      "outputPath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\OpenRGB.NET\\obj\\",
+      "projectPath": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
+      "packagesPath": "/Users/zoe/.nuget/packages/",
+      "outputPath": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\zOe\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/zoe/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
-        "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\OpenRGB.NET\\bin\\Release": {},
+        "/usr/local/share/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -120,19 +109,28 @@
       "restoreAuditProperties": {
         "enableAudit": "true",
         "auditLevel": "low",
-        "auditMode": "all"
-      },
-      "SdkAnalysisLevel": "9.0.100"
+        "auditMode": "direct"
+      }
     },
     "frameworks": {
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
-          "Microsoft.NET.ILLink.Tasks": {
+          "ErrorProne.NET.CoreAnalyzers": {
+            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "suppressParent": "All",
             "target": "Package",
-            "version": "[8.0.11, )",
-            "autoReferenced": true
+            "version": "[0.4.0-beta.1, )"
+          },
+          "ErrorProne.NET.Structs": {
+            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[0.4.0-beta.1, )"
+          },
+          "NonCopyableAnalyzer": {
+            "target": "Package",
+            "version": "[0.7.0, )"
           }
         },
         "imports": [
@@ -151,12 +149,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
-      }
-    },
-    "runtimes": {
-      "win-x64": {
-        "#import": []
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.406/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

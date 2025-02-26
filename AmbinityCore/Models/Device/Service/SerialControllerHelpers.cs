@@ -1,11 +1,8 @@
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Text;
-using System.Text.RegularExpressions;
-using AmbinityCore.DataStream;
 using AmbinityCore.Models.Device.Controller;
 using Avalonia.Media;
-using Microsoft.Win32;
 using Serilog;
 
 namespace AmbinityCore.Models.Device.Service;
@@ -20,7 +17,7 @@ public class SerialControllerHelpers
     {
     }
 
-    public byte[] GetSettingOutputStream(SerialController controller)
+    private byte[] GetSettingOutputStream(SerialController controller)
     {
         var ledSettings = controller.LedController.HardwareSettings;
         var fanSettings = controller.FanController?.HardwareSettings;
@@ -54,7 +51,7 @@ public class SerialControllerHelpers
         return outputStream;
     }
 
-    public byte[] GetEEPRomDataOutputStream()
+    private byte[] GetEEPRomDataOutputStream()
     {
         var outputStream = new byte[48];
         Buffer.BlockCopy(sendCommand, 0, outputStream, 0, sendCommand.Length);
@@ -62,7 +59,7 @@ public class SerialControllerHelpers
         return outputStream;
     }
 
-    public bool IsFirmwareValid(SerialController controller)
+    private bool IsFirmwareValid(SerialController controller)
     {
         if (controller.HardwareType == HardwareTypeEnum.AmbinoBasic ||
             controller.HardwareType == HardwareTypeEnum.AmbinoEDGE ||
@@ -519,35 +516,4 @@ public class SerialControllerHelpers
         return await Task.FromResult(true);
     }
 
-    public static List<string> GetComPortByID(String VID, String PID)
-    {
-        String pattern = String.Format("^VID_{0}.PID_{1}", VID, PID);
-        Regex _rx = new Regex(pattern, RegexOptions.IgnoreCase);
-        List<string> comports = new List<string>();
-        RegistryKey rk1 = Registry.LocalMachine;
-        RegistryKey rk2 = rk1.OpenSubKey("SYSTEM\\CurrentControlSet\\Enum");
-        foreach (String s3 in rk2.GetSubKeyNames())
-        {
-            RegistryKey rk3 = rk2.OpenSubKey(s3);
-            foreach (String s in rk3.GetSubKeyNames())
-            {
-                if (_rx.Match(s).Success)
-                {
-                    RegistryKey rk4 = rk3.OpenSubKey(s);
-                    foreach (String s2 in rk4.GetSubKeyNames())
-                    {
-                        RegistryKey rk5 = rk4.OpenSubKey(s2);
-                        RegistryKey rk6 = rk5.OpenSubKey("Device Parameters");
-                        string portName = (string)rk6.GetValue("PortName");
-                        if (!String.IsNullOrEmpty(portName) && SerialPort.GetPortNames().Contains(portName))
-                        {
-                            comports.Add((string)rk6.GetValue("PortName"));
-                        }
-                    }
-                }
-            }
-        }
-
-        return comports;
-    }
 }

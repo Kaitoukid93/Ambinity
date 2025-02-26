@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>OpenRGB.NET</id>
+    <version>3.1.1</version>
+    <authors>Diogo Trindade</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <projectUrl>https://github.com/diogotr7/OpenRGB.NET</projectUrl>
+    <description>Client for the OpenRGB SDK</description>
+    <copyright>Copyright © 2020 Diogo Trindade</copyright>
+    <tags>openrgb, rgb, sdk, client</tags>
+    <repository type="git" url="https://github.com/diogotr7/OpenRGB.NET" commit="b761d61785d66bd473c478540b6afd8c1d7a0d93" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="NonCopyableAnalyzer" version="0.7.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/bin/Debug/net8.0/OpenRGB.NET.dll" target="lib/net8.0/OpenRGB.NET.dll" />
+    <file src="/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/bin/Debug/net8.0/OpenRGB.NET.xml" target="lib/net8.0/OpenRGB.NET.xml" />
+  </files>
+</package>

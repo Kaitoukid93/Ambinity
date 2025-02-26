@@ -1,10 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "rz6Uk0JbyBw=",
+  "dgSpecHash": "5XH42KzyZ/M=",
   "success": true,
-  "projectFilePath": "D:\\AmbinityAvalonia\\Ambinity_Avalonia\\OpenRGB.NET\\OpenRGB.NET.csproj",
+  "projectFilePath": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\zOe\\.nuget\\packages\\microsoft.net.illink.tasks\\8.0.11\\microsoft.net.illink.tasks.8.0.11.nupkg.sha512"
+    "/Users/zoe/.nuget/packages/errorprone.net.coreanalyzers/0.4.0-beta.1/errorprone.net.coreanalyzers.0.4.0-beta.1.nupkg.sha512",
+    "/Users/zoe/.nuget/packages/errorprone.net.structs/0.4.0-beta.1/errorprone.net.structs.0.4.0-beta.1.nupkg.sha512",
+    "/Users/zoe/.nuget/packages/noncopyableanalyzer/0.7.0/noncopyableanalyzer.0.7.0.nupkg.sha512"
   ],
   "logs": []
 }

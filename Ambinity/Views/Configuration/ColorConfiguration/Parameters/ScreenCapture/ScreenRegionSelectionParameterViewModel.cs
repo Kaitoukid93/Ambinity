@@ -24,6 +24,7 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
     private readonly IWindowService _windowService;
     private ScreenCaptureRegionSelectionViewModel _regionSelectionViewModel;
     private readonly GeneralSettingsManager _settingsManager;
+    private double _displayScalingFactor = 1.0d;
     private readonly ScreenCaptureConfiguration _config;
     private ICaptureZone _captureZone;
     private IScreenCapture _screenCapture;
@@ -87,6 +88,10 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
     {
         _shouldShowImage = true;
         _capturingService.RegisterUse();
+        if(_screenCapture is SCKScreenCapture sckScreenCapture)
+        {
+            _displayScalingFactor = sckScreenCapture.ScalingFactor;
+        }
         if (_captureZone != null)
         {
             try
@@ -100,10 +105,10 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
         }
         try
         {
-            var left = _config.ScreenCaptureArea.RatioX * _screenCapture.Display.Width;
-            var top = _config.ScreenCaptureArea.RatioY * _screenCapture.Display.Height;
-            var width = _config.ScreenCaptureArea.RatioWidth * _screenCapture.Display.Width;
-            var height = _config.ScreenCaptureArea.RatioHeight * _screenCapture.Display.Height;
+            var left = _config.ScreenCaptureArea.RatioX * _screenCapture.Display.Width*_displayScalingFactor;
+            var top = _config.ScreenCaptureArea.RatioY * _screenCapture.Display.Height*_displayScalingFactor;
+            var width = _config.ScreenCaptureArea.RatioWidth * _screenCapture.Display.Width*_displayScalingFactor;
+            var height = _config.ScreenCaptureArea.RatioHeight * _screenCapture.Display.Height*_displayScalingFactor;
             _captureZone = _screenCapture.RegisterCaptureZone((int)left, (int)top, (int)width,
                 (int)height, downscaleLevel: 3);
             _reusableRow = new byte[(int)_captureZone.Width * 4];
@@ -230,7 +235,7 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
                 Log.Error(ex.ToString());
             }
         }
-            
+
         _capturingService.FrameUpdated -= OnFrameUpdate;
         _capturingService.UnregisterUse();
     }

@@ -1,0 +1,1054 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OpenRGB.NET</name>
+    </assembly>
+    <members>
+        <member name="T:OpenRGB.NET.ColorMode">
+            <summary>
+                Enum representing how a specific Mode uses
+                the colors assigned to it.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ColorMode.None">
+            <summary>
+                The mode does not use any color.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ColorMode.PerLed">
+            <summary>
+                The mode sets each led to a specific color.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ColorMode.ModeSpecific">
+            <summary>
+                The mode uses one color, specific to the effect.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ColorMode.Random">
+            <summary>
+                The mode has no set color, uses random colors instead.
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.CommandId">
+            <summary>
+                Enum representing the various commands supported by the SDK server.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.RequestControllerCount">
+            <summary>
+                Request the number of device controllers from the server.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.RequestControllerData">
+            <summary>
+                Request the data block of a controller from the server.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.RequestProtocolVersion">
+            <summary>
+                Request the latest supported SDK server protocol version.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.SetClientName">
+            <summary>
+                Send the server the name of the client.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.DeviceListUpdated">
+            <summary>
+                Indicates device list has been updated.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.RequestProfiles">
+            <summary>
+                Request list of profiles from the server.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.SaveProfile">
+            <summary>
+                Saves the current profile to disk.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.LoadProfile">
+            <summary>
+                Load a given profile.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.DeleteProfile">
+            <summary>
+                Delete a given profile.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.RequestPlugins">
+            <summary>
+                Request list of plugins from the server.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.PluginSpecific">
+            <summary>
+                Interact with a plugin installed on the server.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.ResizeZone">
+            <summary>
+                Calls RGBController::ResizeZone() on the server. Not implemented.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.UpdateLeds">
+            <summary>
+                Calls RGBController::UpdateLEDs() on the server.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.UpdateZoneLeds">
+            <summary>
+                Calls RGBController::UpdateZoneLEDs() on the server.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.UpdateSingleLed">
+            <summary>
+                Calls RGBController::UpdateSingleLED() on the server. Not implemented.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.SetCustomMode">
+            <summary>
+                Calls RGBController::SetCustomMode() on the server.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.UpdateMode">
+            <summary>
+                Calls RGBController::UpdateMode() on the server.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.CommandId.SaveMode">
+            <summary>
+                Calls RGBController::SaveMode() on the server.
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.DeviceType">
+            <summary>
+                Enum representing the various device types supported.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Motherboard">
+            <summary>
+                Motherboard device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Dram">
+            <summary>
+                RAM device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Gpu">
+            <summary>
+                GPU device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Cooler">
+            <summary>
+                CPU device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Ledstrip">
+            <summary>
+                LED strip device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Keyboard">
+            <summary>
+                Keyboard device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Mouse">
+            <summary>
+                Mouse device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Mousemat">
+            <summary>
+                Mousemat device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Headset">
+            <summary>
+                Headset device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.HeadsetStand">
+            <summary>
+                Headset stand device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Gamepad">
+            <summary>
+                Gamepad device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Light">
+            <summary>
+                Light device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Speaker">
+            <summary>
+                Speaker device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Virtual">
+            <summary>
+                Virtual device type.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.DeviceType.Unknown">
+            <summary>
+                Unknown device type.
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.Direction">
+            <summary>
+                Enum representing the various directions a specific mode can have.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.Direction.None">
+            <summary>
+                No direction.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.Direction.Left">
+            <summary>
+                Left direction.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.Direction.Right">
+            <summary>
+                Right direction.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.Direction.Up">
+            <summary>
+                Up direction.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.Direction.Down">
+            <summary>
+                Down direction.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.Direction.Horizontal">
+            <summary>
+                Horizontal direction.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.Direction.Vertical">
+            <summary>
+                Vertical direction.
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.ModeFlags">
+            <summary>
+                Flags representing the capabilities a mode can have.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ModeFlags.None">
+            <summary>
+                This mode has no capabilities.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ModeFlags.HasSpeed">
+            <summary>
+                This mode has a speed parameter.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ModeFlags.HasDirectionLR">
+            <summary>
+                This Mode has a Left-Right direction parameter.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ModeFlags.HasDirectionUD">
+            <summary>
+                This Mode has an Up-Down direction parameter.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ModeFlags.HasDirectionHV">
+            <summary>
+                This Mode has an Horizontal-Vertical direction parameter.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ModeFlags.HasBrightness">
+            <summary>
+                This Mode has a brightness parameter.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ModeFlags.HasPerLedColor">
+            <summary>
+                This Mode has per-LED colors.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ModeFlags.HasModeSpecificColor">
+            <summary>
+                This Mode has mode specific colors.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ModeFlags.HasRandomColor">
+            <summary>
+                This Mode has a random color option.
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.ZoneType">
+            <summary>
+                Enum representing the different types a zone can be.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ZoneType.Single">
+            <summary>
+                This zone represents one LED.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ZoneType.Linear">
+            <summary>
+                This zone represents s sequence of LEDs in a line, like an LED strip.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ZoneType.Matrix">
+            <summary>
+                This zone represents a matrix of LEDs in a grid, like a keyboard.
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.IOpenRgbClient">
+            <summary>
+                Interface for an OpenRGB SDK client.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.IOpenRgbClient.Connected">
+            <summary>
+                Represents the connection status of the socket to the server
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.IOpenRgbClient.MaxSupportedProtocolVersion">
+            <summary>
+                The maximum protocol version this implementation supports
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.IOpenRgbClient.ClientProtocolVersion">
+            <summary>
+                The protocol version to be used by this instance of <see cref="T:OpenRGB.NET.IOpenRgbClient" />
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.IOpenRgbClient.CommonProtocolVersion">
+            <summary>
+                The minimum common protocol version between this client and the connected server. Only set after the first
+                <see cref="M:OpenRGB.NET.IOpenRgbClient.Connect" />
+            </summary>
+        </member>
+        <member name="E:OpenRGB.NET.IOpenRgbClient.DeviceListUpdated">
+            <summary>
+                Triggered when the device list updates
+            </summary>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.Connect">
+            <summary>
+                Connects manually to the server. Only needs to be called if the constructor was called
+                with auto-connect set to false.
+            </summary>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.GetControllerCount">
+            <summary>
+                Requests the controller count from the server.
+            </summary>
+            <returns>The amount of controllers.</returns>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.GetControllerData(System.Int32)">
+            <summary>
+                Requests the data block for a given controller index.
+            </summary>
+            <param name="deviceId">The index of the controller to request the data from.</param>
+            <returns>The Device containing the decoded data for the controller with the given id.</returns>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.GetAllControllerData">
+            <summary>
+                Requests the data for all the controllers detected by the server.
+            </summary>
+            <returns>An array with the information for all the devices.</returns>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.GetProfiles">
+            <summary>
+                Requests existing profiles on the server
+            </summary>
+            <returns>An array with profile names</returns>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.LoadProfile(System.String)">
+            <summary>
+                Loads the provided profile on the server
+            </summary>
+            <param name="profile">Name of the profile to load</param>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.DeleteProfile(System.String)">
+            <summary>
+                Deletes the provided profile on the server
+            </summary>
+            <param name="profile"> Name of the profile to delete</param>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.SaveProfile(System.String)">
+            <summary>
+                Saves the current state as a profile with the provided name
+            </summary>
+            <param name="profile"> Name of the profile to save</param>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.GetPlugins">
+            <summary>
+                Requests the list of plugins from the server.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.ResizeZone(System.Int32,System.Int32,System.Int32)">
+            <summary>
+                Resizes the given zone to the given size.
+            </summary>
+            <param name="deviceId"></param>
+            <param name="zoneId"></param>
+            <param name="size"></param>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.UpdateLeds(System.Int32,System.ReadOnlySpan{OpenRGB.NET.Color})">
+            <summary>
+                Updates the LEDs for the given device.
+                Make sure the array has the correct number of LEDs.
+            </summary>
+            <param name="deviceId"></param>
+            <param name="colors"></param>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.UpdateZoneLeds(System.Int32,System.Int32,System.ReadOnlySpan{OpenRGB.NET.Color})">
+            <summary>
+                Updates the LEDs of a given device and zone.
+                Make sure the array has the correct number of LEDs for the zone.
+            </summary>
+            <param name="deviceId"></param>
+            <param name="zoneId"></param>
+            <param name="colors"></param>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.UpdateSingleLed(System.Int32,System.Int32,OpenRGB.NET.Color)">
+            <summary>
+                Updates a single LED of a given device.
+            </summary>
+            <param name="deviceId">The id of the device to update</param>
+            <param name="ledId">which led to update on the device</param>
+            <param name="color">what color to set the led to</param>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.SetCustomMode(System.Int32)">
+            <summary>
+                Sets the mode of the specified device to "Custom".
+            </summary>
+            <param name="deviceId"></param>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.UpdateMode(System.Int32,System.Int32,System.Nullable{System.UInt32},System.Nullable{OpenRGB.NET.Direction},OpenRGB.NET.Color[])">
+            <summary>
+                Sets the specified mode on the specified device.
+                Any optional parameters not set will be left as received from the server.
+            </summary>
+            <param name="deviceId">The id of the device to update</param>
+            <param name="modeId">The id of the zone on the device yp update</param>
+            <param name="speed">The optional speed value to set.</param>
+            <param name="direction">The optional direction value to set</param>
+            <param name="colors">The optional colors value to set.</param>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.SaveMode(System.Int32,System.Int32)">
+            <summary>
+                Sets the specified mode on the specified device and zone.
+            </summary>
+            <param name="deviceId">The id of the device to update</param>
+            <param name="modeId">The id of the mode on the device to update</param>
+        </member>
+        <member name="M:OpenRGB.NET.IOpenRgbClient.PluginSpecific(System.Int32,System.Int32,System.ReadOnlySpan{System.Byte})">
+            <summary>
+                Sends plugin-specific data to the server.
+            </summary>
+            <param name="pluginId">The id of the plugin to send the data to</param>
+            <param name="pluginPacketType">The type of data to send to the plugin</param>
+            <param name="data">The data sent to the plugin</param>
+        </member>
+        <member name="T:OpenRGB.NET.Color">
+            <summary>
+                Represents a color.
+            </summary>
+            <param name="R">The Red component</param>
+            <param name="G">The Green component</param>
+            <param name="B">The Blue component</param>
+        </member>
+        <member name="M:OpenRGB.NET.Color.#ctor(System.Byte,System.Byte,System.Byte)">
+            <summary>
+                Represents a color.
+            </summary>
+            <param name="R">The Red component</param>
+            <param name="G">The Green component</param>
+            <param name="B">The Blue component</param>
+        </member>
+        <member name="P:OpenRGB.NET.Color.R">
+            <summary>
+                Red value of the color.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Color.G">
+            <summary>
+                Green value of the color.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Color.B">
+            <summary>
+                Blue value of the color.
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.Device">
+            <summary>
+                Device class containing all the info present in an OpenRGB RGBController
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.Index">
+            <summary>
+                The index of the device.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.Type">
+            <summary>
+                The type of the device.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.Name">
+            <summary>
+                The name of the device.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.Vendor">
+            <summary>
+                The vendor of the device. Will be null on protocol versions below 1.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.Description">
+            <summary>
+                The description of device.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.Version">
+            <summary>
+                The version of the device. Usually a firmware version.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.Serial">
+            <summary>
+                The serial number of the device.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.Location">
+            <summary>
+                The location of the device. Usually the device file on the filesystem.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.ActiveModeIndex">
+            <summary>
+                The index of the currently active mode on the device.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.Modes">
+            <summary>
+                The modes the device can be set to.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.Zones">
+            <summary>
+                The lighting zones present on the device.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.Leds">
+            <summary>
+                All the leds present on the device.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.Colors">
+            <summary>
+                The colors of all the leds present on the device.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Device.ActiveMode">
+            <summary>
+                Shortcut for Modes[ActiveModeIndex], returns the currently active mode.
+            </summary>
+        </member>
+        <member name="M:OpenRGB.NET.Device.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:OpenRGB.NET.Led">
+            <summary>
+                Led class containing the name of the LED
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Led.Index">
+            <summary>
+              The index of the led.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Led.Name">
+            <summary>
+                The name of the led.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Led.Value">
+            <summary>
+                Device specific led value. Most likely not useful for the clients.
+            </summary>
+        </member>
+        <member name="M:OpenRGB.NET.Led.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:OpenRGB.NET.MatrixMap">
+            <summary>
+                Matrix Map class for the matrix Zone type
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.MatrixMap.Height">
+            <summary>
+                The height of the matrix.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.MatrixMap.Width">
+            <summary>
+                The width of the matrix.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.MatrixMap.Matrix">
+            <summary>
+                The matrix.
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.Mode">
+            <summary>
+                Mode class containing the parameters one mode has.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.ProtocolVersion">
+            <summary>
+                The version the mode was decoded in.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.Index">
+            <summary>
+              The index of the mode.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.Name">
+            <summary>
+                The name of the mode.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.Value">
+            <summary>
+                Device specific value for this mode. Most likely not useful for the client.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.Flags">
+            <summary>
+                Flags containing the features this mode supports.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.SpeedMin">
+            <summary>
+                The minimum speed value this mode supports.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.SpeedMax">
+            <summary>
+                The maximum speed value this mode supports.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.BrightnessMin">
+            <summary>
+                The minimum brightness value this mode supports.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.BrightnessMax">
+            <summary>
+                The maximum brightness value this mode supports.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.ColorMin">
+            <summary>
+                The minimum number of colors this mode supports.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.ColorMax">
+            <summary>
+                The maximum number of colors this mode supports.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.Speed">
+            <summary>
+                The current speed value of this mode.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.Brightness">
+            <summary>
+                The current brightness value of this mode.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.Direction">
+            <summary>
+                The current direction of this mode.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.ColorMode">
+            <summary>
+                Mode representing how the Colors are used for effects.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.Colors">
+            <summary>
+                The colors this mode uses for lighting.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.SupportsSpeed">
+            <summary>
+                Whether this mode supports speed.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.SupportsBrightness">
+            <summary>
+                Whether this mode supports brightness.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Mode.SupportsDirection">
+            <summary>
+                Whether this mode supports direction.
+            </summary>
+        </member>
+        <member name="M:OpenRGB.NET.Mode.SetSpeed(System.UInt32)">
+            <summary>
+              Sets the speed of the mode.
+            </summary>
+        </member>
+        <member name="M:OpenRGB.NET.Mode.SetBrightness(System.UInt32)">
+            <summary>
+             Sets the brightness of the mode. 
+            </summary>
+        </member>
+        <member name="M:OpenRGB.NET.Mode.SetDirection(OpenRGB.NET.Direction)">
+            <summary>
+             Sets the direction of the mode.
+            </summary>
+        </member>
+        <member name="M:OpenRGB.NET.Mode.SetColors(OpenRGB.NET.Color[])">
+            <summary>
+            Sets the colors of the mode.
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.Plugin">
+            <summary>
+                Represents a Plugin installed on the OpenRGB server.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Plugin.Name">
+            <summary>
+                The name of the plugin.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Plugin.Description">
+            <summary>
+               The description of the plugin.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Plugin.Version">
+            <summary>
+                The version of the plugin.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Plugin.Index">
+            <summary>
+                The index of the plugin.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Plugin.SdkVersion">
+            <summary>
+                The SDK version of the plugin.
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.ProtocolVersion">
+            <summary>
+                Describes a Protocol Version
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.ProtocolVersion.Number">
+            <summary>
+                The number of the protocol version
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.ProtocolVersion.SupportsVendorString">
+            <summary>
+                Whether the protocol version supports the vendor string
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.ProtocolVersion.SupportsProfileControls">
+            <summary>
+                Whether the protocol version supports profile controls
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.ProtocolVersion.SupportsBrightnessAndSaveMode">
+            <summary>
+                Whether the protocol version supports brightness and save mode
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.ProtocolVersion.SupportsSegmentsAndPlugins">
+            <summary>
+                Whether the protocol version supports segments
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ProtocolVersion.Invalid">
+            <summary>
+                The invalid protocol version.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ProtocolVersion.V0">
+            <summary>
+                The protocol version 0, the initial release.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ProtocolVersion.V1">
+            <summary>
+                The protocol version 1, with vendor string.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ProtocolVersion.V2">
+            <summary>
+                The protocol version 2, with profile controls.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ProtocolVersion.V3">
+            <summary>
+                The protocol version 3, with brightness and save mode.
+            </summary>
+        </member>
+        <member name="F:OpenRGB.NET.ProtocolVersion.V4">
+            <summary>
+                The protocol version 4, with segments.
+            </summary>
+        </member>
+        <member name="M:OpenRGB.NET.ProtocolVersion.FromNumber(System.UInt32)">
+            <summary>
+                Gets a protocol version from a number
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.Segment">
+            <summary>
+                Represents a segment of a Zone.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Segment.Index">
+            <summary>
+             The index of the segment.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Segment.Name">
+            <summary>
+                The name of the segment chosen by the user.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Segment.Type">
+            <summary>
+                The type of the zone the segment is part of.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Segment.Start">
+            <summary>
+                The index of the first LED in the segment.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Segment.LedCount">
+            <summary>
+                The number of LEDs in the segment.
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.Zone">
+            <summary>
+                Zone class containing the name, type and size of a Zone.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Zone.Index">
+            <summary>
+                The index of the zone.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Zone.DeviceIndex">
+            <summary>
+                The index of the zone's parent device
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Zone.Name">
+            <summary>
+                The name of the zone.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Zone.Type">
+            <summary>
+                The type of the zone.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Zone.LedCount">
+            <summary>
+                How many leds the zone has.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Zone.LedsMin">
+            <summary>
+                Minimum number of leds in the zone
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Zone.LedsMax">
+            <summary>
+                Maximum number of leds in the zone
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Zone.MatrixMap">
+            <summary>
+                A 2d Matrix containing the LED positions on the zone. Will be null if ZoneType is not ZoneType.MatrixMap
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.Zone.Segments">
+            <summary>
+                A list of segments in the zone. Will be null if protocol version is below 4.
+            </summary>
+        </member>
+        <member name="T:OpenRGB.NET.OpenRgbClient">
+            <summary>
+                Client for the OpenRGB SDK.
+            </summary>
+        </member>
+        <member name="P:OpenRGB.NET.OpenRgbClient.Connected">
+            <inheritdoc />
+        </member>
+        <member name="P:OpenRGB.NET.OpenRgbClient.MaxSupportedProtocolVersion">
+            <inheritdoc />
+        </member>
+        <member name="P:OpenRGB.NET.OpenRgbClient.ClientProtocolVersion">
+            <inheritdoc />
+        </member>
+        <member name="P:OpenRGB.NET.OpenRgbClient.CommonProtocolVersion">
+            <inheritdoc />
+        </member>
+        <member name="E:OpenRGB.NET.OpenRgbClient.DeviceListUpdated">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.#ctor(System.String,System.Int32,System.String,System.Boolean,System.Int32,System.UInt32)">
+            <summary>
+                Sets all the needed parameters to connect to the server.
+                Connects to the server immediately unless autoConnect is set to false.
+            </summary>
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.Connect">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.GetControllerCount">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.GetControllerData(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.GetAllControllerData">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.GetProfiles">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.GetPlugins">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.ResizeZone(System.Int32,System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.UpdateLeds(System.Int32,System.ReadOnlySpan{OpenRGB.NET.Color})">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.UpdateZoneLeds(System.Int32,System.Int32,System.ReadOnlySpan{OpenRGB.NET.Color})">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.UpdateSingleLed(System.Int32,System.Int32,OpenRGB.NET.Color)">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.SetCustomMode(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.LoadProfile(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.SaveProfile(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.DeleteProfile(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.UpdateMode(System.Int32,System.Int32,System.Nullable{System.UInt32},System.Nullable{OpenRGB.NET.Direction},OpenRGB.NET.Color[])">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.SaveMode(System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.PluginSpecific(System.Int32,System.Int32,System.ReadOnlySpan{System.Byte})">
+            <inheritdoc />
+        </member>
+        <member name="M:OpenRGB.NET.OpenRgbClient.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:OpenRGB.NET.Utils.ColorUtils">
+            <summary>
+                Utility class for colors.
+            </summary>
+        </member>
+        <member name="M:OpenRGB.NET.Utils.ColorUtils.FromHsv(System.Double,System.Double,System.Double)">
+            <summary>
+                Method used to create a color from HSV values.
+            </summary>
+            <param name="hue">Hue ranges from 0 to 360, input range wraps automatically.</param>
+            <param name="saturation">Ranges from 0.0 to 1.0.</param>
+            <param name="value">Ranges from 0.0 to 1.0.</param>
+            <returns>The color converted to RGB.</returns>
+        </member>
+        <member name="M:OpenRGB.NET.Utils.ColorUtils.ToHsv(OpenRGB.NET.Color)">
+            <summary>
+                Converts a color to HSV.
+            </summary>
+            <returns>Tuple with the HSV values.</returns>
+        </member>
+        <member name="M:OpenRGB.NET.Utils.ColorUtils.GetHueRainbow(System.Int32,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+                Generates a smooth rainbow with the given amount of colors.
+                Uses HSV conversion to get a hue-based rainbow.
+            </summary>
+            <param name="amount">How many colors to generate.</param>
+            <param name="hueStart">The hue of the first color, 0 to 360.</param>
+            <param name="huePercent">How much of the hue scale to use. 1.0 represents the full range.</param>
+            <param name="saturation">The HSV saturation of the colors, 0.0 to 1.0.</param>
+            <param name="value">The HSV value of the colors, 0.0 to 1.0.</param>
+            <returns>An collection of Colors in a rainbow pattern.</returns>
+        </member>
+        <member name="M:OpenRGB.NET.Utils.ColorUtils.GetSinRainbow(System.Int32,System.Int32,System.Int32,System.Double,System.Double)">
+            <summary>
+                Generates a smooth rainbow with the given amount of colors.
+                Uses sine waves to generate the pattern.
+            </summary>
+            <param name="amount">How many colors to generate.</param>
+            <param name="floor">The least bright any given RGB value can be.</param>
+            <param name="width">The brightness variation of any given RGB value.</param>
+            <param name="range">
+                How much of the sine wave is used to generate the colors. Decrease this value to get a fraction of
+                the spectrum. In percent.
+            </param>
+            <param name="offset">The value the first color of the sequence will be generated with.</param>
+            <returns>A collection of Colors in a rainbow pattern.</returns>
+        </member>
+        <member name="T:OpenRGB.NET.PacketHeader">
+            <summary>
+                Packet Header class containing the command ID and the length of the data to be sent.
+            </summary>
+        </member>
+        <member name="M:OpenRGB.NET.PacketHeader.#ctor(System.UInt32,OpenRGB.NET.CommandId,System.UInt32)">
+            <summary>
+                Packet Header class containing the command ID and the length of the data to be sent.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -50,10 +50,12 @@ using Avalonia.Media;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Draw2D.Core.Graphic;
 using FluentAvalonia.Styling;
+using LibreHardwareMonitor.Software;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Serilog;
 using Constants = AmbinityCore.Constants;
+using OperatingSystem = System.OperatingSystem;
 using RootViewModel = Ambinity.Views.Root.RootViewModel;
 
 namespace Ambinity;
@@ -64,7 +66,7 @@ public class AmbinityBootStrapper
 
     private static KnownTypesBinder _knownTypeBinders { get; set; }
     private static GeneralSettingsManager _generalSettingsManager;
-    
+
     private IDialogService _dialogService;
     private static Application? _application;
     private static IWindowService _windowService;
@@ -80,7 +82,7 @@ public class AmbinityBootStrapper
         //get settings
         _generalSettingsManager = Ioc.Default.GetRequiredService<GeneralSettingsManager>();
         //register auto starts
-       // ConfigureAutoStart();
+        // ConfigureAutoStart();
         //set theme and color
         ConfigureTheme();
         //configure json settings for all Serialize and Deserialize action ( this need for legacy adrilight json)
@@ -119,15 +121,15 @@ public class AmbinityBootStrapper
     {
         _knownTypeBinders = new KnownTypesBinder();
         JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
-            { TypeNameHandling = TypeNameHandling.Objects, SerializationBinder = _knownTypeBinders };
+        { TypeNameHandling = TypeNameHandling.Objects, SerializationBinder = _knownTypeBinders };
     }
 
     private static void ConfigureTheme()
     {
         AppThemeManager.UpdateAppAccentColor(_generalSettingsManager.Settings.PrimaryColor);
         AppThemeManager.SetAppTheme(_generalSettingsManager.Settings.SelectedTheme);
-        
-        
+
+
     }
 
     // private static void ConfigureAutoStart()
@@ -141,153 +143,156 @@ public class AmbinityBootStrapper
     {
         //create default frame buffer
         var mainFrameBuffer = new FrameBuffer(750, 500);
+        var serviceCollection = new ServiceCollection()
+            .AddSingleton<IMainWindowService, MainWindowService>()
+            .AddSingleton<IWindowService, WindowService>()
+            .AddSingleton<RootViewModel>()
+            .AddSingleton<GeneralSettingsManager>()
+            .AddSingleton<RootNavigationStores>()
+            .AddSingleton<AppSettingsViewModel>()
+            .AddSingleton<UpdateService>()
+            .AddSingleton<DeviceSettingsViewModel>()
+            .AddSingleton<DeviceSettingsDashboardViewModel>()
+            .AddSingleton<HomeViewModelFactory>()
+            .AddSingleton<HomeViewModel>()
+            .AddSingleton<DeviceFirmwareSettingsViewModel>()
+            .AddSingleton<DeviceHardwareLightingViewModel>()
+            .AddSingleton<DeviceCoolingSettingsViewModel>()
+            .AddSingleton<DeviceConnectionSettingsViewModel>()
+            .AddSingleton<DevicePortConfigurationViewModel>()
+            .AddSingleton<DeviceSettingsInfoBarViewModel>()
+            .AddSingleton<PortDetailViewModel>()
+            .AddSingleton<AmbinityDeviceViewModelFactory>()
+            .AddSingleton<NonClientAreaContentViewModel>()
+            .AddSingleton<AppTourViewModel>()
+            .AddSingleton<AppTourElementProvider>()
+            //system tray
+            .AddSingleton<SystemTrayFlyoutWindowViewModel>()
+            .AddSingleton<QuickAccessViewModel>()
+            .AddSingleton<QuickAccessNavigationStore>()
+            .AddSingleton<ShortcutPageViewModel>()
+            .AddSingleton<DevicesPageViewModel>()
+            .AddSingleton<QuickAccessViewModelFactory>()
+            .AddSingleton<ShortcutEditorViewModel>()
+            .AddSingleton<LightingProfilePlayerWidgetViewModel>()
+            //splash
+            .AddSingleton<SplashViewModel>()
+            //layout editor
+            .AddSingleton<DeviceLayoutEditorViewModel>()
+            .AddSingleton<ProfileEditorViewModel>()
+            .AddSingleton<LayoutCanvasViewModel>()
+            .AddSingleton<ProfileEditorRightPanelViewModel>()
+            .AddSingleton<ParameterViewModelFactory>()
+            .AddSingleton<ColorConfigurationViewModelFactory>()
+            .AddTransient<PositionConfigurationViewModel>()
+            .AddSingleton<ColorPaletteAssetsViewModel>()
+            .AddSingleton<LightingZonesLibraryViewModel>()
+            .AddSingleton<DeviceLayoutAssetsViewModel>()
+            .AddSingleton<LightingZoneAssetsViewModel>()
+            .AddSingleton<AnimationAssetsViewModel>()
+            .AddSingleton<LightingProfileAssetsViewModel>()
+            .AddSingleton<ColorPalettesLibraryViewModel>()
+            .AddSingleton<DeviceLayoutsLibraryViewModel>()
+            .AddSingleton<AnimationLibraryViewModel>()
+            .AddSingleton<LightingProfileLibraryViewModel>()
+            .AddSingleton<LibraryViewModelFactory>()
+            .AddSingleton<Draw2DCanvasInfoBarViewModel>()
+            .AddSingleton<AssetItemViewModelFactory>()
+            .AddSingleton<DeviceLayoutRightPanelViewModel>()
+            .AddSingleton<ConfigurationHeaderViewModel>()
+            //device layout
+            .AddSingleton<DevicePropertiesViewModel>()
+            //Capturing Service
+
+            .AddSingleton<CapturingServiceProvider>()
+            .AddSingleton<DeviceBitmapCaptureFactory>()
+            .AddSingleton<FanOutputServiceFactory>()
+            .AddSingleton<BassAudioDeviceEnumerationService>()
+            .AddSingleton<BrightnessProviderFactory>()
+            .AddSingleton<AudioDeviceNotificationClient>()
+            //lighting engine
+            .AddTransient<SelfGeneratedColorEngine>()
+            .AddTransient<ScreenCaptureEngine>()
+            .AddTransient<GifxelationEngine>()
+            .AddTransient<AnimationDecodeEngine>()
+            //Side menu
+            .AddSingleton<SideMenuViewModel>()
+            .AddSingleton<LightingProfileRepository>()
+            .AddSingleton<LightingProfileCategoryRepository>()
+            .AddSingleton<SideMenuProfilePlayerViewModel>()
+            .AddSingleton<SideMenuViewModelFactory>()
+            //Dialogs
+            .AddSingleton<IDialogService, DialogService>()
+            //Profile editor
+            .AddSingleton<Draw2DCanvasViewModel>()
+            .AddSingleton<FigureContextMenuProvider>()
+            .AddSingleton<ToolsViewModel>()
+            .AddSingleton<LayersViewModel>()
+            .AddSingleton<DeviceLayoutRightPanelViewModel>()
+            .AddSingleton<ZonePropertiesViewModel>()
+            .AddTransient<LayersView>()
+
+            //profile Decoder
+            .AddSingleton(mainFrameBuffer)
+            .AddSingleton<LightingProfileDecoder>()
+            .AddSingleton<ColorEngineProvider>()
+            //Repository singleton
+            .AddSingleton<TutorialsOnlineRepository>()
+            .AddSingleton<StaticColorsRepository>()
+            .AddSingleton<ColorPaletteRepository>()
+            .AddSingleton<AnimationsRepository>()
+            .AddSingleton<GradientColorsRepository>()
+            .AddSingleton<GifImagesRepository>()
+            .AddSingleton<LightingZoneRepository>()
+            .AddSingleton<SerialControllerDiscoveryService>()
+            .AddSingleton<SerialControllerProvider>()
+            .AddSingleton<SerialControllerRepository>()
+            .AddSingleton<OpenRGBControllerRepository>()
+            .AddSingleton<OpenRGBService>()
+            .AddSingleton<OpenRGBControllerProvider>()
+            .AddSingleton<OpenRGBControllerDiscoveryService>()
+            .AddSingleton<DataStreamProvider>()
+            .AddSingleton<AmbinityOpenRGBClient>()
+            .AddSingleton<AmbinityDeviceLayoutRepository>()
+            .AddSingleton<AmbinityDeviceOnlineRepository>()
+            .AddSingleton<LightingZoneOnlineRepository>()
+            .AddSingleton<LightingProfileOnlineRepository>()
+            .AddSingleton<ColorPaletteOnlineRepository>()
+            .AddSingleton<AmbinityDeviceRepository>()
+            .AddSingleton<ResourceService>()
+            .AddSingleton<AnimationsRepository>()
+            .AddSingleton<AnimationOnlineRepository>()
+            .AddSingleton<ShortcutRepository>()
+
+            //Server
+            .AddSingleton<AmbinityClient>()
+            .AddSingleton<ThumbnailService>()
+            .AddSingleton<DownloadService>()
+            .AddSingleton<FirmwareService>()
+            .AddSingleton<AmbinityStoreItemExportViewModel>()
+            .AddSingleton<RepositoryHelpers>()
+            .AddSingleton<ProfileStoreViewModel>()
+            .AddSingleton<ProfileStoreNonClientAreaContentViewModel>()
+            .AddSingleton<AmbinityStoreNavigation>()
+            .AddSingleton<AmbinityStoreDetailViewModel>()
+            //capture
+            .AddSingleton<ScreenCapturingService>()
+            .AddSingleton<AudioCapturingService>()
+            .AddSingleton<HWMonitorCapturingService>();
+
         Ioc.Default.ConfigureServices(
-            new ServiceCollection()
-                //Main view
-                .AddSingleton<IMainWindowService, MainWindowService>()
-                .AddSingleton<IWindowService, WindowService>()
-                .AddSingleton<RootViewModel>()
-                .AddSingleton<GeneralSettingsManager>()
-                .AddSingleton<RootNavigationStores>()
-                .AddSingleton<AppSettingsViewModel>()
-                .AddSingleton<UpdateService>()
-                .AddSingleton<DeviceSettingsViewModel>()
-                .AddSingleton<DeviceSettingsDashboardViewModel>()
-                .AddSingleton<HomeViewModelFactory>()
-                .AddSingleton<HomeViewModel>()
-                .AddSingleton<DeviceFirmwareSettingsViewModel>()
-                .AddSingleton<DeviceHardwareLightingViewModel>()
-                .AddSingleton<DeviceCoolingSettingsViewModel>()
-                .AddSingleton<DeviceConnectionSettingsViewModel>()
-                .AddSingleton<DevicePortConfigurationViewModel>()
-                .AddSingleton<DeviceSettingsInfoBarViewModel>()
-                .AddSingleton<PortDetailViewModel>()
-                .AddSingleton<AmbinityDeviceViewModelFactory>()
-                .AddSingleton<NonClientAreaContentViewModel>()
-                .AddSingleton<AppTourViewModel>()
-                .AddSingleton<AppTourElementProvider>()
-                //system tray
-                .AddSingleton<SystemTrayFlyoutWindowViewModel>()
-                .AddSingleton<QuickAccessViewModel>()
-                .AddSingleton<QuickAccessNavigationStore>()
-                .AddSingleton<ShortcutPageViewModel>()
-                .AddSingleton<DevicesPageViewModel>()
-                .AddSingleton<QuickAccessViewModelFactory>()
-                .AddSingleton<ShortcutEditorViewModel>()
-                .AddSingleton<LightingProfilePlayerWidgetViewModel>()
-                //splash
-                .AddSingleton<SplashViewModel>()
-                //layout editor
-                .AddSingleton<DeviceLayoutEditorViewModel>()
-                .AddSingleton<ProfileEditorViewModel>()
-                .AddSingleton<LayoutCanvasViewModel>()
-                .AddSingleton<ProfileEditorRightPanelViewModel>()
-                .AddSingleton<ParameterViewModelFactory>()
-                .AddSingleton<ColorConfigurationViewModelFactory>()
-                .AddTransient<PositionConfigurationViewModel>()
-                .AddSingleton<ColorPaletteAssetsViewModel>()
-                .AddSingleton<LightingZonesLibraryViewModel>()
-                .AddSingleton<DeviceLayoutAssetsViewModel>()
-                .AddSingleton<LightingZoneAssetsViewModel>()
-                .AddSingleton<AnimationAssetsViewModel>()
-                .AddSingleton<LightingProfileAssetsViewModel>()
-                .AddSingleton<ColorPalettesLibraryViewModel>()
-                .AddSingleton<DeviceLayoutsLibraryViewModel>()
-                .AddSingleton<AnimationLibraryViewModel>()
-                .AddSingleton<LightingProfileLibraryViewModel>()
-                .AddSingleton<LibraryViewModelFactory>()
-                .AddSingleton<Draw2DCanvasInfoBarViewModel>()
-                .AddSingleton<AssetItemViewModelFactory>()
-                .AddSingleton<DeviceLayoutRightPanelViewModel>()
-                .AddSingleton<ConfigurationHeaderViewModel>()
-                //device layout
-                .AddSingleton<DevicePropertiesViewModel>()
-                //Capturing Service
-                .AddSingleton<ScreenCapturingService>()
-                .AddSingleton<AudioCapturingService>()
-                .AddSingleton<HWMonitorCapturingService>()
-                .AddSingleton<CapturingServiceProvider>()
-                .AddSingleton<DeviceBitmapCaptureFactory>()
-                .AddSingleton<FanOutputServiceFactory>()
-                .AddSingleton<BassAudioDeviceEnumerationService>()
-                .AddSingleton<BrightnessProviderFactory>()
-                .AddSingleton<AudioDeviceNotificationClient>()
-                //lighting engine
-                .AddTransient<SelfGeneratedColorEngine>()
-                .AddTransient<ScreenCaptureEngine>()
-                .AddTransient<GifxelationEngine>()
-                .AddTransient<AnimationDecodeEngine>()
-                //Side menu
-                .AddSingleton<SideMenuViewModel>()
-                .AddSingleton<LightingProfileRepository>()
-                .AddSingleton<LightingProfileCategoryRepository>()
-                .AddSingleton<SideMenuProfilePlayerViewModel>()
-                .AddSingleton<SideMenuViewModelFactory>()
-                //Dialogs
-                .AddSingleton<IDialogService, DialogService>()
-                //Profile editor
-                .AddSingleton<Draw2DCanvasViewModel>()
-                .AddSingleton<FigureContextMenuProvider>()
-                .AddSingleton<ToolsViewModel>()
-                .AddSingleton<LayersViewModel>()
-                .AddSingleton<DeviceLayoutRightPanelViewModel>()
-                .AddSingleton<ZonePropertiesViewModel>()
-                .AddTransient<LayersView>()
-
-                //profile Decoder
-                .AddSingleton(mainFrameBuffer)
-                .AddSingleton<LightingProfileDecoder>()
-                .AddSingleton<ColorEngineProvider>()
-                //Repository singleton
-                .AddSingleton<TutorialsOnlineRepository>()
-                .AddSingleton<StaticColorsRepository>()
-                .AddSingleton<ColorPaletteRepository>()
-                .AddSingleton<AnimationsRepository>()
-                .AddSingleton<GradientColorsRepository>()
-                .AddSingleton<GifImagesRepository>()
-                .AddSingleton<LightingZoneRepository>()
-                .AddSingleton<SerialControllerDiscoveryService>()
-                .AddSingleton<SerialControllerProvider>()
-                .AddSingleton<SerialControllerRepository>()
-                .AddSingleton<OpenRGBControllerRepository>()
-                .AddSingleton<OpenRGBService>()
-                .AddSingleton<OpenRGBControllerProvider>()
-                .AddSingleton<OpenRGBControllerDiscoveryService>()
-                .AddSingleton<DataStreamProvider>()
-                .AddSingleton<AmbinityOpenRGBClient>()
-                .AddSingleton<AmbinityDeviceLayoutRepository>()
-                .AddSingleton<AmbinityDeviceOnlineRepository>()
-                .AddSingleton<LightingZoneOnlineRepository>()
-                .AddSingleton<LightingProfileOnlineRepository>()
-                .AddSingleton<ColorPaletteOnlineRepository>()
-                .AddSingleton<AmbinityDeviceRepository>()
-                .AddSingleton<ResourceService>()
-                .AddSingleton<AnimationsRepository>()
-                .AddSingleton<AnimationOnlineRepository>()
-                .AddSingleton<ShortcutRepository>()
-
-                //Server
-                .AddSingleton<AmbinityClient>()
-                .AddSingleton<ThumbnailService>()
-                .AddSingleton<DownloadService>()
-                .AddSingleton<FirmwareService>()
-                .AddSingleton<AmbinityStoreItemExportViewModel>()
-                .AddSingleton<RepositoryHelpers>()
-                .AddSingleton<ProfileStoreViewModel>()
-                .AddSingleton<ProfileStoreNonClientAreaContentViewModel>()
-                .AddSingleton<AmbinityStoreNavigation>()
-                .AddSingleton<AmbinityStoreDetailViewModel>()
+            serviceCollection
                 .BuildServiceProvider());
     }
 
-    
+
 
     private static async Task ConfigureCoreService(SplashViewModel splashViewModel)
     {
         //Update framebuffer value from settings before any service run
         var framebuffer = Ioc.Default.GetRequiredService<FrameBuffer>();
-        framebuffer.FrameWidth =(int) _generalSettingsManager.Settings.CanvasWidth>=400?(int) _generalSettingsManager.Settings.CanvasWidth:400;
-        framebuffer.FrameHeight = (int)_generalSettingsManager.Settings.CanvasHeight>=320?(int) _generalSettingsManager.Settings.CanvasHeight:320;
+        framebuffer.FrameWidth = (int)_generalSettingsManager.Settings.CanvasWidth >= 400 ? (int)_generalSettingsManager.Settings.CanvasWidth : 400;
+        framebuffer.FrameHeight = (int)_generalSettingsManager.Settings.CanvasHeight >= 320 ? (int)_generalSettingsManager.Settings.CanvasHeight : 320;
         //update setting incase size mismatch
         _generalSettingsManager.Settings.CanvasWidth = framebuffer.FrameWidth;
         _generalSettingsManager.Settings.CanvasHeight = framebuffer.FrameHeight;
@@ -339,8 +344,10 @@ public class AmbinityBootStrapper
             splashViewModel.Progress = 85;
             shortcutRepository.Init();
             await Task.Delay(100);
-            
+
             serialControllerRepository.Init();
+            //only allow Openrgb to run on Windows
+            if(OperatingSystem.IsWindows())
             openRGBControllerRepository.Init();
         });
         //run the profile decoder for rendering to device

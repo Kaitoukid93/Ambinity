@@ -105,7 +105,7 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         set => SetProperty(ref _enableHWMonitor, value);
     }
 
-    private bool _enableOpenRGB = true;
+    private bool _enableOpenRGB = false;
 
     public bool EnableOpenRGB
     {

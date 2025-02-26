@@ -125,7 +125,7 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
             SelectedPalette = new ColorPaletteAssetViewModel(new ColorPalette(_ledHardwareSettings.HWL_palette));
             SelectedColor = _ledHardwareSettings.HWL_singleColor;
         }
-        
+
         OnPropertyChanged(nameof(LedHardwareSettings));
         OnPropertyChanged(nameof(EnableHWLExpand));
         OnPropertyChanged(nameof(HasFanControl));
@@ -224,7 +224,7 @@ public class DeviceHardwareLightingViewModel : ViewModelBase
         }
     }
 
-    public bool EnableHWLExpand => _ledHardwareSettings.HWL_enable;
+    public bool EnableHWLExpand => _ledHardwareSettings != null ? _ledHardwareSettings.HWL_enable : false;
     private bool _enableColorIntensity;
 
     public bool EnableColorIntensity

@@ -1,0 +1,52 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "OpenRGB.NET/3.1.1": {
+        "dependencies": {
+          "ErrorProne.NET.CoreAnalyzers": "0.4.0-beta.1",
+          "ErrorProne.NET.Structs": "0.4.0-beta.1",
+          "NonCopyableAnalyzer": "0.7.0"
+        },
+        "runtime": {
+          "OpenRGB.NET.dll": {}
+        }
+      },
+      "ErrorProne.NET.CoreAnalyzers/0.4.0-beta.1": {},
+      "ErrorProne.NET.Structs/0.4.0-beta.1": {},
+      "NonCopyableAnalyzer/0.7.0": {}
+    }
+  },
+  "libraries": {
+    "OpenRGB.NET/3.1.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ErrorProne.NET.CoreAnalyzers/0.4.0-beta.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jW7IDd7xMJoz2IyhyI2NE7JB5o+mH9AuLHDh4I79dL/WpbLRhPGXlcK1GmZa2HjSXEl2a9zXQ4/Hyo9lOaNq1g==",
+      "path": "errorprone.net.coreanalyzers/0.4.0-beta.1",
+      "hashPath": "errorprone.net.coreanalyzers.0.4.0-beta.1.nupkg.sha512"
+    },
+    "ErrorProne.NET.Structs/0.4.0-beta.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3cTaYc/hcDJumpCTjYNu+X0IEyTFRKHsIlsHwDjju1rGpH7/9dcostXJlRtmIIno6PgRWIh5ZalHDq76QYUA2w==",
+      "path": "errorprone.net.structs/0.4.0-beta.1",
+      "hashPath": "errorprone.net.structs.0.4.0-beta.1.nupkg.sha512"
+    },
+    "NonCopyableAnalyzer/0.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-G2vRegGULhvTQ3/LzI0bC7nSSoEGtuvr1LJSWSoLmdVuJn5YNlMtTBAF/O0Rl1Acf2w8QjLuzoxiGagjvglicQ==",
+      "path": "noncopyableanalyzer/0.7.0",
+      "hashPath": "noncopyableanalyzer.0.7.0.nupkg.sha512"
+    }
+  }
+}

@@ -124,6 +124,7 @@ public class LightingProfileDecoder
         {
             zone.ParentProfile = _currentPlayingProfile;
             RegisterZone(zone, count++);
+            Thread.Sleep(5);
         }
 
         _currentPlayingProfile.IsPlaying = true;
@@ -227,7 +228,7 @@ public class LightingProfileDecoder
         {
             IsBackground = true,
             Priority = ThreadPriority.BelowNormal,
-            Name = "colorsweep"
+            Name = engine.GetType().ToString() + index
         };
         thread.Start();
         _engines.Add(engine);
@@ -268,7 +269,7 @@ public class LightingProfileDecoder
                     FramesTime[index] = Math.Round((double)totalFrameTime, 5);
                 }
 
-                FrameUpdate?.Invoke();
+                //FrameUpdate?.Invoke();
                 Thread.Sleep(1000 / _framerate);
             }
         }

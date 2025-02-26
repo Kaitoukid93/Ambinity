@@ -17,13 +17,15 @@ public class SerialControllerDiscoveryService
     public event Action<string> NewComportDetected;
 
     private SerialControllerHelpers _serialControllerHelpers;
+    public List<string> PortInUse { get; set; }
 
     public SerialControllerDiscoveryService()
     {
         _serialControllerHelpers = new SerialControllerHelpers();
+        PortInUse=[];
     }
 
-    public bool IsRunning  => _workerThread != null && _workerThread.IsAlive;
+    public bool IsRunning => _workerThread != null && _workerThread.IsAlive;
     private Thread _workerThread;
     private CancellationTokenSource _cancellationTokenSource;
     private bool _onHold;
@@ -47,18 +49,18 @@ public class SerialControllerDiscoveryService
         }
 
         _cancellationTokenSource = new CancellationTokenSource();
-        // _workerThread = new Thread(() => Run(_cancellationTokenSource.Token))
-        // {
-        //     Name = "Device Discovery",
-        //     IsBackground = true,
-        //     Priority = ThreadPriority.BelowNormal
-        // };
-        _workerThread = new Thread(() =>RunDebug())
+        _workerThread = new Thread(() => Run(_cancellationTokenSource.Token))
         {
             Name = "Device Discovery",
             IsBackground = true,
             Priority = ThreadPriority.BelowNormal
         };
+        // _workerThread = new Thread(() =>RunDebug())
+        // {
+        //     Name = "Device Discovery",
+        //     IsBackground = true,
+        //     Priority = ThreadPriority.BelowNormal
+        // };
         _workerThread.Start();
     }
 
@@ -71,38 +73,38 @@ public class SerialControllerDiscoveryService
     private async void RunDebug()
     {
         int count = 0;
-       
-            try
-            {
-                //get the list of new devices for every second
-                // new device contains serial and openrgb devices ( Wled devices in the future)
-                 AddDummyController(HardwareTypeEnum.AmbinoBasic);
-                 await Task.Delay(5000);
-                 AddDummyController(HardwareTypeEnum.AmbinoFanHub);
-                 await Task.Delay(5000);
-                 AddDummyController(HardwareTypeEnum.AmbinoHUBV3);
-                 await Task.Delay(5000);
-                 AddDummyController(HardwareTypeEnum.AmbinoEDGE);
-                 await Task.Delay(5000);
-                 AddDummyController(HardwareTypeEnum.Dram);
-                 await Task.Delay(5000);
-                 AddDummyController(HardwareTypeEnum.Motherboard);
-                 await Task.Delay(5000);
-                 AddDummyController(HardwareTypeEnum.Keyboard);
-                 await Task.Delay(5000);
-                 AddDummyController(HardwareTypeEnum.Mouse);
-                 await Task.Delay(5000);
 
-                 
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, $"error when scanning devices : {ex.GetType().FullName}: {ex.Message}");
-            }
+        try
+        {
+            //get the list of new devices for every second
+            // new device contains serial and openrgb devices ( Wled devices in the future)
+            AddDummyController(HardwareTypeEnum.AmbinoBasic);
+            await Task.Delay(5000);
+            AddDummyController(HardwareTypeEnum.AmbinoFanHub);
+            await Task.Delay(5000);
+            AddDummyController(HardwareTypeEnum.AmbinoHUBV3);
+            await Task.Delay(5000);
+            AddDummyController(HardwareTypeEnum.AmbinoEDGE);
+            await Task.Delay(5000);
+            AddDummyController(HardwareTypeEnum.Dram);
+            await Task.Delay(5000);
+            AddDummyController(HardwareTypeEnum.Motherboard);
+            await Task.Delay(5000);
+            AddDummyController(HardwareTypeEnum.Keyboard);
+            await Task.Delay(5000);
+            AddDummyController(HardwareTypeEnum.Mouse);
+            await Task.Delay(5000);
 
-            //check once a second for updates
-            await Task.Delay(TimeSpan.FromSeconds(1));
-        
+
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, $"error when scanning devices : {ex.GetType().FullName}: {ex.Message}");
+        }
+
+        //check once a second for updates
+        await Task.Delay(TimeSpan.FromSeconds(1));
+
     }
     private async void Run(CancellationToken token)
     {
@@ -126,15 +128,15 @@ public class SerialControllerDiscoveryService
             await Task.Delay(TimeSpan.FromSeconds(1));
         }
     }
-/// <summary>
-/// add dummy controller for testing canvas
-/// </summary>
-/// <returns></returns>
+    /// <summary>
+    /// add dummy controller for testing canvas
+    /// </summary>
+    /// <returns></returns>
     private void AddDummyController(HardwareTypeEnum type)
     {
         var controller = new SerialController();
         controller.Name = "Dummy" + type;
-        controller.SerialNumber = type+"123456";
+        controller.SerialNumber = type + "123456";
         controller.SerialPort = "COM1" + type;
         controller.FirmwareVersion = "1.0.1";
         controller.HardwareVersion = "1.0.1";
@@ -144,9 +146,9 @@ public class SerialControllerDiscoveryService
     public async Task ScanSerialDevice()
     {
         //these are valid PID VID used by Ambino devices
-        List<string> CH55X = SerialControllerHelpers.GetComPortByID("1209", "c550");
-        List<string> CH340 = SerialControllerHelpers.GetComPortByID("1A86", "7522");
-        List<string> ada = SerialControllerHelpers.GetComPortByID("239A", "CAFE");
+        List<string> CH55X = SerialControllerEnumerator.GetSerialPortByID("1209", "c550");
+        List<string> CH340 = SerialControllerEnumerator.GetSerialPortByID("1A86", "7522");
+        List<string> ada = SerialControllerEnumerator.GetSerialPortByID("239A", "CAFE");
         var ports = new List<string>();
         if (CH55X.Count > 0 || CH340.Count > 0 || ada.Count > 0)
         {
@@ -173,6 +175,8 @@ public class SerialControllerDiscoveryService
         var invalidDevice = new List<string>();
         foreach (var port in ports)
         {
+            if (PortInUse.Contains(port))
+                continue;
             var _serialPort = new SerialPort(port, 1000000);
             _serialPort.ReadTimeout = 5000;
             _serialPort.WriteTimeout = 1000;
