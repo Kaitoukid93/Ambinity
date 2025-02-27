@@ -23,7 +23,6 @@ using AmbinityServer;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Themes.Fluent;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;

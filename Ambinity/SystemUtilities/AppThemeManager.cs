@@ -27,6 +27,7 @@ public static class AppThemeManager
         var theme = GetThemeVariant(themeName);
         var _faTheme = Application.Current.Styles[0] as FluentAvaloniaTheme;
         Application.Current.RequestedThemeVariant = theme;
+        //change backdrop blur tint color too
         if (themeName != "System")
         {                    
             _faTheme.PreferSystemTheme = false;

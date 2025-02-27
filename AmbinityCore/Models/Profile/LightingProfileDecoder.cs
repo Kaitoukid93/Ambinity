@@ -1,16 +1,12 @@
-using System.Buffers;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+
 using AmbinityCore.DataBase;
 using AmbinityCore.LightingEngines;
 using AmbinityCore.Models.GeneralSetting;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Repositories;
-using Avalonia;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using Draw2D.Core.Graphic;
 using Serilog;
+using Timer = System.Timers.Timer;
 
 namespace AmbinityCore.Models.Profile;
 
@@ -26,7 +22,7 @@ public class LightingProfileDecoder
     public event Action FrameUpdate;
     private float _bitmapDimFactor;
     private int _framerate;
-
+    public bool ShouldUpdateFrame { get; set; }
 
     public LightingProfileDecoder(LightingProfileRepository repository, ColorEngineProvider colorEngineProvider,
         FrameBuffer buffer, GeneralSettingsManager generalSettingsManager)
@@ -40,7 +36,7 @@ public class LightingProfileDecoder
 
     private LightingProfileRepository _repository;
     private ColorEngineProvider _colorEngineProvider;
-    private CancellationTokenSource _tokenSource;
+    private CancellationTokenSource? _tokenSource;
     private IGeneralSettings _generalSettings;
     private bool _isRendering;
     public bool IsRendering => _isRendering;
@@ -65,25 +61,6 @@ public class LightingProfileDecoder
         _currentPlayingProfile = lastPlayedProfile;
     }
 
-    /// <summary>
-    /// Init a profle ready to play
-    /// </summary>
-    /// <param name="profile"></param>
-    // public void Init(LightingProfile profile)
-    // {
-    //     //create list engines for managing
-    //     if (profile == null)
-    //         return;
-    //     _currentPlayingProfile = profile;
-    //     Log.Information("Init profile: " + profile.Name);
-    //     if (profile.Zones.Count == 0)
-    //     {
-    //         Log.Warning("Profile contains 0 zones!");
-    //         //return;
-    //     }
-    //
-    //     Resume();
-    // }
     public void Init()
     {
         //only play if app tour is not activated, app tour is designed to work with nothing is playing,
@@ -96,7 +73,7 @@ public class LightingProfileDecoder
     }
 
     /// <summary>
-    /// Replay the profile
+    /// Resume the profile, only work if there is a previous profile already loaded
     /// </summary>
     private void Resume()
     {
@@ -126,7 +103,13 @@ public class LightingProfileDecoder
             RegisterZone(zone, count++);
             Thread.Sleep(5);
         }
-
+        var thread = new Thread(() => Render(_tokenSource.Token))
+        {
+            IsBackground = true,
+            Priority = ThreadPriority.BelowNormal,
+            Name = "Profile Decoder"
+        };
+        thread.Start();
         _currentPlayingProfile.IsPlaying = true;
         _isRendering = true;
         _generalSettings.LastPlayedProfileID = _currentPlayingProfile.ID;
@@ -180,57 +163,27 @@ public class LightingProfileDecoder
             return;
         if (!_isRendering)
             return;
-        //dim the bitmap 
-
-
-        // for (int j = 0; j < 100; j++)
-        // {
-        //     lock (_buffer.FrameLock)
-        //     {
-        //         _bitmapDimFactor -= 0.01f;
-        //         for (int i = 0; i < _buffer.PixelData.Length; i += 4)
-        //         {
-        //             _buffer.PixelData[i + 0] = (byte)(_buffer.PixelData[i + 0] * _bitmapDimFactor);
-        //             _buffer.PixelData[i + 1] = (byte)(_buffer.PixelData[i + 1] * _bitmapDimFactor);
-        //             _buffer.PixelData[i + 2] = (byte)(_buffer.PixelData[i + 2] * _bitmapDimFactor);
-        //             _buffer.PixelData[i + 3] = 255;
-        //         }
-        //     }
-        //
-        //     await Task.Delay(10);
-        // }
-
-
-        //clear buffer
 
         _engines.Clear();
         _currentPlayingProfile.IsPlaying = false;
-        await _tokenSource?.CancelAsync();
-        _tokenSource = null;
+        if (_tokenSource != null)
+        {
+            await _tokenSource.CancelAsync();
+            _tokenSource = null;
+        }
         _isRendering = false;
-        // lock (_buffer.FrameLock)
-        // {
-        //     _buffer.PixelData = new byte[_buffer.FrameWidth * _buffer.FrameHeight * 4];
-        // }
-
         RenderingStatusChanged?.Invoke();
     }
 
     /// <summary>
     /// get corresponding lighting engine
+    /// todo make a hash set for this
     /// </summary>
     /// <param name="zone"></param>
     private void RegisterZone(LightingZone zone, int index)
     {
         var engine = _colorEngineProvider.GetEngine(zone);
         engine.Init(zone);
-        var thread = new Thread(() => Render(engine, _tokenSource.Token, index))
-        {
-            IsBackground = true,
-            Priority = ThreadPriority.BelowNormal,
-            Name = engine.GetType().ToString() + index
-        };
-        thread.Start();
         _engines.Add(engine);
     }
 
@@ -245,33 +198,53 @@ public class LightingProfileDecoder
     /// <summary>
     /// render activated child to canvas
     /// </summary>
-    private void Render(IColorEngine engine, CancellationToken token, int index)
+    private void Render(CancellationToken token)
     {
         try
         {
-            if (!engine.IsAvailable)
-                return;
-            Stopwatch sw = new Stopwatch();
-            Stopwatch reportStopwatch = new Stopwatch();
-            reportStopwatch.Start();
+
+
+            // Stopwatch sw = new Stopwatch();
+            // Stopwatch reportStopwatch = new Stopwatch();
+            // reportStopwatch.Start();
             long totalFrameTime = 0;
-            while (!token.IsCancellationRequested)
+
+            Timer timer = new Timer(1000 / _framerate);
+            timer.Elapsed += (sender, e) =>
             {
-                sw.Restart();
-                var brightness = _currentPlayingProfile.Brightness / 100d;
-                _buffer.BrightnessFactor = brightness;
-                engine.Render();
-                sw.Stop();
-                totalFrameTime = sw.ElapsedMilliseconds; // Accumulate the elapsed time
-                if (reportStopwatch.ElapsedMilliseconds >= 100)
+                if (token.IsCancellationRequested)
                 {
-                    reportStopwatch.Restart();
-                    FramesTime[index] = Math.Round((double)totalFrameTime, 5);
+                    timer.Stop();
+                    timer.Dispose();
+                    return;
                 }
 
-                //FrameUpdate?.Invoke();
-                Thread.Sleep(1000 / _framerate);
-            }
+                // sw.Restart();
+                var brightness = _currentPlayingProfile.Brightness / 100d;
+                _buffer.BrightnessFactor = brightness;
+                foreach (var engine in _engines)
+                {
+                    if (!engine.IsAvailable)
+                        continue;
+                    engine.Render();
+                }
+
+                // sw.Stop();
+                // totalFrameTime = sw.ElapsedMilliseconds; // Accumulate the elapsed time
+
+                // if (reportStopwatch.ElapsedMilliseconds >= 100)
+                // {
+                //     reportStopwatch.Restart();
+                //     FramesTime[index] = Math.Round((double)totalFrameTime, 5);
+                // }
+                if (ShouldUpdateFrame)
+                    FrameUpdate?.Invoke();
+            };
+
+            timer.Start();
+
+            // Wait for the cancellation token to be triggered
+            token.WaitHandle.WaitOne();
         }
         catch (Exception ex)
         {
@@ -279,7 +252,11 @@ public class LightingProfileDecoder
         }
         finally
         {
-            engine.Dispose();
+            foreach (var engine in _engines)
+            {
+                engine.Dispose();
+            }
+
             GC.Collect();
         }
     }

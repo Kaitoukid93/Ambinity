@@ -1,10 +1,12 @@
 using System.Drawing;
+using System.Timers;
 using AmbinityCore.Models.Device.LED;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Utils;
 using Avalonia;
 using Draw2D.Core.Graphic;
 using Serilog;
+using Timer = System.Timers.Timer;
 using Point = Avalonia.Point;
 
 namespace AmbinityCore.Models.Device.Device;
@@ -23,14 +25,14 @@ public class AmbinityDeviceBitmapCapture
     private void OnRenderingStatusChanged()
     {
         //dim led
-       // _device.TransformLeds();
+        // _device.TransformLeds();
         _dimMode = _decoder.IsRendering ? DimMode.Up : DimMode.Down;
     }
 
     private FrameBuffer _frame;
     private AmbinityDevice _device;
     private CancellationTokenSource _cancellationTokenSource;
-    private Thread _workerThread;
+    private Timer _timer;
     private float _smoothFactor = 1f;
     private readonly LightingProfileDecoder _decoder;
     public AmbinityDevice Device => _device;
@@ -39,14 +41,16 @@ public class AmbinityDeviceBitmapCapture
     {
         _device?.TransformLeds();
         _cancellationTokenSource = new CancellationTokenSource();
-        _workerThread = new Thread(() => Run(_cancellationTokenSource.Token))
+        var thread = new Thread(() => Capture(_cancellationTokenSource.Token))
         {
             IsBackground = true,
             Priority = ThreadPriority.BelowNormal,
-            Name = "BitmapCapture"
+            Name = "Profile Decoder"
         };
-        _workerThread.Start();
+        thread.Start();
+
     }
+
     private double _dimFactor;
 
     private enum DimMode
@@ -56,6 +60,7 @@ public class AmbinityDeviceBitmapCapture
     };
 
     private DimMode _dimMode;
+
     private void DimLED()
     {
         if (_dimMode == DimMode.Down)
@@ -74,13 +79,27 @@ public class AmbinityDeviceBitmapCapture
             //_dimMode = DimMode.Down;
         }
     }
-    public void Run(CancellationToken token)
+
+
+
+    private void StopTimer()
+    {
+        if (_timer != null)
+        {
+            _timer.Stop();
+            _timer.Dispose();
+            _timer = null;
+        }
+    }
+
+    private void Capture(CancellationToken token)
     {
         try
         {
-            while (!token.IsCancellationRequested)
+
+            _timer = new Timer(15); // Set the interval to 10ms
+            _timer.Elapsed += (sender, e) =>
             {
-                //this indicator that user is opening this device and we need raise event when color update on each spot
                 lock (_device.Lock)
                 {
                     lock (_frame.FrameLock)
@@ -110,7 +129,7 @@ public class AmbinityDeviceBitmapCapture
                                 led.LED.Green,
                                 led.LED.Blue);
                             if (!_device.IsIdentifying)
-                                led.LED.SetColor((byte)(R*_dimFactor*bitmapBrightness), (byte)(G*_dimFactor*bitmapBrightness), (byte)(B*_dimFactor*bitmapBrightness));
+                                led.LED.SetColor((byte)(R * _dimFactor * bitmapBrightness), (byte)(G * _dimFactor * bitmapBrightness), (byte)(B * _dimFactor * bitmapBrightness));
                             // else
                             // {
                             //     led.LED.SetColor(255, 0, 0);
@@ -118,11 +137,12 @@ public class AmbinityDeviceBitmapCapture
                         }
                     }
                 }
-
-                Thread.Sleep(10);
-            }
+            };
+            _timer.AutoReset = true;
+            _timer.Start();
+            //this indicator that user is opening this device and we need raise event when color update on each spot
+            token.WaitHandle.WaitOne();
         }
-
         catch (Exception ex)
         {
             Log.Error(ex, ToString());
@@ -137,9 +157,10 @@ public class AmbinityDeviceBitmapCapture
     {
         _cancellationTokenSource.Cancel();
         _cancellationTokenSource = null;
-        _workerThread = null;
+        StopTimer();
         GC.SuppressFinalize(this);
     }
+
     private void ApplySmoothing(float r, float g, float b, out byte semifinalR, out byte semifinalG,
         out byte semifinalB,
         byte lastColorR, byte lastColorG, byte lastColorB)

@@ -1,18 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Ambinity.Services;
 using Ambinity.ViewModels;
 using Ambinity.Views.LayoutEditor;
 using AmbinityCore.Models.Device;
-using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Repositories;
-using AmbinityServer.OnlineItem;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Draw2D.Core;
 
 namespace Ambinity.Views.Screens.ProfileEditor;
@@ -24,7 +19,7 @@ public class ProfileEditorViewModel : ViewModelBase
         ToolsViewModel toolsViewModel,
         LightingZoneRepository lightingZoneRepository,
         LightingZoneOnlineRepository lightingZoneOnlineRepository,
-        AmbinityDeviceRepository deviceRepository)
+        AmbinityDeviceRepository deviceRepository,LightingProfileDecoder decoder)
     {
         LayoutViewModel = layoutViewModel;
         LayoutViewModel.ItemAdded += OnItemAdded;
@@ -36,6 +31,7 @@ public class ProfileEditorViewModel : ViewModelBase
         _lightingZoneOnlineRepository = lightingZoneOnlineRepository;
         mainWindowService.MainWindowClosed += OnMainWindowClosed;
         _toolsViewModel = toolsViewModel;
+        _decoder = decoder;
         
     }
 
@@ -65,7 +61,7 @@ public class ProfileEditorViewModel : ViewModelBase
     private readonly LightingZoneOnlineRepository _lightingZoneOnlineRepository;
     private readonly ToolsViewModel _toolsViewModel;
     private readonly AmbinityDeviceRepository _deviceRepository;
-
+    private readonly LightingProfileDecoder _decoder;
     public void Init(LightingProfile profile)
     {
         _currentProfile = profile;
@@ -107,11 +103,14 @@ public class ProfileEditorViewModel : ViewModelBase
         RightPanelViewModel.PropertiesViewModel = _propertiesViewModel;
         //init assets
         RightPanelViewModel.Init();
+        //tell decoder to update frame until this is disposed
+        _decoder.ShouldUpdateFrame =true;
     }
 
     public override void Dispose()
     {
         LayoutViewModel?.Dispose();
         RightPanelViewModel?.Dispose();
+        _decoder.ShouldUpdateFrame = false;
     }
 }

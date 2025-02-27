@@ -22,7 +22,7 @@ public class SerialControllerDiscoveryService
     public SerialControllerDiscoveryService()
     {
         _serialControllerHelpers = new SerialControllerHelpers();
-        PortInUse=[];
+        PortInUse = [];
     }
 
     public bool IsRunning => _workerThread != null && _workerThread.IsAlive;

@@ -5,14 +5,14 @@
              xmlns:sty="using:FluentAvalonia.Styling"
              xmlns:root = "using:Ambinity.Views.Root"
              x:DataType="root:RootViewModel"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              xmlns:converters ="clr-namespace:Ambinity.MacOs.Converters"
              xmlns:windows="clr-namespace:Ambinity.MacOs">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
-    <Application.Resources>
-       
+    <Application.Resources>    
         <ResourceDictionary>
                 <ResourceDictionary.ThemeDictionaries>
 
@@ -101,13 +101,50 @@
                     <SolidColorBrush x:Key="UIExpanderBorderBrush" Color="{DynamicResource UIExpanderBorderColor}" />
 
                     <SolidColorBrush x:Key="UIOverlayBackgroundBrush" Color="{DynamicResource UIOverlayBackground}" />
-
+                    <FontFamily x:Key="NunitoFont">avares://Ambinity/Assets/Fonts#Nunito</FontFamily>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
     <Application.Styles>
-        <sty:FluentAvaloniaTheme PreferUserAccentColor="True" />
+        <sty:FluentAvaloniaTheme PreferUserAccentColor="True" TextVerticalAlignmentOverrideBehavior="AlwaysEnabled"  />
+        <Style Selector=":is(TopLevel)">
+		<Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+    
+	</Style>
+        <Style Selector="MenuItem">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="TextBlock">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="TextBox">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="Label">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="MenuItem">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="RadioButton">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="ComboBox">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="ListBox">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="ListBoxItem">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="Button">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+   <Style Selector=":is(TextBox)">
+    <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
         <StyleInclude Source="avares://Ambinity/Styles/Ambinity.axaml" />
         
         <Style Selector=":is(Window)">

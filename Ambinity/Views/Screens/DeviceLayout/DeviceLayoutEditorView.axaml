@@ -6,7 +6,7 @@
              xmlns:local ="clr-namespace:Ambinity.Views.Screens.DeviceLayout"
              x:DataType="local:DeviceLayoutEditorViewModel"
              x:Class="Ambinity.Views.Screens.DeviceLayout.DeviceLayoutEditorView">
-    <Grid RowDefinitions="auto,5,*">
+    <Grid Margin="0,10,0,0" RowDefinitions="auto,5,*">
         <TextBlock Margin="5" Text="Layout" FontSize="25" FontWeight="SemiBold"></TextBlock>
         <Grid Row="2" ColumnDefinitions="*, auto">
             <Border Padding="10" Classes="card" Margin="0,10,10,10">

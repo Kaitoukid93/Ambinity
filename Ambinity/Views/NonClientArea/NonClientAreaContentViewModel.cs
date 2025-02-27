@@ -12,18 +12,27 @@ namespace Ambinity.Views.NonClientArea;
 public class NonClientAreaContentViewModel : ViewModelBase
 {
     public event Action ShowAppTourEvent;
+    public bool ShowIconAndAppName { get; set; }
     public NonClientAreaContentViewModel(IWindowService windowService)
     {
         // Geometry = geometry;
         // Header = header;
-        _windowService = windowService;;
+        _windowService = windowService; ;
         _lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
+        if (OperatingSystem.IsWindows())
+        {
+            ShowIconAndAppName = true;
+        }
+        else
+        {
+            ShowIconAndAppName = false;
+        }
     }
 
     private void ShowAppTour()
     {
         ShowAppTourEvent?.Invoke();
-        
+
     }
     private readonly IClassicDesktopStyleApplicationLifetime _lifeTime;
     // public NonClientAreaContentViewModel(string content, string geometry, bool showBackButton, ICommand buttonCommand)

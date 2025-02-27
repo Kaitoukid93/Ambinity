@@ -143,7 +143,7 @@
             </Style>
         </ControlTheme>
     </UserControl.Resources>
-    <Grid Margin="5,0,20,20" RowDefinitions="auto,5,Auto,*">
+    <Grid Margin="5,15,20,20" RowDefinitions="auto,5,Auto,*">
         <TextBlock Margin="5,0,0,10" Text="Ambinity store" FontSize="25" FontWeight="SemiBold"></TextBlock>
         <Grid HorizontalAlignment="Right" Row="0">
             <Grid Margin="7,7,7,7" ColumnDefinitions="Auto,8,*">

@@ -8,7 +8,7 @@
              x:DataType="local:AppSettingsViewModel"
              x:Class="Ambinity.Views.Screens.AppSettings.AppSettingsView">
     <ScrollViewer IsScrollInertiaEnabled="True">
-        <Grid Margin="40,0,50,20" MaxWidth="1000" RowDefinitions="auto,5,*">
+        <Grid Margin="40,15,50,20" MaxWidth="1000" RowDefinitions="auto,5,*">
             <TextBlock Margin="0,0,0,10" Text="Settings" FontSize="25" FontWeight="SemiBold"></TextBlock>
             <StackPanel Grid.Row="2" Spacing="30">
                 <Grid RowDefinitions="Auto,*">
@@ -64,7 +64,7 @@
                                 <ui:SettingsExpander MinWidth="500" Header="Theme"
                                                      Description="Change accent color and theme settings">
                                     <ui:SettingsExpander.Footer>
-                                        <ui:FAComboBox SelectedIndex="{Binding !UseSystemTheme}" x:Name="customTheme">
+                                        <ui:FAComboBox FontFamily="{StaticResource NunitoFont}" VerticalContentAlignment="Center" SelectedIndex="{Binding !UseSystemTheme}" x:Name="customTheme">
                                             <ui:FAComboBoxItem> Use system theme</ui:FAComboBoxItem>
                                             <ui:FAComboBoxItem> Custom</ui:FAComboBoxItem>
                                         </ui:FAComboBox>
@@ -85,7 +85,7 @@
                                                              Description="Choose between dark and light mode "
                                                              IsClickEnabled="False">
                                         <ui:SettingsExpanderItem.Footer>
-                                            <ui:FAComboBox SelectedItem="{Binding CurrentAppTheme}"
+                                            <ui:FAComboBox FontFamily="{StaticResource NunitoFont}" SelectedItem="{Binding CurrentAppTheme}"
                                                            ItemsSource="{Binding AvailableAppThemes}" Margin="40,0">
                                             </ui:FAComboBox>
                                         </ui:SettingsExpanderItem.Footer>
@@ -129,7 +129,7 @@
                                                              Description="Try to increase this value if your computer is struggling when turn on ambilight effect."
                                                              IsClickEnabled="False">
                                         <ui:SettingsExpanderItem.Footer>
-                                            <ui:FAComboBox Margin="40,0">
+                                            <ui:FAComboBox FontFamily="{StaticResource NunitoFont}" Margin="40,0">
                                                 <ui:FAComboBoxItem>0</ui:FAComboBoxItem>
                                                 <ui:FAComboBoxItem>1</ui:FAComboBoxItem>
                                                 <ui:FAComboBoxItem>2</ui:FAComboBoxItem>
@@ -161,7 +161,7 @@
                                         </ToggleSwitch>
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
-                                <ui:SettingsExpander MinWidth="500" Header="Hardware monitor"
+                                <!-- <ui:SettingsExpander MinWidth="500" Header="Hardware monitor"
                                                      Description="Enable Hardware monitor plugin. This plugin is required for adaptive fan control mode.">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource
@@ -182,7 +182,7 @@
                                     <ui:SettingsExpander.Footer>
                                         <ToggleSwitch Margin="40,0" x:Name="ORGBoutline"></ToggleSwitch>
                                     </ui:SettingsExpander.Footer>
-                                </ui:SettingsExpander>
+                                </ui:SettingsExpander> -->
 
                             </StackPanel>
                         </Grid>
@@ -213,7 +213,7 @@
                                         <ui:PathIconSource Data="{DynamicResource flash}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                        <ui:FAComboBox ItemsSource="{Binding AvailableFrameRates}"
+                                        <ui:FAComboBox ItemsSource="{Binding AvailableFrameRates}" FontFamily="{StaticResource NunitoFont}"
                                                        SelectedItem="{Binding TargetFramerate}" Margin="40,0">
 
                                         </ui:FAComboBox>
@@ -225,7 +225,7 @@
                                         <ui:PathIconSource Data="{DynamicResource bitmapSize}"></ui:PathIconSource>
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpander.Footer>
-                                        <ui:FAComboBox ItemsSource="{Binding AvailableBitmapSize}"
+                                        <ui:FAComboBox FontFamily="{StaticResource NunitoFont}" ItemsSource="{Binding AvailableBitmapSize}"
                                                        SelectedItem="{Binding TargetBitmapSize}" Margin="40,0">
 
                                         </ui:FAComboBox>

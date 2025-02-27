@@ -6,7 +6,7 @@
              xmlns:local = "clr-namespace:Ambinity.Views.NonClientArea"
              x:DataType="local:NonClientAreaContentViewModel"
              x:Class="Ambinity.Views.NonClientArea.NonClientAreaContentView">
-   <Grid ColumnDefinitions="Auto,Auto,Auto,*">
+   <Grid IsVisible="{Binding ShowIconAndAppName}" ColumnDefinitions="Auto,Auto,Auto,*">
        <Grid>
            <Image RenderOptions.BitmapInterpolationMode="HighQuality" Margin="15,15,10,10" Height="20" Width="20"            
                      Source="avares://Ambinity/Assets/appicon.ico"/>

@@ -3,26 +3,38 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         ExtendClientAreaToDecorationsHint="True"
-        TransparencyLevelHint="{Binding TransparencyLevel}"
+        TransparencyLevelHint="AcrylicBlur"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         Width="1600"
         Height="900"
         MinWidth="1200"
         MinHeight="750"
+        FontFamily="{StaticResource NunitoFont}"
         WindowStartupLocation="CenterScreen"
         x:Class="Ambinity.Views.MainWindow"
         x:DataType="root:RootViewModel"
         xmlns:root="clr-namespace:Ambinity.Views.Root"
         Icon="/Assets/appicon.ico"
+        Background="Transparent"
         Title="Ambinity">
     <Window.Styles>
         <Style Selector="Window[WindowState=Maximized]">
             <Setter Property="Padding" Value="8" />
         </Style>
     </Window.Styles>
-    <Grid>
+     <Panel>
+           <ExperimentalAcrylicBorder IsHitTestVisible="False">
+               <ExperimentalAcrylicBorder.Material>
+                   <ExperimentalAcrylicMaterial
+                       BackgroundSource="Digger"
+                       TintColor="Black"
+                       TintOpacity="1.7"
+                       MaterialOpacity="0.0" />
+               </ExperimentalAcrylicBorder.Material>
+           </ExperimentalAcrylicBorder>
+           <Grid>
 
-        <Grid RowDefinitions="Auto,*">
+        <Grid RowDefinitions="40,*">
             <Grid ColumnDefinitions="Auto,Auto,*,*">
                 <ContentControl x:Name="nonClientArea" Content="{Binding NonClientAreaContentViewModel}"></ContentControl>
             </Grid>
@@ -40,6 +52,8 @@
         </Grid>
         <ContentControl Content="{Binding AppTourViewModel}"></ContentControl>
     </Grid>
+       </Panel>
+    
 
 
 </Window>

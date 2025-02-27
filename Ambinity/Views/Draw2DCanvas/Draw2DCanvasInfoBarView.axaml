@@ -16,6 +16,5 @@
                       CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                       Content="Don't show again" />
         </Grid>
-
     </ui:InfoBar>
 </UserControl>

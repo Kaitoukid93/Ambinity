@@ -7,7 +7,7 @@
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              x:DataType="local:DeviceSettingsDashboardViewModel"
              x:Class="Ambinity.Views.Screens.DeviceSettings.DeviceSettingsDashboardView">
-    <ScrollViewer IsScrollInertiaEnabled="True">
+    <ScrollViewer Margin="0,10,0,0" IsScrollInertiaEnabled="True">
     <Grid RowDefinitions="auto,5,*">
         <TextBlock Margin="5" Text="Devices" FontSize="25" FontWeight="SemiBold"></TextBlock>
         <ScrollViewer Grid.Row="2" IsScrollInertiaEnabled="True">
