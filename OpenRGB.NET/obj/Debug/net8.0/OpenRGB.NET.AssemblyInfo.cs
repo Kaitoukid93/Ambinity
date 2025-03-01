@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright © 2020 Diogo Trindade")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Client for the OpenRGB SDK")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("3.1.1.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("3.1.1+0c29a7e3ccdf03cbebe8ab96db5b0e4173469cab")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("3.1.1+f08ece9e298c757869451389a84777334e77293a")]
 [assembly: System.Reflection.AssemblyProductAttribute("OpenRGB.NET")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OpenRGB.NET")]
 [assembly: System.Reflection.AssemblyVersionAttribute("3.1.1.0")]

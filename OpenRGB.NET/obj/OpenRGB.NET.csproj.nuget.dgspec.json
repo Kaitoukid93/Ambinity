@@ -43,6 +43,24 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "ErrorProne.NET.CoreAnalyzers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.4.0-beta.1, )"
+            },
+            "ErrorProne.NET.Structs": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.4.0-beta.1, )"
+            },
+            "NonCopyableAnalyzer": {
+              "target": "Package",
+              "version": "[0.7.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -60,11 +78,6 @@
             }
           },
           "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.406/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "osx-arm64": {
-          "#import": []
         }
       }
     }

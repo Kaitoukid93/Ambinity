@@ -18,5 +18,7 @@
 		<string>NSApplication</string>
 		<key>CFBundleIconFile</key>
 		<string>ambinity.icns</string>
+		<key>LSMinimumSystemVersion</key>
+		<string>12.3.0</string>
 	</dict>
 </plist>
