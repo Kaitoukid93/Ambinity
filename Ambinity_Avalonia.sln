@@ -23,6 +23,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenCapture.NET.X11", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenCapture.NET", "..\..\VSCode Projects\ScreenCapture.NET\ScreenCapture.NET\ScreenCapture.NET.csproj", "{27584030-D2E3-47FC-AA47-3C44506D774E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ambinity.Windows", "Ambinity.Windows\Ambinity.Windows.csproj", "{ED0F92DC-E8DB-4252-B1B5-F2D6CEDB447F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenRGB.NET", "OpenRGB.NET\OpenRGB.NET.csproj", "{34B85157-C115-46A0-9597-1C17CFEC8E00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ambinity.Installer", "Ambinity.Installer\Ambinity.Installer.csproj", "{1CF787D7-3D50-4EAE-A94C-F4B7CD4C457F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +75,18 @@ Global
 		{27584030-D2E3-47FC-AA47-3C44506D774E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27584030-D2E3-47FC-AA47-3C44506D774E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27584030-D2E3-47FC-AA47-3C44506D774E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED0F92DC-E8DB-4252-B1B5-F2D6CEDB447F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED0F92DC-E8DB-4252-B1B5-F2D6CEDB447F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED0F92DC-E8DB-4252-B1B5-F2D6CEDB447F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED0F92DC-E8DB-4252-B1B5-F2D6CEDB447F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34B85157-C115-46A0-9597-1C17CFEC8E00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34B85157-C115-46A0-9597-1C17CFEC8E00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34B85157-C115-46A0-9597-1C17CFEC8E00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34B85157-C115-46A0-9597-1C17CFEC8E00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CF787D7-3D50-4EAE-A94C-F4B7CD4C457F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CF787D7-3D50-4EAE-A94C-F4B7CD4C457F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CF787D7-3D50-4EAE-A94C-F4B7CD4C457F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CF787D7-3D50-4EAE-A94C-F4B7CD4C457F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

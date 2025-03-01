@@ -21,5 +21,6 @@ sealed class Program
             .With(new AvaloniaNativePlatformOptions
            {
                RenderingMode = new [] { AvaloniaNativeRenderingMode.OpenGl, AvaloniaNativeRenderingMode.Metal }
-           });
+           })
+           .With(new MacOSPlatformOptions() { ShowInDock = false});
 }

@@ -7,14 +7,9 @@
     <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">/Users/zoe/.nuget/packages/</NuGetPackageRoot>
     <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">/Users/zoe/.nuget/packages/</NuGetPackageFolders>
     <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
-    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.12.2</NuGetToolVersion>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.11.1</NuGetToolVersion>
   </PropertyGroup>
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <SourceRoot Include="/Users/zoe/.nuget/packages/" />
   </ItemGroup>
-  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <PkgNonCopyableAnalyzer Condition=" '$(PkgNonCopyableAnalyzer)' == '' ">/Users/zoe/.nuget/packages/noncopyableanalyzer/0.7.0</PkgNonCopyableAnalyzer>
-    <PkgErrorProne_NET_Structs Condition=" '$(PkgErrorProne_NET_Structs)' == '' ">/Users/zoe/.nuget/packages/errorprone.net.structs/0.4.0-beta.1</PkgErrorProne_NET_Structs>
-    <PkgErrorProne_NET_CoreAnalyzers Condition=" '$(PkgErrorProne_NET_CoreAnalyzers)' == '' ">/Users/zoe/.nuget/packages/errorprone.net.coreanalyzers/0.4.0-beta.1</PkgErrorProne_NET_CoreAnalyzers>
-  </PropertyGroup>
 </Project>

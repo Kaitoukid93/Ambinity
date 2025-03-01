@@ -28,10 +28,25 @@ public class LEDLayoutEditorViewModel : ViewModelBase
         set
         {
             isInIndexSetupMode = value;
+            if(value)
+            WindowState = WindowState.Maximized;
+            else
+            {
+                WindowState = WindowState.Normal;
+            }
             OnPropertyChanged();
         }
     }
-
+    private WindowState _windowState;
+    public WindowState WindowState
+    {
+        get => _windowState;
+        set
+        {
+            _windowState = value;
+            OnPropertyChanged();
+        }
+    }
     public AmbinityLEDViewModel CurrentSelectedLED
     {
         get => _currentSelectedLED;
@@ -103,9 +118,9 @@ public class LEDLayoutEditorViewModel : ViewModelBase
     {
         var vm = new ColorTestingViewModel(_device, mode);
 
-        var window = await _windowService.ShowDialogWindow(vm,_currentWindow);
+        var window = await _windowService.ShowDialogWindow(vm, _currentWindow);
         vm.WindowCloseRequest += () => window.Close();
-        
+
     }
 
     private void SaveCurrentIndexSetup()

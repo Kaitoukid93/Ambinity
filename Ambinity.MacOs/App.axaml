@@ -110,7 +110,7 @@
         <sty:FluentAvaloniaTheme PreferUserAccentColor="True" TextVerticalAlignmentOverrideBehavior="AlwaysEnabled"  />
         <Style Selector=":is(TopLevel)">
 		<Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
-    
+    <!--Font override-->
 	</Style>
         <Style Selector="MenuItem">
   <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
@@ -157,9 +157,10 @@
     </Application.Styles>
     <TrayIcon.Icons>
         <TrayIcons>
-            <TrayIcon ToolTipText="Ambinity"  Command="{CompiledBinding OpenQuickAccessCommand}" CommandParameter="devices" Icon="/Assets/appicon.ico" >
+            <TrayIcon MacOSProperties.IsTemplateIcon="true" ToolTipText="Ambinity"  Command="{CompiledBinding OpenQuickAccessCommand}" CommandParameter="devices" Icon="/Assets/appIcon_mac_512.png" >
                 <TrayIcon.Menu>
                     <NativeMenu>
+                      <NativeMenuItem Header="Quick access" Command="{CompiledBinding OpenQuickAccessCommand}"  />
                         <NativeMenuItem Header="Home" Command="{CompiledBinding OpenUiCommand}" CommandParameter="devices"  />
                         <NativeMenuItem Header="Exit" Command="{CompiledBinding ExitAppCommand}"  />
                     </NativeMenu>

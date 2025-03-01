@@ -13,6 +13,10 @@
         <InformationalVersion>1.2024.11.20</InformationalVersion>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     </PropertyGroup>
+    <PropertyGroup>
+        <PublishSingleFile>true</PublishSingleFile>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    </PropertyGroup>
     <ItemGroup>
         <AvaloniaResource Include="Assets\**"/>
         <AvaloniaResource Remove="ViewModels\Test\**" />

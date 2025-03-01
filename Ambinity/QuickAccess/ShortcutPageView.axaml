@@ -54,6 +54,11 @@
                         Classes="icon-button">
                     <PathIcon Width="15" Data="{DynamicResource home_3__home_house_roof_shelter}"></PathIcon>
                 </Button>
+                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" CommandParameter="store" ToolTip.HorizontalOffset="-20"
+                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="Ambinity store" Height="35" Width="35"
+                        Classes="icon-button">
+                    <PathIcon Width="15" Data="{DynamicResource onlineStore}"></PathIcon>
+                </Button>
                 <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" CommandParameter="devices" ToolTip.HorizontalOffset="-20"
                         Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="Devices" Height="35" Width="35"
                         Classes="icon-button">

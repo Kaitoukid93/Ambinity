@@ -50,11 +50,13 @@ public class SideMenuProfilePlayerViewModel : ViewModelBase
     private void OnMainWindowOpened(object? sender, EventArgs e)
     {
         _shouldShowImage = true;
+        _decoder.ShouldUpdateFrame = true;
     }
 
     private void OnMainWindowClosed(object? sender, EventArgs e)
     {
         _shouldShowImage = false;
+        _decoder.ShouldUpdateFrame = false;
     }
 
     private WriteableBitmap _reusableBitmap;

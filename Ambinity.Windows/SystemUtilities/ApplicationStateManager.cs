@@ -78,13 +78,13 @@ public class ApplicationStateManager
             };
             Process.Start(info);
         }
-        // Non-elevated runs via a utility method is currently elevated (de-elevating is hacky)
-        // Ambinity is not using it right now since the app always need to be elevated
-        // else
-        // {
-        //     string powerShell = Path.Combine(Environment.SystemDirectory, "WindowsPowerShell", "v1.0", "powershell.exe");
-        //     ProcessUtilities.RunAsDesktopUser(powerShell, command, true);
-        // }
+       //  Non-elevated runs via a utility method is currently elevated (de-elevating is hacky)
+       // Ambinity is not using it right now since the app always need to be elevated
+        else
+        {
+            string powerShell = Path.Combine(Environment.SystemDirectory, "WindowsPowerShell", "v1.0", "powershell.exe");
+            ProcessUtilities.RunAsDesktopUser(powerShell, command, false);
+        }
 
         // Lets try a graceful shutdown, PowerShell will kill if needed
         // if (Application.Current?.ApplicationLifetime is IControlledApplicationLifetime controlledApplicationLifetime)

@@ -19,18 +19,19 @@ public class DevicesPageViewModel : ViewModelBase
     {
         _factory = factory;
         _serialControllerRepository = serialControllerRepository;
-         _openRGBControllerRepository = openRGBControllerRepository;
-         _serialControllerRepository.ItemAdded += OnItemAdded;
-         Devices = new ObservableCollection<QuickAccessDeviceViewModel>();
+        _openRGBControllerRepository = openRGBControllerRepository;
+        _serialControllerRepository.ItemAdded += OnItemAdded;
+        Devices = new ObservableCollection<QuickAccessDeviceViewModel>();
     }
 
     public void Init()
     {
+        Devices?.Clear();
         foreach (var controler in _serialControllerRepository.Items)
         {
             OnItemAdded(controler as SerialController);
         }
-        
+
         foreach (var controler in _openRGBControllerRepository.Items)
         {
             OnItemAdded(controler as OpenRGBController);

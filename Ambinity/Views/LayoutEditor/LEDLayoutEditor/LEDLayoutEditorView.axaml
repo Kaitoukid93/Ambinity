@@ -12,6 +12,7 @@
         RequestedThemeVariant="Dark"
         Width="800"
         SizeToContent="Height"
+        WindowState="{Binding WindowState}"
         WindowStartupLocation="CenterScreen"
         Padding="40,60,40,40"
         Title="LED Layout Editor">

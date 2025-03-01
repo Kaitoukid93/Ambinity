@@ -25,7 +25,7 @@ public class ShortcutPageViewModel : ViewModelBase
 
     public ShortcutPageViewModel(DevicesPageViewModel devicesPageViewModel, QuickAccessNavigationStore navigationStore,
         QuickAccessViewModelFactory factory, LightingProfileRepository profileRepository,
-        ShortcutRepository shortcutRepository, IMainWindowService mainWindowService,LightingProfilePlayerWidgetViewModel widgetViewModel, LightingProfileDecoder decoder)
+        ShortcutRepository shortcutRepository, IMainWindowService mainWindowService, LightingProfilePlayerWidgetViewModel widgetViewModel, LightingProfileDecoder decoder)
     {
         WidgetViewModel = widgetViewModel;
         _decoder = decoder;
@@ -65,7 +65,7 @@ public class ShortcutPageViewModel : ViewModelBase
     private void AddShortcut()
     {
         //add to collection
-        var shortcut = new Shortcut("Shortcut "+Shortcuts.Count);
+        var shortcut = new Shortcut("Shortcut " + Shortcuts.Count);
         //add to repository
         _shortcutRepository.AddItem(shortcut);
         AddShortcutCommand.NotifyCanExecuteChanged();
@@ -79,7 +79,7 @@ public class ShortcutPageViewModel : ViewModelBase
         _shortcutRepository.RemoveItem(shortcutViewModel.Shortcut);
         AddShortcutCommand.NotifyCanExecuteChanged();
     }
-        
+
 
     private bool CanAdd()
     {
@@ -93,7 +93,7 @@ public class ShortcutPageViewModel : ViewModelBase
         {
             shortcut.IsInEditMode = true;
         }
-        
+
     }
 
     private void ExitEditMode()
@@ -112,21 +112,24 @@ public class ShortcutPageViewModel : ViewModelBase
             case "home":
                 _mainWindowService.OpenMainWindow(0);
                 break;
-            case "devices":
+            case "store":
                 _mainWindowService.OpenMainWindow(1);
                 break;
-            case "layout":
+            case "devices":
                 _mainWindowService.OpenMainWindow(2);
                 break;
-            case "settings":
+            case "layout":
                 _mainWindowService.OpenMainWindow(3);
+                break;
+            case "settings":
+                _mainWindowService.OpenMainWindow(4);
                 break;
         }
     }
 
     private void OnNavigated(ViewModelBase viewmodel)
     {
-        if(viewmodel==this)
+        if (viewmodel == this)
             this.Init();
     }
 
@@ -150,7 +153,7 @@ public class ShortcutPageViewModel : ViewModelBase
         }
         WidgetViewModel.Init();
         OnPropertyChanged(nameof(Shortcuts));
-        
+
     }
 
     private void OnShortcutAdded(ICollectableItem item)
@@ -168,6 +171,7 @@ public class ShortcutPageViewModel : ViewModelBase
 
     private void GoToDevicesPage()
     {
+        _devicesPageViewModel.Init();
         _navigationStore.CurrentViewModel = _devicesPageViewModel;
     }
 
@@ -178,7 +182,7 @@ public class ShortcutPageViewModel : ViewModelBase
 
     public ObservableCollection<ShortcutViewModel> Shortcuts
     {
-        get=>_shortcut;
+        get => _shortcut;
         set
         {
             _shortcut = value;

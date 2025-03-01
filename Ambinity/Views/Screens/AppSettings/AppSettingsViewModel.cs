@@ -65,6 +65,9 @@ public class AppSettingsViewModel : ViewModelBase
         _updatingProgress = new Progress<int>((p) => { CurrentUpdateProgress = p; });
     }
 
+    public bool HWMonitorSettingVisible{get;} = OperatingSystem.IsWindows();
+    public bool OpenRGBSettingVisible{get;} = OperatingSystem.IsWindows();
+
     private int _currentUpdateProgress;
 
     public int CurrentUpdateProgress

@@ -94,20 +94,21 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
         }
     }
 
+
     private void ChangeWindowTransparencyLevel(bool value)
     {
-        if (value && TransparencyLevel.Contains(WindowTransparencyLevel.Mica))
+        if (value && (TransparencyLevel.Contains(WindowTransparencyLevel.Mica) || TransparencyLevel.Contains(WindowTransparencyLevel.AcrylicBlur)))
             return;
-
+        //since mac os does not support mica, we use acrylic blur, I don't know about linux then
         TransparencyLevel = value
-            ? [WindowTransparencyLevel.Mica]
+            ? OperatingSystem.IsWindows() ? [WindowTransparencyLevel.Mica] : [WindowTransparencyLevel.AcrylicBlur]
             : [];
         OnPropertyChanged(nameof(TransparencyLevel));
         // Application.Current!.Resources["TransparencyEnabled"] = value;
     }
-    public IReadOnlyList<WindowTransparencyLevel>  TransparencyLevel { get; set; } =[WindowTransparencyLevel.Mica];
+    public IReadOnlyList<WindowTransparencyLevel> TransparencyLevel { get; set; } = OperatingSystem.IsWindows() ? [WindowTransparencyLevel.Mica] : [WindowTransparencyLevel.AcrylicBlur];
     public AppTourViewModel AppTourViewModel { get; set; }
-     
+
 
     private bool ShouldShowUI()
     {

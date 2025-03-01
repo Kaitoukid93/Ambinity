@@ -347,8 +347,8 @@ public class AmbinityBootStrapper
 
             serialControllerRepository.Init();
             //only allow Openrgb to run on Windows
-            if(OperatingSystem.IsWindows())
-            openRGBControllerRepository.Init();
+            if (OperatingSystem.IsWindows() && _generalSettingsManager.Settings.EnableOpenRGB)
+                openRGBControllerRepository.Init();
         });
         //run the profile decoder for rendering to device
         var profileDecoder = Ioc.Default.GetRequiredService<LightingProfileDecoder>();

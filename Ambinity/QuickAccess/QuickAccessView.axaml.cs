@@ -32,7 +32,7 @@ public partial class QuickAccessView : UserControl
 
     private void OnFrameNavigated(object sender, NavigationEventArgs e)
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
     }
 
     private void FrameNavigate(ViewModelBase vm)

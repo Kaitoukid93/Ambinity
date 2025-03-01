@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         ExtendClientAreaToDecorationsHint="True"
-        TransparencyLevelHint="AcrylicBlur"
+        TransparencyLevelHint="{Binding TransparencyLevel}"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         Width="1600"
         Height="900"
@@ -15,7 +15,6 @@
         x:DataType="root:RootViewModel"
         xmlns:root="clr-namespace:Ambinity.Views.Root"
         Icon="/Assets/appicon.ico"
-        Background="Transparent"
         Title="Ambinity">
     <Window.Styles>
         <Style Selector="Window[WindowState=Maximized]">
