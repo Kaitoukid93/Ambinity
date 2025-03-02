@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using Ambinity.SystemUtilities;
 using Ambinity.ViewModels;
 using AmbinityCore.DataBase;
 using AmbinityCore.Models.GeneralSetting;
 using Avalonia.Controls;
+using Avalonia.Styling;
 using FluentAvalonia.Core;
 
 namespace Ambinity.QuickAccess;
@@ -13,15 +15,30 @@ public class SystemTrayFlyoutWindowViewModel : ViewModelBase
     public QuickAccessViewModel QuickAccessViewModel => _quickAccessViewModel;
     private readonly QuickAccessViewModel _quickAccessViewModel;
     private readonly IGeneralSettings _settings;
+    private readonly AppThemeManager _appThemeManager;
 
-    public SystemTrayFlyoutWindowViewModel(QuickAccessViewModel quickAccessViewModel, GeneralSettingsManager settingsManager)
+    public SystemTrayFlyoutWindowViewModel(QuickAccessViewModel quickAccessViewModel, GeneralSettingsManager settingsManager, AppThemeManager appThemeManager) 
     {
         _quickAccessViewModel = quickAccessViewModel;
         _settings = settingsManager.Settings;
         _settings.PropertyChanged += OnGeneralSettingsChanged;
         ChangeWindowTransparencyLevel(_settings.EnableMica);
+        _appThemeManager = appThemeManager;
+        _appThemeManager.ThemeChanged += (theme) =>
+        {
+            IsDarkTheme = theme == ThemeVariant.Dark;
+        };
     }
-
+    private bool _isDarkTheme;
+    public bool IsDarkTheme
+    {
+        get => _isDarkTheme;
+        set
+        {
+            _isDarkTheme = value;
+            OnPropertyChanged();
+        }
+    }
     public void Init()
     {
         _quickAccessViewModel.Init();
@@ -51,5 +68,5 @@ public class SystemTrayFlyoutWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(TransparencyLevel));
         // Application.Current!.Resources["TransparencyEnabled"] = value;
     }
-    public IReadOnlyList<WindowTransparencyLevel>  TransparencyLevel { get; set; } =[WindowTransparencyLevel.AcrylicBlur];
+    public IReadOnlyList<WindowTransparencyLevel> TransparencyLevel { get; set; } = [WindowTransparencyLevel.AcrylicBlur];
 }

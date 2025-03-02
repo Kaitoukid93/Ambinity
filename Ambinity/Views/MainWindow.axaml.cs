@@ -1,3 +1,4 @@
+using Ambinity.Views.Root;
 using Avalonia.Controls;
 
 namespace Ambinity.Views

@@ -20,15 +20,24 @@
         WindowStartupLocation="Manual"
         Title="SystemTrayFlyoutWindow">
     <Panel>
-        <ExperimentalAcrylicBorder IsHitTestVisible="False">
-          <ExperimentalAcrylicBorder.Material>
+          <ExperimentalAcrylicBorder IsVisible="{Binding !IsDarkTheme,Mode=TwoWay}" IsHitTestVisible="False">
+               <ExperimentalAcrylicBorder.Material>
+                   <ExperimentalAcrylicMaterial
+                       BackgroundSource="Digger"
+                       TintColor="White"
+                       TintOpacity="4"
+                       MaterialOpacity="0.0" />
+               </ExperimentalAcrylicBorder.Material>
+           </ExperimentalAcrylicBorder>
+            <ExperimentalAcrylicBorder IsVisible="{Binding IsDarkTheme,Mode=TwoWay}" IsHitTestVisible="False">
+               <ExperimentalAcrylicBorder.Material>
                    <ExperimentalAcrylicMaterial
                        BackgroundSource="Digger"
                        TintColor="Black"
                        TintOpacity="1.3"
                        MaterialOpacity="0.0" />
                </ExperimentalAcrylicBorder.Material>
-        </ExperimentalAcrylicBorder>
+           </ExperimentalAcrylicBorder>
         <ContentControl Padding="10" Content="{Binding QuickAccessViewModel}"></ContentControl>
     </Panel>
   

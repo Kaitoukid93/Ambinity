@@ -70,6 +70,7 @@ public class AmbinityBootStrapper
     private IDialogService _dialogService;
     private static Application? _application;
     private static IWindowService _windowService;
+    private static AppThemeManager _appThemeManager;
 
     #endregion
     public static async void Initialize(Application application)
@@ -126,8 +127,9 @@ public class AmbinityBootStrapper
 
     private static void ConfigureTheme()
     {
-        AppThemeManager.UpdateAppAccentColor(_generalSettingsManager.Settings.PrimaryColor);
-        AppThemeManager.SetAppTheme(_generalSettingsManager.Settings.SelectedTheme);
+        _appThemeManager = Ioc.Default.GetRequiredService<AppThemeManager>();
+        _appThemeManager.UpdateAppAccentColor(_generalSettingsManager.Settings.PrimaryColor);
+        _appThemeManager.SetAppTheme(_generalSettingsManager.Settings.SelectedTheme);
 
 
     }
@@ -144,6 +146,7 @@ public class AmbinityBootStrapper
         //create default frame buffer
         var mainFrameBuffer = new FrameBuffer(750, 500);
         var serviceCollection = new ServiceCollection()
+            .AddSingleton<AppThemeManager>()
             .AddSingleton<IMainWindowService, MainWindowService>()
             .AddSingleton<IWindowService, WindowService>()
             .AddSingleton<RootViewModel>()

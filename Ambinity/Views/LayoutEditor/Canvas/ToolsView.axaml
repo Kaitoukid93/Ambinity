@@ -69,11 +69,9 @@
     <Grid>
 
         <StackPanel Spacing="10" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Border  CornerRadius="7" Margin="0,0,0,0" HorizontalAlignment="Left"
+            <Border Background="{DynamicResource ButtonBackground}"  CornerRadius="7" Margin="0,0,0,0" HorizontalAlignment="Left"
                     VerticalAlignment="Top" Padding="0">
-                <Border.Background>
-                    <SolidColorBrush Color="Black" Opacity="0.5"></SolidColorBrush>
-                </Border.Background>
+                
                 <ItemsControl ItemsSource="{Binding CanvasTools}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -139,10 +137,8 @@
                     </ItemsControl.DataTemplates>
                 </ItemsControl>
             </Border>
-            <Border IsVisible="{Binding ShowDiag}" VerticalAlignment="Top"  Padding="10" CornerRadius="7">
-                <Border.Background>
-                    <SolidColorBrush Color="Black" Opacity="0.25"></SolidColorBrush>
-                </Border.Background>
+            <Border Background="{DynamicResource ButtonBackground}"  IsVisible="{Binding ShowDiag}" VerticalAlignment="Top"  Padding="10" CornerRadius="7">
+          
                 <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
                     <StackPanel Spacing="3">
                         <ItemsControl ItemsSource="{Binding FrameTime}">
@@ -175,11 +171,9 @@
         </StackPanel>
 
         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="10">
-            <Border  CornerRadius="7"
+            <Border Background="{DynamicResource ButtonBackground}"   CornerRadius="7"
                     Margin="0,0,0,0" Padding="0">
-                <Border.Background>
-                    <SolidColorBrush Color="Black" Opacity="0.5"></SolidColorBrush>
-                </Border.Background>
+            
                 <Button Classes="icon-button" CornerRadius="4"
                         Width="40" Height="40"
                         ToolTip.Tip="Play-Pause"
@@ -195,22 +189,18 @@
                     </Grid>
                 </Button>
             </Border>
-            <Border  CornerRadius="7"
+            <Border  Background="{DynamicResource ButtonBackground}"  CornerRadius="7"
                     Margin="0,0,0,0" Padding="0">
-                <Border.Background>
-                    <SolidColorBrush Color="Black" Opacity="0.5"></SolidColorBrush>
-                </Border.Background>
+               
                 <Slider Margin="10,0,10,0" Width="160" Minimum="0" Value="{Binding Brightness}" Maximum="100"></Slider>
             </Border>
         </StackPanel>
         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="10">
         </StackPanel>
         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
-            <Border HorizontalAlignment="Center" VerticalAlignment="Bottom" CornerRadius="7"
+            <Border Background="{DynamicResource ButtonBackground}"  HorizontalAlignment="Center" VerticalAlignment="Bottom" CornerRadius="7"
                     Margin="0,0,0,0" Padding="0">
-                <Border.Background>
-                    <SolidColorBrush Color="Black" Opacity="0.5"></SolidColorBrush>
-                </Border.Background>
+              
                 <ItemsControl x:Name="tools" ItemsSource="{Binding ZoneTools}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -276,12 +266,10 @@
                     </ItemsControl.DataTemplates>
                 </ItemsControl>
             </Border>
-            <Border VerticalAlignment="Bottom" IsVisible="{Binding  ShowLockSymbol}" Width="50" Height="50"
+            <Border Background="{DynamicResource ButtonBackground}"  VerticalAlignment="Bottom" IsVisible="{Binding  ShowLockSymbol}" Width="50" Height="50"
                    CornerRadius="7"
                     Margin="0,0,0,0" Padding="0">
-                <Border.Background>
-                    <SolidColorBrush Color="Black" Opacity="0.5"></SolidColorBrush>
-                </Border.Background>
+               
                 <PathIcon Foreground="OrangeRed" ToolTip.Tip="Canvas is locked" Data="{DynamicResource lock}"></PathIcon>
             </Border>
         </StackPanel>

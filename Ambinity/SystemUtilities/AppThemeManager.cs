@@ -1,4 +1,5 @@
 
+using System;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -6,9 +7,17 @@ using FluentAvalonia.Styling;
 
 namespace Ambinity.SystemUtilities;
 
-public static class AppThemeManager
+public class AppThemeManager
 {
-    private static ThemeVariant GetThemeVariant(string value)
+    public AppThemeManager()
+    {
+        Application.Current.ActualThemeVariantChanged+= (s, e) =>
+        {
+            ThemeChanged?.Invoke(Application.Current.RequestedThemeVariant);
+        };
+    }
+    public event Action<ThemeVariant> ThemeChanged;
+    private ThemeVariant GetThemeVariant(string value)
     {
         switch (value)
         {
@@ -17,12 +26,13 @@ public static class AppThemeManager
             case "Dark":
                 return ThemeVariant.Dark;
             case "System":
+            return Application.Current.RequestedThemeVariant;
             default:
-                return null;
+                return ThemeVariant.Default;
         }
     }
 
-    public static void SetAppTheme(string themeName)
+    public void SetAppTheme(string themeName)
     {
         var theme = GetThemeVariant(themeName);
         var _faTheme = Application.Current.Styles[0] as FluentAvaloniaTheme;
@@ -39,8 +49,9 @@ public static class AppThemeManager
             _faTheme.PreferUserAccentColor = false;
             _faTheme.CustomAccentColor = null;
         }
+        ThemeChanged?.Invoke(theme);
     }
-    public static void UpdateAppAccentColor(Color? color)
+    public void UpdateAppAccentColor(Color? color)
     {
         var _faTheme = Application.Current.Styles[0] as FluentAvaloniaTheme;
         _faTheme.CustomAccentColor = color;

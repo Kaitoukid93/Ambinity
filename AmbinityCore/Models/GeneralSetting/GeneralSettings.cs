@@ -33,7 +33,7 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         set => SetProperty(ref _primaryColor, value);
     }
 
-    private bool _enableMica = false;
+    private bool _enableMica = OperatingSystem.IsMacOS() ? true : false;
 
     public bool EnableMica
     {
@@ -118,18 +118,18 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
 
     #region Profile
 
-    private int _canvasWidth =1000;
+    private int _canvasWidth = 1000;
 
     public int CanvasWidth
     {
-        get =>_canvasWidth ;
+        get => _canvasWidth;
         set => SetProperty(ref _canvasWidth, value);
     }
-    private int _canvasHeight =500;
+    private int _canvasHeight = 500;
 
     public int CanvasHeight
     {
-        get =>_canvasHeight ;
+        get => _canvasHeight;
         set => SetProperty(ref _canvasHeight, value);
     }
     private int _targetFramerate = 30;

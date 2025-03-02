@@ -18,7 +18,7 @@
             <ResourceDictionary.ThemeDictionaries>
 
                 <ResourceDictionary x:Key="Default">
-
+                    
                     <Color x:Key="UIWindowBackgroundColorInactive">#F3F3F3</Color>
                     <Color x:Key="UIWindowBackgroundColorActive">#80F3F3F3</Color>
 

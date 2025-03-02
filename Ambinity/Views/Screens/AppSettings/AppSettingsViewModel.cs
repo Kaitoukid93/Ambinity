@@ -35,8 +35,9 @@ public class AppSettingsViewModel : ViewModelBase
     private UpdateService _updateService;
     public IGeneralSettings GeneralSettings => _generalSettings;
     private IProgress<int> _updatingProgress;
+    private AppThemeManager _appThemeManager;
 
-    public AppSettingsViewModel(GeneralSettingsManager settingsManager, UpdateService updateService)
+    public AppSettingsViewModel(GeneralSettingsManager settingsManager, UpdateService updateService, AppThemeManager appThemeManager)
     {
         _settingsManager = settingsManager;
         _updateService = updateService;
@@ -49,6 +50,7 @@ public class AppSettingsViewModel : ViewModelBase
         _startupDelay = _generalSettings.AutoStartDelay;
         _enableMica = _generalSettings.EnableMica;
         _startMinimized = _generalSettings.StartMinimized;
+        _appThemeManager = appThemeManager;
         AvailableFrameRates = ["24 FPS", "30 FPS", "60 FPS", "100 FPS", "144 FPS"];
         AvailableBitmapSize = ["400 * 320 px", "750 * 500 px", "800 * 600 px", "1024 * 768 px", "1200 * 600 px", "1000 * 500 px"];
         _targetBitmapSize = AvailableBitmapSize.Where(f =>
@@ -297,7 +299,7 @@ public class AppSettingsViewModel : ViewModelBase
             OnPropertyChanged();
             if (value != null && value != string.Empty)
             {
-                AppThemeManager.SetAppTheme(value);
+                _appThemeManager.SetAppTheme(value);
             }
         }
     }
@@ -311,7 +313,7 @@ public class AppSettingsViewModel : ViewModelBase
         {
             _currentAppAccentColor = value;
             _generalSettings.PrimaryColor = value;
-            AppThemeManager.UpdateAppAccentColor(value);
+            _appThemeManager.UpdateAppAccentColor(value);
             OnPropertyChanged();
         }
     }

@@ -17,7 +17,8 @@
                 <ResourceDictionary.ThemeDictionaries>
 
                 <ResourceDictionary x:Key="Default">
-
+                     <Color x:Key="TextFillColorPrimary">#FF3D3D3D</Color>
+                    <Color x:Key="TextFillColorSecondary">#FF4B494B</Color>
                     <Color x:Key="UIWindowBackgroundColorInactive">#F3F3F3</Color>
                     <Color x:Key="UIWindowBackgroundColorActive">#80F3F3F3</Color>
 
@@ -61,7 +62,32 @@
                     <Color x:Key="UIPopupBlurBackground">#111111</Color>
 
                 </ResourceDictionary>
+                   <ResourceDictionary x:Key="Light">
+                    <Color x:Key="TextFillColorPrimary">#FF3D3D3D</Color>
+                    <Color x:Key="TextFillColorSecondary">#FF4B494B</Color>
+                    <Color x:Key="UIWindowBackgroundColorInactive">#F3F3F3</Color>
+                    <Color x:Key="UIWindowBackgroundColorActive">#80F3F3F3</Color>
 
+                    <Color x:Key="UIWindowBorderColorInactive">Transparent</Color>
+
+                    <Color x:Key="UIControlBorderColorBase">#16212121</Color>
+                    <Color x:Key="UIControlBackgroundColorBase">#A0FAFCFD</Color>
+                    <Color x:Key="UIControlBackgroundColorBasePointerOver">#18CCCCCC</Color>
+
+                    <Color x:Key="UIControlBorderColorHigh">#30AAAAAA</Color>
+                    <Color x:Key="UIControlBackgroundColorHigh">#18CCCCCC</Color>
+
+                    <Color x:Key="UIControlBackgroundColorHighest">#40AAAAAA</Color>
+
+                    <Color x:Key="UIExpanderBorderColor">#16212121</Color>
+
+                    <Color x:Key="UIOverlayBackground">#20212121</Color>
+
+                    <Color x:Key="UIPopupBlurBackground">#E3E3E3</Color>
+
+                </ResourceDictionary>
+
+               
             </ResourceDictionary.ThemeDictionaries>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://Ambinity/Views/GeometryCollection/GeometryCollection.axaml" />

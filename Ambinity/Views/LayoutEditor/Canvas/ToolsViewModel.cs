@@ -172,7 +172,7 @@ public class ToolsViewModel : ViewModelBase
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
         snapToGridTools.Command = ToggleSnapToGridCommand;
         var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",
-            new SolidColorBrush(Colors.White), FitCanvasToViewCommand);
+            new SolidColorBrush(Colors.Gray), FitCanvasToViewCommand);
         var showDiagTool =
             new ToggleToolbarItem("Info", "Show stats", "wave_signal__heart_line_beat_square_graph_stats");
         showDiagTool.IsChecked = _showDiag;
@@ -200,7 +200,7 @@ public class ToolsViewModel : ViewModelBase
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
         snapToGridTools.Command = ToggleSnapToGridCommand;
         var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",
-            new SolidColorBrush(Colors.White), FitCanvasToViewCommand);
+            new SolidColorBrush(Colors.Gray), FitCanvasToViewCommand);
         CanvasTools.Add(snapToGridTools);
         CanvasTools.Add(centerCanvasTool);
         OnRenderingStatusChanged();
@@ -221,7 +221,7 @@ public class ToolsViewModel : ViewModelBase
     private ButtonToolbarItem ShowLibraryTool()
     {
         return new ButtonToolbarItem("Show Library", "Show Zone Library", "collection",
-            new SolidColorBrush(Colors.White), ShowLibraryCommand);
+            new SolidColorBrush(Colors.Gray), ShowLibraryCommand);
     }
 
     private ButtonToolbarItem AddAnimationZoneTool()

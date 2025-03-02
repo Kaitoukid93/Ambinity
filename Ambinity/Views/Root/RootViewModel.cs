@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.QuickAccess;
 using Ambinity.Services;
 using Ambinity.Stores;
+using Ambinity.SystemUtilities;
 using Ambinity.ViewModels;
 using Ambinity.Views.AppTour;
 using Ambinity.Views.NonClientArea;
@@ -23,8 +25,11 @@ using AmbinityServer;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
+using FluentAvalonia.Styling;
 using Serilog;
 
 
@@ -50,7 +55,7 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
         GeneralSettingsManager settingsManager,
         AmbinityClient ambinityClient, NonClientAreaContentViewModel nonClientAreaContentViewModel,
         AppTourViewModel appTourViewModel, IWindowService windowService,
-        SystemTrayFlyoutWindowViewModel systemTrayFlyoutWindowViewModel, ShortcutRepository shortcutRepository)
+        SystemTrayFlyoutWindowViewModel systemTrayFlyoutWindowViewModel, ShortcutRepository shortcutRepository, AppThemeManager appThemeManager)
     {
         _rootNavigationStores = rootNavigationStores;
         CommandSetup();
@@ -73,9 +78,15 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
         _settings.PropertyChanged += OnGeneralSettingsChanged;
         _ambinityClient = ambinityClient;
         _windowService = windowService;
+        _appThemeManager = appThemeManager;
+        _appThemeManager.ThemeChanged += (theme) =>
+        {
+            IsDarkTheme = theme == ThemeVariant.Dark;
+        };
         mainWindowService.ConfigureMainWindowProvider(this);
         NonClientAreaContentViewModel = nonClientAreaContentViewModel;
         AppTourViewModel = appTourViewModel;
+        IsDarkTheme = Application.Current.RequestedThemeVariant == ThemeVariant.Dark;
         ChangeWindowTransparencyLevel(_settings.EnableMica);
         //show UI if requested
         if (ShouldShowUI())
@@ -83,7 +94,16 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
             OpenMainWindow();
         }
     }
-
+    private bool _isDarkTheme;
+    public bool IsDarkTheme
+    {
+        get => _isDarkTheme; 
+        set
+        {
+            _isDarkTheme = value; 
+            OnPropertyChanged();
+        }
+    }
     private void OnGeneralSettingsChanged(object? sender, PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
@@ -310,6 +330,7 @@ public partial class RootViewModel : ViewModelBase, IMainWindowProvider
     private List<CollectableItemRepository> _repositories;
     private readonly IWindowService _windowService;
     private readonly SystemTrayFlyoutWindowViewModel _systemTrayFlyoutWindowViewModel;
+    private readonly AppThemeManager _appThemeManager;
 
     private async Task SaveRepositories()
     {
