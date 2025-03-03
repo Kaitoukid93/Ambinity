@@ -5,6 +5,7 @@
              xmlns:sty="using:FluentAvalonia.Styling"
              xmlns:root = "using:Ambinity.Views.Root"
              x:DataType="root:RootViewModel"
+             Name="Ambinity"
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              xmlns:converters ="clr-namespace:Ambinity.MacOs.Converters"
              xmlns:windows="clr-namespace:Ambinity.MacOs">

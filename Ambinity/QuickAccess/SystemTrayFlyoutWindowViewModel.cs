@@ -4,6 +4,7 @@ using Ambinity.SystemUtilities;
 using Ambinity.ViewModels;
 using AmbinityCore.DataBase;
 using AmbinityCore.Models.GeneralSetting;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Styling;
 using FluentAvalonia.Core;
@@ -23,6 +24,7 @@ public class SystemTrayFlyoutWindowViewModel : ViewModelBase
         _settings = settingsManager.Settings;
         _settings.PropertyChanged += OnGeneralSettingsChanged;
         ChangeWindowTransparencyLevel(_settings.EnableMica);
+         IsDarkTheme = Application.Current.RequestedThemeVariant == ThemeVariant.Dark;
         _appThemeManager = appThemeManager;
         _appThemeManager.ThemeChanged += (theme) =>
         {
