@@ -32,7 +32,7 @@ public class ScreenCapturingService : ICapturingService
         if (!IsEnabled)
             return;
         _screenCaptureService?.Dispose();
-        _screenCaptureService ??= new SCKScreenCaptureService();
+        _screenCaptureService ??= new DX11ScreenCaptureService();
         var graphicsCards = new GraphicsCard();
         _availableScreen = _screenCaptureService.GetDisplays(graphicsCards).ToList();
         _screenCaptures = new List<IScreenCapture>();

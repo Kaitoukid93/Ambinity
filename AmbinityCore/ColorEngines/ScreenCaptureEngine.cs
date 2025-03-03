@@ -77,10 +77,13 @@ public class ScreenCaptureEngine : IColorEngine
             Log.Error("Screen Capture Engine Init Failed");
             return;
         }
-        if (_screenCapture is SCKScreenCapture sckScreenCapture)
+#if NET8_0_MACOS
+    if (_screenCapture is SCKScreenCapture sckScreenCapture)
         {
             _displayScalingFactor = sckScreenCapture.ScalingFactor;
         }
+#endif
+
         var left = _config.ScreenCaptureArea.RatioX * _screenCapture.Display.Width * _displayScalingFactor;
         var top = _config.ScreenCaptureArea.RatioY * _screenCapture.Display.Height * _displayScalingFactor;
         var width = _config.ScreenCaptureArea.RatioWidth * _screenCapture.Display.Width * _displayScalingFactor;

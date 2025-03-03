@@ -88,10 +88,14 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
     {
         _shouldShowImage = true;
         _capturingService.RegisterUse();
-        if(_screenCapture is SCKScreenCapture sckScreenCapture)
+#if NET8_0_MACOS
+          if(_screenCapture is SCKScreenCapture sckScreenCapture)
         {
             _displayScalingFactor = sckScreenCapture.ScalingFactor;
         }
+
+#endif
+
         if (_captureZone != null)
         {
             try
@@ -105,10 +109,10 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
         }
         try
         {
-            var left = _config.ScreenCaptureArea.RatioX * _screenCapture.Display.Width*_displayScalingFactor;
-            var top = _config.ScreenCaptureArea.RatioY * _screenCapture.Display.Height*_displayScalingFactor;
-            var width = _config.ScreenCaptureArea.RatioWidth * _screenCapture.Display.Width*_displayScalingFactor;
-            var height = _config.ScreenCaptureArea.RatioHeight * _screenCapture.Display.Height*_displayScalingFactor;
+            var left = _config.ScreenCaptureArea.RatioX * _screenCapture.Display.Width * _displayScalingFactor;
+            var top = _config.ScreenCaptureArea.RatioY * _screenCapture.Display.Height * _displayScalingFactor;
+            var width = _config.ScreenCaptureArea.RatioWidth * _screenCapture.Display.Width * _displayScalingFactor;
+            var height = _config.ScreenCaptureArea.RatioHeight * _screenCapture.Display.Height * _displayScalingFactor;
             _captureZone = _screenCapture.RegisterCaptureZone((int)left, (int)top, (int)width,
                 (int)height, downscaleLevel: 3);
             _reusableRow = new byte[(int)_captureZone.Width * 4];

@@ -9,7 +9,6 @@
         Height="900"
         MinWidth="1200"
         MinHeight="750"
-        FontFamily="{StaticResource NunitoFont}"
         WindowStartupLocation="CenterScreen"
         x:Class="Ambinity.Views.MainWindow"
         x:DataType="root:RootViewModel"

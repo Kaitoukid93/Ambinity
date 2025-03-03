@@ -4,17 +4,18 @@
     <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
     <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
     <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
-    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">/Users/zoe/.nuget/packages/</NuGetPackageRoot>
-    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">/Users/zoe/.nuget/packages/</NuGetPackageFolders>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\zOe\.nuget\packages\;C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages</NuGetPackageFolders>
     <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
-    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.11.1</NuGetToolVersion>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.12.0</NuGetToolVersion>
   </PropertyGroup>
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <SourceRoot Include="/Users/zoe/.nuget/packages/" />
+    <SourceRoot Include="C:\Users\zOe\.nuget\packages\" />
+    <SourceRoot Include="C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <PkgNonCopyableAnalyzer Condition=" '$(PkgNonCopyableAnalyzer)' == '' ">/Users/zoe/.nuget/packages/noncopyableanalyzer/0.7.0</PkgNonCopyableAnalyzer>
-    <PkgErrorProne_NET_Structs Condition=" '$(PkgErrorProne_NET_Structs)' == '' ">/Users/zoe/.nuget/packages/errorprone.net.structs/0.4.0-beta.1</PkgErrorProne_NET_Structs>
-    <PkgErrorProne_NET_CoreAnalyzers Condition=" '$(PkgErrorProne_NET_CoreAnalyzers)' == '' ">/Users/zoe/.nuget/packages/errorprone.net.coreanalyzers/0.4.0-beta.1</PkgErrorProne_NET_CoreAnalyzers>
+    <PkgNonCopyableAnalyzer Condition=" '$(PkgNonCopyableAnalyzer)' == '' ">C:\Users\zOe\.nuget\packages\noncopyableanalyzer\0.7.0</PkgNonCopyableAnalyzer>
+    <PkgErrorProne_NET_Structs Condition=" '$(PkgErrorProne_NET_Structs)' == '' ">C:\Users\zOe\.nuget\packages\errorprone.net.structs\0.4.0-beta.1</PkgErrorProne_NET_Structs>
+    <PkgErrorProne_NET_CoreAnalyzers Condition=" '$(PkgErrorProne_NET_CoreAnalyzers)' == '' ">C:\Users\zOe\.nuget\packages\errorprone.net.coreanalyzers\0.4.0-beta.1</PkgErrorProne_NET_CoreAnalyzers>
   </PropertyGroup>
 </Project>

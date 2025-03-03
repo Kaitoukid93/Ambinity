@@ -9,12 +9,12 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PlatformTarget>arm64</PlatformTarget>
+        <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PlatformTarget>arm64</PlatformTarget>
+        <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
 
     <ItemGroup>
@@ -49,11 +49,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../ScreenCapture.NET.AV/ScreenCapture.NET.AV.csproj" />
+
         <ProjectReference Include="../ScreenCapture.NET.DX11/ScreenCapture.NET.DX11.csproj" />
         <ProjectReference Include="../ScreenCapture.NET.DX9/ScreenCapture.NET.DX9.csproj" />
-        <ProjectReference Include="../ScreenCapture.NET.SCK/ScreenCapture.NET.SCK.csproj" />
-        <ProjectReference Include="../ScreenCapture.NET.X11/ScreenCapture.NET.X11.csproj" />
+  
+     
         <ProjectReference Include="../ScreenCapture.NET/ScreenCapture.NET.csproj" />
         <ProjectReference Include="..\AmbinityServer\AmbinityServer.csproj" />
         <ProjectReference Include="..\Draw2D.Core\Draw2D.Core.csproj" />
