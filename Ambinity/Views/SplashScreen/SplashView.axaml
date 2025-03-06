@@ -30,7 +30,7 @@
                     
                     <Lottie Margin="5" Path="/Assets/splash_loading.json" Width="75" Height="75"></Lottie>
                     <TextBlock FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center"
-                               Text="Ambinity is loading">
+                            Text="Ambinity is loading">
                     </TextBlock>
                     <StackPanel>
                         <StackPanel.Styles>

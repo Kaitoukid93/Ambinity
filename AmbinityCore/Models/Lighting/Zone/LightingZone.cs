@@ -297,7 +297,7 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
 
     [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
-    public OnlineItemRepository GetOnlineRerpository()
+    public OnlineItemRepository GetOnlineRepository()
     {
         return Ioc.Default.GetRequiredService<LightingZoneOnlineRepository>();
     }

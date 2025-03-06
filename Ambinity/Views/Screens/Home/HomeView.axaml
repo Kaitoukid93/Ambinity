@@ -75,7 +75,7 @@
                                                 <Border ClipToBounds="True"
                                                         CornerRadius="5">
                                                     <Image Stretch="UniformToFill"
-                                                           Source="{Binding GetThumbnail^,FallbackValue=null}">
+                                                           Source="{Binding GetThumbnail^}">
                                                     </Image>
                                                 </Border>
                                             </Grid>

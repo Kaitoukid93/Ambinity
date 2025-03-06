@@ -168,12 +168,11 @@ public class SerialController : ObservableObject, IController
     /// </summary>
     public void Save()
     {
-        //todo implement profile save with icon 
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path
             var dbPath = LocalRepository.LocalFolderPath;
-            LocalPath = Path.Combine(dbPath, Name + "-" + SerialPort);
+            LocalPath = Path.Combine(dbPath, Name + "-" + SerialNumber);
             Directory.CreateDirectory(LocalPath);
         }
 
@@ -199,7 +198,7 @@ public class SerialController : ObservableObject, IController
     }
 
     [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
-    public OnlineItemRepository GetOnlineRerpository()
+    public OnlineItemRepository GetOnlineRepository()
     {
         //todo make online repo for serial controller
         return null;

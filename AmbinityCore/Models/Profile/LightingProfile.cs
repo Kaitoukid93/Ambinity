@@ -150,7 +150,7 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
 
     [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
-    public OnlineItemRepository GetOnlineRerpository()
+    public OnlineItemRepository GetOnlineRepository()
     {
         //todo make online repo for lighting profile controller
         return null;

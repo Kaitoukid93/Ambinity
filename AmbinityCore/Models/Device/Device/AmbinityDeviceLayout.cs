@@ -223,7 +223,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
         return Ioc.Default.GetRequiredService<AmbinityDeviceLayoutRepository>();
     }
 
-    public OnlineItemRepository GetOnlineRerpository()
+    public OnlineItemRepository GetOnlineRepository()
     {
         return Ioc.Default.GetRequiredService<AmbinityDeviceOnlineRepository>();
     }

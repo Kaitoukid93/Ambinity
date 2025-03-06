@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using CommunityToolkit.Mvvm.DependencyInjection;
-#if NET8_0_MACOS
+#if MACOS
 using AppKit;
 #endif
 
@@ -31,7 +31,7 @@ public partial class SystemTrayFlyoutWindowView : Window
     }
     private void CalculateFlyoutPosition()
     {
-#if NET8_0_MACOS
+#if MACOS
         var screens = NSScreen.Screens;
         NSScreen currentScreen = NSScreen.MainScreen;
         var visibleFrame = currentScreen.VisibleFrame;

@@ -70,16 +70,16 @@ public sealed class SCKScreenCapture : AbstractScreenCapture<ColorBGRA>
                           Console.WriteLine("Error while requesting shareable content " + error.Code);
                           return;
                       }
-                      //get tartget display
-                      foreach (var display in content.Displays)
-                      {
-                          if (display.DisplayId == Display.Index+1) // I have no idea why apple using 1 as the offset for display index...Í
-                          {
-                              _selectedDisplay = display;
-                              break;
-                          }
-                      }
-
+                      //get tartget display 
+                    //   foreach (var display in content.Displays)
+                    //   {
+                    //       if (display.DisplayId == Display.Index+1) // I have no idea why apple using 1 as the offset for display index...Í
+                    //       {
+                    //           _selectedDisplay = display;
+                    //           break;
+                    //       }
+                    //   }
+                        _selectedDisplay = content.Displays[Display.Index];
                       _stride = (int)(Display.Width * _scalingFactor * ColorBGRA.ColorFormat.BytesPerPixel);
                       _buffer = new byte[(int)(Display.Height * _scalingFactor * _stride)];
                       var apps = content.Applications;

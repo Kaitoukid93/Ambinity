@@ -71,13 +71,18 @@ public class ScreenCaptureEngine : IColorEngine
     private void OnCaptureAreaUpdated()
     {
         var displayIndex = _config.DisplayIndex;
+        if(displayIndex < 0 || displayIndex >= _screenCapturingService.AvailableScreens.Count)
+        {
+            Log.Error("Invalid display index");
+            displayIndex = 0;
+        }
         _screenCapture = _screenCapturingService.GetScreenCapture(displayIndex);
         if (_screenCapture == null)
         {
             Log.Error("Screen Capture Engine Init Failed");
             return;
         }
-#if NET8_0_MACOS
+#if MACOS
     if (_screenCapture is SCKScreenCapture sckScreenCapture)
         {
             _displayScalingFactor = sckScreenCapture.ScalingFactor;

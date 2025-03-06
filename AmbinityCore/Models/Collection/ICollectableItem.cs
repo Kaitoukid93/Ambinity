@@ -28,6 +28,6 @@ public interface ICollectableItem : INotifyPropertyChanged
     /// get co-responding online repository for this item
     /// </summary>
     /// <returns></returns>
-    OnlineItemRepository GetOnlineRerpository();
+    OnlineItemRepository GetOnlineRepository();
     
 }

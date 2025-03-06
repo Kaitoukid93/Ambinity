@@ -23,7 +23,7 @@ public class SolidColor : FillColorBase, ICollectableItem
 
     [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
-    public OnlineItemRepository GetOnlineRerpository()
+    public OnlineItemRepository GetOnlineRepository()
     {
         //todo make online repo for solid color 
         return null;

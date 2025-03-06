@@ -88,7 +88,7 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
     {
         _shouldShowImage = true;
         _capturingService.RegisterUse();
-#if NET8_0_MACOS
+#if MACOS
           if(_screenCapture is SCKScreenCapture sckScreenCapture)
         {
             _displayScalingFactor = sckScreenCapture.ScalingFactor;

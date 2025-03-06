@@ -20,7 +20,7 @@ public class ColorPalette : FillColorBase, ICollectableItem
 
     [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
-    public OnlineItemRepository GetOnlineRerpository()
+    public OnlineItemRepository GetOnlineRepository()
     {
         //todo make online repo for color palette
         return null;

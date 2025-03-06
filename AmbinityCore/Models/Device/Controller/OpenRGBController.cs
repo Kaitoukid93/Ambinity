@@ -162,7 +162,7 @@ public class OpenRGBController : ObservableObject, IController
     }
     [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
-    public OnlineItemRepository GetOnlineRerpository()
+    public OnlineItemRepository GetOnlineRepository()
     {
         //todo make online repo for serial controller
         return null;
