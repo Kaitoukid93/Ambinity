@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-   <OutputType>Exe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0-macos15.0</TargetFramework>
     <SupportedOSPlatformVersion>12.3.0</SupportedOSPlatformVersion>
     <ImplicitUsings>enable</ImplicitUsings>

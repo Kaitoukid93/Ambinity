@@ -213,6 +213,10 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
                 if (AnimationRepository == null)
                     Assets.Add(new AnimationsRepository(Path.Combine(_assetPath, "animations")));
                 break;
+                case ConfigurationType.Video:
+                if (VideoRepository == null)
+                    Assets.Add(new VideosRepository(Path.Combine(_assetPath, "videos")));
+                break;
         }
     }
 
@@ -250,10 +254,16 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
             switch (dirName)
             {
                 case "animations":
-                    var repo = new AnimationsRepository(dir);
-                    repo.LoadFromDisk();
-                    Assets.Add(repo);
+                    var repoAnim = new AnimationsRepository(dir);
+                    repoAnim.LoadFromDisk();
+                    Assets.Add(repoAnim);
                     Log.Information("Animation asset loaded");
+                    break;
+                    case "videos":
+                    var repoVid = new VideosRepository(dir);
+                    repoVid.LoadFromDisk();
+                    Assets.Add(repoVid);
+                    Log.Information("Video asset loaded");
                     break;
             }
         }
@@ -280,4 +290,7 @@ public class LightingProfile : ObservableObject, IDisposable, ICollectableItem
     [JsonIgnore]
     public AnimationsRepository AnimationRepository =>
         Assets?.Where(a => a.Name == "Animation").FirstOrDefault() as AnimationsRepository;
+           [JsonIgnore]
+    public VideosRepository VideoRepository =>
+        Assets?.Where(a => a.Name == "Video").FirstOrDefault() as VideosRepository;
 }

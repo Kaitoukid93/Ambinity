@@ -19,5 +19,9 @@ public enum ConfigurationType
     /// <summary>
     /// Require animation engine
     /// </summary>
-    Animation
+    Animation,
+       /// <summary>
+    /// Require video engine
+    /// </summary>
+    Video
 }
