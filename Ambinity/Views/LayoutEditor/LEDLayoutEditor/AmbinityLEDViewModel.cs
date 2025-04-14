@@ -8,6 +8,7 @@ public class AmbinityLEDViewModel : ViewModelBase
 {
     private readonly AmbinityLED _led;
     public AmbinityLED LED => _led;
+    private int? _backupIndex;
 
     public AmbinityLEDViewModel(AmbinityLED led)
     {
@@ -15,6 +16,7 @@ public class AmbinityLEDViewModel : ViewModelBase
         Width = led.Width;
         Height = led.Height;
         Index = led.Index;
+        _backupIndex =led.Index;
         X = led.RelativeX;
         Y = led.RelativeY;
         Geometry = led.Geometry;
@@ -22,19 +24,27 @@ public class AmbinityLEDViewModel : ViewModelBase
 
     public void SaveIndex()
     {
-        _led.Index = Index;
+       // _led.Index = Index;
     }
     public void ResetIndex()
     {
-        Index = 0;
+        Index = null;
+        _led.Index = null;
         IsSelected = false;
         IsIndexVisible = false;
         OnPropertyChanged(nameof(Index));
     }
+    //in case user cancel editing
+    public void RevertIndex()
+    {
+       _led.Index = _backupIndex;
+       IsIndexVisible = true;
+    }
 
-    public void SetIndex(int index)
+    public void SetIndex(int? index)
     {
         Index = index;
+        _led.Index = index;
         OnPropertyChanged(nameof(Index));
         IsIndexVisible = true;
     }
@@ -51,7 +61,7 @@ public class AmbinityLEDViewModel : ViewModelBase
     }
     public float Width { get; set; }
     public float Height { get; set; }
-    public int Index { get; set; }
+    public int? Index { get; set; }
     public float X { get; set; }
     public float Y { get; set; }
     public string Geometry { get; set; }

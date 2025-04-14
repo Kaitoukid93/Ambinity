@@ -13,10 +13,10 @@ public static class Constants
         Environment.SpecialFolder.LocalApplicationData);
 
     public static readonly string AppDataFolder =
-        Path.Combine(BaseFolder, "Ambinity\\");
+        Path.Combine(BaseFolder, "Ambinity");
 
     public static readonly string ModelDataFolder =
-        Path.Combine(BaseFolder, "Ambinity\\Data\\");
+        Path.Combine(AppDataFolder, "Data");
 
     #region database local folder paths
     public static readonly string InstallerExecutablePath = Path.Combine(AppDataFolder, "installer","Ambinity.Installer.exe");

@@ -19,7 +19,7 @@ public class AmbinityLED : ObservableObject
         float top,
         float width,
         float height,
-        int index,
+        int? index,
         bool isActivated,
         string geometry)
     {
@@ -36,7 +36,7 @@ public class AmbinityLED : ObservableObject
     }
 
     public ArgbLed LED { get; }
-    public int Index { get; set; }
+    public int? Index { get; set; }
     [JsonIgnore] public AmbinityDevice Device { get; }
 
     /// <summary>
@@ -61,12 +61,12 @@ public class AmbinityLED : ObservableObject
         set => SetProperty(ref _geometry, value);
     }
 
-    private int _ledID = 0;
+    private int? _ledID = 0;
 
     /// <summary>
     /// LED ID map to real world
     /// </summary>
-    public int LedID
+    public int? LedID
     {
         get => _ledID;
         set => SetProperty(ref _ledID, value);
@@ -129,7 +129,7 @@ public class AmbinityLED : ObservableObject
 
 
     /// <summary>
-    /// Absolute X position 
+    /// Absolute X position
     /// </summary>
     public float AbsoluteX => OffsetX + RelativeX;
 

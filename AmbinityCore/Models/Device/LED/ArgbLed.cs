@@ -20,8 +20,7 @@ public class ArgbLed : ObservableObject
         Red = red;
         Green = green;
         Blue = blue;
-   
+
     }
-    
 }
 

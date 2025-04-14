@@ -49,14 +49,14 @@ public class SerialControllerDiscoveryService
         }
 
         _cancellationTokenSource = new CancellationTokenSource();
-#if DEBUG
-        _workerThread = new Thread(() => RunDebug())
-        {
-            Name = "Device Discovery",
-            IsBackground = true,
-            Priority = ThreadPriority.BelowNormal
-        };
-#else
+// #if DEBUG
+//         _workerThread = new Thread(() => RunDebug())
+//         {
+//             Name = "Device Discovery",
+//             IsBackground = true,
+//             Priority = ThreadPriority.BelowNormal
+//         };
+// #else
 
         _workerThread = new Thread(() => Run(_cancellationTokenSource.Token))
         {
@@ -64,7 +64,7 @@ public class SerialControllerDiscoveryService
             IsBackground = true,
             Priority = ThreadPriority.BelowNormal
         };
-#endif
+// #endif
         _workerThread.Start();
     }
 

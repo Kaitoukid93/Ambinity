@@ -60,7 +60,6 @@ public class DeviceLayoutEditorViewModel : ViewModelBase
     public void Init()
     {
         var devices = new List<AmbinityDevice>();
-        var leds = new List<AmbinityLED>();
         foreach (var device in _deviceRepository.Devices)
         {
             device.IsSelectable = true;
@@ -70,10 +69,7 @@ public class DeviceLayoutEditorViewModel : ViewModelBase
             device.IsScalable = true;
             device.IsDeleteable = false;
             devices.Add(device);
-            foreach (var led in device.Leds)
-            {
-                leds.Add(led);
-            }
+
         }
         //init layout canvas
         LayoutViewModel.ShoudDrawBackground = false;

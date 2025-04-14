@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
+using Serilog;
 using RGBLEDOrderEnum = AmbinityCore.Enums.RGBLEDOrderEnum;
 
 namespace AmbinityCore.Models.Device;
@@ -73,7 +74,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     /// </summary>
     public AmbinityDeviceLayout Layout { get; set; }
 
-    
+
 
     #region Iposition aware implement
 
@@ -314,8 +315,17 @@ public class AmbinityDevice : ObservableObject, IPositionAware
             if (Scale == scale)
                 return;
             Scale = scale;
-            TransformLeds();
-            UpdateSizeByChild(false);
+            try
+            {
+                TransformLeds();
+                UpdateSizeByChild(false);
+            }
+            catch (System.Exception ex)
+            {
+
+                Log.Error(ex.ToString());
+            }
+
             DeviceUpdate?.Invoke();
         }
     }

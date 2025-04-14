@@ -12,7 +12,7 @@ using Draw2D.Core;
 namespace Ambinity.Views.Configuration.PositionConfiguration;
 
 /// <summary>
-/// UI logic for Dimesion and size, scale.... etc config 
+/// UI logic for Dimesion and size, scale.... etc config
 /// </summary>
 public class PositionConfigurationViewModel : ViewModelBase
 {
@@ -30,7 +30,21 @@ public class PositionConfigurationViewModel : ViewModelBase
 
     private void SetItemScale(string value)
     {
-        ScaleProperty = double.Parse(value);
+        switch (value)
+        {
+            case "0.25":
+            ScaleProperty = 0.25d;
+            break;
+            case "0.5":
+            ScaleProperty =0.5d;
+            break;
+            case "0.75":
+            ScaleProperty =0.75d;
+            break;
+            case "1":
+            ScaleProperty =1d;
+            break;
+        }
     }
 
     private Draw2DCanvasViewModel _canvas;

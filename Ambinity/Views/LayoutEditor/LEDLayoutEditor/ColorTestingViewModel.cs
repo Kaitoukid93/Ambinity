@@ -20,9 +20,9 @@ public class ColorTestingViewModel : ViewModelBase
 
     public ColorTestingViewModel(AmbinityDevice device, string testMode)
     {
+        device.IsIdentifying =true;
         _currentTestMode = testMode;
         Device = device;
-        CloseCommand = new RelayCommand(Close);
         LEDs = new List<AmbinityLEDViewModel>();
         foreach (var led in Device.Leds)
         {
@@ -39,6 +39,8 @@ public class ColorTestingViewModel : ViewModelBase
         {
             led.SetColor(new Color(255, 0, 0, 0));
         }
+        Device.IsIdentifying =false;
+
     }
 
     public ICommand CloseCommand { get; set; }
@@ -53,7 +55,11 @@ public class ColorTestingViewModel : ViewModelBase
         {
             _isTesting = value;
             if (!value)
-                WindowCloseRequest?.Invoke();
+            {
+                 Close();
+                  WindowCloseRequest?.Invoke();
+            }
+
             OnPropertyChanged();
         }
     }

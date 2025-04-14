@@ -195,12 +195,17 @@ internal sealed class SerialStream : IDisposable, IDataStream
                         ReOrderSpotColor(rgbOrder, led.LED.Red, led.LED.Green, led.LED.Blue, out byte r, out byte g,
                             out byte b);
                         //get data
-                        outputStream[counter + (led.Index + offset) * 3 + 0] = (byte)(r * _dimFactor * brightnessCap);
+                        if (led.Index != null)
+                        {
+                            int index = (int)led.Index;
+                            outputStream[counter + (index + offset) * 3 + 0] = (byte)(r * _dimFactor * brightnessCap);
 
-                        outputStream[counter + (led.Index + offset) * 3 + 1] = (byte)(g * _dimFactor * brightnessCap);
-                        // green
-                        outputStream[counter + (led.Index + offset) * 3 + 2] = (byte)(b * _dimFactor * brightnessCap);
-                        // red
+                            outputStream[counter + (index + offset) * 3 + 1] = (byte)(g * _dimFactor * brightnessCap);
+                            // green
+                            outputStream[counter + (index + offset) * 3 + 2] = (byte)(b * _dimFactor * brightnessCap);
+                            // red
+                        }
+
 
 
                         allBlack = allBlack && led.LED.Red == 0 && led.LED.Green == 0 && led.LED.Blue == 0;

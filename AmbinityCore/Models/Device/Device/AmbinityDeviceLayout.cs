@@ -34,7 +34,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
     }
 
     //if this is null, index will be applied from layout
-    public int[] CustomIndex { get; set; }
+    public int?[] CustomIndex { get; set; }
     public string Description { get; set; }
     public string FilePath { get; }
     [JsonIgnore] public List<AmbinityLEDLayout> Leds { get; }
@@ -109,7 +109,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
             //add led if missing
             if (led == null)
             {
-                int index = 0;
+                int? index = 0;
                 if (CustomIndex != null)
                 {
                     if (CustomIndex.Length > ledCount)
@@ -149,7 +149,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
             led.Geometry = ledLayout.Geometry;
 
             usableLeds.Add(led);
-            
+
         }
 
         device.Leds.Clear();
@@ -206,7 +206,7 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
     /// </summary>
     public void Save()
     {
-        //todo implement profile save with icon 
+        //todo implement profile save with icon
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path

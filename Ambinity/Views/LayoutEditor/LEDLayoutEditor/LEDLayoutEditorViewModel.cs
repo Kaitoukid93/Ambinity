@@ -28,8 +28,8 @@ public class LEDLayoutEditorViewModel : ViewModelBase
         set
         {
             isInIndexSetupMode = value;
-            if(value)
-            WindowState = WindowState.Maximized;
+            if (value)
+                WindowState = WindowState.Maximized;
             else
             {
                 WindowState = WindowState.Normal;
@@ -47,6 +47,7 @@ public class LEDLayoutEditorViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
     public AmbinityLEDViewModel CurrentSelectedLED
     {
         get => _currentSelectedLED;
@@ -108,7 +109,7 @@ public class LEDLayoutEditorViewModel : ViewModelBase
         ];
         CurrentSelectedButton = AvailableColors.First();
         EnterIndexSetupCommand = new RelayCommand(EnterIndexSetup);
-        ExitIndexSetupCommand = new RelayCommand(ExitIndexSetup);
+        ExitIndexSetupCommand = new RelayCommand(CancelIndexSetup);
         ResetIndexCommand = new RelayCommand(ResetIndex);
         SaveCurrentIndexSetupCommand = new RelayCommand(SaveCurrentIndexSetup);
         RunTestCommand = new AsyncRelayCommand<string>(RunTest);
@@ -120,24 +121,29 @@ public class LEDLayoutEditorViewModel : ViewModelBase
 
         var window = await _windowService.ShowDialogWindow(vm, _currentWindow);
         vm.WindowCloseRequest += () => window.Close();
-
+        
     }
 
     private void SaveCurrentIndexSetup()
     {
+        if(LEDs.Any(led=>!led.IsSelected))
+        return;
         foreach (var led in LEDs)
         {
             led.SaveIndex();
+            led.IsSelected = false;
+            led.IsIndexVisible = true;
         }
-
-        _device.Layout.CustomIndex = new int[LEDs.Count];
+        IsInIndexSetupMode = false;
+        //add custom layout to load at startup
+        _device.Layout.CustomIndex = new int?[LEDs.Count];
         for (int i = 0; i < LEDs.Count; i++)
         {
             _device.Layout.CustomIndex[i] = LEDs[i].Index;
         }
+        Device.IsIdentifying =false;
 
         OnPropertyChanged(nameof(UseCustomIndex));
-        ExitIndexSetup();
     }
     private Window _currentWindow;
     //pass window instance for dialog show
@@ -155,15 +161,16 @@ public class LEDLayoutEditorViewModel : ViewModelBase
         }
     }
 
-    private void ExitIndexSetup()
+    private void CancelIndexSetup()
     {
         IsInIndexSetupMode = false;
         foreach (var led in LEDs)
         {
             led.IsSelected = false;
             led.IsIndexVisible = true;
-            led.ReloadIndex();
+            led.RevertIndex();
         }
+        Device.IsIdentifying = false;
     }
 
     private void EnterIndexSetup()
@@ -186,23 +193,26 @@ public class LEDLayoutEditorViewModel : ViewModelBase
 
     public void SetIndex(AmbinityLEDViewModel led)
     {
-        if (!led.IsSelected)
+        lock (_device.Lock)
         {
-            led.IsSelected = true;
-            if (CurrentSelectedButton != null)
+            if (!led.IsSelected)
             {
-                led.SetColor(CurrentSelectedButton.Color.Color);
+                led.IsSelected = true;
+                if (CurrentSelectedButton != null)
+                {
+                    led.SetColor(CurrentSelectedButton.Color.Color);
+                }
+                led.SetIndex(_currentLEDIndex);
+                _currentLEDIndex++;
             }
+            else
+            {
+                _currentLEDIndex--;
+                led.IsSelected = false;
+                led.SetIndex(null);
+            }
+        }
 
-            led.SetIndex(_currentLEDIndex);
-            _currentLEDIndex++;
-        }
-        else
-        {
-            _currentLEDIndex--;
-            led.IsSelected = false;
-            led.SetIndex(0);
-        }
     }
 
     public void ToggleLED(AmbinityLEDViewModel led)

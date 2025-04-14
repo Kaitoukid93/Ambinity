@@ -13,6 +13,7 @@ public class ScreenCaptureDelegate : NSObject, ISCStreamOutput, INativeObject, I
     {
         _buffer = buffer;
     }
+    public event Action StreamStopped;
     public int BufferReceived { get; set; }
     private byte[] _buffer;
     [Export("init")]
@@ -60,6 +61,7 @@ public class ScreenCaptureDelegate : NSObject, ISCStreamOutput, INativeObject, I
         if(error!=null)
         {
             Console.WriteLine(error);
+            StreamStopped?.Invoke();
         }
     }
 }
