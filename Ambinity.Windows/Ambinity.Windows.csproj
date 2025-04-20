@@ -51,6 +51,16 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
+    <ItemGroup>
+        <Content Include="ExternalLibs\bass.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>bass.dll</Link>
+        </Content>
+        <Content Include="ExternalLibs\basswasapi.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>basswasapi.dll</Link>
+        </Content>
+    </ItemGroup>
 
     <ItemGroup>
         <Content Include="obj\Debug\net8.0\Ambinity.B3F1E1E7.Up2Date" />

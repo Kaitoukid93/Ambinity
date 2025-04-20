@@ -88,7 +88,8 @@ public class InstallViewModel : ViewModelBase
 
     private void FinishSetup()
     {
-        SaveInitialAppSettings();
+        if (!File.Exists(Constants.GeneralSettingsFilePath))
+            SaveInitialAppSettings();
         if (_postInstallationSettings.CreateDesktopShortcut)
             _installationService.CreateDesktopShortcut();
         if (_postInstallationSettings.OpenAfterFinish)
@@ -104,7 +105,7 @@ public class InstallViewModel : ViewModelBase
     {
         CurrentView = Steps[2];
         (_currentView as SecondStepViewModel).Init(versionInfomation);
-        
+
     }
     private void CancelSetup()
     {
@@ -118,6 +119,8 @@ public class InstallViewModel : ViewModelBase
             var initialSettings = new GeneralSettings();
             initialSettings.AutoStart = _postInstallationSettings.AutoStart;
             initialSettings.PrimaryColor = _postInstallationSettings.PrimaryColor;
+            initialSettings.EnableMica = false;
+            initialSettings.SelectedTheme = "Dark";
             var json = JsonConvert.SerializeObject(initialSettings,
                 new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
             File.WriteAllText(Constants.GeneralSettingsFilePath, json);
@@ -133,7 +136,7 @@ public class InstallViewModel : ViewModelBase
     {
         public bool AutoStart { get; set; }
         public Color PrimaryColor { get; set; }
-        public string SelectedTheme { get; set; }
+        public string SelectedTheme { get; set; } = "Dark";
         public bool EnableMica { get; set; } = false;
     }
 

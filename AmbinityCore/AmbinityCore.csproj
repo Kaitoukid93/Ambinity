@@ -5,17 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PlatformTarget>arm64</PlatformTarget>
     </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PlatformTarget>arm64</PlatformTarget>
-    </PropertyGroup>
-
     <ItemGroup>
         <PackageReference Include="Avalonia.Skia.Lottie" Version="11.0.0" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
@@ -55,12 +46,15 @@
         <ProjectReference Include="../ScreenCapture.NET.SCK/ScreenCapture.NET.SCK.csproj" />
         <ProjectReference Include="../ScreenCapture.NET.AV/ScreenCapture.NET.AV.csproj" />
     </ItemGroup>
-
+    <!-- Include only ScreenCapture.NET.SCK and ScreenCapture.NET.AV for Linux -->
+    <ItemGroup
+        Condition="'$(TargetFramework)' == 'net8.0' AND '$(RuntimeIdentifier)' == 'linux-x64'">
+        <ProjectReference Include="../ScreenCapture.NET.X11/ScreenCapture.NET.X11.csproj" />
+    </ItemGroup>
     <!-- Include all other project references for non-macOS builds -->
-    <ItemGroup Condition="'$(TargetFramework)' != 'net8.0-macos'">
+    <ItemGroup>
         <ProjectReference Include="../ScreenCapture.NET.DX11/ScreenCapture.NET.DX11.csproj" />
         <ProjectReference Include="../ScreenCapture.NET.DX9/ScreenCapture.NET.DX9.csproj" />
-        <ProjectReference Include="../ScreenCapture.NET.X11/ScreenCapture.NET.X11.csproj" />
         <ProjectReference Include="../ScreenCapture.NET/ScreenCapture.NET.csproj" />
         <ProjectReference Include="..\AmbinityServer\AmbinityServer.csproj" />
         <ProjectReference Include="..\Draw2D.Core\Draw2D.Core.csproj" />

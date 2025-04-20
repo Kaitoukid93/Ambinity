@@ -25,8 +25,25 @@ public class ThirdStepViewModel : StepViewModelBase
         CanForward = false;
         DefaultColors = DefaultSolidColors.Colors;
         _initialSettings = settings;
+        if (File.Exists(Constants.GeneralSettingsFilePath))
+            EnableCustomization = false;
+        else
+        {
+            EnableCustomization = true;
+        }
     }
-    
+
+    private bool _enableCustomization = false;
+    public bool EnableCustomization
+    {
+        get => _enableCustomization;
+        set
+        {
+            _enableCustomization = value;
+            OnPropertyChanged();
+        }
+    }
+
     private PostInstallationSettings _initialSettings;
     private Color _selectedColor;
 

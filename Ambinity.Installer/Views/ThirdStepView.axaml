@@ -1,140 +1,171 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:viewModels="clr-namespace:Ambinity.Installer.ViewModels"
-             x:DataType="viewModels:ThirdStepViewModel"
-             x:Class="Ambinity.Installer.Views.ThirdStepView">
+<UserControl
+    x:Class="Ambinity.Installer.Views.ThirdStepView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:Ambinity.Installer.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="viewModels:ThirdStepViewModel"
+    mc:Ignorable="d">
     <UserControl.Resources>
-          <ControlTheme TargetType="ListBoxItem" x:Key="_striplessListboxItem">
-        <Setter Property="FontFamily" Value="{DynamicResource ContentControlThemeFontFamily}" />
-        <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
-        <Setter Property="Background" Value="{DynamicResource ListViewItemBackground}" />
-        <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
-        <Setter Property="Foreground" Value="{DynamicResource ListViewItemForeground}" />
-        <Setter Property="Padding" Value="5" />
-        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        <Setter Property="VerticalContentAlignment" Value="Stretch" />
-        <Setter Property="MinWidth" Value="5" />
-        <Setter Property="MinHeight" Value="5" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Panel>
-                    <ContentPresenter Name="PART_ContentPresenter"
-                                      Background="{TemplateBinding Background}"
-                                      BorderBrush="{TemplateBinding BorderBrush}"
-                                      BorderThickness="{TemplateBinding BorderThickness}"
-                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                      Content="{TemplateBinding Content}"
-                                      Padding="{TemplateBinding Padding}"
-                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      CornerRadius="{TemplateBinding CornerRadius}"
-                                      Margin="2" />
+        <ControlTheme x:Key="_striplessListboxItem" TargetType="ListBoxItem">
+            <Setter Property="FontFamily" Value="{DynamicResource ContentControlThemeFontFamily}" />
+            <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
+            <Setter Property="Background" Value="{DynamicResource ListViewItemBackground}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+            <Setter Property="Foreground" Value="{DynamicResource ListViewItemForeground}" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="MinWidth" Value="5" />
+            <Setter Property="MinHeight" Value="5" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel>
+                        <ContentPresenter
+                            Name="PART_ContentPresenter"
+                            Margin="2"
+                            Padding="{TemplateBinding Padding}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            CornerRadius="{TemplateBinding CornerRadius}" />
 
-                </Panel>
-            </ControlTemplate>
-        </Setter>
-        
-        <Style Selector="^:disabled">
-            <!-- There's no Disabled brush for LVI, so just dim opacity -->
-            <Setter Property="Opacity" Value="0.5" />
-        </Style>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
 
-        <Style Selector="^:pointerover">
-            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-                <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundPointerOver}" />
+            <Style Selector="^:disabled">
+                <!--  There's no Disabled brush for LVI, so just dim opacity  -->
+                <Setter Property="Opacity" Value="0.5" />
             </Style>
-            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-                <Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundPointerOver}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^:pressed">
-            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-                <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundPressed}" />
-            </Style>
-            <Style Selector="^ /template/ ContentPresenter">
-                <Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundPressed}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^:selected">
-            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-                <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundSelected}" />
-            </Style>
-            <Style Selector="^ /template/ ContentPresenter">
-                <Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundSelected}" />
-            </Style>
-
-            <Style Selector="^:not(:focus) /template/ ContentPresenter#PART_ContentPresenter">
-                <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundSelected}" />
-            </Style>
-            <Style Selector="^:not(:focus) /template/ ContentPresenter#PART_ContentPresenter">
-                <Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundSelected}" />
-            </Style>
-
 
             <Style Selector="^:pointerover">
                 <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-                    <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundSelectedPointerOver}" />
+                    <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundPointerOver}" />
                 </Style>
-                <Style Selector="^ /template/ ContentPresenter">
-                    <Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundSelectedPointerOver}" />
+                <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundPointerOver}" />
                 </Style>
-
             </Style>
 
             <Style Selector="^:pressed">
                 <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-                    <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundSelectedPressed}" />
+                    <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundPressed}" />
                 </Style>
-                <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-                    <Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundSelectedPressed}" />
+                <Style Selector="^ /template/ ContentPresenter">
+                    <Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundPressed}" />
                 </Style>
-
             </Style>
 
+            <Style Selector="^:selected">
+                <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundSelected}" />
+                </Style>
+                <Style Selector="^ /template/ ContentPresenter">
+                    <Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundSelected}" />
+                </Style>
 
-        </Style>
-    </ControlTheme>
+                <Style Selector="^:not(:focus) /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundSelected}" />
+                </Style>
+                <Style Selector="^:not(:focus) /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundSelected}" />
+                </Style>
+
+
+                <Style Selector="^:pointerover">
+                    <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundSelectedPointerOver}" />
+                    </Style>
+                    <Style Selector="^ /template/ ContentPresenter">
+                        <Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundSelectedPointerOver}" />
+                    </Style>
+
+                </Style>
+
+                <Style Selector="^:pressed">
+                    <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="{DynamicResource ListViewItemBackgroundSelectedPressed}" />
+                    </Style>
+                    <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Foreground" Value="{DynamicResource ListViewItemForegroundSelectedPressed}" />
+                    </Style>
+
+                </Style>
+
+
+            </Style>
+        </ControlTheme>
     </UserControl.Resources>
     <Grid Margin="20,0" RowDefinitions="Auto,10,*">
         <StackPanel Spacing="5">
-            <TextBlock Text="{Binding Header}" FontSize="25" FontWeight="SemiBold" HorizontalAlignment="Left"
-                       VerticalAlignment="Top" />
-            <TextBlock MaxWidth="500" TextWrapping="Wrap" HorizontalAlignment="Left" Text="{Binding SubHeader}"
-                       FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}">
-            </TextBlock>
+            <TextBlock
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                FontSize="25"
+                FontWeight="SemiBold"
+                Text="{Binding Header}" />
+            <TextBlock
+                MaxWidth="500"
+                HorizontalAlignment="Left"
+                FontSize="13"
+                Foreground="{DynamicResource ButtonForegroundDisabled}"
+                Text="{Binding SubHeader}"
+                TextWrapping="Wrap" />
         </StackPanel>
         <Grid Row="2" RowDefinitions="Auto,10,*">
             <StackPanel Spacing="10">
-                <CheckBox IsChecked="{Binding AutoStart}" Content="Auto run on Windows startup"></CheckBox>
-                <CheckBox IsChecked="{Binding CreateDesktopShortcut}" Content="Create desktop shortcut"></CheckBox>
-                <CheckBox IsChecked="{Binding OpenAfterFinish}" Content="Open Ambinity after installation"></CheckBox>
+                <CheckBox
+                    Content="Auto run on Windows startup"
+                    IsChecked="{Binding AutoStart}"
+                    IsVisible="{Binding EnableCustomization}" />
+                <CheckBox
+                    Content="Create desktop shortcut"
+                    IsChecked="{Binding CreateDesktopShortcut}"
+                    IsVisible="{Binding EnableCustomization}" />
+                <CheckBox Content="Open Ambinity after installation" IsChecked="{Binding OpenAfterFinish}" />
             </StackPanel>
-            <Grid Row="2" RowDefinitions="Auto,8,*">
-                    <TextBlock Text="Select your color" FontWeight="SemiBold" FontSize="13"></TextBlock>
-                    <ListBox SelectedItem="{Binding SelectedColor}" Grid.Row="2" Padding="0" ItemContainerTheme="{DynamicResource _striplessListboxItem}" ItemsSource="{Binding DefaultColors}">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Columns="10">
-                                </UniformGrid>
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border Width="15" Height="15" CornerRadius="7">
-                                    <Border.Background>
-                                        <SolidColorBrush Color="{Binding }"></SolidColorBrush>
-                                    </Border.Background>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-             
-          
+            <Grid
+                IsVisible="{Binding EnableCustomization}"
+                Row="2"
+                RowDefinitions="Auto,8,*">
+                <TextBlock
+                    FontSize="13"
+                    FontWeight="SemiBold"
+                    Text="Select your color" />
+                <ListBox
+                    Grid.Row="2"
+                    Padding="0"
+                    ItemContainerTheme="{DynamicResource _striplessListboxItem}"
+                    ItemsSource="{Binding DefaultColors}"
+                    SelectedItem="{Binding SelectedColor}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="10" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Width="15"
+                                Height="15"
+                                CornerRadius="7">
+                                <Border.Background>
+                                    <SolidColorBrush Color="{Binding}" />
+                                </Border.Background>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+
             </Grid>
         </Grid>
     </Grid>
