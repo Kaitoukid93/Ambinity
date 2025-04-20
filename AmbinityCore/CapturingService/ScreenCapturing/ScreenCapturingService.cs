@@ -32,7 +32,11 @@ public class ScreenCapturingService : ICapturingService
         if (!IsEnabled)
             return;
         _screenCaptureService?.Dispose();
-        _screenCaptureService ??= new SCKScreenCaptureService();
+#if MACOS
+    _screenCaptureService ??= new SCKScreenCaptureService();
+#else
+        _screenCaptureService ??= new DX11ScreenCaptureService(); // Replace with the appropriate service for non-macOS platforms
+#endif
         var graphicsCards = new GraphicsCard();
         _availableScreen = _screenCaptureService.GetDisplays(graphicsCards).ToList();
         _screenCaptures = new List<IScreenCapture>();

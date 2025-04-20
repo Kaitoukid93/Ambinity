@@ -56,5 +56,8 @@
   <ItemGroup>
     <ProjectReference Include="../ScreenCapture.NET/ScreenCapture.NET.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="4.0.1" />
+  </ItemGroup>
 
 </Project>

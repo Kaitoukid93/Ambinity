@@ -10,7 +10,7 @@ using SkiaSharp.Skottie;
 
 namespace AmbinityCore.Repositories;
 
-public class Animation : ObservableObject, ICollectableItem
+public class LottieJsonAnimation : ObservableObject, IAnimation
 {
     public event Action<ICollectableItem>? ItemNameChanged;
     public event Action<ICollectableItem>? ItemPinStatusChanged;
@@ -37,13 +37,13 @@ public class Animation : ObservableObject, ICollectableItem
     //uid will be used for resolve animation when profile is loaded
     public Guid UID { get; set; }
 
-    public Animation(string name)
+    public LottieJsonAnimation(string name)
     {
         Name = name;
         UID = Guid.NewGuid();
     }
 
-    public Animation()
+    public LottieJsonAnimation()
     {
     }
 
@@ -77,10 +77,9 @@ public class Animation : ObservableObject, ICollectableItem
         JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath, "animation.json"));
     }
 
-    public void Export(string path)
-    {
-        JsonHelpers.WriteSimpleJson(this, path);
-    }
-
     [JsonIgnore] public SkiaSharp.Skottie.Animation SkottieAnimation { get; set; }
+    [JsonIgnore] public TimeSpan  Duration => SkottieAnimation.Duration;
+    [JsonIgnore] public string Fps =>SkottieAnimation.Fps.ToString();
+    [JsonIgnore] public string Size =>SkottieAnimation.Size.ToString();
+    [JsonIgnore] public string Version => SkottieAnimation.Version.ToString();
 }

@@ -13,7 +13,7 @@ public class AnimationAssetViewModel : AssetItemViewModelBase
     {
         Name = item.Name;
         AnimationJsonPath = Path.Combine(item.LocalPath, "config.json");
-        Description = (item as Animation).Description;
+        Description = item.Description;
     }
 
     public string AnimationJsonPath { get; set; }

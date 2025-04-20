@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using AmbinityCore.CapturingService;
+using AmbinityCore.ColorEngines;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
@@ -21,12 +22,13 @@ public class AnimationDecodeEngine : IColorEngine
 
     // private string _animationFilePath = "C:\\Users\\AMBINO\\Downloads\\moving circle.json";
     private byte[] _reusableRow;
-    private Animation _animation;
+    private IAnimation _animation;
     private AnimationConfiguration _config;
     private bool _loadingAnimation;
     private int _frameRate = 1;
     private readonly AnimationsRepository _animationRepository;
-    private  AnimationsRepository _currentWorkingRepository;
+    private AnimationsRepository _currentWorkingRepository;
+    private IAnimationStreamDecoder _streamDecoder;
 
     public AnimationDecodeEngine(FrameBuffer buffer, AnimationsRepository repository)
     {
@@ -40,18 +42,12 @@ public class AnimationDecodeEngine : IColorEngine
             return;
         int width = (int)_zone.Width;
         int height = (int)_zone.Height;
-        int frameCount = (int)(_animation.Fps * _animation.Duration.TotalMilliseconds / 1000);
+        var dst = new SKRect(0,0,width,height);
         lock (_buffer.FrameLock)
         {
             using (var bitmap = new SKBitmap(width, height))
-            using (var canvas = new SKCanvas(bitmap))
             {
-                // Set up the Lottie animation renderer
-                _animation.SeekFrame(_startIndex);
-                var dst = new SKRect(0, 0, width, height);
-                // Render the frame
-                _animation.Render(canvas, dst);
-                // Get the pixel data
+                _streamDecoder.TryDecodeNextFrame(bitmap,dst);
                 var pixelData = bitmap.Bytes;
                 int length = (int)bitmap.Width * 4;
                 for (int i = 0; i < bitmap.Height; i++)
@@ -61,23 +57,17 @@ public class AnimationDecodeEngine : IColorEngine
                     Array.Copy(pixelData, startSource, _buffer.PixelData, start, length);
                 }
             }
-        }
 
-        // Thread.Sleep(1000 / 10);
-        //increase color index
-        _startIndex += _config.FrameRate;
-        ;
-        if (_startIndex >= frameCount)
-            _startIndex = 0;
-        //update frame if needed
-        // _zone.UpdateFrame();
+        }
     }
+
+
 
     public void Init(LightingZone zone)
     {
         _zone = zone;
         _config = zone.LightingConfiguration as AnimationConfiguration;
-        if (_zone.ParentProfile.Assets.Count == 0 || _zone.ParentProfile.AnimationRepository==null)
+        if (_zone.ParentProfile.Assets.Count == 0 || _zone.ParentProfile.AnimationRepository == null)
         {
             _currentWorkingRepository = _animationRepository;
         }
@@ -103,7 +93,16 @@ public class AnimationDecodeEngine : IColorEngine
         }
 
         animation.LoadAnimation();
-        _animation = animation.SkottieAnimation;
+        // init a stream decoder based on animation type selected
+        _streamDecoder?.Dispose();
+        if (animation is LottieJsonAnimation)
+        {
+            _streamDecoder = new LottieAnimationStreamDecoder(animation);
+        }
+        // else if (animation is VideoAnimation)
+        // {
+        //     _streamDecoder = new VideoStreamDecoder(animation,_zone);
+        // }
         _loadingAnimation = false;
     }
 

@@ -1,0 +1,32 @@
+{
+  "title": "Ambinity_osx_arm64",
+  "icon-size": 64,
+  "icon": "/Users/zoe/Downloads/icon.icns",
+  "background": "/Users/zoe/Documents/InstallerBackground.png",
+  "contents": [
+    {
+      "x": 123,
+      "y": 324,
+      "type": "link",
+      "path": "/Applications"
+    },
+    {
+      "x": 123,
+      "y": 92,
+      "type": "file",
+      "path": "/Users/zoe/RiderProjects/Ambinity/Ambinity.MacOs/bin/Debug/net8.0-macos15.0/osx-arm64/Ambinity.MacOs.app"
+    },
+    {
+        "x": 300,
+        "y": 324,
+        "type": "file",
+        "path": "/Users/zoe/RiderProjects/Ambinity/Ambinity.MacOs/SystemUtilities/FirstRunCommand.txt"
+      }
+  ],
+  "window": {
+    "size": {
+      "width": 666,
+      "height": 449
+    }
+  }
+}

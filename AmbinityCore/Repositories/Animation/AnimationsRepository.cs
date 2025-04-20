@@ -31,7 +31,16 @@ public class AnimationsRepository : CollectableItemRepository
         string[] directories = Directory.GetDirectories(LocalFolderPath);
         foreach (var dir in directories)
         {
-            var animation = JsonHelpers.DeserializeJson<Animation>(Path.Combine(dir, "animation.json"));
+            IAnimation animation = null;
+
+            if (File.Exists(Path.Combine(dir, "config.json")))
+            {
+                animation = JsonHelpers.DeserializeJson<LottieJsonAnimation>(Path.Combine(dir, "animation.json"));
+            }
+            else if (File.Exists(Path.Combine(dir, "video.mp4")))
+            {
+                animation = JsonHelpers.DeserializeJson<VideoAnimation>(Path.Combine(dir, "animation.json"));
+            }
             if (animation == null)
                 continue;
             if (animation.UID == null || animation.UID == Guid.Empty)
@@ -58,17 +67,17 @@ public class AnimationsRepository : CollectableItemRepository
         //update the collection
     }
 
-    public Animation FindAnimation(Guid animationUID)
+    public IAnimation FindAnimation(Guid animationUID)
     {
         if (Items.Count == 0)
             return null;
-        return Items.Where(i => (i as Animation).UID == animationUID).FirstOrDefault() as Animation;
+        return Items.Where(i => (i as IAnimation).UID == animationUID).FirstOrDefault() as IAnimation;
     }
 
-    public Animation FindAnimation(string name)
+    public IAnimation FindAnimation(string name)
     {
         if (Items.Count == 0)
             return null;
-        return Items.Where(i => (i as Animation).Name == name).FirstOrDefault() as Animation;
+        return Items.Where(i => (i as IAnimation).Name == name).FirstOrDefault() as IAnimation;
     }
 }

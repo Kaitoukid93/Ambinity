@@ -30,11 +30,11 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
     private readonly IWindowService _windowService;
     private readonly AnimationsRepository _repository;
     private readonly AmbinityStoreItemExportViewModel _itemExportViewModel;
-    private AmbinityCore.Repositories.Animation _selectedAnimation;
+    private IAnimation _selectedAnimation;
     private LightingZone _zone;
     private AnimationsRepository _internalRepository => _zone?.ParentProfile?.AnimationRepository;
 
-    public AmbinityCore.Repositories.Animation SelectedAnimation
+    public IAnimation SelectedAnimation
     {
         get => _selectedAnimation;
         set
@@ -54,7 +54,7 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
         _windowService = windowService;
         _repository = repository;
         //prepare internal repository for any animation selection
-        if(_internalRepository == null)
+        if (_internalRepository == null)
             zone.ParentProfile.UpdateRepository(ConfigurationType.Animation);
         _libraryViewModelFactory = libraryViewModelFactory;
         _rightPanelViewModel = rightPanelViewModel;
@@ -85,7 +85,7 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
     private async Task ImportAnimation()
     {
         string[]? result = await _windowService.CreateOpenFileDialog()
-            .HavingFilter(f => f.WithExtension("json").WithName("json file"))
+            .HavingFilter(f => f.WithExtension("json").WithExtension("mp4").WithName("json or video file"))
             .ShowAsync();
         if (result == null)
             return;
@@ -98,13 +98,29 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
             _configuration.ChangeAnimation(existed);
             return;
         }
+        var extension = Path.GetExtension(importFilePath);
+        IAnimation animation = null;
+        if (extension.Contains("mp4"))
+        {
+            return;
+            // animation = new VideoAnimation(filename);
+            // _internalRepository.AddItem(animation);
+            // animation.Save();
+            // //rename json to config and copy to folder
+            // File.Copy(importFilePath, Path.Combine(animation.LocalPath, "video.mp4"), true);
+            // animation.LoadAnimation();
+        }
+        else if (extension.Contains("json"))
+        {
+            animation = new LottieJsonAnimation(filename);
+            _internalRepository.AddItem(animation);
+            animation.Save();
+            //rename json to config and copy to folder
+            File.Copy(importFilePath, Path.Combine(animation.LocalPath, "config.json"), true);
+            animation.LoadAnimation();
+        }
 
-        var animation = new AmbinityCore.Repositories.Animation(filename);
-        _internalRepository.AddItem(animation);
-        animation.Save();
-        //rename json to config and copy to folder
-        File.Copy(importFilePath, Path.Combine(animation.LocalPath, "config.json"), true);
-        animation.LoadAnimation();
+
         _configuration.ChangeAnimation(animation);
         //ask if user want to add to library
         var confirmationDialogVm = new ConfirmationDialogContentViewModel();
@@ -130,7 +146,7 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
                 Log.Information("Item not found, aborting...");
                 return;
             }
-              
+
             if (_repository.Items.Any(i => i.Name == selectedAnimation.Name))
             {
                 Log.Information("Item existed, aborting...");
@@ -170,7 +186,7 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
                 Path.Combine(_internalRepository.LocalFolderPath, animationAsset.Item.Name), true);
             //reload item
             _internalRepository.LoadFromDisk();
-            _configuration.ChangeAnimation(animationAsset.Item as AmbinityCore.Repositories.Animation);
+            _configuration.ChangeAnimation(animationAsset.Item as IAnimation);
         }
     }
 

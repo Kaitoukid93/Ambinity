@@ -12,7 +12,7 @@ public class ColorEngineProvider
     /// </summary>
     public ColorEngineProvider()
     {
-       
+
     }
 
     private CapturingServiceProvider _capturingServiceProvider;
@@ -34,10 +34,10 @@ public class ColorEngineProvider
             case ConfigurationType.Animation:
                 return Ioc.Default.GetRequiredService<AnimationDecodeEngine>();
                 break;
-          
+
         }
 
         return null;
     }
-    
+
 }

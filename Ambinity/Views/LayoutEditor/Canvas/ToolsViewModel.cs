@@ -59,6 +59,7 @@ public class ToolsViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsRendering));
         AddAmbilightZoneCommand.NotifyCanExecuteChanged();
         AddAnimationZoneCommand.NotifyCanExecuteChanged();
+        AddVideoZoneCommand.NotifyCanExecuteChanged();
         AddColorZoneCommand.NotifyCanExecuteChanged();
         ShowLibraryCommand.NotifyCanExecuteChanged();
     }
@@ -96,6 +97,7 @@ public class ToolsViewModel : ViewModelBase
         ToggleSnapToGridCommand = new RelayCommand(ToggleSnapToGrid);
         AddAnimationZoneCommand = new RelayCommand(AddAnimationZone, () => ZoneToolsCommandCanExecute);
         AddAmbilightZoneCommand = new RelayCommand(AddAmbilightZone, () => ZoneToolsCommandCanExecute);
+        AddVideoZoneCommand = new RelayCommand(AddVideoZone,()=>ZoneToolsCommandCanExecute);
         ShowLibraryCommand = new AsyncRelayCommand(ShowLibrary, () => ZoneToolsCommandCanExecute);
         AddColorZoneCommand = new RelayCommand(AddColorZone, () => ZoneToolsCommandCanExecute);
         TogglePlayPauseCommand = new RelayCommand(TogglePlayPause);
@@ -148,6 +150,14 @@ public class ToolsViewModel : ViewModelBase
         figure.SetChild(zone);
         AddFigure?.Invoke(figure);
     }
+    private void AddVideoZone()
+    {
+         var zone = _lightingZoneRepository.GetDefaultAmbilightZone("new zone", 100, 100, 100, 100, 0);
+        zone.Shape = ZoneShapeEnum.Rectangle;
+        var figure = zone.GetContainer();
+        figure.SetChild(zone);
+        AddFigure?.Invoke(figure);
+    }
 
     private void AddAnimationZone()
     {
@@ -181,6 +191,7 @@ public class ToolsViewModel : ViewModelBase
         ZoneTools.Add(_addColorZoneTools);
         ZoneTools.Add(AddAmbilightZoneTool());
         ZoneTools.Add(AddAnimationZoneTool());
+        ZoneTools.Add(AddVideoZoneTool());
         ZoneTools.Add(separator);
         ZoneTools.Add(ShowLibraryTool());
 
@@ -216,6 +227,10 @@ public class ToolsViewModel : ViewModelBase
         return new ButtonToolbarItem("Ambilight", "Add Ambilight Zone",
             "expand__big_bigger_design_expand_larger_resize_size_square", new SolidColorBrush(Color.Parse("#d769ff")),
             AddAmbilightZoneCommand);
+    }
+    private ButtonToolbarItem AddVideoZoneTool()
+    {
+        return new ButtonToolbarItem("Video","Add Video Zone","video_zone",new SolidColorBrush(Colors.LimeGreen),AddVideoZoneCommand);
     }
 
     private ButtonToolbarItem ShowLibraryTool()
@@ -308,6 +323,7 @@ public class ToolsViewModel : ViewModelBase
     }
 
     public RelayCommand FitCanvasToViewCommand { get; set; }
+    public RelayCommand AddVideoZoneCommand {get;set;}
     public RelayCommand ToggleSnapToGridCommand { get; set; }
     public RelayCommand AddAmbilightZoneCommand { get; set; }
     public RelayCommand AddAnimationZoneCommand { get; set; }

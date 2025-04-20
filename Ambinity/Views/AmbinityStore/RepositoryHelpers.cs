@@ -11,7 +11,7 @@ public class RepositoryHelpers(
     ColorPaletteRepository colorPaletteRepository,
     LightingProfileRepository lightingProfileRepository)
 {
-   
+
 
     public void AddItemToRepository(ICollectableItem item)
     {
@@ -27,7 +27,7 @@ public class RepositoryHelpers(
         {
             colorPaletteRepository.AddItem(item);
         }
-        if (item is Animation)
+        if (item is IAnimation)
         {
             animationsRepository.AddItem(item);
         }

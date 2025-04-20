@@ -32,8 +32,8 @@ public class LightingZoneRepository : CollectableItemRepository
     //todo also import attached files
     public override void ImportItem(string path)
     {
-         LocalFileHelpers.CopyDirectory(path,LocalFolderPath,true);
-          LoadFromDisk();
+        LocalFileHelpers.CopyDirectory(path, LocalFolderPath, true);
+        LoadFromDisk();
     }
 
     public override void LoadFromDisk()
@@ -75,6 +75,7 @@ public class LightingZoneRepository : CollectableItemRepository
         return fullScreenAmbilightZone;
     }
 
+
     public LightingZone GetDefaultSolidColorZone(string name, int x, int y, int width, int height, Color color)
     {
         var solidRedZone = new LightingZone(x, y, width, height);
@@ -99,7 +100,7 @@ public class LightingZoneRepository : CollectableItemRepository
         var animationZone = new LightingZone(x, y, width, height);
         animationZone.Name = name;
         var animation = _animationsRepository.Items.Count > 0 ? _animationsRepository.Items.First() : null;
-        animationZone.LightingConfiguration = new AnimationConfiguration(animation as Animation);
+        animationZone.LightingConfiguration = new AnimationConfiguration(animation as LottieJsonAnimation);
 
         return animationZone;
     }

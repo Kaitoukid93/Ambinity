@@ -31,7 +31,7 @@
            </Setter>
            <Setter Property="ErrorTemplate">
                <DataTemplate x:DataType="{x:Type x:Object}">
-                   <Canvas Width="3" Height="30" Margin="5 0 1 0" 
+                   <Canvas Width="3" Height="30" Margin="5 0 1 0"
                            Background="Transparent">
                        <Canvas.Styles>
                            <Style Selector="ToolTip">
@@ -69,7 +69,7 @@
                             <PathIcon Width="16" Data="{DynamicResource Export}"></PathIcon>
                         </Button>
                     </Grid>
-                   
+
                     <Grid>
                         <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1"
                                 Background="Transparent" Width="30" Height="30"
@@ -99,7 +99,7 @@
                         </Grid>
                         <Grid Column="2">
                             <ui:NumberBox  Theme="{DynamicResource borderlessNumberBox}"  BorderThickness="0" Minimum="1" Maximum="5"  SpinButtonPlacementMode="Compact" VerticalAlignment="Center" Value="{Binding FrameRate}">
-                               
+
                             </ui:NumberBox>
 
 
@@ -120,25 +120,25 @@
                             <Grid ColumnDefinitions="Auto, *">
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Duration: "></TextBlock>
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1"
-                                           Text="{Binding SelectedAnimation.SkottieAnimation.Duration}">
+                                           Text="{Binding SelectedAnimation.Duration}">
                                 </TextBlock>
                             </Grid>
                             <Grid ColumnDefinitions="Auto, *">
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Fps: "></TextBlock>
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1"
-                                           Text="{Binding SelectedAnimation.SkottieAnimation.Fps}">
+                                           Text="{Binding SelectedAnimation.Fps}">
                                 </TextBlock>
                             </Grid>
                             <Grid ColumnDefinitions="Auto, *">
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Version: "></TextBlock>
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1"
-                                           Text="{Binding SelectedAnimation.SkottieAnimation.Version}">
+                                           Text="{Binding SelectedAnimation.Version}">
                                 </TextBlock>
                             </Grid>
                             <Grid ColumnDefinitions="Auto, *">
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Size: "></TextBlock>
                                 <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Grid.Column="1"
-                                           Text="{Binding SelectedAnimation.SkottieAnimation.Size}">
+                                           Text="{Binding SelectedAnimation.Size}">
                                 </TextBlock>
                             </Grid>
                         </StackPanel>

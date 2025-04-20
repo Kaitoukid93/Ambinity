@@ -1,0 +1,3 @@
+Nhập dòng lệnh dưới đây vào terminal rồi nhấn [Enter]
+
+xattr -dr com.apple.quarantine /Applications/Ambinity.MacOs.app

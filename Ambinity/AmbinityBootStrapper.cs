@@ -244,7 +244,6 @@ public class AmbinityBootStrapper
             .AddSingleton<StaticColorsRepository>()
             .AddSingleton<ColorPaletteRepository>()
             .AddSingleton<AnimationsRepository>()
-            .AddSingleton<GradientColorsRepository>()
             .AddSingleton<GifImagesRepository>()
             .AddSingleton<LightingZoneRepository>()
             .AddSingleton<SerialControllerDiscoveryService>()
@@ -263,7 +262,6 @@ public class AmbinityBootStrapper
             .AddSingleton<ColorPaletteOnlineRepository>()
             .AddSingleton<AmbinityDeviceRepository>()
             .AddSingleton<ResourceService>()
-            .AddSingleton<AnimationsRepository>()
             .AddSingleton<AnimationOnlineRepository>()
             .AddSingleton<ShortcutRepository>()
 

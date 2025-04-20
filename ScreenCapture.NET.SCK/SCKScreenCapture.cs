@@ -7,6 +7,7 @@ using HPPH;
 using ObjCRuntime;
 using ScreenCapture.NET.SCK;
 using ScreenCaptureKit;
+using Serilog;
 
 namespace ScreenCapture.NET;
 /// <summary>
@@ -32,8 +33,8 @@ public sealed class SCKScreenCapture : AbstractScreenCapture<ColorBGRA>
     public readonly object _captureLock = new();
     public int BufferReceived => _delegate.BufferReceived;
     private bool _isInitialized;
-    private bool _isInitializing;
     private int _blackFrameCounter;
+    private readonly object _lock = new();
     #region Constructors
 
     /// <summary>
@@ -51,7 +52,19 @@ public sealed class SCKScreenCapture : AbstractScreenCapture<ColorBGRA>
 
     private void StreamComplete(NSError error)
     {
-        Console.WriteLine(error);
+        if (error != null)
+        {
+            Log.Information(error.ToString());
+            _isInitialized = false;
+            _stream?.Dispose();
+            Thread.Sleep(1000);
+        }
+        else
+        {
+            _isInitialized = true;
+            Log.Information("Successfully created SCK capture session on display index: " + Display.Index);
+        }
+
     }
 
     public NativeHandle Handle { get; set; }
@@ -69,56 +82,68 @@ public sealed class SCKScreenCapture : AbstractScreenCapture<ColorBGRA>
             try
             {
                 SCShareableContent.GetShareableContent((SCShareableContent content, NSError error) =>
-                                  {
-                                      if (error != null)
-                                      {
-                                          Console.WriteLine("Error while requesting shareable content " + error.Code);
-                                          return;
-                                      }
-                                      //get tartget display
-                                      //   foreach (var display in content.Displays)
-                                      //   {
-                                      //       if (display.DisplayId == Display.Index+1) // I have no idea why apple using 1 as the offset for display index...Í
-                                      //       {
-                                      //           _selectedDisplay = display;
-                                      //           break;
-                                      //       }
-                                      //   }
-                                      _selectedDisplay = content.Displays[Display.Index];
-                                      _stride = (int)(Display.Width * _scalingFactor * ColorBGRA.ColorFormat.BytesPerPixel);
-                                      _buffer = new byte[(int)(Display.Height * _scalingFactor * _stride)];
-                                      var apps = content.Applications;
-                                      //config new sreen capture session
-                                      _filter = new SCContentFilter(_selectedDisplay, [], SCContentFilterOption.Exclude);
-                                      _streamConfig = new SCStreamConfiguration
-                                      {
-                                          Width = (nuint)(Display.Width * _scalingFactor),
-                                          Height = (nuint)(Display.Height * _scalingFactor),
-                                          MinimumFrameInterval = new CoreMedia.CMTime(1, 20), // 60 FPS
-                                          QueueDepth = 5,
-                                          PixelFormat = CoreVideo.CVPixelFormatType.CV32BGRA,
-                                          ScalesToFit = false,
-                                          SourceRect = new CGRect(0, 0, Display.Width, Display.Height),
-                                          ShowsCursor = false,
-                                          CaptureResolution = SCCaptureResolutionType.Best,
-                                          CapturesAudio = false,
-                                          StreamName = "SCKScreenCapture.NET"
+                            {
+                                if (error != null)
+                                {
+                                    Log.Error("Error while requesting shareable content " + error.Code);
+                                    return;
+                                }
+                                Log.Information("Available display to capture: ");
+                                foreach (var display in content.Displays)
+                                {
+                                    Log.Information("Display: Index = " + display.DisplayId +
+                                     " | resolution =  " + display.Width + "x" + display.Height);
+                                }
 
-                                      };
-                                      //update registerd zones
-                                      _delegate = new ScreenCaptureDelegate(_buffer);
-                                      _delegate.StreamStopped += OnStreamStopped;
-                                      _stream = new SCStream(_filter, _streamConfig, _delegate);
-                                      var streamError = new NSError();
-                                      _stream.AddStreamOutput(_delegate, SCStreamOutputType.Screen, null, out streamError);
-                                      _stream.StartCapture(OnStreamComplete);
-                                      _isInitialized = true;
-                                  });
+
+                                //check if the display exist, feel silly enough because it actually happens when mac
+                                // just wakeup from sleep
+                                //the display is not available yet but the code is already running in background
+                                if (content.Displays.Length <= Display.Index)
+                                {
+                                    Log.Error("Requested display not found" + Display.Index);
+                                    return;
+                                }
+                                _selectedDisplay = content.Displays[Display.Index];
+                                _stride = (int)(Display.Width * _scalingFactor * ColorBGRA.ColorFormat.BytesPerPixel);
+                                _buffer = new byte[(int)(Display.Height * _scalingFactor * _stride)];
+                                var apps = content.Applications;
+                                //config new sreen capture session
+                                _filter = new SCContentFilter(_selectedDisplay, [], SCContentFilterOption.Exclude);
+                                _streamConfig = new SCStreamConfiguration
+                                {
+                                    Width = (nuint)(Display.Width * _scalingFactor),
+                                    Height = (nuint)(Display.Height * _scalingFactor),
+                                    MinimumFrameInterval = new CoreMedia.CMTime(1, 40), // 60 FPS
+                                    QueueDepth = 5,
+                                    PixelFormat = CoreVideo.CVPixelFormatType.CV32BGRA,
+                                    ScalesToFit = false,
+                                    SourceRect = new CGRect(0, 0, Display.Width, Display.Height),
+                                    ShowsCursor = false,
+                                    CaptureResolution = SCCaptureResolutionType.Best,
+                                    CapturesAudio = true,
+                                    StreamName = "SCKScreenCapture.NET"
+
+                                };
+                                //update registerd zones
+                                _delegate = new ScreenCaptureDelegate(_buffer);
+                                _delegate.StreamStopped += OnStreamStopped;
+                                _stream = new SCStream(_filter, _streamConfig, _delegate);
+                                var streamError = new NSError();
+                                _stream.AddStreamOutput(_delegate, SCStreamOutputType.Screen, null, out streamError);
+                                _stream.AddStreamOutput(_delegate,SCStreamOutputType.Audio,null,out streamError);
+                                _stream.StartCapture(OnStreamComplete);
+
+                            });
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString);
+                Log.Error(ex.ToString());
+            }
+            finally
+            {
+
             }
 
         }
@@ -127,26 +152,31 @@ public sealed class SCKScreenCapture : AbstractScreenCapture<ColorBGRA>
     }
     private void OnStreamStopped()
     {
-
         _stream?.Dispose();
         Thread.Sleep(1000);
         _isInitialized = false;
     }
     private Action<NSError> OnStreamComplete;
-
+    private bool ReadyToRestart()
+    {
+        lock (_lock)
+        {
+            return !_isInitialized;
+        }
+    }
     /// <inheritdoc />
     protected override void PerformCaptureZoneUpdate(CaptureZone<ColorBGRA> captureZone, Span<byte> buffer)
     {
-        if (!_isInitialized)
+        if (ReadyToRestart())
         {
             _blackFrameCounter++;
             if (_blackFrameCounter > 600)
             {
                 //10 secs has passed, try to restart
+                Log.Error("Restarting SCK Capture session");
                 Restart();
                 _blackFrameCounter = 0;
             }
-
         }
 
         if (_buffer == null) return;
