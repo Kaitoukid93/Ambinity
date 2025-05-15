@@ -60,7 +60,11 @@ public class LottieJsonAnimation : ObservableObject, IAnimation
         }
 
         var json = File.ReadAllText(Path.Combine(LocalPath, "config.json"));
-        SkottieAnimation = SkiaSharp.Skottie.Animation.Parse(json);
+        SkottieAnimation = Animation.Parse(json);
+        Duration = SkottieAnimation.Duration;
+        Fps = SkottieAnimation.Fps.ToString();
+        Size = SkottieAnimation.Size.ToString();
+        Version = SkottieAnimation.Version.ToString();
     }
 
     public OnlineItemTypeEnum GetType()
@@ -78,8 +82,8 @@ public class LottieJsonAnimation : ObservableObject, IAnimation
     }
 
     [JsonIgnore] public SkiaSharp.Skottie.Animation SkottieAnimation { get; set; }
-    [JsonIgnore] public TimeSpan  Duration => SkottieAnimation.Duration;
-    [JsonIgnore] public string Fps =>SkottieAnimation.Fps.ToString();
-    [JsonIgnore] public string Size =>SkottieAnimation.Size.ToString();
-    [JsonIgnore] public string Version => SkottieAnimation.Version.ToString();
+    [JsonIgnore] public TimeSpan Duration { get; set; }
+    [JsonIgnore] public string Fps { get; set; }
+    [JsonIgnore] public string Size { get; set; }
+    [JsonIgnore] public string Version { get; set; }
 }

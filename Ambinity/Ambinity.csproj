@@ -18,8 +18,9 @@
 
 
 	<ItemGroup>
+		<PackageReference Include="Avalonia.Labs.Controls" Version="11.2.0" />
+		<PackageReference Include="Avalonia.Labs.Lottie" Version="11.2.0" />
 		<PackageReference Include="Avalonia.Skia.Lottie" Version="11.0.0" />
-		<PackageReference Include="AvaloniaGif-Unofficial" Version="1.0.1" />
 		<PackageReference Include="Live.Avalonia" Version="1.4.1" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc3.3" />
 		<PackageReference Include="Serilog" Version="4.0.1" />
@@ -52,7 +53,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-
 	  <ProjectReference Include="..\AmbinityCore\AmbinityCore.csproj" />
 	  <ProjectReference Include="..\AmbinityServer\AmbinityServer.csproj" />
 	  <ProjectReference Include="..\Draw2D.Core\Draw2D.Core.csproj" />

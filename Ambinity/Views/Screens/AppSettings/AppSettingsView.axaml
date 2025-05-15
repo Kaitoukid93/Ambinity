@@ -141,7 +141,7 @@
                                 <ui:InfoBar
                                     Title="Settings changed"
                                     IsOpen="{Binding ShowPluginInfoBar, Mode=TwoWay}"
-                                    Message="Restart is require for changes to take effect"
+                                    Message="Restart is required for changes to take effect"
                                     Severity="Warning">
                                     <Button
                                         Margin="0,0,0,10"
@@ -253,7 +253,7 @@
                                 <ui:InfoBar
                                     Title="Settings changed"
                                     IsOpen="{Binding ShowRenderingInfoBar, Mode=TwoWay}"
-                                    Message="Restart is require for changes to take effect"
+                                    Message="Restart is required for changes to take effect"
                                     Severity="Warning">
                                     <Button
                                         Margin="0,0,0,10"
@@ -262,7 +262,7 @@
                                 </ui:InfoBar>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Change the frame rate that of the bitmap rendering method"
+                                    Description="Change the frame rate of the bitmap rendering method."
                                     Header="Target frame rate">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource flash}" />
@@ -294,7 +294,7 @@
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid RowDefinitions="Auto,*">
+                <Grid IsVisible="{Binding EnableInAppUpdate}" RowDefinitions="Auto,*">
                     <Grid>
                         <TextBlock Classes="smallBold" Text="Update" />
                     </Grid>

@@ -51,8 +51,18 @@ public class LightingProfileDecoder
     {
         if (_repository.Items == null || _repository.Items.Count == 0)
             return;
-        if (_generalSettings.LastPlayedProfileID == null)
-            return;
+
+        else if (_generalSettings.LastPlayedProfileID == Guid.Empty || _generalSettings.LastPlayedProfileID == Guid.Empty)
+        {
+            //this happens when application is installed for the first time
+            var neon = _repository.Items
+                 .Where(i => (i as LightingProfile).Name == "Neon")
+                 .FirstOrDefault() as LightingProfile;
+            if (neon == null) // something seriously wrong with the databasse
+                return;
+            _generalSettings.LastPlayedProfileID = neon.ID;
+
+        }
         var lastPlayedProfile =
             _repository.Items.Where(i => (i as LightingProfile).ID == _generalSettings.LastPlayedProfileID)
                 .FirstOrDefault() as LightingProfile;
@@ -65,11 +75,11 @@ public class LightingProfileDecoder
     {
         //only play if app tour is not activated, app tour is designed to work with nothing is playing,
         //so it can show user how to press the play button to render a profile
-        if (!_generalSettings.ShowAppTour)
-        {
+        // if (!_generalSettings.ShowAppTour)
+        // {
             LoadLastProfile();
             Resume();
-        }
+        // }
     }
 
     /// <summary>

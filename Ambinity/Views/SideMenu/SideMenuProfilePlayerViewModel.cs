@@ -25,7 +25,7 @@ public class SideMenuProfilePlayerViewModel : ViewModelBase
     private bool _shouldShowImage;
 
     public SideMenuProfilePlayerViewModel(LightingProfileDecoder decoder, RootNavigationStores rootNavigationStores,
-        FrameBuffer frame, IMainWindowService windowService,GeneralSettingsManager generalSettingsManager)
+        FrameBuffer frame, IMainWindowService windowService, GeneralSettingsManager generalSettingsManager)
     {
         _generalSettings = generalSettingsManager.Settings;
         _decoder = decoder;
@@ -41,7 +41,7 @@ public class SideMenuProfilePlayerViewModel : ViewModelBase
         _windowService.MainWindowClosed += OnMainWindowClosed;
         _windowService.MainWindowOpened += OnMainWindowOpened;
     }
-    
+
     private void ToggleRenderingStatus()
     {
         _decoder.Toggle();
@@ -154,7 +154,7 @@ public class SideMenuProfilePlayerViewModel : ViewModelBase
     public string PlayButtonToolTip => IsPlaying ? "Pause" : "Play";
     public string PlayButtonIcon => IsPlaying ? "pauseComposition" : "playComposition";
 
-    public string CurrentPlayingProfileDescription => CurrentPlayingProfile.Category == null
+    public string CurrentPlayingProfileDescription => (CurrentPlayingProfile == null || CurrentPlayingProfile.Category == null)
         ? "Last played profile"
         : CurrentPlayingProfile.Category.Name;
 

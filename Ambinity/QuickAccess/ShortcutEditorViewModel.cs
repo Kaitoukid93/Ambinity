@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Ambinity.Stores;
@@ -25,7 +26,7 @@ public class ShortcutEditorViewModel : ViewModelBase
         {
             AvailableIcons.Add(key as string);
         }
-
+        AvailableLightingProfiles = [];
         ApplySettingsCommand = new RelayCommand(ApplySettings,()=> NullProfileAlert);
     }
 
@@ -40,14 +41,15 @@ public class ShortcutEditorViewModel : ViewModelBase
     }
 
     public List<string> AvailableIcons { get; set; }
-    public List<LightingProfile> AvailableLightingProfiles { get; set; } = new List<LightingProfile>();
+    public ObservableCollection<LightingProfileComboboxItemViewModel> AvailableLightingProfiles { get; set; }
 
     public void Init(ShortcutViewModel shortcut)
     {
-        AvailableLightingProfiles.Clear();
+        AvailableLightingProfiles?.Clear();
         foreach (var item in _lightingProfileRepository.Items)
         {
-            AvailableLightingProfiles.Add(item as LightingProfile);
+            var vm = new LightingProfileComboboxItemViewModel(item as LightingProfile);
+            AvailableLightingProfiles.Add(vm);
         }
 
         ShortcutViewModel = shortcut;
@@ -85,17 +87,17 @@ public class ShortcutEditorViewModel : ViewModelBase
         }
     }
 
-    private LightingProfile _selectedProfile;
+    private LightingProfileComboboxItemViewModel _selectedProfile;
     private readonly QuickAccessNavigationStore _navigationStore;
 
-    public LightingProfile SelectedProfile
+    public LightingProfileComboboxItemViewModel SelectedProfile
     {
         get => _selectedProfile;
         set
         {
             _selectedProfile = value;
-            ApplySettingsCommand.NotifyCanExecuteChanged();
             OnPropertyChanged();
+            ApplySettingsCommand.NotifyCanExecuteChanged();
         }
     }
 

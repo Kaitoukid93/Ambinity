@@ -11,7 +11,7 @@ public class AppThemeManager
 {
     public AppThemeManager()
     {
-        Application.Current.ActualThemeVariantChanged+= (s, e) =>
+        Application.Current.ActualThemeVariantChanged += (s, e) =>
         {
             ThemeChanged?.Invoke(Application.Current.RequestedThemeVariant);
         };
@@ -26,7 +26,13 @@ public class AppThemeManager
             case "Dark":
                 return ThemeVariant.Dark;
             case "System":
-            return Application.Current.RequestedThemeVariant;
+                var theme = Application.Current.RequestedThemeVariant;
+                if (theme == null)
+                    return ThemeVariant.Dark;
+                if (theme == ThemeVariant.Default)
+                    return ThemeVariant.Dark;
+                else
+                    return Application.Current.RequestedThemeVariant;
             default:
                 return ThemeVariant.Default;
         }
@@ -39,7 +45,7 @@ public class AppThemeManager
         Application.Current.RequestedThemeVariant = theme;
         //change backdrop blur tint color too
         if (themeName != "System")
-        {                    
+        {
             _faTheme.PreferSystemTheme = false;
             _faTheme.PreferUserAccentColor = true;
         }
@@ -56,5 +62,5 @@ public class AppThemeManager
         var _faTheme = Application.Current.Styles[0] as FluentAvaloniaTheme;
         _faTheme.CustomAccentColor = color;
     }
-    
+
 }

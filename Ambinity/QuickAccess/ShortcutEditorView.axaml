@@ -1,51 +1,142 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:local = "clr-namespace:Ambinity.QuickAccess"
-             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
-             x:DataType="local:ShortcutEditorViewModel"
-             x:Class="Ambinity.QuickAccess.ShortcutEditorView">
+<UserControl
+    x:Class="Ambinity.QuickAccess.ShortcutEditorView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Ambinity.QuickAccess"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="local:ShortcutEditorViewModel"
+    mc:Ignorable="d">
+
     <Grid Margin="15" RowDefinitions="Auto,20,*,auto">
-        <Grid Row="0" ColumnDefinitions="*,Auto">
-            <TextBlock FontWeight="SemiBold" FontSize="15" Text="{Binding ShortcutViewModel.Name}"></TextBlock>
+        <Grid ColumnDefinitions="*,Auto" Row="0">
+            <TextBlock
+                FontSize="15"
+                FontWeight="SemiBold"
+                Text="{Binding ShortcutViewModel.Name}" />
         </Grid>
         <Grid Grid.Row="2">
             <StackPanel Spacing="10">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Name" FontSize="12" FontWeight="SemiBold"></TextBlock>
-                    <TextBox Text="{Binding ShortcutViewModel.Name}"></TextBox>
+                    <TextBlock
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Text="Name" />
+                    <TextBox Text="{Binding ShortcutViewModel.Name}" />
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Profile" FontSize="12" FontWeight="SemiBold"></TextBlock>
-                   <ui:FAComboBox x:Name="cbx" DisplayMemberBinding="{Binding Name}" SelectedItem="{Binding SelectedProfile}" ItemsSource="{Binding AvailableLightingProfiles}" HorizontalAlignment="Stretch">
-                      
-                   </ui:FAComboBox>
+                    <TextBlock
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Text="Profile" />
+                    <ui:FAComboBox
+                        HorizontalAlignment="Stretch"
+                        ItemsSource="{Binding AvailableLightingProfiles}"
+                        SelectedItem="{Binding SelectedProfile}">
+                        <ui:FAComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid
+                                    x:Name="ItemGrid"
+                                    Margin="0,2"
+                                    Background="Transparent"
+                                    ColumnDefinitions="Auto,*,10">
+                                    <Grid.Styles>
+                                        <Style Selector="ContentControl.profileIcon">
+                                            <Setter Property="Content">
+                                                <Template>
+                                                    <PathIcon
+                                                        Width="18"
+                                                        Height="18"
+                                                        Margin="5,0,7,0"
+                                                        Data="{Binding Icon, Converter={StaticResource ResourceConverter}}">
+                                                        <PathIcon.Foreground>
+                                                            <SolidColorBrush Color="{Binding IconColor}" />
+                                                        </PathIcon.Foreground>
+                                                    </PathIcon>
+                                                </Template>
+                                            </Setter>
+                                        </Style>
+                                        <Style Selector="ContentControl.profileIcon.image">
+                                            <Setter Property="Content">
+                                                <Template>
+                                                    <Border
+                                                        Width="18"
+                                                        Height="18"
+                                                        Margin="5,0,7,0"
+                                                        Padding="0"
+                                                        ClipToBounds="True"
+                                                        CornerRadius="9">
+                                                        <Image
+                                                            RenderOptions.BitmapInterpolationMode="HighQuality"
+                                                            Source="{Binding GetThumbnail^, FallbackValue=null}"
+                                                            Stretch="Fill" />
+                                                    </Border>
+
+                                                </Template>
+                                            </Setter>
+                                        </Style>
+                                    </Grid.Styles>
+                                    <!--  <PathIcon Width="15" Height="15" Margin="0,0,7,0"  -->
+                                    <!--  Classes.playing-fill="{CompiledBinding IsPlaying}"  -->
+                                    <!--  Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">  -->
+                                    <!-- </PathIcon> -->
+                                    <ContentControl Classes="profileIcon" Classes.image="{Binding !IconType}" />
+
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Padding="0,6,0,6"
+                                        HorizontalAlignment="Left"
+                                        Classes="smallBold"
+                                        Text="{CompiledBinding Name,
+                                                               FallbackValue='No Name'}"
+                                        TextTrimming="CharacterEllipsis" />
+                                </Grid>
+                            </DataTemplate>
+                        </ui:FAComboBox.ItemTemplate>
+                    </ui:FAComboBox>
                 </StackPanel>
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Display icon" FontSize="12" FontWeight="SemiBold"></TextBlock>
+                    <TextBlock
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Text="Display icon" />
                     <Expander MaxHeight="190">
                         <Expander.HeaderTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Spacing="15">
-                                    <PathIcon Data="{Binding ElementName=listIcon,Path=SelectedItem,Converter={StaticResource ResourceConverter}}"></PathIcon>
-                                    <TextBlock MaxWidth="200" TextTrimming="CharacterEllipsis" FontSize="12" Foreground="{DynamicResource ButtonForegroundDisabled}" FontWeight="SemiBold" Text="{Binding ElementName=listIcon,Path=SelectedItem}"></TextBlock>
+                                    <PathIcon Data="{Binding ElementName=listIcon, Path=SelectedItem, Converter={StaticResource ResourceConverter}}" />
+                                    <TextBlock
+                                        MaxWidth="200"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource ButtonForegroundDisabled}"
+                                        Text="{Binding ElementName=listIcon, Path=SelectedItem}"
+                                        TextTrimming="CharacterEllipsis" />
                                 </StackPanel>
-                          
+
                             </DataTemplate>
                         </Expander.HeaderTemplate>
                         <ScrollViewer IsScrollInertiaEnabled="True">
-                            <ListBox x:Name="listIcon" SelectedItem="{Binding Icon}"  ItemContainerTheme="{DynamicResource _striplessListboxItem}"
-                                      Theme="{DynamicResource _striplessListbox}" ItemsSource="{Binding AvailableIcons}">
+                            <ListBox
+                                x:Name="listIcon"
+                                ItemContainerTheme="{DynamicResource _striplessListboxItem}"
+                                ItemsSource="{Binding AvailableIcons}"
+                                SelectedItem="{Binding Icon}"
+                                Theme="{DynamicResource _striplessListbox}">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel></WrapPanel>
+                                        <WrapPanel />
                                     </ItemsPanelTemplate>
                                 </ListBox.ItemsPanel>
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <PathIcon Width="20" Height="20" Data="{Binding .,Converter={StaticResource ResourceConverter}}"></PathIcon>
+                                        <PathIcon
+                                            Width="20"
+                                            Height="20"
+                                            Data="{Binding ., Converter={StaticResource ResourceConverter}}" />
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
@@ -55,7 +146,13 @@
             </StackPanel>
         </Grid>
         <Grid Row="3">
-            <Button ToolTip.ShowDelay="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Classes="accent" Content="Apply" Command="{Binding ApplySettingsCommand}"></Button>
+            <Button
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Classes="accent"
+                Command="{Binding ApplySettingsCommand}"
+                Content="Apply"
+                ToolTip.ShowDelay="0" />
         </Grid>
     </Grid>
 </UserControl>

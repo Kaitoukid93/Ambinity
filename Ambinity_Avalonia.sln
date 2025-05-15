@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenCapture.NET.X11", "Sc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenCapture.NET.SCK", "ScreenCapture.NET.SCK\ScreenCapture.NET.SCK.csproj", "{705A8BAE-3D7D-43E8-9D88-8E95C7E0CFF6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.Gif", "Avalonia.Gif\Avalonia.Gif.csproj", "{F508E0A5-0C0D-46B9-ABB9-FC5F7D89F2F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{705A8BAE-3D7D-43E8-9D88-8E95C7E0CFF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{705A8BAE-3D7D-43E8-9D88-8E95C7E0CFF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{705A8BAE-3D7D-43E8-9D88-8E95C7E0CFF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F508E0A5-0C0D-46B9-ABB9-FC5F7D89F2F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F508E0A5-0C0D-46B9-ABB9-FC5F7D89F2F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F508E0A5-0C0D-46B9-ABB9-FC5F7D89F2F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F508E0A5-0C0D-46B9-ABB9-FC5F7D89F2F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

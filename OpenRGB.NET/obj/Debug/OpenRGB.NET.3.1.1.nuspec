@@ -10,7 +10,7 @@
     <description>Client for the OpenRGB SDK</description>
     <copyright>Copyright © 2020 Diogo Trindade</copyright>
     <tags>openrgb, rgb, sdk, client</tags>
-    <repository type="git" url="https://github.com/diogotr7/OpenRGB.NET" commit="beb86485490180b3f8d0d4600bddaab5df6cac0a" />
+    <repository type="git" url="https://github.com/diogotr7/OpenRGB.NET" commit="1ec0dd97ec3f2d705e78867423421e6dbf84c68e" />
     <dependencies>
       <group targetFramework="net8.0">
         <dependency id="NonCopyableAnalyzer" version="0.7.0" exclude="Build,Analyzers" />

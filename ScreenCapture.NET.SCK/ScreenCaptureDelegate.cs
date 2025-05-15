@@ -24,7 +24,7 @@ public class ScreenCaptureDelegate : NSObject, ISCStreamOutput, INativeObject, I
 
     }
     [Foundation.Export("stream:didOutputSampleBuffer:ofType:")]
-    public void DidOutputSampleBuffer(SCStream stream, CMSampleBuffer sampleBuffer, SCStreamOutputType type)
+    public unsafe void DidOutputSampleBuffer(SCStream stream, CMSampleBuffer sampleBuffer, SCStreamOutputType type)
     {
 
         try
@@ -52,11 +52,11 @@ public class ScreenCaptureDelegate : NSObject, ISCStreamOutput, INativeObject, I
             {
                 // Process audio buffer
                 var formatDescription = sampleBuffer.GetAudioFormatDescription();
-                Console.WriteLine($"Audio Format: {formatDescription}");
                 var numSamples = (int)sampleBuffer.NumSamples;
                 _audioBuffer = new AudioBuffer[numSamples];
                 AudioBuffers outputBuffer = new AudioBuffers(numSamples); // Replace '1' with the appropriate number of buffers required
                 var error = sampleBuffer.CopyPCMDataIntoAudioBufferList(0, (int)sampleBuffer.NumSamples, outputBuffer);
+
                 if (error != CMSampleBufferError.None)
                 {
                     Log.Error(error.ToString());

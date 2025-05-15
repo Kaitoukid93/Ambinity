@@ -31,7 +31,7 @@ public class LightingProfileAssetsViewModel : AssetsViewModelBase
     {
         await base.Init(localRepo, onlineRepo);
         //for now just show online repo
-        await UpdateAssets("Online",true);
+        await UpdateAssets("Online", true);
     }
 
     public async Task FilterItem(string[] filters)
@@ -44,7 +44,11 @@ public class LightingProfileAssetsViewModel : AssetsViewModelBase
             if (item is OnlineItemAssetViewModel onlineAsset)
             {
                 if (filters.Intersect(onlineAsset.OnlineItemData.Tags).Any())
+                {
+                    onlineAsset.ThumbnailWidth = 300;
                     DisplayAssets.Add(item);
+                }
+
             }
         }
         OnPropertyChanged(nameof(ShowNoResult));

@@ -20,7 +20,6 @@ public class AnimationDecodeEngine : IColorEngine
     public bool IsAvailable { get; private set; } = true;
     private FrameBuffer _buffer;
 
-    // private string _animationFilePath = "C:\\Users\\AMBINO\\Downloads\\moving circle.json";
     private byte[] _reusableRow;
     private IAnimation _animation;
     private AnimationConfiguration _config;
@@ -29,6 +28,10 @@ public class AnimationDecodeEngine : IColorEngine
     private readonly AnimationsRepository _animationRepository;
     private AnimationsRepository _currentWorkingRepository;
     private IAnimationStreamDecoder _streamDecoder;
+
+    // Class-level fields for SKImageInfo and SKBitmap
+    private SKImageInfo _imageInfo;
+    private SKBitmap _bitmap;
 
     public AnimationDecodeEngine(FrameBuffer buffer, AnimationsRepository repository)
     {
@@ -40,28 +43,35 @@ public class AnimationDecodeEngine : IColorEngine
     {
         if (_loadingAnimation)
             return;
-        int width = (int)_zone.Width;
-        int height = (int)_zone.Height;
-        var dst = new SKRect(0,0,width,height);
-        lock (_buffer.FrameLock)
+
+        try
         {
-            using (var bitmap = new SKBitmap(width, height))
+            int width = (int)_zone.Width;
+            int height = (int)_zone.Height;
+            var dst = new SKRect(0, 0, width, height);
+
+            lock (_buffer.FrameLock)
             {
-                _streamDecoder.TryDecodeNextFrame(bitmap,dst);
-                var pixelData = bitmap.Bytes;
-                int length = (int)bitmap.Width * 4;
-                for (int i = 0; i < bitmap.Height; i++)
+                // Use the pre-initialized bitmap
+                var result = _streamDecoder.TryDecodeNextFrame(_bitmap, dst);
+                if (result == false)
+                    return;
+                var pixelData = _bitmap.Bytes;
+                int length = (int)_bitmap.Width * 4;
+
+                for (int i = 0; i < _bitmap.Height; i++)
                 {
                     int start = (_buffer.FrameWidth * 4) * (i + (int)_zone.Y) + (int)_zone.X * 4;
-                    int startSource = i * bitmap.Width * 4;
+                    int startSource = i * _bitmap.Width * 4;
                     Array.Copy(pixelData, startSource, _buffer.PixelData, start, length);
                 }
             }
-
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Error while rendering animation");
         }
     }
-
-
 
     public void Init(LightingZone zone)
     {
@@ -83,8 +93,10 @@ public class AnimationDecodeEngine : IColorEngine
     {
         if (_config.AnimationUID == null || _config.AnimationUID == Guid.Empty)
             return;
+
         _loadingAnimation = true;
-        //resolve animation from repo
+
+        // Resolve animation from repository
         var animation = _currentWorkingRepository.FindAnimation(_config.AnimationUID);
         if (animation == null)
         {
@@ -93,22 +105,32 @@ public class AnimationDecodeEngine : IColorEngine
         }
 
         animation.LoadAnimation();
-        // init a stream decoder based on animation type selected
+
+        // Dispose of the previous stream decoder and bitmap
         _streamDecoder?.Dispose();
+        _bitmap?.Dispose();
+
+        // Initialize a stream decoder based on the animation type
         if (animation is LottieJsonAnimation)
         {
             _streamDecoder = new LottieAnimationStreamDecoder(animation);
         }
-        // else if (animation is VideoAnimation)
-        // {
-        //     _streamDecoder = new VideoStreamDecoder(animation,_zone);
-        // }
+        else if (animation is GifAnimation)
+        {
+            _streamDecoder = new GifAnimationStreamDecoder(animation, _zone);
+        }
+        int width = (int)_zone.Width;
+        int height = (int)_zone.Height;
+        _imageInfo = new SKImageInfo(width, height, SKColorType.Bgra8888);
+        _bitmap = new SKBitmap(_imageInfo);
         _loadingAnimation = false;
     }
 
     public void Dispose()
     {
         _config.AnimationChanged -= OnAnimationChanged;
+        _streamDecoder?.Dispose();
+        _bitmap?.Dispose();
     }
 
     public bool IsDisposed { get; }

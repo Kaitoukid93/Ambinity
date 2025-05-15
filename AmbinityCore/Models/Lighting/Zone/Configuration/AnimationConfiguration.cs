@@ -41,7 +41,7 @@ public class AnimationConfiguration : ObservableObject, ILightingConfiguration
     /// </summary>
     public bool DelayFrame { get; set; }
 
-    public void ChangeAnimation(IAnimation  animation)
+    public void ChangeAnimation(IAnimation animation)
     {
         AnimationUID = animation.UID;
         AnimationChanged?.Invoke();

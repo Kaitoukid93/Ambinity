@@ -14,7 +14,7 @@
                 <Grid RowDefinitions="120,10,30,10,*">
                     <!-- <ui:ProgressRing Grid.Column="1" IsVisible="{CompiledBinding IsDownloading}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10"  IsIndeterminate="True"/> -->
                     <Border ClipToBounds="True"  CornerRadius="4,4,0,0">
-                        <Image 
+                        <Image
                                Source="{Binding GetThumbnail^,FallbackValue=null}" Stretch="UniformToFill">
                         </Image>
                     </Border>
@@ -28,13 +28,13 @@
                         <StackPanel Margin="10" HorizontalAlignment="Right" IsVisible="{Binding IsLocalExisted}" Spacing="5"
                                     Orientation="Horizontal">
                             <Border CornerRadius="13" Height="26" Width="26"  HorizontalAlignment="Right" Classes="chip" ToolTip.Tip="Item is installed">
-                              
+
                                     <PathIcon Foreground="{DynamicResource SystemAccentColor}" Width="12" HorizontalAlignment="Center" VerticalAlignment="Center"
                                               Height="12" Data="{DynamicResource checkBold}">
                                     </PathIcon>
-                               
+
                             </Border>
-                            <Button Command="{Binding DownloadItemCommand}" IsVisible="{Binding IsLocalExisted}" CornerRadius="3" Padding="5,3" 
+                            <Button Command="{Binding DownloadItemCommand}" IsVisible="{Binding IsLocalExisted}" CornerRadius="3" Padding="5,3"
                                     HorizontalAlignment="Right" Classes="chip">
                                 <Grid ColumnDefinitions="Auto,*">
                                     <PathIcon Margin="0,0,5,0" Width="12" Height="10" Data="{DynamicResource download}"></PathIcon>
@@ -44,7 +44,7 @@
                                 </Grid>
 
                             </Button>
-                           
+
                         </StackPanel>
 
                         <Button Command="{Binding DownloadItemCommand}" Margin="10" CornerRadius="3" Padding="5,3"
@@ -72,7 +72,7 @@
                             <WrapPanel Orientation="Horizontal"></WrapPanel>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
-                    
+
 
                 </ItemsControl>
                 <Grid RowDefinitions="*,Auto,*" IsVisible="{Binding ShowNoResult}">

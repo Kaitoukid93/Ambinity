@@ -86,6 +86,8 @@ public sealed class SCKScreenCapture : AbstractScreenCapture<ColorBGRA>
                                 if (error != null)
                                 {
                                     Log.Error("Error while requesting shareable content " + error.Code);
+                                    //this is when user press denied, so we stop requesting
+                                    _isInitialized = true;
                                     return;
                                 }
                                 Log.Information("Available display to capture: ");
@@ -114,14 +116,14 @@ public sealed class SCKScreenCapture : AbstractScreenCapture<ColorBGRA>
                                 {
                                     Width = (nuint)(Display.Width * _scalingFactor),
                                     Height = (nuint)(Display.Height * _scalingFactor),
-                                    MinimumFrameInterval = new CoreMedia.CMTime(1, 40), // 60 FPS
+                                    MinimumFrameInterval = new CoreMedia.CMTime(1, 30), // 60 FPS
                                     QueueDepth = 5,
                                     PixelFormat = CoreVideo.CVPixelFormatType.CV32BGRA,
                                     ScalesToFit = false,
                                     SourceRect = new CGRect(0, 0, Display.Width, Display.Height),
                                     ShowsCursor = false,
                                     CaptureResolution = SCCaptureResolutionType.Best,
-                                    CapturesAudio = true,
+                                    CapturesAudio = false,
                                     StreamName = "SCKScreenCapture.NET"
 
                                 };
@@ -131,7 +133,7 @@ public sealed class SCKScreenCapture : AbstractScreenCapture<ColorBGRA>
                                 _stream = new SCStream(_filter, _streamConfig, _delegate);
                                 var streamError = new NSError();
                                 _stream.AddStreamOutput(_delegate, SCStreamOutputType.Screen, null, out streamError);
-                                _stream.AddStreamOutput(_delegate,SCStreamOutputType.Audio,null,out streamError);
+                               // _stream.AddStreamOutput(_delegate,SCStreamOutputType.Audio,null,out streamError);
                                 _stream.StartCapture(OnStreamComplete);
 
                             });

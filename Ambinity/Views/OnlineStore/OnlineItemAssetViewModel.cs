@@ -23,9 +23,17 @@ public class OnlineItemAssetViewModel : AssetItemViewModelBase
 {
     private static bool _canDownload = true;
     private int _thumbnailWidth;
-
+    public int ThumbnailWidth
+    {
+        get => _thumbnailWidth;
+        set
+        {
+            _thumbnailWidth = value;
+            OnPropertyChanged();
+        }
+    }
     public OnlineItemAssetViewModel(OnlineItem item, DownloadService downloadService,
-        CollectableItemRepository localRepository, int thumbnailWidth = 50) : base()
+        CollectableItemRepository localRepository, int thumbnailWidth = 100) : base()
     {
         _localRepository = localRepository;
         _downloadService = downloadService;

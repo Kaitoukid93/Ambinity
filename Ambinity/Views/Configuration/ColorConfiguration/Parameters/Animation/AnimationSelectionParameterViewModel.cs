@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Services;
+using Ambinity.ViewModels;
 using Ambinity.Views.AmbinityStore;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Windows;
@@ -79,47 +80,67 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
     {
         SelectedAnimation = _repository.FindAnimation(_configuration.AnimationUID) ??
                             _internalRepository?.FindAnimation(_configuration.AnimationUID);
-        OnPropertyChanged(nameof(AnimationFilePath));
+                            if (SelectedAnimation == null)
+                            return;
+        if (SelectedAnimation is GifAnimation)
+        {
+            var path = Path.Combine(SelectedAnimation.LocalPath, "animation.gif");
+            Thumbnail = new GifAnimationThumbnailViewModel(path);
+
+        }
+
+        else if (SelectedAnimation is LottieJsonAnimation)
+        {
+            var path = Path.Combine(SelectedAnimation.LocalPath, "config.json");
+            Thumbnail = new LottieAnimationThumbnailViewModel(path);
+        }
+       SelectedAnimation.LoadAnimation();
+        Size = SelectedAnimation.Size;
+        Duration = SelectedAnimation.Duration;
+        Fps = SelectedAnimation.Fps;
+        Size = SelectedAnimation.Size;
     }
+
+
 
     private async Task ImportAnimation()
     {
         string[]? result = await _windowService.CreateOpenFileDialog()
-            .HavingFilter(f => f.WithExtension("json").WithExtension("mp4").WithName("json or video file"))
+            .HavingFilter(f => f.WithExtension("json")
+            .WithExtension("gif")
+            .WithName("json or gif file"))
             .ShowAsync();
         if (result == null)
             return;
         var importFilePath = result.First();
         var filename = Path.GetFileNameWithoutExtension(importFilePath);
-        if (_internalRepository.Items.Any(i => i.Name == filename))
-        {
-            var existed = _internalRepository.FindAnimation(filename);
-            existed.LoadAnimation();
-            _configuration.ChangeAnimation(existed);
-            return;
-        }
+        // if (_internalRepository.Items.Any(i => i.Name == filename))
+        // {
+        //     var existed = _internalRepository.FindAnimation(filename);
+        //     existed.LoadAnimation();
+        //     _configuration.ChangeAnimation(existed);
+        //     return;
+        // }
+        //remove all animation folders
+        _internalRepository.ClearAllAnimations();
         var extension = Path.GetExtension(importFilePath);
         IAnimation animation = null;
-        if (extension.Contains("mp4"))
-        {
-            return;
-            // animation = new VideoAnimation(filename);
-            // _internalRepository.AddItem(animation);
-            // animation.Save();
-            // //rename json to config and copy to folder
-            // File.Copy(importFilePath, Path.Combine(animation.LocalPath, "video.mp4"), true);
-            // animation.LoadAnimation();
-        }
-        else if (extension.Contains("json"))
+        if (extension.Contains("json"))
         {
             animation = new LottieJsonAnimation(filename);
             _internalRepository.AddItem(animation);
             animation.Save();
             //rename json to config and copy to folder
             File.Copy(importFilePath, Path.Combine(animation.LocalPath, "config.json"), true);
-            animation.LoadAnimation();
         }
-
+        else if (extension.Contains("gif"))
+        {
+            animation = new GifAnimation(filename);
+            _internalRepository.AddItem(animation);
+            animation.Save();
+            //rename json to config and copy to folder
+            File.Copy(importFilePath, Path.Combine(animation.LocalPath, "animation.gif"), true);
+        }
 
         _configuration.ChangeAnimation(animation);
         //ask if user want to add to library
@@ -180,6 +201,8 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
     {
         if (item is AnimationAssetViewModel)
         {
+            //clear internal repository
+            _internalRepository.ClearAllAnimations();
             var animationAsset = item as AnimationAssetViewModel;
             //add this to internal repo by copying item
             LocalFileHelpers.CopyDirectory(animationAsset.Item.LocalPath,
@@ -209,8 +232,55 @@ public class AnimationSelectionParameterViewModel : ParameterViewModelBase
             OnPropertyChanged();
         }
     }
+    private ViewModelBase _thumbnail;
+    public ViewModelBase Thumbnail
+    {
+        get => _thumbnail; set
+        {
+            _thumbnail = value;
+            OnPropertyChanged();
+        }
+    }
+    private TimeSpan _duration;
+    private string _fps;
+    private string _size;
+    private string _version;
+    public TimeSpan Duration
+    {
+        get => _duration;
+        set
+        {
+            _duration = value;
+        }
+    }
+    public string Fps
+    {
+        get => _fps;
+        set
+        {
+            _fps = value;
+            OnPropertyChanged();
+        }
+    }
+    public string Size
+    {
+        get => _size;
+        set
+        {
+            _size = value;
+            OnPropertyChanged();
+        }
+    }
 
-    public string AnimationFilePath => Path.Combine(SelectedAnimation.LocalPath, "config.json");
+    public string Version
+    {
+        get => _version;
+        set
+        {
+            _version = value;
+            OnPropertyChanged();
+        }
+    }
     public AnimationConfiguration Configuration => _configuration;
     public ICommand ExportAnimationCommand { get; }
 }

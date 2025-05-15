@@ -51,13 +51,6 @@ public class ShortcutRepository : CollectableItemRepository
         });
         AddItem(new Shortcut()
         {
-            Name = "Audio reactive",
-            Description = "Shortcut for music mode",
-            IsDefault = true,
-            Icon = "headphones"
-        });
-        AddItem(new Shortcut()
-        {
             Name = "Neon",
             Description = "Shortcut for rainbow effect",
             IsDefault = true,
@@ -65,13 +58,13 @@ public class ShortcutRepository : CollectableItemRepository
         });
         AddItem(new Shortcut()
         {
-            Name = "Ambino mix",
-            Description = "Ambinity default mix profile",
+            Name = "Solid Blue",
+            Description = "Ambinity default solid blue profile",
             IsDefault = true,
-            Icon = "puzzle"
+            Icon = "genericCircle"
         });
-     
-    
+
+
         //find child for each shortcut if profile is not attached
         foreach (var item in Items)
         {

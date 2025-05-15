@@ -30,10 +30,11 @@ public class FigureContextMenuProvider
         };
         _pasteMenuItem = new MenuItem()
         {
-            Header = "Paste", Command = _canvasVM.PasteCommand,
-            InputGesture = new KeyGesture(Key.V, KeyModifiers.Control)
+            Header = "Paste",
+            Command = _canvasVM.PasteCommand,
+            // InputGesture = new KeyGesture(Key.V, KeyModifiers.Control)
         };
-        HotKeyManager.SetHotKey(_pasteMenuItem, new KeyGesture(Key.V, KeyModifiers.Control));
+        // HotKeyManager.SetHotKey(_pasteMenuItem, new KeyGesture(Key.V, KeyModifiers.Control));
     }
 
     public MenuFlyout GetContextMenu(Figure clickedItem, Point clickPoint)
@@ -67,24 +68,27 @@ public class FigureContextMenuProvider
             {
                 _contextMenu.Items.Add(new MenuItem()
                 {
-                    Header = "Copy", Command = _canvasVM.CopySelectedFigureCommand,
-                    InputGesture = new KeyGesture(Key.C, KeyModifiers.Control)
+                    Header = "Copy",
+                    Command = _canvasVM.CopySelectedFigureCommand,
+                    // InputGesture = new KeyGesture(Key.C, KeyModifiers.Control)
                 });
                 _contextMenu.Items.Add(new MenuItem()
                 {
-                    Header = "Delete", Command = _canvasVM.DeleteCommand, InputGesture = new KeyGesture(Key.Delete)
+                    Header = "Delete",
+                    Command = _canvasVM.DeleteCommand,
+                    //   InputGesture = new KeyGesture(Key.Delete)
                 });
             }
         }
         else if (containerFigure is DeviceContainerFigure)
         {
-            _contextMenu.Items.Add(new MenuItem() { Header = "Ping device", Command = new AsyncRelayCommand<AmbinityDevice>(PingDevice),CommandParameter = containerFigure.ChildItem});
-            _contextMenu.Items.Add(new MenuItem() { Header = "Order check", Command = new AsyncRelayCommand<AmbinityDevice>(CheckDeviceLedOrder),CommandParameter = containerFigure.ChildItem});
+            _contextMenu.Items.Add(new MenuItem() { Header = "Ping device", Command = new AsyncRelayCommand<AmbinityDevice>(PingDevice), CommandParameter = containerFigure.ChildItem });
+            _contextMenu.Items.Add(new MenuItem() { Header = "Order check", Command = new AsyncRelayCommand<AmbinityDevice>(CheckDeviceLedOrder), CommandParameter = containerFigure.ChildItem });
             _contextMenu.Items.Add(new MenuItem() { Header = "Disable device" });
         }
 
 
-       
+
     }
 
     private async Task PingDevice(AmbinityDevice device)

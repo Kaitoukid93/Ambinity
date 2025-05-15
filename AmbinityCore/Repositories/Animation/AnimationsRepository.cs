@@ -23,8 +23,6 @@ public class AnimationsRepository : CollectableItemRepository
     {
         CreateDefaultAnimation();
     }
-
-
     public override void LoadFromDisk()
     {
         Items?.Clear();
@@ -37,9 +35,9 @@ public class AnimationsRepository : CollectableItemRepository
             {
                 animation = JsonHelpers.DeserializeJson<LottieJsonAnimation>(Path.Combine(dir, "animation.json"));
             }
-            else if (File.Exists(Path.Combine(dir, "video.mp4")))
+            else if (File.Exists(Path.Combine(dir, "animation.gif")))
             {
-                animation = JsonHelpers.DeserializeJson<VideoAnimation>(Path.Combine(dir, "animation.json"));
+                animation = JsonHelpers.DeserializeJson<GifAnimation>(Path.Combine(dir, "animation.json"));
             }
             if (animation == null)
                 continue;
@@ -49,6 +47,36 @@ public class AnimationsRepository : CollectableItemRepository
             animation.LocalRepository = this;
             AddItem(animation);
         }
+    }
+    /// <summary>
+    /// Removes all animation directories on disk.
+    /// </summary>
+    public void ClearAllAnimations()
+    {
+        if (!Directory.Exists(LocalFolderPath))
+        {
+            return; // If the folder doesn't exist, there's nothing to clear
+        }
+
+        // Get all directories under the LocalFolderPath
+        string[] directories = Directory.GetDirectories(LocalFolderPath);
+
+        foreach (var dir in directories)
+        {
+            try
+            {
+                // Delete each directory and its contents
+                Directory.Delete(dir, true);
+            }
+            catch (Exception ex)
+            {
+                // Log or handle exceptions if needed
+                Console.WriteLine($"Failed to delete directory {dir}: {ex.Message}");
+            }
+        }
+
+        // Clear the in-memory collection
+        Items?.Clear();
     }
 
     /// <summary>

@@ -65,7 +65,7 @@ public sealed class ThumbnailService
     //             _cache.Add(address, screenshot);
     //         }
     //     }
-    //     
+    //
     //     return screenshots;
     // }
     /// <summary>
@@ -96,7 +96,7 @@ public sealed class ThumbnailService
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
-    public async Task LoadAnimatedStream(string path,Stream output)
+    public async Task LoadAnimatedStream(string path, Stream output)
     {
         // Not in the cache, so load from path server
         _client.Init();

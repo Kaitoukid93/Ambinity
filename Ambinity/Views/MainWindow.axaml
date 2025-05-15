@@ -7,7 +7,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         Width="1600"
         Height="900"
-        MinWidth="1200"
+        MinWidth="1400"
         MinHeight="750"
         WindowStartupLocation="CenterScreen"
         x:Class="Ambinity.Views.MainWindow"
@@ -60,7 +60,7 @@
         <ContentControl Content="{Binding AppTourViewModel}"></ContentControl>
     </Grid>
        </Panel>
-    
+
 
 
 </Window>

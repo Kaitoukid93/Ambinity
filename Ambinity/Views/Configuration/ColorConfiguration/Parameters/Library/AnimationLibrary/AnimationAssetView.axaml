@@ -1,26 +1,48 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
-             x:DataType="local:AnimationAssetViewModel"
-             x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.AnimationAssetView">
-    <Button Command="{Binding SelectItemCommand}" MinWidth="270" Margin=" 0,5" HorizontalContentAlignment="Stretch" Padding="0" HorizontalAlignment="Stretch">
-        <Grid ColumnDefinitions="100,10,*" Height="100">
+<UserControl
+    x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.AnimationAssetView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="local:AnimationAssetViewModel"
+    mc:Ignorable="d">
+    <Button
+        MinWidth="270"
+        Margin="0,5"
+        Padding="0"
+        HorizontalAlignment="Stretch"
+        HorizontalContentAlignment="Stretch"
+        Command="{Binding SelectItemCommand}">
+        <Grid Height="100" ColumnDefinitions="100,10,*">
             <Grid>
-                <Border Classes="card" BorderThickness="1" Padding="0" Width="90" Height="90" CornerRadius="7">
-                    <Lottie Margin="5" Path="{Binding AnimationJsonPath}"></Lottie>
+                <Border
+                    Width="90"
+                    Height="90"
+                    Padding="0"
+                    BorderThickness="1"
+                    Classes="card"
+                    CornerRadius="7">
+                    <ContentControl Margin="5" Content="{Binding Thumbnail}" />
                 </Border>
             </Grid>
             <Grid Column="2" RowDefinitions="Auto,30,*,Auto">
-                <TextBlock ToolTip.Tip="{Binding Name}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"
-                           MaxWidth="180" Grid.Row="0" Margin="0,10,0,0" FontWeight="SemiBold" Text="{Binding Name}">
-                </TextBlock>
+                <TextBlock
+                    Grid.Row="0"
+                    MaxWidth="180"
+                    Margin="0,10,0,0"
+                    HorizontalAlignment="Left"
+                    FontWeight="SemiBold"
+                    Text="{Binding Name}"
+                    TextTrimming="CharacterEllipsis"
+                    ToolTip.Tip="{Binding Name}" />
                 <Grid Row="1" RowDefinitions="*,*">
-                    <TextBlock FontSize="12" Foreground="{DynamicResource ButtonForegroundDisabled}"
-                               Text="{Binding Description }">
-                    </TextBlock>
+                    <TextBlock
+                        FontSize="12"
+                        Foreground="{DynamicResource ButtonForegroundDisabled}"
+                        Text="{Binding Description}" />
                 </Grid>
             </Grid>
 

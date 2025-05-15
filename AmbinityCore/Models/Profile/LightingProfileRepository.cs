@@ -83,7 +83,7 @@ public sealed class LightingProfileRepository : CollectableItemRepository
                     Log.Error(e, "Failed to load ZIP profile");
                     continue;
                 }
-                // we need to remove zip file or next step will throw, im too lazy to implement a switch 
+                // we need to remove zip file or next step will throw, im too lazy to implement a switch
                 File.Delete(file);
             }
         }
@@ -109,7 +109,7 @@ public sealed class LightingProfileRepository : CollectableItemRepository
         var profile = JsonHelpers.DeserializeJson<LightingProfile>(configPath);
         if (profile == null)
             return;
-        var matchedItems = Items.Where(x => x.Name.Contains(profile.Name));
+        var matchedItems = Items.Where(x => x.Name != null && x.Name.Contains(profile.Name));
         //rename if match
         if (matchedItems != null && matchedItems.Count() > 0)
         {
@@ -153,5 +153,5 @@ public sealed class LightingProfileRepository : CollectableItemRepository
         if (Directory.Exists(Constants.CacheFolderPath))
             Directory.Delete(Constants.CacheFolderPath, true);
     }
-    
+
 }

@@ -24,16 +24,12 @@ public class ColorEngineProvider
         {
             case ConfigurationType.ScreenCapture:
                 return Ioc.Default.GetRequiredService<ScreenCaptureEngine>();
-                break;
             case ConfigurationType.SelfGeneratedColor:
                 return Ioc.Default.GetRequiredService<SelfGeneratedColorEngine>();
-                break;
             case ConfigurationType.Gifxelation:
                 return Ioc.Default.GetRequiredService<GifxelationEngine>();
-                break;
             case ConfigurationType.Animation:
                 return Ioc.Default.GetRequiredService<AnimationDecodeEngine>();
-                break;
 
         }
 

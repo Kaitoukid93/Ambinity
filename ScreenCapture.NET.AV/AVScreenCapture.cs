@@ -17,7 +17,7 @@ namespace ScreenCapture.NET;
 /// Capture screen for whatever interval (you have to implement a loop in calling class)
 /// Then store at a buffer with the size calculated by color space and screen resolution
 /// Everytime user register a new capture zone, a buffer corresponding for that zone is created
-/// 
+///
 /// </summary>
 
 public sealed class AVScreenCapture : AbstractScreenCapture<ColorBGRA>

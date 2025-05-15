@@ -69,7 +69,7 @@ public class AppSettingsViewModel : ViewModelBase
 
     public bool HWMonitorSettingVisible{get;} = OperatingSystem.IsWindows();
     public bool OpenRGBSettingVisible{get;} = OperatingSystem.IsWindows();
-
+    public bool EnableInAppUpdate{get;} = OperatingSystem.IsWindows();
     private int _currentUpdateProgress;
 
     public int CurrentUpdateProgress

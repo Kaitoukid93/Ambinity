@@ -94,7 +94,7 @@ public abstract class AssetsViewModelBase : ViewModelBase
         set
         {
             _searchContent = value;
-            
+
             OnPropertyChanged();
         }
     }
@@ -183,9 +183,9 @@ public abstract class AssetsViewModelBase : ViewModelBase
     {
         if (_selectedRepository == "Local")
             return;
-        IsLoading = true;
-        await _onlineItemRepository.UpdateCollection(SearchContent ==null?string.Empty:SearchContent.ToLower());
-        IsLoading = false;
+       // IsLoading = true;
+        //await _onlineItemRepository.UpdateCollection(SearchContent ==null?string.Empty:SearchContent.ToLower());
+       // IsLoading = false;
     }
 
     public virtual async Task Init(CollectableItemRepository localRepo, OnlineItemRepository onlineRepo)
@@ -225,7 +225,7 @@ public abstract class AssetsViewModelBase : ViewModelBase
     {
         //suppressor for user rapid input using delay in textbox axaml
         IsLoading = true;
-        var searchText = SearchContent.ToLower();
+        var searchText = SearchContent?.ToLower();
         var filteredItems = new List<AssetItemViewModelBase>();
         switch (_selectedRepository)
         {

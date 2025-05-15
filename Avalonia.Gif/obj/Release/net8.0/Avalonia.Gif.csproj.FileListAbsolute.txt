@@ -1,0 +1,14 @@
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/bin/Release/net8.0/Avalonia.Gif.deps.json
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/bin/Release/net8.0/Avalonia.Gif.dll
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/bin/Release/net8.0/Avalonia.Gif.pdb
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Release/net8.0/Avalonia.Gif.csproj.AssemblyReference.cache
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Release/net8.0/Avalonia/Resources.Inputs.cache
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Release/net8.0/Avalonia.Gif.GeneratedMSBuildEditorConfig.editorconfig
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Release/net8.0/Avalonia.Gif.AssemblyInfoInputs.cache
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Release/net8.0/Avalonia.Gif.AssemblyInfo.cs
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Release/net8.0/Avalonia.Gif.csproj.CoreCompileInputs.cache
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Release/net8.0/Avalonia.Gif.sourcelink.json
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Release/net8.0/Avalonia.Gif.dll
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Release/net8.0/refint/Avalonia.Gif.dll
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Release/net8.0/Avalonia.Gif.pdb
+/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Release/net8.0/ref/Avalonia.Gif.dll

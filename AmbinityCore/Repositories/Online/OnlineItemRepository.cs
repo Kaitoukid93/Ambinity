@@ -126,7 +126,7 @@ public abstract class OnlineItemRepository : ObservableObject
     //         _currentDisplayItemsCount ++;
     //     }
     //
-    //     
+    //
     // }
 
     public async Task UpdateCollection(string filter)
@@ -151,8 +151,7 @@ public abstract class OnlineItemRepository : ObservableObject
             filteredFolder = AvailableAssetsPaths;
         }
 
-        foreach (var url in filteredFolder.Take(new Range(_currentDisplayItemsCount,
-                     _currentDisplayItemsCount + 10)))
+        foreach (var url in filteredFolder)
         {
             var infoPath = url + "/info.json";
             var contentPath = url + "/content/";
