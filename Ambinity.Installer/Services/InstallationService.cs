@@ -163,7 +163,7 @@ public class InstallationService
         var availableRelease = await GetAvailableRelease();
         if (availableRelease == null || availableRelease.Count == 0)
             return (null, null);
-        var selectedRelease = info == null ? availableRelease.OrderByDescending(r => r.ReleaseDate.Date).First() : info;
+        var selectedRelease = info == null ? availableRelease.OrderByDescending(r => r.ReleaseDate).First() : info;
         //download zip
         if (!Directory.Exists(Constants.CacheFolderPath))
             Directory.CreateDirectory(Constants.CacheFolderPath);

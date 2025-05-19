@@ -77,6 +77,7 @@ public interface IPositionAware
 
     ContainerFigure GetContainer();
     ContainerFigure Clone(float x, float y);
+    ContainerFigure Clone();
     string GetDisplayName();
     string Icon { get; }
     Rect Bound { get; }

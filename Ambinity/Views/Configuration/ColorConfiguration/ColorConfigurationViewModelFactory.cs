@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
@@ -18,17 +19,23 @@ public class ColorConfigurationViewModelFactory
         switch (zone.LightingConfiguration.Type)
         {
             case ConfigurationType.ScreenCapture:
-                return new ScreenCaptureConfigurationViewModel(zone,_parameterViewModelFactory);
+                return new ScreenCaptureConfigurationViewModel(zone, _parameterViewModelFactory);
                 break;
 
             case ConfigurationType.SelfGeneratedColor:
-                return new SelfColorGenerationConfigurationViewModel(zone,_parameterViewModelFactory);
+                return new SelfColorGenerationConfigurationViewModel(zone, _parameterViewModelFactory);
                 break;
             case ConfigurationType.Animation:
                 return new AnimationConfigurationViewModel(zone, _parameterViewModelFactory);
                 break;
         }
 
+        return null;
+    }
+
+    public ColorConfigurationViewModelBase GetColorConfiguration(List<LightingZone> zones)
+    {
+        ///return common color configuration if zones type are the same
         return null;
     }
 }

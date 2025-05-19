@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 namespace AmbinityCore.Models.Lighting.Zone;
 
 /// <summary>
-/// Represent a zone that render on the main canvas 
+/// Represent a zone that render on the main canvas
 /// </summary>
 public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
 {
@@ -292,7 +292,19 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
         cloneContainerFigure.SetChild(cloneZone);
         return cloneContainerFigure;
     }
-
+    /// <summary>
+    /// clone this object and put it at certain point on canvas
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="Y"></param>
+    /// <returns></returns>
+    public ContainerFigure Clone()
+    {
+        var cloneZone = ObjectHelpers.Clone<LightingZone>(this);
+        var cloneContainerFigure = cloneZone.GetContainer();
+        cloneContainerFigure.SetChild(cloneZone);
+        return cloneContainerFigure;
+    }
     public Rect Bound => ZoneBound;
 
     [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
@@ -318,7 +330,7 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
     #region Graphic
 
     /// <summary>
-    /// Frame data 
+    /// Frame data
     /// </summary>
     [JsonIgnore]
     public FrameBuffer Buffer { get; set; }
@@ -434,7 +446,7 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
 
     public void Save()
     {
-        //todo implement profile save with icon 
+        //todo implement profile save with icon
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path

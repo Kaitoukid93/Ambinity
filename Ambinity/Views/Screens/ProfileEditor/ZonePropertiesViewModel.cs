@@ -21,7 +21,7 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         PositionConfiguration = positionConfigurationViewModel;
         _canvasViewModel = canvasViewModel;
         _colorConfigurationViewModelFactory = colorConfigurationViewModelFactory;
-       
+
     }
 
     private Figure _selectedFigure;
@@ -79,10 +79,11 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
             _zone = zone;
             //show full view
             ColorConfiguration?.Dispose();
-            ColorConfiguration = _colorConfigurationViewModelFactory.GetColorConfiguration(zone);
+            ColorConfiguration = _colorConfigurationViewModelFactory.GetCologitignorerConfiguration(zone);
         }
         else
         {
+            /// get all the mutual properties and display
             _zone = null;
             ColorConfiguration?.Dispose();
             _selectedFigure = null;

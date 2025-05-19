@@ -188,7 +188,10 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     {
         throw new NotImplementedException("Can not clone deivce");
     }
-
+    public ContainerFigure Clone()
+    {
+        throw new NotImplementedException("Can not clone deivce");
+    }
     #endregion
 
     #region Canvas Corordinate Properties

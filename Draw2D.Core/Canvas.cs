@@ -448,7 +448,7 @@ namespace Draw2D.Core
         {
         }
 
-        public float MinimalDragDistance { get; set; } = 1;
+        public float MinimalDragDistance { get; set; } = 5;
 
         public void AddAdornerFigure(Figure figure)
         {

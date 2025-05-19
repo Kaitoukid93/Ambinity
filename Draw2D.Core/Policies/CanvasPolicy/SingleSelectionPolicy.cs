@@ -60,6 +60,8 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
             if (canvas.Selection.Contains(figure))
             {
+                Unselect(canvas, canvas.Selection.All);
+                figure.Select();
                 return;
             }
 
@@ -72,7 +74,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             var slavesOfToBeSelected = figure.Policies.OfType<ILink>().SelectMany(f => f.GetLinkedFigures()).ToList();
             Unselect(canvas, slavesOfToBeSelected);
 
-            if (isCtrlKey)
+            if (isShiftKey)
             {
                 if (canvas.Selection.Contains(figure))
                 {
@@ -141,7 +143,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                         dy = delta.Y;
                     }
 
-                    canvas.Selection.All.ToList().ForEach(f => f.Translate(dx, dy,canvas.Selection.All.Count==1));
+                    canvas.Selection.All.ToList().ForEach(f => f.Translate(dx, dy, canvas.Selection.All.Count == 1));
                 }
             }
         }
@@ -260,7 +262,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             var slavesOfToBeSelected = figure.Policies.OfType<ILink>().SelectMany(f => f.GetLinkedFigures()).ToList();
             Unselect(canvas, slavesOfToBeSelected);
 
-            if (isCtrlKey)
+            if (isShiftKey)
             {
                 if (canvas.Selection.Contains(figure))
                 {
@@ -329,9 +331,9 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
             if (!figure.IsSelectable)
                 return;
-
-            canvas.Selection.Remove(figure, notify);
             figure.Unselect();
+            canvas.Selection.Remove(figure, notify);
+
         }
 
         private void Unselect(Canvas canvas, IEnumerable<Figure> all)
