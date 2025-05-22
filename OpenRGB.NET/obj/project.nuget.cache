@@ -1,12 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ybXXDBrHBhc=",
+  "dgSpecHash": "Mv2q/ok+L4A=",
   "success": true,
-  "projectFilePath": "D:\\VSCode\\Ambinity\\OpenRGB.NET\\OpenRGB.NET.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\AMBINO\\.nuget\\packages\\errorprone.net.coreanalyzers\\0.4.0-beta.1\\errorprone.net.coreanalyzers.0.4.0-beta.1.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\errorprone.net.structs\\0.4.0-beta.1\\errorprone.net.structs.0.4.0-beta.1.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\noncopyableanalyzer\\0.7.0\\noncopyableanalyzer.0.7.0.nupkg.sha512"
-  ],
+  "projectFilePath": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }

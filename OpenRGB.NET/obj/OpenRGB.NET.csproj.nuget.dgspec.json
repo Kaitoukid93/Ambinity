@@ -1,25 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "D:\\VSCode\\Ambinity\\OpenRGB.NET\\OpenRGB.NET.csproj": {}
+    "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj": {}
   },
   "projects": {
-    "D:\\VSCode\\Ambinity\\OpenRGB.NET\\OpenRGB.NET.csproj": {
+    "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj": {
       "version": "3.1.1",
       "restore": {
-        "projectUniqueName": "D:\\VSCode\\Ambinity\\OpenRGB.NET\\OpenRGB.NET.csproj",
+        "projectUniqueName": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
         "projectName": "OpenRGB.NET",
-        "projectPath": "D:\\VSCode\\Ambinity\\OpenRGB.NET\\OpenRGB.NET.csproj",
-        "packagesPath": "C:\\Users\\AMBINO\\.nuget\\packages\\",
-        "outputPath": "D:\\VSCode\\Ambinity\\OpenRGB.NET\\obj\\",
+        "projectPath": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
+        "packagesPath": "/Users/zoe/.nuget/packages/",
+        "outputPath": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\AMBINO\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/zoe/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -42,24 +43,6 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "dependencies": {
-            "ErrorProne.NET.CoreAnalyzers": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[0.4.0-beta.1, )"
-            },
-            "ErrorProne.NET.Structs": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[0.4.0-beta.1, )"
-            },
-            "NonCopyableAnalyzer": {
-              "target": "Package",
-              "version": "[0.7.0, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
@@ -76,7 +59,12 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.409/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.406/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
         }
       }
     }
