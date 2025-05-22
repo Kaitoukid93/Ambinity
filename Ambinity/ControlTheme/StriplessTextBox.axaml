@@ -14,10 +14,10 @@
                 </TextBox>
                 <TextBox Theme="{DynamicResource StriplessTextBox}" Width="150"></TextBox>
             </StackPanel>
-          
+
         </Border>
     </Design.PreviewWith>
-   
+
        <ControlTheme TargetType="TextBox" x:Key="{x:Type TextBox}">
             <Setter Property="Foreground" Value="{DynamicResource TextControlForeground}" />
             <Setter Property="Background" Value="{DynamicResource TextControlBackground}" />
@@ -106,7 +106,7 @@
                     </DataValidationErrors>
                 </ControlTemplate>
             </Setter>
- 
+
             <!-- Disabled State -->
             <Style Selector="^:disabled">
                 <Setter Property="Foreground" Value="{DynamicResource TextControlForegroundDisabled}" />

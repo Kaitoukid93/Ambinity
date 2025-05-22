@@ -4,7 +4,7 @@
     <Design.PreviewWith>
         <Border Padding="20">
             <!-- Add Controls for Previewer Here -->
-          
+
         </Border>
     </Design.PreviewWith>
 
@@ -94,10 +94,10 @@
                         </Border>
                     </Panel>
                 </DataValidationErrors>
-                
+
             </ControlTemplate>
         </Setter>
-        
+
     </Style>
        <Style Selector="DataValidationErrors">
            <Setter Property="Template">
@@ -121,7 +121,7 @@
            </Setter>
            <Setter Property="ErrorTemplate">
                <DataTemplate x:DataType="{x:Type x:Object}">
-                   <Canvas Width="3" Height="30" Margin="5 0 1 0" 
+                   <Canvas Width="3" Height="30" Margin="5 0 1 0"
                            Background="Transparent">
                        <Canvas.Styles>
                            <Style Selector="ToolTip">
@@ -152,7 +152,7 @@
            </Style>
        </Style>
 
-       
+
        <Style Selector="TextBox /template/ TextBlock#PART_Prefix">
            <Setter Property="Foreground" Value="{DynamicResource TextControlForegroundDisabled}"></Setter>
            <Setter Property="Margin" Value="-4 0 4 0"></Setter>

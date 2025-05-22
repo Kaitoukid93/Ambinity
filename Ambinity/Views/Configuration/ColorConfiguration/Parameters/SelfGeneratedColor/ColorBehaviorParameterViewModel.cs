@@ -20,7 +20,18 @@ public class ColorBehaviorParameterViewModel : ParameterViewModelBase
 
     private void SetQuickResolution(string value)
     {
-        Resolution = (float)(100 * Convert.ToDecimal(value));
+        if (float.TryParse(value, out var numericValue))
+        {
+            var val = 100 * numericValue;
+            if (val < 0 || val > 200)
+                return;
+            Resolution = 100 * numericValue;
+        }
+        else
+        {
+            // Handle invalid input (e.g., log an error or set a default value)
+            return;
+        }
     }
 
     private SelfGeneratedColorConfiguration _configuration;

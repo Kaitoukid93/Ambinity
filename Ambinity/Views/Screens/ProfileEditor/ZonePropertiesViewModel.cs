@@ -79,7 +79,7 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
             _zone = zone;
             //show full view
             ColorConfiguration?.Dispose();
-            ColorConfiguration = _colorConfigurationViewModelFactory.GetCologitignorerConfiguration(zone);
+            ColorConfiguration = _colorConfigurationViewModelFactory.GetColorConfiguration(zone);
         }
         else
         {
