@@ -7,7 +7,7 @@ public class LEDOutput : ObservableObject
 {
     public event Action<LEDOutput> OutputDisabled;
     public event Action<LEDOutput> OutputEnabled;
-    public event Action<string,AmbinityDevice> DevicesUpdated;
+    public event Action<string, AmbinityDevice> DevicesUpdated;
 
     public LEDOutput(int maxLed, int index, AmbinityDevice device)
     {
@@ -49,8 +49,11 @@ public class LEDOutput : ObservableObject
 
     public void AddDeviceToOutputChain(AmbinityDevice device)
     {
+
+        var groupID = Devices.Last().GroupID;
         Devices.Add(device);
-        DevicesUpdated?.Invoke("Add",device);
+        device.GroupID = groupID;
+        DevicesUpdated?.Invoke("Add", device);
     }
 
     public void RemoveDeviceFromOutputChain(AmbinityDevice device)
@@ -58,12 +61,12 @@ public class LEDOutput : ObservableObject
         if (Devices.Contains(device))
         {
             Devices.Remove(device);
-            DevicesUpdated?.Invoke("Remove",device);
+            DevicesUpdated?.Invoke("Remove", device);
         }
     }
 
     /// <summary>
-    /// ping the output to locate 
+    /// ping the output to locate
     /// </summary>
     public async Task PingOutputChain()
     {
@@ -81,7 +84,7 @@ public class LEDOutput : ObservableObject
         foreach (var device in Devices)
         {
             ledCount += device.Leds.Count;
-            
+
         }
 
         return ledCount;

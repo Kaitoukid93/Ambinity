@@ -17,7 +17,6 @@ public abstract class OnlineItemRepository : ObservableObject
 {
     public event EventHandler? ServerConnectFailedEvent;
     private int _currentDisplayItemsCount;
-
     public OnlineItemRepository(AmbinityClient client)
     {
         _client = client;
@@ -129,14 +128,19 @@ public abstract class OnlineItemRepository : ObservableObject
     //
     // }
 
+    private readonly object _updateCollectionLock = new();
+
     public async Task UpdateCollection(string filter)
     {
-        //clear collection each time user search
-        if (_currentFilter != filter)
+        lock (_updateCollectionLock)
         {
-            _currentFilter = filter;
-            _currentDisplayItemsCount = 0;
-            Items?.Clear();
+            //clear collection each time user search
+            if (_currentFilter != filter)
+            {
+                _currentFilter = filter;
+                _currentDisplayItemsCount = 0;
+                Items?.Clear();
+            }
         }
         var filteredFolder = new List<string>();
         if (_currentFilter != null && _currentFilter != string.Empty)
@@ -148,7 +152,7 @@ public abstract class OnlineItemRepository : ObservableObject
         }
         else
         {
-            filteredFolder = AvailableAssetsPaths;
+            filteredFolder = AvailableAssetsPaths.ToList(); // Always make a copy
         }
 
         foreach (var url in filteredFolder)
@@ -176,8 +180,11 @@ public abstract class OnlineItemRepository : ObservableObject
                 Log.Warning("No content found");
             }
 
-            AddItem(item);
-            _currentDisplayItemsCount++;
+            lock (_updateCollectionLock)
+            {
+                AddItem(item);
+                _currentDisplayItemsCount++;
+            }
         }
     }
 

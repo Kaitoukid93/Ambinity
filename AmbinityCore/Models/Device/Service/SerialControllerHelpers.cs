@@ -121,17 +121,17 @@ public class SerialControllerHelpers
             {
                 return false;
             }
-
-            if (!IsFirmwareValid(controller))
-            {
-                return false;
-            }
-
             controller.Name = deviceName;
             controller.FirmwareVersion = deviceFirmware;
             controller.HardwareVersion = deviceHardware;
             controller.SerialNumber = deviceID;
             controller.HWLVersion = deviceHWL;
+            if (!IsFirmwareValid(controller))
+            {
+                return false;
+            }
+
+
             if (controller.HWLVersion < 1)
             {
                 //request firmware update and hide device settings
@@ -256,8 +256,8 @@ public class SerialControllerHelpers
         _serialPort.Write(requestCommand, 0, 4);
         int retryCount = 0;
         int offset = 0;
-        int idLength = 0; // Expected response length of valid deviceID 
-        int nameLength = 0; // Expected response length of valid deviceName 
+        int idLength = 0; // Expected response length of valid deviceID
+        int nameLength = 0; // Expected response length of valid deviceName
         int fwLength = 0;
         int hwLength = 0;
         while (offset < 3)

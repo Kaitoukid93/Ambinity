@@ -43,13 +43,14 @@ namespace Draw2D.Core.Policies.CanvasPolicy
         public virtual void OnMouseLeftDown(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
         {
             _mouseMovedDuringMouseDown = false;
-
+            _mouseDownElement = null;
             var figure =
                 canvas.GetBestFigure(mouseX, mouseY, new List<Type> { typeof(Selectionbox) }, new List<Type>());
 
             if (figure == null)
             {
                 Unselect(canvas, canvas.Selection.All);
+
                 return;
             }
 
@@ -57,11 +58,9 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             {
                 Unselect(canvas, canvas.Selection.All);
             }
-
+            _mouseDownElement = figure;
             if (canvas.Selection.Contains(figure))
             {
-                Unselect(canvas, canvas.Selection.All);
-                figure.Select();
                 return;
             }
 
@@ -117,7 +116,11 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             }
             else
             {
-                if (canvas.Selection.All.Count() == 1)
+                if (isCtrlKey && _mouseDownElement != null)
+                {
+                    _mouseDownElement.OnDrag(canvas, dxSum, dySum, dx, dy, isShiftKey, isCtrlKey);
+                }
+                else if (canvas.Selection.All.Count() == 1)
                 {
                     canvas.Selection.All.ToList()
                         .ForEach(f => f.OnDrag(canvas, dxSum, dySum, dx, dy, isShiftKey, isCtrlKey));
@@ -161,7 +164,11 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             }
             else
             {
-                if (canvas.Selection.All.Count() == 1)
+                if (isCtrlKey && _mouseDownElement != null)
+                {
+                    _mouseDownElement.OnDragStart(canvas, startPosX, startPosY);
+                }
+                else if (canvas.Selection.All.Count() == 1)
                 {
                     canvas.Selection.All.ToList().ForEach(f => f.OnDragStart(canvas, startPosX, startPosY));
                 }
@@ -227,6 +234,12 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                 {
                     selectedFigure.HideHandles(canvas);
                 }
+            }
+            if (_mouseDownElement != null&&!isShiftKey)
+            {
+                Unselect(canvas, canvas.Selection.All);
+                _mouseDownElement.Select();
+                _mouseDownElement = null;
             }
         }
 

@@ -67,16 +67,19 @@ public class SerialControllerProvider
                     {
                         RGBOrder = RGBLEDOrderEnum.GRB
                     }));
+
                 break;
             case HardwareTypeEnum.AmbinoFanHub:
                 controller.DashboardHeight = 270;
                 controller.DashboardWidth = 400;
+                var groupID = Guid.NewGuid();
                 for (var i = 0; i < 10; i++)
                 {
                     ledController.Outputs.Add(new LEDOutput(80, i,
-                        new AmbinityDevice(_layoutRepository.GetLayout("Ambino Dualring Fan"," ", 30))
+                        new AmbinityDevice(_layoutRepository.GetLayout("Ambino Dualring Fan", " ", 30))
                         {
-                            RGBOrder = RGBLEDOrderEnum.GRB
+                            RGBOrder = RGBLEDOrderEnum.GRB,
+                            GroupID = groupID
                         }));
                 }
 
@@ -90,7 +93,7 @@ public class SerialControllerProvider
             case HardwareTypeEnum.AmbinoHUBV3:
                 controller.DashboardHeight = 270;
                 controller.DashboardWidth = 290;
-              
+
                 for (int i = 0; i < 4; i++)
                 {
                     ledController.Outputs.Add(new LEDOutput(80, i,
@@ -173,7 +176,7 @@ public class SerialControllerProvider
                 });
                 break;
         }
-        
+
 
         ledController.HardwareSettings.HardwareType = controller.HardwareType;
         ledController.PopulateDefaultLayout();

@@ -53,7 +53,7 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
             var deviceLayoutAsset = item as AmbinityDeviceLayoutAssetViewModel;
             ApplyLayout(deviceLayoutAsset.Item as AmbinityDeviceLayout);
         }
-        
+
     }
 
     private void ApplyLayout(AmbinityDeviceLayout layout)
@@ -66,8 +66,11 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
         foreach (var fig in figs)
         {
             var deviceContainerFigure = fig as DeviceContainerFigure;
+
             if (deviceContainerFigure != null)
             {
+                if (!deviceContainerFigure.IsSelectionActive)
+                    continue;
                 selectedDevices.Add(deviceContainerFigure.ChildItem as AmbinityDevice);
             }
         }

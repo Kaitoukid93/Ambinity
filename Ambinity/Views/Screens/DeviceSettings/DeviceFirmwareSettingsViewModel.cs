@@ -120,7 +120,7 @@ public class DeviceFirmwareSettingsViewModel : ViewModelBase
         }
     }
 
-    public string LatestFirmwareString => "Firmware version: " + LatestFirmware.Version;
+    public string LatestFirmwareString => "Firmware version: " + LatestFirmware?.Version;
 
     private bool _updateAvailable;
 

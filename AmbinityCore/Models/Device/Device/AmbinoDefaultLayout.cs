@@ -29,7 +29,7 @@ public static class AmbinoDefaultLayout
                 return DefaultMouseZone();
             case HardwareTypeEnum.Keyboard:
                 return DefaultKeyboardZone();
-                
+
             default: return new List<Point>() { new Point(0, 0) };
         }
     }
