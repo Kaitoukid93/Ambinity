@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Ambinity.Views.Screens.DeviceLayout;
@@ -79,15 +80,30 @@ public class FigureContextMenuProvider
                     //   InputGesture = new KeyGesture(Key.Delete)
                 });
             }
+
         }
         else if (containerFigure is DeviceContainerFigure)
         {
             _contextMenu.Items.Add(new MenuItem() { Header = "Ping device", Command = new AsyncRelayCommand<AmbinityDevice>(PingDevice), CommandParameter = containerFigure.ChildItem });
             _contextMenu.Items.Add(new MenuItem() { Header = "Order check", Command = new AsyncRelayCommand<AmbinityDevice>(CheckDeviceLedOrder), CommandParameter = containerFigure.ChildItem });
-            _contextMenu.Items.Add(new MenuItem() { Header = "Disable device" });
+            if (_canvasVM.Canvas.Selection.AllActive.Count > 1 && containerFigure.ChildItem.GroupID == Guid.Empty)
+            {
+                _contextMenu.Items.Add(new MenuItem() { Header = "Link", Command = new AsyncRelayCommand(LinkItem), CommandParameter = containerFigure.ChildItem });
+            }
+            if (containerFigure.ChildItem.GroupID != Guid.Empty)
+            {
+                _contextMenu.Items.Add(new MenuItem() { Header = "Unlink", Command = new AsyncRelayCommand<Guid>(UnlinkItem), CommandParameter = containerFigure.ChildItem.GroupID });
+            }
         }
 
-
+        // if (_canvasVM.Canvas.Selection.AllActive.Count > 1 && containerFigure.ChildItem.GroupID == Guid.Empty)
+        // {
+        //     _contextMenu.Items.Add(new MenuItem() { Header = "Link", Command = new AsyncRelayCommand(LinkItem), CommandParameter = containerFigure.ChildItem });
+        // }
+        // if (containerFigure.ChildItem.GroupID != Guid.Empty)
+        // {
+        //     _contextMenu.Items.Add(new MenuItem() { Header = "Unlink", Command = new AsyncRelayCommand<Guid>(UnlinkItem), CommandParameter = containerFigure.ChildItem.GroupID });
+        // }
 
     }
 
@@ -99,5 +115,28 @@ public class FigureContextMenuProvider
     private async Task CheckDeviceLedOrder(AmbinityDevice device)
     {
         await device.OrderCheck();
+    }
+    private async Task LinkItem()
+    {
+        var groupID = Guid.NewGuid();
+        foreach (var figure in _canvasVM.Canvas.Selection.AllActive)
+        {
+            if (figure is ContainerFigure containerFigure)
+            {
+                containerFigure.ChildItem.GroupID = groupID;
+            }
+        }
+    }
+    private async Task UnlinkItem(Guid groupID)
+    {
+
+        foreach (var figure in _canvasVM.Canvas.Selection.All)
+        {
+            if (figure is ContainerFigure containerFigure)
+            {
+                if (containerFigure.ChildItem.GroupID == groupID)
+                    containerFigure.ChildItem.GroupID = Guid.Empty;
+            }
+        }
     }
 }

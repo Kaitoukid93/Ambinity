@@ -102,7 +102,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
 
     private void OnRenderingStatusChanged()
     {
-        //incase this canvas is use for another purpose 
+        //incase this canvas is use for another purpose
         if (_decoder == null)
             return;
         if (_decoder.IsRendering)
@@ -173,7 +173,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// disable all action on the canvas 
+    /// disable all action on the canvas
     /// </summary>
     public bool IsLocked { get; set; }
 
@@ -436,7 +436,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
         vm.DialogClosed += OnDeleteDialogClosed;
         vm.Content = "This action cannot be undone";
         await _dialogService.ShowConfirmationDialog(vm,"Delete selected zones?","Remove", "Cancel" );
-        
+
     }
 
     private void OnDeleteDialogClosed(object? sender, EventArgs e)
@@ -455,7 +455,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
             Canvas.RemoveSelected();
             UpdateFigure();
         }
-       
+
     }
 
     /// <summary>
@@ -555,7 +555,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
         //     new RegionDragDropEditPolicy(new Draw2D.Core.Geo.Rectangle(0, 0, Canvas.Width, Canvas.Height));
         if (figure is LightingZoneFigure)
         {
-            
+
         }
         if (figure.IsResizable)
             figure.AddHandlesAllDirections(Canvas, HandleSizes.Tiny, HandleShapeType.Square);
