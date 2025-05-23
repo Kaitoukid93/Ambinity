@@ -22,7 +22,7 @@ public class DeviceContainerFigure : ContainerFigure, IAssetSelectable
         Height = height;
         // SnapTargets = SnapTargets.Center | SnapTargets.MidPoints | SnapTargets.Vertices;
     }
-
+    private bool _isLinked;
     public override void SetChild(IPositionAware child)
     {
         ChildItem = child;
@@ -50,6 +50,7 @@ public class DeviceContainerFigure : ContainerFigure, IAssetSelectable
     public override void Render(DrawingContext dc, double strokeThickness, Color strokeColor)
     {
         //get size and location from device property
+        _isLinked = ChildItem.GroupID != Guid.Empty;
         ItemVisualizer.Render(dc, Canvas);
         var strokeBrush = new ImmutableSolidColorBrush(StrokeColor);
         var thickness = StrokeThickness;
@@ -79,7 +80,9 @@ public class DeviceContainerFigure : ContainerFigure, IAssetSelectable
         if (IsSelectable)
             dc.DrawRectangle(fillBrush, immutablePen,
                 new Rect(new Point(X, Y), new Size(Width, Height)));
-
+        if (_isLinked)
+         dc.DrawRectangle(new SolidColorBrush(Avalonia.Media.Colors.Red.AdjustOpacity(0.2)), null,
+                new Rect(new Point(X, Y), new Size(Width, Height)));
         // dc.Pop();
     }
 
@@ -90,40 +93,5 @@ public class DeviceContainerFigure : ContainerFigure, IAssetSelectable
 
     #endregion
 
-    public bool IsSelectionActive { get; private set; } = false;
 
-    public override Figure Select(bool showHandles = true, bool repaint = true, bool notify = true)
-    {
-        IsSelectionActive = true;
-        base.Select(showHandles, repaint, notify);
-
-        // Add all other DeviceContainerFigure with the same ChildItem.GroupID to canvas selection, without notify
-        if (ChildItem != null && ChildItem.GroupID != null && Canvas != null)
-        {
-            var groupId = ChildItem.GroupID;
-            if (groupId == Guid.Empty)
-                return this;
-            var figures = Canvas.Figures?.OfType<DeviceContainerFigure>()
-                .Where(f => f != this && f.ChildItem != null && f.ChildItem.GroupID == groupId)
-                .ToList();
-            if (figures != null)
-            {
-                foreach (var fig in figures)
-                {
-                    if (!Canvas.Selection.Contains(fig))
-                    {
-                        Canvas.Selection.Add(fig, false); // false = do not notify
-                    }
-                }
-            }
-        }
-        return this;
-    }
-
-    public override Figure Unselect()
-    {
-        IsSelectionActive = false;
-        base.Unselect();
-        return this;
-    }
 }

@@ -26,7 +26,7 @@ namespace Draw2D.Core
                 Add(_primary);
             }
         }
-
+        public List<Figure> AllActive => _all.Where(f => f.IsSelectionActive).ToList();
         public List<Figure> All => _all;
 
         //notify will update canvas selection event, in case of multiple selection,

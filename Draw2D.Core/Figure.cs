@@ -45,7 +45,7 @@ namespace Draw2D.Core
                 Canvas?.NeedsRepaint(this);
             }
         }
-
+        public bool IsSelectionActive { get; set; } = false;
         public event Action<float, float> PositionPropertyChanged;
         public event Action<float, float> SizePropertyChanged;
         public event Action<bool> MouseOverChanged;
