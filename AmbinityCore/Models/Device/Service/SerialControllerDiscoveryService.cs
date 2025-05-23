@@ -149,89 +149,100 @@ public class SerialControllerDiscoveryService
     }
     public async Task ScanSerialDevice()
     {
-        //these are valid PID VID used by Ambino devices
-        List<string> CH55X = SerialControllerEnumerator.GetSerialPortByID("1209", "c550");
-        List<string> CH340 = SerialControllerEnumerator.GetSerialPortByID("1A86", "7522");
-        List<string> ada = SerialControllerEnumerator.GetSerialPortByID("239A", "CAFE");
-        var ports = new List<string>();
-        if (CH55X.Count > 0 || CH340.Count > 0 || ada.Count > 0)
+        // List of known Ambino device VID/PID pairs
+        var knownDevices = new List<(string vid, string pid)>
         {
-            foreach (var port in CH55X)
-            {
-                ports.Add(port);
-            }
+            ("1209", "c550"), // CH55X
+            ("1A86", "7522"), // CH340
+            ("239A", "CAFE")  // Ada
+        };
 
-            foreach (var port in CH340)
-            {
-                ports.Add(port);
-            }
-
-            foreach (var port in ada)
+        var ports = new HashSet<string>();
+        foreach (var (vid, pid) in knownDevices)
+        {
+            var foundPorts = SerialControllerEnumerator.GetSerialPortByID(vid, pid);
+            foreach (var port in foundPorts)
             {
                 ports.Add(port);
             }
         }
-        else
+
+        if (ports.Count == 0)
         {
             Log.Warning("No Compatible Device Detected");
+            return;
         }
 
-        var invalidDevice = new List<string>();
-        foreach (var port in ports)
+        // Filter out ports already in use
+        var availablePorts = ports.Except(PortInUse).ToList();
+        if (availablePorts.Count == 0)
         {
-            if (PortInUse.Contains(port))
-                continue;
-            var _serialPort = new SerialPort(port, 1000000);
-            _serialPort.ReadTimeout = 5000;
-            _serialPort.WriteTimeout = 1000;
-            _serialPort.DtrEnable = true;
-            try
+            Log.Information("All detected ports are already in use.");
+            return;
+        }
+
+        var validPorts = new List<string>();
+        foreach (var port in availablePorts)
+        {
+            using (var serialPort = new SerialPort(port, 1000000))
             {
-                _serialPort.Open();
-                Thread.Sleep(1000);
-                _serialPort.Close();
-                _serialPort.Dispose();
+                serialPort.ReadTimeout = 5000;
+                serialPort.WriteTimeout = 1000;
+                serialPort.DtrEnable = true;
+                try
+                {
+                    serialPort.Open();
+                    await Task.Delay(1000); // Give device time to initialize
+                    serialPort.Close();
+                    validPorts.Add(port);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"Port {port} is not available: {ex.Message}");
+                }
             }
-            catch (Exception ex)
-            {
-                invalidDevice.Add(port);
-            }
         }
 
-        foreach (var device in invalidDevice)
+        if (validPorts.Count == 0)
         {
-            ports.Remove(device);
+            Log.Warning("No valid serial ports found after filtering.");
+            return;
         }
 
-        if (ports.Count > 0)
+        // Only process the first valid port for now
+        var selectedPort = validPorts.First();
+        await Task.Delay(500); // Wait for device to be ready
+
+        string deviceName = null;
+        string deviceID = null;
+        string deviceFirmware = null;
+        string deviceHardware = null;
+        int deviceHWL = 0;
+        HardwareTypeEnum hardwareType = HardwareTypeEnum.Unknown;
+        var result = await Task.Run(() => _serialControllerHelpers.RefreshDeviceInfo(selectedPort,
+            out deviceName,
+            out deviceID,
+            out deviceFirmware,
+            out deviceHardware,
+            out deviceHWL,
+            out hardwareType));
+        if (!result)
         {
-            // Dispatcher.UIThread.Invoke(() => { NewComportDetected?.Invoke(ports.First()); });
-            await Task.Delay(500);
-            string deviceName = null;
-            string deviceID = null;
-            string deviceFirmware = null;
-            string deviceHardware = null;
-            int deviceHWL = 0;
-            HardwareTypeEnum hardwareType = HardwareTypeEnum.Unknown;
-            var result = await Task.Run(() => _serialControllerHelpers.RefreshDeviceInfo(ports.First(),
-                out deviceName,
-                out deviceID,
-                out deviceFirmware,
-                out deviceHardware,
-                out deviceHWL,
-                out hardwareType));
-            if (!result)
-                return;
-            var controller = new SerialController();
-            controller.Name = deviceName;
-            controller.SerialNumber = deviceID;
-            controller.SerialPort = ports.First();
-            controller.FirmwareVersion = deviceFirmware;
-            controller.HardwareVersion = deviceHardware;
-            controller.HardwareType = hardwareType;
-
-            //invoke provider
-            Dispatcher.UIThread.Invoke(() => { NewDevicesFound?.Invoke(controller); });
+            Log.Warning($"Failed to refresh device info for port {selectedPort}.");
+            return;
         }
+
+        var controller = new SerialController
+        {
+            Name = deviceName,
+            SerialNumber = deviceID,
+            SerialPort = selectedPort,
+            FirmwareVersion = deviceFirmware,
+            HardwareVersion = deviceHardware,
+            HardwareType = hardwareType
+        };
+
+        // Notify UI thread
+        Dispatcher.UIThread.Invoke(() => { NewDevicesFound?.Invoke(controller); });
     }
 }

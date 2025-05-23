@@ -198,6 +198,11 @@ public class SerialControllerProvider
         _isBusy = false;
         _discoveryService.Resume();
     }
+    public void ControllerDisconnected(IController controller)
+    {
+        _discoveryService.PortInUse.Remove(controller.SerialPort);
+        _discoveryService.Resume();
+    }
 
     private SerialControllerDiscoveryService _discoveryService;
     private AmbinityDeviceLayoutRepository _layoutRepository;

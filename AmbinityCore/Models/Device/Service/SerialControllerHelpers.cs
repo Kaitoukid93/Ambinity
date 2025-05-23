@@ -224,153 +224,90 @@ public class SerialControllerHelpers
         out int deviceHWL,
         out HardwareTypeEnum hardwareType)
     {
-        byte[] id = new byte[256];
-        byte[] name = new byte[256];
-        byte[] fw = new byte[256];
-        byte[] hw = new byte[256];
         deviceName = null;
         deviceID = null;
         deviceFirmware = null;
         deviceHardware = null;
         deviceHWL = 0;
         hardwareType = HardwareTypeEnum.Unknown;
-        var _serialPort = new SerialPort(comPort, 1000000);
-        _serialPort.DtrEnable = true;
-        _serialPort.ReadTimeout = 5000;
-        _serialPort.WriteTimeout = 1000;
+
+        byte[] id = null, name = null, fw = null, hw = null;
+        int idLength = 0, nameLength = 0, fwLength = 0, hwLength = 0;
+        int offset = 0;
+        var expectedHeader = expectedValidHeader;
+        var _serialPort = new SerialPort(comPort, 1000000)
+        {
+            DtrEnable = true,
+            ReadTimeout = 5000,
+            WriteTimeout = 1000
+        };
         try
         {
             _serialPort.Open();
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return false;
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex.ToString());
-            return false;
-        }
-
-        //write request info command
-        _serialPort.Write(requestCommand, 0, 4);
-        int retryCount = 0;
-        int offset = 0;
-        int idLength = 0; // Expected response length of valid deviceID
-        int nameLength = 0; // Expected response length of valid deviceName
-        int fwLength = 0;
-        int hwLength = 0;
-        while (offset < 3)
-        {
-            try
+            // Write request info command
+            _serialPort.Write(requestCommand, 0, requestCommand.Length);
+            int retryCount = 0;
+            // Read 3-byte header
+            while (offset < 3)
             {
-                byte header = (byte)_serialPort.ReadByte();
-                if (header == expectedValidHeader[offset])
+                try
                 {
-                    offset++;
+                    byte header = (byte)_serialPort.ReadByte();
+                    if (header == expectedHeader[offset])
+                        offset++;
+                }
+                catch (TimeoutException)
+                {
+                    _serialPort.Write(requestCommand, 0, requestCommand.Length);
+                    retryCount++;
+                    if (retryCount >= 3)
+                    {
+                        Log.Error($"Timeout waiting for response on serialport {_serialPort.PortName}");
+                        _serialPort.Close();
+                        _serialPort.Dispose();
+                        return false;
+                    }
                 }
             }
-            catch (TimeoutException) // retry until received valid header
+            if (offset != 3)
             {
-                _serialPort.Write(requestCommand, 0, 4);
-                retryCount++;
-                if (retryCount == 3)
-                {
-                    Log.Error("timeout waiting for respond on serialport " + _serialPort.PortName);
-                    break;
-                }
-
-                Debug.WriteLine("no respond, retrying...");
+                _serialPort.Close();
+                _serialPort.Dispose();
                 return false;
             }
-        }
-
-        if (offset == 3) //3 bytes header are valid
-        {
-            idLength = (byte)_serialPort.ReadByte();
-            int count = idLength;
-            id = new byte[count];
-            while (count > 0)
-            {
-                var readCount = _serialPort.Read(id, 0, count);
-                offset += readCount;
-                count -= readCount;
-            }
-
-
-            deviceID = BitConverter.ToString(id).Replace('-', ' ');
-        }
-
-        if (offset == 3 + idLength) //3 bytes header are valid
-        {
-            nameLength = (byte)_serialPort.ReadByte();
-            int count = nameLength;
-            name = new byte[count];
-            while (count > 0)
-            {
-                var readCount = _serialPort.Read(name, 0, count);
-                offset += readCount;
-                count -= readCount;
-            }
-
+            // Read deviceID
+            idLength = _serialPort.ReadByte();
+            id = new byte[idLength];
+            _serialPort.Read(id, 0, idLength);
+            deviceID = BitConverter.ToString(id).Replace("-", " ");
+            // Read deviceName
+            nameLength = _serialPort.ReadByte();
+            name = new byte[nameLength];
+            _serialPort.Read(name, 0, nameLength);
             deviceName = Encoding.ASCII.GetString(name, 0, name.Length);
-        }
-
-        if (offset == 3 + idLength + nameLength) //3 bytes header are valid
-        {
-            fwLength = (byte)_serialPort.ReadByte();
-            int count = fwLength;
-            fw = new byte[count];
-            while (count > 0)
-            {
-                var readCount = _serialPort.Read(fw, 0, count);
-                offset += readCount;
-                count -= readCount;
-            }
-
+            // Read deviceFirmware
+            fwLength = _serialPort.ReadByte();
+            fw = new byte[fwLength];
+            _serialPort.Read(fw, 0, fwLength);
             deviceFirmware = Encoding.ASCII.GetString(fw, 0, fw.Length);
-        }
-
-        if (offset == 3 + idLength + nameLength + fwLength) //3 bytes header are valid
-        {
-            try
+            // Read deviceHardware
+            hwLength = _serialPort.ReadByte();
+            hw = new byte[hwLength];
+            _serialPort.Read(hw, 0, hwLength);
+            deviceHardware = Encoding.ASCII.GetString(hw, 0, hw.Length);
+            // Parse hardwareType
+            if (!string.IsNullOrEmpty(deviceHardware) && deviceHardware.Length >= 2)
             {
-                hwLength = (byte)_serialPort.ReadByte();
-                int count = hwLength;
-                hw = new byte[count];
-                while (count > 0)
-                {
-                    var readCount = _serialPort.Read(hw, 0, count);
-                    offset += readCount;
-                    count -= readCount;
-                }
-
-                deviceHardware = Encoding.ASCII.GetString(hw, 0, hw.Length);
                 switch (deviceHardware.Substring(0, 2))
                 {
-                    case "AF":
-                        hardwareType = HardwareTypeEnum.AmbinoFanHub;
-                        break;
-                    case "AH":
-                        hardwareType = HardwareTypeEnum.AmbinoHUBV3;
-                        break;
-                    case "AB":
-                        hardwareType = HardwareTypeEnum.AmbinoBasic;
-                        break;
-                    case "AE":
-                        hardwareType = HardwareTypeEnum.AmbinoEDGE;
-                        break;
+                    case "AF": hardwareType = HardwareTypeEnum.AmbinoFanHub; break;
+                    case "AH": hardwareType = HardwareTypeEnum.AmbinoHUBV3; break;
+                    case "AB": hardwareType = HardwareTypeEnum.AmbinoBasic; break;
+                    case "AE": hardwareType = HardwareTypeEnum.AmbinoEDGE; break;
+                    default: hardwareType = HardwareTypeEnum.Unknown; break;
                 }
             }
-            catch (TimeoutException)
-            {
-                Log.Information(deviceName, "Unknown Firmware Version");
-                deviceHardware = "unknown";
-            }
-        }
-
-        if (offset == 3 + idLength + nameLength + fwLength + hwLength) //3 bytes header are valid
-        {
+            // Read deviceHWL
             try
             {
                 deviceHWL = _serialPort.ReadByte();
@@ -379,11 +316,20 @@ public class SerialControllerHelpers
             {
                 Log.Information("Unknown Hardware Lighting Version");
             }
+            _serialPort.Close();
+            _serialPort.Dispose();
+            return true;
         }
-
-        _serialPort.Close();
-        _serialPort.Dispose();
-        return true;
+        catch (UnauthorizedAccessException)
+        {
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            try { _serialPort.Close(); _serialPort.Dispose(); } catch { }
+            return false;
+        }
     }
 
     public void ReadDeviceEEPROM(SerialPort _serialPort, SerialController controller)

@@ -105,6 +105,7 @@ public class SerialControllerRepository : CollectableItemRepository
     private void SerialControllerDisconnected(IController controller)
     {
         ControllerDisconnected?.Invoke(controller as SerialController);
+        _controllerProvider.ControllerDisconnected(controller);
     }
 
     public IDataStream GetSerialStream(IController controller)
