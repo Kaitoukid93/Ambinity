@@ -209,40 +209,42 @@ public class SerialControllerDiscoveryService
             return;
         }
 
-        // Only process the first valid port for now
-        var selectedPort = validPorts.First();
-        await Task.Delay(500); // Wait for device to be ready
-
-        string deviceName = null;
-        string deviceID = null;
-        string deviceFirmware = null;
-        string deviceHardware = null;
-        int deviceHWL = 0;
-        HardwareTypeEnum hardwareType = HardwareTypeEnum.Unknown;
-        var result = await Task.Run(() => _serialControllerHelpers.RefreshDeviceInfo(selectedPort,
-            out deviceName,
-            out deviceID,
-            out deviceFirmware,
-            out deviceHardware,
-            out deviceHWL,
-            out hardwareType));
-        if (!result)
+        // Process all valid ports one by one
+        foreach (var selectedPort in validPorts)
         {
-            Log.Warning($"Failed to refresh device info for port {selectedPort}.");
-            return;
+            await Task.Delay(500); // Wait for device to be ready
+
+            string deviceName = null;
+            string deviceID = null;
+            string deviceFirmware = null;
+            string deviceHardware = null;
+            int deviceHWL = 0;
+            HardwareTypeEnum hardwareType = HardwareTypeEnum.Unknown;
+            var result = await Task.Run(() => _serialControllerHelpers.RefreshDeviceInfo(selectedPort,
+                out deviceName,
+                out deviceID,
+                out deviceFirmware,
+                out deviceHardware,
+                out deviceHWL,
+                out hardwareType));
+            if (!result)
+            {
+                Log.Warning($"Failed to refresh device info for port {selectedPort}.");
+                continue;
+            }
+
+            var controller = new SerialController
+            {
+                Name = deviceName,
+                SerialNumber = deviceID,
+                SerialPort = selectedPort,
+                FirmwareVersion = deviceFirmware,
+                HardwareVersion = deviceHardware,
+                HardwareType = hardwareType
+            };
+
+            // Notify UI thread
+            Dispatcher.UIThread.Invoke(() => { NewDevicesFound?.Invoke(controller); });
         }
-
-        var controller = new SerialController
-        {
-            Name = deviceName,
-            SerialNumber = deviceID,
-            SerialPort = selectedPort,
-            FirmwareVersion = deviceFirmware,
-            HardwareVersion = deviceHardware,
-            HardwareType = hardwareType
-        };
-
-        // Notify UI thread
-        Dispatcher.UIThread.Invoke(() => { NewDevicesFound?.Invoke(controller); });
     }
 }
