@@ -337,25 +337,24 @@
     ]
   },
   "packageFolders": {
-    "/Users/zoe/.nuget/packages/": {}
+    "C:\\Users\\AMBINO\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/Avalonia.Gif.csproj",
+      "projectUniqueName": "D:\\VSCode\\Ambinity\\Avalonia.Gif\\Avalonia.Gif.csproj",
       "projectName": "Avalonia.Gif",
-      "projectPath": "/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/Avalonia.Gif.csproj",
-      "packagesPath": "/Users/zoe/.nuget/packages/",
-      "outputPath": "/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/",
+      "projectPath": "D:\\VSCode\\Ambinity\\Avalonia.Gif\\Avalonia.Gif.csproj",
+      "packagesPath": "C:\\Users\\AMBINO\\.nuget\\packages\\",
+      "outputPath": "D:\\VSCode\\Ambinity\\Avalonia.Gif\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/zoe/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\AMBINO\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "/usr/local/share/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -400,7 +399,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.406/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.409/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

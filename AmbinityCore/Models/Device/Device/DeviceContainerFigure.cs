@@ -80,9 +80,9 @@ public class DeviceContainerFigure : ContainerFigure, IAssetSelectable
         if (IsSelectable)
             dc.DrawRectangle(fillBrush, immutablePen,
                 new Rect(new Point(X, Y), new Size(Width, Height)));
-        if (_isLinked)
-         dc.DrawRectangle(new SolidColorBrush(Avalonia.Media.Colors.Red.AdjustOpacity(0.2)), null,
-                new Rect(new Point(X, Y), new Size(Width, Height)));
+        if (_isLinked && IsSelectable)
+            dc.DrawRectangle(new SolidColorBrush(Avalonia.Media.Colors.Red.AdjustOpacity(0.2)), null,
+                   new Rect(new Point(X, Y), new Size(Width, Height)));
         // dc.Pop();
     }
 
