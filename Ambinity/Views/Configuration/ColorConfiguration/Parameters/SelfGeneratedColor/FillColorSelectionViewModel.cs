@@ -47,7 +47,7 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
         AddColorCommand = new RelayCommand<Color>(AddColor);
         OpenLibraryCommand = new AsyncRelayCommand(OpenLibrary);
         _rightPanelViewModel = rightPanelViewModel;
-        
+
     }
 
     private async Task AddPaletteToLibrary()
@@ -86,7 +86,7 @@ public class FillColorSelectionViewModel : ParameterViewModelBase
             var colorPaletteAsset = item as ColorPaletteAssetViewModel;
             ApplyPalette(colorPaletteAsset.Item as ColorPalette);
         }
-     
+
     }
 
     private async Task ImportPalette()

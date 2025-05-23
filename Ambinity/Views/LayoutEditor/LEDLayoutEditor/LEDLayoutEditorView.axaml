@@ -1,81 +1,103 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="Ambinity.Views.LayoutEditor.LEDLayoutEditor.LEDLayoutEditorView"
-        xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor.LEDLayoutEditor"
-        xmlns:led="clr-namespace:AmbinityCore.Models.Device.LED;assembly=AmbinityCore"
-        xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia"
-        x:DataType="local:LEDLayoutEditorViewModel"
-        ExtendClientAreaToDecorationsHint="True"
-        RequestedThemeVariant="Dark"
-        Width="800"
-        SizeToContent="Height"
-        WindowState="{Binding WindowState}"
-        WindowStartupLocation="CenterScreen"
-        Padding="40,60,40,40"
-        Title="LED Layout Editor">
+<Window
+    x:Class="Ambinity.Views.LayoutEditor.LEDLayoutEditor.LEDLayoutEditorView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:led="clr-namespace:AmbinityCore.Models.Device.LED;assembly=AmbinityCore"
+    xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor.LEDLayoutEditor"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia"
+    Title="LED Layout Editor"
+    Width="800"
+    Padding="40,60,40,40"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="local:LEDLayoutEditorViewModel"
+    ExtendClientAreaToDecorationsHint="True"
+    RequestedThemeVariant="Dark"
+    WindowStartupLocation="CenterScreen"
+    WindowState="{Binding WindowState}"
+    mc:Ignorable="d">
     <Window.Styles>
-        <Style Selector="Path.led" x:DataType="local:AmbinityLEDViewModel">
-            <Setter Property="Fill" Value="{DynamicResource ButtonForegroundDisabled}"></Setter>
+        <Style x:DataType="local:AmbinityLEDViewModel" Selector="Path.led">
+            <Setter Property="Fill" Value="{DynamicResource ButtonForegroundDisabled}" />
             <Style Selector="^:pointerover">
-                <Setter Property="Fill" Value="{DynamicResource AccentButtonBackground}"></Setter>
+                <Setter Property="Fill" Value="{DynamicResource AccentButtonBackground}" />
             </Style>
             <Style Selector="^.selected">
-                <Setter Property="Fill" Value="{Binding   AvaloniaColor}"></Setter>
+                <Setter Property="Fill" Value="{Binding AvaloniaColor}" />
             </Style>
         </Style>
     </Window.Styles>
     <Grid ColumnDefinitions="*,20,Auto">
         <StackPanel Spacing="20">
-            <Border IsVisible="{Binding UseCustomIndex}" HorizontalAlignment="Left" Classes="primaryChip">
-                <TextBlock  HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource AccentButtonBackground}" Text="Device is using custom Index"></TextBlock>
+            <Border
+                HorizontalAlignment="Left"
+                Classes="primaryChip"
+                IsVisible="{Binding UseCustomIndex}">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{DynamicResource AccentButtonBackground}"
+                    Text="Device is using custom Index" />
             </Border>
-            <Viewbox>
-                <ItemsControl ItemsSource="{Binding LEDs}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas Width="{Binding Device.Width}" Height="{Binding Device.Height}">
-                            </Canvas>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.Styles>
-                        <Style Selector="ContentPresenter" x:DataType="local:AmbinityLEDViewModel">
-                            <Setter Property="Canvas.Left" Value="{Binding X}" />
-                            <Setter Property="Canvas.Top" Value="{Binding Y}" />
-                        </Style>
-                    </ItemsControl.Styles>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                           
-                                
-                                <Path PointerReleased="InputElement_OnPointerReleased" Classes="led"
-                                      Classes.selected="{Binding IsSelected}" ToolTip.Tip="{Binding Index}"
-                                      Data="{Binding Geometry}"
-                                      Width="{Binding Width}" Height="{Binding Height}">
-                                </Path>
-                                <Viewbox IsHitTestVisible="False" IsVisible="{Binding IsIndexVisible}" Width="{Binding Width}" Height="{Binding Height}">
-                                    <TextBlock Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Index}"></TextBlock>
-                                </Viewbox>
-                            </Grid>
-                            
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Viewbox>
-            <Button Classes="accent" IsVisible="{Binding !IsInIndexSetupMode}" Content="Index setup" Command="{Binding EnterIndexSetupCommand}"></Button>
-        
+            <Grid>
+                <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <ItemsControl ItemsSource="{Binding LEDs}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas Width="{Binding Device.Width}" Height="{Binding Device.Height}" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.Styles>
+                            <Style x:DataType="local:AmbinityLEDViewModel" Selector="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                            </Style>
+                        </ItemsControl.Styles>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Path
+                                        Width="{Binding Width}"
+                                        Height="{Binding Height}"
+                                        Classes="led"
+                                        Classes.selected="{Binding IsSelected}"
+                                        Data="{Binding Geometry}"
+                                        PointerReleased="InputElement_OnPointerReleased"
+                                        ToolTip.Tip="{Binding Index}" />
+                                    <Viewbox
+                                        Width="{Binding Width}"
+                                        Height="{Binding Height}"
+                                        IsHitTestVisible="False"
+                                        IsVisible="{Binding IsIndexVisible}">
+                                        <TextBlock
+                                            Margin="10"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Index}" />
+                                    </Viewbox>
+                                </Grid>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Viewbox>
+            </Grid>
+
+            <Button
+                Classes="accent"
+                Command="{Binding EnterIndexSetupCommand}"
+                Content="Index setup"
+                IsVisible="{Binding !IsInIndexSetupMode}" />
+
         </StackPanel>
         <Grid Column="2" IsVisible="{Binding IsInIndexSetupMode}">
             <StackPanel Spacing="10">
                 <Grid>
-                    <Border Classes="card">
-                       
-                    </Border>
+                    <Border Classes="card" />
                 </Grid>
-                <Separator Height="1" Margin="5,10"></Separator>
+                <Separator Height="1" Margin="5,10" />
                 <mdxaml:MarkdownScrollViewer MaxWidth="400" xml:space="preserve">
 ##### **How to setup LED Index**
 
@@ -86,87 +108,93 @@ position and you're good to go
  * Continue clicking next LEDs and make sure each LED you click light up the LED at the same position on the real device
  * Click on any LED again to turn off, this action also erase LED Index
  * You can expand this Window for better vision
- 
+
 Learn more at [Ambino](https://ambino.vn)
                                                 </mdxaml:MarkdownScrollViewer>
-                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="8" Orientation="Horizontal">
-                    <Button Content="Reset" Command="{Binding ResetIndexCommand}"></Button>
-                    <Button Content="Cancel" Command="{Binding ExitIndexSetupCommand}"></Button>
-                    <Button Classes="accent"  Content="Save" Command="{Binding SaveCurrentIndexSetupCommand}"></Button>
+                <StackPanel
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Orientation="Horizontal"
+                    Spacing="8">
+                    <Button Command="{Binding ResetIndexCommand}" Content="Reset" />
+                    <Button Command="{Binding ExitIndexSetupCommand}" Content="Cancel" />
+                    <Button
+                        Classes="accent"
+                        Command="{Binding SaveCurrentIndexSetupCommand}"
+                        Content="Save" />
                 </StackPanel>
-               
+
             </StackPanel>
         </Grid>
-        <Grid IsVisible="{Binding !IsInIndexSetupMode}" Column="2">
+        <Grid Column="2" IsVisible="{Binding !IsInIndexSetupMode}">
             <StackPanel Spacing="10">
                 <Grid>
                     <StackPanel Spacing="8">
-                        <TextBlock Text="LED Information"></TextBlock>
+                        <TextBlock Text="LED Information" />
                         <StackPanel Spacing="8">
-                            <TextBlock
-                                Text="{Binding CurrentSelectedLED.Width,
-                            StringFormat='Width: {0}'}"
-                                Foreground="{DynamicResource ButtonForegroundDisabled}">
-                            </TextBlock>
-                            <TextBlock
-                                Text="{Binding CurrentSelectedLED.Height,
-                            StringFormat='Height: {0}'}"
-                                Foreground="{DynamicResource ButtonForegroundDisabled}">
-                            </TextBlock>
-                            <TextBlock
-                                Text="{Binding CurrentSelectedLED.Index,
-                            StringFormat='Index: {0}'}"
-                                Foreground="{DynamicResource ButtonForegroundDisabled}">
-                            </TextBlock>
+                            <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding CurrentSelectedLED.Width, StringFormat='Width: {0}'}" />
+                            <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding CurrentSelectedLED.Height, StringFormat='Height: {0}'}" />
+                            <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding CurrentSelectedLED.Index, StringFormat='Index: {0}'}" />
                         </StackPanel>
                     </StackPanel>
                 </Grid>
-                <Separator Height="1" Margin="5,10"></Separator>
+                <Separator Height="1" Margin="5,10" />
                 <Grid>
                     <StackPanel Spacing="8">
-                        <TextBlock Text="Basic testing">
-
-                        </TextBlock>
-                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}"
-                                   Text="Click each color button to change color">
-
-                        </TextBlock>
-                        <ListBox ItemContainerTheme="{DynamicResource _striplessListboxItem}"
-                                 SelectedItem="{Binding CurrentSelectedButton}" ItemsSource="{Binding AvailableColors}">
+                        <TextBlock Text="Basic testing" />
+                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Click each color button to change color" />
+                        <ListBox
+                            ItemContainerTheme="{DynamicResource _striplessListboxItem}"
+                            ItemsSource="{Binding AvailableColors}"
+                            SelectedItem="{Binding CurrentSelectedButton}">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <UniformGrid Rows="1" Columns="7"></UniformGrid>
+                                    <UniformGrid Columns="7" Rows="1" />
                                 </ItemsPanelTemplate>
                             </ListBox.ItemsPanel>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="{Binding Color}" Width="32" Height="32" CornerRadius="4"></Border>
+                                    <Border
+                                        Width="32"
+                                        Height="32"
+                                        Background="{Binding Color}"
+                                        CornerRadius="4" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </StackPanel>
                 </Grid>
-                <Separator Height="1" Margin="5,10"></Separator>
+                <Separator Height="1" Margin="5,10" />
                 <Grid>
                     <StackPanel Spacing="8">
-                        <TextBlock Text="Test Sequence">
-
-                        </TextBlock>
-                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}"
-                                   Text="Click each button to activate testing sequence">
-
-                        </TextBlock>
-                        <WrapPanel Orientation="Horizontal" >
-                            <Button ToolTip.Tip="Play 3 basic RGB color in order, All LEDs will light up" Command="{Binding RunTestCommand}" CommandParameter="basic" Margin="0,10,10,0" Content="3 colors test"></Button>
-                            <Button Command="{Binding RunTestCommand}" CommandParameter="white" ToolTip.Tip="This could draw significant power" Margin="0,10,10,0"  Content="White test"></Button>
-                            <Button ToolTip.Tip="Light up LEDs one by one from first to last LED using index" Margin="0,10,10,0" Command="{Binding RunTestCommand}" CommandParameter="order"  Content="Order check"></Button>
+                        <TextBlock Text="Test Sequence" />
+                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Click each button to activate testing sequence" />
+                        <WrapPanel Orientation="Horizontal">
+                            <Button
+                                Margin="0,10,10,0"
+                                Command="{Binding RunTestCommand}"
+                                CommandParameter="basic"
+                                Content="3 colors test"
+                                ToolTip.Tip="Play 3 basic RGB color in order, All LEDs will light up" />
+                            <Button
+                                Margin="0,10,10,0"
+                                Command="{Binding RunTestCommand}"
+                                CommandParameter="white"
+                                Content="White test"
+                                ToolTip.Tip="This could draw significant power" />
+                            <Button
+                                Margin="0,10,10,0"
+                                Command="{Binding RunTestCommand}"
+                                CommandParameter="order"
+                                Content="Order check"
+                                ToolTip.Tip="Light up LEDs one by one from first to last LED using index" />
                         </WrapPanel>
                     </StackPanel>
                 </Grid>
             </StackPanel>
         </Grid>
-     
-        
+
+
     </Grid>
 
 </Window>
