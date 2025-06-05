@@ -2,16 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Ambinity.Services;
 using Ambinity.ViewModels;
 using Ambinity.Views.CollectableItem.AmbinityDeviceLayout;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
-using Ambinity.Views.Draw2DCanvas;
+using Ambinity.Views.LayoutEditor.Canvas;
+using Ambinity.Views.LayoutEditor.LEDLayoutCreator;
 using Ambinity.Views.Screens.DeviceLayout;
-using Ambinity.Views.Screens.DeviceLayout.Library;
-using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Profile;
-using AmbinityCore.Repositories;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 
@@ -26,15 +25,26 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
     public event Action CloseFlyoutEvent;
 
     public DeviceLayoutRightPanelViewModel(
-        Draw2DCanvasViewModel canvasViewModel,
+        CanvasViewModelFactory canvasViewModelFactory,
         LightingProfileDecoder decoder,
-        LibraryViewModelFactory libraryViewModelFactory
+        LEDLayoutCreatorViewModel layoutCreatorViewModel,
+        LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService
     )
     {
+        _windowService = windowService;
         _libraryViewModelFactory = libraryViewModelFactory;
         _decoder = decoder;
-        _canvasViewModel = canvasViewModel;
+        _canvasViewModel = canvasViewModelFactory.Get<DeviceLayoutCanvasViewModel>();
+        _layoutCreatorViewModel = layoutCreatorViewModel;
         OpenLibraryCommand = new AsyncRelayCommand(OpenLibrary);
+        OpenLayoutCreatorCommand = new RelayCommand(OpenLayoutCreator);
+    }
+
+
+    private void OpenLayoutCreator()
+    {
+        _layoutCreatorViewModel?.Init();
+        _windowService.ShowWindow(_layoutCreatorViewModel);
     }
 
     private async Task OpenLibrary()
@@ -114,8 +124,10 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
     }
 
     public DevicePropertiesViewModel PropertiesViewModel { get; set; }
-    private Draw2DCanvasViewModel _canvasViewModel;
+    private DeviceLayoutCanvasViewModel _canvasViewModel;
+    private LEDLayoutCreatorViewModel _layoutCreatorViewModel;
     private readonly LightingProfileDecoder _decoder;
+    private readonly IWindowService _windowService;
     private readonly LibraryViewModelFactory _libraryViewModelFactory;
     private LibraryViewModelBase _libraryViewModel;
 
@@ -137,4 +149,5 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
 
     public bool IsLocked => _decoder.IsRendering;
     public ICommand OpenLibraryCommand { get; }
+    public ICommand OpenLayoutCreatorCommand { get; }
 }

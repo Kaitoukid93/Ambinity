@@ -65,6 +65,34 @@ public class LightingZoneVisualizer : ICanvasVisualizerItem
 
     public void UpdateContainerSize(float x, float y)
     {
+        if (_zone.Shape == ZoneShapeEnum.Polyline && _zone.Points.Count > 0)
+        {
+            // Compute current bounding box
+            double minX = _zone.Points.Min(p => p.X);
+            double maxX = _zone.Points.Max(p => p.X);
+            double minY = _zone.Points.Min(p => p.Y);
+            double maxY = _zone.Points.Max(p => p.Y);
+
+            double oldWidth = _zone.Width;
+            double oldHeight = _zone.Height;
+
+            // Prevent division by zero
+            if (oldWidth == 0) oldWidth = 1;
+            if (oldHeight == 0) oldHeight = 1;
+
+            var newPoints = new List<Point>();
+            foreach (var pt in _zone.Points)
+            {
+                double normX = (pt.X - minX) / oldWidth;
+                double normY = (pt.Y - minY) / oldHeight;
+
+                double newX = minX + normX * x;
+                double newY = minY + normY * y;
+                newPoints.Add(new Point(newX, newY));
+            }
+            _zone.Points = newPoints;
+        }
+
         _zone.Width = x;
         _zone.Height = y;
         _zoneBounds = MeasureZone();
@@ -91,7 +119,7 @@ public class LightingZoneVisualizer : ICanvasVisualizerItem
             //render zone bitmap and info
 
 
-            // todo: render zone info 
+            // todo: render zone info
         }
         finally
         {

@@ -9,7 +9,7 @@ using Draw2D.Core.Graphic;
 
 namespace AmbinityCore.LightingEngines;
 
-public class SelfGeneratedColorEngine : IColorEngine
+public class SelfGeneratedColorEngine : IColorService
 {
     private float _startIndex = 0f;
     private Color[] _colorBank;
@@ -157,7 +157,7 @@ public class SelfGeneratedColorEngine : IColorEngine
     }
 
     /// <summary>
-    /// update list of leds that this zone care about 
+    /// update list of leds that this zone care about
     /// </summary>
     private void UpdatePixelsData()
     {
@@ -175,7 +175,7 @@ public class SelfGeneratedColorEngine : IColorEngine
             {
                 foreach (var device in _deviceRepository.Devices)
                 {
-               
+
                     var rect = _zone.ZoneBound.Intersect(device.Bound);
                     if (rect == default)
                         continue;
@@ -189,7 +189,7 @@ public class SelfGeneratedColorEngine : IColorEngine
                     }
                 }
             }
-          
+
 
             _lineList = GetPixels(_colorApperance);
             if (_isReverse)

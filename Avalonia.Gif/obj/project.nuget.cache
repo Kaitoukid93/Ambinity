@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "6CdJG1DfiOg=",
+  "dgSpecHash": "sP+NtmyWHTI=",
   "success": true,
-  "projectFilePath": "D:\\VSCode\\Ambinity\\Avalonia.Gif\\Avalonia.Gif.csproj",
+  "projectFilePath": "/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/Avalonia.Gif.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\AMBINO\\.nuget\\packages\\avalonia\\11.1.0\\avalonia.11.1.0.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\avalonia.buildservices\\0.0.29\\avalonia.buildservices.0.0.29.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\avalonia.remote.protocol\\11.1.0\\avalonia.remote.protocol.11.1.0.nupkg.sha512",
-    "C:\\Users\\AMBINO\\.nuget\\packages\\microcom.runtime\\0.11.0\\microcom.runtime.0.11.0.nupkg.sha512"
+    "/Users/zoe/.nuget/packages/avalonia/11.1.0/avalonia.11.1.0.nupkg.sha512",
+    "/Users/zoe/.nuget/packages/avalonia.buildservices/0.0.29/avalonia.buildservices.0.0.29.nupkg.sha512",
+    "/Users/zoe/.nuget/packages/avalonia.remote.protocol/11.1.0/avalonia.remote.protocol.11.1.0.nupkg.sha512",
+    "/Users/zoe/.nuget/packages/microcom.runtime/0.11.0/microcom.runtime.0.11.0.nupkg.sha512"
   ],
   "logs": []
 }

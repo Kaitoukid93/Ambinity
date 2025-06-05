@@ -8,6 +8,7 @@ using ScreenCaptureKit;
 using Serilog;
 
 namespace ScreenCapture.NET.SCK;
+
 public class ScreenCaptureDelegate : NSObject, ISCStreamOutput, INativeObject, IDisposable, ISCStreamDelegate
 {
     public ScreenCaptureDelegate(byte[] buffer)
@@ -32,19 +33,23 @@ public class ScreenCaptureDelegate : NSObject, ISCStreamOutput, INativeObject, I
             if (type == SCStreamOutputType.Screen)
             {
                 // Process video frame
-                var imageBuffer = sampleBuffer.GetImageBuffer() as CVPixelBuffer;
-                if (imageBuffer != null)
+                using (sampleBuffer)
                 {
-                    imageBuffer.Lock(lockFlags: CVPixelBufferLock.ReadOnly);
-                    IntPtr baseAddress = imageBuffer.BaseAddress;
-                    int bytesPerRow = (int)imageBuffer.BytesPerRow;
-                    int width = (int)imageBuffer.Width;
-                    int height = (int)imageBuffer.Height;
+                    var imageBuffer = sampleBuffer.GetImageBuffer() as CVPixelBuffer;
+                    if (imageBuffer != null)
+                    {
+                        using (imageBuffer)
+                        {
+                            imageBuffer.Lock(lockFlags: CVPixelBufferLock.ReadOnly);
+                            IntPtr baseAddress = imageBuffer.BaseAddress;
+                            int bytesPerRow = (int)imageBuffer.BytesPerRow;
+                            int width = (int)imageBuffer.Width;
+                            int height = (int)imageBuffer.Height;
 
-                    Marshal.Copy(baseAddress, _buffer, 0, _buffer.Length);
-                    imageBuffer.Unlock(CVPixelBufferLock.ReadOnly);
-
-                    sampleBuffer.Dispose();
+                            Marshal.Copy(baseAddress, _buffer, 0, _buffer.Length);
+                            imageBuffer.Unlock(CVPixelBufferLock.ReadOnly);
+                        }
+                    }
                 }
 
             }

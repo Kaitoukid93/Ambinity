@@ -11,7 +11,7 @@ using Serilog;
 
 namespace AmbinityCore.LightingEngines;
 
-public class ScreenCaptureEngine : IColorEngine
+public class ScreenCaptureEngine : IColorService
 {
     public ScreenCaptureEngine(FrameBuffer buffer, CapturingServiceProvider capturingServiceProvider,
         AmbinityDeviceRepository deviceRepository)

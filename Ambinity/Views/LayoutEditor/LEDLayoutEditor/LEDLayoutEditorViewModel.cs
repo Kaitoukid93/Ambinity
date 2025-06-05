@@ -121,7 +121,7 @@ public class LEDLayoutEditorViewModel : ViewModelBase
 
         var window = await _windowService.ShowDialogWindow(vm, _currentWindow);
         vm.WindowCloseRequest += () => window.Close();
-        
+
     }
 
     private void SaveCurrentIndexSetup()

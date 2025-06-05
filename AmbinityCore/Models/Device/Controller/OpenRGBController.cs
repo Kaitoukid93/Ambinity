@@ -19,7 +19,7 @@ public class OpenRGBController : ObservableObject, IController
     public event Action WorkingStateChanged;
     public event Action SerialPortChanged;
     public event Action TransferActiveChanged;
-    
+
     private string resourcePath => Path.Combine(Constants.AppDataFolder, "Images");
 
     public OpenRGBController()
@@ -98,11 +98,12 @@ public class OpenRGBController : ObservableObject, IController
 
     public void RegisterLEDController()
     {
-        if(LedController ==null)
+        if (LedController == null)
             return;
         LedController.PropertyChanged += OnControllerPropertyChanged;
+        LedController.HardwareSettings.HardwareType = HardwareType;
     }
-    
+
     private void OnControllerPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         OnPropertyChanged(nameof(sender));
@@ -115,7 +116,7 @@ public class OpenRGBController : ObservableObject, IController
         IsTransferActive = false;
         TransferActiveChanged?.Invoke();
     }
-    
+
 
     public void EnableTransfer()
     {
@@ -133,7 +134,7 @@ public class OpenRGBController : ObservableObject, IController
     /// </summary>
     public void Save()
     {
-        //todo implement profile save with icon 
+        //todo implement profile save with icon
         if (LocalPath == null || !Directory.Exists(LocalPath))
         {
             //create local path

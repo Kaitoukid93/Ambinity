@@ -101,15 +101,17 @@ public class DeviceVisualizer : ICanvasVisualizerItem
                 }
 
                 var bound = newGroup.Bounds;
-                // Render device and LED images 
+                // Render device and LED images
                 if (_deviceImage != null)
                 {
-                    if (_device.IsDraggable)
+                    if (_device.IsSelectable)
                         dc.DrawImage(_deviceImage, new Rect(_deviceImage.Size),
                             new Rect(0, 0, _device.Layout.ImageWidth, _device.Layout.ImageHeight));
                 }
 
-                // 
+
+
+                //
                 dc.DrawGeometry(new ImmutableSolidColorBrush(Colors.Black.AdjustOpacity(0.5)), null, newGroup);
             }
         }
@@ -187,15 +189,39 @@ public class DeviceVisualizer : ICanvasVisualizerItem
         AmbinityDeviceLayout? layout = device.Layout;
         if (layout == null)
             return null;
-        if (layout.FilePath == null)
+        if (string.IsNullOrWhiteSpace(layout.FilePath))
             return null;
-        if (!File.Exists(Path.Combine(layout.FilePath, "thumbnail.png")))
+
+        string thumbnailPath;
+        try
+        {
+            thumbnailPath = Path.Combine(layout.FilePath, "thumbnail.png");
+        }
+        catch (Exception ex)
+        {
+            // Log or handle invalid path
             return null;
+        }
+
+        if (!File.Exists(thumbnailPath))
+            return null;
+
         if (BitmapCache.TryGetValue(layout.FilePath, out RenderTargetBitmap? existingBitmap))
             return existingBitmap;
 
-        RenderTargetBitmap renderTargetBitmap = layout.RenderLayout((int)device.Width, (int)device.Height);
-        BitmapCache[layout.FilePath] = renderTargetBitmap;
-        return renderTargetBitmap;
+        if (device.Width <= 0 || device.Height <= 0)
+            return null;
+
+        try
+        {
+            RenderTargetBitmap renderTargetBitmap = layout.RenderLayout((int)device.Width, (int)device.Height);
+            BitmapCache[layout.FilePath] = renderTargetBitmap;
+            return renderTargetBitmap;
+        }
+        catch (Exception ex)
+        {
+            // Log or handle rendering exception
+            return null;
+        }
     }
 }

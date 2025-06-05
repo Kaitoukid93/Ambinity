@@ -7,6 +7,7 @@ using System.Windows.Input;
 using Ambinity.ViewModels;
 using Ambinity.Windows;
 using AmbinityCore.DataBase;
+using AmbinityCore.Models.Device;
 using AmbinityCore.Models.GeneralSetting;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
@@ -171,16 +172,19 @@ public class Draw2DCanvasViewModel : ViewModelBase
         OnRenderingStatusChanged();
         SelectionChanged?.Invoke();
     }
-
+    private Dictionary<Figure, (bool IsResizable, bool IsDragable, bool IsSelected)> _figureLastState = new();
     /// <summary>
     /// disable all action on the canvas
     /// </summary>
     public bool IsLocked { get; set; }
 
-    public void LockCanvas()
+    private void LockCanvas()
     {
         if (Figures == null)
             return;
+
+        // Store last state
+        _figureLastState.Clear();
         foreach (var figure in Figures)
         {
             figure.IsResizable = false;
@@ -189,6 +193,27 @@ public class Draw2DCanvasViewModel : ViewModelBase
         }
 
         IsLocked = true;
+    }
+
+    private void UnlockCanvas()
+    {
+        if (Figures == null)
+            return;
+
+        // Restore last state only for DeviceContainerFigure
+        foreach (var figure in Figures)
+        {
+            if (figure is LightingZoneFigure)
+            {
+                // Default if not found
+                figure.IsResizable = true;
+                figure.IsDragable = true;
+                figure.Unselect();
+            }
+        }
+
+        IsLocked = false;
+        _figureLastState.Clear();
     }
 
 
@@ -202,7 +227,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
         var polyLine = Canvas.Figures.Where(f => f is PolyLine).First() as PolyLine;
         var points = new List<Point>();
 
-        for (int i = 0; i < polyLine.Points.Count - 1; i++)
+        for (int i = 0; i < polyLine.Points.Count; i++)
         {
             points.Add(new Point(polyLine.Points[i].X, polyLine.Points[i].Y));
         }
@@ -212,7 +237,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
         var newZone =
             _zoneRepository.GetDefaultSolidColorZone("Polyline", (int)bound.X, (int)bound.Y, (int)bound.Width,
                 (int)bound.Height,
-                Colors.Red);
+                Colors.Red, ZoneShapeEnum.Polyline);
         if (newZone.Width < 2)
         {
             newZone.Width = 2;
@@ -227,7 +252,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
 
         newZone.Points = points;
         newZone.Shape = ZoneShapeEnum.Polyline;
-        newZone.IsResizeable = false;
+        newZone.IsResizeable = true;
         var container = newZone.GetContainer();
         container.SetChild(newZone);
         Canvas.RemoveSelected();
@@ -235,22 +260,6 @@ public class Draw2DCanvasViewModel : ViewModelBase
         AddFigure(container, true);
     }
 
-    /// <summary>
-    /// Enable actions that should be enabled
-    /// </summary>
-    public void UnlockCanvas()
-    {
-        if (Figures == null)
-            return;
-        foreach (var figure in Figures)
-        {
-            figure.IsResizable = true;
-            figure.IsDragable = true;
-            figure.Unselect();
-        }
-
-        IsLocked = false;
-    }
 
     public int SelectionCount
     {
@@ -435,7 +444,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
         var vm = new ConfirmationDialogContentViewModel();
         vm.DialogClosed += OnDeleteDialogClosed;
         vm.Content = "This action cannot be undone";
-        await _dialogService.ShowConfirmationDialog(vm,"Delete selected zones?","Remove", "Cancel" );
+        await _dialogService.ShowConfirmationDialog(vm, "Delete selected zones?", "Remove", "Cancel");
 
     }
 
@@ -551,8 +560,7 @@ public class Draw2DCanvasViewModel : ViewModelBase
 
     public void AddFigure(Figure figure, bool notify)
     {
-        // var regionPolicy =
-        //     new RegionDragDropEditPolicy(new Draw2D.Core.Geo.Rectangle(0, 0, Canvas.Width, Canvas.Height));
+
         if (figure is LightingZoneFigure)
         {
 
@@ -568,9 +576,13 @@ public class Draw2DCanvasViewModel : ViewModelBase
             figure.IsResizable = false;
         }
 
-        // figure.InstallEditPolicy(regionPolicy);
+        // Add to canvas
         Canvas.AddFigure(figure);
         UpdateFigure();
+
+        // Add to _figureLastState with current state
+        _figureLastState[figure] = (figure.IsResizable, figure.IsDragable, figure.IsSelected);
+
         if (notify)
             FigureAdded?.Invoke(figure);
     }
@@ -580,10 +592,19 @@ public class Draw2DCanvasViewModel : ViewModelBase
         if (Figures == null)
             Figures = new ObservableCollection<Figure>();
         Figures.Clear();
+
+        // Update _figureLastState for all figures currently on the canvas
         foreach (var figure in Canvas.Figures)
         {
             Figures.Add(figure);
+            _figureLastState[figure] = (figure.IsResizable, figure.IsDragable, figure.IsSelected);
         }
+
+        // Optionally, remove states for figures no longer present
+        var figuresOnCanvas = Canvas.Figures.ToHashSet();
+        var keysToRemove = _figureLastState.Keys.Where(f => !figuresOnCanvas.Contains(f)).ToList();
+        foreach (var key in keysToRemove)
+            _figureLastState.Remove(key);
     }
 
     private void EnablePanModeCommandExecute()

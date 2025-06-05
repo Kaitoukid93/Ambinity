@@ -4,6 +4,7 @@ using System.Windows.Input;
 using Ambinity.Services;
 using Ambinity.ViewModels;
 using Ambinity.Views.Draw2DCanvas;
+using Ambinity.Views.LayoutEditor.Canvas;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
 using Avalonia;
 using Avalonia.Controls;
@@ -18,6 +19,7 @@ namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 
 public class ScreenCaptureRegionSelectionViewModel : ViewModelBase
 {
+    private readonly CanvasViewModelFactory _canvasViewModelFactory;
     private readonly ScreenCaptureConfiguration _config;
 
     public event Action CloseMe;
@@ -29,13 +31,13 @@ public class ScreenCaptureRegionSelectionViewModel : ViewModelBase
     private Window _currentWindow;
 
 //todo poptrait mode
-    public ScreenCaptureRegionSelectionViewModel(Draw2DCanvasViewModel canvasViewModel,
+    public ScreenCaptureRegionSelectionViewModel(CanvasViewModelFactory canvasViewModelFactory,
         ScreenCaptureConfiguration config, List<ScreenRegionSelectionParameterViewModel.ScreenDataDisplay> screens,
         IWindowService windowService)
     {
+        _canvasViewModelFactory = canvasViewModelFactory;
         _config = config;
         _windowService = windowService;
-        CanvasViewModel = canvasViewModel;
         CloseCommand = new RelayCommand(Close);
         SaveCurrentLayoutCommand = new RelayCommand(SaveCurrentLayout);
         LeftCommand = new RelayCommand(LeftRegion);
@@ -90,13 +92,14 @@ public class ScreenCaptureRegionSelectionViewModel : ViewModelBase
 
     private void Init(int index)
     {
+        CanvasViewModel = _canvasViewModelFactory.Get<CaptureRegionSelectionCanvasViewModel>();
         if (index >= desktop.MainWindow.Screens.ScreenCount)
             return;
         //init canvas
         _currentScreenIndex = index;
         var selectedScreen = desktop.MainWindow.Screens.All[_currentScreenIndex];
         var size = selectedScreen.Bounds.Size;
-        CanvasViewModel.Init(size.ToSize(1d), false, true);
+        CanvasViewModel.Init(size.ToSize(1d));
         CanvasViewModel.MinimumZoom = 1;
         CanvasViewModel.MaximumZoom = 1;
         var area = _config.ScreenCaptureArea;
@@ -159,7 +162,7 @@ public class ScreenCaptureRegionSelectionViewModel : ViewModelBase
         }
     }
 
-    public Draw2DCanvasViewModel CanvasViewModel { get; }
+    public CaptureRegionSelectionCanvasViewModel CanvasViewModel { get; set; }
 
     public ICommand SaveCurrentLayoutCommand { get; set; }
     public ICommand CloseCommand { get; set; }

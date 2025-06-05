@@ -2,6 +2,7 @@ using System.Linq;
 using Ambinity.Views.Configuration.ColorConfiguration;
 using Ambinity.Views.Configuration.PositionConfiguration;
 using Ambinity.Views.Draw2DCanvas;
+using Ambinity.Views.LayoutEditor.Canvas;
 using Ambinity.Views.LayoutEditor.RightPanel.PropertiesView;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Geography;
@@ -13,13 +14,14 @@ namespace Ambinity.Views.Screens.ProfileEditor;
 
 public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
 {
-    public ZonePropertiesViewModel(Draw2DCanvasViewModel canvasViewModel,
+    public ZonePropertiesViewModel(CanvasViewModelFactory canvasViewModelFactory,
         ColorConfigurationViewModelFactory colorConfigurationViewModelFactory,
         PositionConfigurationViewModel positionConfigurationViewModel, ConfigurationHeaderViewModel headerViewModel)
     {
         _headerViewModel = headerViewModel;
         PositionConfiguration = positionConfigurationViewModel;
-        _canvasViewModel = canvasViewModel;
+        _canvasViewModelFactory = canvasViewModelFactory;
+        _canvasViewModel = canvasViewModelFactory.Get<ProfileEditorCanvasViewModel>();
         _colorConfigurationViewModelFactory = colorConfigurationViewModelFactory;
 
     }
@@ -99,7 +101,7 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
     }
 
     private LightingZone _zone;
-    private Draw2DCanvasViewModel _canvasViewModel;
+    private ProfileEditorCanvasViewModel _canvasViewModel;
     private PositionConfigurationViewModel _positionConfiguration;
 
     private ColorConfigurationViewModelFactory _colorConfigurationViewModelFactory;
@@ -129,6 +131,7 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         }
     }
 
+    private CanvasViewModelFactory _canvasViewModelFactory;
     private ColorConfigurationViewModelBase _colorConfiguration;
 
     public ColorConfigurationViewModelBase ColorConfiguration

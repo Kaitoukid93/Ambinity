@@ -76,22 +76,22 @@ public class LightingZoneRepository : CollectableItemRepository
     }
 
 
-    public LightingZone GetDefaultSolidColorZone(string name, int x, int y, int width, int height, Color color)
+    public LightingZone GetDefaultSolidColorZone(string name, int x, int y, int width, int height, Color color,ZoneShapeEnum shape = ZoneShapeEnum.Rectangle)
     {
         var solidRedZone = new LightingZone(x, y, width, height);
         solidRedZone.Name = name;
         solidRedZone.LightingConfiguration =
-            new SelfGeneratedColorConfiguration(new List<Color>() { color }, new NoneMotionConfiguration());
+            new SelfGeneratedColorConfiguration(new List<Color>() { color }, new NoneMotionConfiguration(),shape);
         return solidRedZone;
     }
 
     public LightingZone GetDefaultColorPaletteZone(string name, int x, int y, int width, int height,
-        ColorPalette palette)
+        ColorPalette palette,ZoneShapeEnum shape = ZoneShapeEnum.Rectangle)
     {
         var solidRedZone = new LightingZone(x, y, width, height);
         solidRedZone.Name = name;
         solidRedZone.LightingConfiguration =
-            new SelfGeneratedColorConfiguration(palette.Colors.ToList(), new NoneMotionConfiguration());
+            new SelfGeneratedColorConfiguration(palette.Colors.ToList(), new NoneMotionConfiguration(),shape);
         return solidRedZone;
     }
 

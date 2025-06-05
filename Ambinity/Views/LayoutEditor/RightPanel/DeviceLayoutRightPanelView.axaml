@@ -38,6 +38,7 @@
                                     </PathIcon.RenderTransform>
                                 </PathIcon>
                             </Button>
+
                         </Grid>
                     </StackPanel>
                 </Grid>
@@ -69,12 +70,12 @@
                                     <mdxaml:MarkdownScrollViewer xml:space="preserve">
 ##### **Device Layout**
 
- * **What even is Device Layout?** 
+ * **What even is Device Layout?**
  Device layout is the model Ambinity use to calculate the color based on position and shape.
- * **Why do I need a custom Device Layout** 
+ * **Why do I need a custom Device Layout**
  It's fine if you just use the default layout, but Ambinity will not be able to calculate the color precisely. Hence the default model will
 not represent a 1:1 color to the actual device
- 
+
 Request custom layout at [Ambino-Layout](https://ambino.vn)
                                                 </mdxaml:MarkdownScrollViewer>
                                 </Border>
@@ -90,6 +91,13 @@ Request custom layout at [Ambino-Layout](https://ambino.vn)
                                     Background="Transparent" Width="30" Height="30"
                                     Classes="icon-button">
                                 <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon>
+                            </Button>
+                        </Grid>
+                          <Grid>
+                            <Button ToolTip.Tip="Create Custom Layout" Command="{Binding OpenLayoutCreatorCommand}" Padding="1"
+                                    Background="Transparent" Width="30" Height="30"
+                                    Classes="icon-button">
+                                <PathIcon Width="15" Data="{DynamicResource AddToCollection}"></PathIcon>
                             </Button>
                         </Grid>
                     </StackPanel>

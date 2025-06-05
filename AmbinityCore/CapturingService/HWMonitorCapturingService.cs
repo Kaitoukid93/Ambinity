@@ -123,8 +123,6 @@ public class HWMonitorCapturingService : ICapturingService
                         _fanControlSensors.RemoveAt(i);
                     }
                 }
-
-                List<double> values = new List<double>();
                 foreach (var sensor in _fanControlSensors)
                 {
                     if (sensor.Value.HasValue)
@@ -136,8 +134,6 @@ public class HWMonitorCapturingService : ICapturingService
                       //  Log.Information(sensor.Name + ": " + "Value:" + _sensorValue[0] + ", Min:" + _sensorValue[1] +
                                       //  ", Max:" + _sensorValue[2]);
                     }
-
-                    values.Add((double)sensor.Value);
                 }
 
                 DataUpdate?.Invoke();

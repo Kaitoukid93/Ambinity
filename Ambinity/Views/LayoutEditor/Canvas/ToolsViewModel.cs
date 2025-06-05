@@ -31,6 +31,7 @@ public class ToolsViewModel : ViewModelBase
     public event Action ToggleSnapToGridEvent;
     public event Action<Figure> AddFigure;
     public event Action<PolylineTool> InstallPolylineTool;
+    public event Action ResetLayout;
     public event Action OpenFlyoutEvent;
     public event Action CloseFlyoutEvent;
 
@@ -61,6 +62,7 @@ public class ToolsViewModel : ViewModelBase
         AddAnimationZoneCommand.NotifyCanExecuteChanged();
         AddColorZoneCommand.NotifyCanExecuteChanged();
         ShowLibraryCommand.NotifyCanExecuteChanged();
+        ResetDefaultLayoutCommand.NotifyCanExecuteChanged();
     }
 
     private bool _showLockSymbol;
@@ -100,6 +102,7 @@ public class ToolsViewModel : ViewModelBase
         AddColorZoneCommand = new RelayCommand(AddColorZone, () => ZoneToolsCommandCanExecute);
         TogglePlayPauseCommand = new RelayCommand(TogglePlayPause);
         ShowDiagCommand = new RelayCommand(ToggleShowDiag);
+        ResetDefaultLayoutCommand = new RelayCommand(ResetDefaultLayout, () => ZoneToolsCommandCanExecute);
     }
 
     private void ToggleShowDiag()
@@ -190,6 +193,11 @@ public class ToolsViewModel : ViewModelBase
         OnRenderingStatusChanged();
     }
 
+    public void InitForLEDLayoutCreator()
+    {
+        
+    }
+
     public void InitForDeviceLayout()
     {
         _currentProfile = _decoder.CurrentPlayingProfile;
@@ -201,11 +209,19 @@ public class ToolsViewModel : ViewModelBase
         snapToGridTools.Command = ToggleSnapToGridCommand;
         var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",
             new SolidColorBrush(Colors.Gray), FitCanvasToViewCommand);
+        var resetDefaultLayoutTool = new ButtonToolbarItem("Reset", "Reset to default layout",
+        "mail_send", new SolidColorBrush(Colors.Gray), ResetDefaultLayoutCommand);
         CanvasTools.Add(snapToGridTools);
         CanvasTools.Add(centerCanvasTool);
+        CanvasTools.Add(resetDefaultLayoutTool);
         OnRenderingStatusChanged();
     }
 
+
+    private void ResetDefaultLayout()
+    {
+        ResetLayout?.Invoke();
+    }
     private void AddPolyline(FlyoutItem obj)
     {
         InstallPolylineTool?.Invoke(new PolylineTool());
@@ -314,6 +330,7 @@ public class ToolsViewModel : ViewModelBase
     public RelayCommand AddAnimationZoneCommand { get; set; }
     public RelayCommand AddColorZoneCommand { get; set; }
     public RelayCommand ShowDiagCommand { get; set; }
+    public RelayCommand ResetDefaultLayoutCommand { get; set; }
     public AsyncRelayCommand ShowLibraryCommand { get; set; }
     public bool IsRendering => _decoder.IsRendering && _decoder.CurrentPlayingProfile.ID == _currentProfile.ID;
     public ICommand TogglePlayPauseCommand { get; set; }

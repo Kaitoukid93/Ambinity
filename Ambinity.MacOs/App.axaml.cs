@@ -8,6 +8,11 @@ using Avalonia.Markup.Xaml;
 using AmbinityCore.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Ambinity.MacOs.SystemUtilities;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using AmbinityCore.CapturingService;
+using AmbinityCore.Models.Profile;
+using AmbinityCore.Models.Device.Service;
 
 namespace Ambinity.MacOs;
 
@@ -23,10 +28,10 @@ public partial class App : Application
             Environment.Exit(1);
         }
         //hot reload with jetbrains rider
-       // this.EnableHotReload(); // Ensure this line **precedes** `AvaloniaXamlLoader.Load(this);`
+        // this.EnableHotReload(); // Ensure this line **precedes** `AvaloniaXamlLoader.Load(this);`
         AvaloniaXamlLoader.Load(this);
     }
-        
+
     private bool FocusExistingInstance()
     {
         if (Design.IsDesignMode)
@@ -39,12 +44,17 @@ public partial class App : Application
     {
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
+        SystemEvent.Subscribe();
+
         BindingPlugins.DataValidators.RemoveAt(0);
         //register service and ui
         AmbinityBootStrapper.Initialize(this);
-           
+        var capturingServiceProvider = Ioc.Default.GetRequiredService<CapturingServiceProvider>();
+        var profileDecoder = Ioc.Default.GetRequiredService<LightingProfileDecoder>();
+        var serialDiscoveryService = Ioc.Default.GetRequiredService<SerialControllerDiscoveryService>();
+        _applicationStateManager = new ApplicationStateManager(capturingServiceProvider, profileDecoder, serialDiscoveryService);
     }
-        
+
     private Mutex? _ambinityMutex;
-    
+    private ApplicationStateManager _applicationStateManager;
 }

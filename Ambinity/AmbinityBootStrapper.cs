@@ -10,8 +10,11 @@ using Ambinity.Views.AppTour;
 using Ambinity.Views.Configuration.ColorConfiguration;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 using Ambinity.Views.Configuration.PositionConfiguration;
+using Ambinity.Views.Debug;
 using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.LayoutEditor;
+using Ambinity.Views.LayoutEditor.Canvas;
+using Ambinity.Views.LayoutEditor.LEDLayoutCreator;
 using Ambinity.Views.LayoutEditor.RightPanel.PropertiesView;
 using Ambinity.Views.NonClientArea;
 using Ambinity.Views.OnlineStore.Library;
@@ -76,10 +79,10 @@ public class AmbinityBootStrapper
     public static async void Initialize(Application application)
     {
         _application = application;
-        //setup debug logging
-        SetupDebugLogging();
         //register all Services and ViewModels
         ConfigureIoc();
+        //setup debug logging
+        SetupDebugLogging();
         //get settings
         _generalSettingsManager = Ioc.Default.GetRequiredService<GeneralSettingsManager>();
         //register auto starts
@@ -181,9 +184,10 @@ public class AmbinityBootStrapper
             //splash
             .AddSingleton<SplashViewModel>()
             //layout editor
+            .AddSingleton<CanvasViewModelFactory>()
             .AddSingleton<DeviceLayoutEditorViewModel>()
+            .AddSingleton<CanvasViewModelBase, DeviceLayoutCanvasViewModel>()
             .AddSingleton<ProfileEditorViewModel>()
-            .AddSingleton<LayoutCanvasViewModel>()
             .AddSingleton<ProfileEditorRightPanelViewModel>()
             .AddSingleton<ParameterViewModelFactory>()
             .AddSingleton<ColorConfigurationViewModelFactory>()
@@ -227,7 +231,8 @@ public class AmbinityBootStrapper
             //Dialogs
             .AddSingleton<IDialogService, DialogService>()
             //Profile editor
-            .AddSingleton<Draw2DCanvasViewModel>()
+            .AddSingleton<CanvasViewModelBase,CaptureRegionSelectionCanvasViewModel>()
+            .AddSingleton<CanvasViewModelBase, ProfileEditorCanvasViewModel>()
             .AddSingleton<FigureContextMenuProvider>()
             .AddSingleton<ToolsViewModel>()
             .AddSingleton<LayersViewModel>()
@@ -238,7 +243,7 @@ public class AmbinityBootStrapper
             //profile Decoder
             .AddSingleton(mainFrameBuffer)
             .AddSingleton<LightingProfileDecoder>()
-            .AddSingleton<ColorEngineProvider>()
+            .AddSingleton<ColorServiceProvider>()
             //Repository singleton
             .AddSingleton<TutorialsOnlineRepository>()
             .AddSingleton<StaticColorsRepository>()
@@ -276,10 +281,18 @@ public class AmbinityBootStrapper
             .AddSingleton<ProfileStoreNonClientAreaContentViewModel>()
             .AddSingleton<AmbinityStoreNavigation>()
             .AddSingleton<AmbinityStoreDetailViewModel>()
+
             //capture
             .AddSingleton<ScreenCapturingService>()
             .AddSingleton<AudioCapturingService>()
-            .AddSingleton<HWMonitorCapturingService>();
+            .AddSingleton<HWMonitorCapturingService>()
+
+            //debug
+            .AddSingleton<DebugWindowViewModel>()
+            .AddSingleton<AvaloniaViewModelSink>()
+        //LED layout creator
+            .AddSingleton<CanvasViewModelBase,LEDLayoutCreatorCanvasViewModel>()
+            .AddSingleton<LEDLayoutCreatorViewModel>();
 
         Ioc.Default.ConfigureServices(
             serviceCollection
@@ -362,9 +375,12 @@ public class AmbinityBootStrapper
 
     private static void SetupDebugLogging()
     {
+        var debugViewModel = Ioc.Default.GetRequiredService<DebugWindowViewModel>();
+        var debugSinkViewModel = Ioc.Default.GetRequiredService<AvaloniaViewModelSink>();
         var logPath = Path.Combine(Constants.AppDataFolder, "Logs");
         Log.Logger = new LoggerConfiguration()
             .WriteTo.Console()
+            .WriteTo.Sink(debugSinkViewModel)
             .WriteTo.File(Path.Combine(logPath, "ambinity-.txt"), rollingInterval: RollingInterval.Day,
                 retainedFileCountLimit: 10, shared: true,
                 outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")

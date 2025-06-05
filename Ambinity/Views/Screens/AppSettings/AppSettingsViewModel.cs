@@ -4,12 +4,14 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Services;
 using Ambinity.SystemUtilities;
 using Ambinity.Utils;
 using Ambinity.ViewModels;
+using Ambinity.Views.Debug;
 using AmbinityCore.DataBase;
 using AmbinityCore.Models.GeneralSetting;
 using AmbinityCore.Utils;
@@ -30,6 +32,8 @@ public class AppSettingsViewModel : ViewModelBase
     private const string _system = "System";
     private const string _dark = "Dark";
     private const string _light = "Light";
+    private readonly DebugWindowViewModel _debugWindowViewModel;
+    private readonly IWindowService _windowService;
     private readonly GeneralSettingsManager _settingsManager;
     private IGeneralSettings _generalSettings;
     private UpdateService _updateService;
@@ -37,8 +41,10 @@ public class AppSettingsViewModel : ViewModelBase
     private IProgress<int> _updatingProgress;
     private AppThemeManager _appThemeManager;
 
-    public AppSettingsViewModel(GeneralSettingsManager settingsManager, UpdateService updateService, AppThemeManager appThemeManager)
+    public AppSettingsViewModel(GeneralSettingsManager settingsManager, IWindowService windowService, DebugWindowViewModel debugWindowViewModel, UpdateService updateService, AppThemeManager appThemeManager)
     {
+        _debugWindowViewModel = debugWindowViewModel;
+        _windowService = windowService;
         _settingsManager = settingsManager;
         _updateService = updateService;
         var settings = _settingsManager.Settings;
@@ -61,15 +67,19 @@ public class AppSettingsViewModel : ViewModelBase
             .First();
         RequestRestartApplicationCommand = new RelayCommand(RequestRestartApplication);
         CheckForAppUpdateCommand = new AsyncRelayCommand(CheckForAppUpdate);
+        RemoveAllDevicesCommand = new RelayCommand(RemoveAllDevices);
+        RemoveDownloadedDatasCommand = new RelayCommand(RemoveDownloadedDatas);
+        ShowDebugLogCommand = new RelayCommand(ShowDebugLog);
         var assemblyVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
         CurrentReleaseInformation = new AppReleaseInformation(assemblyVersion, DateTime.Now);
         InstallUpdateCommand = new AsyncRelayCommand(InstallUpdate);
         _updatingProgress = new Progress<int>((p) => { CurrentUpdateProgress = p; });
     }
 
-    public bool HWMonitorSettingVisible{get;} = OperatingSystem.IsWindows();
-    public bool OpenRGBSettingVisible{get;} = OperatingSystem.IsWindows();
-    public bool EnableInAppUpdate{get;} = OperatingSystem.IsWindows();
+
+    public bool HWMonitorSettingVisible { get; } = OperatingSystem.IsWindows();
+    public bool OpenRGBSettingVisible { get; } = OperatingSystem.IsWindows();
+    public bool EnableInAppUpdate { get; } = OperatingSystem.IsWindows();
     private int _currentUpdateProgress;
 
     public int CurrentUpdateProgress
@@ -113,7 +123,21 @@ public class AppSettingsViewModel : ViewModelBase
         Utilities.ApplyUpdate(true);
         IsUpdating = false;
     }
-
+    private void ShowDebugLog()
+    {
+        // _debugWindowViewModel.Init();
+        _windowService.ShowWindow(_debugWindowViewModel);
+    }
+    private void RemoveDownloadedDatas()
+    {
+        AppUtilities.RemoveAppData();
+        RequestRestartApplication();
+    }
+    private void RemoveAllDevices()
+    {
+        AppUtilities.RemoveAllDevices();
+        RequestRestartApplication();
+    }
     private async Task CheckForAppUpdate()
     {
         IsCheckingForUpdate = true;
@@ -186,7 +210,15 @@ public class AppSettingsViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+    public string BuildInfo { get; } = GetBuildInfo();
 
+    private static string GetBuildInfo()
+    {
+        var buildNumber = DateTime.UtcNow.ToString("yyyyMMdd");
+        var version = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "?.?.?.?";
+        var os = RuntimeInformation.RuntimeIdentifier;
+        return $"Build: {buildNumber} | Version: {version} | OS: {os}";
+    }
     public AsyncRelayCommand CheckForAppUpdateCommand { get; set; }
 
     private void RequestRestartApplication()
@@ -331,6 +363,9 @@ public class AppSettingsViewModel : ViewModelBase
     }
 
     public ICommand RequestRestartApplicationCommand { get; }
+    public ICommand RemoveAllDevicesCommand { get; }
+    public ICommand ShowDebugLogCommand { get; }
+    public ICommand RemoveDownloadedDatasCommand { get; }
 
     private void RegisterStartupInformation(bool update = false)
     {

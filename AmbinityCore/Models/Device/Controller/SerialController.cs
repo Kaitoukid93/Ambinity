@@ -100,6 +100,7 @@ public class SerialController : ObservableObject, IController
         if (LedController == null)
             return;
         LedController.PropertyChanged += OnControllerPropertyChanged;
+        LedController.HardwareSettings.HardwareType = HardwareType;
     }
 
     public void RegisterFanController()

@@ -12,7 +12,7 @@ using Animation = SkiaSharp.Skottie.Animation;
 
 namespace AmbinityCore.LightingEngines;
 
-public class AnimationDecodeEngine : IColorEngine
+public class AnimationDecodeEngine : IColorService
 {
     private int _startIndex = 0;
     public LightingZone Zone => _zone;

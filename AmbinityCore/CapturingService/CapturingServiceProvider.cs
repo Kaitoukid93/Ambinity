@@ -30,4 +30,24 @@ public class CapturingServiceProvider(
 
         return null;
     }
+    public async Task Dispose()
+    {
+        var tasks = new List<Task>
+        {
+            Task.Run(() => audioCapturingService.Dispose()),
+            Task.Run(() => screenCapturingService.Dispose()),
+            Task.Run(() => hwMonitorCapturingService.Dispose())
+        };
+        await Task.WhenAll(tasks);
+    }
+    public async Task Init()
+    {
+        var tasks = new List<Task>
+        {
+            Task.Run(() => audioCapturingService.Init()),
+            Task.Run(() => screenCapturingService.Init()),
+            Task.Run(() => hwMonitorCapturingService.Init())
+        };
+        await Task.WhenAll(tasks);
+    }
 }

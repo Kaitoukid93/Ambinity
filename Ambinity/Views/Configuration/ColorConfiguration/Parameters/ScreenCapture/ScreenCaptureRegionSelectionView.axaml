@@ -52,7 +52,7 @@
                             Flyout="{StaticResource CaptureRegionFlyout}" Margin="5,5">
                         <Grid ColumnDefinitions="*,10,Auto">
                             <TextBlock HorizontalAlignment="Left" Text="Full screen">
-                            </TextBlock>    
+                            </TextBlock>
                             <PathIcon Grid.Column="2" Width="15" Data="{DynamicResource scale}"></PathIcon>
                         </Grid>
                     </SplitButton>

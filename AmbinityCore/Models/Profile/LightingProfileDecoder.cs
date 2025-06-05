@@ -24,18 +24,17 @@ public class LightingProfileDecoder
     private int _framerate;
     public bool ShouldUpdateFrame { get; set; }
 
-    public LightingProfileDecoder(LightingProfileRepository repository, ColorEngineProvider colorEngineProvider,
+    public LightingProfileDecoder(LightingProfileRepository repository, ColorServiceProvider colorServiceProvider,
         FrameBuffer buffer, GeneralSettingsManager generalSettingsManager)
     {
-        _colorEngineProvider = colorEngineProvider;
+        _colorServiceProvider = colorServiceProvider;
         _repository = repository;
         _buffer = buffer;
         _generalSettings = generalSettingsManager?.Settings;
-        _engines = new List<IColorEngine>();
     }
 
     private LightingProfileRepository _repository;
-    private ColorEngineProvider _colorEngineProvider;
+    private ColorServiceProvider _colorServiceProvider;
     private CancellationTokenSource? _tokenSource;
     private IGeneralSettings _generalSettings;
     private bool _isRendering;
@@ -43,7 +42,7 @@ public class LightingProfileDecoder
     public LightingProfile CurrentPlayingProfile => _currentPlayingProfile;
     private LightingProfile _currentPlayingProfile;
     private FrameBuffer _buffer;
-    private List<IColorEngine> _engines;
+    private ColorServiceCollection _colorServiceCollection = new ColorServiceCollection();
     private readonly AmbinityDeviceRepository _deviceRepository;
     public double[] FramesTime;
 
@@ -77,8 +76,8 @@ public class LightingProfileDecoder
         //so it can show user how to press the play button to render a profile
         // if (!_generalSettings.ShowAppTour)
         // {
-            LoadLastProfile();
-            Resume();
+        LoadLastProfile();
+        Resume();
         // }
     }
 
@@ -174,8 +173,17 @@ public class LightingProfileDecoder
         if (!_isRendering)
             return;
 
-        _engines.Clear();
+        _colorServiceCollection.Clear();
         _currentPlayingProfile.IsPlaying = false;
+
+        // Clear the buffer
+        lock (_buffer.FrameLock)
+        {
+            Array.Clear(_buffer.PixelData, 0, _buffer.PixelData.Length);
+            if (ShouldUpdateFrame)
+                FrameUpdate?.Invoke();
+        }
+
         if (_tokenSource != null)
         {
             await _tokenSource.CancelAsync();
@@ -192,17 +200,17 @@ public class LightingProfileDecoder
     /// <param name="zone"></param>
     private void RegisterZone(LightingZone zone, int index)
     {
-        var engine = _colorEngineProvider.GetEngine(zone);
-        engine.Init(zone);
-        _engines.Add(engine);
+        var service = _colorServiceProvider.GetService(zone);
+        service.Init(zone);
+        _colorServiceCollection.Add(service);
     }
 
     public void UnregisterZone(LightingZone zone)
     {
-        var engine = _engines.Where(e => e.Zone == zone).FirstOrDefault();
-        if (engine == null)
+        var service = _colorServiceCollection.GetByZone(zone);
+        if (service == null)
             return;
-        engine.Dispose();
+        service.Dispose();
     }
 
     /// <summary>
@@ -232,21 +240,12 @@ public class LightingProfileDecoder
                 // sw.Restart();
                 var brightness = _currentPlayingProfile.Brightness / 100d;
                 _buffer.BrightnessFactor = brightness;
-                foreach (var engine in _engines)
+                foreach (var service in _colorServiceCollection.GetAll())
                 {
-                    if (!engine.IsAvailable)
+                    if (!service.IsAvailable)
                         continue;
-                    engine.Render();
+                    service.Render();
                 }
-
-                // sw.Stop();
-                // totalFrameTime = sw.ElapsedMilliseconds; // Accumulate the elapsed time
-
-                // if (reportStopwatch.ElapsedMilliseconds >= 100)
-                // {
-                //     reportStopwatch.Restart();
-                //     FramesTime[index] = Math.Round((double)totalFrameTime, 5);
-                // }
                 if (ShouldUpdateFrame)
                     FrameUpdate?.Invoke();
             };
@@ -262,9 +261,9 @@ public class LightingProfileDecoder
         }
         finally
         {
-            foreach (var engine in _engines)
+            foreach (var service in _colorServiceCollection.GetAll())
             {
-                engine.Dispose();
+                service.Dispose();
             }
 
             GC.Collect();

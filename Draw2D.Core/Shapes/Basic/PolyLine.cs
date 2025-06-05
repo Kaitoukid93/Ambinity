@@ -98,7 +98,7 @@ namespace Draw2D.Core.Shapes.Basic
                         count++;
                         continue;
                     }
-                        
+
                     var vertex = Canvas.CoordinateSystem.ToScreenSpace(point);
                     var v = new Avalonia.Point(vertex[0], vertex[1]);
                     ctx.LineTo(v);

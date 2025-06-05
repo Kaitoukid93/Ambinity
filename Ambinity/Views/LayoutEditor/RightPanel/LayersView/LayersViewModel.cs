@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ambinity.ViewModels;
 using Ambinity.Views.Draw2DCanvas;
+using Ambinity.Views.LayoutEditor.Canvas;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Threading;
 using Draw2D.Core;
 
@@ -16,13 +18,26 @@ namespace Ambinity.Views.LayoutEditor;
 /// </summary>
 public class LayersViewModel : ViewModelBase
 {
-    public LayersViewModel(Draw2DCanvasViewModel canvasViewModel)
+    public LayersViewModel(CanvasViewModelFactory canvasViewModelFactory)
     {
-        _canvasViewModel = canvasViewModel;
+        canvasViewModelFactory.CurrentChanged += OnCanvasViewModelChanged;
+
+        Layers = new ObservableCollection<LayerViewModel>();
+    }
+
+    private void OnCanvasViewModelChanged(CanvasViewModelBase vm)
+    {
+        if (_canvasViewModel != null)
+        {
+            _canvasViewModel.SelectionChanged -= OnCanvasSelectionChanged;
+            _canvasViewModel.FigureAdded -= OnFigureAdded;
+            _canvasViewModel.FigureRemoved -= OnFigureRemoved;
+        }
+
+        _canvasViewModel = vm;
         _canvasViewModel.SelectionChanged += OnCanvasSelectionChanged;
         _canvasViewModel.FigureAdded += OnFigureAdded;
         _canvasViewModel.FigureRemoved += OnFigureRemoved;
-        Layers = new ObservableCollection<LayerViewModel>();
     }
 
     private void OnFigureRemoved(Figure figure)
@@ -49,7 +64,7 @@ public class LayersViewModel : ViewModelBase
         }
     }
 
-    private Draw2DCanvasViewModel _canvasViewModel;
+    private CanvasViewModelBase _canvasViewModel;
     public ObservableCollection<LayerViewModel> Layers { get; set; }
 
     public async Task Update()

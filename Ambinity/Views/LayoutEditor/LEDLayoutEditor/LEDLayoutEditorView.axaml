@@ -30,7 +30,7 @@
         </Style>
     </Window.Styles>
     <Grid ColumnDefinitions="*,20,Auto">
-        <StackPanel Spacing="20">
+        <Grid RowDefinitions="Auto,20,*,20,Auto">
             <Border
                 HorizontalAlignment="Left"
                 Classes="primaryChip"
@@ -41,7 +41,7 @@
                     Foreground="{DynamicResource AccentButtonBackground}"
                     Text="Device is using custom Index" />
             </Border>
-            <Grid>
+            <Grid Row="2">
                 <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <ItemsControl ItemsSource="{Binding LEDs}">
                         <ItemsControl.ItemsPanel>
@@ -85,13 +85,13 @@
                 </Viewbox>
             </Grid>
 
-            <Button
+            <Button Grid.Row="4"
                 Classes="accent"
                 Command="{Binding EnterIndexSetupCommand}"
                 Content="Index setup"
                 IsVisible="{Binding !IsInIndexSetupMode}" />
 
-        </StackPanel>
+        </Grid>
         <Grid Column="2" IsVisible="{Binding IsInIndexSetupMode}">
             <StackPanel Spacing="10">
                 <Grid>

@@ -1,0 +1,165 @@
+using Avalonia;
+using Ambinity.Views.Draw2DCanvas;
+using Ambinity.Services;
+using AmbinityCore.DataBase;
+using Ambinity.Windows;
+using AmbinityCore.Models.Lighting.Zone;
+using AmbinityCore.Models.Profile;
+using Draw2D.Core.Graphic;
+using Canvas = Draw2D.Core.Canvas;
+using Avalonia.Media;
+using Draw2D.Core.Shapes.Basic;
+using System.Collections.Generic;
+using System.Linq;
+using AmbinityCore.Models.Geography;
+using Draw2D.Core.Policies.RouterPolicy;
+using Draw2D.Core;
+using System;
+using AmbinityCore.Repositories;
+using AmbinityCore.Models.Device;
+
+namespace Ambinity.Views.LayoutEditor.Canvas
+{
+    public class LEDLayoutCreatorCanvasViewModel : CanvasViewModelBase
+    {
+
+
+        public ToolsViewModel ToolsViewModel { get; }
+        public Draw2DCanvasInfoBarViewModel InfoBarViewModel { get; }
+        public LEDLayoutCreatorCanvasViewModel(GeneralSettingsManager settingsManager,
+         IDialogService dialogService, ToolsViewModel toolsViewModel)
+            : base(settingsManager, dialogService)
+        {
+
+            ToolsViewModel = toolsViewModel;
+        }
+
+
+
+        private void InstallTool(PolylineTool tool)
+        {
+            InstallPolylineTool();
+        }
+
+        private void OnFigureAddedFromTool(Figure figure)
+        {
+            AddFigure(figure, true);
+            figure.Select();
+        }
+
+        public bool ShoudDrawBackground { get; set; }
+
+        private void OnFigureRemoved(Figure figure)
+        {
+
+        }
+
+        private void OnFigureAdded(Figure figure)
+        {
+
+        }
+
+        private void ToggleSnapToGrid()
+        {
+            ToggleGridSnapCommand.Execute(null);
+        }
+
+        private void FitCanvasToView()
+        {
+            FitCommand.Execute(null);
+        }
+
+        public void Init()
+        {
+            //Register Tools
+            ToolsViewModel.FitCanvasToViewEvent += FitCanvasToView;
+            ToolsViewModel.ToggleSnapToGridEvent += ToggleSnapToGrid;
+            ToolsViewModel.InstallPolylineTool += InstallTool;
+            ToolsViewModel.AddFigure += OnFigureAddedFromTool;
+
+            //Create Canvas
+            var canvasSize = new Size(500, 500);
+            base.Init(canvasSize);
+            FigureAdded += OnFigureAdded;
+            FigureRemoved += OnFigureRemoved;
+            Canvas.ShouldDrawBackgroundImage = false;
+
+            //resolve list figures
+            int zOrder = 0;
+            //Register InforBar
+            ToolsViewModel.InitForLEDLayoutCreator();
+        }
+
+
+
+        public override void UnlockCanvas()
+        {
+            if (Figures == null)
+                return;
+
+            // Restore last state only for DeviceContainerFigure
+            foreach (var figure in Figures)
+            {
+                if (figure is LightingZoneFigure)
+                {
+                    // Default if not found
+                    figure.IsResizable = true;
+                    figure.IsDragable = true;
+                    figure.Unselect();
+                }
+            }
+
+            IsLocked = false;
+        }
+        public override void LockCanvas()
+        {
+            if (Figures == null)
+                return;
+
+            // Lock all figures
+            foreach (var figure in Figures)
+            {
+                if (figure is LightingZoneFigure)
+                {
+                    figure.IsResizable = false;
+                    figure.IsDragable = false;
+                    figure.Unselect();
+                }
+            }
+
+            IsLocked = true;
+        }
+        public override void OnPolylineFinishDrawing()
+        {
+
+        }
+
+        public override void Paste()
+        {
+            var bound = Getbound(ClipboardFigures);
+            foreach (var figure in ClipboardFigures)
+            {
+                //todo implementing paste abstract
+                var clipboardChilItem = (figure as ContainerFigure).ChildItem;
+                var offSetX = clipboardChilItem.X - bound.X;
+                var offSetY = clipboardChilItem.Y - bound.Y;
+                var cloneFigure = clipboardChilItem.Clone((float)WorldMousePosX + (float)offSetX,
+                    (float)WorldMousePosY + (float)offSetY);
+                AddFigure(cloneFigure, true);
+                cloneFigure.Select();
+            }
+        }
+
+        public override void Dispose()
+        {
+            ToolsViewModel.FitCanvasToViewEvent -= FitCanvasToView;
+            ToolsViewModel.ToggleSnapToGridEvent -= ToggleSnapToGrid;
+            FigureAdded -= OnFigureAdded;
+            FigureRemoved -= OnFigureRemoved;
+            ToolsViewModel.InstallPolylineTool -= InstallTool;
+            ToolsViewModel.AddFigure -= OnFigureAddedFromTool;
+            ToolsViewModel?.Dispose();
+        }
+
+    }
+}

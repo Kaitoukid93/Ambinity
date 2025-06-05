@@ -5,12 +5,12 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace AmbinityCore.LightingEngines;
 
-public class ColorEngineProvider
+public class ColorServiceProvider
 {
     /// <summary>
     /// provide background running task with specific color engine
     /// </summary>
-    public ColorEngineProvider()
+    public ColorServiceProvider()
     {
 
     }
@@ -18,7 +18,7 @@ public class ColorEngineProvider
     private CapturingServiceProvider _capturingServiceProvider;
     private readonly ScreenCapturingService _screenCapturingService;
 
-    public IColorEngine GetEngine(LightingZone zone)
+    public IColorService GetService(LightingZone zone)
     {
         switch (zone.LightingConfiguration.Type)
         {

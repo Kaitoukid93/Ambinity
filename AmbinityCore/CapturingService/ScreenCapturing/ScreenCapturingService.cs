@@ -19,8 +19,9 @@ public class ScreenCapturingService : ICapturingService
     public bool IsEnabled { get; private set; }
     public event Action<int> FrameUpdated;
 
-    private IScreenCaptureService _screenCaptureService;
-    private List<IScreenCapture> _screenCaptures { get; set; }
+    private IScreenCaptureService? _screenCaptureService;
+    private CancellationTokenSource _cancellationTokenSource = new();
+    private List<IScreenCapture>? _screenCaptures { get; set; }
     private bool _disposed { get; set; }
     public List<Display> AvailableScreens => _availableScreen;
     private List<Display> _availableScreen;
@@ -33,13 +34,18 @@ public class ScreenCapturingService : ICapturingService
             return;
         _screenCaptureService?.Dispose();
 #if MACOS
-    _screenCaptureService ??= new SCKScreenCaptureService();
+        _screenCaptureService = new SCKScreenCaptureService();
 #else
-        _screenCaptureService ??= new DX11ScreenCaptureService(); // Replace with the appropriate service for non-macOS platforms
+        _screenCaptureService = new DX11ScreenCaptureService();
 #endif
         var graphicsCards = new GraphicsCard();
         _availableScreen = _screenCaptureService.GetDisplays(graphicsCards).ToList();
         _screenCaptures = new List<IScreenCapture>();
+
+        // Cancel any previous capture threads
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource = new CancellationTokenSource();
+
         foreach (var display in _availableScreen)
         {
             var screenCapture = _screenCaptureService.GetScreenCapture(display);
@@ -48,7 +54,7 @@ public class ScreenCapturingService : ICapturingService
 
         foreach (var screenCapture in _screenCaptures)
         {
-            var thread = new Thread(() => CaptureScreen(screenCapture))
+            var thread = new Thread(() => CaptureScreen(screenCapture, _cancellationTokenSource.Token))
             {
                 IsBackground = true,
                 Priority = ThreadPriority.BelowNormal,
@@ -58,17 +64,15 @@ public class ScreenCapturingService : ICapturingService
         }
     }
 
-    public void CaptureScreen(IScreenCapture screenCapture)
+    public void CaptureScreen(IScreenCapture screenCapture, CancellationToken cancellationToken)
     {
         try
         {
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 //call render from engine
                 if (_userCount > 0)
                 {
-                    // _paletteEngine.Render(zone, _imageBuffer, colorBank)
-
                     screenCapture.CaptureScreen();
                     FrameUpdated?.Invoke(screenCapture.Display.Index);
                     Thread.Sleep(1000 / 30);
@@ -115,6 +119,9 @@ public class ScreenCapturingService : ICapturingService
 
     public void Dispose()
     {
+        // Cancel all capture threads
+        _cancellationTokenSource?.Cancel();
+
         // Dispose of unmanaged resources.
         Dispose(true);
         // Suppress finalization.
@@ -124,6 +131,10 @@ public class ScreenCapturingService : ICapturingService
     protected void Dispose(bool disposing)
     {
         if (_disposed)
+        {
+            return;
+        }
+        if (_screenCaptures == null)
         {
             return;
         }
@@ -137,7 +148,7 @@ public class ScreenCapturingService : ICapturingService
 
             _screenCaptureService?.Dispose();
         }
-
+        _screenCaptureService = null;
         _screenCaptures = null;
 
         _disposed = true;

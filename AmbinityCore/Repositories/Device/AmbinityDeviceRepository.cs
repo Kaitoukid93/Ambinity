@@ -63,7 +63,7 @@ public class AmbinityDeviceRepository
 
             DevicesListUpdated?.Invoke();
         }
-      
+
     }
 
 //todo implement device remove
@@ -97,6 +97,17 @@ public class AmbinityDeviceRepository
             var capture = GetCapture(device);
             capture?.Dispose();
             _captures.Remove(capture);
+        }
+    }
+
+    public void ResetDefaultLayout()
+    {
+        foreach(var controller in _serialControllerRepository.Items)
+        {
+            if (controller is SerialController serialController)
+            {
+                serialController.LedController.PopulateDefaultLayout();
+            }
         }
     }
 

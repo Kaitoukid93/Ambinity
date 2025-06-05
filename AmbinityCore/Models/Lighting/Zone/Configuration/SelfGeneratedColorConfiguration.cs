@@ -15,10 +15,18 @@ public class SelfGeneratedColorConfiguration : ILightingConfiguration
     {
     }
 
-    public SelfGeneratedColorConfiguration(List<Color> colors, IMotionConfiguration motionConfig)
+    public SelfGeneratedColorConfiguration(List<Color> colors, IMotionConfiguration motionConfig, ZoneShapeEnum shape = ZoneShapeEnum.Rectangle)
     {
         Colors = colors;
         MotionConfig = motionConfig;
+        if (shape == ZoneShapeEnum.Polyline)
+        {
+            Apperance = new ColorApperance()
+            {
+                Mode = ColorApperanceEnum.Stroke,
+                Value = 3
+            };
+        }
     }
 
     public string Name => "Colors";
@@ -55,7 +63,7 @@ public class SelfGeneratedColorConfiguration : ILightingConfiguration
     public float Speed { get; set; } = 10f;
 
     /// <summary>
-    /// How dense color place 
+    /// How dense color place
     /// </summary>
     public float ColorResolution { get; set; } = 8f;
 

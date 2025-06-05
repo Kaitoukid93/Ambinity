@@ -49,14 +49,14 @@ public class SerialControllerDiscoveryService
         }
 
         _cancellationTokenSource = new CancellationTokenSource();
-// #if DEBUG
-//         _workerThread = new Thread(() => RunDebug())
-//         {
-//             Name = "Device Discovery",
-//             IsBackground = true,
-//             Priority = ThreadPriority.BelowNormal
-//         };
-// #else
+        // #if DEBUG
+        //         _workerThread = new Thread(() => RunDebug())
+        //         {
+        //             Name = "Device Discovery",
+        //             IsBackground = true,
+        //             Priority = ThreadPriority.BelowNormal
+        //         };
+        // #else
 
         _workerThread = new Thread(() => Run(_cancellationTokenSource.Token))
         {
@@ -64,7 +64,7 @@ public class SerialControllerDiscoveryService
             IsBackground = true,
             Priority = ThreadPriority.BelowNormal
         };
-// #endif
+        // #endif
         _workerThread.Start();
     }
 
@@ -177,7 +177,7 @@ public class SerialControllerDiscoveryService
         var availablePorts = ports.Except(PortInUse).ToList();
         if (availablePorts.Count == 0)
         {
-            Log.Information("All detected ports are already in use.");
+            //Log.Information("All detected ports are already in use.");
             return;
         }
 
@@ -199,6 +199,11 @@ public class SerialControllerDiscoveryService
                 catch (Exception ex)
                 {
                     Log.Warning($"Port {port} is not available: {ex.Message}");
+                    if (!PortInUse.Contains(port))
+                    {
+                        PortInUse.Add(port); // Add to in-use list if it fails to open
+                    }
+
                 }
             }
         }
@@ -242,7 +247,21 @@ public class SerialControllerDiscoveryService
                 HardwareVersion = deviceHardware,
                 HardwareType = hardwareType
             };
-
+            Log.Information(
+    "Discovered controller:\n" +
+    "  Name: {Name}\n" +
+    "  SerialNumber: {SerialNumber}\n" +
+    "  SerialPort: {SerialPort}\n" +
+    "  FirmwareVersion: {FirmwareVersion}\n" +
+    "  HardwareVersion: {HardwareVersion}\n" +
+    "  HardwareType: {HardwareType}",
+    controller.Name,
+    controller.SerialNumber,
+    controller.SerialPort,
+    controller.FirmwareVersion,
+    controller.HardwareVersion,
+    controller.HardwareType
+);
             // Notify UI thread
             Dispatcher.UIThread.Invoke(() => { NewDevicesFound?.Invoke(controller); });
         }

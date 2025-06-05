@@ -251,8 +251,8 @@ public class LightingZone : ObservableObject, ICollectableItem, IPositionAware
 
     public ContainerFigure GetContainer()
     {
-        if (Shape == ZoneShapeEnum.Polyline)
-            this.IsResizeable = false;
+        // if (Shape == ZoneShapeEnum.Polyline)
+        //     this.IsResizeable = false;
         return new LightingZoneFigure(X, Y, Width, Height)
         {
             IsResizable = this.IsResizeable,

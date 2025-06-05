@@ -3,17 +3,17 @@ using AmbinityCore.Models.Lighting.Zone;
 
 namespace AmbinityCore.LightingEngines;
 
-public class GifxelationEngine : IColorEngine
+public class GifxelationEngine : IColorService
 {
     public GifxelationEngine()
     {
-        
+
     }
     public LightingZone Zone => _zone;
     private LightingZone _zone;
     public void Render()
     {
-        
+
     }
     public void Init(LightingZone zone)
     {

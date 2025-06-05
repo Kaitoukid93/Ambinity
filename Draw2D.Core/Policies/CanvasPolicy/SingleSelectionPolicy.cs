@@ -38,6 +38,11 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             {
                 canvas?.HoverFigure(figure);
             }
+            else
+            {
+                canvas?.UnHoverAll();
+                return;
+            }
         }
 
         public virtual void OnMouseLeftDown(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
@@ -57,6 +62,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             if (figure.IsSelectable == false)
             {
                 Unselect(canvas, canvas.Selection.All);
+                return;
             }
             _mouseDownElement = figure;
             if (canvas.Selection.Contains(figure))

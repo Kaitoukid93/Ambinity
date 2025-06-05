@@ -46,10 +46,14 @@ namespace Draw2D.Core
             }
         }
         public bool IsSelectionActive { get; set; } = false;
-        public event Action<float, float> PositionPropertyChanged;
-        public event Action<float, float> SizePropertyChanged;
+        public  event Action<float, float> PositionPropertyChanged;
+        public  event Action<float, float> SizePropertyChanged;
         public event Action<bool> MouseOverChanged;
-
+        public void PositionAndSizeChanged(float dx, float dy, float newWidth, float newHeight)
+        {
+            PositionPropertyChanged?.Invoke(dx, dy);
+            SizePropertyChanged?.Invoke(newWidth, newHeight);
+        }
         public int ZOrder
         {
             get { return _zOrder; }
@@ -89,7 +93,7 @@ namespace Draw2D.Core
 
         public virtual bool HitTest(float x, float y)
         {
-            return BoundingBox.HitTest(x, y);
+            return BoundingBox.Extented(2).HitTest(x, y);
         }
 
         public Figure InstallEditPolicy(PolicyBase policyBase)
@@ -333,7 +337,7 @@ namespace Draw2D.Core
             }
         }
 
-        private void ApplyResize(float dTop, float dRight, float dBottom, float dLeft)
+        private  void ApplyResize(float dTop, float dRight, float dBottom, float dLeft)
         {
             var box = new Rectangle(X, Y, Width, Height);
             box.AdjustDimensions(dTop, dRight, dBottom, dLeft);
@@ -357,8 +361,6 @@ namespace Draw2D.Core
             }
 
             Canvas?.OnFigureTranslated(this);
-
-
             Canvas?.NeedsRepaint(this);
         }
 

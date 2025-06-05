@@ -1,0 +1,57 @@
+<UserControl
+    x:Class="Ambinity.Views.LayoutEditor.Canvas.DeviceLayoutCanvasView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cv="clr-namespace:Ambinity.Views.Draw2DCanvas"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:draw2DControlLibrary="clr-namespace:Draw2DControlLibrary;assembly=Draw2DControlLibrary"
+    xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor.Canvas"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="local:DeviceLayoutCanvasViewModel"
+    mc:Ignorable="d">
+    <Grid>
+        <Grid>
+            <draw2DControlLibrary:ZoomAndPanControl
+                x:Name="zoomAndPanControl"
+                Margin="0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                BorderThickness="0"
+                FillCommandDepProp="{Binding FillCommand, Mode=OneWayToSource}"
+                FitCommandDepProp="{Binding FitCommand, Mode=OneWayToSource}"
+                MaximumZoom="{Binding MaximumZoom}"
+                MinimumZoom="{Binding MinimumZoom}"
+                OneHundredPercentCommandDepProp="{Binding OneHundredPercentCommand, Mode=OneWayToSource}"
+                RedoZoomCommandDepProp="{Binding RedoZoomCommand, Mode=OneWayToSource}"
+                UndoZoomCommandDepProp="{Binding UndoZoomCommand, Mode=OneWayToSource}"
+                ViewportZoom="{Binding CurrentZoom}"
+                ZoomInCommandDepProp="{Binding ZoomInCommand, Mode=OneWayToSource}"
+                ZoomOutCommandDepProp="{Binding ZoomOutCommand, Mode=OneWayToSource}">
+                <draw2DControlLibrary:ZoomAndPanControl.Content>
+                    <draw2DControlLibrary:Draw2DControl
+                        x:Name="Draw2DControl"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Canvas="{Binding Canvas}"
+                        ContentOffsetX="{Binding ElementName=zoomAndPanControl, Path=ContentOffsetX, Mode=TwoWay}"
+                        ContentOffsetY="{Binding ElementName=zoomAndPanControl, Path=ContentOffsetY, Mode=TwoWay}"
+                        Focusable="True"
+                        RenderedItemsCount="{Binding RenderedItemsCount, Mode=TwoWay}"
+                        ViewportHeight="{Binding ElementName=zoomAndPanControl, Path=ContentViewportHeight, Mode=TwoWay}"
+                        ViewportWidth="{Binding ElementName=zoomAndPanControl, Path=ContentViewportWidth, Mode=TwoWay}"
+                        WorldMousePosX="{Binding WorldMousePosX, Mode=TwoWay}"
+                        WorldMousePosY="{Binding WorldMousePosY, Mode=TwoWay}" />
+                </draw2DControlLibrary:ZoomAndPanControl.Content>
+            </draw2DControlLibrary:ZoomAndPanControl>
+            <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" />
+        </Grid>
+        <ContentControl Margin="10" Content="{Binding ToolsViewModel}" />
+        <ContentControl
+            Margin="10"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Content="{Binding InfoBarViewModel}" />
+    </Grid>
+</UserControl>

@@ -1,24 +1,27 @@
 using System.Collections.Generic;
+using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
 
 namespace Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 
 public class ColorAppearanceParameterViewModel : ParameterViewModelBase
 {
-    public ColorAppearanceParameterViewModel(SelfGeneratedColorConfiguration config)
+    public ColorAppearanceParameterViewModel(SelfGeneratedColorConfiguration config, LightingZone zone)
     {
         _configuration = config;
-        AppearanceModes = new List<string>()
+        AppearanceModes = new List<string>();
+        if (zone.Shape == ZoneShapeEnum.Rectangle)
         {
-            "Fill entire zone",
-            "Apply stroke only"
-        };
+            AppearanceModes.Add("Fill entire zone");
+        }
+        AppearanceModes.Add("Apply stroke only");
+
         _appearance = _configuration.Apperance.Mode == ColorApperanceEnum.Fill
-            ? AppearanceModes[0]
-            : AppearanceModes[1];
+            ? "Fill entire zone"
+            : "Apply stroke only";
         _appearanceValue = _configuration.Apperance.Value;
         _valueSuffix = _appearance == "Fill entire zone" ? "º" : "px";
-        _icon = _appearance == "Fill entire zone" ?"Rotate_value" : "Stroke_value";
+        _icon = _appearance == "Fill entire zone" ? "Rotate_value" : "Stroke_value";
         _icon = _configuration.Apperance.Mode == ColorApperanceEnum.Fill ? "Rotate_value" : "Stroke_value";
     }
 

@@ -14,6 +14,7 @@
         <Grid
             MaxWidth="1000"
             Margin="40,15,50,20"
+            
             RowDefinitions="auto,5,*">
             <TextBlock
                 Margin="0,0,0,10"
@@ -21,6 +22,11 @@
                 FontWeight="SemiBold"
                 Text="Settings" />
             <StackPanel Grid.Row="2" Spacing="30">
+                <Grid>
+                    <Border Margin="0,0,0,10" Classes="card">
+                        <TextBlock Text="{Binding BuildInfo}" />
+                    </Border>
+                </Grid>
                 <Grid RowDefinitions="Auto,*">
                     <Grid>
                         <TextBlock Classes="smallBold" Text="General" />
@@ -288,6 +294,67 @@
                                             FontFamily="{StaticResource NunitoFont}"
                                             ItemsSource="{Binding AvailableBitmapSize}"
                                             SelectedItem="{Binding TargetBitmapSize}" />
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid RowDefinitions="Auto,*">
+                    <Grid>
+                        <TextBlock Classes="smallBold" Text="Debug" />
+                    </Grid>
+                    <Grid Margin="0,10,0,0" Row="1">
+                        <!--  <ui:InfoBar Severity="Error" Title="Warning" IsOpen="True"  -->
+                        <!--  IsIconVisible="True"  -->
+                        <!--  IsClosable="False"  -->
+                        <!--  Message="Hardware settings for this device is not available at the moment">  -->
+                        <!-- </ui:InfoBar> -->
+                        <Grid>
+                            <StackPanel Spacing="2">
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Show Debug log."
+                                    Header="Debug">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource debug_window}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <Button
+                                            Margin="40,0"
+                                            Command="{Binding ShowDebugLogCommand}"
+                                            Content="Show debug log"
+                                            FontFamily="{StaticResource NunitoFont}" />
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Remove all devices from the device list. This also removes all device settings."
+                                    Header="Remove all devices">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource device_data}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <Button
+                                            Margin="40,0"
+                                            Command="{Binding RemoveAllDevicesCommand}"
+                                            Content="Remove"
+                                            FontFamily="{StaticResource NunitoFont}" />
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Remove all downloaded datas. This includes all lighting profiles, color palette..."
+                                    Header="Remove downloaded datas">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource download_data}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <Button
+                                            Margin="40,0"
+                                            Command="{Binding RemoveDownloadedDatasCommand}"
+                                            Content="Remove"
+                                            FontFamily="{StaticResource NunitoFont}" />
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
                             </StackPanel>

@@ -15,19 +15,17 @@ namespace Ambinity.Views.LayoutEditor;
 /// </summary>
 public  class AssetItemViewModelFactory
 {
-    private readonly Draw2DCanvasViewModel _canvasViewModel;
     private readonly ThumbnailService _thumnailService;
 
-    public AssetItemViewModelFactory(Draw2DCanvasViewModel canvasViewModel, ThumbnailService thumbnailService)
+    public AssetItemViewModelFactory(ThumbnailService thumbnailService)
     {
-        _canvasViewModel = canvasViewModel;
         _thumnailService = thumbnailService;
     }
     public  AssetItemViewModelBase GetViewModel(ICollectableItem item)
     {
         switch (item.GetType())
         {
-            case OnlineItemTypeEnum.DeviceLayout: 
+            case OnlineItemTypeEnum.DeviceLayout:
                 return new AmbinityDeviceLayoutAssetViewModel(item,_thumnailService);
                 break;
             case OnlineItemTypeEnum.ColorPalette:

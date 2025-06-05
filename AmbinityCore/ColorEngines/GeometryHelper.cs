@@ -216,7 +216,7 @@ public class GeometryHelper
     /// <param name="polyline"></param>
     /// <param name="thickness"></param>
     /// <returns></returns>
-    public static List<Point[]> GetPixelsFromPolylineWithThickness(Point[] polyline, int thickness)
+    public static List<Point[]> GetPixelsFromPolylineWithThickness(Point[] polyline, int thickness,bool autoJoin = false)
     {
         List<Point[]> pixels = new List<Point[]>();
 
@@ -227,13 +227,13 @@ public class GeometryHelper
             pixels.AddRange(BresenhamLineWithThickness((int)start.X, (int)start.Y, (int)end.X, (int)end.Y, thickness));
         }
 
-        if (polyline.Length > 2)
+        if (polyline.Length > 2&& autoJoin)
         {
             pixels.AddRange(BresenhamLineWithThickness((int)polyline[polyline.Length - 1].X,
                 (int)polyline[polyline.Length - 1].Y,
                 (int)polyline[0].X, (int)polyline[0].Y, thickness));
         }
-       
+
         return pixels;
     }
 

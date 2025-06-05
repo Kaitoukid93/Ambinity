@@ -23,7 +23,7 @@ public static class Utilities
     {
         if (_shuttingDown)
             return;
-        
+
         // Request a graceful shutdown, whatever UI we're running can pick this up
         _shuttingDown = true;
         OnShutdownRequested();
@@ -71,9 +71,31 @@ public static class Utilities
         return Process.Start(processInfo);
     }
     /// <summary>
+    /// Put application to sleep state
+    /// </summary>
+    public static void Sleep()
+    {
+        SleepRequested?.Invoke(null, EventArgs.Empty);
+    }
+    /// <summary>
+    ///   Wakes up the application from sleep state
+    /// </summary>
+    public static void Wakeup()
+    {
+        WakeupRequested?.Invoke(null, EventArgs.Empty);
+    }
+    /// <summary>
     ///     Occurs when the core has requested an application shutdown
     /// </summary>
     public static event EventHandler? ShutdownRequested;
+    /// <summary>
+    ///    Occurs when the core has requested an application sleep
+    /// </summary>
+    public static event EventHandler? SleepRequested;
+    /// <summary>
+    ///    Occurs when the core has requested an application wakeup
+    /// </summary>
+    public static event EventHandler? WakeupRequested;
 
     /// <summary>
     ///     Occurs when the core has requested an application restart
@@ -84,7 +106,7 @@ public static class Utilities
     ///     Occurs when the core has requested a pending application update to be applied
     /// </summary>
     public static event EventHandler<UpdateEventArgs>? UpdateRequested;
- 
+
 
     private static void OnRestartRequested(RestartEventArgs e)
     {
@@ -100,5 +122,7 @@ public static class Utilities
     {
         UpdateRequested?.Invoke(null, e);
     }
-    
+
+
+
 }

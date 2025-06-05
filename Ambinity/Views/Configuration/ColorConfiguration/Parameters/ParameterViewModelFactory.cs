@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Ambinity.Services;
 using Ambinity.Views.AmbinityStore;
 using Ambinity.Views.LayoutEditor;
+using Ambinity.Views.LayoutEditor.Canvas;
 using Ambinity.Windows;
 using AmbinityCore.CapturingService;
 using AmbinityCore.Colors;
@@ -31,6 +32,7 @@ public class ParameterViewModelFactory(
     BrightnessProviderFactory brightnessProviderFactory,
     ScreenCapturingService screenCapturingService,
     LightingProfileDecoder decoder,
+    CanvasViewModelFactory canvasViewModelFactory,
     AmbinityStoreItemExportViewModel exportViewModel)
 {
     public List<ParameterViewModelBase> CreateParameterViewModels(LightingZone zone)
@@ -49,7 +51,7 @@ public class ParameterViewModelFactory(
         if (zone.LightingConfiguration is not SelfGeneratedColorConfiguration configuration)
             return null;
         var colorSelectorParameter = new FillColorSelectionViewModel(configuration, rightPanelViewModel,
-            colorsRepository, colorPaletteRepository, libraryViewModelFactory, windowService, dialogService,exportViewModel);
+            colorsRepository, colorPaletteRepository, libraryViewModelFactory, windowService, dialogService, exportViewModel);
         parameters.Add(colorSelectorParameter);
 
         parameters.Add(new SeparationParameterViewModel());
@@ -57,7 +59,7 @@ public class ParameterViewModelFactory(
         parameters.Add(colorBehaviorParameterViewModel);
 
         parameters.Add(new SeparationParameterViewModel());
-        var colorAppearanceParameter = new ColorAppearanceParameterViewModel(configuration);
+        var colorAppearanceParameter = new ColorAppearanceParameterViewModel(configuration, zone);
         parameters.Add(colorAppearanceParameter);
         parameters.Add(new SeparationParameterViewModel());
         var motionConfigParameter = new MotionConfigParameterViewModel(configuration, capturingServiceProvider,
@@ -70,8 +72,8 @@ public class ParameterViewModelFactory(
     {
         if (zone.LightingConfiguration is not ScreenCaptureConfiguration configuration)
             return null;
-        var captureParameter = new ScreenRegionSelectionParameterViewModel(configuration,
-            windowService, settingsManager, screenCapturingService,decoder);
+        var captureParameter = new ScreenRegionSelectionParameterViewModel(configuration, canvasViewModelFactory,
+            windowService, settingsManager, screenCapturingService, decoder);
         var blackBarDetectionParameter = new BlackBarDetectionParameterViewModel();
         return [captureParameter, new SeparationParameterViewModel(), blackBarDetectionParameter];
     }
@@ -82,7 +84,7 @@ public class ParameterViewModelFactory(
             return null;
         var animationSelectionParameter = new AnimationSelectionParameterViewModel(
             zone, rightPanelViewModel, libraryViewModelFactory, windowService,
-            animationsRepository,exportViewModel,dialogService);
+            animationsRepository, exportViewModel, dialogService);
         return [animationSelectionParameter];
     }
 }

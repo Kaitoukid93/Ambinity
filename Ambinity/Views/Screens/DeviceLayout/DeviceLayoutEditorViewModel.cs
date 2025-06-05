@@ -5,6 +5,7 @@ using Ambinity.Services;
 using Ambinity.ViewModels;
 using Ambinity.Views.Draw2DCanvas;
 using Ambinity.Views.LayoutEditor;
+using Ambinity.Views.LayoutEditor.Canvas;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Controller;
@@ -19,31 +20,23 @@ namespace Ambinity.Views.Screens.DeviceLayout;
 
 public class DeviceLayoutEditorViewModel : ViewModelBase
 {
-    public DeviceLayoutEditorViewModel(LayoutCanvasViewModel layoutViewModel,
+    public DeviceLayoutEditorViewModel(CanvasViewModelFactory canvasViewModelFactory,
         DeviceLayoutRightPanelViewModel rightPanelViewModel,
         IMainWindowService mainWindowService, DevicePropertiesViewModel propertiesViewModel,
         ToolsViewModel toolsViewModel,
         AmbinityDeviceRepository deviceRepository)
     {
-        LayoutViewModel = layoutViewModel;
-        LayoutViewModel.ItemAdded += OnItemAdded;
-        LayoutViewModel.ItemRemoved += OnItemRemoved;
+        _canvasViewModelFactory = canvasViewModelFactory;
         _deviceRepository = deviceRepository;
         RightPanelViewModel = rightPanelViewModel;
         _propertiesViewModel = propertiesViewModel;
         mainWindowService.MainWindowClosed += OnMainWindowClosed;
         _toolsViewModel = toolsViewModel;
+        _toolsViewModel.ResetLayout += OnLayoutReset;
     }
-
-    private void OnItemRemoved(Figure item)
+    private void OnLayoutReset()
     {
-        //throw new NotImplementedException();
-    }
-
-//todo how to properly notify profile to update zone
-    private void OnItemAdded(Figure item)
-    {
-        //throw new NotImplementedException();
+        _deviceRepository.ResetDefaultLayout();
     }
 
     private void OnMainWindowClosed(object? sender, EventArgs e)
@@ -51,37 +44,35 @@ public class DeviceLayoutEditorViewModel : ViewModelBase
         Dispose();
     }
 
-    public LayoutCanvasViewModel LayoutViewModel { get; set; }
     public DeviceLayoutRightPanelViewModel RightPanelViewModel { get; set; }
+    private DeviceLayoutCanvasViewModel _canvasViewModel;
+    public DeviceLayoutCanvasViewModel CanvasViewModel
+    {
+        get => _canvasViewModel;
+        set
+        {
+            _canvasViewModel = value;
+            OnPropertyChanged(nameof(CanvasViewModel));
+        }
+    }
     private DevicePropertiesViewModel _propertiesViewModel;
     private readonly ToolsViewModel _toolsViewModel;
+    private readonly CanvasViewModelFactory _canvasViewModelFactory;
     private readonly AmbinityDeviceRepository _deviceRepository;
 
     public void Init()
     {
-        var devices = new List<AmbinityDevice>();
-        foreach (var device in _deviceRepository.Devices)
-        {
-            device.IsSelectable = true;
-            device.IsDraggable = true;
-            device.IsResizeable = false;
-            device.IsRotatable = true;
-            device.IsScalable = true;
-            device.IsDeleteable = false;
-            devices.Add(device);
-
-        }
-        //init layout canvas
-        LayoutViewModel.ShoudDrawBackground = false;
-        LayoutViewModel.Init(devices);
-        _toolsViewModel.InitForDeviceLayout();
+        CanvasViewModel = _canvasViewModelFactory.Get<DeviceLayoutCanvasViewModel>();
+        _canvasViewModelFactory.SetCurrent(CanvasViewModel);
+        CanvasViewModel.Init();
         RightPanelViewModel.PropertiesViewModel = _propertiesViewModel;
         RightPanelViewModel.Init();
     }
 
     public override void Dispose()
     {
-        LayoutViewModel?.Dispose();
+        CanvasViewModel?.Dispose();
         RightPanelViewModel?.Dispose();
     }
+    
 }

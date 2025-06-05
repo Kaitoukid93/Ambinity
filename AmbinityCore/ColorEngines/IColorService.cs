@@ -4,7 +4,7 @@ using AmbinityCore.Models.Profile;
 
 namespace AmbinityCore.LightingEngines;
 
-public interface IColorEngine
+public interface IColorService
 {
     void Render();
     void Init(LightingZone zone);

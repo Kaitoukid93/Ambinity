@@ -1,13 +1,9 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Ambinity.ViewModels;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 using Ambinity.Views.Draw2DCanvas;
-using AmbinityCore.Models.Collection;
-using AmbinityCore.Models.Geography;
-using AmbinityCore.Repositories;
-using AmbinityServer.OnlineItem;
+using Ambinity.Views.LayoutEditor.Canvas;
 using Draw2D.Core;
 
 namespace Ambinity.Views.LayoutEditor;
@@ -18,13 +14,13 @@ public class ProfileEditorRightPanelViewModel : ViewModelBase
     public event Action CloseFlyoutEvent;
 
     public ProfileEditorRightPanelViewModel(LayersViewModel layersViewModel,
-        Draw2DCanvasViewModel canvasViewModel, LibraryViewModelFactory libraryViewModelFactory
+        CanvasViewModelFactory canvasViewModelFactory, LibraryViewModelFactory libraryViewModelFactory
     )
     {
         LayersViewModel = layersViewModel;
-        _canvasViewModel = canvasViewModel;
+        _canvasViewModel = canvasViewModelFactory.Get<ProfileEditorCanvasViewModel>();
         _libraryViewModelFactory  = libraryViewModelFactory;
-       
+
     }
     private void OnFigureRemoved(Figure obj)
     {
@@ -53,7 +49,7 @@ public class ProfileEditorRightPanelViewModel : ViewModelBase
     public FlyoutContentViewModelBase FlyoutViewModel { get; set; }
     public CanvasObjectPropertiesViewModelBase PropertiesViewModel { get; set; }
     public LayersViewModel LayersViewModel { get; set; }
-    private Draw2DCanvasViewModel _canvasViewModel;
+    private ProfileEditorCanvasViewModel _canvasViewModel;
 
     public void Init()
     {

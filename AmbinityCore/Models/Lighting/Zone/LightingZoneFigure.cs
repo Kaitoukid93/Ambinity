@@ -76,6 +76,8 @@ public class LightingZoneFigure : ContainerFigure, IAssetSelectable
     //         AlphaFormat.Premul);
     // }
 
+
+
     public override void Render(DrawingContext dc, double strokeThickness, Color strokeColor)
     {
         //get size and location from device property
@@ -102,17 +104,17 @@ public class LightingZoneFigure : ContainerFigure, IAssetSelectable
         // }
 
 
-        var strokeBrush = new ImmutableSolidColorBrush(ChildItem.GetDisplayColor()??strokeColor);
+        var strokeBrush = new ImmutableSolidColorBrush(ChildItem.GetDisplayColor() ?? strokeColor);
         var thickness = StrokeThickness;
         if (OverrideStrokeStyle)
         {
-            strokeBrush = new ImmutableSolidColorBrush(ChildItem.GetDisplayColor()??strokeColor);
+            strokeBrush = new ImmutableSolidColorBrush(ChildItem.GetDisplayColor() ?? strokeColor);
             thickness = (float)strokeThickness;
         }
-        
+
         var screenPoint = Canvas.CoordinateSystem.ToScreenSpace(Position);
         var offset = new Point((float)screenPoint[0] - X, (float)screenPoint[1] - Y);
-        
+
         var fillBrush = new ImmutableSolidColorBrush(FillColor);
         if (!_isValid)
             strokeBrush = new ImmutableSolidColorBrush(Avalonia.Media.Colors.Red);
@@ -121,52 +123,61 @@ public class LightingZoneFigure : ContainerFigure, IAssetSelectable
             fillBrush = new ImmutableSolidColorBrush(Avalonia.Media.Colors.Gray.AdjustOpacity(0.2));
             strokeBrush = new ImmutableSolidColorBrush(Avalonia.Media.Colors.Orange);
         }
-        
+
         var pen = new Pen(strokeBrush, thickness, DashStyle);
         var immutablePen = pen.ToImmutable();
-        
+
         Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
         dc.PushTransform(translate);
         var zone = ChildItem as LightingZone;
-        
-            if (zone.Shape == ZoneShapeEnum.Ellipse)
+
+        if (zone.Shape == ZoneShapeEnum.Ellipse)
+        {
+            dc.DrawEllipse(fillBrush, pen,
+                new Rect(new Point(X, Y), new Size(Width, Height)));
+        }
+        else if (zone.Shape == ZoneShapeEnum.Rectangle)
+        {
+            dc.DrawRectangle(fillBrush, pen,
+                new Rect(new Point(X, Y), new Size(Width, Height)));
+        }
+        else if (zone.Shape == ZoneShapeEnum.Polyline)
+        {
+            if (zone.Points.Count == 0)
+                return;
+            var geom = new StreamGeometry();
+            using (StreamGeometryContext ctx = geom.Open())
             {
-                dc.DrawEllipse(fillBrush, pen,
-                    new Rect(new Point(X, Y), new Size(Width, Height)));
-            }
-            else if (zone.Shape == ZoneShapeEnum.Rectangle)
-            {
-                dc.DrawRectangle(fillBrush, pen,
-                    new Rect(new Point(X, Y), new Size(Width, Height)));
-            }
-            else if (zone.Shape == ZoneShapeEnum.Polyline)
-            {
-                if(zone.Points.Count ==0)
-                    return;
-                var geom = new StreamGeometry();
-                using (StreamGeometryContext ctx = geom.Open())
+                var StartPoint = new Draw2D.Core.Geo.Point((float)zone.Points[0].X, (float)zone.Points[0].Y);
+                var startVertex = Canvas.CoordinateSystem.ToScreenSpace(StartPoint);
+                ctx.BeginFigure(new Avalonia.Point(startVertex[0], startVertex[1]), false);
+                int pointCount = 0;
+                foreach (var point in zone.Points)
                 {
-                    var StartPoint = new Draw2D.Core.Geo.Point((float)zone.Points[0].X, (float)zone.Points[0].Y);
-                    var startVertex = Canvas.CoordinateSystem.ToScreenSpace(StartPoint);
-                    ctx.BeginFigure(new Avalonia.Point(startVertex[0], startVertex[1]), false);
-                    int pointCount = 0;
-                    foreach (var point in zone.Points)
+                    var GeoPoint = new Draw2D.Core.Geo.Point((float)point.X, (float)point.Y);
+                    if (pointCount == 0)
                     {
-                        var GeoPoint = new Draw2D.Core.Geo.Point((float)point.X, (float)point.Y);
-                        if (pointCount == 0)
-                        {
-                            pointCount++;
-                            continue;
-                        }
-                        
-                        var vertex = Canvas.CoordinateSystem.ToScreenSpace(GeoPoint);
-                        var v = new Avalonia.Point(vertex[0], vertex[1]);
-                        ctx.LineTo(v);
                         pointCount++;
+                        continue;
                     }
+
+                    var vertex = Canvas.CoordinateSystem.ToScreenSpace(GeoPoint);
+                    var v = new Avalonia.Point(vertex[0], vertex[1]);
+                    ctx.LineTo(v);
+                    pointCount++;
                 }
-                dc.DrawGeometry(null, pen, geom);
             }
+            var linePen = new ImmutablePen(strokeBrush, thickness);
+
+            dc.DrawGeometry(null, linePen, geom);
+            if (IsSelected || IsMouseOver)
+            {
+                //get an extend boudning box
+                dc.DrawRectangle(fillBrush, pen,
+              new Rect(new Point(X, Y), new Size(Width, Height)));
+            }
+
+        }
         //  var currentZoomValue = 2 / strokeThickness;
         //  double adaptiveFontSize = 12d / currentZoomValue;
         //  _text.SetFontSize(adaptiveFontSize);

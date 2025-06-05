@@ -226,11 +226,11 @@ public class AudioCapturingService : ICapturingService
 
     public void Dispose()
     {
-        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource?.Cancel();
         _cancellationTokenSource = null;
         foreach (var capture in _availableAudioCapture)
         {
-            capture.Dispose();
+            capture?.Dispose();
         }
     }
 }

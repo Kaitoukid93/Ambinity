@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Services;
 using Ambinity.Views.Draw2DCanvas;
+using Ambinity.Views.LayoutEditor.Canvas;
 using AmbinityCore.CapturingService;
 using AmbinityCore.DataBase;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
@@ -30,12 +31,14 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
     private IScreenCapture _screenCapture;
     private byte[] _reusableRow;
     private bool _shouldShowImage;
+    private readonly CanvasViewModelFactory _canvasViewModelFactory;
     private readonly LightingProfileDecoder _decoder;
     public event Action PreviewImageUpdated;
 
-    public ScreenRegionSelectionParameterViewModel(ScreenCaptureConfiguration config, IWindowService windowService,
+    public ScreenRegionSelectionParameterViewModel(ScreenCaptureConfiguration config,CanvasViewModelFactory canvasViewModelFactory, IWindowService windowService,
         GeneralSettingsManager settingsManager, ScreenCapturingService capturingService, LightingProfileDecoder decoder)
     {
+        _canvasViewModelFactory = canvasViewModelFactory;
         _decoder = decoder;
         _config = config;
         _windowService = windowService;
@@ -127,9 +130,8 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
     {
         //get sregion property from config
         IsEnabled = false;
-        _canvasViewModel = new Draw2DCanvasViewModel(_settingsManager);
         _regionSelectionViewModel =
-            new ScreenCaptureRegionSelectionViewModel(_canvasViewModel, _config, AvailableScreen, _windowService);
+            new ScreenCaptureRegionSelectionViewModel(_canvasViewModelFactory, _config, AvailableScreen, _windowService);
         _regionSelectionViewModel.CloseMe += CloseRegionSelectionWindow;
     }
 
@@ -139,8 +141,6 @@ public class ScreenRegionSelectionParameterViewModel : ParameterViewModelBase
         _regionSelectionViewModel.Dispose();
         IsEnabled = true;
     }
-
-    private Draw2DCanvasViewModel _canvasViewModel;
     private ScreenCapturingService _capturingService;
     public List<ScreenDataDisplay> AvailableScreen { get; set; }
 

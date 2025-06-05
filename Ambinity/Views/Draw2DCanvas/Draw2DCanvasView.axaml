@@ -39,7 +39,7 @@
                 </draw2DControlLibrary:ZoomAndPanControl.Content>
             </draw2DControlLibrary:ZoomAndPanControl>
         <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right">
-            
+
         </Grid>
     </Grid>
 </UserControl>

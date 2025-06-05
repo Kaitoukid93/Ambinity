@@ -77,15 +77,14 @@ public class AmbinityDevice : ObservableObject, IPositionAware
 
 
     #region Iposition aware implement
-
-    private bool _isDragable = true;
+    //since 6.0.8, ambinity device will default be locked to prevent accidental modification
+    private bool _isDragable = false;
     private bool _isSelectable = true;
     private bool _isSelected;
     private bool _isDeleteable = true;
     private bool _isResizeable = true;
     private bool _isHitTestVisible = true;
     private bool _isRotatable;
-    private bool _isDraggable;
     private bool _isScalable;
 
 
@@ -150,8 +149,8 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     [JsonIgnore]
     public bool IsDraggable
     {
-        get => _isDraggable;
-        set => SetProperty(ref _isDraggable, value);
+        get => _isDragable;
+        set => SetProperty(ref _isDragable, value);
     }
 
     /// <summary>
@@ -434,6 +433,7 @@ public class AmbinityDevice : ObservableObject, IPositionAware
     {
         X = (float)x;
         Y = (float)y;
+        DeviceUpdate?.Invoke();
     }
 
     public void UpdateSizeByChild(bool withPoint)

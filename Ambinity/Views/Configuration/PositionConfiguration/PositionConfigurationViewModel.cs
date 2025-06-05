@@ -1,11 +1,9 @@
 using System;
-using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Ambinity.ViewModels;
 using Ambinity.Views.Draw2DCanvas;
+using Ambinity.Views.LayoutEditor.Canvas;
 using AmbinityCore.Models.Geography;
-using Avalonia;
-using Avalonia.Data;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 
@@ -17,10 +15,15 @@ namespace Ambinity.Views.Configuration.PositionConfiguration;
 public class PositionConfigurationViewModel : ViewModelBase
 {
     //todo pass params to enable or disable properties such as scale, rotation
-    public PositionConfigurationViewModel(Draw2DCanvasViewModel canvas)
+    public PositionConfigurationViewModel(CanvasViewModelFactory canvasViewModelFactory)
     {
-        _canvas = canvas;
+        canvasViewModelFactory.CurrentChanged += OnCurrentCanvasViewModelChanged;
         SetItemScaleCommand = new RelayCommand<string>(SetItemScale);
+    }
+
+    private void OnCurrentCanvasViewModelChanged(CanvasViewModelBase vm)
+    {
+        _canvas = vm;
     }
 
     private int _minimumWidth = 2;
@@ -47,7 +50,7 @@ public class PositionConfigurationViewModel : ViewModelBase
         }
     }
 
-    private Draw2DCanvasViewModel _canvas;
+    private CanvasViewModelBase _canvas;
 
     public void Init(IPositionAware item)
     {
