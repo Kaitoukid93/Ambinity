@@ -9,11 +9,7 @@
              x:Class="Ambinity.Views.Screens.DeviceSettings.DashboardDeviceView">
     <UserControl.Resources>
         <MenuFlyout x:Key="moreMenuFlyout" Placement="Top">
-            <MenuItem Classes="OnOffSwitch" Classes.turnOn="{Binding !IsTurnedOn}">
-
-            </MenuItem>
-            <MenuItem Header="Remove">
-
+            <MenuItem Command="{Binding RemoveControllerCommand}" Header="Remove">
             </MenuItem>
         </MenuFlyout>
     </UserControl.Resources>
@@ -45,7 +41,7 @@
         <Style Selector="Border.info">
             <Setter Property="Padding" Value="5,3" />
             <Setter Property="Background" Value="{DynamicResource ButtonBackgroundDisabled}">
-             
+
             </Setter>
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
@@ -100,7 +96,7 @@
                         <Border IsVisible="{Binding IsOpenRGB}"
                                 ToolTip.Tip="{Binding Controller.SerialPort}" VerticalAlignment="Bottom"
                                 CornerRadius="3" HorizontalAlignment="Right"
-                                
+
                                 Classes="info">
                             <Grid ColumnDefinitions="Auto,*">
                                 <PathIcon IsVisible="{Binding IsTransferActive}"  Foreground="{DynamicResource ButtonForegroundDisabled}" Width="12" Margin="0,0,3,0"
@@ -151,7 +147,7 @@
                                 </TextBlock>
                             </Grid>
                         </Border>
-                      
+
                     </StackPanel>
                 </Grid>
 

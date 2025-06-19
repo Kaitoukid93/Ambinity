@@ -57,6 +57,7 @@ using LibreHardwareMonitor.Software;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Serilog;
+using Serilog.Core;
 using Constants = AmbinityCore.Constants;
 using OperatingSystem = System.OperatingSystem;
 using RootViewModel = Ambinity.Views.Root.RootViewModel;
@@ -289,7 +290,7 @@ public class AmbinityBootStrapper
 
             //debug
             .AddSingleton<DebugWindowViewModel>()
-            .AddSingleton<AvaloniaViewModelSink>()
+            .AddSingleton<LogStore>()
         //LED layout creator
             .AddSingleton<CanvasViewModelBase,LEDLayoutCreatorCanvasViewModel>()
             .AddSingleton<LEDLayoutCreatorViewModel>();
@@ -376,11 +377,11 @@ public class AmbinityBootStrapper
     private static void SetupDebugLogging()
     {
         var debugViewModel = Ioc.Default.GetRequiredService<DebugWindowViewModel>();
-        var debugSinkViewModel = Ioc.Default.GetRequiredService<AvaloniaViewModelSink>();
+        var logStore = Ioc.Default.GetRequiredService<LogStore>();
         var logPath = Path.Combine(Constants.AppDataFolder, "Logs");
         Log.Logger = new LoggerConfiguration()
             .WriteTo.Console()
-            .WriteTo.Sink(debugSinkViewModel)
+            .WriteTo.Sink(logStore)
             .WriteTo.File(Path.Combine(logPath, "ambinity-.txt"), rollingInterval: RollingInterval.Day,
                 retainedFileCountLimit: 10, shared: true,
                 outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")

@@ -1,176 +1,263 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
-             xmlns:local="clr-namespace:Ambinity.Views.Screens.Home"
-             x:DataType="local:HomeViewModel"
-             x:Class="Ambinity.Views.Screens.Home.HomeView">
+<UserControl
+    x:Class="Ambinity.Views.Screens.Home.HomeView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Ambinity.Views.Screens.Home"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    d:DesignHeight="800"
+    d:DesignWidth="800"
+    x:DataType="local:HomeViewModel"
+    mc:Ignorable="d">
     <Grid Margin="5,15,20,20" RowDefinitions="auto,5,*">
-        <TextBlock Margin="5,0,0,10" Text="Home" FontSize="25" FontWeight="SemiBold"></TextBlock>
-        <StackPanel Grid.Row="2" Spacing="30">
-            <!-- <Panel> -->
-            <!--     <ItemsControl> -->
-            <!--         <ItemsControl.ItemsPanel> -->
-            <!--             <ItemsPanelTemplate> -->
-            <!--                 <StackPanel Margin="5,0" Orientation="Horizontal" Spacing="10"></StackPanel> -->
-            <!--             </ItemsPanelTemplate> -->
-            <!--         </ItemsControl.ItemsPanel> -->
-            <!--         <ItemsControl.Items> -->
-            <!--             <Border Width="600" Height="300" CornerRadius="10" ClipToBounds="True"> -->
-            <!--                 <Image Stretch="UniformToFill" -->
-            <!--                        Source="C:\Users\zOe\Downloads\9bd238_fd1d87cbc5dd4529bfbdf7c97db1baec~mv2.webp"> -->
-            <!--                 </Image> -->
-            <!--             </Border> -->
-            <!--             <Border Width="600" Height="300" CornerRadius="10" ClipToBounds="True"> -->
-            <!--                 <Image Stretch="UniformToFill" -->
-            <!--                        Source="C:\Users\zOe\Downloads\5edc62_57614561fa6a44e69f8aef29a6635553~mv2.webp"> -->
-            <!--                 </Image> -->
-            <!--             </Border> -->
-            <!--             <Border Width="600" Height="300" CornerRadius="10" ClipToBounds="True"> -->
-            <!--                 <Image Stretch="UniformToFill" -->
-            <!--                        Source="C:\Users\zOe\Downloads\9bd238_fd1d87cbc5dd4529bfbdf7c97db1baec~mv2.webp"> -->
-            <!--                 </Image> -->
-            <!--             </Border> -->
-            <!--         </ItemsControl.Items> -->
-            <!--     </ItemsControl> -->
-            <!-- </Panel> -->
-            <Grid>
-                <StackPanel Spacing="10">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Text="Newest profiles" Margin="5,0" HorizontalAlignment="Left" FontSize="18"
-                                   FontWeight="SemiBold">
-                        </TextBlock>
-                        <Button VerticalAlignment="Top" Grid.Column="1"
-                                HorizontalAlignment="Right" Margin="5,0" ToolTip.Tip="Device control"
-                                Classes="icon-button" Padding="5,2,5,2" Height="25"
-                                Command="{Binding ShowProfileLibraryCommand}">
-                            <Grid ColumnDefinitions="Auto,8,*">
-                                <TextBlock FontSize="12" Margin="0,0,0,1" FontWeight="SemiBold" VerticalAlignment="Center"
-                                           Grid.Column="0"
-                                           Text="Show all">
-                                </TextBlock>
-                                <PathIcon Grid.Column="2" Height="8" Width="8" Data="{DynamicResource showMoreRight}"></PathIcon>
-                            </Grid>
+        <TextBlock
+            Margin="5,0,0,10"
+            FontSize="25"
+            FontWeight="SemiBold"
+            Text="Home" />
+        <Grid Row="2">
+            <Lottie
+                Width="75"
+                Height="75"
+                Margin="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                IsVisible="{Binding IsLoading}"
+                Path="/Assets/home_loading.json" />
+        </Grid>
+        <Grid
+            IsVisible="{Binding !IsLoading}"
+            Row="2"
+            RowDefinitions="Auto,20,*">
+            <StackPanel Grid.Row="2" Spacing="30">
+                <Grid>
+                    <StackPanel Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock
+                                Margin="5,0"
+                                HorizontalAlignment="Left"
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Text="Newest profiles" />
+                            <Button
+                                Grid.Column="1"
+                                Height="25"
+                                Margin="5,0"
+                                Padding="5,2,5,2"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Classes="icon-button"
+                                Command="{Binding ShowProfileLibraryCommand}"
+                                ToolTip.Tip="Device control">
+                                <Grid ColumnDefinitions="Auto,8,*">
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Margin="0,0,0,1"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Text="Show all" />
+                                    <PathIcon
+                                        Grid.Column="2"
+                                        Width="8"
+                                        Height="8"
+                                        Data="{DynamicResource showMoreRight}" />
+                                </Grid>
 
-                        </Button>
-                    </Grid>
+                            </Button>
+                        </Grid>
 
-                    <ItemsControl ItemsSource="{Binding DisplayAssets}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Rows="1" Columns="4"></UniformGrid>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button x:Name="itemButton" Command="{Binding SelectItemCommand}" Classes="icon-button"
-                                        CornerRadius="9" Padding="5">
-                                    <Grid RowDefinitions="Auto,10,Auto">
-                                        <Border Height="150" CornerRadius="11" Classes="card" Padding="0">
-                                            <Grid>
-                                                <!-- <Grid HorizontalAlignment="Right" VerticalAlignment="Top"> -->
-                                                <!--     <TextBlock Margin="10" FontWeight="SemiBold" FontSize="12" Text="{Binding LastUpdate}"></TextBlock> -->
-                                                <!-- </Grid> -->
-                                                <Border ClipToBounds="True"
-                                                        CornerRadius="5">
-                                                    <Image Stretch="UniformToFill"
-                                                           Source="{Binding GetThumbnail^}">
-                                                    </Image>
-                                                </Border>
+                        <ItemsControl ItemsSource="{Binding DisplayAssets}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="4" Rows="1" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        x:Name="itemButton"
+                                        Padding="5"
+                                        Classes="icon-button"
+                                        Command="{Binding SelectItemCommand}"
+                                        CornerRadius="9">
+                                        <Grid RowDefinitions="Auto,10,Auto">
+                                            <Border
+                                                Height="150"
+                                                Padding="0"
+                                                Classes="card"
+                                                CornerRadius="11">
+                                                <Grid>
+                                                    <Border ClipToBounds="True" CornerRadius="5">
+                                                        <Image Source="{Binding GetThumbnail^}" Stretch="UniformToFill" />
+                                                    </Border>
+                                                </Grid>
+
+                                            </Border>
+                                            <Grid ColumnDefinitions="*,10,Auto" Row="2">
+                                                <Grid RowDefinitions="Auto,*">
+                                                    <TextBlock
+                                                        MaxWidth="200"
+                                                        Margin="5,0"
+                                                        HorizontalAlignment="Left"
+                                                        FontSize="18"
+                                                        FontWeight="SemiBold"
+                                                        Text="{Binding Name}"
+                                                        TextTrimming="CharacterEllipsis"
+                                                        ToolTip.Tip="{Binding Description}" />
+                                                    <TextBlock
+                                                        Grid.Row="1"
+                                                        MaxWidth="200"
+                                                        Margin="5,0"
+                                                        HorizontalAlignment="Left"
+                                                        FontSize="12"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{DynamicResource ButtonForegroundDisabled}"
+                                                        Text="{Binding Tags}"
+                                                        TextTrimming="CharacterEllipsis" />
+                                                </Grid>
+                                                <Grid
+                                                    Background="Transparent"
+                                                    Classes="downloadZone"
+                                                    Column="2">
+                                                    <StackPanel
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        IsVisible="{Binding IsLocalExisted}"
+                                                        Orientation="Horizontal"
+                                                        Spacing="5">
+                                                        <Border
+                                                            Width="26"
+                                                            Height="26"
+                                                            HorizontalAlignment="Right"
+                                                            Classes="chip"
+                                                            CornerRadius="13"
+                                                            ToolTip.Tip="Item is installed">
+
+                                                            <PathIcon
+                                                                Width="12"
+                                                                Height="12"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                Data="{DynamicResource checkBold}"
+                                                                Foreground="{DynamicResource SystemAccentColor}" />
+
+                                                        </Border>
+                                                        <Button
+                                                            Padding="5,3"
+                                                            HorizontalAlignment="Right"
+                                                            Classes="chip"
+                                                            Command="{Binding DownloadItemCommand}"
+                                                            CornerRadius="3"
+                                                            IsVisible="{Binding IsLocalExisted}">
+                                                            <Grid ColumnDefinitions="Auto,*">
+                                                                <PathIcon
+                                                                    Width="12"
+                                                                    Height="10"
+                                                                    Margin="0,0,5,0"
+                                                                    Data="{DynamicResource download}" />
+                                                                <TextBlock
+                                                                    Grid.Column="1"
+                                                                    Margin="0,0,0,2"
+                                                                    Classes.downloadButton="{Binding IsDownloading}"
+                                                                    FontSize="12"
+                                                                    FontWeight="SemiBold"
+                                                                    Text="Reinstall" />
+                                                            </Grid>
+
+                                                        </Button>
+
+                                                    </StackPanel>
+
+                                                    <Button
+                                                        Padding="5,3"
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        Classes="accent"
+                                                        Command="{Binding DownloadItemCommand}"
+                                                        CornerRadius="3"
+                                                        IsVisible="{Binding !IsLocalExisted}">
+                                                        <Grid ColumnDefinitions="Auto,*">
+                                                            <PathIcon
+                                                                Width="12"
+                                                                Height="10"
+                                                                Margin="0,0,5,0"
+                                                                Data="{DynamicResource download}" />
+                                                            <TextBlock
+                                                                Grid.Column="1"
+                                                                Margin="0,0,0,2"
+                                                                Classes.downloadButton="{Binding IsDownloading}"
+                                                                FontSize="12"
+                                                                FontWeight="SemiBold"
+                                                                Text="Install" />
+                                                        </Grid>
+                                                    </Button>
+                                                </Grid>
                                             </Grid>
 
-                                        </Border>
-                                        <Grid Row="2" ColumnDefinitions="*,10,Auto">
-                                             <Grid RowDefinitions="Auto,*">
-                                            <TextBlock MaxWidth="200" ToolTip.Tip="{Binding Description}" Margin="5,0"
-                                                       TextTrimming="CharacterEllipsis"
-                                                       FontSize="18" FontWeight="SemiBold"
-                                                       HorizontalAlignment="Left"
-                                                       Text="{Binding Name}">
-                                            </TextBlock>
-                                            <TextBlock HorizontalAlignment="Left" Margin="5,0" Grid.Row="1"
-                                                       Text="{Binding Tags}" MaxWidth="200"
-                                                       FontSize="12" TextTrimming="CharacterEllipsis"
-                                                       Foreground="{DynamicResource ButtonForegroundDisabled}"
-                                                       FontWeight="SemiBold">
-                                            </TextBlock>
                                         </Grid>
-                                        <Grid Column="2" Classes="downloadZone" Background="Transparent">
-                                            <StackPanel HorizontalAlignment="Right"
-                                                        VerticalAlignment="Bottom"
-                                                        IsVisible="{Binding IsLocalExisted}" Spacing="5"
-                                                        Orientation="Horizontal">
-                                                <Border CornerRadius="13" Height="26" Width="26"
-                                                        HorizontalAlignment="Right" Classes="chip"
-                                                        ToolTip.Tip="Item is installed">
-
-                                                    <PathIcon Foreground="{DynamicResource SystemAccentColor}"
-                                                              Width="12" HorizontalAlignment="Center"
-                                                              VerticalAlignment="Center"
-                                                              Height="12" Data="{DynamicResource checkBold}">
-                                                    </PathIcon>
-
-                                                </Border>
-                                                <Button Command="{Binding DownloadItemCommand}"
-                                                        IsVisible="{Binding IsLocalExisted}" CornerRadius="3"
-                                                        Padding="5,3"
-                                                        HorizontalAlignment="Right" Classes="chip">
-                                                    <Grid ColumnDefinitions="Auto,*">
-                                                        <PathIcon Margin="0,0,5,0" Width="12" Height="10"
-                                                                  Data="{DynamicResource download}">
-                                                        </PathIcon>
-                                                        <TextBlock Classes.downloadButton="{Binding IsDownloading}"
-                                                                   Margin="0,0,0,2" FontWeight="SemiBold"
-                                                                   Grid.Column="1" FontSize="12" Text="Reinstall">
-                                                        </TextBlock>
-                                                    </Grid>
-
-                                                </Button>
-
-                                            </StackPanel>
-
-                                            <Button Command="{Binding DownloadItemCommand}"
-                                                    CornerRadius="3" Padding="5,3"
-                                                    IsVisible="{Binding !IsLocalExisted}" VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                                                    Classes="accent">
-                                                <Grid ColumnDefinitions="Auto,*">
-                                                    <PathIcon Margin="0,0,5,0" Width="12" Height="10"
-                                                              Data="{DynamicResource download}">
-                                                    </PathIcon>
-                                                    <TextBlock Classes.downloadButton="{Binding IsDownloading}"
-                                                               Margin="0,0,0,2" FontWeight="SemiBold"
-                                                               Grid.Column="1" FontSize="12" Text="Install">
-                                                    </TextBlock>
-                                                </Grid>
-                                            </Button>
-                                        </Grid>
-                                        </Grid>
-
-                                    </Grid>
-                                </Button>
+                                    </Button>
 
 
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </Grid>
-            <Grid>
-                <StackPanel Spacing="10">
-                    <TextBlock Margin="5,0" Text="Tutorial - FAQ" HorizontalAlignment="Left" FontSize="18"
-                               FontWeight="SemiBold">
-                    </TextBlock>
-                    <ItemsControl ItemsSource="{Binding AvailableTutorials}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Rows="1" Columns="5"></UniformGrid>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Grid>
+                <Grid>
+                    <StackPanel Spacing="10">
+                        <TextBlock
+                            Margin="5,0"
+                            HorizontalAlignment="Left"
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Text="Tutorial - FAQ" />
+                        <ItemsControl ItemsSource="{Binding AvailableTutorials}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="5" Rows="1" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </StackPanel>
 
-            </Grid>
-        </StackPanel>
+                </Grid>
+            </StackPanel>
+
+        </Grid>
+        <Grid Row="2">
+            <ui:InfoBar
+                Title="{Binding Title}"
+                Width="400"
+                Margin="20"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                DataContext="{Binding InfoBarViewModel}"
+                IsOpen="{Binding IsOpen, Mode=TwoWay}">
+                <ui:InfoBar.IconSource>
+                    <ui:PathIconSource Data="{DynamicResource infoCircle}" />
+                </ui:InfoBar.IconSource>
+                <Grid RowDefinitions="Auto,*,Auto">
+                    <TextBlock
+                        Margin="0,5"
+                        FontWeight="SemiBold"
+                        Foreground="{Binding ForeGround}"
+                        Text="{Binding Content}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Margin="0,0,0,15"
+                        Text="{Binding SubContent}"
+                        TextTrimming="CharacterEllipsis" />
+                    <ProgressBar
+                        Grid.Row="2"
+                        Height="2"
+                        Margin="0,0,0,10"
+                        VerticalAlignment="Bottom"
+                        IsIndeterminate="True"
+                        IsVisible="{Binding IsLoading}" />
+                </Grid>
+            </ui:InfoBar>
+        </Grid>
     </Grid>
 </UserControl>

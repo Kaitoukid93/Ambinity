@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using AmbinityCore.Models.Device.LED;
 using Avalonia;
@@ -15,7 +16,16 @@ public partial class LEDLayoutEditorView : Window
     public LEDLayoutEditorView()
     {
         InitializeComponent();
-       
+        this.Closed += OnUserClosingWindow;
+    }
+
+    private void OnUserClosingWindow(object? sender, EventArgs e)
+    {
+        var vm = this.DataContext as LEDLayoutEditorViewModel;
+        if (vm == null)
+            return;
+        if (vm.IsInIndexSetupMode)
+            vm.CancelIndexSetup();
     }
 
     private void InputElement_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -29,9 +39,9 @@ public partial class LEDLayoutEditorView : Window
                 _viewModel.SetIndex(led);
             }
             else
-            _viewModel.ToggleLED(led);
+                _viewModel.ToggleLED(led);
         }
     }
 
-    
+
 }

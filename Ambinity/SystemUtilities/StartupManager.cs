@@ -16,8 +16,10 @@ public static class StartUpManager
         if (ts.GetTask(taskName) != null && !update)
             return;
         TaskDefinition td = ts.NewTask();
-        //td.Principal.RunLevel = TaskRunLevel.Highest;
-        //td.Triggers.AddNew(TaskTriggerType.Logon);          
+        var isElevated = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+        if(isElevated)
+        td.Principal.RunLevel = TaskRunLevel.Highest;
+        //td.Triggers.AddNew(TaskTriggerType.Logon);
         string program_path = Constants.ExecutablePath; // you can have it dynamic
         LogonTrigger lg = new LogonTrigger { UserId = WindowsIdentity.GetCurrent().Name };
         lg.Delay = TimeSpan.FromSeconds(delaySecond);
@@ -34,5 +36,5 @@ public static class StartUpManager
             ts.RootFolder.DeleteTask(taskName);
         }
     }
-    
+
 }

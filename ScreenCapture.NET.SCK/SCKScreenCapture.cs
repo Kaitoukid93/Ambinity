@@ -105,7 +105,7 @@ public sealed class SCKScreenCapture : AbstractScreenCapture<ColorBGRA>
                                 {
                                     Log.Error("Requested display not found" + Display.Index);
                                     //stop capturing request from outside
-                                    _isInitialized = true;
+                                    //_isInitialized = true;
                                     return;
                                 }
                                 _selectedDisplay = content.Displays[Display.Index];

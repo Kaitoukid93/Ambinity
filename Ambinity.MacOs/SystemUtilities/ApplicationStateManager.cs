@@ -51,11 +51,7 @@ public class ApplicationStateManager
 
     private async void UtilitiesOnSleepRequested(object? sender, EventArgs e)
     {
-        //Stop current playing profile
-        //stop screencapturingservice
-        //stop audiocapturingservice
-        //stop serialdiscoveryservice
-        //stop hwmonitorservice
+        //implement a core services that hold all the services
         Log.Information("Going to sleep, disposing capturing services");
         await _decoder.Stop();
         await _capturingServiceProvider.Dispose();

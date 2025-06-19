@@ -1,69 +1,123 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
-             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
-             x:DataType="local:DeviceSettingsDashboardViewModel"
-             x:Class="Ambinity.Views.Screens.DeviceSettings.DeviceSettingsDashboardView">
+<UserControl
+    x:Class="Ambinity.Views.Screens.DeviceSettings.DeviceSettingsDashboardView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="local:DeviceSettingsDashboardViewModel"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <MenuFlyout x:Key="addNewMenuFlyout" Placement="Top">
+            <MenuItem Command="{Binding AddNewDeviceCommand}" Header="Add Ambino Device" />
+            <MenuItem Header="Add Adalight Device" IsEnabled="false" />
+            <MenuItem Header="Add WLED Device" IsEnabled="false" />
+        </MenuFlyout>
+    </UserControl.Resources>
     <ScrollViewer Margin="0,10,0,0" IsScrollInertiaEnabled="True">
-    <Grid RowDefinitions="auto,5,*">
-        <TextBlock Margin="5" Text="Devices" FontSize="25" FontWeight="SemiBold"></TextBlock>
-        <ScrollViewer Grid.Row="2" IsScrollInertiaEnabled="True">
-        <StackPanel  Spacing="20">
-            <Grid>
-                <ItemsControl IsEnabled="{Binding !InfoBarViewModel.IsOpen}" ItemsSource="{Binding Devices}">
-                    <ItemsControl.DataTemplates>
-                        <DataTemplate DataType="{x:Type local:DashboardDeviceViewModel}">
-                            <local:DashboardDeviceView></local:DashboardDeviceView>
-                        </DataTemplate>
-                    </ItemsControl.DataTemplates>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal"></WrapPanel>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
+        <Grid RowDefinitions="auto,5,*">
+            <Grid ColumnDefinitions="*,20,auto" Row="0">
+                <TextBlock
+                    Margin="5"
+                    FontSize="25"
+                    FontWeight="SemiBold"
+                    Text="Devices" />
+                <Grid Column="2">
+                    <Button
+                        Margin="5,0,20,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Classes="accent"
+                        BorderThickness="0"
+                        Flyout="{DynamicResource addNewMenuFlyout}">
+                        <Grid ColumnDefinitions="Auto,5,*">
+                            <PathIcon Data="{DynamicResource addnew}" />
+                            <TextBlock
+                                Grid.Column="2"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="Add Device" />
+                        </Grid>
+                    </Button>
+                </Grid>
             </Grid>
-            <!-- <Grid RowDefinitions="Auto,0,*"> -->
-            <!--     <TextBlock Margin="10,0" Text="Cooling Devices" Classes="smallBold"></TextBlock> -->
-            <!--     <ItemsControl Grid.Row="2" IsEnabled="{Binding !InfoBarViewModel.IsOpen}" ItemsSource="{Binding CoolingDevices}"> -->
-            <!--         <ItemsControl.DataTemplates> -->
-            <!--             <DataTemplate DataType="{x:Type local:DashboardDeviceViewModel}"> -->
-            <!--                 <local:DashboardDeviceView></local:DashboardDeviceView> -->
-            <!--             </DataTemplate> -->
-            <!--         </ItemsControl.DataTemplates> -->
-            <!--         <ItemsControl.ItemsPanel> -->
-            <!--             <ItemsPanelTemplate> -->
-            <!--                 <WrapPanel Orientation="Horizontal"></WrapPanel> -->
-            <!--             </ItemsPanelTemplate> -->
-            <!--         </ItemsControl.ItemsPanel> -->
-            <!--     </ItemsControl> -->
-            <!-- </Grid> -->
-        </StackPanel>
-       </ScrollViewer>
-        <Grid Row="2">
-            <ui:InfoBar Width="400" DataContext="{Binding InfoBarViewModel }" IsOpen="{Binding IsOpen,Mode=TwoWay}" HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom" Margin="20" Title="{Binding Title}">
-                <ui:InfoBar.IconSource>
-                    <ui:PathIconSource Data="{DynamicResource infoCircle}"></ui:PathIconSource>
-                </ui:InfoBar.IconSource>
-                <Grid ColumnDefinitions="Auto,*">
-                    <Grid RowDefinitions="Auto,*,Auto">
-                        <TextBlock Margin="0,5" Text="{Binding Content}"
-                                   Foreground="{Binding ForeGround}"
-                                   FontWeight="SemiBold">
-                        </TextBlock>
-                        <TextBlock Grid.Row="1" Margin="0,0,0,15" Text="{Binding SubContent}"></TextBlock>
+
+            <ScrollViewer Grid.Row="2" IsScrollInertiaEnabled="True">
+                <StackPanel Spacing="20">
+                    <Grid>
+                        <ItemsControl IsEnabled="{Binding !InfoBarViewModel.IsOpen}" ItemsSource="{Binding Devices}">
+                            <ItemsControl.DataTemplates>
+                                <DataTemplate DataType="{x:Type local:DashboardDeviceViewModel}">
+                                    <local:DashboardDeviceView />
+                                </DataTemplate>
+                            </ItemsControl.DataTemplates>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </Grid>
+                    <!-- <Grid RowDefinitions="Auto,0,*"> -->
+                    <!--     <TextBlock Margin="10,0" Text="Cooling Devices" Classes="smallBold"></TextBlock> -->
+                    <!--     <ItemsControl Grid.Row="2" IsEnabled="{Binding !InfoBarViewModel.IsOpen}" ItemsSource="{Binding CoolingDevices}"> -->
+                    <!--         <ItemsControl.DataTemplates> -->
+                    <!--             <DataTemplate DataType="{x:Type local:DashboardDeviceViewModel}"> -->
+                    <!--                 <local:DashboardDeviceView></local:DashboardDeviceView> -->
+                    <!--             </DataTemplate> -->
+                    <!--         </ItemsControl.DataTemplates> -->
+                    <!--         <ItemsControl.ItemsPanel> -->
+                    <!--             <ItemsPanelTemplate> -->
+                    <!--                 <WrapPanel Orientation="Horizontal"></WrapPanel> -->
+                    <!--             </ItemsPanelTemplate> -->
+                    <!--         </ItemsControl.ItemsPanel> -->
+                    <!--     </ItemsControl> -->
+                    <!-- </Grid> -->
+                </StackPanel>
+            </ScrollViewer>
+            <Grid Row="2">
+                <ui:InfoBar
+                    Title="{Binding Title}"
+                    Width="400"
+                    Margin="20"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    DataContext="{Binding InfoBarViewModel}"
+                    IsOpen="{Binding IsOpen, Mode=TwoWay}">
+                    <ui:InfoBar.IconSource>
+                        <ui:PathIconSource Data="{DynamicResource infoCircle}" />
+                    </ui:InfoBar.IconSource>
+                    <Grid>
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            <TextBlock
+                                Margin="0,5"
+                                FontWeight="SemiBold"
+                                Foreground="{Binding ForeGround}"
+                                Text="{Binding Content}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Margin="0,0,0,15"
+                                Text="{Binding SubContent}"
+                                TextTrimming="CharacterEllipsis" />
+                            <ProgressBar
+                                Grid.Row="2"
+                                Height="2"
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Bottom"
+                                IsIndeterminate="True"
+                                IsVisible="{Binding IsLoading}" />
+                        </Grid>
 
                     </Grid>
-                    <ProgressBar IsVisible="{Binding IsLoading}" Margin="20,0,10,0" Grid.Column="1" Grid.Row="2" Height="2" IsIndeterminate="True"></ProgressBar>
-                </Grid>
 
 
-            </ui:InfoBar>
+                </ui:InfoBar>
+            </Grid>
         </Grid>
-    </Grid>
     </ScrollViewer>
 </UserControl>

@@ -6,8 +6,12 @@
         x:DataType="local:LEDLayoutCreatorViewModel"
         xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor.LEDLayoutCreator"
         x:Class="Ambinity.Views.LayoutEditor.LEDLayoutCreator.LEDLayoutCreatorView"
+        ExtendClientAreaToDecorationsHint="True"
         Title="Layout Creator">
- <Grid ColumnDefinitions="*,20,Auto" RowDefinitions="20,*,Auto">
+ <Grid ColumnDefinitions="*,20,Auto" RowDefinitions="40,*,Auto">
   <ContentControl Grid.Row="1" Grid.Column="0" Content="{Binding CanvasViewModel}"/>
+  <Grid  Column="2">
+   <ContentControl Margin="10" Grid.Row ="2" Content = "{Binding LEDPropertiesViewModel}"/>
+    </Grid>
   </Grid>
 </Window>

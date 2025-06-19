@@ -8,7 +8,6 @@ namespace Draw2D.Core.Shapes.Basic
     public class Rectangle : VectorFigure
     {
        // private VectorFigure _centerHandle;
-
         public Rectangle(float x, float y, float width, float height)
         {
             X = x;

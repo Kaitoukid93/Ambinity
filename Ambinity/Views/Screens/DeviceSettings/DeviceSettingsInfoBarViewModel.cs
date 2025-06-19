@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Ambinity.ViewModels;
 using AmbinityCore.DataBase;
@@ -13,7 +14,7 @@ namespace Ambinity.Views.Screens.DeviceSettings;
 
 public class DeviceSettingsInfoBarViewModel : ViewModelBase
 {
-    
+
     public DeviceSettingsInfoBarViewModel(SerialControllerRepository controllerRepository, GeneralSettingsManager settingsManager,
         SerialControllerDiscoveryService discoveryService)
     {
@@ -23,7 +24,20 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
         _discoveryService.NewComportDetected += OnNewComPortDetected;
         _controllerRepository.OldDeviceDetected += OnOldSerilaPortDetected;
         _controllerRepository.ControllerDisconnected += OnSerialControllerDisconnected;
+        _controllerRepository.OldDeviceReconnected += OnOldDeviceConnected;
         _controllerRepository.LoadingFromDisk += OnLoadingFromDisk;
+        _controllerRepository.NewControllerAdded += OnNewControllerAdded;
+
+    }
+
+    private void OnNewControllerAdded(IController controller)
+    {
+        IsOpen = false;
+    }
+
+    private void OnOldDeviceConnected(IController controller)
+    {
+        IsOpen = false;
     }
 
     private void OnLoadingFromDisk(IController controller)
@@ -81,7 +95,7 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
 
     private SerialControllerRepository _controllerRepository;
     private SerialControllerDiscoveryService _discoveryService;
-    
+
     private bool _isOpen;
     public bool IsOpen
     {

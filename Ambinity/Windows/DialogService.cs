@@ -36,7 +36,7 @@ public class DialogService : IDialogService
 
         var result = await dialog.ShowAsync();
     }
-    
+
     public async Task ShowCreateNewProfileDialog(NewProfileDialogContentViewModel viewModel)
     {
         var dialog = new ContentDialog()
@@ -46,13 +46,31 @@ public class DialogService : IDialogService
             IsSecondaryButtonEnabled = false,
             CloseButtonText = "Cancel"
         };
-       
+
         viewModel.Init(dialog);
         dialog.Content = new NewProfileDialogContent()
         {
             DataContext = viewModel
         };
-        
+
+        var result = await dialog.ShowAsync();
+    }
+       public async Task ShowCreateNewDeviceDialog(NewDeviceDialogContentViewModel viewModel)
+    {
+        var dialog = new ContentDialog()
+        {
+            Title = "New Device",
+            PrimaryButtonText = "Ok",
+            IsSecondaryButtonEnabled = false,
+            CloseButtonText = "Cancel"
+        };
+
+        viewModel.Init(dialog);
+        dialog.Content = new NewDeviceDialogContent()
+        {
+            DataContext = viewModel
+        };
+
         var result = await dialog.ShowAsync();
     }
     public async Task ShowDownloadDialog(DownloadDialogViewModel vm, bool showCancelButton)

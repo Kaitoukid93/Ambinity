@@ -37,13 +37,22 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
         _canvasViewModel = canvasViewModelFactory.Get<DeviceLayoutCanvasViewModel>();
         _layoutCreatorViewModel = layoutCreatorViewModel;
         OpenLibraryCommand = new AsyncRelayCommand(OpenLibrary);
-        OpenLayoutCreatorCommand = new RelayCommand(OpenLayoutCreator);
+        OpenLayoutCreatorCommand = new RelayCommand(OpenNewLayoutInitialSetup);
     }
 
-
-    private void OpenLayoutCreator()
+    private void OpenNewLayoutInitialSetup()
     {
-        _layoutCreatorViewModel?.Init();
+        var vm = new LEDLayoutCreatorInitialViewModel();
+        _windowService.ShowWindow(vm);
+        vm.Accept += OpenLayoutCreator;
+    }
+    private void OpenLayoutCreator(LayoutPropertiesViewModel vm)
+    {
+        var width = (int)vm.Width;
+        var height = (int)vm.Height;
+        var image = vm.ImagePath;
+        var ledCount = vm.LEDCount;
+        _layoutCreatorViewModel?.Init(width,height,ledCount,image);
         _windowService.ShowWindow(_layoutCreatorViewModel);
     }
 

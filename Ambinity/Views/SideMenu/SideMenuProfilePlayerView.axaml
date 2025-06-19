@@ -52,7 +52,7 @@
                            Text="{Binding CurrentPlayingProfile.Name}">
                 </TextBlock>
                 <TextBlock Grid.Row="1" Classes="smallBoldSecondary"
-                           HorizontalAlignment="Center" 
+                           HorizontalAlignment="Center"
                            Text="{Binding CurrentPlayingProfileDescription}">
                 </TextBlock>
             </Grid>

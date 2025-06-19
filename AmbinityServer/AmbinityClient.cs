@@ -4,7 +4,7 @@ namespace AmbinityServer;
 
 public class AmbinityClient
 {
-   
+
     private SftpWrapper _ftpServer;
     public SftpWrapper SftpServer => _ftpServer;
 
@@ -16,10 +16,9 @@ public class AmbinityClient
 
     public async Task<bool> Init()
     {
-        //dispose first
         return await _ftpServer.Connect();
     }
-    
+
 
     public void Disconnect()
     {

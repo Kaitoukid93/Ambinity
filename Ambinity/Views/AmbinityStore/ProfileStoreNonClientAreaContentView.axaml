@@ -31,13 +31,13 @@
                                 <PathIcon  Width="15" Height="15" Data="{DynamicResource search}"></PathIcon>
                             </Button>
                         </Grid>
-                       
+
                     </TextBox.InnerRightContent>
                 </TextBox>
-                <ProgressBar MinWidth="150" MaxWidth="450" IsVisible="{Binding !EnableSearchBar}" Margin="20,0,20,0" Height="2" HorizontalAlignment="Stretch" IsIndeterminate="True"></ProgressBar>
+                <!-- <Prar MinWidth="150" MogressBaxWidth="450" IsVisible="{Binding !EnableSearchBar}" Margin="20,0,20,0" Height="2" HorizontalAlignment="Stretch" IsIndeterminate="True"></ProgressBar> -->
             </StackPanel>
-            
+
         </Grid>
-        
+
     </Grid>
 </UserControl>

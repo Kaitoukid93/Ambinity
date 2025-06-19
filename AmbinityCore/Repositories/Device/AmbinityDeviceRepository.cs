@@ -1,3 +1,4 @@
+using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Device.Device;
@@ -19,6 +20,7 @@ public class AmbinityDeviceRepository
         _serialControllerRepository.NewControllerAdded += OnNewControllerAdded;
         _openRGBControllerRepository = openRgbControllerRepository;
         _openRGBControllerRepository.NewControllerAdded += OnNewControllerAdded;
+        _serialControllerRepository.ItemRemoved += OnControllerRemoved;
 
         Devices = new List<AmbinityDevice>();
         foreach (var item in serialControllerRepository.Items)
@@ -30,8 +32,48 @@ public class AmbinityDeviceRepository
         _captures = new List<AmbinityDeviceBitmapCapture>();
     }
 
+    private void OnControllerRemoved(ICollectableItem item)
+    {
+        if (item is not IController controller)
+            return;
+
+        lock (Lock)
+        {
+            // Remove LED devices and their captures
+            foreach (var output in controller.LedController.Outputs)
+            {
+                output.OutputEnabled -= OnOutputEnabled;
+                output.OutputDisabled -= OnOutputDisabled;
+                output.DevicesUpdated -= OnDevicesUpdated;
+
+                foreach (var device in output.Devices)
+                {
+                    Devices.Remove(device);
+                    var capture = GetCapture(device);
+                    if (capture != null)
+                    {
+                        capture.Dispose();
+                        _captures.Remove(capture);
+                    }
+                }
+            }
+
+            // Remove fan outputs/services if any
+            if (controller.FanController != null)
+            {
+                foreach (var output in controller.FanController.Outputs)
+                {
+                    var service = _fanOutputServiceFactory.GetFanOutputService(output);
+                    service.Dispose();
+                }
+            }
+
+            DevicesListUpdated?.Invoke();
+        }
+    }
+
     private List<AmbinityDeviceBitmapCapture> _captures;
-    public object Lock { get; }= new object();
+    public object Lock { get; } = new object();
     private void OnNewControllerAdded(IController controller)
     {
         lock (Lock)
@@ -66,7 +108,7 @@ public class AmbinityDeviceRepository
 
     }
 
-//todo implement device remove
+    //todo implement device remove
     private void OnDevicesUpdated(string action, AmbinityDevice device)
     {
         switch (action)
@@ -102,7 +144,7 @@ public class AmbinityDeviceRepository
 
     public void ResetDefaultLayout()
     {
-        foreach(var controller in _serialControllerRepository.Items)
+        foreach (var controller in _serialControllerRepository.Items)
         {
             if (controller is SerialController serialController)
             {

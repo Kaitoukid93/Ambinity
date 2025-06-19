@@ -94,11 +94,11 @@ Request custom layout at [Ambino-Layout](https://ambino.vn)
                             </Button>
                         </Grid>
                           <Grid>
-                            <Button ToolTip.Tip="Create Custom Layout" Command="{Binding OpenLayoutCreatorCommand}" Padding="1"
+                            <!-- <Button ToolTip.Tip="Create Custom Layout" Command="{Binding OpenLayoutCreatorCommand}" Padding="1"
                                     Background="Transparent" Width="30" Height="30"
                                     Classes="icon-button">
                                 <PathIcon Width="15" Data="{DynamicResource AddToCollection}"></PathIcon>
-                            </Button>
+                            </Button> -->
                         </Grid>
                     </StackPanel>
 

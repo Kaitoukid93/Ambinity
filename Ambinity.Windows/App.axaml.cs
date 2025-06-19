@@ -10,6 +10,10 @@ using AmbinityCore.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using HotAvalonia;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using AmbinityCore.CapturingService;
+using AmbinityCore.Models.Profile;
+using AmbinityCore.Models.Device.Service;
 
 namespace Ambinity.Windows;
 
@@ -28,7 +32,7 @@ public partial class App : Application
         this.EnableHotReload(); // Ensure this line **precedes** `AvaloniaXamlLoader.Load(this);`
         AvaloniaXamlLoader.Load(this);
     }
-        
+
     private bool FocusExistingInstance()
     {
         if (Design.IsDesignMode)
@@ -41,16 +45,19 @@ public partial class App : Application
     {
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
-        _applicationStateManager = new ApplicationStateManager(desktop.Args ?? Array.Empty<string>());
-       //if(!_applicationStateManager.IsElevated)
+
+        //if(!_applicationStateManager.IsElevated)
         //Utilities.Restart(true, TimeSpan.Zero);
         BindingPlugins.DataValidators.RemoveAt(0);
         //register service and ui
         AmbinityBootStrapper.Initialize(this);
-           
+        var capturingServiceProvider = Ioc.Default.GetRequiredService<CapturingServiceProvider>();
+        var profileDecoder = Ioc.Default.GetRequiredService<LightingProfileDecoder>();
+        var serialDiscoveryService = Ioc.Default.GetRequiredService<SerialControllerDiscoveryService>();
+        _applicationStateManager = new ApplicationStateManager(desktop.Args ?? Array.Empty<string>(),capturingServiceProvider, profileDecoder, serialDiscoveryService);
     }
-        
+
     private Mutex? _ambinityMutex;
     private ApplicationStateManager _applicationStateManager;
-    
+
 }

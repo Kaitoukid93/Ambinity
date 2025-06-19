@@ -28,6 +28,7 @@ public partial class Draw2DCanvasView : UserControl
         _viewModelFactory = Ioc.Default.GetRequiredService<CanvasViewModelFactory>();
         _contextMenuProvider = Ioc.Default.GetRequiredService<FigureContextMenuProvider>();
         _viewModelFactory.CurrentChanged += OnCurrentCanvasViewModelChanged;
+        
     }
 
     private void OnCurrentCanvasViewModelChanged(CanvasViewModelBase vm)

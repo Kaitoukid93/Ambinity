@@ -6,7 +6,10 @@ using System.Linq;
 using System.Security.Principal;
 using Ambinity.Events;
 using Ambinity.Utils;
+using AmbinityCore.CapturingService;
 using AmbinityCore.Events;
+using AmbinityCore.Models.Device.Service;
+using AmbinityCore.Models.Profile;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
@@ -20,10 +23,15 @@ namespace Ambinity.Windows.SystemUtilities;
 public class ApplicationStateManager
 {
     private const int SM_SHUTTINGDOWN = 0x2000;
-    
-    public ApplicationStateManager(string[] startupArguments)
+    private LightingProfileDecoder _decoder;
+    private CapturingServiceProvider _capturingServiceProvider;
+
+    public ApplicationStateManager(string[] startupArguments, CapturingServiceProvider capturingServiceProvider,
+    LightingProfileDecoder decoder, SerialControllerDiscoveryService serialDiscoveryService)
     {
- 
+        _decoder = decoder;
+        _capturingServiceProvider = capturingServiceProvider;
+        _serialDiscoveryService = serialDiscoveryService;
         StartupArguments = startupArguments;
         IsElevated = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
 
@@ -31,13 +39,17 @@ public class ApplicationStateManager
         Utilities.RestartRequested += UtilitiesOnRestartRequested;
         Utilities.UpdateRequested += UtilitiesOnUpdateRequested;
 
+        Utilities.SleepRequested += UtilitiesOnSleepRequested;
+        Utilities.WakeupRequested += UtilitiesOnWakeupRequested;
         // On Windows shutdown dispose the IOC container just so device providers get a chance to clean up
         if (Application.Current?.ApplicationLifetime is IControlledApplicationLifetime controlledApplicationLifetime)
             controlledApplicationLifetime.Exit += ControlledApplicationLifetimeOnExit;
         //
         // Inform the Core about elevation status
-       // container.Resolve<ICoreService>().IsElevated = IsElevated;
+        // container.Resolve<ICoreService>().IsElevated = IsElevated;
     }
+
+    private SerialControllerDiscoveryService _serialDiscoveryService;
 
     public string[] StartupArguments { get; }
 
@@ -51,7 +63,7 @@ public class ApplicationStateManager
             argsList.AddRange(e.ExtraArgs.Except(argsList));
         string args = argsList.Any() ? "-ArgumentList " + string.Join(',', argsList) : "";
         string command =
-            $"-Command \"& {{Start-Sleep -Milliseconds {(int) e.Delay.TotalMilliseconds}; " +
+            $"-Command \"& {{Start-Sleep -Milliseconds {(int)e.Delay.TotalMilliseconds}; " +
             "(Get-Process 'Ambinity.Windows').kill(); " +
             $"Start-Process -FilePath '{Constants.ExecutablePath}' -WorkingDirectory '{Constants.ApplicationFolder}' {args}}}\"";
         // Elevated always runs with RunAs
@@ -78,8 +90,8 @@ public class ApplicationStateManager
             };
             Process.Start(info);
         }
-       //  Non-elevated runs via a utility method is currently elevated (de-elevating is hacky)
-       // Ambinity is not using it right now since the app always need to be elevated
+        //  Non-elevated runs via a utility method is currently elevated (de-elevating is hacky)
+        // Ambinity is not using it right now since the app always need to be elevated
         else
         {
             string powerShell = Path.Combine(Environment.SystemDirectory, "WindowsPowerShell", "v1.0", "powershell.exe");
@@ -90,7 +102,31 @@ public class ApplicationStateManager
         // if (Application.Current?.ApplicationLifetime is IControlledApplicationLifetime controlledApplicationLifetime)
         //     Dispatcher.UIThread.Post(() => controlledApplicationLifetime.Shutdown());
     }
+    private async void UtilitiesOnSleepRequested(object? sender, EventArgs e)
+    {
+        //Stop current playing profile
+        //stop screencapturingservice
+        //stop audiocapturingservice
+        //stop serialdiscoveryservice
+        //stop hwmonitorservice
+        Log.Information("Going to sleep, disposing capturing services");
+        await _decoder.Stop();
+        await _capturingServiceProvider.Dispose();
+        _serialDiscoveryService.Hold();
 
+    }
+    private async void UtilitiesOnWakeupRequested(object? sender, EventArgs e)
+    {
+        Log.Information("Waking up from sleep, re-initializing capturing services");
+        await _capturingServiceProvider.Init();
+        _decoder.Init();
+        await _serialDiscoveryService.Resume(1);
+        //start screencapturingservice
+        //start audiocapturingservice
+        //start serialdiscoveryservice
+        //start hwmonitorservice
+        //start current playing profile
+    }
     private void UtilitiesOnUpdateRequested(object? sender, UpdateEventArgs e)
     {
         List<string> argsList = new(StartupArguments);
@@ -113,7 +149,7 @@ public class ApplicationStateManager
     private void ControlledApplicationLifetimeOnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
     {
         Log.Information("Application lifetime exiting, disposing container and friends");
-        
+
         RunForcedShutdownIfEnabled();
 
         // Dispose plugins before disposing the IOC container because plugins might access services during dispose

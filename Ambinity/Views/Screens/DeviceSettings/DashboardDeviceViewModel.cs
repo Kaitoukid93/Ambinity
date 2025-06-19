@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Security.AccessControl;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.ViewModels;
@@ -14,12 +15,13 @@ namespace Ambinity.Views.Screens.DeviceSettings;
 public class DashboardDeviceViewModel : ViewModelBase
 {
     public event Action<DashboardDeviceViewModel> DeviceClicked;
-private ThumbnailService _thumbnailService;
+    public event Action<DashboardDeviceViewModel> DeviceRemoved;
+    private ThumbnailService _thumbnailService;
     public DashboardDeviceViewModel(IController controller, ThumbnailService thumbnailService)
     {
         _thumbnailService = thumbnailService;
         Controller = controller;
-        Thumbnail = Controller.Thumbnail ??  _thumbnailService.GetThumbnail("null").Result;
+        Thumbnail = Controller.Thumbnail ?? _thumbnailService.GetThumbnail("null").Result;
         OnPropertyChanged(nameof(IsOpenRGB));
         Controller.TransferActiveChanged += OnTransferActiveChanged;
         controller.WorkingStateChanged += OnWorkingStateChanged;
@@ -46,12 +48,12 @@ private ThumbnailService _thumbnailService;
         DeviceClickedCommand = new RelayCommand(SelectDevice);
         TurnOffControllerCommand = new RelayCommand(TurnOff);
         TurnOnControllerCommand = new RelayCommand(TurnOn);
+        RemoveControllerCommand = new AsyncRelayCommand(RemoveController);
     }
- 
+
     private void TurnOn()
     {
         Controller.TurnOn();
-        ;
     }
 
     private void TurnOff()
@@ -63,9 +65,14 @@ private ThumbnailService _thumbnailService;
     {
         DeviceClicked?.Invoke(this);
     }
+    private async Task RemoveController()
+    {
+       DeviceRemoved?.Invoke(this);
+    }
 
     public bool IsOpenRGB => Controller is OpenRGBController;
     public ICommand DeviceClickedCommand { get; set; }
     public ICommand TurnOffControllerCommand { get; set; }
     public ICommand TurnOnControllerCommand { get; set; }
+    public ICommand RemoveControllerCommand { get; set;}
 }

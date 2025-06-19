@@ -14,7 +14,6 @@ namespace Ambinity.MacOs.SystemUtilities
         {
             if (_isSubscribed)
                 return;
-
             NSWorkspace.SharedWorkspace.NotificationCenter.AddObserver(
                 NSWorkspace.WillSleepNotification,
                 OnSystemSleep);

@@ -19,32 +19,31 @@ namespace Ambinity.Views.Draw2DCanvas;
 
 public class FigureContextMenuProvider
 {
-    private CanvasViewModelBase _canvasVM;
+    public CanvasViewModelBase CanvasVM;
     private MenuFlyout _contextMenu;
     private MenuItem _pasteMenuItem;
 
     public FigureContextMenuProvider(CanvasViewModelFactory canvasViewModelFactory)
     {
-        canvasViewModelFactory.CurrentChanged += OnCurrentCanvasViewModelChanged;
-
         // HotKeyManager.SetHotKey(_pasteMenuItem, new KeyGesture(Key.V, KeyModifiers.Control));
     }
 
-    private void OnCurrentCanvasViewModelChanged(CanvasViewModelBase vm)
+
+    public void Init()
     {
-        _canvasVM = vm;
+        if (CanvasVM == null)
+            return;
+        _pasteMenuItem = new MenuItem()
+        {
+            Header = "Paste",
+            Command = CanvasVM?.PasteCommand,
+            // InputGesture = new KeyGesture(Key.V, KeyModifiers.Control)
+        };
         _contextMenu = new MenuFlyout()
         {
             Placement = PlacementMode.Pointer
         };
-        _pasteMenuItem = new MenuItem()
-        {
-            Header = "Paste",
-            Command = _canvasVM.PasteCommand,
-            // InputGesture = new KeyGesture(Key.V, KeyModifiers.Control)
-        };
     }
-
     public MenuFlyout GetContextMenu(Figure clickedItem, Point clickPoint)
     {
         if (clickedItem == null)
@@ -77,13 +76,13 @@ public class FigureContextMenuProvider
                 _contextMenu.Items.Add(new MenuItem()
                 {
                     Header = "Copy",
-                    Command = _canvasVM.CopySelectedFigureCommand,
+                    Command = CanvasVM.CopySelectedFigureCommand,
                     // InputGesture = new KeyGesture(Key.C, KeyModifiers.Control)
                 });
                 _contextMenu.Items.Add(new MenuItem()
                 {
                     Header = "Delete",
-                    Command = _canvasVM.DeleteCommand,
+                    Command = CanvasVM.DeleteCommand,
                     //   InputGesture = new KeyGesture(Key.Delete)
                 });
             }
@@ -122,7 +121,7 @@ public class FigureContextMenuProvider
                 });
             }
 
-            if (_canvasVM.Canvas.Selection.AllActive.Count > 1 && containerFigure.ChildItem.GroupID == Guid.Empty)
+            if (CanvasVM.Canvas.Selection.AllActive.Count > 1 && containerFigure.ChildItem.GroupID == Guid.Empty)
             {
                 _contextMenu.Items.Add(new MenuItem()
                 {
@@ -154,7 +153,7 @@ public class FigureContextMenuProvider
     }
     private async Task LockUnlockMultipleItems(bool lockItems)
     {
-        var selectedFigures = _canvasVM.Canvas.Selection.AllActive
+        var selectedFigures = CanvasVM.Canvas.Selection.AllActive
             .OfType<ContainerFigure>()
             .ToList();
 
@@ -178,7 +177,7 @@ public class FigureContextMenuProvider
     private async Task LinkItem()
     {
         var groupID = Guid.NewGuid();
-        foreach (var figure in _canvasVM.Canvas.Selection.AllActive)
+        foreach (var figure in CanvasVM.Canvas.Selection.AllActive)
         {
             if (figure is ContainerFigure containerFigure)
             {
@@ -203,7 +202,7 @@ public class FigureContextMenuProvider
     private async Task UnlinkItem(Guid groupID)
     {
 
-        foreach (var figure in _canvasVM.Canvas.Selection.All)
+        foreach (var figure in CanvasVM.Canvas.Selection.All)
         {
             if (figure is ContainerFigure containerFigure)
             {

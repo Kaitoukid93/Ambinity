@@ -161,7 +161,7 @@ public class LEDLayoutEditorViewModel : ViewModelBase
         }
     }
 
-    private void CancelIndexSetup()
+    public void CancelIndexSetup()
     {
         IsInIndexSetupMode = false;
         foreach (var led in LEDs)

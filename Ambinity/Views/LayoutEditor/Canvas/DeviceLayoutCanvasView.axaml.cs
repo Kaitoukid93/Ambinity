@@ -28,6 +28,8 @@ public partial class DeviceLayoutCanvasView : UserControl
         if (_viewModel.IsLocked)
             return;
         var point = new Point(e.MousePosX, e.MousePosY);
+        _contextMenuProvider.CanvasVM = _viewModel;
+        _contextMenuProvider.Init();
         var menu = _contextMenuProvider.GetContextMenu(null, point);
         menu.ShowAt(Draw2DControl);
     }
@@ -36,6 +38,8 @@ public partial class DeviceLayoutCanvasView : UserControl
     {
         if (_viewModel.IsLocked)
             return;
+        _contextMenuProvider.CanvasVM = _viewModel;
+        _contextMenuProvider.Init();
         var figure = e.Sender as Figure;
         var point = new Point(e.MousePosX, e.MousePosY);
         var menu = _contextMenuProvider.GetContextMenu(figure, point);

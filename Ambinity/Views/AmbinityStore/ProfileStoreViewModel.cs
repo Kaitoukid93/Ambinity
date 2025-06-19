@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,12 +18,14 @@ public class ProfileStoreViewModel : ViewModelBase
 
     public ProfileStoreViewModel(ProfileStoreNonClientAreaContentViewModel nonClientAreaContentViewModel,
         LightingProfileLibraryViewModel profileLibraryViewModel, AmbinityStoreNavigation storeNavigation,
-        AmbinityStoreDetailViewModel detailViewModel)
+        AmbinityStoreDetailViewModel detailViewModel,LightingProfileAssetsViewModel assetsViewModel)
     {
+        _assetsViewModel = assetsViewModel;
+        _assetsViewModel.LoadingChanged += OnLoadingChanged;
         _detailViewModel = detailViewModel;
         _storeNavigation = storeNavigation;
         _libraryViewModel = profileLibraryViewModel;
-        
+
         NonClientAreaContent = nonClientAreaContentViewModel;
         //init categories
         var colorPaletteProfilesCategory = new ProfileStoreSideMenuItemViewModel()
@@ -67,6 +70,11 @@ public class ProfileStoreViewModel : ViewModelBase
         ];
     }
 
+    private void OnLoadingChanged()
+    {
+        OnPropertyChanged(nameof(IsLoading));
+    }
+   public bool IsLoading => _assetsViewModel.IsLoading;
     private async void OnStoreItemSelected(AssetItemViewModelBase item)
     {
         if (item is OnlineItemAssetViewModel)
@@ -84,6 +92,7 @@ public class ProfileStoreViewModel : ViewModelBase
 
     //side menu simply a filter
     private ProfileStoreSideMenuItemViewModel _selectedFilter;
+    private LightingProfileAssetsViewModel _assetsViewModel;
     private readonly AmbinityStoreNavigation _storeNavigation;
     private readonly AmbinityStoreDetailViewModel _detailViewModel;
 

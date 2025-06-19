@@ -13,7 +13,7 @@
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
-    <Application.Resources>    
+    <Application.Resources>
         <ResourceDictionary>
                 <ResourceDictionary.ThemeDictionaries>
 
@@ -88,7 +88,7 @@
 
                 </ResourceDictionary>
 
-               
+
             </ResourceDictionary.ThemeDictionaries>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://Ambinity/Views/GeometryCollection/GeometryCollection.axaml" />
@@ -99,7 +99,7 @@
                 <ResourceInclude Source="avares://Ambinity/ControlTheme/BorderlessNumberbox.axaml"></ResourceInclude>
                 <ResourceInclude Source="avares://Ambinity/ControlTheme/StriplessTextBox.axaml"></ResourceInclude>
                 <ResourceInclude Source="avares://Ambinity/ControlTheme/SmallIconSettingsExpander.axaml"></ResourceInclude>
-                
+
                 <ResourceDictionary>
                     <converters:StaticResourceConverter x:Key="ResourceConverter" />
                 </ResourceDictionary>
@@ -173,7 +173,7 @@
     <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
 </Style>
         <StyleInclude Source="avares://Ambinity/Styles/Ambinity.axaml" />
-        
+        <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
         <Style Selector=":is(Window)">
             <Setter Property="Background" Value="{DynamicResource UIWindowBackgroundBrushInactive}" />
         </Style>

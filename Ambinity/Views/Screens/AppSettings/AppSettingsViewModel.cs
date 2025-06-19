@@ -52,10 +52,11 @@ public class AppSettingsViewModel : ViewModelBase
         _generalSettings.PropertyChanged += OnGeneralSettingsPropertyChanged;
         _useSystemTheme = _generalSettings.SelectedTheme == "System";
         _currentAppTheme = _generalSettings.SelectedTheme;
-        _runAtStartup = _generalSettings.AutoStart;
+        RunAtStartup = _generalSettings.AutoStart;
         _startupDelay = _generalSettings.AutoStartDelay;
         _enableMica = _generalSettings.EnableMica;
         _startMinimized = _generalSettings.StartMinimized;
+        _autoScanNewDevices = _generalSettings.AutoScanNewDevices;
         _appThemeManager = appThemeManager;
         AvailableFrameRates = ["24 FPS", "30 FPS", "60 FPS", "100 FPS", "144 FPS"];
         AvailableBitmapSize = ["400 * 320 px", "750 * 500 px", "800 * 600 px", "1024 * 768 px", "1200 * 600 px", "1000 * 500 px"];
@@ -125,7 +126,8 @@ public class AppSettingsViewModel : ViewModelBase
     }
     private void ShowDebugLog()
     {
-        // _debugWindowViewModel.Init();
+        _debugWindowViewModel.Init();
+
         _windowService.ShowWindow(_debugWindowViewModel);
     }
     private void RemoveDownloadedDatas()
@@ -240,6 +242,9 @@ public class AppSettingsViewModel : ViewModelBase
             case nameof(_generalSettings.CanvasHeight):
                 ShowRenderingInfoBar = true;
                 break;
+            case nameof(_generalSettings.AutoScanNewDevices):
+                ShowDevicesInfoBar = true;
+                break;
         }
     }
 
@@ -252,6 +257,7 @@ public class AppSettingsViewModel : ViewModelBase
         set
         {
             _runAtStartup = value;
+            if(OperatingSystem.IsWindows())
             RegisterStartupInformation();
             OnPropertyChanged();
         }
@@ -391,6 +397,18 @@ public class AppSettingsViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+    private bool _autoScanNewDevices;
+    public bool AutoScanNewDevices
+    {
+        get => _autoScanNewDevices;
+        set
+        {
+            _autoScanNewDevices = value;
+            _generalSettings.AutoScanNewDevices = value;
+            ShowDevicesInfoBar = true;
+            OnPropertyChanged();
+        }
+    }
 
     public List<string> AvailableBitmapSize { get; set; }
 
@@ -439,6 +457,17 @@ public class AppSettingsViewModel : ViewModelBase
         set
         {
             _showRenderingInfoBar = value;
+            OnPropertyChanged();
+        }
+    }
+    private bool _showDevicesInfoBar;
+
+    public bool ShowDevicesInfoBar
+    {
+        get => _showDevicesInfoBar;
+        set
+        {
+            _showDevicesInfoBar = value;
             OnPropertyChanged();
         }
     }

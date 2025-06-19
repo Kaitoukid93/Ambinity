@@ -17,6 +17,8 @@ using Draw2D.Core;
 using System;
 using AmbinityCore.Repositories;
 using AmbinityCore.Models.Device;
+using System.Reflection.Metadata;
+using AmbinityCore;
 
 namespace Ambinity.Views.LayoutEditor.Canvas
 {
@@ -25,6 +27,8 @@ namespace Ambinity.Views.LayoutEditor.Canvas
 
 
         public ToolsViewModel ToolsViewModel { get; }
+        private ImageFigure _deviceImage;
+        private string _imagePath;
         public Draw2DCanvasInfoBarViewModel InfoBarViewModel { get; }
         public LEDLayoutCreatorCanvasViewModel(GeneralSettingsManager settingsManager,
          IDialogService dialogService, ToolsViewModel toolsViewModel)
@@ -32,6 +36,7 @@ namespace Ambinity.Views.LayoutEditor.Canvas
         {
 
             ToolsViewModel = toolsViewModel;
+
         }
 
 
@@ -45,6 +50,36 @@ namespace Ambinity.Views.LayoutEditor.Canvas
         {
             AddFigure(figure, true);
             figure.Select();
+        }
+
+        /// <summary>
+        /// Each device can only have one single image
+        /// New image added will be stretch to device size
+        /// </summary>
+        public void SetDeviceImage(string imagePath)
+        {
+            if (_deviceImage == null)
+                return;
+            _imagePath = imagePath;
+            _deviceImage?.SetImage(_imagePath);
+
+        }
+        /// <summary>
+        /// Actually changing canvas size, all items will be removed
+        /// </summary>
+        /// <param name="size"></param>
+        public void SetDeviceSize(int width, int height)
+        {
+            // Canvas.Clear();
+            // _deviceImage = new ImageFigure(0, 0, width, height);
+            // if (_imagePath == null)
+            //     return;
+            // _deviceImage?.SetImage(_imagePath);
+            // _deviceImage.IsDragable = false;
+            // _deviceImage.IsSelectable = false;
+            // _deviceImage.IsResizable = false;
+            // Canvas.AddFigure(_deviceImage);
+
         }
 
         public bool ShoudDrawBackground { get; set; }
@@ -69,7 +104,7 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             FitCommand.Execute(null);
         }
 
-        public void Init()
+        public void Init(int width = 500, int height = 500)
         {
             //Register Tools
             ToolsViewModel.FitCanvasToViewEvent += FitCanvasToView;
@@ -78,7 +113,7 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             ToolsViewModel.AddFigure += OnFigureAddedFromTool;
 
             //Create Canvas
-            var canvasSize = new Size(500, 500);
+            var canvasSize = new Size(width, height);
             base.Init(canvasSize);
             FigureAdded += OnFigureAdded;
             FigureRemoved += OnFigureRemoved;
@@ -88,6 +123,12 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             int zOrder = 0;
             //Register InforBar
             ToolsViewModel.InitForLEDLayoutCreator();
+            _deviceImage = new ImageFigure(0, 0, width, height);
+            _deviceImage.IsDragable = false;
+            _deviceImage.IsSelectable = false;
+            _deviceImage.IsResizable = false;
+            Canvas.AddFigure(_deviceImage);
+            FitCommand?.Execute(null);
         }
 
 

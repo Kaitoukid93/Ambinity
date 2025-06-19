@@ -18,7 +18,7 @@
             <ResourceDictionary.ThemeDictionaries>
 
                 <ResourceDictionary x:Key="Default">
-                    
+
                     <Color x:Key="UIWindowBackgroundColorInactive">#F3F3F3</Color>
                     <Color x:Key="UIWindowBackgroundColorActive">#80F3F3F3</Color>
 
@@ -102,7 +102,7 @@
     <Application.Styles>
         <sty:FluentAvaloniaTheme PreferUserAccentColor="True" />
         <StyleInclude Source="avares://Ambinity/Styles/Ambinity.axaml" />
-
+        <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
         <!--  Override font  -->
         <!-- <Style Selector=":is(TopLevel)">
             <Setter Property="FontFamily" Value="{StaticResource NunitoFont}" />

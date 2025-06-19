@@ -125,7 +125,7 @@ public abstract class CollectableItemRepository : ObservableObject
     {
     }
 
-    public void RemoveItem(ICollectableItem item)
+    public virtual void RemoveItem(ICollectableItem item)
     {
         item.ItemCheckStatusChanged -= OnItemCheckStatusChanged;
         item.ItemNameChanged -= OnItemNameChanged;

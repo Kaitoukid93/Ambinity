@@ -9,6 +9,7 @@ public interface IGeneralSettings : INotifyPropertyChanged
 {
     bool AutoStart { get; set; }
     int AutoStartDelay { get; set; }
+    bool AutoScanNewDevices { get; set; }
     bool StartMinimized { get; set; }
     Color PrimaryColor { get; set; }
     bool EnableSnapToGrid { get; set; }
@@ -17,7 +18,7 @@ public interface IGeneralSettings : INotifyPropertyChanged
     Guid LastPlayedProfileID { get; set; }
     bool EnableMica { get; set; }
     string SelectedTheme { get; set; }
-    
+
     bool EnableAudioCapture { get; set; }
     bool EnableScreenCapture { get; set; }
     bool EnableHWMonitor { get; set; }

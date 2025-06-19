@@ -34,6 +34,22 @@ public class SerialControllerRepository : CollectableItemRepository
         _controllerProvider.Init();
     }
 
+    public override void RemoveItem(ICollectableItem item)
+    {
+        base.RemoveItem(item);
+        if (item is SerialController controller)
+        {
+            var stream = GetSerialStream(controller);
+            if (stream != null)
+            {
+                stream.ControllerDisconnected -= SerialControllerDisconnected;
+                _dataStreams.Remove(stream);
+                stream.Stop();
+                _controllerProvider.ControllerDisconnected(controller);
+            }
+        }
+    }
+
     private async void OnNewDeviceFound(IController controller)
     {
         _controllerProvider.Hold();

@@ -4,7 +4,7 @@ using Serilog;
 namespace AmbinityServer.OnlineItem;
 
 /// <summary>
-/// service to download item 
+/// service to download item
 /// </summary>
 public class DownloadService
 {
@@ -29,7 +29,7 @@ public class DownloadService
         }
         _isInit = true;
         return true;
-        
+
     }
     /// <summary>
     /// download an OnlineItem to destination path

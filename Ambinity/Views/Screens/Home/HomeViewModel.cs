@@ -8,6 +8,7 @@ using Ambinity.ViewModels;
 using Ambinity.Views.AmbinityStore;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Views.OnlineStore;
+using Ambinity.Views.Screens.DeviceSettings;
 using AmbinityCore.Models.Profile;
 using AmbinityServer.OnlineItem;
 using CommunityToolkit.Mvvm.Input;
@@ -23,10 +24,11 @@ public class HomeViewModel : ViewModelBase
     private HomeViewModelFactory _factory;
     public event Action<AssetItemViewModelBase> ShowAllProfileRequested;
 
-    public HomeViewModel(LightingProfileOnlineRepository lightingProfileOnlineRepository,
+    public HomeViewModel(LightingProfileOnlineRepository lightingProfileOnlineRepository, DeviceSettingsInfoBarViewModel infoBarViewModel,
         DownloadService downloadService, LightingProfileRepository lightingProfileRepository, ProfileStoreViewModel profileStoreViewModel, HomeViewModelFactory factory,
         TutorialsOnlineRepository tutorialsOnlineRepository)
     {
+        InfoBarViewModel = infoBarViewModel;
         _tutorialRepository = tutorialsOnlineRepository;
         _profileStoreViewModel = profileStoreViewModel;
         _factory = factory;
@@ -43,9 +45,19 @@ public class HomeViewModel : ViewModelBase
     {
         ShowAllProfileRequested?.Invoke(item);
     }
-
+    private bool _isLoading;
+    public bool IsLoading
+    {
+        get => _isLoading;
+        set
+        {
+            _isLoading = value;
+            OnPropertyChanged();
+        }
+    }
     public async Task Init()
     {
+        IsLoading = true;
         AvailableAssets?.Clear();
         AvailableTutorials?.Clear();
         DisplayAssets?.Clear();
@@ -63,13 +75,13 @@ public class HomeViewModel : ViewModelBase
             DisplayAssets.Add(asset);
             asset.ItemSelected += OnProfileSelected;
         }
-         //load tutorials if any
+        //load tutorials if any
         _tutorialRepository.Init();
         foreach (var item in _tutorialRepository.Items)
         {
             AvailableTutorials.Add(_factory.GetHyperLinkViewModel(item));
         }
-       
+        IsLoading = false;
     }
 
     private async void OnProfileSelected(AssetItemViewModelBase item)
@@ -104,6 +116,9 @@ public class HomeViewModel : ViewModelBase
     private ObservableCollection<OnlineItemAssetViewModel> _displayAssets;
     private readonly IWindowService _windowService;
     private readonly ProfileStoreViewModel _profileStoreViewModel;
+
+    public DeviceSettingsInfoBarViewModel InfoBarViewModel { get; }
+
     private readonly TutorialsOnlineRepository _tutorialRepository;
     private readonly RootNavigationStores _rootNavigationStore;
 

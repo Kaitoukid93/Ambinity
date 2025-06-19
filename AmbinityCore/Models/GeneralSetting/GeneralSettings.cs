@@ -23,6 +23,12 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         get => _autoStartDelay;
         set => SetProperty(ref _autoStartDelay, value);
     }
+    private bool _autoScanNewDevices = true;
+    public bool AutoScanNewDevices
+    {
+        get => _autoScanNewDevices;
+        set => SetProperty(ref _autoScanNewDevices, value);
+    }
 
     private Color _primaryColor = Color.Parse("#1ac35f");
 
