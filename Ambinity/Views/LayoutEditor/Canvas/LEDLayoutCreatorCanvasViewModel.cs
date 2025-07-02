@@ -19,6 +19,7 @@ using AmbinityCore.Repositories;
 using AmbinityCore.Models.Device;
 using System.Reflection.Metadata;
 using AmbinityCore;
+using Avalonia.Controls;
 
 namespace Ambinity.Views.LayoutEditor.Canvas
 {
@@ -36,10 +37,18 @@ namespace Ambinity.Views.LayoutEditor.Canvas
         {
 
             ToolsViewModel = toolsViewModel;
+            ToolsViewModel.InstallPolylineTool += InstallTool;
+            toolsViewModel.AddFigure += OnLEDAdded;
 
         }
 
-
+        private void OnLEDAdded(Figure figure)
+        {
+            figure.IsResizable = true;
+            figure.IsDragable = true;
+            figure.IsSelectable = true;
+            Canvas.AddFigure(figure);
+        }
 
         private void InstallTool(PolylineTool tool)
         {
@@ -56,11 +65,19 @@ namespace Ambinity.Views.LayoutEditor.Canvas
         /// Each device can only have one single image
         /// New image added will be stretch to device size
         /// </summary>
-        public void SetDeviceImage(string imagePath)
+        public void SetDeviceImage(string imagePath, int width, int height)
         {
-            if (_deviceImage == null)
+            if (Canvas == null)
                 return;
+            Canvas?.Clear();
             _imagePath = imagePath;
+            float x = (Canvas.Width - width) / 2;
+            float y = (Canvas.Height - height) / 2;
+            _deviceImage = new ImageFigure(x, y, width, height);
+            _deviceImage.IsDragable = false;
+            _deviceImage.IsSelectable = false;
+            _deviceImage.IsResizable = false;
+            Canvas?.AddFigure(_deviceImage);
             _deviceImage?.SetImage(_imagePath);
 
         }
@@ -111,6 +128,7 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             ToolsViewModel.ToggleSnapToGridEvent += ToggleSnapToGrid;
             ToolsViewModel.InstallPolylineTool += InstallTool;
             ToolsViewModel.AddFigure += OnFigureAddedFromTool;
+            ToolsViewModel.ImageVisibilityChanged += ToggleImageVisibility;
 
             //Create Canvas
             var canvasSize = new Size(width, height);
@@ -123,33 +141,18 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             int zOrder = 0;
             //Register InforBar
             ToolsViewModel.InitForLEDLayoutCreator();
-            _deviceImage = new ImageFigure(0, 0, width, height);
-            _deviceImage.IsDragable = false;
-            _deviceImage.IsSelectable = false;
-            _deviceImage.IsResizable = false;
-            Canvas.AddFigure(_deviceImage);
+
             FitCommand?.Execute(null);
+            UnlockCanvas();
         }
 
-
+        private void ToggleImageVisibility()
+        {
+            _deviceImage.IsVisible = !_deviceImage.IsVisible;
+        }
 
         public override void UnlockCanvas()
         {
-            if (Figures == null)
-                return;
-
-            // Restore last state only for DeviceContainerFigure
-            foreach (var figure in Figures)
-            {
-                if (figure is LightingZoneFigure)
-                {
-                    // Default if not found
-                    figure.IsResizable = true;
-                    figure.IsDragable = true;
-                    figure.Unselect();
-                }
-            }
-
             IsLocked = false;
         }
         public override void LockCanvas()

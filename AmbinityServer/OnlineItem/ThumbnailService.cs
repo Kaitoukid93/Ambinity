@@ -73,16 +73,20 @@ public sealed class ThumbnailService
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
-    public async Task<Bitmap> LoadThumbnail(string path)
+    public async Task<Bitmap> LoadThumbnail(string path, int width = 100, bool discardCache = false)
     {
         Bitmap thumbnail;
 
+        if (discardCache)
+        {
+            _cache.Remove(path);
+        }
         if (!_cache.TryGetValue(path, out thumbnail))
         {
             // Not in the cache, so load from path server
             await using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                thumbnail = Bitmap.DecodeToWidth(stream, 100);
+                thumbnail = Bitmap.DecodeToWidth(stream, width);
             }
 
             _cache.Add(path, thumbnail);

@@ -11,6 +11,11 @@ using Ambinity.Windows;
 using Ambinity.Services;
 using Ambinity.ViewModels;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using SkiaSharp;
+using System.IO;
+using Avalonia.Controls.Shapes;
+using AmbinityCore.Models.Device.LED;
+using Avalonia.Media;
 
 namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
 {
@@ -19,6 +24,7 @@ namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
         private DialogService _dialogService;
         private IWindowService _windowService;
         private CanvasViewModelFactory _canvasViewModelFactory;
+        private int _ledCount;
 
         // The main canvas viewmodel
         private LEDLayoutCreatorCanvasViewModel _canvasViewModel;
@@ -32,6 +38,7 @@ namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
             }
         }
 
+
         public LEDLayoutCreatorViewModel(CanvasViewModelFactory canvasViewModelFactory, IWindowService windowService)
         {
 
@@ -43,34 +50,74 @@ namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
 
 
         }
-        public void Init(int width, int height,int ledCount, string imagePath)
+        public void Init(int width, int height, int ledCount, string imagePath)
         {
             // Initialize the canvas with a specific size and properties
             var vm = _canvasViewModelFactory.Get<LEDLayoutCreatorCanvasViewModel>();
-            vm.Init(width,height);
-            vm.SetDeviceImage(imagePath);
+            vm.Init(1000, 1000);
+            vm.SetDeviceImage(imagePath, width, height);
             //add rectangle to canvas based on ledcount
+            _ledCount = ledCount;
             CanvasViewModel = vm;
+            //PopulateLEDs();
             LEDPropertiesViewModel = new LEDPropertiesViewModel();
 
         }
-
-        private void OnLayoutSizeChanged(float width, float height)
+        /// <summary>
+        /// populate led based on led count
+        /// </summary>
+        private void PopulateLEDs()
         {
+            const double canvasWidth = 500;
+            const double canvasHeight = 500;
+            const double maxWidth = 20;
+            const double maxHeight = 20;
 
-            var vm = _canvasViewModelFactory.Get<LEDLayoutCreatorCanvasViewModel>();
-            vm.Init((int)width, (int)height);
-            CanvasViewModel = vm;
-            CanvasViewModel.SetDeviceImage(CurrentImagePath);
+            // Calculate how many columns and rows can fit
+            int columns = (int)(canvasWidth / maxWidth);
+            int rows = (int)(canvasHeight / maxHeight);
+
+            // Calculate actual rectangle size to fit all LEDs if possible
+            double rectWidth = Math.Min(canvasWidth / columns, maxWidth);
+            double rectHeight = Math.Min(canvasHeight / rows, maxHeight);
+            int count = 0;
+
+            for (int row = 0; row < rows && count < _ledCount; row++)
+            {
+                for (int col = 0; col < columns && count < _ledCount; col++)
+                {
+                    double x = col * rectWidth;
+                    double y = row * rectHeight;
+                    var geometryString = "M0,0 H20 V20 H0 Z";
+                    var led = new AmbinityLED(new ArgbLed(), null, (float)x, (float)y, (float)rectWidth, (float)rectHeight, count, false, geometryString);
+                    led.X = (float)x;
+                    led.Y = (float)y;
+                    var containerFigure = led.GetContainer();
+                    containerFigure.SetChild(led);
+                    containerFigure.MinHeight = 5;
+                    containerFigure.MinWidth = 5;
+                    CanvasViewModel.AddFigure(containerFigure, false);
+                    count++;
+                }
+            }
         }
 
-        private void OnDeviceImageChanged(string imagePath)
-        {
-            CurrentImagePath = imagePath;
-            CanvasViewModel.SetDeviceImage(CurrentImagePath);
-        }
+        // private void OnLayoutSizeChanged(float width, float height)
+        // {
 
-        public ICommand AddLEDCommand { get; set; }
+        //     var vm = _canvasViewModelFactory.Get<LEDLayoutCreatorCanvasViewModel>();
+        //     vm.Init((int)width, (int)height);
+        //     CanvasViewModel = vm;
+        //     CanvasViewModel.SetDeviceImage(CurrentImagePath);
+        // }
+
+        // private void OnDeviceImageChanged(string imagePath)
+        // {
+        //     CurrentImagePath = imagePath;
+        //     CanvasViewModel.SetDeviceImage(CurrentImagePath);
+        // }
+
+        // public ICommand AddLEDCommand { get; set; }
 
 
 
@@ -132,102 +179,6 @@ namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
         }
     }
 
-    public class LayoutPropertiesViewModel : ViewModelBase
-    {
-        public LayoutPropertiesViewModel()
-        {
-            _windowService = Ioc.Default.GetRequiredService<IWindowService>();
-            SelectDeviceImageCommand = new AsyncRelayCommand(SelectDeviceImage);
-        }
 
-        private IWindowService _windowService;
-
-        public ICommand SelectDeviceImageCommand { get; set; }
-
-        private float _width = 120;
-        private float _height = 120;
-        public float Width
-        {
-            get => _width;
-            set
-            {
-                _width = value;
-                OnPropertyChanged();
-            }
-        }
-        public float Height
-        {
-            get => _height;
-            set
-            {
-                _height = value;
-                OnPropertyChanged();
-            }
-        }
-        private string? _imagePath;
-        public string? ImagePath
-        {
-            get => _imagePath;
-            set
-            {
-                _imagePath = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private async Task SelectDeviceImage()
-        {
-            string[]? result = await _windowService.CreateOpenFileDialog()
-                 .WithTitle("Select Device Image")
-                 .HavingFilter(f => f.WithExtension("png").WithName("png file"))
-                 .WithDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures))
-                 .ShowAsync();
-            if (result == null || result.Length == 0)
-                return;
-            ImagePath = result[0];
-
-        }
-        public void Init(float width = 500, float height = 500)
-        {
-            Width = width;
-            Height = height;
-            LayoutName = "New Device Layout";
-            LEDCount = 20;
-        }
-        public string LayoutName { get; set; } = "New Device Layout";
-        public int LEDCount { get; set; }
-
-    }
-
-    public class LayoutEditorToolsViewModel : ViewModelBase
-    {
-        public LayoutEditorToolsViewModel()
-        {
-            OpenAddLEDDialogCommand = new AsyncRelayCommand(OpenAddLEDDialog);
-            ImportLEDGeometryCommand = new AsyncRelayCommand(OpenLEDGeometryBrowser);
-            ClearCanvasCommand = new RelayCommand(ClearCanvas);
-            FitCanvasViewCommand = new RelayCommand(FitCanvas);
-        }
-        public ICommand OpenAddLEDDialogCommand { get; set; }
-        public ICommand ImportLEDGeometryCommand { get; set; }
-        public ICommand ClearCanvasCommand { get; set; }
-        public ICommand FitCanvasViewCommand { get; set; }
-        private async Task OpenAddLEDDialog()
-        {
-
-        }
-        private async Task OpenLEDGeometryBrowser()
-        {
-
-        }
-        private void ClearCanvas()
-        {
-
-        }
-        private void FitCanvas()
-        {
-
-        }
-    }
 
 }

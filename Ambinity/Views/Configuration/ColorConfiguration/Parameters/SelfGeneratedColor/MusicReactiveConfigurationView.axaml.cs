@@ -12,13 +12,13 @@ public partial class MusicReactiveConfigurationView : UserControl
         InitializeComponent();
     }
 
-    private void InfoButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        infoTip.IsOpen = true;
-    }
+    // private void InfoButton_OnClick(object? sender, RoutedEventArgs e)
+    // {
+    //     infoTip.IsOpen = true;
+    // }
 
-    private void NoSoundTeachingButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        nosoundTip.IsOpen = true;
-    }
+    // private void NoSoundTeachingButton_OnClick(object? sender, RoutedEventArgs e)
+    // {
+    //     nosoundTip.IsOpen = true;
+    // }
 }

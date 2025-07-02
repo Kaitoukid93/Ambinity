@@ -60,9 +60,9 @@
                         <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding LEDsCount}"></TextBlock>
                         <Grid Height="20"></Grid>
                     </StackPanel>
-                   
+
                 </Grid>
-               
+
                 <Grid Column="2">
                     <Button Command="{Binding PingOutputCommand}"
                             CornerRadius="3" Padding="5,3"
@@ -83,7 +83,7 @@
                     </Button>
                 </Grid>
             </Grid>
-           
+
             <!-- <Grid ColumnDefinitions="*,Auto"> -->
             <!--     <ContentControl Margin="0,10" Content="{Binding DetailViewModel}"></ContentControl> -->
             <!--     <Grid Column="1"> -->
@@ -98,7 +98,7 @@
             <!--                 <ui:TeachingTip Name="libraryTip" -->
             <!--                                 Target="{Binding #ShowLibraryButton}" -->
             <!--                                 Title="Library" -->
-            <!--                                 Subtitle="Click this button to select your device"> -->
+            <!--                                 Subtitle="Click this button to szelect your device"> -->
             <!--                 </ui:TeachingTip> -->
             <!--             </Grid> -->
             <!-- -->
@@ -166,7 +166,7 @@
                             </ItemsControl.DataTemplates>
                         </ItemsControl>
                     </StackPanel>
-                 
+
 
 
                 </ui:SettingsExpanderItem>

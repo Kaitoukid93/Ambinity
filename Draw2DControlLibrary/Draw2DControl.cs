@@ -67,7 +67,8 @@ namespace Draw2DControlLibrary
                 return;
             DrawBackground(dc);
             // DrawGrid(dc);
-            DrawBorder(dc);
+            if (Canvas.ShouldDrawBorder)
+                DrawBorder(dc);
             if (_zoomValue > 5)
                 DrawGrid(dc);
             //var vectorFigures = Canvas.Figures.OfType<VectorFigure>().Where(f => f.IsVisible).ToList();
@@ -115,6 +116,7 @@ namespace Draw2DControlLibrary
         public void UpdateZoomValue(double value)
         {
             _zoomValue = value;
+            Canvas.ZoomLevel = (float)value;
             _globalBorderThickness = 1.5d / value;
             foreach (var figure in Canvas.Figures)
             {

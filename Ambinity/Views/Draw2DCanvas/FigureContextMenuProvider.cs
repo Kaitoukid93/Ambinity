@@ -5,15 +5,18 @@ using Ambinity.Views.LayoutEditor.Canvas;
 using Ambinity.Views.Screens.DeviceLayout;
 using AmbinityCore.Converters;
 using AmbinityCore.Models.Device;
+using AmbinityCore.Models.Device.LED;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Repositories;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
+using Draw2D.Core.Shapes.Basic;
 
 namespace Ambinity.Views.Draw2DCanvas;
 
@@ -46,7 +49,7 @@ public class FigureContextMenuProvider
     }
     public MenuFlyout GetContextMenu(Figure clickedItem, Point clickPoint)
     {
-        if (clickedItem == null)
+        if (clickedItem == null|| !clickedItem.IsSelectable)
         {
             CreateCanvasContextMenu(clickPoint);
         }
@@ -140,6 +143,34 @@ public class FigureContextMenuProvider
                 });
             }
         }
+        if (CanvasVM is LEDLayoutCreatorCanvasViewModel ledCanvasVM)
+        {
+            if (figure is PolyLine)
+            {
+                _contextMenu.Items.Add(new MenuItem()
+                {
+                    Header = "Create LED",
+                    Command = new RelayCommand(CreateLED),
+                    CommandParameter = null
+                });
+            }
+            if (figure is LEDContainerFigure)
+            {
+                _contextMenu.Items.Add(new MenuItem()
+                {
+                    Header = "Copy LED",
+                    Command = CanvasVM.CopySelectedFigureCommand,
+                    CommandParameter = null
+                });
+            }
+            _contextMenu.Items.Add(new MenuItem()
+            {
+                Header = "Delete",
+                Command = CanvasVM.DeleteCommand,
+                //   InputGesture = new KeyGesture(Key.Delete)
+            });
+
+        }
 
         // if (_canvasVM.Canvas.Selection.AllActive.Count > 1 && containerFigure.ChildItem.GroupID == Guid.Empty)
         // {
@@ -151,6 +182,19 @@ public class FigureContextMenuProvider
         // }
 
     }
+    private void CreateLED()
+    {
+        var selectedFigure = CanvasVM.Canvas.Selection.AllActive;
+        foreach (var figure in selectedFigure)
+        {
+            if (figure is PolyLine polyline)
+            {
+                //combine shape
+            }
+        }
+    }
+
+
     private async Task LockUnlockMultipleItems(bool lockItems)
     {
         var selectedFigures = CanvasVM.Canvas.Selection.AllActive

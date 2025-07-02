@@ -1,5 +1,7 @@
 using System.Drawing;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json.Serialization;
+using AmbinityCore.Models.Geography;
 using Avalonia;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,7 +11,7 @@ using Rectangle = Draw2D.Core.Shapes.Basic.Rectangle;
 
 namespace AmbinityCore.Models.Device.LED;
 
-public class AmbinityLED : ObservableObject
+public class AmbinityLED : ObservableObject, IPositionAware
 {
     /// <summary>
     /// extend ARGBLED with size and location on a real device
@@ -33,6 +35,7 @@ public class AmbinityLED : ObservableObject
         RelativeY = top;
         Geometry = geometry;
         Index = index;
+        Name = "LED " + (index ?? 0);
     }
 
     public ArgbLed LED { get; }
@@ -72,27 +75,7 @@ public class AmbinityLED : ObservableObject
         set => SetProperty(ref _ledID, value);
     }
 
-    private float _width;
 
-    /// <summary>
-    /// Bounding box width
-    /// </summary>
-    public float Width
-    {
-        get => _width;
-        set => SetProperty(ref _width, value);
-    }
-
-    private float _height;
-
-    /// <summary>
-    /// Bounding box width
-    /// </summary>
-    public float Height
-    {
-        get => _height;
-        set => SetProperty(ref _height, value);
-    }
 
     public Avalonia.Size LedSize => new Avalonia.Size(Width, Height);
     private float _relativeX;
@@ -142,6 +125,235 @@ public class AmbinityLED : ObservableObject
     /// Rect respect to rotation and scale on great bitmap
     /// </summary>
     public Rect TransformedRect { get; set; }
+
+    public string Name { get; set; }
+
+    #region Iposition aware implement
+    //since 6.0.8, ambinity device will default be locked to prevent accidental modification
+    private bool _isDragable = false;
+    private bool _isSelectable = true;
+    private bool _isSelected;
+    private bool _isDeleteable = true;
+    private bool _isResizeable = true;
+    private bool _isRotatable;
+    private bool _isScalable;
+
+    /// <summary>
+    /// Device can or can not be selected on the canvas
+    /// </summary>
+    [JsonIgnore]
+    public bool IsSelectable
+    {
+        get => _isSelectable;
+        set => SetProperty(ref _isSelectable, value);
+    }
+
+    /// <summary>
+    /// Device can or can not be selected on the canvas
+    /// </summary>
+    [JsonIgnore]
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => SetProperty(ref _isSelected, value);
+    }
+
+    /// <summary>
+    /// Device can or can not be deleted from the canvas
+    /// </summary>
+    [JsonIgnore]
+    public bool IsDeleteable
+    {
+        get => _isDeleteable;
+        set => SetProperty(ref _isDeleteable, value);
+    }
+
+    /// <summary>
+    /// Device can or can not be resized on the canvas
+    /// </summary>
+    [JsonIgnore]
+    public bool IsResizeable
+    {
+        get => _isResizeable;
+        set => SetProperty(ref _isResizeable, value);
+    }
+
+    /// <summary>
+    /// Device can or can not be drag on the canvas
+    /// </summary>
+    [JsonIgnore]
+    public bool IsDraggable
+    {
+        get => _isDragable;
+        set => SetProperty(ref _isDragable, value);
+    }
+
+    /// <summary>
+    /// Device can or can not be rotate on the canvas
+    /// </summary>
+    [JsonIgnore]
+    public bool IsRotatable
+    {
+        get => _isRotatable;
+        set => SetProperty(ref _isRotatable, value);
+    }
+
+    /// <summary>
+    /// Device can or can not be scale on the canvas
+    /// </summary>
+    [JsonIgnore]
+    public bool IsScalable
+    {
+        get => _isScalable;
+        set => SetProperty(ref _isScalable, value);
+    }
+    #endregion
+    #region Canvas Corordinate Properties
+
+    /// <summary>
+    /// Device absolute position on the canvas respect ot top left corner
+    /// </summary>
+    private float _x = 0;
+
+    private float _y = 0;
+
+    public float X
+    {
+        get => _x;
+        set
+        {
+            _x = value;
+            OnPropertyChanged();
+            //DeviceUpdate?.Invoke();
+        }
+    }
+
+    public float Y
+    {
+        get => _y;
+        set
+        {
+            _y = value;
+            OnPropertyChanged();
+            //DeviceUpdate?.Invoke();
+        }
+    }
+
+    private float _width = 100;
+    private float _height = 100;
+
+    public float Width
+    {
+        get => _width;
+        set
+        {
+            _width = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public float Height
+    {
+        get => _height;
+        set
+        {
+            _height = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// set scale ot match canvas size
+    /// </summary>
+    private float _scale = 1.0f;
+
+    private float _rotation = 0;
+
+    public float Scale
+    {
+        get => _scale;
+        set
+        {
+            _scale = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public float Rotation
+    {
+        get => _rotation;
+        set
+        {
+            _rotation = value;
+            OnPropertyChanged();
+        }
+    }
+    #endregion
+    public string Icon => throw new NotImplementedException();
+
+    public Rect Bound => new Rect(X, Y, Width, Height);
+
+    public Guid GroupID { get; set; } = Guid.Empty;
+
+    public ContainerFigure GetContainer()
+    {
+         return new LEDContainerFigure(X, Y, Width, Height)
+        {
+            IsResizable = true,
+            IsSelectable = true,
+            IsDragable = true,
+        };
+    }
+
+    public ContainerFigure Clone(float x, float y)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ContainerFigure Clone()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetDisplayName()
+    {
+        return Name;
+    }
+
+    public void SetScale(float scale)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Avalonia.Media.Color? GetDisplayColor()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetRotation(float angle)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetX(float x)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetY(float y)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetWidth(float width)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetHeight(float height)
+    {
+        throw new NotImplementedException();
+    }
 
 
     #region Methods

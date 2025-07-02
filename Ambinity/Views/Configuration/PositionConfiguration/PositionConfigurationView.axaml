@@ -31,7 +31,7 @@
            </Setter>
            <Setter Property="ErrorTemplate">
                <DataTemplate x:DataType="{x:Type x:Object}">
-                   <Canvas Width="3" Height="30" Margin="5 0 1 0" 
+                   <Canvas Width="3" Height="30" Margin="5 0 1 0"
                            Background="Transparent">
                        <Canvas.Styles>
                            <Style Selector="ToolTip">
@@ -75,19 +75,19 @@
                 <TextBlock  VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
                            Text="Dimensions">
                 </TextBlock>
-                <Grid>
+                <!-- <Grid>
                     <Button Click="InfoButton_OnClick"  x:Name="infoButton" Background="Transparent" BorderThickness="0" Classes="icon-button-small" >
                         <PathIcon Width="15" Height="15" Data="{DynamicResource infoCircle}"></PathIcon>
                     </Button>
-                    <ui:TeachingTip x:Name="infoTip" 
+                    <ui:TeachingTip x:Name="infoTip"
                                     Target="{Binding #infoButton}"
                                     Title="Dimension"
                                     Subtitle="Only device can have scale and rotation property">
                     </ui:TeachingTip>
-                </Grid>
+                </Grid> -->
             </StackPanel>
-           
-         
+
+
         </Grid>
         <Grid Row="1" ColumnDefinitions="*,20,*">
             <Grid MaxWidth="120" Column="0" RowDefinitions="*,*,*">
@@ -105,14 +105,14 @@
                                Text="X">
                     </TextBlock>
                     <ui:NumberBox  SimpleNumberFormat="F2" Width="100"  Theme="{DynamicResource borderlessNumberBox}"
-                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding XProperty}" 
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding XProperty}"
                                   Margin="5,0">
                     </ui:NumberBox>
                 </Grid>
                 <Grid IsVisible="{CompiledBinding CanRotate}" Margin="0,7" Row="2" ColumnDefinitions="20,*">
                     <PathIcon  HorizontalAlignment="Left" Foreground="{DynamicResource ButtonForegroundDisabled}" Width="20" Height="20" Data="{DynamicResource Rotate_value}"></PathIcon>
                     <ui:NumberBox  SimpleNumberFormat="F2" Width="100" Theme="{DynamicResource borderlessNumberBox}"
-                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding RotationProperty}" 
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding RotationProperty}"
                                   Margin="5,0">
                     </ui:NumberBox>
                 </Grid>
@@ -123,7 +123,7 @@
                                Text="H">
                     </TextBlock>
                     <ui:NumberBox Width="100" SimpleNumberFormat="F2"  Theme="{DynamicResource borderlessNumberBox}"
-                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding HeightProperty}" 
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding HeightProperty}"
                                   Margin="5,0">
                     </ui:NumberBox>
                 </Grid>
@@ -132,7 +132,7 @@
                                Text="Y">
                     </TextBlock>
                     <ui:NumberBox  Width="100" SimpleNumberFormat="F2"  Theme="{DynamicResource borderlessNumberBox}"
-                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding YProperty}" 
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding YProperty}"
                                   Margin="5,0">
                     </ui:NumberBox>
                 </Grid>

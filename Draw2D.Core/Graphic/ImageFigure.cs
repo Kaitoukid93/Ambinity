@@ -38,10 +38,11 @@ public class ImageFigure : Rectangle
         {
             var strokeBrush = new ImmutableSolidColorBrush(StrokeColor);
             dc.DrawImage(_deviceImage, new Rect(_deviceImage.Size),
-                new Rect(0, 0, this.Width, this.Height));
-            // var pen = new Pen(strokeBrush, StrokeThickness, DashStyle);
-            // dc.DrawRectangle(null, pen,
-            //     new Rect(new Point(X, Y), new Size(Width, Height)));
+                new Rect(this.X, this.Y, this.Width, this.Height));
+            var dash = new ImmutableDashStyle(new double[] { 7, 3 }, 1);
+            var pen = new Pen(strokeBrush, StrokeThickness, dash);
+            dc.DrawRectangle(null, pen,
+                new Rect(new Point(X, Y), new Size(Width, Height)));
         }
     }
 

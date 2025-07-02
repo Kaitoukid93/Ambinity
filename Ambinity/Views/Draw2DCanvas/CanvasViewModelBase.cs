@@ -108,8 +108,8 @@ public class CanvasViewModelBase : ViewModelBase
                 Height = (float)canvasSize.Height,
                 Grid = new Grid()
                 {
-                    UnitX = 5,
-                    UnitY = 5
+                    UnitX = 1,
+                    UnitY = 1
                 }
             };
             GridUnitX = 5;
@@ -132,6 +132,11 @@ public class CanvasViewModelBase : ViewModelBase
             //get snap setting from general settings
             _snapGridPolicy.Enabled = _generalSettings.EnableSnapToGrid;
             _snapElementPolicy.Enabled = false;
+        }
+        if (Canvas.Width != canvasSize.Width || Canvas.Height != canvasSize.Height)
+        {
+            Canvas.Width = (float)canvasSize.Width;
+            Canvas.Height = (float)canvasSize.Height;
         }
         CurrentZoom = 1d;
         Canvas.Clear();
@@ -510,7 +515,7 @@ public class CanvasViewModelBase : ViewModelBase
     public bool IsDisposed { get; set; }
     public double CurrentZoom { get; set; }
     public object MinimumZoom { get; set; } = 0.0001;
-    public object MaximumZoom { get; set; } = 10;
+    public object MaximumZoom { get; set; } = 50;
 
     public override void Dispose()
     {

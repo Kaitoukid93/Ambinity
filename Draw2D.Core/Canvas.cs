@@ -35,6 +35,7 @@ namespace Draw2D.Core
         private int _bulkEditCount;
         private float _width;
         private float _height;
+        private float _zoomLevel=1.0f;
         private Color _strokeColor;
 
         private readonly List<PolicyBase> _policies = new List<PolicyBase>();
@@ -43,6 +44,7 @@ namespace Draw2D.Core
         private Rectangle _viewport = new Rectangle(0, 0, 1, 1);
         public FrameBuffer BackgroundImageBuffer { get; set; }
         public bool ShouldDrawBackgroundImage { get; set; }
+        public bool ShouldDrawBorder { get; set; } = true;
 
         public Color StrokeColor
         {
@@ -176,7 +178,18 @@ namespace Draw2D.Core
                     RebuildQuadTree();
             }
         }
+        public float ZoomLevel
+        {
+            get { return _zoomLevel; }
+            set
+            {
+                if (_zoomLevel == value)
+                    return;
 
+                _zoomLevel = value;
+
+            }
+        }
         public ICoordinateSystem CoordinateSystem
         {
             get { return _coordinateSystem; }
@@ -191,8 +204,8 @@ namespace Draw2D.Core
         public Figure BringToFront(Figure figure)
         {
             //why mac os throw on this one, I dont know...
-            if(Figures.Count()==0)
-            return null;
+            if (Figures.Count() == 0)
+                return null;
             var maxZOrder = Figures.Max(f => f.ZOrder);
             if (figure.ZOrder <= maxZOrder)
             {
@@ -448,7 +461,7 @@ namespace Draw2D.Core
         {
         }
 
-        public float MinimalDragDistance { get; set; } = 5;
+        public float MinimalDragDistance { get; set; } = 0.1f;
 
         public void AddAdornerFigure(Figure figure)
         {

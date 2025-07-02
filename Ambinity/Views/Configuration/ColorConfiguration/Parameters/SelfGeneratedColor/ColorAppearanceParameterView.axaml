@@ -20,7 +20,7 @@
                 VerticalAlignment="Center"
                 FontSize="13"
                 Text="Appearance" />
-            <Grid Column="1">
+            <!-- <Grid Column="1">
                 <Button
                     x:Name="nosoundTeaching"
                     HorizontalAlignment="Right"
@@ -56,7 +56,7 @@ Learn more at [Ambino](https://ambino.vn)
                         </Border>
                     </ui:TeachingTip.HeroContent>
                 </ui:TeachingTip>
-            </Grid>
+            </Grid> -->
         </Grid>
         <Grid
             Margin="0,8"

@@ -45,7 +45,7 @@
                         <Grid>
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Text="Frequency range"></TextBlock>
-                                <Grid>
+                                <!-- <Grid>
                                     <Button Click="InfoButton_OnClick" x:Name="infoButton" Background="Transparent"
                                             BorderThickness="0" Classes="icon-button-small" HorizontalAlignment="Right"
                                             VerticalAlignment="Top" Margin="0,8">
@@ -57,7 +57,7 @@
                                                     Title="Frequencies"
                                                     Subtitle="Use the range slider below to select frequencies">
                                     </ui:TeachingTip>
-                                </Grid>
+                                </Grid> -->
                             </StackPanel>
 
 
@@ -137,7 +137,7 @@
                                 <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"
                                            Text="No sound behavior">
                                 </TextBlock>
-                                <Grid>
+                                <!-- <Grid>
                                     <Button Click="NoSoundTeachingButton_OnClick" x:Name="nosoundTeaching"
                                             Background="Transparent" BorderThickness="0" Classes="icon-button-small"
                                             HorizontalAlignment="Right" VerticalAlignment="Top">
@@ -153,13 +153,13 @@
 
  * **Keep LEDs off** : The LEDs will stay off as there is no sound present
  * **Return to normal lighting** : The LEDs will show full brightness and will react to music when the sound data is available in the buffer
- 
+
 Learn more at [Ambino](https://ambino.vn)
                                                 </mdxaml:MarkdownScrollViewer>
                                             </Border>
                                         </ui:TeachingTip.HeroContent>
                                     </ui:TeachingTip>
-                                </Grid>
+                                </Grid> -->
 
                             </StackPanel>
 

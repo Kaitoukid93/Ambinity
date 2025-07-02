@@ -29,6 +29,24 @@
                             Content="Browse" />
                     </TextBox.InnerRightContent>
                 </TextBox>
+
+                <TextBlock Text="The image of your device should be 250px minimum in width for better visual, transparrent background, and  *.png format" TextWrapping="Wrap" />
+                <StackPanel Orientation="Horizontal" Spacing="20">
+                    <Image
+                        Width="300"
+                        RenderOptions.BitmapInterpolationMode="HighQuality"
+                        Source="{Binding GetThumbnail^, FallbackValue=null}"
+                        Stretch="UniformToFill" />
+                    <Button
+                        Margin="5"
+                        Padding="5"
+                        HorizontalAlignment="Right"
+                        Command="{Binding EditImageCommand}"
+                        Content="Edit Image"
+                        IsVisible="{Binding ShowEditImageButton}"
+                        ToolTip.Tip="Crop and resize image" />
+                </StackPanel>
+
             </StackPanel>
             <Separator Height="1" Margin="2,0" />
             <StackPanel Spacing="8">
@@ -63,7 +81,7 @@
                             SimpleNumberFormat="F2"
                             SpinButtonPlacementMode="Hidden"
                             Theme="{DynamicResource borderlessNumberBox}"
-                            Value="{Binding Width}" />
+                            Value="{Binding Width, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBlock VerticalAlignment="Center" Text="mm" />
                     </StackPanel>
                     <StackPanel
@@ -81,7 +99,7 @@
                             SimpleNumberFormat="F2"
                             SpinButtonPlacementMode="Hidden"
                             Theme="{DynamicResource borderlessNumberBox}"
-                            Value="{Binding Height}" />
+                            Value="{Binding Height, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBlock VerticalAlignment="Center" Text="mm" />
                     </StackPanel>
 

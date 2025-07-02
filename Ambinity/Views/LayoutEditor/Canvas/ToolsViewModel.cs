@@ -9,6 +9,7 @@ using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 using Ambinity.Views.Screens.ProfileEditor.Library;
 using AmbinityCore.DataBase;
 using AmbinityCore.Models.Collection;
+using AmbinityCore.Models.Device.LED;
 using AmbinityCore.Models.Flyout;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Profile;
@@ -17,6 +18,7 @@ using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 using Draw2D.Core.Policies.RouterPolicy;
+using Draw2D.Core.Shapes.Basic;
 using DynamicData;
 using Canvas = Avalonia.Controls.Canvas;
 
@@ -32,6 +34,7 @@ public class ToolsViewModel : ViewModelBase
     public event Action<Figure> AddFigure;
     public event Action<PolylineTool> InstallPolylineTool;
     public event Action ResetLayout;
+    public event Action ImageVisibilityChanged;
     public event Action OpenFlyoutEvent;
     public event Action CloseFlyoutEvent;
 
@@ -96,10 +99,12 @@ public class ToolsViewModel : ViewModelBase
     {
         FitCanvasToViewCommand = new RelayCommand(FitCanvasToView);
         ToggleSnapToGridCommand = new RelayCommand(ToggleSnapToGrid);
+        ToggleImageVisibilityCommand = new RelayCommand(ToggleImageVisibility);
         AddAnimationZoneCommand = new RelayCommand(AddAnimationZone, () => ZoneToolsCommandCanExecute);
         AddAmbilightZoneCommand = new RelayCommand(AddAmbilightZone, () => ZoneToolsCommandCanExecute);
         ShowLibraryCommand = new AsyncRelayCommand(ShowLibrary, () => ZoneToolsCommandCanExecute);
         AddColorZoneCommand = new RelayCommand(AddColorZone, () => ZoneToolsCommandCanExecute);
+        AddLEDCommand = new RelayCommand(AddLED);
         TogglePlayPauseCommand = new RelayCommand(TogglePlayPause);
         ShowDiagCommand = new RelayCommand(ToggleShowDiag);
         ResetDefaultLayoutCommand = new RelayCommand(ResetDefaultLayout, () => ZoneToolsCommandCanExecute);
@@ -118,6 +123,16 @@ public class ToolsViewModel : ViewModelBase
 
     public LibraryViewModelBase CurrentFlyoutViewModel { get; set; }
     private LightingZonesLibraryViewModel _lightingZonesLibraryViewModel;
+    private bool _showProfileControl = false;
+    public bool ShowProfileControl
+    {
+        get => _showProfileControl;
+        set
+        {
+            _showProfileControl = value;
+            OnPropertyChanged();
+        }
+    }
 
     private async Task ShowLibrary()
     {
@@ -142,7 +157,10 @@ public class ToolsViewModel : ViewModelBase
     {
         //throw new NotImplementedException();
     }
-
+    private void AddLED()
+    {
+        //throw new NotImplementedException();
+    }
     private void AddAmbilightZone()
     {
         var zone = _lightingZoneRepository.GetDefaultAmbilightZone("new zone", 100, 100, 100, 100, 0);
@@ -166,6 +184,7 @@ public class ToolsViewModel : ViewModelBase
     /// </summary>
     public void InitForProfileEditor(LightingProfile profile)
     {
+        ShowProfileControl = true;
         _currentProfile = profile;
         Brightness = _currentProfile.Brightness;
         _decoder.FrameUpdate += OnFrameUpdated;
@@ -195,11 +214,91 @@ public class ToolsViewModel : ViewModelBase
 
     public void InitForLEDLayoutCreator()
     {
-        
+        ShowProfileControl = false;
+        _currentProfile = _decoder.CurrentPlayingProfile;
+        Brightness = _currentProfile.Brightness;
+        ZoneTools.Clear();
+        CanvasTools.Clear();
+        ZoneTools.Add(AddLEDTool());
+        var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
+        var showHideImage = new ToggleToolbarItem("ShowHideImage", "Toggle Image Visibility", "show_hide_image");
+        snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
+        snapToGridTools.Command = ToggleSnapToGridCommand;
+        showHideImage.Command = ToggleImageVisibilityCommand;
+        showHideImage.IsChecked = true;
+        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",
+            new SolidColorBrush(Colors.Gray), FitCanvasToViewCommand);
+        CanvasTools.Add(snapToGridTools);
+        CanvasTools.Add(centerCanvasTool);
+        CanvasTools.Add(showHideImage);
+
+    }
+    private FlyoutButtonToolbarItem AddLEDTool()
+    {
+        var addLEDTool = new FlyoutButtonToolbarItem("Add", "Add new LED",
+            "paint_bucket__bucket_color_colors_design_paint_painting", new SolidColorBrush(Color.Parse("#33bbff")),
+            AddLEDCommand);
+        FlyoutItem addRectangle = new FlyoutItem("Rectangle", "CanvasTool_Rectangle");
+        addRectangle.FlyoutItemSelected += AddRectangleLED;
+        FlyoutItem addEllipse = new FlyoutItem("Ellipse", "CanvasTool_Ellipse");
+        addEllipse.FlyoutItemSelected += AddEllipseLED;
+        FlyoutItem addPolyline = new FlyoutItem("Poly line", "CanvasTool_PolyLine");
+        FlyoutItem import = new FlyoutItem("Import SVG", "Import");
+        addPolyline.FlyoutItemSelected += AddPolylineLED;
+        addLEDTool.FlyoutItems.Add(addRectangle);
+        addLEDTool.FlyoutItems.Add(addEllipse);
+        addLEDTool.FlyoutItems.Add(addPolyline);
+        addLEDTool.FlyoutItems.Add(import);
+        return addLEDTool;
+    }
+    private void AddRectangleLED(FlyoutItem obj)
+    {
+
+        var geometryString = "M0,0 H20 V20 H0 Z";
+        var led = new AmbinityLED(new ArgbLed(), null, 100, 100, 20, 20, 0, false, geometryString);
+        var ledContainerFigure = new LEDContainerFigure(100, 100, 20, 20);
+        led.X = 100;
+        led.Y = 100;
+        ledContainerFigure.SetChild(led);
+        ledContainerFigure.MinWidth = 5;
+        ledContainerFigure.MinHeight = 5;
+        AddFigure?.Invoke(ledContainerFigure);
+    }
+    private void AddEllipseLED(FlyoutItem obj)
+    {
+        var geometryString = "M40,20 A20,20 0 1 0 0,20 A20,20 0 1 0 40,20";
+        var led = new AmbinityLED(new ArgbLed(), null, 100, 100, 20, 20, 0, false, geometryString);
+        led.X = 100;
+        led.Y = 100;
+        var ledContainerFigure = new LEDContainerFigure(100, 100, 20, 20);
+        ledContainerFigure.SetChild(led);
+        ledContainerFigure.MinWidth = 5;
+        ledContainerFigure.MinHeight = 5;
+        AddFigure?.Invoke(ledContainerFigure);
+    }
+    private void AddPolylineLED(FlyoutItem obj)
+    {
+        InstallPolylineTool?.Invoke(new PolylineTool());
+    }
+    public void InitForImageEditor()
+    {
+        ShowProfileControl = false;
+        _currentProfile = _decoder.CurrentPlayingProfile;
+        Brightness = _currentProfile.Brightness;
+        ZoneTools.Clear();
+        CanvasTools.Clear();
+        var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
+        snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
+        snapToGridTools.Command = ToggleSnapToGridCommand;
+        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",
+            new SolidColorBrush(Colors.Gray), FitCanvasToViewCommand);
+        CanvasTools.Add(snapToGridTools);
+        CanvasTools.Add(centerCanvasTool);
     }
 
     public void InitForDeviceLayout()
     {
+        ShowProfileControl = false;
         _currentProfile = _decoder.CurrentPlayingProfile;
         Brightness = _currentProfile.Brightness;
         ZoneTools.Clear();
@@ -221,6 +320,10 @@ public class ToolsViewModel : ViewModelBase
     private void ResetDefaultLayout()
     {
         ResetLayout?.Invoke();
+    }
+    private void ToggleImageVisibility()
+    {
+        ImageVisibilityChanged?.Invoke();
     }
     private void AddPolyline(FlyoutItem obj)
     {
@@ -324,8 +427,11 @@ public class ToolsViewModel : ViewModelBase
         }
     }
 
+    public ICommand AddLEDCommand { get; set; }
+
     public RelayCommand FitCanvasToViewCommand { get; set; }
     public RelayCommand ToggleSnapToGridCommand { get; set; }
+    public RelayCommand ToggleImageVisibilityCommand { get; set; }
     public RelayCommand AddAmbilightZoneCommand { get; set; }
     public RelayCommand AddAnimationZoneCommand { get; set; }
     public RelayCommand AddColorZoneCommand { get; set; }

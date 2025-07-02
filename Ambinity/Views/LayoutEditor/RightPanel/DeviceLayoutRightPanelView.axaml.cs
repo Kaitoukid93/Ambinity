@@ -19,17 +19,17 @@ public partial class DeviceLayoutRightPanelView : UserControl
         _viewModel = Ioc.Default.GetRequiredService<DeviceLayoutRightPanelViewModel>();
         _viewModel.OpenFlyoutEvent += OpenFlyout;
         _viewModel.CloseFlyoutEvent += CloseFlyout;
- 
+
 
     }
 
-   
+
 
     private DeviceLayoutRightPanelViewModel _viewModel;
-    private void InfoButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        infotip.IsOpen = true;
-    }
+    // private void InfoButton_OnClick(object? sender, RoutedEventArgs e)
+    // {
+    //     infotip.IsOpen = true;
+    // }
 
     private void CloseFlyout()
     {
@@ -52,5 +52,5 @@ public partial class DeviceLayoutRightPanelView : UserControl
         FlyoutBase.GetAttachedFlyout(this).Hide();
     }
 
- 
+
 }

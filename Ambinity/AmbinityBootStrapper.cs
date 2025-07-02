@@ -232,7 +232,7 @@ public class AmbinityBootStrapper
             //Dialogs
             .AddSingleton<IDialogService, DialogService>()
             //Profile editor
-            .AddSingleton<CanvasViewModelBase,CaptureRegionSelectionCanvasViewModel>()
+            .AddSingleton<CanvasViewModelBase, CaptureRegionSelectionCanvasViewModel>()
             .AddSingleton<CanvasViewModelBase, ProfileEditorCanvasViewModel>()
             .AddSingleton<FigureContextMenuProvider>()
             .AddSingleton<ToolsViewModel>()
@@ -292,8 +292,10 @@ public class AmbinityBootStrapper
             .AddSingleton<DebugWindowViewModel>()
             .AddSingleton<LogStore>()
         //LED layout creator
-            .AddSingleton<CanvasViewModelBase,LEDLayoutCreatorCanvasViewModel>()
-            .AddSingleton<LEDLayoutCreatorViewModel>();
+            .AddSingleton<CanvasViewModelBase, LEDLayoutCreatorCanvasViewModel>()
+            .AddSingleton<CanvasViewModelBase, LayoutImageEditorCanvasViewModel>()
+            .AddSingleton<LEDLayoutCreatorViewModel>()
+            .AddSingleton<LayoutImageEditorViewModel>();
 
         Ioc.Default.ConfigureServices(
             serviceCollection

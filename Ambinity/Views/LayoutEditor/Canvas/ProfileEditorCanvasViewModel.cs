@@ -120,7 +120,7 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             OnRenderingStatusChanged();
             FigureAdded += OnFigureAdded;
             FigureRemoved += OnFigureRemoved;
-            Canvas.ShouldDrawBackgroundImage = true;
+            Canvas.ShouldDrawBackgroundImage = false;
 
             //resolve list figures
             int zOrder = 0;

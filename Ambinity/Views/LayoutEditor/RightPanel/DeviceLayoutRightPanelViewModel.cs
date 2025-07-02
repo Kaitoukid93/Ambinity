@@ -11,6 +11,9 @@ using Ambinity.Views.LayoutEditor.LEDLayoutCreator;
 using Ambinity.Views.Screens.DeviceLayout;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Profile;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 
@@ -23,6 +26,8 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
 {
     public event Action OpenFlyoutEvent;
     public event Action CloseFlyoutEvent;
+    private Window _layoutCreatorInitialWindow;
+    private Window _layoutCreatorWindow;
 
     public DeviceLayoutRightPanelViewModel(
         CanvasViewModelFactory canvasViewModelFactory,
@@ -42,18 +47,34 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
 
     private void OpenNewLayoutInitialSetup()
     {
+        if (_layoutCreatorInitialWindow != null && _layoutCreatorInitialWindow.IsVisible)
+        {
+            _layoutCreatorInitialWindow.Activate();
+            return;
+        }
+          if (_layoutCreatorWindow != null && _layoutCreatorWindow.IsVisible)
+        {
+            _layoutCreatorWindow.Activate();
+            return;
+        }
         var vm = new LEDLayoutCreatorInitialViewModel();
-        _windowService.ShowWindow(vm);
+        _layoutCreatorInitialWindow = _windowService.ShowWindow(vm);
+        vm.LayoutPropertiesViewModel.HostWindow = _layoutCreatorInitialWindow;
         vm.Accept += OpenLayoutCreator;
     }
-    private void OpenLayoutCreator(LayoutPropertiesViewModel vm)
+    private async void OpenLayoutCreator(LayoutPropertiesViewModel vm)
     {
         var width = (int)vm.Width;
         var height = (int)vm.Height;
         var image = vm.ImagePath;
         var ledCount = vm.LEDCount;
-        _layoutCreatorViewModel?.Init(width,height,ledCount,image);
-        _windowService.ShowWindow(_layoutCreatorViewModel);
+        _layoutCreatorViewModel?.Init(width, height, ledCount, image);
+        if (_layoutCreatorWindow != null && _layoutCreatorWindow.IsVisible)
+        {
+            _layoutCreatorWindow.Activate();
+        }
+          var lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
+        _layoutCreatorWindow =await _windowService.ShowDialogWindow(_layoutCreatorViewModel,_windowService.GetCurrentWindow());
     }
 
     private async Task OpenLibrary()

@@ -142,8 +142,8 @@ namespace Draw2D.Core.Geo
 
         public bool HitTest(float iX, float iY, double scale)
         {
-            var iX2 = X + Width / scale;
-            var iY2 = Y + Height / scale;
+            var iX2 = (X + Width) / scale;
+            var iY2 = (Y + Height) / scale;
 
             return (iX >= X && iX <= iX2 && iY >= Y && iY <= iY2);
         }

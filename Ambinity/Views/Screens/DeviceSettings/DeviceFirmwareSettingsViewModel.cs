@@ -25,7 +25,7 @@ public class DeviceFirmwareSettingsViewModel : ViewModelBase
     private readonly IDialogService _dialogService;
     private SerialControllerRepository _controllerRepository;
     private IDataStream _serialStream;
-    public DeviceFirmwareSettingsViewModel(FirmwareService firmwareService, IDialogService dialogService,SerialControllerRepository controllerRepository)
+    public DeviceFirmwareSettingsViewModel(FirmwareService firmwareService, IDialogService dialogService, SerialControllerRepository controllerRepository)
     {
         _serialControllerHelpers = new SerialControllerHelpers();
         _controllerRepository = controllerRepository;
@@ -72,8 +72,8 @@ public class DeviceFirmwareSettingsViewModel : ViewModelBase
         {
             UpdateAvailable = false;
         }
-
-        AvailableFirmwares = availableFirmwares.OrderByDescending(f=>f.ReleaseDate).ToList();
+        if (availableFirmwares != null)
+            AvailableFirmwares = availableFirmwares.OrderByDescending(f => f.ReleaseDate).ToList();
 
         Header = "You're up to date";
         CheckingForUpdate = false;

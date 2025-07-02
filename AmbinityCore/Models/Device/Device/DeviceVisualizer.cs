@@ -94,13 +94,14 @@ public class DeviceVisualizer : ICanvasVisualizerItem
             {
                 // Apply device scale
                 // using DrawingContext.PushedState scalePush = dc.PushTransform(Matrix.CreateScale(_device.Scale, _device.Scale));
-                GeometryGroup newGroup = new GeometryGroup();
+                // GeometryGroup newGroup = new GeometryGroup();
                 foreach (LedVisualizer led in _ledVisualizers)
                 {
-                    newGroup.Children.Add(led.DisplayGeometry);
+                    // newGroup.Children.Add(led.DisplayGeometry);
+                    led.RenderGeometry(dc);
                 }
 
-                var bound = newGroup.Bounds;
+
                 // Render device and LED images
                 if (_deviceImage != null)
                 {
@@ -112,7 +113,7 @@ public class DeviceVisualizer : ICanvasVisualizerItem
 
 
                 //
-                dc.DrawGeometry(new ImmutableSolidColorBrush(Colors.Black.AdjustOpacity(0.5)), null, newGroup);
+                //dc.DrawGeometry(new ImmutableSolidColorBrush(Colors.Black.AdjustOpacity(0.5)), null, newGroup);
             }
         }
         finally

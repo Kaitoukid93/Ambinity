@@ -32,6 +32,8 @@ namespace Draw2D.Core
         /// </summary>
         float Height { get; set; }
 
+        float ZoomLevel { get; set; }
+
         ICoordinateSystem CoordinateSystem { get; set; }
         HandleShapeFactory HandleShapeFactory { get; }
         ToolBase ActiveTool { get; }
@@ -46,7 +48,7 @@ namespace Draw2D.Core
 
         void OnMouseRightDown(double mouseX, double mouseY, bool isShiftKey, bool isCtrlKey);
         void OnMouseRightUp(double mouseX, double mouseY, bool isShiftKey, bool isCtrlKey);
- 
+
         ICanvas InstallEditPolicy(PolicyBase policy);
         ICanvas UninstallEditPolicy(PolicyBase policy);
         void OnKeyDown(Key key);
@@ -64,8 +66,9 @@ namespace Draw2D.Core
         void EndBulkEdit();
         Color StrokeColor { get; set; }
         FrameBuffer BackgroundImageBuffer { get; set; }
-        
+
         bool ShouldDrawBackgroundImage { get; set; }
+        bool ShouldDrawBorder { get; set; }
     }
 
     public class SelectionChangedEventArgs : EventArgs

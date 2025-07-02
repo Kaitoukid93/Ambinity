@@ -1,31 +1,40 @@
 using AmbinityCore.Models.Device.LED;
 using AmbinityCore.Models.Geography;
+using AmbinityCore.Visualizer;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
+using Serilog;
+using Color = Avalonia.Media.Color;
 
 namespace Draw2D.Core.Shapes.Basic;
 
-public class LedVisualizer
+public class LedVisualizer : ICanvasVisualizerItem
 {
     private readonly SolidColorBrush _fillBrush;
     private readonly ImmutablePen _pen;
     private readonly SolidColorBrush _penBrush;
+    private Rect _ledBounds;
+    public Rect Bounds => _ledBounds;
+    public event Action RefreshVisualizer;
+    public event Action ItemUpdated;
 
-    public LedVisualizer(AmbinityLED led)
+    public LedVisualizer(IPositionAware led)
     {
         Led = led as AmbinityLED;
-
+        _ledBounds = MeasureLED();
         _fillBrush = new SolidColorBrush();
         _penBrush = new SolidColorBrush();
         var pen = new Pen(_penBrush) { LineJoin = PenLineJoin.Round };
         _pen = pen.ToImmutable();
-
         CreateLedGeometry();
     }
 
     public AmbinityLED Led { get; }
     public Geometry? DisplayGeometry { get; private set; }
+
+
+    public IPositionAware Item => Led;
 
     public void RenderGeometry(DrawingContext drawingContext)
     {
@@ -53,32 +62,11 @@ public class LedVisualizer
             CreateRectangleGeometry();
         else
             CreateCustomGeometry(1.0);
-
-        // switch (Led.RgbLed.Shape)
-        // {
-        //     case Shape.Custom:
-        //         if (Led.RgbLed.Device.DeviceInfo.DeviceType is RGBDeviceType.Keyboard or RGBDeviceType.Keypad)
-        //             CreateCustomGeometry(2.0);
-        //         else
-        //             CreateCustomGeometry(1.0);
-        //         break;
-        //     case Shape.Rectangle:
-        //         if (Led.RgbLed.Device.DeviceInfo.DeviceType is RGBDeviceType.Keyboard or RGBDeviceType.Keypad)
-        //             CreateKeyCapGeometry();
-        //         else
-        //             CreateRectangleGeometry();
-        //         break;
-        //     case Shape.Circle:
-        //         CreateCircleGeometry();
-        //         break;
-        //     default:
-        //         throw new ArgumentOutOfRangeException();
-        // }
     }
 
     private void CreateRectangleGeometry()
     {
-        DisplayGeometry = new RectangleGeometry(new Rect(Led.RelativeX + 0.5, Led.RelativeY + 0.5,
+        DisplayGeometry = new RectangleGeometry(new Rect(Led.X + 0.5, Led.Y + 0.5,
             Led.LedSize.Width - 1, Led.LedSize.Height - 1));
     }
 
@@ -86,27 +74,81 @@ public class LedVisualizer
     {
         try
         {
-            double width = Led.LedSize.Width - deflateAmount;
-            double height = Led.LedSize.Height - deflateAmount;
+            var defAmount = deflateAmount;
+            if (Led.Device == null)
+                defAmount = 0.5f;
+            double width = Led.LedSize.Width - defAmount;
+            double height = Led.LedSize.Height - defAmount;
             Geometry geometry;
             geometry = Geometry.Parse(Led.Geometry);
             var boundsLeft = geometry.Bounds.Left;
             var boundsTop = geometry.Bounds.Top;
             var scaleX = width / geometry.Bounds.Width;
             var scaleY = height / geometry.Bounds.Height;
+            var left = Led.RelativeX - boundsLeft * scaleX + 0.5 * defAmount;
+            var top = Led.RelativeY - boundsTop * scaleY + 0.5 * defAmount;
+            if (Led.Device == null)
+            {
+                left = Led.X - boundsLeft * scaleX + 0.5 * defAmount;
+                top = Led.Y - boundsTop * scaleY + 0.5 * defAmount;
+            }
             geometry.Transform = new TransformGroup
             {
                 Children = new Transforms()
                 {
                     new ScaleTransform(scaleX, scaleY),
-                    new TranslateTransform(Led.RelativeX - boundsLeft * scaleX, Led.RelativeY - boundsTop * scaleY)
+                    new TranslateTransform(left, top)
                 }
             };
             DisplayGeometry = geometry;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Log.Error(ex.ToString());
             CreateRectangleGeometry();
         }
+    }
+
+    public void UpdateContainerOffset(float dx, float dy)
+    {
+        Led.X += dx;
+        Led.Y += dy;
+        _ledBounds = MeasureLED();
+        CreateLedGeometry();
+        ItemUpdated?.Invoke();
+    }
+
+    public void UpdateContainerSize(float width, float height)
+    {
+        Led.Width = width;
+        Led.Height = height;
+        _ledBounds = MeasureLED();
+        CreateLedGeometry();
+        ItemUpdated?.Invoke();
+    }
+
+    public void Render(DrawingContext dc, Canvas canvas)
+    {
+        RenderGeometry(dc);
+    }
+    private Rect MeasureLED()
+    {
+        if (Led == null || float.IsNaN(Led.Width) || float.IsNaN(Led.Height))
+            return new Rect();
+
+        Rect deviceRect = new(0, 0, Led.Width, Led.Height);
+        Geometry geometry = new RectangleGeometry(deviceRect);
+        geometry.Transform = new TransformGroup()
+        {
+            Children =
+            {
+                new RotateTransform(Led.Rotation),
+                new ScaleTransform(Led.Scale, Led.Scale),
+                new TranslateTransform(Led.X, Led.Y)
+            }
+        };
+
+
+        return geometry.Bounds;
     }
 }

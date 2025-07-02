@@ -139,7 +139,7 @@ public class LightingZoneFigure : ContainerFigure, IAssetSelectable
         else if (zone.Shape == ZoneShapeEnum.Rectangle)
         {
             dc.DrawRectangle(fillBrush, pen,
-                new Rect(new Point(X, Y), new Size(Width, Height)));
+                new Rect(new Point(X, Y), new Size(Width, Height)),2*thickness,2*thickness);
         }
         else if (zone.Shape == ZoneShapeEnum.Polyline)
         {

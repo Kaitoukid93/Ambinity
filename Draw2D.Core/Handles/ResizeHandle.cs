@@ -117,6 +117,14 @@ namespace Draw2D.Core.Handles
             canvas.SnapCluster.Remove(Owner);
             canvas.SnapCluster.Add(Owner.GetSnapPoints(), Owner);
         }
+        public override bool HitTest(float x, float y)
+        {
+            //get bounding box based on zoom level
+            var handleShape = GetCurrentHandleShapeSize();
+            if(handleShape == null)
+                return false;
+            return handleShape.Extented(2 / Canvas.ZoomLevel).HitTest(x, y);
+        }
 
         public void Show(Canvas canvas)
         {
@@ -174,7 +182,7 @@ namespace Draw2D.Core.Handles
 
         public override void Render(DrawingContext dc, double strokeThickness, Color strokeColor)
         {
-            if (HandleShape != null)
+            if (HandleShape != null && Canvas != null)
             {
                 HandleShape.Canvas = Canvas;
                 var strokeBrush = new ImmutableSolidColorBrush(HandleShape.StrokeColor);
@@ -198,16 +206,25 @@ namespace Draw2D.Core.Handles
 
                 var fillBrush = new ImmutableSolidColorBrush(HandleShape.FillColor);
                 // fillBrush.Freeze();
-                var scale = strokeThickness / 1.5;
-                var newWidth = HandleShape.Width * scale;
-                var newHeight = HandleShape.Height * scale;
-                var newX = HandleShape.X + (HandleShape.Width - HandleShape.Width * scale) / 2;
-                var newY = HandleShape.Y + (HandleShape.Height - HandleShape.Height * scale) / 2;
+
+                var handleShape = GetCurrentHandleShapeSize();
                 Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
                 dc.PushTransform(translate);
                 dc.DrawRectangle(fillBrush, immutablePen,
-                    new Rect(new Avalonia.Point(newX, newY), new Size(newWidth, newHeight)));
+                    new Rect(new Avalonia.Point(handleShape.X, handleShape.Y), new Size(handleShape.Width, handleShape.Height)));
             }
+        }
+
+        private Draw2D.Core.Geo.Rectangle GetCurrentHandleShapeSize()
+        {
+            if(Canvas==null|| HandleShape == null)
+             return null;
+            var scale = Canvas.ZoomLevel;
+            var newWidth = HandleShape.Width / scale;
+            var newHeight = HandleShape.Height / scale;
+            var newX = HandleShape.X + (HandleShape.Width - newWidth) / 2;
+            var newY = HandleShape.Y + (HandleShape.Height - newHeight) / 2;
+            return new Geo.Rectangle(newX, newY, newWidth, newHeight);
         }
 
         public Figure Owner { get; }

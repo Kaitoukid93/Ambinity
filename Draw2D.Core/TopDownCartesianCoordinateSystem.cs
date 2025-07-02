@@ -4,19 +4,19 @@
     {
         public float OffsetX { get;  }
         public float OffsetY { get;   }
-       
+
 
         public TopDownCartesianCoordinateSystem(float offsetX, float offsetY)
         {
             OffsetX = offsetX;
             OffsetY = offsetY;
         }
-       
+
         public Geo.Point ToWorldSpace(double screenPointX, double screenPointY)
         {
             var factor = 1; //internally everthing is stored in 1/100.
-            return new Geo.Point((float)Math.Ceiling(screenPointX - OffsetX * factor),
-                (float)Math.Ceiling(screenPointY - OffsetY * factor));
+            return new Geo.Point((float)(screenPointX - OffsetX * factor),
+                (float)(screenPointY - OffsetY * factor));
         }
 
         public double[] ToScreenSpace(Geo.Point worldPoint)

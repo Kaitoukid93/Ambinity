@@ -241,7 +241,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                     selectedFigure.HideHandles(canvas);
                 }
             }
-            if (_mouseDownElement != null&&!isShiftKey)
+            if (_mouseDownElement != null && !isShiftKey)
             {
                 Unselect(canvas, canvas.Selection.All);
                 _mouseDownElement.Select();

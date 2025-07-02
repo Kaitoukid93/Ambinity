@@ -14,10 +14,10 @@ public partial class PositionConfigurationView : UserControl
         InitializeComponent();
         var nm = this.FindControl<NumberBox>("scaleNumberBox");
     }
-    
 
-    private void InfoButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        infoTip.IsOpen = true;
-    }
+
+    // private void InfoButton_OnClick(object? sender, RoutedEventArgs e)
+    // {
+    //     infoTip.IsOpen = true;
+    // }
 }

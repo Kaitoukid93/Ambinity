@@ -55,7 +55,7 @@
             <Grid IsVisible="{Binding !IsLocked}" Grid.Row="2" Margin="20,0,20,10" ColumnDefinitions="*,Auto">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="Device Layout"></TextBlock>
-                    <Grid>
+                    <!-- <Grid>
                         <Button Click="InfoButton_OnClick" x:Name="infoButton" Background="Transparent"
                                 BorderThickness="0" Classes="icon-button-small" HorizontalAlignment="Right"
                                 VerticalAlignment="Center">
@@ -81,7 +81,7 @@ Request custom layout at [Ambino-Layout](https://ambino.vn)
                                 </Border>
                             </ui:TeachingTip.HeroContent>
                         </ui:TeachingTip>
-                    </Grid>
+                    </Grid> -->
                 </StackPanel>
 
                 <Grid Column="1">
@@ -94,11 +94,11 @@ Request custom layout at [Ambino-Layout](https://ambino.vn)
                             </Button>
                         </Grid>
                           <Grid>
-                            <!-- <Button ToolTip.Tip="Create Custom Layout" Command="{Binding OpenLayoutCreatorCommand}" Padding="1"
+                            <Button ToolTip.Tip="Create Custom Layout" Command="{Binding OpenLayoutCreatorCommand}" Padding="1"
                                     Background="Transparent" Width="30" Height="30"
                                     Classes="icon-button">
                                 <PathIcon Width="15" Data="{DynamicResource AddToCollection}"></PathIcon>
-                            </Button> -->
+                            </Button>
                         </Grid>
                     </StackPanel>
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Input;
 using Ambinity.ViewModels;
 using CommunityToolkit.Mvvm.Input;
@@ -30,6 +31,6 @@ public class LEDLayoutCreatorInitialViewModel : ViewModelBase
     }
 
     public LayoutPropertiesViewModel LayoutPropertiesViewModel { get; set; }
-    public ICommand AcceptCommand { get; }
+    public RelayCommand AcceptCommand { get; }
     public ICommand CancelCommand { get; }
 }

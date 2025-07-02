@@ -12,8 +12,8 @@ public partial class BlackBarDetectionParameterView : UserControl
         InitializeComponent();
     }
 
-    private void InfoButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        infotip.IsOpen = true;
-    }
+    // private void InfoButton_OnClick(object? sender, RoutedEventArgs e)
+    // {
+    //     infotip.IsOpen = true;
+    // }
 }

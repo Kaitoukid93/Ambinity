@@ -14,7 +14,7 @@
             <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
                        Text="Blackbar detection">
             </TextBlock>
-            <Grid Column="2">
+            <!-- <Grid Column="2">
                 <Button Click="InfoButton_OnClick" x:Name="infoButton" Background="Transparent"
                         BorderThickness="0" Classes=" icon-button icon-button-small" HorizontalAlignment="Center"
                         VerticalAlignment="Center" Margin="0,0">
@@ -28,21 +28,21 @@
                             <mdxaml:MarkdownScrollViewer xml:space="preserve">
 ##### **Blackbar Detection**
 
- * **What even is Blackbar Detection?** 
+ * **What even is Blackbar Detection?**
  Blackbar detection is an algorithm to detect "no-pixel' zone in the screen, such as viewing 21:9 content in 16:9 ratio screen
- * **How does it work?** 
+ * **How does it work?**
  When there are black zones in the content, the background service will count for stable frames, if the stable frames count exceed for example 20 frame,
 the screen capture service will copy the area next to the black zone (that have colors) and render at the black zones location
- * **Should I turn this on?** 
+ * **Should I turn this on?**
  Sure! You can try to turn this on and watch some content that have different ration than your screen ratio, but this has some downside when the black zone
 situation is so complicated, feel free to tweak the sensitivity value that suit best for you
- 
+
 Learn more [Ambino-ScreenCapturre](https://ambino.vn)
                                                 </mdxaml:MarkdownScrollViewer>
                         </Border>
                     </ui:TeachingTip.HeroContent>
                 </ui:TeachingTip>
-            </Grid>
+            </Grid> -->
             <ToggleSwitch x:Name="enable" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="3"></ToggleSwitch>
         </Grid>
         <StackPanel Grid.Row="2" Spacing="5">

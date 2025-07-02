@@ -15,34 +15,8 @@ public partial class DeviceLayoutCanvasView : UserControl
     public DeviceLayoutCanvasView()
     {
         InitializeComponent();
-        _viewModelFactory = Ioc.Default.GetRequiredService<CanvasViewModelFactory>();
-        _viewModel = _viewModelFactory.Get<DeviceLayoutCanvasViewModel>();
-        _contextMenuProvider = Ioc.Default.GetRequiredService<FigureContextMenuProvider>();
-        _viewModel.Canvas.FigureRightClicked += OnFigureRightClicked;
-        _viewModel.Canvas.CanvasRightClicked += OnCanvasRightClicked;
 
     }
 
-    private void OnCanvasRightClicked(object? sender, CanvasClickEventArgs e)
-    {
-        if (_viewModel.IsLocked)
-            return;
-        var point = new Point(e.MousePosX, e.MousePosY);
-        _contextMenuProvider.CanvasVM = _viewModel;
-        _contextMenuProvider.Init();
-        var menu = _contextMenuProvider.GetContextMenu(null, point);
-        menu.ShowAt(Draw2DControl);
-    }
 
-    private void OnFigureRightClicked(object? sender, FigureClickEventArgs e)
-    {
-        if (_viewModel.IsLocked)
-            return;
-        _contextMenuProvider.CanvasVM = _viewModel;
-        _contextMenuProvider.Init();
-        var figure = e.Sender as Figure;
-        var point = new Point(e.MousePosX, e.MousePosY);
-        var menu = _contextMenuProvider.GetContextMenu(figure, point);
-        menu.ShowAt(Draw2DControl);
-    }
 }

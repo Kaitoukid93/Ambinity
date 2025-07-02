@@ -1,7 +1,10 @@
 ﻿
+using Avalonia;
 using Avalonia.Media;
+using Avalonia.Media.Immutable;
 using Draw2D.Core.Geo;
 using Draw2D.Core.Shapes.Basic;
+using Point = Draw2D.Core.Geo.Point;
 
 namespace Draw2D.Core.Handles
 {
@@ -10,8 +13,8 @@ namespace Draw2D.Core.Handles
         private readonly Line _line;
         public VectorFigure HandleShape { get; set; }
         public int LinePointIndex { get; private set; }
-        
-        
+
+
 
         public Figure Owner { get; }
 
@@ -21,6 +24,7 @@ namespace Draw2D.Core.Handles
             _line = line;
             Owner = line;
             HandleShape = handleShape;
+            HandleShape.IsZoomAwareness = true;
             LinePointIndex = linePointIndex;
 
 
@@ -31,14 +35,14 @@ namespace Draw2D.Core.Handles
 
             handleShape.IsDragable = false;
             handleShape.IsVisible = false;
-             handleShape.IsSelectable = false;
+            handleShape.IsSelectable = false;
             handleShape.CanBeSnapTarget = false;
 
             IsDragable = true;
             IsVisible = true;
             IsSelectable = true;
             CanBeSnapTarget = false;
-           
+
             SetSnapTargets(SnapTargets.Center);
         }
 
@@ -53,7 +57,7 @@ namespace Draw2D.Core.Handles
             foreach (var policy in canvas.GetSnapPolicies())
             {
                 Point snapPoint;
-                isSnapped = policy.Snap(canvas, HandleShape.Position, dx, dy, dxSum, dySum, out snapPoint, out snapDelta, new[]{ this});
+                isSnapped = policy.Snap(canvas, HandleShape.Position, dx, dy, dxSum, dySum, out snapPoint, out snapDelta, new[] { this });
 
                 if (isSnapped)
                     break;
@@ -64,12 +68,12 @@ namespace Draw2D.Core.Handles
                 dx = snapDelta.X;
                 dy = snapDelta.Y;
             }
-         
+
             _line.Translate(dx, dy, LinePointIndex);
 
             Update();
 
-            
+
             Canvas?.NeedsRepaint(this);
 
         }
@@ -78,7 +82,7 @@ namespace Draw2D.Core.Handles
         public override void ForceSetPositionCenter(float x, float y)
         {
             base.ForceSetPositionCenter(x, y);
-            HandleShape.ForceSetPositionOfCenter(x,y);
+            HandleShape.ForceSetPositionOfCenter(x, y);
         }
 
 
@@ -94,7 +98,11 @@ namespace Draw2D.Core.Handles
         }
         public override bool HitTest(float x, float y)
         {
-            return BoundingBox.HitTest(x, y,1.5/StrokeThickness);
+            //get bounding box based on zoom level
+            var handleShape = GetCurrentHandleShapeSize();
+            if (handleShape == null)
+                return false;
+            return handleShape.Extented(2 / Canvas.ZoomLevel).HitTest(x, y);
         }
         public void Update()
         {
@@ -106,10 +114,52 @@ namespace Draw2D.Core.Handles
         {
             if (HandleShape != null)
             {
-                HandleShape.Canvas = Canvas;
-                HandleShape.Render(dc,strokeThickness,strokeColor);
+                var strokeBrush = new ImmutableSolidColorBrush(StrokeColor);
+                var thickness = StrokeThickness;
+                if (OverrideStrokeStyle)
+                {
+                    strokeBrush = new ImmutableSolidColorBrush(strokeColor);
+                    thickness = (float)strokeThickness;
+                }
+                var screenPoint = Canvas.CoordinateSystem.ToScreenSpace(Position);
+                var offset = new Avalonia.Point((float)screenPoint[0] - X, (float)screenPoint[1] - Y);
+
+                //strokeBrush.Freeze();
+
+                var pen = new ImmutablePen(strokeBrush, thickness);
+                var immutablePen = pen.ToImmutable();
+                //  {
+                //     DashStyle = DashStyle
+                // };
+                //pen.Freeze();
+
+                var fillBrush = new ImmutableSolidColorBrush(FillColor);
+                //fillBrush.Freeze();
+                Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
+
+
+                dc.PushTransform(translate);
+
+                var scale = 1 / Canvas.ZoomLevel;
+                if (IsMouseOver)
+                    fillBrush = new ImmutableSolidColorBrush(Colors.Red);
+
+                dc.DrawEllipse(fillBrush, immutablePen, new Avalonia.Point(BoundingBox.Center.X, BoundingBox.Center.Y), Width * scale / 2, Height * scale / 2);
+
+                // dc.Pop();
             }
-            
+
+        }
+        private Draw2D.Core.Geo.Rectangle GetCurrentHandleShapeSize()
+        {
+            if (Canvas == null || HandleShape == null)
+                return null;
+            var scale = Canvas.ZoomLevel;
+            var newWidth = HandleShape.Width / scale;
+            var newHeight = HandleShape.Height / scale;
+            var newX = HandleShape.X + (HandleShape.Width - newWidth) / 2;
+            var newY = HandleShape.Y + (HandleShape.Height - newHeight) / 2;
+            return new Geo.Rectangle(newX, newY, newWidth, newHeight);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
+using Draw2D.Core.Handles;
 using Draw2D.Core.Utlils;
 using Point = Draw2D.Core.Geo.Point;
 
@@ -9,6 +10,7 @@ namespace Draw2D.Core.Shapes.Basic
 {
     public class Ellipse : Rectangle
     {
+
         public Ellipse(float x, float y, float width, float height) : base(x - width / 2.0f, y - height / 2.0f, width,
             height)
         {
@@ -26,7 +28,7 @@ namespace Draw2D.Core.Shapes.Basic
             }
             var screenPoint = Canvas.CoordinateSystem.ToScreenSpace(Position);
             var offset = new Point((float)screenPoint[0] - X, (float)screenPoint[1] - Y);
-            
+
             //strokeBrush.Freeze();
 
             var pen = new ImmutablePen(strokeBrush, thickness);
@@ -38,13 +40,20 @@ namespace Draw2D.Core.Shapes.Basic
 
             var fillBrush = new ImmutableSolidColorBrush(FillColor);
             //fillBrush.Freeze();
-            Matrix translate = Matrix.CreateTranslation(offset.X , offset.Y);
-            var scale = strokeThickness/1.5  ;
-            dc.PushTransform(translate);
-         
-            dc.DrawEllipse(fillBrush, immutablePen, new Avalonia.Point(BoundingBox.Center.X,BoundingBox.Center.Y) , Width*scale / 2, Height*scale / 2);
+            Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
 
-           // dc.Pop();
+
+            dc.PushTransform(translate);
+            var scale = 1.0d;
+            if (IsZoomAwareness)
+            {
+                scale = strokeThickness / 1.5;
+                // if(IsSelected)
+                // fillBrush = new ImmutableSolidColorBrush(Colors.Red);
+            }
+            dc.DrawEllipse(fillBrush, immutablePen, new Avalonia.Point(BoundingBox.Center.X, BoundingBox.Center.Y), Width * scale / 2, Height * scale / 2);
+
+            // dc.Pop();
         }
     }
 }

@@ -12,8 +12,8 @@ public partial class ColorAppearanceParameterView : UserControl
         InitializeComponent();
     }
 
-    private void ApearanceGuide_OnClick(object? sender, RoutedEventArgs e)
-    {
-        apperanceGuide.IsOpen = true;
-    }
+    // private void ApearanceGuide_OnClick(object? sender, RoutedEventArgs e)
+    // {
+    //     apperanceGuide.IsOpen = true;
+    // }
 }

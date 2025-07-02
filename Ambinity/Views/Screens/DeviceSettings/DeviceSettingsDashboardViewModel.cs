@@ -12,6 +12,7 @@ using AmbinityCore.Models.Profile;
 using AmbinityServer.OnlineItem;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using Serilog;
 
 namespace Ambinity.Views.Screens.DeviceSettings;
 
@@ -150,12 +151,13 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
         var result = await Task.Run(() => _deviceSettingsViewModel.Init(device.Controller));
         if (result)
         {
-            dialogvm.Close();
+            Log.Error("Failed to load device settings, firmware not supported or not connected.");
         }
         else
         {
-            dialogvm.ShowError("Failed to load device settings, firmware not supported or not connected.");
+            //log out device detail
         }
+        dialogvm.Close();
         _rootNavigationStores.CurrentViewModel = _deviceSettingsViewModel;
     }
 

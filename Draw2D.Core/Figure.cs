@@ -28,6 +28,7 @@ namespace Draw2D.Core
         private int _zOrder;
         protected IHandle HittedResizeHandle;
         protected SnapTargets SnapTargets;
+        public bool IsZoomAwareness { get; set; } = false;
 
         protected readonly List<ConstraintPoint> FixConstraintPoints = new List<ConstraintPoint>();
         protected readonly List<ConstraintPoint> DynamicConstraintPoints = new List<ConstraintPoint>();
@@ -93,7 +94,7 @@ namespace Draw2D.Core
 
         public virtual bool HitTest(float x, float y)
         {
-            return BoundingBox.Extented(2).HitTest(x, y);
+            return BoundingBox.Extented(2/Canvas.ZoomLevel).HitTest(x, y);
         }
 
         public Figure InstallEditPolicy(PolicyBase policyBase)
