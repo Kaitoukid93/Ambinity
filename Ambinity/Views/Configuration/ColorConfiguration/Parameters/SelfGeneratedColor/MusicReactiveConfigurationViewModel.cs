@@ -115,7 +115,7 @@ public class MusicReactiveConfigurationViewModel : MotionConfigurationViewModelB
 
         _isDefault = _configuration.UseDefaultDevice;
         if (_configuration.UseDefaultDevice)
-            _selectedAudioDevice = AvailableAudioDevices.Where(d => d.Name.Contains("[default]")).FirstOrDefault();
+            _selectedAudioDevice = AvailableAudioDevices.Where(d => d.Name != null && d.Name.Contains("[default]")).FirstOrDefault();
         else
         {
             _selectedAudioDevice =
@@ -139,6 +139,8 @@ public class MusicReactiveConfigurationViewModel : MotionConfigurationViewModelB
     {
         int count = 0;
         if (Frequencies == null)
+            return;
+        if (SelectedAudioDevice == null)
             return;
         lock (Frequencies)
         {
