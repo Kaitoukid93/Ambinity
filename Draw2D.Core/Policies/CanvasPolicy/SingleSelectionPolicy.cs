@@ -172,11 +172,11 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             {
                 if (isCtrlKey && _mouseDownElement != null)
                 {
-                    _mouseDownElement.OnDragStart(canvas, startPosX, startPosY);
+                    _mouseDownElement.OnDragStart(canvas, startPosX, startPosY, _mouseDownElement);
                 }
                 else if (canvas.Selection.All.Count() == 1)
                 {
-                    canvas.Selection.All.ToList().ForEach(f => f.OnDragStart(canvas, startPosX, startPosY));
+                    canvas.Selection.All.ToList().ForEach(f => f.OnDragStart(canvas, startPosX, startPosY, _mouseDownElement));
                 }
                 else
                 {
@@ -204,14 +204,8 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             }
             else
             {
-                if (canvas.Selection.All.Count() == 1)
-                {
-                    foreach (var selectedFigure in canvas.Selection.All)
-                    {
-                        selectedFigure.ShowHandles(canvas);
-                    }
-                }
-                else if (canvas.Selection.All.Count() > 1)
+                canvas.Selection.All.ToList().ForEach(f => f.UpdateHandles(canvas));
+                if (canvas.Selection.All.Count() > 1)
                 {
                     foreach (var snapPolicy in canvas.GetSnapPolicies())
                     {
@@ -221,30 +215,16 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
                 canvas.Selection.All.ToList().ForEach(f => f.OnDragEnd(canvas, isShiftKey, isCtrlKey));
             }
-
+            _mouseDownElement = null;
             canvas.NeedsRepaint(null);
         }
 
         public virtual void OnMouseLeftUp(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
         {
-            if (canvas.Selection.All.Count() == 1)
-            {
-                foreach (var selectedFigure in canvas.Selection.All)
-                {
-                    selectedFigure.ShowHandles(canvas);
-                }
-            }
-            else if (canvas.Selection.All.Count() > 1)
-            {
-                foreach (var selectedFigure in canvas.Selection.All)
-                {
-                    selectedFigure.HideHandles(canvas);
-                }
-            }
+            canvas.Selection.All.ToList().ForEach(f => f.UpdateHandles(canvas));
             if (_mouseDownElement != null && !isShiftKey)
             {
-                Unselect(canvas, canvas.Selection.All);
-                _mouseDownElement.Select();
+                Unselect(canvas, canvas.Selection.AllBut(_mouseDownElement));
                 _mouseDownElement = null;
             }
         }
@@ -311,8 +291,8 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             if (canvas.Selection.Contains(figure))
                 return;
 
-
             figure.Select(true, false);
+
             canvas.Selection.Primary = figure;
         }
 

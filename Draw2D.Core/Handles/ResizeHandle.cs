@@ -134,7 +134,7 @@ namespace Draw2D.Core.Handles
 
         public void Hide(Canvas canvas)
         {
-            canvas.RemoveAdornerFigure(this);
+            canvas?.RemoveAdornerFigure(this);
         }
 
         public void Update()

@@ -67,7 +67,7 @@ public class DeviceVisualizer : ICanvasVisualizerItem
         //  _device.SetScale((float)scale);
     }
 
-    public void Render(DrawingContext dc, Canvas canvas)
+    public void Render(DrawingContext dc, Canvas canvas,bool isSelected = false)
     {
         if (_device == null || _deviceBounds.Width == 0 || _deviceBounds.Height == 0 || _loading)
             return;

@@ -8,7 +8,7 @@ namespace Draw2D.Core.Shapes.Basic
     {
         public Selectionbox(float x, float y, float width, float height) : base(x, y, width, height)
         {
-      
+
         }
 
         public Selectionbox(Geo.Rectangle rect) : base(rect)
@@ -39,7 +39,7 @@ namespace Draw2D.Core.Shapes.Basic
             Matrix translate = Matrix.CreateTranslation(offset.X, offset.Y);
             dc.PushTransform(translate);
             dc.DrawRectangle(fillBrush, immutablePen,
-                new Rect(new Point(X, Y), new Size(Width, Height)),1d,1d);
+                new Rect(new Point(X, Y), new Size(Width, Height)), 2 * thickness, 2 * thickness);
 
             // dc.Pop();
         }

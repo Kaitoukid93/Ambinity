@@ -52,7 +52,7 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
             _layoutCreatorInitialWindow.Activate();
             return;
         }
-          if (_layoutCreatorWindow != null && _layoutCreatorWindow.IsVisible)
+        if (_layoutCreatorWindow != null && _layoutCreatorWindow.IsVisible)
         {
             _layoutCreatorWindow.Activate();
             return;
@@ -69,12 +69,15 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
         var image = vm.ImagePath;
         var ledCount = vm.LEDCount;
         _layoutCreatorViewModel?.Init(width, height, ledCount, image);
-        if (_layoutCreatorWindow != null && _layoutCreatorWindow.IsVisible)
+
+        var lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
+
+        _layoutCreatorWindow = await _windowService.ShowDialogWindow(_layoutCreatorViewModel, _windowService.GetCurrentWindow());
+        _layoutCreatorWindow.Closed += (sender, args) =>
         {
-            _layoutCreatorWindow.Activate();
-        }
-          var lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
-        _layoutCreatorWindow =await _windowService.ShowDialogWindow(_layoutCreatorViewModel,_windowService.GetCurrentWindow());
+            _layoutCreatorViewModel?.Dispose();
+        };
+
     }
 
     private async Task OpenLibrary()

@@ -489,7 +489,7 @@ namespace Draw2D.Core
                 SnapCluster.Add(figure.GetSnapPoints(), figure);
             }
 
-            QuadTree.Insert(figure);
+           // QuadTree.Insert(figure);
 
             _figures.Add(figure);
 
@@ -525,8 +525,7 @@ namespace Draw2D.Core
 
         public List<Figure> GetBestFigures(Geo.Rectangle searchBox, List<Type> blacklist, List<Type> whitelist)
         {
-            var hits = QuadTree.Query(searchBox)
-                .ToList(); //Figures.Where(f => searchBox.Contains(f.BoundingBox)).ToList();
+            var hits = Figures.Where(f => searchBox.Intersects(f.BoundingBox)).ToList();
             var toFilterOut = new List<Figure>();
 
             foreach (var type in blacklist)

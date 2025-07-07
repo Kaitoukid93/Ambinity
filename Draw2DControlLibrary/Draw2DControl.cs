@@ -122,6 +122,11 @@ namespace Draw2DControlLibrary
             {
                 if (figure is VectorFigure)
                     (figure as VectorFigure).StrokeThickness = (float)_globalBorderThickness;
+
+            }
+            foreach (var figure in Canvas.Selection.AllActive)
+            {
+                figure.UpdateHandles(Canvas as Draw2D.Core.Canvas);
             }
 
             _gridPen.Thickness = 1 / _zoomValue;

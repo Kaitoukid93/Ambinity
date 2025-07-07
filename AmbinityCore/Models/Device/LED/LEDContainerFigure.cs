@@ -48,7 +48,7 @@ public class LEDContainerFigure : ContainerFigure
     {
         //get size and location from device property
         // _isLinked = ChildItem.GroupID != Guid.Empty;
-        ItemVisualizer.Render(dc, Canvas);
+        ItemVisualizer.Render(dc, Canvas, IsSelected);
         var strokeBrush = new ImmutableSolidColorBrush(StrokeColor);
         var thickness = StrokeThickness;
         if (OverrideStrokeStyle)
@@ -77,8 +77,9 @@ public class LEDContainerFigure : ContainerFigure
         // if (IsSelectable)
         //     dc.DrawRectangle(fillBrush, immutablePen,
         //         new Rect(new Point(X, Y), new Size(Width, Height)));
-        dc.DrawRectangle(fillBrush, immutablePen,
-       new Rect(BoundingBox.X, BoundingBox.Y, BoundingBox.Width, BoundingBox.Height));
+        if (IsSelected)
+            dc.DrawRectangle(fillBrush, immutablePen,
+           new Rect(BoundingBox.X, BoundingBox.Y, BoundingBox.Width, BoundingBox.Height));
         // if (_isLinked && IsSelectable)
         //     dc.DrawRectangle(new SolidColorBrush(Avalonia.Media.Colors.Green.AdjustOpacity(0.2)), null,
         //            new Rect(new Point(X, Y), new Size(Width, Height)));

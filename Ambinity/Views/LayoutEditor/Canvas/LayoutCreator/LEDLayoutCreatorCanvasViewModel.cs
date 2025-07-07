@@ -37,8 +37,6 @@ namespace Ambinity.Views.LayoutEditor.Canvas
         {
 
             ToolsViewModel = toolsViewModel;
-            ToolsViewModel.InstallPolylineTool += InstallTool;
-            toolsViewModel.AddFigure += OnLEDAdded;
 
         }
 

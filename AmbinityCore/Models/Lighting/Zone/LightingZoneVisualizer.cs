@@ -98,7 +98,7 @@ public class LightingZoneVisualizer : ICanvasVisualizerItem
         _zoneBounds = MeasureZone();
     }
 
-    public void Render(DrawingContext dc, Canvas canvas)
+    public void Render(DrawingContext dc, Canvas canvas,bool isSelected = false)
     {
         if (_zone == null || _zoneBounds.Width == 0 || _zoneBounds.Height == 0 || _loading)
             return;

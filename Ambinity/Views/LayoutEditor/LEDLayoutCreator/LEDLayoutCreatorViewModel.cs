@@ -19,7 +19,7 @@ using Avalonia.Media;
 
 namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
 {
-    public partial class LEDLayoutCreatorViewModel : ObservableObject
+    public partial class LEDLayoutCreatorViewModel : ViewModelBase
     {
         private DialogService _dialogService;
         private IWindowService _windowService;
@@ -151,6 +151,12 @@ namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
             {
                 LEDPropertiesViewModel = null;
             }
+        }
+        public override void Dispose()
+        {
+            // Unsubscribe from events if necessary
+            CanvasViewModel?.Dispose();
+            CanvasViewModel = null;
         }
     }
 

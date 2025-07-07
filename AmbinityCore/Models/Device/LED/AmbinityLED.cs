@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Draw2D.Core;
 using SkiaSharp;
 using Rectangle = Draw2D.Core.Shapes.Basic.Rectangle;
-
+using AmbinityCore.Helpers;
 namespace AmbinityCore.Models.Device.LED;
 
 public class AmbinityLED : ObservableObject, IPositionAware
@@ -103,12 +103,12 @@ public class AmbinityLED : ObservableObject, IPositionAware
     /// <summary>
     /// offset X (parent's X)
     /// </summary>
-    public float OffsetX => Device.X;
+    public float OffsetX => Device != null ? Device.X : 0f;
 
     /// <summary>
     /// Offset Y ( parent's Y)
     /// </summary>
-    public float OffsetY => Device.Y;
+    public float OffsetY => Device != null ? Device.Y : 0f;
 
 
     /// <summary>
@@ -289,7 +289,7 @@ public class AmbinityLED : ObservableObject, IPositionAware
         }
     }
     #endregion
-    public string Icon => throw new NotImplementedException();
+    public string Icon => null;
 
     public Rect Bound => new Rect(X, Y, Width, Height);
 
@@ -297,7 +297,7 @@ public class AmbinityLED : ObservableObject, IPositionAware
 
     public ContainerFigure GetContainer()
     {
-         return new LEDContainerFigure(X, Y, Width, Height)
+        return new LEDContainerFigure(X, Y, Width, Height)
         {
             IsResizable = true,
             IsSelectable = true,
@@ -307,12 +307,34 @@ public class AmbinityLED : ObservableObject, IPositionAware
 
     public ContainerFigure Clone(float x, float y)
     {
-        throw new NotImplementedException();
+        var cloneLed = ObjectHelpers.Clone<AmbinityLED>(this);
+        var movX = x - X;
+        var movY = y - Y;
+        cloneLed.X = x;
+        cloneLed.Y = y;
+        // if (Shape == ZoneShapeEnum.Polyline)
+        // {
+        //     var newPoints = new List<Point>();
+        //     foreach (var point in cloneZone.Points)
+        //     {
+        //         var newPoint = new Point(point.X + movX, point.Y + movY);
+        //         newPoints.Add(newPoint);
+        //     }
+
+        //     cloneZone.Points = newPoints;
+        // }
+
+        var cloneContainerFigure = cloneLed.GetContainer();
+        cloneContainerFigure.SetChild(cloneLed);
+        return cloneContainerFigure;
     }
 
     public ContainerFigure Clone()
     {
-        throw new NotImplementedException();
+        var cloneLed = ObjectHelpers.Clone<AmbinityLED>(this);
+        var cloneContainerFigure = cloneLed.GetContainer();
+        cloneContainerFigure.SetChild(cloneLed);
+        return cloneContainerFigure;
     }
 
     public string GetDisplayName()

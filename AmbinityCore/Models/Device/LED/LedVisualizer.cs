@@ -36,16 +36,18 @@ public class LedVisualizer : ICanvasVisualizerItem
 
     public IPositionAware Item => Led;
 
-    public void RenderGeometry(DrawingContext drawingContext)
+    public void RenderGeometry(DrawingContext drawingContext, bool isSelected = false)
     {
         if (DisplayGeometry == null)
             return;
-
+        if (isSelected)
+            Led.LED.SetColor(255, 0, 0);
+        else
+            Led.LED.SetColor(0, 0, 0);
         _fillBrush.Color = new Color(100, Led.LED.Red, Led.LED.Green, Led.LED.Blue);
         _penBrush.Color = new Color(255, Led.LED.Red, Led.LED.Green, Led.LED.Blue);
-
-        // Render the LED geometry
         drawingContext.DrawGeometry(_fillBrush, _pen, DisplayGeometry);
+
     }
 
     public bool HitTest(Point position)
@@ -127,9 +129,9 @@ public class LedVisualizer : ICanvasVisualizerItem
         ItemUpdated?.Invoke();
     }
 
-    public void Render(DrawingContext dc, Canvas canvas)
+    public void Render(DrawingContext dc, Canvas canvas, bool isSelected = false)
     {
-        RenderGeometry(dc);
+        RenderGeometry(dc, isSelected);
     }
     private Rect MeasureLED()
     {

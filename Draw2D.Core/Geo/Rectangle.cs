@@ -137,7 +137,7 @@ namespace Draw2D.Core.Geo
             var iX2 = X + Width;
             var iY2 = Y + Height;
             //need to add 1 pixel correction because of the drag behavior
-            return (iX >= X  && iX <= iX2  && iY >= Y  && iY <= iY2 );
+            return (iX >= X && iX <= iX2 && iY >= Y && iY <= iY2);
         }
 
         public bool HitTest(float iX, float iY, double scale)
@@ -312,5 +312,6 @@ namespace Draw2D.Core.Geo
                    && Bottom <= other.Bottom
                    && Right >= other.Right;
         }
+
     }
 }

@@ -12,7 +12,7 @@ namespace Draw2D.Core.Utlils.QuadTree
     public class QuadTreeNode<T> where T : Figure
     {
         /// <summary>
-        /// Construct a quadtree node with the given bounds 
+        /// Construct a quadtree node with the given bounds
         /// </summary>
         public QuadTreeNode(Rectangle bounds)
         {
@@ -93,7 +93,7 @@ namespace Draw2D.Core.Utlils.QuadTree
             List<T> results = new List<T>();
 
             // this quad contains items that are not entirely contained by
-            // it's four sub-quads. Iterate through the items in this quad 
+            // it's four sub-quads. Iterate through the items in this quad
             // to see if they intersect.
             foreach (T item in this.Contents)
             {
@@ -115,10 +115,10 @@ namespace Draw2D.Core.Utlils.QuadTree
                     break;
                 }
 
-                // Case 2: Sub-quad completely contained by search area 
+                // Case 2: Sub-quad completely contained by search area
                 // if the query area completely contains a sub-quad,
-                // just add all the contents of that quad and it's children 
-                // to the result set. You need to continue the loop to test 
+                // just add all the contents of that quad and it's children
+                // to the result set. You need to continue the loop to test
                 // the other quads
                 if (queryArea.Contains(node.Bounds))
                 {
@@ -171,7 +171,7 @@ namespace Draw2D.Core.Utlils.QuadTree
 
             // if we make it to here, either
             // 1) none of the subnodes completely contained the item. or
-            // 2) we're at the smallest subnode size allowed 
+            // 2) we're at the smallest subnode size allowed
             // add the item to this node's contents.
             this.Contents.Add(item);
         }
@@ -190,7 +190,7 @@ namespace Draw2D.Core.Utlils.QuadTree
         /// </summary>
         private void CreateSubNodes()
         {
-            // the smallest subnode has an area 
+            // the smallest subnode has an area
             if ((m_bounds.Height * m_bounds.Width) <= 10)
                 return;
 

@@ -7,7 +7,7 @@ namespace Draw2D.Core.Shapes.Basic
 {
     public class Rectangle : VectorFigure
     {
-       // private VectorFigure _centerHandle;
+        // private VectorFigure _centerHandle;
         public Rectangle(float x, float y, float width, float height)
         {
             X = x;
@@ -36,9 +36,9 @@ namespace Draw2D.Core.Shapes.Basic
         {
         }
 
-        public override bool OnDragStart(Canvas canvas, float x, float y)
+        public override bool OnDragStart(Canvas canvas, float x, float y, Figure mouseDownElement = null)
         {
-            base.OnDragStart(canvas, x, y);
+            base.OnDragStart(canvas, x, y, mouseDownElement);
 
             // if (_centerHandle == null)
             // {
@@ -52,7 +52,7 @@ namespace Draw2D.Core.Shapes.Basic
             //     // canvas.AddFigure(_centerHandle);
             // }
 
-           // _centerHandle.BringToFront();
+            // _centerHandle.BringToFront();
 
 
             return true;
@@ -63,14 +63,14 @@ namespace Draw2D.Core.Shapes.Basic
         {
             base.OnDrag(canvas, dxSum, dySum, dx, dy, isShiftKey, isCtrlKey);
 
-          //  _centerHandle?.ForceSetPositionOfCenter(BoundingBox.Center);
+            //  _centerHandle?.ForceSetPositionOfCenter(BoundingBox.Center);
         }
 
         public override void OnDragEnd(Canvas canvas, bool isShiftKey, bool isCtrlKey)
         {
             base.OnDragEnd(canvas, isShiftKey, isCtrlKey);
-           // canvas.RemoveFigure(_centerHandle);
-           // _centerHandle = null;
+            // canvas.RemoveFigure(_centerHandle);
+            // _centerHandle = null;
         }
 
         public override string ToString()

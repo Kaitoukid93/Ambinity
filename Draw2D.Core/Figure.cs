@@ -47,8 +47,8 @@ namespace Draw2D.Core
             }
         }
         public bool IsSelectionActive { get; set; } = false;
-        public  event Action<float, float> PositionPropertyChanged;
-        public  event Action<float, float> SizePropertyChanged;
+        public event Action<float, float> PositionPropertyChanged;
+        public event Action<float, float> SizePropertyChanged;
         public event Action<bool> MouseOverChanged;
         public void PositionAndSizeChanged(float dx, float dy, float newWidth, float newHeight)
         {
@@ -94,7 +94,7 @@ namespace Draw2D.Core
 
         public virtual bool HitTest(float x, float y)
         {
-            return BoundingBox.Extented(2/Canvas.ZoomLevel).HitTest(x, y);
+            return BoundingBox.Extented(2 / Canvas.ZoomLevel).HitTest(x, y);
         }
 
         public Figure InstallEditPolicy(PolicyBase policyBase)
@@ -193,14 +193,6 @@ namespace Draw2D.Core
             foreach (var policy in _policies.OfType<SelectionFeedbackPolicy>())
             {
                 policy.OnSelect(Canvas, this);
-            }
-
-            if (showHandles && IsResizable)
-            {
-                foreach (var handle in _handles)
-                {
-                    handle.Show(Canvas);
-                }
             }
 
             foreach (var policy in _policies.OfType<ILink>())
@@ -338,7 +330,7 @@ namespace Draw2D.Core
             }
         }
 
-        private  void ApplyResize(float dTop, float dRight, float dBottom, float dLeft)
+        private void ApplyResize(float dTop, float dRight, float dBottom, float dLeft)
         {
             var box = new Rectangle(X, Y, Width, Height);
             box.AdjustDimensions(dTop, dRight, dBottom, dLeft);
@@ -405,9 +397,14 @@ namespace Draw2D.Core
         }
 
 
-        public virtual bool OnDragStart(Canvas canvas, float x, float y)
+        public virtual bool OnDragStart(Canvas canvas, float x, float y, Figure mouseDownElement = null)
         {
-            HittedResizeHandle = _handles.FirstOrDefault(h => h.HitTest(x, y));
+            // HittedResizeHandle = _handles.FirstOrDefault(h => h.HitTest(x, y));
+            HittedResizeHandle = null;
+            if (mouseDownElement != null && mouseDownElement is IHandle)
+            {
+                HittedResizeHandle = mouseDownElement as IHandle;
+            }
             if (HittedResizeHandle != null)
             {
                 HittedResizeHandle.OnDragStart(canvas, x, y);
@@ -573,9 +570,21 @@ namespace Draw2D.Core
             }
         }
 
+        public void UpdateHandles(Canvas canvas)
+        {
+            var visualWidth = Width * canvas.ZoomLevel;
+            var visualHeight = Height * canvas.ZoomLevel;
+            if (Math.Max(visualWidth, visualHeight) < 20)
+                HideHandles(canvas);
+            else
+                ShowHandles(canvas);
+        }
+
         public void ShowHandles(Canvas canvas)
         {
             if (!IsResizable)
+                return;
+            if (canvas.Selection.AllActive.Count > 1)
                 return;
             foreach (var handle in Handles)
             {

@@ -39,5 +39,5 @@ public interface ICanvasVisualizerItem
     /// </summary>
     /// <param name="dc"></param>
     /// <param name="canvas"></param>
-    void Render(DrawingContext dc, Canvas canvas);
+    void Render(DrawingContext dc, Canvas canvas, bool isSelected = false);
 }

@@ -204,6 +204,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                 }
 
                 canvas.Selection.All.ToList().ForEach(f => f.OnDragEnd(canvas, isShiftKey, isCtrlKey));
+                canvas.Selection.All.ToList().ForEach(f => f.UpdateHandles(canvas));
             }
 
             canvas.NeedsRepaint(null);

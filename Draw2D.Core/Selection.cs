@@ -71,6 +71,13 @@ namespace Draw2D.Core
 
             return _all.Contains(figure);
         }
+        public List<Figure> AllBut(Figure figure)
+        {
+            if (figure == null)
+                return _all.ToList();
+
+          return _all.Where(f => f != figure).ToList();
+        }
 
         public void Clear()
         {

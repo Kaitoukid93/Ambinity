@@ -49,7 +49,7 @@ internal class WindowService : IWindowService
         Window window = (Window)Activator.CreateInstance(type)!;
         window.DataContext = viewModel;
         window.Show();
-      
+
         return window;
     }
 

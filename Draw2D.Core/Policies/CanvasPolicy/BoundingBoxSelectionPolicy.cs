@@ -53,9 +53,8 @@ namespace Draw2D.Core.Policies.CanvasPolicy
                 canvas.Selection.All.Where(f => !_figuresInside.Contains(f))
                     .ToList()
                     .ForEach(f => Unselect(canvas, f));
-
-
                 Select(canvas, _figuresInside.Where(f => f.IsSelectable).ToList());
+                _figuresInside = null;
             }
 
             base.OnDragEnd(canvas, isShiftKey, isCtrlKey);
@@ -77,7 +76,7 @@ namespace Draw2D.Core.Policies.CanvasPolicy
             _y = startPosY;
 
             //Console.WriteLine($"Drag start: {_x}, {_y}");
-            _selectBox = new Selectionbox(_x, _y, 1, 1);
+            _selectBox = new Selectionbox(_x, _y, 0.1f, 0.1f);
             _selectBox.FillColor = canvas.StrokeColor.AdjustOpacity(0.1);
             _selectBox.StrokeColor = canvas.StrokeColor;
             _absoluteBoundingBox = _selectBox.BoundingBox.Clone();
