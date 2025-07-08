@@ -13,6 +13,7 @@ using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using SkiaSharp;
+using System.Collections.Generic;
 namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator;
 
 public class LayoutPropertiesViewModel : ViewModelBase
@@ -173,6 +174,13 @@ public class LayoutPropertiesViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
+    public string SelectedLEDShape { get; set; } = "Square";
+    public List<string> LEDShapes { get; set; } = new List<string>
+    {
+        "Square",
+        "Circle"
+    };
     public void Init(float width = 500, float height = 500)
     {
         Width = width;

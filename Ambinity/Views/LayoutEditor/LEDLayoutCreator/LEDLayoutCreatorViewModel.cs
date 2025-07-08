@@ -50,7 +50,7 @@ namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
 
 
         }
-        public void Init(int width, int height, int ledCount, string imagePath)
+        public void Init(int width, int height, int ledCount,string ledShape, string imagePath)
         {
             // Initialize the canvas with a specific size and properties
             var vm = _canvasViewModelFactory.Get<LEDLayoutCreatorCanvasViewModel>();
@@ -59,14 +59,14 @@ namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
             //add rectangle to canvas based on ledcount
             _ledCount = ledCount;
             CanvasViewModel = vm;
-            //PopulateLEDs();
+            PopulateLEDs(ledShape);
             LEDPropertiesViewModel = new LEDPropertiesViewModel();
 
         }
         /// <summary>
         /// populate led based on led count
         /// </summary>
-        private void PopulateLEDs()
+        private void PopulateLEDs(string ledShape)
         {
             const double canvasWidth = 500;
             const double canvasHeight = 500;
@@ -89,6 +89,11 @@ namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
                     double x = col * rectWidth;
                     double y = row * rectHeight;
                     var geometryString = "M0,0 H20 V20 H0 Z";
+                    if(ledShape == "Circle")
+                    {
+                        geometryString = "M10,0 A10,10 0 1,1 10,-20 A10,10 0 1,1 10,0 Z";
+                    }
+
                     var led = new AmbinityLED(new ArgbLed(), null, (float)x, (float)y, (float)rectWidth, (float)rectHeight, count, false, geometryString);
                     led.X = (float)x;
                     led.Y = (float)y;

@@ -20,6 +20,7 @@ using AmbinityCore.Models.Device;
 using System.Reflection.Metadata;
 using AmbinityCore;
 using Avalonia.Controls;
+using AmbinityCore.Models.Device.LED;
 
 namespace Ambinity.Views.LayoutEditor.Canvas
 {
@@ -190,6 +191,26 @@ namespace Ambinity.Views.LayoutEditor.Canvas
                 AddFigure(cloneFigure, true);
                 cloneFigure.Select();
             }
+        }
+
+        public void CreateLEDFromGeometry(String geometry, Rect boundingBox)
+        {
+            var led = new AmbinityLED(new ArgbLed(),
+             null,
+              (float)boundingBox.X,
+              (float)boundingBox.Y,
+               (float)boundingBox.Width,
+                (float)boundingBox.Height,
+                 0,
+                  false,
+                   geometry);
+            led.X = (float)boundingBox.X;
+            led.Y = (float)boundingBox.Y;
+            var containerFigure = led.GetContainer();
+            containerFigure.SetChild(led);
+            containerFigure.MinHeight = 5;
+            containerFigure.MinWidth = 5;
+            AddFigure(containerFigure, false);
         }
 
         public override void Dispose()

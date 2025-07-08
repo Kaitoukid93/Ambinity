@@ -15,7 +15,14 @@ public partial class DeviceLayoutCanvasView : UserControl
     public DeviceLayoutCanvasView()
     {
         InitializeComponent();
+        this.GotFocus += DeviceLayoutCanvasView_GotFocus;
+    }
 
+    private void DeviceLayoutCanvasView_GotFocus(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (_viewModel == null)
+            _viewModel = DataContext as DeviceLayoutCanvasViewModel;
+        _viewModel?.Init();
     }
 
 

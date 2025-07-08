@@ -17,7 +17,8 @@ using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 using Draw2D.Core.Shapes.Basic;
-
+using System.Collections.Generic;
+using static System.FormattableString;
 namespace Ambinity.Views.Draw2DCanvas;
 
 public class FigureContextMenuProvider
@@ -49,7 +50,7 @@ public class FigureContextMenuProvider
     }
     public MenuFlyout GetContextMenu(Figure clickedItem, Point clickPoint)
     {
-        if (clickedItem == null|| !clickedItem.IsSelectable)
+        if (clickedItem == null || !clickedItem.IsSelectable)
         {
             CreateCanvasContextMenu(clickPoint);
         }
@@ -184,14 +185,74 @@ public class FigureContextMenuProvider
     }
     private void CreateLED()
     {
-        var selectedFigure = CanvasVM.Canvas.Selection.AllActive;
-        foreach (var figure in selectedFigure)
+        var selectedFigures = CanvasVM.Canvas.Selection.All
+            .OfType<PolyLine>()
+            .ToList();
+
+        if (selectedFigures.Count == 0)
+            return;
+        var minX = selectedFigures.Min(f => f.X);
+        var minY = selectedFigures.Min(f => f.Y);
+        var maxX = selectedFigures.Max(f => f.X + f.Width);
+        var maxY = selectedFigures.Max(f => f.Y + f.Height);
+        var boundingBox = new Rect(minX, minY, maxX - minX, maxY - minY);
+        var geometries = new List<Geometry>();
+
+        foreach (var polyline in selectedFigures)
         {
-            if (figure is PolyLine polyline)
+            var points = polyline.Points.ToList();
+            if (points.Count < 2)
+                continue;
+
+            // Auto-close if not closed
+            if (points.First() != points.Last())
+                points.Add(points.First());
+
+            var geom = new StreamGeometry();
+            using (StreamGeometryContext ctx = geom.Open())
             {
-                //combine shape
+                var startVertex = CanvasVM.Canvas.CoordinateSystem.ToScreenSpace(polyline.StartPoint);
+                ctx.BeginFigure(new Avalonia.Point(startVertex[0], startVertex[1]), false);
+                int count = 0;
+                foreach (var point in polyline.Points)
+                {
+                    if (count == 0)
+                    {
+                        count++;
+                        continue;
+                    }
+
+                    var vertex = CanvasVM.Canvas.CoordinateSystem.ToScreenSpace(point);
+                    var v = new Avalonia.Point(vertex[0], vertex[1]);
+                    ctx.LineTo(v);
+                    count++;
+                }
+                // ctx.PolyLineTo(Points.Skip(1).Select(p =>
+                //     {
+                //         var vertex = Canvas.CoordinateSystem.ToScreenSpace(p);
+                //         return new Avalonia.Point(vertex[0], vertex[1]);
+                //     }).ToList(),
+                //     true /* is stroked */, true /* is smooth join */);
             }
+            geometries.Add(geom);
         }
+
+        if (geometries.Count == 0)
+            return;
+
+        // Combine all geometries into one
+        Geometry combined = geometries[0];
+        for (int i = 1; i < geometries.Count; i++)
+        {
+            combined = new CombinedGeometry(GeometryCombineMode.Union, combined, geometries[i]);
+        }
+        string geometryString = Invariant(combined.ToString()
+                                .Replace("F1", "")
+                                .Replace(";", ",")
+                                .Replace("L", " L")
+                                .Replace("C", " C"));
+
+        (CanvasVM as LEDLayoutCreatorCanvasViewModel).CreateLEDFromGeometry(geometryString, boundingBox);
     }
 
 

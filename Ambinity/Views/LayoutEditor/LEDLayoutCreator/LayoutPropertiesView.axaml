@@ -51,17 +51,24 @@
             <Separator Height="1" Margin="2,0" />
             <StackPanel Spacing="8">
                 <TextBlock FontWeight="SemiBold" Text="LEDs Counts" />
-                <ui:NumberBox
-                    Background="Transparent"
-                    BorderBrush="Transparent"
-                    BorderThickness="0"
-                    CornerRadius="4,4,4,4"
-                    Maximum="255"
-                    Minimum="1"
-                    SimpleNumberFormat="F2"
-                    SpinButtonPlacementMode="Hidden"
-                    Theme="{DynamicResource borderlessNumberBox}"
-                    Value="{Binding LEDCount}" />
+                <StackPanel Orientation="Horizontal" Spacing="20">
+                    <ui:NumberBox
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        CornerRadius="4,4,4,4"
+                        Maximum="255"
+                        Minimum="1"
+                        SimpleNumberFormat="F2"
+                        SpinButtonPlacementMode="Hidden"
+                        Theme="{DynamicResource borderlessNumberBox}"
+                        Value="{Binding LEDCount}" />
+                    <ui:FAComboBox
+                        HorizontalAlignment="Stretch"
+                        ItemsSource="{Binding LEDShapes}"
+                        SelectedItem="{Binding SelectedLEDShape}" />
+                </StackPanel>
+
 
                 <TextBlock Text="This is the actual LEDs count of your device, use [Order check] function to count it yourself" TextWrapping="Wrap" />
             </StackPanel>

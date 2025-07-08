@@ -68,7 +68,8 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
         var height = (int)vm.Height;
         var image = vm.ImagePath;
         var ledCount = vm.LEDCount;
-        _layoutCreatorViewModel?.Init(width, height, ledCount, image);
+        var ledShape = vm.SelectedLEDShape;
+        _layoutCreatorViewModel?.Init(width, height, ledCount,ledShape, image);
 
         var lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
 
