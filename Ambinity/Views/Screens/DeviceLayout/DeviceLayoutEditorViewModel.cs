@@ -74,5 +74,5 @@ public class DeviceLayoutEditorViewModel : ViewModelBase
         CanvasViewModel?.Dispose();
         RightPanelViewModel?.Dispose();
     }
-    
+
 }

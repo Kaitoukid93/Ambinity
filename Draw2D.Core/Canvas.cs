@@ -35,7 +35,7 @@ namespace Draw2D.Core
         private int _bulkEditCount;
         private float _width;
         private float _height;
-        private float _zoomLevel=1.0f;
+        private float _zoomLevel = 1.0f;
         private Color _strokeColor;
 
         private readonly List<PolicyBase> _policies = new List<PolicyBase>();
@@ -44,6 +44,7 @@ namespace Draw2D.Core
         private Rectangle _viewport = new Rectangle(0, 0, 1, 1);
         public FrameBuffer BackgroundImageBuffer { get; set; }
         public bool ShouldDrawBackgroundImage { get; set; }
+        public bool ShouldDrawEntityColors { get; set; } = true;
         public bool ShouldDrawBorder { get; set; } = true;
 
         public Color StrokeColor
@@ -489,7 +490,7 @@ namespace Draw2D.Core
                 SnapCluster.Add(figure.GetSnapPoints(), figure);
             }
 
-           // QuadTree.Insert(figure);
+            // QuadTree.Insert(figure);
 
             _figures.Add(figure);
 
@@ -580,11 +581,11 @@ namespace Draw2D.Core
 
         private void RebuildQuadTree()
         {
-            QuadTree = new QuadTree<Figure>(new Geo.Rectangle(0, 0, Width, Height));
-            foreach (var oldFigure in _figures.Where(f => f.IsVisible))
-            {
-                QuadTree.Insert(oldFigure);
-            }
+            // QuadTree = new QuadTree<Figure>(new Geo.Rectangle(0, 0, Width, Height));
+            // foreach (var oldFigure in _figures.Where(f => f.IsVisible))
+            // {
+            //     QuadTree.Insert(oldFigure);
+            // }
         }
 
         public void ActivateConnectionRouter()
@@ -640,6 +641,7 @@ namespace Draw2D.Core
             Selection.Clear();
 
             EndBulkEdit();
+            OnSelectionChanged();
         }
 
         public void Clear()

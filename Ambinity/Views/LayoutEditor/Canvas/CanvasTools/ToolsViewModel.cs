@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.ViewModels;
 using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
+using Ambinity.Views.LayoutEditor.LEDLayoutCreator.Tools;
 using Ambinity.Views.Screens.ProfileEditor.Library;
 using AmbinityCore.DataBase;
 using AmbinityCore.Models.Collection;
@@ -33,10 +34,13 @@ public class ToolsViewModel : ViewModelBase
     public event Action ToggleSnapToGridEvent;
     public event Action<Figure> AddFigure;
     public event Action<PolylineTool> InstallPolylineTool;
+    public event Action<LEDTool> InstallLEDTool;
     public event Action ResetLayout;
     public event Action ImageVisibilityChanged;
+    public event Action RenderViewModeChanged;
     public event Action OpenFlyoutEvent;
     public event Action CloseFlyoutEvent;
+    public event Action SaveLayoutEvent;
 
     public ToolsViewModel(GeneralSettingsManager settingsManager, LightingZoneRepository lightingZoneRepository,
         LightingProfileDecoder decoder, LightingZonesLibraryViewModel lightingZonesLibraryViewModel)
@@ -100,11 +104,13 @@ public class ToolsViewModel : ViewModelBase
         FitCanvasToViewCommand = new RelayCommand(FitCanvasToView);
         ToggleSnapToGridCommand = new RelayCommand(ToggleSnapToGrid);
         ToggleImageVisibilityCommand = new RelayCommand(ToggleImageVisibility);
+        ToggleRenderViewModeCommand = new RelayCommand(ToggleRenderViewMode);
         AddAnimationZoneCommand = new RelayCommand(AddAnimationZone, () => ZoneToolsCommandCanExecute);
         AddAmbilightZoneCommand = new RelayCommand(AddAmbilightZone, () => ZoneToolsCommandCanExecute);
         ShowLibraryCommand = new AsyncRelayCommand(ShowLibrary, () => ZoneToolsCommandCanExecute);
         AddColorZoneCommand = new RelayCommand(AddColorZone, () => ZoneToolsCommandCanExecute);
         AddLEDCommand = new RelayCommand(AddLED);
+        SaveLayoutCommand = new RelayCommand(SaveLayout);
         TogglePlayPauseCommand = new RelayCommand(TogglePlayPause);
         ShowDiagCommand = new RelayCommand(ToggleShowDiag);
         ResetDefaultLayoutCommand = new RelayCommand(ResetDefaultLayout, () => ZoneToolsCommandCanExecute);
@@ -140,6 +146,10 @@ public class ToolsViewModel : ViewModelBase
         CurrentFlyoutViewModel.ItemSelected += OnLightingZoneAssetSelected;
         CurrentFlyoutViewModel?.Init();
         OpenFlyoutEvent?.Invoke();
+    }
+    private void SaveLayout()
+    {
+        SaveLayoutEvent?.Invoke();
     }
 
     public void OnFlyoutClosing()
@@ -193,6 +203,9 @@ public class ToolsViewModel : ViewModelBase
         var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
         snapToGridTools.Command = ToggleSnapToGridCommand;
+         var toggleRenderViewMode = new ToggleToolbarItem("View Model", "Toggle render view model", "show_hide_image");
+         toggleRenderViewMode.Command = ToggleRenderViewModeCommand;
+        toggleRenderViewMode.IsChecked = true;
         var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",
             new SolidColorBrush(Colors.Gray), FitCanvasToViewCommand);
         var showDiagTool =
@@ -209,6 +222,7 @@ public class ToolsViewModel : ViewModelBase
         CanvasTools.Add(snapToGridTools);
         CanvasTools.Add(centerCanvasTool);
         CanvasTools.Add(showDiagTool);
+        CanvasTools.Add(toggleRenderViewMode);
         OnRenderingStatusChanged();
     }
 
@@ -220,6 +234,9 @@ public class ToolsViewModel : ViewModelBase
         ZoneTools.Clear();
         CanvasTools.Clear();
         ZoneTools.Add(AddLEDTool());
+        var saveLayoutTool = new ButtonToolbarItem("Save", "Save Layout to library", "Center_canvas",
+            new SolidColorBrush(Colors.Gray), SaveLayoutCommand);
+        ZoneTools.Add(saveLayoutTool);
         var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
         var showHideImage = new ToggleToolbarItem("ShowHideImage", "Toggle Image Visibility", "show_hide_image");
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
@@ -236,7 +253,7 @@ public class ToolsViewModel : ViewModelBase
     private FlyoutButtonToolbarItem AddLEDTool()
     {
         var addLEDTool = new FlyoutButtonToolbarItem("Add", "Add new LED",
-            "paint_bucket__bucket_color_colors_design_paint_painting", new SolidColorBrush(Color.Parse("#33bbff")),
+            "CanvasTool_Rectangle", new SolidColorBrush(Color.Parse("#33bbff")),
             AddLEDCommand);
         FlyoutItem addRectangle = new FlyoutItem("Rectangle", "CanvasTool_Rectangle");
         addRectangle.FlyoutItemSelected += AddRectangleLED;
@@ -253,28 +270,13 @@ public class ToolsViewModel : ViewModelBase
     }
     private void AddRectangleLED(FlyoutItem obj)
     {
-
         var geometryString = "M0,0 H20 V20 H0 Z";
-        var led = new AmbinityLED(new ArgbLed(), null, 100, 100, 20, 20, 0, false, geometryString);
-        var ledContainerFigure = new LEDContainerFigure(100, 100, 20, 20);
-        led.X = 100;
-        led.Y = 100;
-        ledContainerFigure.SetChild(led);
-        ledContainerFigure.MinWidth = 5;
-        ledContainerFigure.MinHeight = 5;
-        AddFigure?.Invoke(ledContainerFigure);
+        InstallLEDTool?.Invoke(new LEDTool(geometryString));
     }
     private void AddEllipseLED(FlyoutItem obj)
     {
         var geometryString = "M40,20 A20,20 0 1 0 0,20 A20,20 0 1 0 40,20";
-        var led = new AmbinityLED(new ArgbLed(), null, 100, 100, 20, 20, 0, false, geometryString);
-        led.X = 100;
-        led.Y = 100;
-        var ledContainerFigure = new LEDContainerFigure(100, 100, 20, 20);
-        ledContainerFigure.SetChild(led);
-        ledContainerFigure.MinWidth = 5;
-        ledContainerFigure.MinHeight = 5;
-        AddFigure?.Invoke(ledContainerFigure);
+        InstallLEDTool?.Invoke(new LEDTool(geometryString));
     }
     private void AddPolylineLED(FlyoutItem obj)
     {
@@ -324,6 +326,10 @@ public class ToolsViewModel : ViewModelBase
     private void ToggleImageVisibility()
     {
         ImageVisibilityChanged?.Invoke();
+    }
+    private void ToggleRenderViewMode()
+    {
+        RenderViewModeChanged?.Invoke();
     }
     private void AddPolyline(FlyoutItem obj)
     {
@@ -428,10 +434,12 @@ public class ToolsViewModel : ViewModelBase
     }
 
     public ICommand AddLEDCommand { get; set; }
+    public ICommand SaveLayoutCommand { get; set; }
 
     public RelayCommand FitCanvasToViewCommand { get; set; }
     public RelayCommand ToggleSnapToGridCommand { get; set; }
     public RelayCommand ToggleImageVisibilityCommand { get; set; }
+    public RelayCommand ToggleRenderViewModeCommand { get; set; }
     public RelayCommand AddAmbilightZoneCommand { get; set; }
     public RelayCommand AddAnimationZoneCommand { get; set; }
     public RelayCommand AddColorZoneCommand { get; set; }

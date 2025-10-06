@@ -1,5 +1,8 @@
+using System.Collections.ObjectModel;
 using adrilight_shared.Enums;
 using adrilight_shared.Models.Device.SlaveDevice;
+using adrilight_shared.Models.Device.Zone;
+using adrilight_shared.Models.Device.Zone.Spot;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device.Device;
@@ -21,6 +24,8 @@ namespace AmbinityCore.Models.Device;
 /// </summary>
 public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
 {
+
+
     /// <summary>
     /// construct new layout from file path
     /// </summary>
@@ -40,10 +45,43 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
     [JsonIgnore] public List<AmbinityLEDLayout> Leds { get; }
     [JsonIgnore] public Uri? Image { get; private set; }
     [JsonIgnore] public string Thumbnail { get; private set; }
+
+    //Physical width and height, this is useful when initializing layout creator or display on canvas
+    //relatively to other device layouts
     [JsonIgnore] public float ImageWidth { get; private set; }
     [JsonIgnore] public float ImageHeight { get; private set; }
     [JsonIgnore] public CollectableItemRepository LocalRepository { get; set; }
 
+    // /// <summary>
+    // /// Save this layout to config file to use with legacy software such as Adrilight...
+    // /// </summary>
+    // private void SaveConfig()
+    // {
+    //     //craft a new legacy object ARGBLEDSlaveDevice
+    //     if (Leds == null)
+    //     {
+    //         Log.Error("Can not export this Layout because there is no LED found");
+    //     }
+    //     var dev = new ARGBLEDSlaveDevice();
+    //     var zone = new ObservableCollection<LEDSetup>();
+    //     var ledSetup = new LEDSetup();
+    //     foreach (var led in Leds)
+    //     {
+    //         var spot = new DeviceSpot();
+    //         spot.Index = led.Index;
+    //         spot.Top = led.X;
+    //         spot.Left = led.Y;
+    //         spot.Width = led.Width;
+    //         spot.Height = led.Height;
+    //         spot.Geometry = led.Geometry;
+    //         ledSetup.Spots.Add(spot);
+    //     }
+    //     zone.Add(ledSetup);
+    //     dev.ControlableZones = zone;
+    //     dev.Name = this.Name;
+    //     dev.Description = this.Description;
+    //     JsonHelpers.WriteSimpleJson(this, Path.Combine(LocalPath, "config.json"));
+    // }
     private void LoadLayout()
     {
         if (Directory.Exists(FilePath))
@@ -63,7 +101,6 @@ public class AmbinityDeviceLayout : ObservableObject, ICollectableItem
                         var led = new AmbinityLEDLayout((float)spot.Left + (float)zone.Left,
                             (float)spot.Top + (float)zone.Top, (float)spot.Width,
                             (float)spot.Height, spot.Geometry, spot.Index);
-
                         Leds.Add(led);
                     }
                 }

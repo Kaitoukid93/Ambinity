@@ -5,9 +5,118 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor.LEDLayoutCreator"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:DataType="local:LEDPropertiesViewModel"
     mc:Ignorable="d">
-    LED Properties!!!
+    <Grid Width="300">
+        <Border Margin="0,0,20,20" Classes="card">
+            <ScrollViewer>
+                <Grid>
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        IsVisible="{Binding !IsValid}"
+                        Text="Please select a LED" />
+                    <StackPanel IsVisible="{Binding IsValid}" Spacing="20">
+                        <TextBlock
+                            Margin="0,0,0,10"
+                            FontWeight="SemiBold"
+                            Text="LED Properties" />
+                        <Separator Height="1" Margin="2,0" />
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock FontWeight="SemiBold" Text="X:" />
+                            <TextBlock Text="{Binding X}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock FontWeight="SemiBold" Text="Y:" />
+                            <TextBlock Text="{Binding Y}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock FontWeight="SemiBold" Text="Width:" />
+                            <TextBlock Text="{Binding Width}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock FontWeight="SemiBold" Text="Height:" />
+                            <TextBlock Text="{Binding Height}" />
+                        </StackPanel>
+                        <Separator Height="1" Margin="2,0" />
+
+                        <Viewbox MaxWidth="300" MaxHeight="150">
+                            <ItemsControl ItemsSource="{Binding LEDs}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas Width="{Binding GeometryWidth}" Height="{Binding GeometryHeight}" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.Styles>
+                                    <Style x:DataType="local:LEDContainerFigureViewModel" Selector="ContentPresenter">
+                                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                    </Style>
+                                </ItemsControl.Styles>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+
+                                            <PathIcon
+                                                Width="{Binding Width}"
+                                                Height="{Binding Height}"
+                                                Data="{Binding Geometry}"
+                                                Foreground="Red" />
+                                            <!-- <TextBlock
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding Index}" /> -->
+                                        </Grid>
+
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Viewbox>
+                        <Separator Height="1" Margin="2,0" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Index" />
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontWeight="SemiBold"
+                                Text="Start:" />
+                            <ui:NumberBox
+                                Width="70"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="0"
+                                CornerRadius="4,4,4,4"
+                                Maximum="10000"
+                                Minimum="0"
+                                Value="{Binding StartIndex}"
+                                Theme="{DynamicResource borderlessNumberBox}" />
+                        </StackPanel>
+                        <Grid ColumnDefinitions="*,5,auto">
+                            <CheckBox
+                                Grid.Column="0"
+                                HorizontalAlignment="Left"
+                                Content="Reverse"
+                                IsChecked="{Binding IsReverseSelected}"
+                                IsVisible="{Binding IsMultipleLEDSelected}" />
+                            <Button
+                                Grid.Column="2"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Right"
+                                Command="{Binding SetIndexCommand}"
+                                Content="Set Index" />
+                        </Grid>
+
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+    </Grid>
 </UserControl>

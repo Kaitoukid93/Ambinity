@@ -1,3 +1,4 @@
+using System.Globalization;
 using AmbinityCore.Models.Device.LED;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Visualizer;
@@ -22,6 +23,7 @@ public class LedVisualizer : ICanvasVisualizerItem
     public LedVisualizer(IPositionAware led)
     {
         Led = led as AmbinityLED;
+        Led.LEDUpdated += OnLedUpdated;
         _ledBounds = MeasureLED();
         _fillBrush = new SolidColorBrush();
         _penBrush = new SolidColorBrush();
@@ -30,23 +32,45 @@ public class LedVisualizer : ICanvasVisualizerItem
         CreateLedGeometry();
     }
 
+    private void OnLedUpdated()
+    {
+        _ledBounds = MeasureLED();
+        CreateLedGeometry();
+        ItemUpdated?.Invoke();
+    }
+
     public AmbinityLED Led { get; }
     public Geometry? DisplayGeometry { get; private set; }
 
 
     public IPositionAware Item => Led;
 
-    public void RenderGeometry(DrawingContext drawingContext, bool isSelected = false)
+    public void RenderGeometry(DrawingContext drawingContext, bool isSelected = false, bool renderLEDColor = true)
     {
         if (DisplayGeometry == null)
             return;
-        if (isSelected)
-            Led.LED.SetColor(255, 0, 0);
+        if (Led.Device == null)
+        {
+            if (isSelected)
+                Led.LED.SetColor(255, 0, 0);
+            else
+                Led.LED.SetColor(0, 0, 0);
+        }
+        if (renderLEDColor)
+        {
+            _fillBrush.Color = new Color(100, Led.LED.Red, Led.LED.Green, Led.LED.Blue);
+
+            _penBrush.Color = new Color(255, Led.LED.Red, Led.LED.Green, Led.LED.Blue);
+        }
         else
-            Led.LED.SetColor(0, 0, 0);
-        _fillBrush.Color = new Color(100, Led.LED.Red, Led.LED.Green, Led.LED.Blue);
-        _penBrush.Color = new Color(255, Led.LED.Red, Led.LED.Green, Led.LED.Blue);
+        {
+            _fillBrush.Color = new Color(100, 0, 0, 0);
+            _penBrush.Color = new Color(255, 0, 0, 0);
+        }
+
+
         drawingContext.DrawGeometry(_fillBrush, _pen, DisplayGeometry);
+
 
     }
 

@@ -37,6 +37,7 @@ public class AmbinityLED : ObservableObject, IPositionAware
         Index = index;
         Name = "LED " + (index ?? 0);
     }
+ public event Action LEDUpdated;
 
     public ArgbLed LED { get; }
     public int? Index { get; set; }
@@ -224,7 +225,7 @@ public class AmbinityLED : ObservableObject, IPositionAware
         {
             _x = value;
             OnPropertyChanged();
-            //DeviceUpdate?.Invoke();
+            LEDUpdated?.Invoke();
         }
     }
 
@@ -235,7 +236,7 @@ public class AmbinityLED : ObservableObject, IPositionAware
         {
             _y = value;
             OnPropertyChanged();
-            //DeviceUpdate?.Invoke();
+            LEDUpdated?.Invoke();
         }
     }
 
@@ -359,22 +360,26 @@ public class AmbinityLED : ObservableObject, IPositionAware
 
     public void SetX(float x)
     {
-        throw new NotImplementedException();
+       if (X != x)
+            X = x;
     }
 
     public void SetY(float y)
     {
-        throw new NotImplementedException();
+        if (Y != y)
+            Y = y;
     }
 
-    public void SetWidth(float width)
+     public void SetWidth(float width)
     {
-        throw new NotImplementedException();
+        if (Width != width)
+            Width = width;
     }
 
     public void SetHeight(float height)
     {
-        throw new NotImplementedException();
+        if (Height != height)
+            Height = height;
     }
 
 

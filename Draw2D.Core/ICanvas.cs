@@ -68,6 +68,7 @@ namespace Draw2D.Core
         FrameBuffer BackgroundImageBuffer { get; set; }
 
         bool ShouldDrawBackgroundImage { get; set; }
+        bool ShouldDrawEntityColors { get; set; }
         bool ShouldDrawBorder { get; set; }
     }
 

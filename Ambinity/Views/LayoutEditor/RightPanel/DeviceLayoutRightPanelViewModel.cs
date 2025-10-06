@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Services;
@@ -10,12 +11,14 @@ using Ambinity.Views.LayoutEditor.Canvas;
 using Ambinity.Views.LayoutEditor.LEDLayoutCreator;
 using Ambinity.Views.Screens.DeviceLayout;
 using AmbinityCore.Models.Device;
+using AmbinityCore.Models.Device.LED;
 using AmbinityCore.Models.Profile;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
+using Serilog;
 
 namespace Ambinity.Views.LayoutEditor;
 
@@ -69,8 +72,14 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
         var image = vm.ImagePath;
         var ledCount = vm.LEDCount;
         var ledShape = vm.SelectedLEDShape;
-        _layoutCreatorViewModel?.Init(width, height, ledCount,ledShape, image);
-
+        var name = vm.LayoutName;
+        var leds = GetLEDs(ledShape, ledCount, vm.SelectedExistingLayout);
+        bool result = _layoutCreatorViewModel.Init(width, height,leds, image);
+        if (!result)
+        {
+            Log.Error("Error creating or parsing layout project");
+            return;
+        }
         var lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
 
         _layoutCreatorWindow = await _windowService.ShowDialogWindow(_layoutCreatorViewModel, _windowService.GetCurrentWindow());
@@ -79,6 +88,47 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
             _layoutCreatorViewModel?.Dispose();
         };
 
+    }
+
+    private List<AmbinityLEDLayout> GetLEDs(string ledShape, int ledCount = 20, AmbinityDeviceLayout? existingLayout = null)
+    {
+        if (existingLayout != null)
+        {
+            return existingLayout.Leds.ToList();
+        }
+        var newLEDs = new List<AmbinityLEDLayout>();
+        const double canvasWidth = 500;
+        const double canvasHeight = 500;
+        const double maxWidth = 20;
+        const double maxHeight = 20;
+
+        // Calculate how many columns and rows can fit
+        int columns = (int)(canvasWidth / maxWidth);
+        int rows = (int)(canvasHeight / maxHeight);
+
+        // Calculate actual rectangle size to fit all LEDs if possible
+        double rectWidth = Math.Min(canvasWidth / columns, maxWidth);
+        double rectHeight = Math.Min(canvasHeight / rows, maxHeight);
+        int count = 0;
+
+        for (int row = 0; row < rows && count < ledCount; row++)
+        {
+            for (int col = 0; col < columns && count < ledCount; col++)
+            {
+                double x = col * rectWidth;
+                double y = row * rectHeight;
+                var geometryString = "M0,0 H20 V20 H0 Z";
+                if (ledShape == "Circle")
+                {
+                    geometryString = "M10,0 A10,10 0 1,1 10,-20 A10,10 0 1,1 10,0 Z";
+                }
+
+                var ledLayout = new AmbinityLEDLayout((float)x, (float)y, (float)rectWidth, (float)rectHeight, geometryString, count);
+                newLEDs.Add(ledLayout);
+                count++;
+            }
+        }
+        return newLEDs;
     }
 
     private async Task OpenLibrary()

@@ -12,7 +12,8 @@
     x:DataType="local:LEDLayoutCreatorCanvasViewModel"
     mc:Ignorable="d">
     <Border Margin="20,0,20,20" Classes="card">
-        <Grid>
+        <Grid  KeyDown="OnGridKeyDown">
+           
             <local:Draw2DCanvasView />
         </Grid>
 

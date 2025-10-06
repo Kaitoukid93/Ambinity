@@ -13,7 +13,7 @@ namespace Draw2D.Core.Layout.Connection
 {
     public abstract class ToolBase : IMouseAware
     {
-        internal Action<ToolBase> OnDone;
+        public  Action<ToolBase> OnDone;
 
         public virtual void OnClick(Figure figure, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
         {

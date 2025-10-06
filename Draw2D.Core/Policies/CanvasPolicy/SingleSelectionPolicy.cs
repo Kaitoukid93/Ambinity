@@ -330,8 +330,8 @@ namespace Draw2D.Core.Policies.CanvasPolicy
 
             if (!figure.IsSelectable)
                 return;
-            figure.Unselect();
-            canvas.Selection.Remove(figure, notify);
+            figure.Unselect(notify);
+            //canvas.Selection.Remove(figure, notify);
 
         }
 

@@ -98,7 +98,7 @@ public class DeviceVisualizer : ICanvasVisualizerItem
                 foreach (LedVisualizer led in _ledVisualizers)
                 {
                     // newGroup.Children.Add(led.DisplayGeometry);
-                    led.RenderGeometry(dc);
+                    led.RenderGeometry(dc,false,canvas.ShouldDrawEntityColors);
                 }
 
 

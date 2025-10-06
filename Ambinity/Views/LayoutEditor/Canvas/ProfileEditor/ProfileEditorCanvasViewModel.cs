@@ -85,6 +85,8 @@ namespace Ambinity.Views.LayoutEditor.Canvas
         private void OnFigureRemoved(Figure figure)
         {
             var zoneFigure = figure as LightingZoneFigure;
+            if(zoneFigure == null)
+                return;
             _profile.RemoveLightingZone(zoneFigure.ChildItem as LightingZone);
         }
 
@@ -112,6 +114,7 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             ToolsViewModel.ToggleSnapToGridEvent += ToggleSnapToGrid;
             ToolsViewModel.InstallPolylineTool += InstallTool;
             ToolsViewModel.AddFigure += OnFigureAddedFromTool;
+            ToolsViewModel.RenderViewModeChanged += ToggleRenderViewMode;
 
             //Create Canvas
             var canvasSize = new Size(_buffer.FrameWidth, _buffer.FrameHeight);
@@ -121,6 +124,7 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             FigureAdded += OnFigureAdded;
             FigureRemoved += OnFigureRemoved;
             Canvas.ShouldDrawBackgroundImage = false;
+            Canvas.ShouldDrawEntityColors = true;
 
             //resolve list figures
             int zOrder = 0;
@@ -139,6 +143,12 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             //Register InforBar
             InfoBarViewModel.Init();
             ToolsViewModel.InitForProfileEditor(_profile);
+        }
+
+        private void ToggleRenderViewMode()
+        {
+            Canvas.ShouldDrawBackgroundImage = !Canvas.ShouldDrawBackgroundImage;
+            Canvas.ShouldDrawEntityColors = !Canvas.ShouldDrawEntityColors;
         }
 
         private List<LightingZone>? ResolveProfile()
@@ -276,6 +286,7 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             FigureRemoved -= OnFigureRemoved;
             ToolsViewModel.InstallPolylineTool -= InstallTool;
             ToolsViewModel.AddFigure -= OnFigureAddedFromTool;
+            ToolsViewModel.RenderViewModeChanged -= ToggleRenderViewMode;
             ToolsViewModel?.Dispose();
         }
 

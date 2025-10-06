@@ -95,6 +95,8 @@ public class AmbinityStoreItemExportViewModel : ViewModelBase
             File.Delete(result);
         ZipFile.CreateFromDirectory(_item.LocalPath, result);
         Log.Information("Item exported to " + result);
+
+        ///AmbinityDeviceLayout export custom Index
     }
 
     public void Init(ICollectableItem item)

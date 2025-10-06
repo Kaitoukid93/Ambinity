@@ -152,7 +152,7 @@ namespace Draw2D.Core.Policies.RouterPolicy
 
         public override void OnMouseLeftDoubleClick(Canvas canvas, float mouseX, float mouseY, bool isShiftKey, bool isCtrlKey)
         {
-            ExecuteOnDone(canvas);
+            ExecuteOnDone(canvas);  
         }
         private void InstallHandles()
         {

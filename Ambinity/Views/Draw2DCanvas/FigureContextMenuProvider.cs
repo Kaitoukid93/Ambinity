@@ -19,6 +19,11 @@ using Draw2D.Core;
 using Draw2D.Core.Shapes.Basic;
 using System.Collections.Generic;
 using static System.FormattableString;
+using SkiaSharp;
+using Ambinity.Services;
+using Avalonia.Controls.ApplicationLifetimes;
+using Ambinity.Views.LayoutEditor.LEDLayoutCreator;
+using AmbinityCore.Utils;
 namespace Ambinity.Views.Draw2DCanvas;
 
 public class FigureContextMenuProvider
@@ -26,9 +31,11 @@ public class FigureContextMenuProvider
     public CanvasViewModelBase CanvasVM;
     private MenuFlyout _contextMenu;
     private MenuItem _pasteMenuItem;
+    private IWindowService _windowService;
 
-    public FigureContextMenuProvider(CanvasViewModelFactory canvasViewModelFactory)
+    public FigureContextMenuProvider(CanvasViewModelFactory canvasViewModelFactory, IWindowService windowService)
     {
+        _windowService = windowService;
         // HotKeyManager.SetHotKey(_pasteMenuItem, new KeyGesture(Key.V, KeyModifiers.Control));
     }
 
@@ -171,91 +178,170 @@ public class FigureContextMenuProvider
                 //   InputGesture = new KeyGesture(Key.Delete)
             });
 
+            if (CanvasVM.SelectionCount > 1)
+            {
+                _contextMenu.Items.Add(new MenuItem()
+                {
+                    Header = "Combine LEDs",
+                    Command = new RelayCommand(CombineLED),
+                    CommandParameter = null
+                });
+                _contextMenu.Items.Add(new MenuItem()
+                {
+                    Header = "Arrange Horizontal",
+                    Command = new RelayCommand(ArrangeHorizontal),
+                    CommandParameter = null
+                });
+                _contextMenu.Items.Add(new MenuItem()
+                {
+                    Header = "Arrange Vertical",
+                    Command = new RelayCommand(ArrangeVertical),
+                    CommandParameter = null
+                });
+            }
+            if (CanvasVM.SelectionCount == 1 && figure is LEDContainerFigure)
+            {
+                _contextMenu.Items.Add(new MenuItem()
+                {
+                    Header = "Split Into Matrix",
+                    Command = new RelayCommand(OpenSplitConfiguration),
+                    CommandParameter = null
+                });
+            }
+
         }
 
-        // if (_canvasVM.Canvas.Selection.AllActive.Count > 1 && containerFigure.ChildItem.GroupID == Guid.Empty)
-        // {
-        //     _contextMenu.Items.Add(new MenuItem() { Header = "Link", Command = new AsyncRelayCommand(LinkItem), CommandParameter = containerFigure.ChildItem });
-        // }
-        // if (containerFigure.ChildItem.GroupID != Guid.Empty)
-        // {
-        //     _contextMenu.Items.Add(new MenuItem() { Header = "Unlink", Command = new AsyncRelayCommand<Guid>(UnlinkItem), CommandParameter = containerFigure.ChildItem.GroupID });
-        // }
+    }
+    private void CombineLED()
+    {
+        var selectedFigures = CanvasVM.Canvas.Selection.All
+            .OfType<LEDContainerFigure>()
+            .ToList();
 
+        var combinedLED = GeometryUltilities.CombineLED(selectedFigures);
+        if (combinedLED != null)
+        {
+            CanvasVM.Canvas.RemoveSelected();
+            CanvasVM.AddFigure(combinedLED, false);
+            combinedLED.Select();
+        }
+
+    }
+    /// <summary>
+    /// Arrange LED horizontally
+    /// </summary>
+    private void ArrangeHorizontal()
+    {
+        //bring LEDs to same Top
+        //make LEDs distance equal
+        var selectedFigures = CanvasVM.Canvas.Selection.AllActive
+            .OfType<LEDContainerFigure>()
+            .ToList();
+
+        if (selectedFigures.Count < 2)
+            return;
+
+        var minY = selectedFigures.Min(f => f.Y);
+        // Sort by X
+        selectedFigures.Sort((a, b) => a.X.CompareTo(b.X));
+
+        float minX = selectedFigures.Min(f => f.X);
+        float maxX = selectedFigures.Max(f => f.X + f.Width);
+
+        float totalWidth = selectedFigures.Sum(f => f.Width);
+        int count = selectedFigures.Count;
+        float availableSpace = (maxX - minX) - totalWidth;
+        float gap = count > 1 ? availableSpace / (count - 1) : 0;
+
+        float currentX = minX;
+        foreach (var figure in selectedFigures)
+        {
+            figure.ForceTranslate(currentX - figure.X, minY - figure.Y);
+            currentX += figure.Width + gap;
+        }
+    }
+
+    /// <summary>
+    /// Arrange LED vertically with equal spacing
+    /// </summary>
+    private void ArrangeVertical()
+    {
+        var selectedFigures = CanvasVM.Canvas.Selection.AllActive
+            .OfType<LEDContainerFigure>()
+            .ToList();
+
+        if (selectedFigures.Count < 2)
+            return;
+
+        var minX = selectedFigures.Min(f => f.X);
+        // Sort by Y
+        selectedFigures.Sort((a, b) => a.Y.CompareTo(b.Y));
+
+        float minY = selectedFigures.Min(f => f.Y);
+        float maxY = selectedFigures.Max(f => f.Y + f.Height);
+
+        float totalHeight = selectedFigures.Sum(f => f.Height);
+        int count = selectedFigures.Count;
+        float availableSpace = (maxY - minY) - totalHeight;
+        float gap = count > 1 ? availableSpace / (count - 1) : 0;
+
+        float currentY = minY;
+        foreach (var figure in selectedFigures)
+        {
+            figure.ForceTranslate(minX - figure.X, currentY - figure.Y);
+            currentY += figure.Height + gap;
+        }
     }
     private void CreateLED()
     {
         var selectedFigures = CanvasVM.Canvas.Selection.All
             .OfType<PolyLine>()
             .ToList();
-
-        if (selectedFigures.Count == 0)
-            return;
-        var minX = selectedFigures.Min(f => f.X);
-        var minY = selectedFigures.Min(f => f.Y);
-        var maxX = selectedFigures.Max(f => f.X + f.Width);
-        var maxY = selectedFigures.Max(f => f.Y + f.Height);
-        var boundingBox = new Rect(minX, minY, maxX - minX, maxY - minY);
-        var geometries = new List<Geometry>();
-
-        foreach (var polyline in selectedFigures)
+        var led = GeometryUltilities.CreateLEDFromSelectedPolyLines(selectedFigures);
+        if (led != null)
         {
-            var points = polyline.Points.ToList();
-            if (points.Count < 2)
-                continue;
-
-            // Auto-close if not closed
-            if (points.First() != points.Last())
-                points.Add(points.First());
-
-            var geom = new StreamGeometry();
-            using (StreamGeometryContext ctx = geom.Open())
-            {
-                var startVertex = CanvasVM.Canvas.CoordinateSystem.ToScreenSpace(polyline.StartPoint);
-                ctx.BeginFigure(new Avalonia.Point(startVertex[0], startVertex[1]), false);
-                int count = 0;
-                foreach (var point in polyline.Points)
-                {
-                    if (count == 0)
-                    {
-                        count++;
-                        continue;
-                    }
-
-                    var vertex = CanvasVM.Canvas.CoordinateSystem.ToScreenSpace(point);
-                    var v = new Avalonia.Point(vertex[0], vertex[1]);
-                    ctx.LineTo(v);
-                    count++;
-                }
-                // ctx.PolyLineTo(Points.Skip(1).Select(p =>
-                //     {
-                //         var vertex = Canvas.CoordinateSystem.ToScreenSpace(p);
-                //         return new Avalonia.Point(vertex[0], vertex[1]);
-                //     }).ToList(),
-                //     true /* is stroked */, true /* is smooth join */);
-            }
-            geometries.Add(geom);
+            CanvasVM.Canvas.RemoveSelected();
+            CanvasVM.AddFigure(led, false);
         }
-
-        if (geometries.Count == 0)
-            return;
-
-        // Combine all geometries into one
-        Geometry combined = geometries[0];
-        for (int i = 1; i < geometries.Count; i++)
-        {
-            combined = new CombinedGeometry(GeometryCombineMode.Union, combined, geometries[i]);
-        }
-        string geometryString = Invariant(combined.ToString()
-                                .Replace("F1", "")
-                                .Replace(";", ",")
-                                .Replace("L", " L")
-                                .Replace("C", " C"));
-
-        (CanvasVM as LEDLayoutCreatorCanvasViewModel).CreateLEDFromGeometry(geometryString, boundingBox);
     }
 
 
+    private async void OpenSplitConfiguration()
+    {
+        var lifeTime = (IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
+        var selectedFigure = CanvasVM.Canvas.Selection.Primary as LEDContainerFigure;
+        if (selectedFigure == null)
+            return;
+        if (selectedFigure.ChildItem is AmbinityLED led && !string.IsNullOrEmpty(led.Geometry))
+        {
+            var vm = new LEDSplitToolConfigurationViewModel(selectedFigure);
+            vm.Accept+= () =>
+            {
+               SplitFigureToMatrix(vm.RowNumber, vm.ColumnNumber, vm.ColumnGutter, vm.RowGutter);
+                vm?.Dispose();
+            };
+            var splitConfigurationWindow = await _windowService.ShowDialogWindow(vm, _windowService.GetCurrentWindow());
+
+        }
+
+    }
+
+    /// <summary>
+    /// Split the geometry of a single selected figure into an n x m matrix of new LEDs using CreateLEDFromGeometry, with gaps between columns and rows.
+    /// </summary>
+    private void SplitFigureToMatrix(int nRows, int nCols, float colGap = 2, float rowGap = 2)
+    {
+        var selectedFigure = CanvasVM.Canvas.Selection.All
+            .OfType<LEDContainerFigure>()
+            .FirstOrDefault();
+
+        var leds = GeometryUltilities.SplitLEDInToMatrix(selectedFigure, nRows, nCols, colGap, rowGap);
+        CanvasVM.Canvas.RemoveSelected();
+        foreach (var led in leds)
+        {
+            CanvasVM.AddFigure(led, false);
+        }
+    }
     private async Task LockUnlockMultipleItems(bool lockItems)
     {
         var selectedFigures = CanvasVM.Canvas.Selection.AllActive

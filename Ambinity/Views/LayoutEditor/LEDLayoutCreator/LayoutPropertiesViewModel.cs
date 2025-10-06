@@ -14,6 +14,8 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using SkiaSharp;
 using System.Collections.Generic;
+using AmbinityCore.Models.Device;
+using Serilog;
 namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator;
 
 public class LayoutPropertiesViewModel : ViewModelBase
@@ -26,7 +28,9 @@ public class LayoutPropertiesViewModel : ViewModelBase
         _layoutImageEditorViewModel.OnUserAccept += ImageEditAccepted;
         SelectDeviceImageCommand = new AsyncRelayCommand(SelectDeviceImage);
         EditImageCommand = new AsyncRelayCommand(EditSelectedImage);
+        SelectExistingProjectCommand = new AsyncRelayCommand(SelectExistingProject);
     }
+
 
     private IWindowService _windowService;
     private ThumbnailService _thumbnailService;
@@ -35,7 +39,7 @@ public class LayoutPropertiesViewModel : ViewModelBase
     public Window HostWindow { get; set; }
     public ICommand SelectDeviceImageCommand { get; set; }
     public ICommand EditImageCommand { get; set; }
-
+    public ICommand SelectExistingProjectCommand { get; set; }
     private float _width = 120;
     private float _height = 120;
     public float Width
@@ -68,8 +72,19 @@ public class LayoutPropertiesViewModel : ViewModelBase
             OnPropertyChanged(nameof(GetThumbnail));
         }
     }
+    public AmbinityDeviceLayout? SelectedExistingLayout { get; set; } = null;
+    private string? _existingProjectPath;
+    public string? ExistingProjectPath
+    {
+        get => _existingProjectPath;
+        set
+        {
+            _existingProjectPath = value;
+            OnPropertyChanged();
+        }
+    }
     private string _editedImage => Path.Combine(Constants.CacheFolderPath, "LayoutCreator", "thumb_edited.png");
-     private string _originalImage => Path.Combine(Constants.CacheFolderPath, "LayoutCreator", "thumb.png");
+    private string _originalImage => Path.Combine(Constants.CacheFolderPath, "LayoutCreator", "thumb.png");
 
     /// <summary>
     /// Open separate window to edit selected image,
@@ -97,7 +112,7 @@ public class LayoutPropertiesViewModel : ViewModelBase
     private void ImageEditAccepted()
     {
         ImagePath = _editedImage;
-       // OnPropertyChanged(nameof(GetThumbnail));
+        // OnPropertyChanged(nameof(GetThumbnail));
     }
 
     private async Task SelectDeviceImage()
@@ -116,6 +131,54 @@ public class LayoutPropertiesViewModel : ViewModelBase
             return;
         await InitializeCache(result[0]);
         InitializeImage();
+    }
+
+    private async Task SelectExistingProject()
+    {
+        string[]? result = await _windowService.CreateOpenFileDialog()
+            .WithTitle("Select Existing Project")
+            .HavingFilter(f => f.WithExtension("json").WithName("Json file"))
+            .WithDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
+            .ShowAsync();
+        if (result == null || result.Length == 0)
+            return;
+        ExistingProjectPath = Path.GetDirectoryName(result[0]);
+        var layout = ParseExistingProject(ExistingProjectPath);
+        if (layout == null)
+            return;
+        SelectedExistingLayout = layout;
+        LayoutName = layout.Name;
+        ImagePath = SelectedExistingLayout.Image?.LocalPath;
+        //physical  width and height ( user input) is stored in ImageWidth and ImageHeight properties
+        Width = SelectedExistingLayout.ImageWidth;
+        Height = SelectedExistingLayout.ImageHeight;
+    }
+
+    private AmbinityDeviceLayout? ParseExistingProject(string path)
+    {
+        //search for json file
+        if (path == null || !Directory.Exists(path))
+        {
+            Log.Error("Selected folder is not valid");
+            return null;
+        }
+        var configPath = Path.Combine(path, "config.json");
+        if (configPath == null)
+        {
+            Log.Error("Selected folder path does not contain any config file.");
+            return null;
+        }
+
+        var layoutPath = Path.Combine(path, "layout.json");
+
+        if (layoutPath == null)
+        {
+            Log.Error("Selected folder path does not contain any layout file.");
+            return null;
+        }
+
+        var layout = new AmbinityDeviceLayout(path);
+        return layout;
     }
     /// <summary>
     /// Initialize cache for editing and exporting device layout

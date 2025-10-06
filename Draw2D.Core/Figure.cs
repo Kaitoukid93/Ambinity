@@ -206,7 +206,7 @@ namespace Draw2D.Core
             return this;
         }
 
-        public virtual Figure Unselect()
+        public virtual Figure Unselect(bool notify = true)
         {
             foreach (var policy in _policies.OfType<SelectionFeedbackPolicy>())
             {
@@ -218,9 +218,7 @@ namespace Draw2D.Core
                 handle.Hide(Canvas);
             }
 
-            Canvas?.Selection.Remove(this);
-
-
+            Canvas?.Selection.Remove(this,notify);
             return this;
         }
 
@@ -369,7 +367,7 @@ namespace Draw2D.Core
             Width = rectangle.Width;
             Height = rectangle.Height;
 
-
+            //  SizePropertyChanged?.Invoke(Width,Height);
             Canvas?.NeedsRepaint(this);
         }
 
@@ -530,7 +528,7 @@ namespace Draw2D.Core
         {
             X = x;
             Y = y;
-
+            PositionPropertyChanged?.Invoke(X, Y);
 
             Canvas?.NeedsRepaint(this);
         }
@@ -541,7 +539,7 @@ namespace Draw2D.Core
             X = x - Width / 2;
             Y = y - Height / 2;
 
-
+            PositionPropertyChanged?.Invoke(x, y);
             Canvas?.NeedsRepaint(this);
         }
 

@@ -16,15 +16,39 @@ using System.IO;
 using Avalonia.Controls.Shapes;
 using AmbinityCore.Models.Device.LED;
 using Avalonia.Media;
+using System.Collections.Generic;
+using System.Net.NetworkInformation;
+using ReactiveUI;
+using System.Linq;
+using Draw2D.Core;
+using Draw2D.Core.Graphic;
+using AmbinityCore;
+using Path = System.IO.Path;
+using AmbinityCore.Models.Device;
+using Serilog;
+using adrilight_shared.Models.Device.SlaveDevice;
+using System.Collections.ObjectModel;
+using adrilight_shared.Models.Device.Zone;
+using adrilight_shared.Models.Device.Zone.Spot;
+using AmbinityCore.Utils;
+using Vortice.Mathematics;
+using AmbinityCore.Helpers;
+using AmbinityCore.Repositories;
 
 namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
 {
     public partial class LEDLayoutCreatorViewModel : ViewModelBase
     {
         private DialogService _dialogService;
+        private AmbinityDeviceLayoutRepository _repository;
         private IWindowService _windowService;
         private CanvasViewModelFactory _canvasViewModelFactory;
         private int _ledCount;
+        private float _scale;
+
+        //user desired layout properties
+        private float _layoutWidth;
+        private float _layoutHeight;
 
         // The main canvas viewmodel
         private LEDLayoutCreatorCanvasViewModel _canvasViewModel;
@@ -39,92 +63,128 @@ namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
         }
 
 
-        public LEDLayoutCreatorViewModel(CanvasViewModelFactory canvasViewModelFactory, IWindowService windowService)
+        public LEDLayoutCreatorViewModel(CanvasViewModelFactory canvasViewModelFactory, IWindowService windowService, AmbinityDeviceLayoutRepository repository)
         {
-
+            _repository = repository;
             _windowService = windowService;
             _canvasViewModelFactory = canvasViewModelFactory;
+            LEDPropertiesViewModel = new LEDPropertiesViewModel();
             //CanvasViewModel.Init(new Size(150, 150), enableSelection: true, enableRegionSelection: false);
             //CanvasViewModel.AddFigure(new Draw2D.Core.Shapes.Basic.Rectangle(0, 0, 25, 25),false);
             // Subscribe to selection changed event
 
 
         }
-        public void Init(int width, int height, int ledCount,string ledShape, string imagePath)
+        public bool Init(int width, int height, List<AmbinityLEDLayout> leds, string? imagePath = null)
         {
             // Initialize the canvas with a specific size and properties
+            if (width <= 0 || height <= 0)
+            {
+                return false;
+            }
+            // if (width > 1000 || height > 1000)
+            // {
+            //     return false;
+            // }
+            _layoutWidth = width;
+            _layoutHeight = height;
             var vm = _canvasViewModelFactory.Get<LEDLayoutCreatorCanvasViewModel>();
+            float adaptedWidth = 500;
+            _scale = adaptedWidth / width;
+            float adaptedHeight = (float)height * _scale;
+            float offsetX = (1000 - adaptedWidth) / 2;
+            float offsetY = (1000 - adaptedHeight) / 2;
             vm.Init(1000, 1000);
-            vm.SetDeviceImage(imagePath, width, height);
+            vm.SetDeviceImage(imagePath, offsetX, offsetY, adaptedWidth, adaptedHeight);
             //add rectangle to canvas based on ledcount
-            _ledCount = ledCount;
+            _ledCount = leds == null ? 0 : leds.Count;
             CanvasViewModel = vm;
-            PopulateLEDs(ledShape);
-            LEDPropertiesViewModel = new LEDPropertiesViewModel();
+            CanvasViewModel.SelectionChanged += OnCanvasSelectionChanged;
+            CanvasViewModel.OnLayoutSaveRequest += SaveLayout;
+            PopulateLEDs(leds, offsetX, offsetY, _scale);
+            return true;
+
 
         }
-        /// <summary>
-        /// populate led based on led count
-        /// </summary>
-        private void PopulateLEDs(string ledShape)
+
+        private void SaveLayout(List<Figure> leds, ImageFigure image, string layoutName, string layoutDescription)
         {
-            const double canvasWidth = 500;
-            const double canvasHeight = 500;
-            const double maxWidth = 20;
-            const double maxHeight = 20;
+            //cache is no longer needed
+            
+            // var cachePath = Path.Combine(Constants.CacheFolderPath, "LayoutCreator");
+            // if (!Directory.Exists(cachePath))
+            //     return;
 
-            // Calculate how many columns and rows can fit
-            int columns = (int)(canvasWidth / maxWidth);
-            int rows = (int)(canvasHeight / maxHeight);
-
-            // Calculate actual rectangle size to fit all LEDs if possible
-            double rectWidth = Math.Min(canvasWidth / columns, maxWidth);
-            double rectHeight = Math.Min(canvasHeight / rows, maxHeight);
-            int count = 0;
-
-            for (int row = 0; row < rows && count < _ledCount; row++)
+            if (leds == null)
             {
-                for (int col = 0; col < columns && count < _ledCount; col++)
+                Log.Error("Can not export this Layout because there is no LED found");
+                return;
+            }
+            var dev = new ARGBLEDSlaveDevice();
+            dev.Name = layoutName;
+            dev.Description = layoutDescription;
+            var zone = new ObservableCollection<LEDSetup>();
+            var ledSetup = new LEDSetup();
+            var boundingBox = image.BoundingBox;
+            var ledsBoundingBox = GeometryUltilities.GetBoundingBox(leds);
+            foreach (var figure in leds)
+            {
+                if (figure is LEDContainerFigure ledContainerFigure)
                 {
-                    double x = col * rectWidth;
-                    double y = row * rectHeight;
-                    var geometryString = "M0,0 H20 V20 H0 Z";
-                    if(ledShape == "Circle")
+                    var led = ledContainerFigure.ChildItem as AmbinityLED;
+                    if (led != null)
                     {
-                        geometryString = "M10,0 A10,10 0 1,1 10,-20 A10,10 0 1,1 10,0 Z";
+                        var spot = new DeviceSpot();
+                        spot.Index = led.Index ?? 0;
+                        spot.Top = (led.Y - ledsBoundingBox.Y) / _scale;
+                        spot.Left = (led.X - ledsBoundingBox.X) / _scale;
+                        spot.Width = led.Width / _scale;
+                        spot.Height = led.Height / _scale;
+                        spot.Geometry = led.Geometry;
+                        ledSetup.Spots.Add(spot);
                     }
-
-                    var led = new AmbinityLED(new ArgbLed(), null, (float)x, (float)y, (float)rectWidth, (float)rectHeight, count, false, geometryString);
-                    led.X = (float)x;
-                    led.Y = (float)y;
-                    var containerFigure = led.GetContainer();
-                    containerFigure.SetChild(led);
-                    containerFigure.MinHeight = 5;
-                    containerFigure.MinWidth = 5;
-                    CanvasViewModel.AddFigure(containerFigure, false);
-                    count++;
                 }
             }
+            ledSetup.Top = (ledsBoundingBox.Y - boundingBox.Y) / _scale;
+            ledSetup.Left = (ledsBoundingBox.X - boundingBox.X) / _scale;
+
+            zone.Add(ledSetup);
+            dev.ControlableZones = zone;
+
+            //rename image
+            var imagePath = image.ImagePath;
+            dev.Image = new ImageVisual() { Width = _layoutWidth, Height = _layoutHeight };
+            _repository.CreateLayout(layoutName, layoutDescription, dev, imagePath, imagePath);
         }
 
-        // private void OnLayoutSizeChanged(float width, float height)
-        // {
 
-        //     var vm = _canvasViewModelFactory.Get<LEDLayoutCreatorCanvasViewModel>();
-        //     vm.Init((int)width, (int)height);
-        //     CanvasViewModel = vm;
-        //     CanvasViewModel.SetDeviceImage(CurrentImagePath);
-        // }
+        /// <summary>
+        /// populate led based on led count, bring leds to center and scale to 500 in width
+        /// </summary>
+        private void PopulateLEDs(List<AmbinityLEDLayout> leds, float offsetX = 250, float offsetY = 250, float scale = 1f)
+        {
 
-        // private void OnDeviceImageChanged(string imagePath)
-        // {
-        //     CurrentImagePath = imagePath;
-        //     CanvasViewModel.SetDeviceImage(CurrentImagePath);
-        // }
-
-        // public ICommand AddLEDCommand { get; set; }
-
-
+            foreach (var led in leds)
+            {
+                var missingLED = new AmbinityLED(new ArgbLed(), null,
+                   led.X,
+                   led.Y,
+                   led.Width,
+                   led.Height,
+                   led.Index,
+                   true,
+                   led.Geometry);
+                missingLED.X = led.X * scale + offsetX;
+                missingLED.Y = led.Y * scale + offsetY;
+                missingLED.Width = missingLED.Width * scale;
+                missingLED.Height = missingLED.Height * scale;
+                var containerFigure = missingLED.GetContainer();
+                containerFigure.SetChild(missingLED);
+                containerFigure.MinHeight = 5;
+                containerFigure.MinWidth = 5;
+                CanvasViewModel.AddFigure(containerFigure, false);
+            }
+        }
 
         public LEDPropertiesViewModel? LEDPropertiesViewModel { get; set; }
         private string _currentImagePath = string.Empty;
@@ -142,19 +202,16 @@ namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
         private void OnCanvasSelectionChanged()
         {
             // Get the selected item (assuming single selection)
-            var selectedFigure = CanvasViewModel.Canvas?.Selection?.Primary;
-            if (selectedFigure != null)
+            var selectedFigures = CanvasViewModel?.Canvas?.Selection?.All;
+            if (selectedFigures != null)
             {
-                // Assume the figure has X, Y properties for position
-                LEDPropertiesViewModel = new LEDPropertiesViewModel
-                {
-                    X = selectedFigure.X,
-                    Y = selectedFigure.Y
-                };
+                LEDPropertiesViewModel?.Init(selectedFigures);
+
             }
             else
             {
-                LEDPropertiesViewModel = null;
+                //LEDPropertiesViewModel = null;
+                LEDPropertiesViewModel?.Init(null);
             }
         }
         public override void Dispose()
@@ -165,30 +222,7 @@ namespace Ambinity.Views.LayoutEditor.LEDLayoutCreator
         }
     }
 
-    public class LEDPropertiesViewModel : ObservableObject
-    {
 
-        private float _x;
-        private float _y;
-        public float X
-        {
-            get => _x;
-            set
-            {
-                _x = value;
-                OnPropertyChanged();
-            }
-        }
-        public float Y
-        {
-            get => _y;
-            set
-            {
-                _y = value;
-                OnPropertyChanged();
-            }
-        }
-    }
 
 
 

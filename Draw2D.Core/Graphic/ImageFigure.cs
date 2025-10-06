@@ -9,6 +9,7 @@ namespace Draw2D.Core.Graphic;
 public class ImageFigure : Rectangle
 {
     private string _imagePath;
+    public string ImagePath => _imagePath;
     private RenderTargetBitmap? _deviceImage;
 
     public ImageFigure(float x, float y, float width, float height) : base(x, y, width, height)

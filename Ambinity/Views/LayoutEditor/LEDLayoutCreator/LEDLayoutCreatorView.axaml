@@ -11,15 +11,13 @@
     x:DataType="local:LEDLayoutCreatorViewModel"
     ExtendClientAreaToDecorationsHint="True"
     mc:Ignorable="d">
-    <Grid ColumnDefinitions="*,20,Auto" RowDefinitions="40,*,Auto">
+    <Grid  ColumnDefinitions="*,10,Auto" RowDefinitions="40,*,Auto">
         <ContentControl
             Grid.Row="1"
             Grid.Column="0"
             Content="{Binding CanvasViewModel}" />
-        <Grid Column="2">
+        <Grid Column="2"  Grid.Row="1">
             <ContentControl
-                Grid.Row="2"
-                Margin="10"
                 Content="{Binding LEDPropertiesViewModel}" />
         </Grid>
     </Grid>

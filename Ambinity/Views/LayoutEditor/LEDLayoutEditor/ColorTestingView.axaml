@@ -33,20 +33,20 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid>
-                            <Path Fill="{Binding AvaloniaColor }"
+                            <PathIcon Foreground="{Binding AvaloniaColor }"
                                   ToolTip.Tip="{Binding Index}"
                                   Data="{Binding Geometry}"
                                   Width="{Binding Width}" Height="{Binding Height}">
-                            </Path>
+                            </PathIcon>
                             <Viewbox IsHitTestVisible="False" IsVisible="{Binding IsIndexVisible}" Width="{Binding Width}" Height="{Binding Height}">
                                 <TextBlock Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Index}"></TextBlock>
                             </Viewbox>
                         </Grid>
-                            
+
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Viewbox>
     </Grid>
-   
+
 </Window>

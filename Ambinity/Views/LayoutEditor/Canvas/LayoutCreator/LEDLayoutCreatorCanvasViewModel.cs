@@ -21,24 +21,52 @@ using System.Reflection.Metadata;
 using AmbinityCore;
 using Avalonia.Controls;
 using AmbinityCore.Models.Device.LED;
+using Ambinity.Views.LayoutEditor.LEDLayoutCreator.Tools;
+using Draw2D.Core.Constants;
+using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
+using AmbinityCore.Utils;
+using Avalonia.Controls.Shapes;
+using Serilog;
+using SharpGen.Runtime.Win32;
+using Ambinity.Views.LayoutEditor.LEDLayoutCreator;
 
 namespace Ambinity.Views.LayoutEditor.Canvas
 {
     public class LEDLayoutCreatorCanvasViewModel : CanvasViewModelBase
     {
-
+        private IWindowService _windowService;
 
         public ToolsViewModel ToolsViewModel { get; }
         private ImageFigure _deviceImage;
         private string _imagePath;
         public Draw2DCanvasInfoBarViewModel InfoBarViewModel { get; }
+        public event Action<List<Figure>, ImageFigure,string,string> OnLayoutSaveRequest;
         public LEDLayoutCreatorCanvasViewModel(GeneralSettingsManager settingsManager,
-         IDialogService dialogService, ToolsViewModel toolsViewModel)
+         IDialogService dialogService, ToolsViewModel toolsViewModel,IWindowService windowService)
             : base(settingsManager, dialogService)
         {
 
+            _windowService = windowService;
             ToolsViewModel = toolsViewModel;
+            IncreaseCommand = new RelayCommand(Increase);
+            DecreaseCommand = new RelayCommand(Decrease);
 
+        }
+
+        private void Increase()
+        {
+            if (Canvas.ActiveTool != null && Canvas.ActiveTool is LEDTool tool)
+            {
+                tool.IncreaseToolSize();
+            }
+        }
+        private void Decrease()
+        {
+            if (Canvas.ActiveTool != null && Canvas.ActiveTool is LEDTool tool)
+            {
+                tool.DecreaseToolSize();
+            }
         }
 
         private void OnLEDAdded(Figure figure)
@@ -49,9 +77,19 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             Canvas.AddFigure(figure);
         }
 
-        private void InstallTool(PolylineTool tool)
+        private void InstallPolyLineTool(PolylineTool tool)
         {
             InstallPolylineTool();
+        }
+        private void InstallLEDTool(LEDTool tool)
+        {
+            tool.CanvasViewModel = this;
+            Canvas?.InstallTool(tool, (tool) => OnLEDToolFinish());
+        }
+        private void OnLEDToolFinish()
+        {
+
+
         }
 
         private void OnFigureAddedFromTool(Figure figure)
@@ -64,14 +102,13 @@ namespace Ambinity.Views.LayoutEditor.Canvas
         /// Each device can only have one single image
         /// New image added will be stretch to device size
         /// </summary>
-        public void SetDeviceImage(string imagePath, int width, int height)
+        public void SetDeviceImage(string imagePath, float x, float y, float width, float height)
         {
             if (Canvas == null)
                 return;
             Canvas?.Clear();
             _imagePath = imagePath;
-            float x = (Canvas.Width - width) / 2;
-            float y = (Canvas.Height - height) / 2;
+            //alaways bring image to 500 px width for better visualization
             _deviceImage = new ImageFigure(x, y, width, height);
             _deviceImage.IsDragable = false;
             _deviceImage.IsSelectable = false;
@@ -125,9 +162,11 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             //Register Tools
             ToolsViewModel.FitCanvasToViewEvent += FitCanvasToView;
             ToolsViewModel.ToggleSnapToGridEvent += ToggleSnapToGrid;
-            ToolsViewModel.InstallPolylineTool += InstallTool;
+            ToolsViewModel.InstallPolylineTool += InstallPolyLineTool;
+            ToolsViewModel.InstallLEDTool += InstallLEDTool;
             ToolsViewModel.AddFigure += OnFigureAddedFromTool;
             ToolsViewModel.ImageVisibilityChanged += ToggleImageVisibility;
+            ToolsViewModel.SaveLayoutEvent += SaveLayout;
 
             //Create Canvas
             var canvasSize = new Size(width, height);
@@ -144,7 +183,27 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             FitCommand?.Execute(null);
             UnlockCanvas();
         }
+        private async void  SaveLayout()
+        {
 
+            var vm = new SaveLayoutDialogViewModel(Canvas.Figures.Where(f => f is LEDContainerFigure).ToList());
+            vm.Accept += () =>
+            {
+                //save current layout to library
+                var boundingBox = GeometryUltilities.GetBoundingBox(Canvas.Figures.Where(f => f is LEDContainerFigure));
+                if (!_deviceImage.BoundingBox.Contains(boundingBox))
+                {
+                    Log.Error("Can not export layout because the leds is out of image's bound");
+                    return;
+                }
+                //get the material for new layout
+
+                var leds = Canvas.Figures.Where(f => f is LEDContainerFigure).ToList();
+                OnLayoutSaveRequest?.Invoke(leds, _deviceImage, vm.LayoutName, vm.LayoutDescription);
+            };
+            var saveDialog = await _windowService.ShowDialogWindow(vm, _windowService.GetCurrentWindow());
+
+        }
         private void ToggleImageVisibility()
         {
             _deviceImage.IsVisible = !_deviceImage.IsVisible;
@@ -177,6 +236,7 @@ namespace Ambinity.Views.LayoutEditor.Canvas
 
         }
 
+
         public override void Paste()
         {
             var bound = Getbound(ClipboardFigures);
@@ -188,29 +248,12 @@ namespace Ambinity.Views.LayoutEditor.Canvas
                 var offSetY = clipboardChilItem.Y - bound.Y;
                 var cloneFigure = clipboardChilItem.Clone((float)WorldMousePosX + (float)offSetX,
                     (float)WorldMousePosY + (float)offSetY);
+                cloneFigure.IsResizable = true;
+                cloneFigure.MinHeight = 5;
+                cloneFigure.MinWidth = 5;
                 AddFigure(cloneFigure, true);
                 cloneFigure.Select();
             }
-        }
-
-        public void CreateLEDFromGeometry(String geometry, Rect boundingBox)
-        {
-            var led = new AmbinityLED(new ArgbLed(),
-             null,
-              (float)boundingBox.X,
-              (float)boundingBox.Y,
-               (float)boundingBox.Width,
-                (float)boundingBox.Height,
-                 0,
-                  false,
-                   geometry);
-            led.X = (float)boundingBox.X;
-            led.Y = (float)boundingBox.Y;
-            var containerFigure = led.GetContainer();
-            containerFigure.SetChild(led);
-            containerFigure.MinHeight = 5;
-            containerFigure.MinWidth = 5;
-            AddFigure(containerFigure, false);
         }
 
         public override void Dispose()
@@ -219,10 +262,16 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             ToolsViewModel.ToggleSnapToGridEvent -= ToggleSnapToGrid;
             FigureAdded -= OnFigureAdded;
             FigureRemoved -= OnFigureRemoved;
-            ToolsViewModel.InstallPolylineTool -= InstallTool;
+            ToolsViewModel.InstallPolylineTool -= InstallPolyLineTool;
+            ToolsViewModel.InstallLEDTool -= InstallLEDTool;
             ToolsViewModel.AddFigure -= OnFigureAddedFromTool;
+            ToolsViewModel.ImageVisibilityChanged -= ToggleImageVisibility;
+             ToolsViewModel.SaveLayoutEvent -= SaveLayout;
             ToolsViewModel?.Dispose();
         }
+
+        public ICommand IncreaseCommand { get; set; }
+        public ICommand DecreaseCommand { get; set; }
 
     }
 }

@@ -33,7 +33,7 @@ public class AmbinityDeviceBitmapCapture
     private AmbinityDevice _device;
     private CancellationTokenSource _cancellationTokenSource;
     private Timer _timer;
-    private float _smoothFactor = 1f;
+    private float _smoothFactor = 2f;
     private readonly LightingProfileDecoder _decoder;
     public AmbinityDevice Device => _device;
 

@@ -26,7 +26,7 @@ namespace Draw2D.Core.Shapes.Basic
 
         private void OnStrokeThicknessChanged()
         {
-             zoomVal = StrokeThickness/1.5;
+            zoomVal = StrokeThickness / 1.5;
             CoronaWidth = 10 * zoomVal;
         }
 
@@ -38,7 +38,7 @@ namespace Draw2D.Core.Shapes.Basic
             _points.Clear();
             this[0] = startPoint;
             this[1] = endPoint;
-        } 
+        }
 
         public Line(float x1, float y1, float x2, float y2) : this(new Point(x1, y1), new Point(x2, y2))
         {
@@ -51,7 +51,7 @@ namespace Draw2D.Core.Shapes.Basic
         {
             var handle = new LineHandle(new Ellipse(this[pointIndex].X, this[pointIndex].Y, 10, 10), pointIndex, this);
             handle.SetSnapTargets(SnapTargets.Center);
- 
+
             AddHandle(handle);
         }
 
@@ -73,7 +73,7 @@ namespace Draw2D.Core.Shapes.Basic
                     return;
 
                 this[0] = value.Clone();
-                
+
                 Canvas?.NeedsRepaint(this);
             }
         }
@@ -90,7 +90,7 @@ namespace Draw2D.Core.Shapes.Basic
 
                 this[_points.Count - 1] = value.Clone();
 
-                
+
                 Canvas?.NeedsRepaint(this);
             }
         }
@@ -128,7 +128,7 @@ namespace Draw2D.Core.Shapes.Basic
 
                 Canvas?.OnFigureTranslated(this);
 
-                
+
                 Canvas?.NeedsRepaint(this);
             }
         }
@@ -137,8 +137,8 @@ namespace Draw2D.Core.Shapes.Basic
         {
             var bb = Geo.Rectangle.GetBoundingBoxAroundPoints(_points);
 
-            bb.Y -= StrokeThickness/2;
-            bb.X -= StrokeThickness/2;
+            bb.Y -= StrokeThickness / 2;
+            bb.X -= StrokeThickness / 2;
 
             bb.Height += StrokeThickness;
             bb.Width += StrokeThickness;
@@ -152,13 +152,13 @@ namespace Draw2D.Core.Shapes.Basic
         {
             _points.RemoveAt(index);
 
-            
+
             Canvas?.NeedsRepaint(this);
         }
 
         public IReadOnlyList<Point> Points => _points;
 
-        
+
         public override bool HitTest(float x, float y)
         {
             return Hit(CoronaWidth + StrokeThickness, StartPoint.X, StartPoint.Y, EndPoint.X, EndPoint.Y, x, y);
@@ -168,10 +168,10 @@ namespace Draw2D.Core.Shapes.Basic
         {
             return LineFunctions.Distance(x1, y1, x2, y2, x, y) < coronaWidth;
         }
-         
-        public override Figure Unselect()
+
+        public override Figure Unselect(bool notify = true)
         {
-            base.Unselect();
+            base.Unselect(notify);
             foreach (var lineHandle in Handles)
             {
                 lineHandle.Hide(Canvas);
@@ -191,13 +191,13 @@ namespace Draw2D.Core.Shapes.Basic
             {
                 StrokeColor = _storedStrokeColor;
             }
-            
+
             Canvas?.NeedsRepaint(this);
 
             return this;
         }
 
-        public override void Translate(float dx, float dy,bool notify = true)
+        public override void Translate(float dx, float dy, bool notify = true)
         {
             if (!IsDragable)
                 return;
@@ -216,10 +216,10 @@ namespace Draw2D.Core.Shapes.Basic
             if (adjustmentResult.Dx != 0 || adjustmentResult.Dy != 0)
             {
                 var offset = new Point(adjustmentResult.Dx, adjustmentResult.Dy);
-                ForceTranslate(offset,notify);
+                ForceTranslate(offset, notify);
             }
         }
-        public void ForceTranslate(Point offset,bool notify)
+        public void ForceTranslate(Point offset, bool notify)
         {
             for (int i = 0; i < _points.Count; i++)
             {
@@ -232,10 +232,10 @@ namespace Draw2D.Core.Shapes.Basic
             }
 
             BoundingBox = CalculateBoundingBox();
-            if(notify)
-            Canvas?.OnFigureTranslated(this);
+            if (notify)
+                Canvas?.OnFigureTranslated(this);
 
-            
+
             Canvas?.NeedsRepaint(this);
         }
 
@@ -248,7 +248,7 @@ namespace Draw2D.Core.Shapes.Basic
             BoundingBox = CalculateBoundingBox();
             Canvas?.OnFigureTranslated(this);
 
-            
+
             Canvas?.NeedsRepaint(this);
         }
 
@@ -265,16 +265,16 @@ namespace Draw2D.Core.Shapes.Basic
             {
                 var p1 = Canvas.CoordinateSystem.ToScreenSpace(this[i]);
                 var p2 = Canvas.CoordinateSystem.ToScreenSpace(this[i + 1]);
-                
-               // brush.Freeze();
 
-               var pen = new ImmutablePen(strokeBrush, thickness);
-             //   {
-              //      DashStyle = DashStyle
+                // brush.Freeze();
+
+                var pen = new ImmutablePen(strokeBrush, thickness);
+                //   {
+                //      DashStyle = DashStyle
                 //};
 
-              //  pen.Freeze();
-                dc.DrawLine(pen, new Avalonia.Point(p1[0],p1[1]), new Avalonia.Point(p2[0], p2[1]));
+                //  pen.Freeze();
+                dc.DrawLine(pen, new Avalonia.Point(p1[0], p1[1]), new Avalonia.Point(p2[0], p2[1]));
             }
         }
 

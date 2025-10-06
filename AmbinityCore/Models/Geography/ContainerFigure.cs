@@ -41,7 +41,7 @@ public abstract class ContainerFigure : Rectangle
             return;
         ItemVisualizer.UpdateContainerOffset(dx, dy);
     }
-     public override Figure Select(bool showHandles = true, bool repaint = true, bool notify = true)
+    public override Figure Select(bool showHandles = true, bool repaint = true, bool notify = true)
     {
         IsSelectionActive = true;
         base.Select(showHandles, repaint, notify);
@@ -69,10 +69,10 @@ public abstract class ContainerFigure : Rectangle
         return this;
     }
 
-    public override Figure Unselect()
+    public override Figure Unselect(bool notify = true)
     {
         IsSelectionActive = false;
-        base.Unselect();
+        base.Unselect(notify);
         return this;
     }
 

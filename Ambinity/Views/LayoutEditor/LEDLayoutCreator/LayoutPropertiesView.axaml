@@ -12,11 +12,7 @@
     mc:Ignorable="d">
     <Grid>
         <StackPanel Spacing="20">
-            <StackPanel Spacing="8">
-                <TextBlock FontWeight="SemiBold" Text="Layout name" />
-                <TextBox VerticalContentAlignment="Center" Text="{Binding LayoutName}" />
-            </StackPanel>
-            <Separator Height="1" Margin="2,0" />
+
             <StackPanel Spacing="8">
                 <TextBlock FontWeight="SemiBold" Text="Select images" />
                 <TextBox VerticalContentAlignment="Center" Text="{Binding ImagePath}">
@@ -95,7 +91,7 @@
                         Grid.Column="2"
                         Orientation="Horizontal"
                         Spacing="8">
-                        <TextBlock VerticalAlignment="Center" Text="Width" />
+                        <TextBlock VerticalAlignment="Center" Text="Height" />
                         <ui:NumberBox
                             Background="Transparent"
                             BorderBrush="Transparent"
@@ -113,7 +109,12 @@
                 </StackPanel>
                 <TextBlock Text="This is the physical bounding box of your device in mm" />
             </StackPanel>
-
+            <Separator Height="1" Margin="2,0" />
+            <TextBlock Text="Already have a existing project?" />
+            <Button
+                Classes="accent"
+                Command="{Binding SelectExistingProjectCommand}"
+                Content="Open Project File" />
         </StackPanel>
 
     </Grid>

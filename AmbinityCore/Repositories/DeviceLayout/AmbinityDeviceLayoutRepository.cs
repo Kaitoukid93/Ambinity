@@ -73,6 +73,31 @@ public class AmbinityDeviceLayoutRepository : CollectableItemRepository
         //update the collection
     }
 
+
+    public AmbinityDeviceLayout CreateLayout(string name, string description, ARGBLEDSlaveDevice device, string imagePath, string thumbnailPath)
+    {
+        var existed = Items.Where(i => i.Name == name).FirstOrDefault();
+        if (existed != null)
+            return existed as AmbinityDeviceLayout;
+
+        var layoutPath = Path.Combine(LocalFolderPath, name);
+        Directory.CreateDirectory(layoutPath);
+
+        var configPath = Path.Combine(layoutPath, "config.json");
+        JsonHelpers.WriteSimpleJson(device, configPath);
+
+
+        if (File.Exists(imagePath))
+            File.Copy(imagePath, Path.Combine(layoutPath, "thumbnail.png"));
+        if (File.Exists(thumbnailPath))
+            File.Copy(thumbnailPath, Path.Combine(layoutPath, "colored_thumbnail.png"));
+
+        var layout = new AmbinityDeviceLayout(layoutPath);
+        layout.Description = description;
+        layout.Name = name;
+        AddItem(layout);
+        return layout;
+    }
     public AmbinityDeviceLayout CreateLayout(string name, int numLED)
     {
         var existed = Items.Where(i => i.Name == name).FirstOrDefault();

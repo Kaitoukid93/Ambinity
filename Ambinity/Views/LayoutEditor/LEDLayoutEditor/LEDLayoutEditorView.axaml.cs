@@ -31,7 +31,7 @@ public partial class LEDLayoutEditorView : Window
     private void InputElement_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         _viewModel = this.DataContext as LEDLayoutEditorViewModel;
-        var led = (sender as Path).DataContext as AmbinityLEDViewModel;
+        var led = (sender as PathIcon).DataContext as AmbinityLEDViewModel;
         if (led != null)
         {
             if (_viewModel.IsInIndexSetupMode)

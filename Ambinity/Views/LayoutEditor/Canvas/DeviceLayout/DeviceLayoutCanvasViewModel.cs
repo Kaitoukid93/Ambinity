@@ -78,6 +78,7 @@ namespace Ambinity.Views.LayoutEditor.Canvas
 
             //init layout canvas
             Canvas.ShouldDrawBackgroundImage = false;
+            Canvas.ShouldDrawEntityColors = false;;
             ToolsViewModel.FitCanvasToViewEvent += FitCanvasToView;
             ToolsViewModel.ToggleSnapToGridEvent += ToggleSnapToGrid;
             ToolsViewModel.InitForDeviceLayout();
@@ -103,7 +104,7 @@ namespace Ambinity.Views.LayoutEditor.Canvas
             {
 
                 device.IsSelectable = true;
-                device.IsDraggable = false;
+                //device.IsDraggable = false;
                 device.IsResizeable = false;
                 device.IsRotatable = true;
                 device.IsScalable = true;

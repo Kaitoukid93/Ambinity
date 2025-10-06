@@ -1,123 +1,157 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
-             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
-             xmlns:led = "clr-namespace:AmbinityCore.Models.Device.LED;assembly=AmbinityCore"
-             x:DataType="local:AmbinityDeviceDetailViewModel"
-             x:Class="Ambinity.Views.Screens.DeviceSettings.AmbinityDeviceDetailView">
+<UserControl
+    x:Class="Ambinity.Views.Screens.DeviceSettings.AmbinityDeviceDetailView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:led="clr-namespace:AmbinityCore.Models.Device.LED;assembly=AmbinityCore"
+    xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="local:AmbinityDeviceDetailViewModel"
+    mc:Ignorable="d">
     <UserControl.Styles>
         <Style Selector="Image.thumb">
-            <Setter Property="Source" Value="{Binding GetThumbnail^}"></Setter>
+            <Setter Property="Source" Value="{Binding GetThumbnail^}" />
         </Style>
         <Style Selector="Image.thumb.multiple">
-            <Setter Property="Source" Value="/Assets/Images/multiSelect.png"></Setter>
+            <Setter Property="Source" Value="/Assets/Images/multiSelect.png" />
         </Style>
-        <Style Selector="Path.led">
-            <Setter Property="Fill" Value="{DynamicResource ButtonForegroundDisabled}"></Setter>
+        <Style Selector="PathIcon.led">
+            <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundDisabled}" />
             <Style Selector="^:pointerover">
-                <Setter Property="Fill" Value="{DynamicResource AccentButtonBackground}"></Setter>
+                <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
             </Style>
         </Style>
     </UserControl.Styles>
     <StackPanel Spacing="10">
         <!-- <Border Classes="card" Padding="15"> -->
         <!--     <Grid ColumnDefinitions="Auto,10,*"> -->
-        <!--         <Image RenderOptions.BitmapInterpolationMode="HighQuality"  Width="70" Height="70" -->
-        <!--                Classes="thumb" Classes.multiple="{Binding IsMultipleItemsSelected}" VerticalAlignment="Center" Stretch="Uniform"> -->
+        <!--  <Image RenderOptions.BitmapInterpolationMode="HighQuality"  Width="70" Height="70"  -->
+        <!--  Classes="thumb" Classes.multiple="{Binding IsMultipleItemsSelected}" VerticalAlignment="Center" Stretch="Uniform">  -->
         <!--         </Image> -->
         <!--         <Grid Column="2"> -->
         <!--             <StackPanel Margin="10,0" Spacing="2"> -->
-        <!--                 <TextBlock ToolTip.Tip="{Binding Name}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis" -->
-        <!--                            MaxWidth="180" FontWeight="SemiBold" Text="{Binding Name}"> -->
+        <!--  <TextBlock ToolTip.Tip="{Binding Name}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"  -->
+        <!--  MaxWidth="180" FontWeight="SemiBold" Text="{Binding Name}">  -->
         <!--                 </TextBlock> -->
-        <!--                 <TextBlock HorizontalAlignment="Left" FontSize="12" -->
-        <!--                            Foreground="{DynamicResource ButtonForegroundDisabled}" -->
-        <!--                            Text="{Binding LEDsCount  }"> -->
+        <!--  <TextBlock HorizontalAlignment="Left" FontSize="12"  -->
+        <!--  Foreground="{DynamicResource ButtonForegroundDisabled}"  -->
+        <!--  Text="{Binding LEDsCount  }">  -->
         <!--                 </TextBlock> -->
-        <!--                 <TextBlock HorizontalAlignment="Left" FontSize="12" ToolTip.Tip="{Binding FilePath}" -->
-        <!--                            TextTrimming="CharacterEllipsis" MaxWidth="180" -->
-        <!--                            Foreground="{DynamicResource ButtonForegroundDisabled}" -->
-        <!--                            Text="{Binding FilePath  }"> -->
+        <!--  <TextBlock HorizontalAlignment="Left" FontSize="12" ToolTip.Tip="{Binding FilePath}"  -->
+        <!--  TextTrimming="CharacterEllipsis" MaxWidth="180"  -->
+        <!--  Foreground="{DynamicResource ButtonForegroundDisabled}"  -->
+        <!--  Text="{Binding FilePath  }">  -->
         <!--                 </TextBlock> -->
         <!--             </StackPanel> -->
-        <!-- -->
-        <!-- -->
+        <!--    -->
+        <!--    -->
         <!--         </Grid> -->
         <!--     </Grid> -->
         <!-- </Border>   -->
         <Grid RowDefinitions="Auto,*">
-            <TextBlock  Foreground="{DynamicResource ButtonForegroundDisabled}"  Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
-                        Text="Layout information">
-            </TextBlock>
+            <TextBlock
+                Margin="0,8"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="13"
+                Foreground="{DynamicResource ButtonForegroundDisabled}"
+                Text="Layout information" />
             <Border Grid.Row="1" Classes="card">
-                <StackPanel Margin="10,0" Spacing="2" > 
-                    <TextBlock ToolTip.Tip="{Binding Name}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"
-                               MaxWidth="180" FontWeight="SemiBold" Text="{Binding Name}">
-                    </TextBlock>
-                    <TextBlock HorizontalAlignment="Left" FontSize="12"
-                               Foreground="{DynamicResource ButtonForegroundDisabled}"
-                               Text="{Binding LEDsCount  }">
-                    </TextBlock>
-                    <TextBlock HorizontalAlignment="Left" FontSize="12" ToolTip.Tip="{Binding FilePath}"
-                               TextTrimming="CharacterEllipsis" MaxWidth="180"
-                               Foreground="{DynamicResource ButtonForegroundDisabled}"
-                               Text="{Binding FilePath  }">
-                    </TextBlock>
+                <StackPanel Margin="10,0" Spacing="2">
+                    <TextBlock
+                        MaxWidth="180"
+                        HorizontalAlignment="Left"
+                        FontWeight="SemiBold"
+                        Text="{Binding Name}"
+                        TextTrimming="CharacterEllipsis"
+                        ToolTip.Tip="{Binding Name}" />
+                    <TextBlock
+                        HorizontalAlignment="Left"
+                        FontSize="12"
+                        Foreground="{DynamicResource ButtonForegroundDisabled}"
+                        Text="{Binding LEDsCount}" />
+                    <TextBlock
+                        MaxWidth="180"
+                        HorizontalAlignment="Left"
+                        FontSize="12"
+                        Foreground="{DynamicResource ButtonForegroundDisabled}"
+                        Text="{Binding FilePath}"
+                        TextTrimming="CharacterEllipsis"
+                        ToolTip.Tip="{Binding FilePath}" />
                 </StackPanel>
             </Border>
-          
+
         </Grid>
         <Grid RowDefinitions="Auto,*,*">
-        <Grid Row="0" ColumnDefinitions="Auto,*">
-            <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
-                       Text="Layout modifications">
-            </TextBlock>
-            <Grid Column="1">
-                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5">
-                    <Grid>
-
-                    </Grid>
-                </StackPanel>
-            </Grid>
-        </Grid>
-        <StackPanel IsVisible="{Binding ShowOptions}" Grid.Row="1" Spacing="10">
-            <Grid RowDefinitions="auto,*">
-                <Grid Margin="0,30,0,0" Row="1">
-                    <Border Height="200" Classes="card" Padding="10">
-                        <Viewbox>
-                            <ItemsControl ItemsSource="{Binding Device.Leds}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <Canvas Width="{Binding Device.Width}" Height="{Binding Device.Height}">
-                                        </Canvas>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.Styles>
-                                    <Style Selector="ContentPresenter" x:DataType="led:AmbinityLED">
-                                        <Setter Property="Canvas.Left" Value="{Binding RelativeX}"/>
-                                        <Setter Property="Canvas.Top" Value="{Binding RelativeY}"/>
-                                    </Style>
-                                </ItemsControl.Styles>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                            <Path Classes="led" ToolTip.Tip="{Binding Index}" Data="{Binding Geometry}" Width="{Binding Width}" Height="{Binding Height}"></Path>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </Viewbox>
-                        <!-- <Image Stretch="Uniform" Height="100" Source="{Binding  LayoutImage^}"></Image> -->
-                        
-                    </Border>
-                   
+            <Grid ColumnDefinitions="Auto,*" Row="0">
+                <TextBlock
+                    Margin="0,8"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Foreground="{DynamicResource ButtonForegroundDisabled}"
+                    Text="Layout modifications" />
+                <Grid Column="1">
+                    <StackPanel
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        Spacing="5">
+                        <Grid />
+                    </StackPanel>
                 </Grid>
             </Grid>
-            <Button Classes="accent" HorizontalAlignment="Center" Command="{Binding OpenLEDOrderEditWindowCommand}" Content="LED order and testing"></Button>
-        </StackPanel>
-    </Grid>
+            <StackPanel
+                Grid.Row="1"
+                IsVisible="{Binding ShowOptions}"
+                Spacing="10">
+                <Grid RowDefinitions="auto,*">
+                    <Grid Margin="0,30,0,0" Row="1">
+                        <Border
+                            Height="200"
+                            Padding="10"
+                            Classes="card">
+                            <Viewbox>
+                                <ItemsControl ItemsSource="{Binding Device.Leds}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Canvas Width="{Binding Device.Width}" Height="{Binding Device.Height}" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.Styles>
+                                        <Style x:DataType="led:AmbinityLED" Selector="ContentPresenter">
+                                            <Setter Property="Canvas.Left" Value="{Binding RelativeX}" />
+                                            <Setter Property="Canvas.Top" Value="{Binding RelativeY}" />
+                                        </Style>
+                                    </ItemsControl.Styles>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <PathIcon
+                                                Width="{Binding Width}"
+                                                Height="{Binding Height}"
+                                                Classes="led"
+                                                Data="{Binding Geometry}"
+                                                ToolTip.Tip="{Binding Index}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Viewbox>
+                            <!-- <Image Stretch="Uniform" Height="100" Source="{Binding  LayoutImage^}"></Image> -->
+
+                        </Border>
+
+                    </Grid>
+                </Grid>
+                <Button
+                    HorizontalAlignment="Center"
+                    Classes="accent"
+                    Command="{Binding OpenLEDOrderEditWindowCommand}"
+                    Content="LED order and testing" />
+            </StackPanel>
+        </Grid>
     </StackPanel>
-   
-    
+
+
 </UserControl>
