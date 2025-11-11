@@ -25,7 +25,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     Margin="5"
                     FontSize="25"
                     FontWeight="SemiBold"
-                    Text="Devices" />
+                    Text="{localize:Loc DeviceSettings.Section.Header}" />
                 <Grid Column="2">
                     <Button
                         Margin="5,0,20,0"

@@ -110,7 +110,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                             Background="Transparent"
                             Classes="icon-button"
                             Command="{Binding OpenLibraryCommand}"
-                            ToolTip.Tip="Show library">
+                            ToolTip.Tip="{localize:Loc ShowLibrary.Button.ToolTip}">
                             <PathIcon Width="16" Data="{DynamicResource collection}" />
                         </Button>
                     </Grid>
@@ -121,7 +121,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             <StackPanel Grid.Column="1" Spacing="5">
                 <!-- <Grid RowDefinitions="Auto,*">
                     <Grid>
-                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Speed" />
+                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{localize:Loc HWLightingSpeed.SettingsExpanderItem.Header}" />
                     </Grid>
                     <Grid ColumnDefinitions="*,12,Auto" Row="1">
                         <Grid Column="0">

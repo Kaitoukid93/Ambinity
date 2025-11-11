@@ -61,12 +61,12 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     <PathIcon Width="15" Data="{DynamicResource onlineStore}"></PathIcon>
                 </Button>
                 <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" CommandParameter="devices" ToolTip.HorizontalOffset="-20"
-                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="Devices" Height="35" Width="35"
+                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="{localize:Loc DeviceSettings.Section.Header}" Height="35" Width="35"
                         Classes="icon-button">
                     <PathIcon Width="15" Data="{DynamicResource Device_settings}"></PathIcon>
                 </Button>
                 <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" CommandParameter="layout" ToolTip.HorizontalOffset="-20"
-                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="Layout" Height="35" Width="35"
+                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="{localize:Loc Layout.Page.Header}" Height="35" Width="35"
                         Classes="icon-button">
                     <PathIcon Width="15" Data="{DynamicResource map_rounded}"></PathIcon>
                 </Button>

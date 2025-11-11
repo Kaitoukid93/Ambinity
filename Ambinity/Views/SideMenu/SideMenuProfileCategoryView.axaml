@@ -55,11 +55,11 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
         </Style>
         <Style Selector="Grid#ContainerGrid.flyout-open :is(Button).properties-button">
             <Setter Property="IsVisible" Value="True" />
-        </Style> 
+        </Style>
         <Style Selector="Grid#ContainerGrid.plus-flyout-open :is(Button).properties-button">
             <Setter Property="IsVisible" Value="True" />
         </Style>
-        
+
         <Style Selector="PathIcon.chevron-collapsed">
             <Setter Property="RenderTransform" Value="rotate(180deg)" />
         </Style>
@@ -77,8 +77,8 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
         </Style>
     </UserControl.Styles>
     <Grid Name="ContainerGrid"
-          Margin="0 5 0 5" 
-          RowDefinitions="Auto,*" 
+          Margin="0 5 0 5"
+          RowDefinitions="Auto,*"
           ContextFlyout="{StaticResource CategoryMenuFlyout}"
           Classes.flyout-open="{CompiledBinding IsOpen, Source={StaticResource CategoryMenuFlyout}}"
           Classes.plus-flyout-open="{CompiledBinding IsOpen, Source={StaticResource PlusMenuFlyout}}">
@@ -136,7 +136,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     Margin="0 0 2 0">
                 <PathIcon Width="13" Height="13" Data="{DynamicResource addTo}"></PathIcon>
             </Button>
-            
+
             <Button Classes="properties-button icon-button icon-button-small"
                     Grid.Column="3"
                     HorizontalAlignment="Right"
@@ -157,7 +157,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
         </Grid>
 
         <Panel x:Name="profilesPanel" Grid.Row="1" IsVisible="{CompiledBinding IsExpanded}">
-            <ListBox x:Name="SidebarListBox" 
+            <ListBox x:Name="SidebarListBox"
                      Classes="sidebar-listbox"
                      ItemsSource="{CompiledBinding Profiles}"
                      SelectedItem="{CompiledBinding SelectedProfile}"
@@ -165,7 +165,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ScrollViewer.VerticalScrollBarVisibility="Disabled">
                 <ListBox.ItemContainerTheme>
-                    <ControlTheme 
+                    <ControlTheme
                         TargetType="ListBoxItem"
                         BasedOn="{StaticResource  _striplessListboxItem}"
                         x:DataType="local:SideMenuProfileViewModel">
@@ -177,12 +177,13 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     <DataTemplate DataType="{x:Type local:SideMenuProfileView}"></DataTemplate>
                 </ListBox.DataTemplates>
             </ListBox>
-            <TextBlock IsVisible="{CompiledBinding !Profiles.Count}" 
+            <TextBlock IsVisible="{CompiledBinding !Profiles.Count}"
                        Margin="20 0 0 0"
                        Classes="smallSecondary"
                        HorizontalAlignment="Left"
-                       IsHitTestVisible="False">
-                Empty collection
+                       IsHitTestVisible="False"
+                       Text="Empty collection">
+
             </TextBlock>
         </Panel>
     </Grid>

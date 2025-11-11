@@ -59,7 +59,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 VerticalAlignment="Center"
                 FontSize="13"
                 Foreground="{DynamicResource ButtonForegroundDisabled}"
-                Text="Layout information" />
+                Text="{localize:Loc LayoutInfo.TextBlock.Text}" />
             <Border Grid.Row="1" Classes="card">
                 <StackPanel Margin="10,0" Spacing="2">
                     <TextBlock
@@ -94,7 +94,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     VerticalAlignment="Center"
                     FontSize="13"
                     Foreground="{DynamicResource ButtonForegroundDisabled}"
-                    Text="Layout modifications" />
+                    Text="{localize:Loc LayoutModification.TextBlock.Text}" />
                 <Grid Column="1">
                     <StackPanel
                         HorizontalAlignment="Right"
@@ -149,7 +149,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     HorizontalAlignment="Center"
                     Classes="accent"
                     Command="{Binding OpenLEDOrderEditWindowCommand}"
-                    Content="LED order and testing" />
+                    Content="{localize:Loc OpenOrderSettings.Button.Content}" />
             </StackPanel>
         </Grid>
     </StackPanel>

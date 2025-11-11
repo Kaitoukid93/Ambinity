@@ -21,8 +21,8 @@
                     Grid.Row="1"
                     MinWidth="500"
                     Margin="0,2"
-                    Description="Auto connect to device when available"
-                    Header="Auto Connect"
+                    Description="{localize:Loc DeviceAutoConnect.SettingsExpander.Description}"
+                    Header="{localize:Loc DeviceAutoConnect.SettingsExpander.Header}"
                     IsClickEnabled="False">
                     <ui:SettingsExpander.IconSource>
                         <ui:PathIconSource Data="{DynamicResource link}" />

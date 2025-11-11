@@ -28,7 +28,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             <Grid Column="1">
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5">
                     <Grid>
-                        <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1" Background="Transparent" Width="30" Height="30"
+                        <Button ToolTip.Tip="{localize:Loc ShowLibrary.Button.ToolTip}" Command="{Binding OpenLibraryCommand}" Padding="1" Background="Transparent" Width="30" Height="30"
                                 Classes="icon-button">
                             <PathIcon Width="16" Data="{DynamicResource collection}"></PathIcon>
                         </Button>

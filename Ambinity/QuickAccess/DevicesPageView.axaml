@@ -9,7 +9,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
              x:Class="Ambinity.QuickAccess.DevicesPageView">
     <Grid Margin="15" RowDefinitions="Auto,20,*">
         <Grid Row="0" ColumnDefinitions="*,Auto">
-            <TextBlock FontWeight="SemiBold" FontSize="15" Text="Devices"></TextBlock>
+            <TextBlock FontWeight="SemiBold" FontSize="15" Text="{localize:Loc DeviceSettings.Section.Header}"></TextBlock>
         </Grid>
        <ItemsControl Grid.Row="2" ItemsSource="{Binding Devices}">
            <ItemsControl.ItemsPanel>

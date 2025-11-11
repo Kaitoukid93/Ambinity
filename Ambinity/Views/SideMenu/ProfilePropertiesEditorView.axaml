@@ -9,7 +9,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
              x:DataType="sideMenu:ProfilePropertiesEditorViewModel">
     <UserControl.Resources>
         <MenuFlyout x:Key="iconFlyout" Placement="Bottom">
-            <MenuItem Command="{Binding SelectBitmapCommand}" Header="Brows Image">
+            <MenuItem Command="{Binding SelectBitmapCommand}" Header="Select image">
                 <MenuItem.Icon>
                     <PathIcon Width="15" Height="15" Data="{DynamicResource Assets}"></PathIcon>
                 </MenuItem.Icon>
@@ -19,7 +19,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     <PathIcon Width="15" Height="15" Data="{DynamicResource save}"></PathIcon>
                 </MenuItem.Icon>
             </MenuItem>
-          
+
         </MenuFlyout>
     </UserControl.Resources>
     <UserControl.Styles>

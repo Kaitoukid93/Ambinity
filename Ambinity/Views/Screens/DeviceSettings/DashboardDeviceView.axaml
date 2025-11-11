@@ -10,25 +10,25 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
              x:Class="Ambinity.Views.Screens.DeviceSettings.DashboardDeviceView">
     <UserControl.Resources>
         <MenuFlyout x:Key="moreMenuFlyout" Placement="Top">
-            <MenuItem Command="{Binding RemoveControllerCommand}" Header="Remove">
+            <MenuItem Command="{Binding RemoveControllerCommand}" Header="{localize:Loc Remove.Button.Content}">
             </MenuItem>
         </MenuFlyout>
     </UserControl.Resources>
     <UserControl.Styles>
         <Style Selector="MenuItem.OnOffSwitch">
             <Setter Property="Command" Value="{Binding TurnOffControllerCommand}"></Setter>
-            <Setter Property="Header" Value="Turn off"></Setter>
+            <Setter Property="Header" Value="{localize:Loc TurnOff.MenuFlyout.Header}"></Setter>
         </Style>
         <Style Selector="MenuItem.OnOffSwitch.turnOn">
             <Setter Property="Command" Value="{Binding TurnOnControllerCommand}"></Setter>
-            <Setter Property="Header" Value="Turn on"></Setter>
+            <Setter Property="Header" Value="{localize:Loc TurnOn.MenuFlyout.Header}"></Setter>
         </Style>
         <Style Selector="TextBlock.connected">
-            <Setter Property="Text" Value="Connected" />
+            <Setter Property="Text" Value="{localize:Loc Connected.TextBlock.Text}" />
             <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}"></Setter>
         </Style>
         <Style Selector="TextBlock.activateStatus">
-            <Setter Property="Text" Value="Active" />
+            <Setter Property="Text" Value="{localize:Loc Active.TextBlock.Text}" />
             <Setter Property="Foreground" Value="LimeGreen"></Setter>
         </Style>
         <Style Selector="Border.chip.activateStatus">
@@ -55,11 +55,11 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
         </Style>
         <Style Selector="TextBlock.activateStatus.turnedOff">
-            <Setter Property="Text" Value="Off" />
+            <Setter Property="Text" Value="{localize:Loc Off.TextBlock.Text}" />
             <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundDisabled}"></Setter>
         </Style>
         <Style Selector="TextBlock.disconnected">
-            <Setter Property="Text" Value="Disconnected" />
+            <Setter Property="Text" Value="{localize:Loc Disconnected.TextBlock.Text}" />
             <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundDisabled}"></Setter>
         </Style>
         <Style Selector="Border.disconnected">
@@ -82,7 +82,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                                Text="{Binding Controller.Name}" TextTrimming="CharacterEllipsis"
                                FontSize="20" FontWeight="SemiBold">
                     </TextBlock>
-                    <Button ToolTip.Tip="More options" Grid.Column="1" Margin="5" HorizontalAlignment="Right"
+                    <Button ToolTip.Tip="{localize:Loc MoreOptions.Button.ToolTip}" Grid.Column="1" Margin="5" HorizontalAlignment="Right"
                             VerticalAlignment="Top" Flyout="{DynamicResource moreMenuFlyout}" Classes="icon-button">
                         <PathIcon Width="15" Data="{DynamicResource more}"></PathIcon>
                     </Button>

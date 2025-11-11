@@ -11,13 +11,13 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
         <MenuFlyout x:Key="daisychainItemFlyout" 
                     Placement="Bottom">
             <MenuItem  Command="{Binding OpenLibraryCommand}"
-                       Header="Change device">
+                       Header="{localize:Loc ChangeDevice.MenuItem.Header}">
                 <MenuItem.Icon>
                     <PathIcon Data="{DynamicResource collection}"></PathIcon>
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem  Command="{Binding DetachThisDeviceCommand}"
-                      Header="Detach">
+                      Header="{localize:Loc DetachDevice.MenuItem.Header}">
                 <MenuItem.Icon>
                     <PathIcon Data="{DynamicResource cut}"></PathIcon>
                 </MenuItem.Icon>
@@ -37,7 +37,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
         </MenuFlyout>
     
     </UserControl.Resources>
-    <Button Flyout="{DynamicResource daisychainItemFlyout}" ToolTip.Tip="Change device" Margin="0,4"
+    <Button Flyout="{DynamicResource daisychainItemFlyout}" ToolTip.Tip="{localize:Loc ChangeDevice.MenuItem.Header}" Margin="0,4"
             Width="70" Height="70">
         <Image Stretch="Uniform" Source="{Binding GetThumbnail^}"></Image>
     </Button>

@@ -13,7 +13,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
     mc:Ignorable="d">
     <Grid>
         <StackPanel MinWidth="400" Spacing="10">
-            <TextBlock>Select device type you want to add</TextBlock>
+            <TextBlock Text="Select device type you want to add"></TextBlock>
             <ListBox
                 ItemContainerTheme="{DynamicResource _striplessListboxItem}"
                 ItemsSource="{Binding DeviceCards}"
@@ -53,7 +53,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 </ListBox.ItemTemplate>
             </ListBox>
             <Grid Height="20" />
-            <TextBlock>COM Port</TextBlock>
+            <TextBlock Text="COM Port"></TextBlock>
             <Grid ColumnDefinitions="*,10,Auto">
                 <ui:FAComboBox
                     HorizontalAlignment="Stretch"

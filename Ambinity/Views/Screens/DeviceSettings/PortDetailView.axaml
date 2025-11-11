@@ -90,7 +90,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             <!--     <Grid Column="1"> -->
             <!--         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Top" Spacing="5"> -->
             <!--             <Grid> -->
-            <!--                 <Button x:Name="ShowLibraryButton" Click="ShowLibraryButton_OnClick" ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1" -->
+            <!--                 <Button x:Name="ShowLibraryButton" Click="ShowLibraryButton_OnClick" ToolTip.Tip="{localize:Loc ShowLibrary.Button.ToolTip}" Command="{Binding OpenLibraryCommand}" Padding="1" -->
             <!--                         Background="Transparent" Width="30" Height="30" -->
             <!--                         Classes="icon-button"> -->
             <!--                     <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon> -->
@@ -122,7 +122,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             </ui:SettingsExpander>
             <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}" Height="1"></Separator>
             <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0" Grid.Row="1"
-                                 Header="Brightness"
+                                 Header="{localize:Loc HWLightingBrightness.SettingsExpanderItem.Header}"
 
                                  Description="Set brightness limit to prevent overloading"
                                  IsClickEnabled="False">
@@ -137,7 +137,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             </ui:SettingsExpander>
             <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}" Height="1"></Separator>
             <ui:SettingsExpander IsVisible="{Binding !IsMultiplePortsSelected}" IsExpanded="True" Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0"
-                                 Grid.Row="1" Header="Devices"
+                                 Grid.Row="1" Header="{localize:Loc DeviceSettings.Section.Header}"
 
                                  Description="You can daisy chain by adding more devices to the port">
                 <ui:SettingsExpander.IconSource>

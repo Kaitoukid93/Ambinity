@@ -11,11 +11,11 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
              x:Class="Ambinity.Views.Screens.DeviceSettings.DeviceCoolingSettingsView">
     <Grid RowDefinitions="Auto,*">
         <Grid>
-            <TextBlock Classes="smallBold" Text="Cooling control"></TextBlock>
+            <TextBlock Classes="smallBold" Text="{localize:Loc CoolingControl.Section.Header}"></TextBlock>
         </Grid>
         <Grid Margin="0,10,0,0" Row="1">
             <StackPanel Spacing="2">
-                <ui:SettingsExpander Header="Fan control"
+                <ui:SettingsExpander Header="{localize:Loc FanControl.SettingsExpander.Header}"
                                      ItemsSource="{Binding Items}"
                                      Description="Change Fan or Pump control."
                                      Tag="{Binding HWmonitorAvailable}"
@@ -50,7 +50,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         </DataTemplate>
                     </ui:SettingsExpander.DataTemplates>
                 </ui:SettingsExpander>
-                <ui:InfoBar IsVisible="{Binding HWmonitorAvailable}" Severity="Informational" Title="Fan control modes" IsOpen="True"
+                <ui:InfoBar IsVisible="{Binding HWmonitorAvailable}" Severity="Informational" Title="{localize:Loc FanControlMode.InforBar.Title}" IsOpen="True"
                             IsIconVisible="True"
                             IsClosable="False"
                             Message="Adaptive control mode will take average value of the sensors showing above to control fans that attached to this Hub, if no sensor present, the mode is [Fixed].">
@@ -59,7 +59,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     <!-- </ui:InfoBar.IconSource> -->
 
                 </ui:InfoBar>
-                <ui:InfoBar IsVisible="{Binding !HWmonitorAvailable}" Severity="Error" Title="Error" IsOpen="True"
+                <ui:InfoBar IsVisible="{Binding !HWmonitorAvailable}" Severity="{localize:Loc Error.InforBar.Title}" Title="{localize:Loc Error.InforBar.Title}" IsOpen="True"
                             IsIconVisible="True"
                             IsClosable="False"
                             Message="Can not read Motherboard Hardware information">

@@ -33,7 +33,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
     <Grid RowDefinitions="Auto,*">
         <Grid Row="0" ColumnDefinitions="Auto,*">
             <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
-                       Text="Brightness">
+                       Text="{localize:Loc HWLightingBrightness.SettingsExpanderItem.Header}">
             </TextBlock>
             <ToggleButton CornerRadius="5" ToolTip.Tip="Brightness correction" BorderThickness="0" Background="Transparent" Width="32" Height="32" Grid.Column="1" HorizontalAlignment="Right">
                 <PathIcon Width="15" Data="{DynamicResource 'Eye Open'}"></PathIcon>

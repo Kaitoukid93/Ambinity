@@ -195,7 +195,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Foreground="{DynamicResource ButtonForegroundDisabled}"
-                        Text="Speed" />
+                        Text="{localize:Loc HWLightingSpeed.SettingsExpanderItem.Header}" />
                 </Grid>
                 <Grid ColumnDefinitions="*,12,Auto" Row="1">
                     <Grid Column="0">

@@ -29,10 +29,10 @@
                 </Grid>
                 <Grid RowDefinitions="Auto,*">
                     <Grid>
-                        <TextBlock Classes="smallBold" Text="{localize:Loc Section.GeneralSettings.Header}"/>
+                        <TextBlock Classes="smallBold" Text="{localize:Loc GeneralSettings.Section.Header}"/>
                     </Grid>
                     <Grid Margin="0,10,0,0" Row="1">
-                        <!--  <ui:InfoBar Severity="Error" Title="Warning" IsOpen="True"  -->
+                        <!--  <ui:InfoBar Severity="{localize:Loc Error.InforBar.Title}" Title="{localize:Loc Warning.InforBar.Title}" IsOpen="True"  -->
                         <!--  IsIconVisible="True"  -->
                         <!--  IsClosable="False"  -->
                         <!--  Message="Hardware settings for this device is not available at the moment">  -->
@@ -41,8 +41,8 @@
                             <StackPanel Spacing="2">
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="{localize:Loc SettingsExpander.Autorun.Description}"
-                                    Header="{localize:Loc SettingsExpander.Autorun.Header}">
+                                    Description="{localize:Loc autorun.SettingsExpander.Description}"
+                                    Header="{localize:Loc autorun.SettingsExpander.Header}">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource button_power_1__power_button_on_off}" />
                                     </ui:SettingsExpander.IconSource>
@@ -51,8 +51,8 @@
                                     </ui:SettingsExpander.Footer>
                                     <ui:SettingsExpanderItem
                                         MinWidth="500"
-                                        Content="{localize:Loc SettingsExpanderItem.Minimized.Header}"
-                                        Description="{localize:Loc SettingsExpanderItem.Minimized.Description}"
+                                        Content="{localize:Loc Minimized.SettingsExpanderItem.Header}"
+                                        Description="{localize:Loc Minimized.SettingsExpanderItem.Description}"
                                         IsClickEnabled="False"
                                         IsEnabled="{Binding ElementName=Switch, Path=IsChecked}">
                                         <ui:SettingsExpanderItem.Footer>
@@ -61,8 +61,8 @@
                                     </ui:SettingsExpanderItem>
                                     <ui:SettingsExpanderItem
                                         MinWidth="500"
-                                        Content="{localize:Loc SettingsExpanderItem.StartupDelay.Header}"
-                                        Description="{localize:Loc SettingsExpanderItem.StartupDelay.Description}"
+                                        Content="{localize:Loc StartupDelay.SettingsExpanderItem.Header}"
+                                        Description="{localize:Loc StartupDelay.SettingsExpanderItem.Description}"
                                         IsClickEnabled="False"
                                         IsEnabled="{Binding ElementName=Switch, Path=IsChecked}">
                                         <ui:SettingsExpanderItem.Footer>
@@ -77,8 +77,8 @@
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="{localize:Loc SettingsExpander.EnableMica.Description}"
-                                    Header="{localize:Loc SettingsExpander.EnableMica.Header}">
+                                    Description="{localize:Loc EnableMica.SettingsExpander.Description}"
+                                    Header="{localize:Loc EnableMica.SettingsExpander.Header}">
                                     <ui:SettingsExpander.Footer>
                                         <ToggleSwitch Margin="40,0" IsChecked="{Binding EnableMica}" />
                                     </ui:SettingsExpander.Footer>
@@ -88,8 +88,8 @@
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Change accent color and theme settings"
-                                    Header="Theme">
+                                    Description="{localize:Loc Theme.SettingsExpander.Description}"
+                                    Header="{localize:Loc Theme.SettingsExpander.Header}">
                                     <ui:SettingsExpander.Footer>
                                         <ui:FAComboBox
                                             x:Name="customTheme"
@@ -105,8 +105,8 @@
                                     </ui:SettingsExpander.IconSource>
                                     <ui:SettingsExpanderItem
                                         MinWidth="500"
-                                        Content="Accent color"
-                                        Description="Choose primary color"
+                                        Content="{localize:Loc ThemeAccentColor.SettingsExpanderItem.Header}"
+                                        Description="{localize:Loc ThemeAccentColor.SettingsExpanderItem.Description}"
                                         IsClickEnabled="False"
                                         IsEnabled="{Binding ElementName=customTheme, Path=SelectedIndex}">
                                         <ui:SettingsExpanderItem.Footer>
@@ -115,8 +115,8 @@
                                     </ui:SettingsExpanderItem>
                                     <ui:SettingsExpanderItem
                                         MinWidth="500"
-                                        Content="Mode"
-                                        Description="Choose between dark and light mode "
+                                        Content="{localize:Loc ThemeMode.SettingsExpanderItem.Header}"
+                                        Description="{localize:Loc ThemeMode.SettingsExpanderItem.Description}"
                                         IsClickEnabled="False"
                                         IsEnabled="{Binding ElementName=customTheme, Path=SelectedIndex}">
                                         <ui:SettingsExpanderItem.Footer>
@@ -130,8 +130,8 @@
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Change display language"
-                                    Header="Language">
+                                    Description="{localize:Loc Language.SettingsExpanderItem.Description}"
+                                    Header="{localize:Loc Language.SettingsExpanderItem.Header}">
                                     <ui:SettingsExpander.Footer>
                                         <ui:FAComboBox
                                             VerticalContentAlignment="Center"
@@ -151,10 +151,10 @@
                 </Grid>
                 <Grid RowDefinitions="Auto,*">
                     <Grid>
-                        <TextBlock Classes="smallBold" Text="Plugins" />
+                        <TextBlock Classes="smallBold" Text="{localize:Loc PluginsSettings.Section.Header}" />
                     </Grid>
                     <Grid Margin="0,10,0,0" Row="1">
-                        <!--  <ui:InfoBar Severity="Error" Title="Warning" IsOpen="True"  -->
+                        <!--  <ui:InfoBar Severity="{localize:Loc Error.InforBar.Title}" Title="{localize:Loc Warning.InforBar.Title}" IsOpen="True"  -->
                         <!--  IsIconVisible="True"  -->
                         <!--  IsClosable="False"  -->
                         <!--  Message="Hardware settings for this device is not available at the moment">  -->
@@ -162,19 +162,19 @@
                         <Grid>
                             <StackPanel Spacing="2">
                                 <ui:InfoBar
-                                    Title="Settings changed"
+                                    Title="{localize:Loc SettingsChanged.InforBar.Header}"
                                     IsOpen="{Binding ShowPluginInfoBar, Mode=TwoWay}"
-                                    Message="Restart is required for changes to take effect"
+                                    Message="{localize:Loc SettingsChanged.InforBar.Message}"
                                     Severity="Warning">
                                     <Button
                                         Margin="0,0,0,10"
                                         Command="{Binding RequestRestartApplicationCommand}"
-                                        Content="Restart now" />
+                                        Content="{localize:Loc RestartApp.Button.Content}" />
                                 </ui:InfoBar>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Enable screen capture plugin. This plugin is required for ambilight effect."
-                                    Header="Screen capture">
+                                    Description="{localize:Loc ScreenCapturePlugin.SettingsExpander.Description}"
+                                    Header="{localize:Loc ScreenCapturePlugin.SettingsExpander.Header}">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource desktopCapture}" />
                                     </ui:SettingsExpander.IconSource>
@@ -183,8 +183,8 @@
                                     </ui:SettingsExpander.Footer>
                                     <ui:SettingsExpanderItem
                                         MinWidth="500"
-                                        Content="Scaling factor"
-                                        Description="Try to increase this value if your computer is struggling when turn on ambilight effect."
+                                        Content="{localize:Loc CaptureScalingFactor.SettingsExpanderItem.Header}"
+                                        Description="{localize:Loc CaptureScalingFactor.SettingsExpanderItem.Description}"
                                         IsClickEnabled="False"
                                         IsEnabled="{Binding ElementName=ambilightEnable, Path=IsChecked}">
                                         <ui:SettingsExpanderItem.Footer>
@@ -199,8 +199,8 @@
                                     </ui:SettingsExpanderItem>
                                     <ui:SettingsExpanderItem
                                         MinWidth="500"
-                                        Content="Capture rate"
-                                        Description="Adjust frames per second"
+                                        Content="{localize:Loc CaptureRate.SettingsExpanderItem.Header}"
+                                        Description="{localize:Loc CaptureRate.SettingsExpanderItem.Description}"
                                         IsClickEnabled="False"
                                         IsEnabled="{Binding ElementName=ambilightEnable, Path=IsChecked}">
                                         <ui:SettingsExpanderItem.Footer>
@@ -214,8 +214,8 @@
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Enable Audio capture plugin. This plugin is required for music reactive effect."
-                                    Header="Audio capture">
+                                    Description="{localize:Loc AudioCapturePlugin.SettingsExpander.Description}"
+                                    Header="{localize:Loc AudioCapturePlugin.SettingsExpander.Header}">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource audioCapture}" />
                                     </ui:SettingsExpander.IconSource>
@@ -228,8 +228,8 @@
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Enable Hardware monitor plugin. This plugin is required for adaptive fan control mode."
-                                    Header="Hardware monitor"
+                                    Description="{localize:Loc HardwareMonitorPlugin.SettingsExpander.Description}"
+                                    Header="{localize:Loc HardwareMonitorPlugin.SettingsExpander.Header}"
                                     IsVisible="{Binding HWMonitorSettingVisible}">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource wave_signal__heart_line_beat_square_graph_stats}" />
@@ -244,7 +244,7 @@
                                 <ui:SettingsExpander
                                     MinWidth="500"
                                     Description="Enable OpenRGB plugin. This plugin is required for controlling 3rd party devices"
-                                    Header="OpenRGB"
+                                    Header="{localize:Loc OpenRGBPlugin.SettingsExpander.Header}"
                                     IsVisible="{Binding OpenRGBSettingVisible}">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource plugin}" />
@@ -263,10 +263,10 @@
                 </Grid>
                 <Grid RowDefinitions="Auto,*">
                     <Grid>
-                        <TextBlock Classes="smallBold" Text="Rendering" />
+                        <TextBlock Classes="smallBold" Text="{localize:Loc RenderingSettings.Section.Header}" />
                     </Grid>
                     <Grid Margin="0,10,0,0" Row="1">
-                        <!--  <ui:InfoBar Severity="Error" Title="Warning" IsOpen="True"  -->
+                        <!--  <ui:InfoBar Severity="{localize:Loc Error.InforBar.Title}" Title="{localize:Loc Warning.InforBar.Title}" IsOpen="True"  -->
                         <!--  IsIconVisible="True"  -->
                         <!--  IsClosable="False"  -->
                         <!--  Message="Hardware settings for this device is not available at the moment">  -->
@@ -274,19 +274,19 @@
                         <Grid>
                             <StackPanel Spacing="2">
                                 <ui:InfoBar
-                                    Title="Settings changed"
+                                    Title="{localize:Loc SettingsChanged.InforBar.Header}"
                                     IsOpen="{Binding ShowRenderingInfoBar, Mode=TwoWay}"
-                                    Message="Restart is required for changes to take effect"
+                                    Message="{localize:Loc SettingsChanged.InforBar.Message}"
                                     Severity="Warning">
                                     <Button
                                         Margin="0,0,0,10"
                                         Command="{Binding RequestRestartApplicationCommand}"
-                                        Content="Restart now" />
+                                        Content="{localize:Loc RestartApp.Button.Content}" />
                                 </ui:InfoBar>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Change the frame rate of the bitmap rendering method."
-                                    Header="Target frame rate">
+                                    Description="{localize:Loc RenderingFrameRate.SettingsExpander.Description}"
+                                    Header="{localize:Loc RenderingFrameRate.SettingsExpander.Header}">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource flash}" />
                                     </ui:SettingsExpander.IconSource>
@@ -300,8 +300,8 @@
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Change size of the target bitmap if you find the default value is too small for your device layout"
-                                    Header="Target bitmap size">
+                                    Description="{localize:Loc RenderingBitmapSize.SettingsExpander.Description}"
+                                    Header="{localize:Loc RenderingBitmapSize.SettingsExpander.Header}">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource bitmapSize}" />
                                     </ui:SettingsExpander.IconSource>
@@ -319,10 +319,10 @@
                 </Grid>
                 <Grid RowDefinitions="Auto,*">
                     <Grid>
-                        <TextBlock Classes="smallBold" Text="Devices" />
+                        <TextBlock Classes="smallBold" Text="{localize:Loc DeviceSettings.Section.Header}" />
                     </Grid>
                     <Grid Margin="0,10,0,0" Row="1">
-                        <!--  <ui:InfoBar Severity="Error" Title="Warning" IsOpen="True"  -->
+                        <!--  <ui:InfoBar Severity="{localize:Loc Error.InforBar.Title}" Title="{localize:Loc Warning.InforBar.Title}" IsOpen="True"  -->
                         <!--  IsIconVisible="True"  -->
                         <!--  IsClosable="False"  -->
                         <!--  Message="Hardware settings for this device is not available at the moment">  -->
@@ -330,19 +330,19 @@
                         <Grid>
                             <StackPanel Spacing="2">
                                 <ui:InfoBar
-                                    Title="Settings changed"
+                                    Title="{localize:Loc SettingsChanged.InforBar.Header}"
                                     IsOpen="{Binding ShowDevicesInfoBar, Mode=TwoWay}"
-                                    Message="Restart is required for changes to take effect"
+                                    Message="{localize:Loc SettingsChanged.InforBar.Message}"
                                     Severity="Warning">
                                     <Button
                                         Margin="0,0,0,10"
                                         Command="{Binding RequestRestartApplicationCommand}"
-                                        Content="Restart now" />
+                                        Content="{localize:Loc RestartApp.Button.Content}" />
                                 </ui:InfoBar>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Device discovery service will scan for new devices every second."
-                                    Header="Auto scan for new devices">
+                                    Description="{localize:Loc AutoScanNewDevices.SettingsExpander.Description}"
+                                    Header="{localize:Loc AutoScanNewDevices.SettingsExpander.Header}">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource search_visual}" />
                                     </ui:SettingsExpander.IconSource>
@@ -356,10 +356,10 @@
                 </Grid>
                 <Grid RowDefinitions="Auto,*">
                     <Grid>
-                        <TextBlock Classes="smallBold" Text="Debug" />
+                        <TextBlock Classes="smallBold" Text="{localize:Loc DebugSettings.Section.Header}" />
                     </Grid>
                     <Grid Margin="0,10,0,0" Row="1">
-                        <!--  <ui:InfoBar Severity="Error" Title="Warning" IsOpen="True"  -->
+                        <!--  <ui:InfoBar Severity="{localize:Loc Error.InforBar.Title}" Title="{localize:Loc Warning.InforBar.Title}" IsOpen="True"  -->
                         <!--  IsIconVisible="True"  -->
                         <!--  IsClosable="False"  -->
                         <!--  Message="Hardware settings for this device is not available at the moment">  -->
@@ -368,8 +368,8 @@
                             <StackPanel Spacing="2">
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Show Debug log."
-                                    Header="Debug">
+                                    Description="{localize:Loc ShowDebugLog.SettingsExpander.Description}"
+                                    Header="{localize:Loc ShowDebugLog.SettingsExpander.Header}">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource debug_window}" />
                                     </ui:SettingsExpander.IconSource>
@@ -377,14 +377,14 @@
                                         <Button
                                             Margin="40,0"
                                             Command="{Binding ShowDebugLogCommand}"
-                                            Content="Show debug log"
+                                            Content="{localize:Loc Show.Button.Content}"
                                             FontFamily="{StaticResource NunitoFont}" />
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Remove all devices from the device list. This also removes all device settings."
-                                    Header="Remove all devices">
+                                    Description="{localize:Loc RemoveDevice.SettingsExpander.Description}"
+                                    Header="{localize:Loc RemoveDevice.SettingsExpander.Header}">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource device_data}" />
                                     </ui:SettingsExpander.IconSource>
@@ -392,14 +392,14 @@
                                         <Button
                                             Margin="40,0"
                                             Command="{Binding RemoveAllDevicesCommand}"
-                                            Content="Remove"
+                                            Content="{localize:Loc Remove.Button.Content}"
                                             FontFamily="{StaticResource NunitoFont}" />
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Remove all downloaded datas. This includes all lighting profiles, color palette..."
-                                    Header="Remove downloaded datas">
+                                    Description="{localize:Loc RemoveDownloadData.SettingsExpander.Description}"
+                                    Header="{localize:Loc RemoveDownloadData.SettingsExpander.Header}">
                                     <ui:SettingsExpander.IconSource>
                                         <ui:PathIconSource Data="{DynamicResource download_data}" />
                                     </ui:SettingsExpander.IconSource>
@@ -407,7 +407,7 @@
                                         <Button
                                             Margin="40,0"
                                             Command="{Binding RemoveDownloadedDatasCommand}"
-                                            Content="Remove"
+                                            Content="{localize:Loc Remove.Button.Content}"
                                             FontFamily="{StaticResource NunitoFont}" />
                                     </ui:SettingsExpander.Footer>
                                 </ui:SettingsExpander>
@@ -444,7 +444,7 @@
                                 <!-- <Grid Column="3"> -->
                                 <!--  <Button IsEnabled="True"  -->
                                 <!--  Command="{Binding CheckForAppUpdateCommand}"  -->
-                                <!--  Content="Check for update" Classes="accent">  -->
+                                <!--  Content="{localize:Loc UpdateCheck.Button.Content}" Classes="accent">  -->
                                 <!--     </Button> -->
                                 <!-- </Grid> -->
                                 <ui:SettingsExpander
@@ -475,7 +475,7 @@
                             </Grid>
 
                             <ui:InfoBar
-                                Title="Update available"
+                                Title="{localize:Loc UpdateAvailable.InforBar.Title}"
                                 IsClosable="False"
                                 IsIconVisible="True"
                                 IsOpen="{Binding UpdateAvailable}"

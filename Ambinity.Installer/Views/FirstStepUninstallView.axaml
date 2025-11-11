@@ -17,7 +17,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             </TextBlock>
         </StackPanel>
         <Grid Grid.Row="2">
-            <ui:InfoBar HorizontalAlignment="Stretch" Severity="Warning" Title="Warning" IsClosable="False"
+            <ui:InfoBar HorizontalAlignment="Stretch" Severity="{localize:Loc Warning.InforBar.Title}" Title="{localize:Loc Warning.InforBar.Title}" IsClosable="False"
                 Message="You are about to remove Ambinity from your computer, click Next to select uninstall options" IsOpen="True" />
 
         </Grid>

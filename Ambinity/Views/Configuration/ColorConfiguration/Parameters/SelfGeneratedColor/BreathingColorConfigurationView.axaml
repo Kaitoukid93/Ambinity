@@ -23,7 +23,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 <Grid RowDefinitions="Auto,5,Auto">
                     <Grid Row="0" ColumnDefinitions="Auto,*">
                         <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
-                                   Text="Speed">
+                                   Text="{localize:Loc HWLightingSpeed.SettingsExpanderItem.Header}">
                         </TextBlock>
                         <Grid Column="1">
                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="10">

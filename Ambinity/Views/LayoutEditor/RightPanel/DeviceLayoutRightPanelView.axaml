@@ -129,7 +129,7 @@ Request custom layout at [Ambino-Layout](https://ambino.vn)
                                 Background="Transparent"
                                 Classes="icon-button"
                                 Command="{Binding OpenLibraryCommand}"
-                                ToolTip.Tip="Show library">
+                                ToolTip.Tip="{localize:Loc ShowLibrary.Button.ToolTip}">
                                 <PathIcon Width="15" Data="{DynamicResource collection}" />
                             </Button>
                         </Grid>

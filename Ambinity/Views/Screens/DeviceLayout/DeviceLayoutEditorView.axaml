@@ -15,7 +15,7 @@
             Margin="5"
             FontSize="25"
             FontWeight="SemiBold"
-            Text="Layout" />
+            Text="{localize:Loc Layout.Page.Header}" />
         <Grid ColumnDefinitions="*, auto" Row="2">
             <Border
                 Margin="0,10,10,10"

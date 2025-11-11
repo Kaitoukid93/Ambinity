@@ -55,7 +55,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         <PathIcon Height="10" Width="10" Data="{DynamicResource showMoreRight}"></PathIcon>
                     </ToggleButton>
                 </Grid>
-                <Button Command="{Binding SelfRemovedCommand}" Margin="0,0,0,0" Foreground="Black" Background="OrangeRed" ToolTip.Tip="Remove" Padding="0" Width="20" Height="20" CornerRadius="13" HorizontalAlignment="Right"
+                <Button Command="{Binding SelfRemovedCommand}" Margin="0,0,0,0" Foreground="Black" Background="OrangeRed" ToolTip.Tip="{localize:Loc Remove.Button.Content}" Padding="0" Width="20" Height="20" CornerRadius="13" HorizontalAlignment="Right"
                         IsVisible="{Binding IsInEditMode}" VerticalAlignment="Top">
                     <PathIcon Width="10" Height="10"
                               Data="{DynamicResource delete_1__remove_add_button_buttons_delete_cross_x_mathematics_multiply_math}">

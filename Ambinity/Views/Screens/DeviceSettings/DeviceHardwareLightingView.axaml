@@ -15,23 +15,23 @@
         <StackPanel Spacing="30">
             <Grid RowDefinitions="Auto,*">
                 <Grid>
-                    <TextBlock Classes="smallBold" Text="Hardware settings" />
+                    <TextBlock Classes="smallBold" Text="{localize:Loc HardwareSettings.Section.Header}" />
                 </Grid>
                 <Grid Margin="0,10,0,0" Row="1">
                     <ui:InfoBar
-                        Title="Warning"
+                        Title="{localize:Loc Warning.InforBar.Title}"
                         IsClosable="False"
                         IsIconVisible="True"
                         IsOpen="{Binding !IsAvailable}"
-                        Message="Hardware settings for this device is not available at the moment"
+                        Message="{localize:Loc HardwareSettingsError.InforBar.Description}"
                         Severity="Error" />
                     <Grid>
                         <StackPanel Spacing="2">
                             <ui:SettingsExpander
                                 Name="SettingsExpander3"
                                 MinWidth="500"
-                                Description="Personalize device lighting when application is not running, click for more settings."
-                                Header="Hardware lighting"
+                                Description="{localize:Loc HardwareLighting.SettingsExpander.Description}"
+                                Header="{localize:Loc HardwareLighting.SettingsExpander.Header}"
                                 IsExpanded="True"
                                 IsVisible="{Binding IsAvailable}">
                                 <ui:SettingsExpander.IconSource>
@@ -42,8 +42,8 @@
                                 </ui:SettingsExpander.Footer>
                                 <ui:SettingsExpanderItem
                                     MinWidth="500"
-                                    Content="Max LED Support"
-                                    Description="Maximum number of LEDs this hardware support for each output. Some hardware might only support up to 80 LEDs."
+                                    Content="{localize:Loc HWLightingMaxLEDSupport.SettingsExpanderItem.Header}"
+                                    Description="{localize:Loc HWLightingMaxLEDSupport.SettingsExpanderItem.Description}"
                                     IsClickEnabled="False"
                                     IsEnabled="{Binding EnableHWLExpand}">
                                     <ui:SettingsExpanderItem.Footer>
@@ -56,8 +56,8 @@
                                 </ui:SettingsExpanderItem>
                                 <ui:SettingsExpanderItem
                                     MinWidth="500"
-                                    Content="Delay time"
-                                    Description="Return to Hardware Lighting after the selected amount of seconds"
+                                    Content="{localize:Loc HWLightingDelayTime.SettingsExpanderItem.Header}"
+                                    Description="{localize:Loc HWLightingDelayTime.SettingsExpanderItem.Description}"
                                     IsClickEnabled="False"
                                     IsEnabled="{Binding EnableHWLExpand}">
                                     <ui:SettingsExpanderItem.Footer>
@@ -69,8 +69,8 @@
                                     </ui:SettingsExpanderItem.Footer>
                                 </ui:SettingsExpanderItem>
                                 <ui:SettingsExpanderItem
-                                    Content="Brightness"
-                                    Description="Brightness of hardware lighting effect"
+                                    Content="{localize:Loc HWLightingBrightness.SettingsExpanderItem.Header}"
+                                    Description="{localize:Loc HWLightingBrightness.SettingsExpanderItem.Description}"
                                     IsClickEnabled="False"
                                     IsEnabled="{Binding EnableHWLExpand}">
                                     <ui:SettingsExpanderItem.Footer>
@@ -93,8 +93,8 @@
                                     </ui:SettingsExpanderItem.Footer>
                                 </ui:SettingsExpanderItem>
                                 <ui:SettingsExpanderItem
-                                    Content="Colors"
-                                    Description="Chose color for selected effect"
+                                    Content="{localize:Loc HWLightingColor.SettingsExpanderItem.Header}"
+                                    Description="{localize:Loc HWLightingColor.SettingsExpanderItem.Description}"
                                     IsClickEnabled="False"
                                     IsEnabled="{Binding EnableHWLExpand}"
                                     IsVisible="{Binding !EnableColorPalette}">
@@ -106,7 +106,7 @@
                                     </ui:SettingsExpanderItem.Footer>
                                 </ui:SettingsExpanderItem>
                                 <ui:SettingsExpanderItem
-                                    Content="Palettes"
+                                    Content="{localize:Loc HWLightingPalette.SettingsExpanderItem.Header}"
                                     Description="Chose palette for selected effect"
                                     IsClickEnabled="False"
                                     IsEnabled="{Binding EnableHWLExpand}"
@@ -143,7 +143,7 @@
                                                 Background="Transparent"
                                                 Classes="icon-button"
                                                 Command="{Binding OpenColorPaletteLibraryCommand}"
-                                                ToolTip.Tip="Show library">
+                                                ToolTip.Tip="{localize:Loc ShowLibrary.Button.ToolTip}">
                                                 <FlyoutBase.AttachedFlyout>
                                                     <Flyout
                                                         Closing="PopupFlyoutBase_OnClosing"
@@ -197,7 +197,7 @@
                                     </ui:SettingsExpanderItem.Footer>
                                 </ui:SettingsExpanderItem>
                                 <ui:SettingsExpanderItem
-                                    Content="Speed"
+                                    Content="{localize:Loc HWLightingSpeed.SettingsExpanderItem.Header}"
                                     Description="Speed of hardware lighting effect"
                                     IsClickEnabled="False"
                                     IsEnabled="{Binding EnableHWLExpand}"
@@ -221,7 +221,7 @@
                                     </ui:SettingsExpanderItem.Footer>
                                 </ui:SettingsExpanderItem>
                                 <ui:SettingsExpanderItem
-                                    Content="Intensity"
+                                    Content="{localize:Loc HWLightingIntensity.SettingsExpanderItem.Header}"
                                     Description="Color intensity of hardware lighting effect"
                                     IsClickEnabled="False"
                                     IsEnabled="{Binding EnableHWLExpand}"
@@ -245,29 +245,29 @@
                                     </ui:SettingsExpanderItem.Footer>
                                 </ui:SettingsExpanderItem>
                                 <ui:SettingsExpanderItem
-                                    Content="Apply these settings"
-                                    Description="Settings will be saved to device's memory and will not be erased after updating firmware"
+                                    Content="{localize:Loc ApplySettings.SettingsExpanderItem.Header}"
+                                    Description="{localize:Loc ApplySettings.SettingsExpanderItem.Description}"
                                     IsClickEnabled="False">
                                     <ui:SettingsExpanderItem.Footer>
                                         <Button
                                             Margin="40,0"
                                             Command="{Binding ApplyHardwareSettingsCommand}"
-                                            Content="Apply" />
+                                            Content="{localize:Loc Apply.Button.Content}" />
                                     </ui:SettingsExpanderItem.Footer>
                                 </ui:SettingsExpanderItem>
                             </ui:SettingsExpander>
                             <ui:SettingsExpander
                                 Name="SettingsExpander2"
-                                Description="Speed of all fan when application is not running."
-                                Header="Hardware fan control"
+                                Description="{localize:Loc HardwareFanControl.SettingsExpander.Description}"
+                                Header="{localize:Loc HardwareFanControl.SettingsExpander.Header}"
                                 IsExpanded="True"
                                 IsVisible="{Binding HasFanControl}">
                                 <ui:SettingsExpander.IconSource>
                                     <ui:PathIconSource Data="{DynamicResource fanSpeedController}" />
                                 </ui:SettingsExpander.IconSource>
                                 <ui:SettingsExpanderItem
-                                    Content="PWM zone 1"
-                                    Description="Ambino single zone PWM controller"
+                                    Content="{localize:Loc PWMZone1.SettingsExpanderItem.Header}"
+                                    Description="{localize:Loc PWMZone1.SettingsExpanderItem.Description}"
                                     IsClickEnabled="False">
                                     <ui:SettingsExpanderItem.Footer>
                                         <Slider
@@ -280,13 +280,13 @@
                                 </ui:SettingsExpanderItem>
                                 <ui:SettingsExpanderItem
                                     Content="Apply this setting"
-                                    Description="Settings will be saved to device's memory and will not be erased after updating firmware"
+                                    Description="{localize:Loc ApplySettings.SettingsExpanderItem.Description}"
                                     IsClickEnabled="False">
                                     <ui:SettingsExpanderItem.Footer>
                                         <Button
                                             Margin="40,0"
                                             Command="{Binding ApplyHardwareSettingsCommand}"
-                                            Content="Apply" />
+                                            Content="{localize:Loc Apply.Button.Content}" />
                                     </ui:SettingsExpanderItem.Footer>
                                 </ui:SettingsExpanderItem>
                             </ui:SettingsExpander>

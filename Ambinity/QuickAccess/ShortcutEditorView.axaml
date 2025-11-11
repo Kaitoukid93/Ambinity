@@ -152,7 +152,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 VerticalAlignment="Bottom"
                 Classes="accent"
                 Command="{Binding ApplySettingsCommand}"
-                Content="Apply"
+                Content="{localize:Loc Apply.Button.Content}"
                 ToolTip.ShowDelay="0" />
         </Grid>
     </Grid>
