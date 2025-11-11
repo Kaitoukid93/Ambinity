@@ -16,11 +16,13 @@ public class ResourceService
 {
     private string ImagesLocalFolderPath => Path.Combine(Constants.AppDataFolder, "Images");
     private string AmbinityDeviceFolderPath => Path.Combine(Constants.AppDataFolder, "AmbinityDevices");
+    private string AmbinityLocalesFolderPath => Path.Combine(Constants.AppDataFolder, "Locales");
     private string ProfileFolderPath => Path.Combine(Constants.ModelDataFolder, "Profiles");
     private string ImageRemotePath;
     private string DeviceRemotePath;
     private string ProfileRemotePath;
     private string FirmwareToolsRemotePath;
+    private string LocalesRemotePath;
 
     public ResourceService(AmbinityClient client, DownloadService downloadService)
     {
@@ -29,6 +31,7 @@ public class ResourceService
         DeviceRemotePath = client.HomeAddress + "ftp/files/Resources/AmbinityDevices";
         ProfileRemotePath = client.HomeAddress + "ftp/files/Resources/LightingProfiles";
         FirmwareToolsRemotePath = client.HomeAddress + "/ftp/files/Firmwares/Tools";
+        LocalesRemotePath = client.HomeAddress + "ftp/files/Resources/Locales";
     }
 
     private DownloadService _downloadService;
@@ -38,6 +41,9 @@ public class ResourceService
     /// </summary>
     public async Task DownloadFirstRunResource(IProgress<DownloadProgress> progress)
     {
+        //download language packs
+        if (!Directory.Exists(AmbinityLocalesFolderPath))
+            await _downloadService.DownloadDirectory(LocalesRemotePath, AmbinityLocalesFolderPath, progress);
         //download device
         if (!Directory.Exists(AmbinityDeviceFolderPath))
             await _downloadService.DownloadDirectory(DeviceRemotePath, AmbinityDeviceFolderPath, progress);

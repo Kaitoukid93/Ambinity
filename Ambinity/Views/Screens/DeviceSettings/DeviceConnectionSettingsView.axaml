@@ -1,45 +1,52 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
-             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
-             x:DataType="local:DeviceConnectionSettingsViewModel"
-             x:Class="Ambinity.Views.Screens.DeviceSettings.DeviceConnectionSettingsView">
+<UserControl
+    x:Class="Ambinity.Views.Screens.DeviceSettings.DeviceConnectionSettingsView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
+    xmlns:localize="clr-namespace:Ambinity.Localization"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="local:DeviceConnectionSettingsViewModel"
+    mc:Ignorable="d">
     <Grid RowDefinitions="Auto,*">
         <Grid>
-            <TextBlock Text="Connection"></TextBlock>
+            <TextBlock Text="Connection" />
         </Grid>
         <Grid Margin="0,10,0,0" Row="1">
             <StackPanel>
-                <ui:SettingsExpander MinWidth="500" Margin="0,2" Grid.Row="1" Header="Auto Connect"
-
-                                     Description="Auto connect to device when available"
-                                     IsClickEnabled="False">
+                <ui:SettingsExpander
+                    Grid.Row="1"
+                    MinWidth="500"
+                    Margin="0,2"
+                    Description="Auto connect to device when available"
+                    Header="Auto Connect"
+                    IsClickEnabled="False">
                     <ui:SettingsExpander.IconSource>
-                        <ui:PathIconSource Data="{DynamicResource link}"></ui:PathIconSource>
+                        <ui:PathIconSource Data="{DynamicResource link}" />
                     </ui:SettingsExpander.IconSource>
                     <ui:SettingsExpander.Footer>
-                        <ToggleSwitch IsChecked="{Binding Controller.AutoConnect}"></ToggleSwitch>
+                        <ToggleSwitch IsChecked="{Binding Controller.AutoConnect}" />
                     </ui:SettingsExpander.Footer>
                 </ui:SettingsExpander>
-                <!-- <ui:SettingsExpander MinWidth="500" Margin="0,2" Grid.Row="1" Header="COM Port" -->
-                <!--                      Description="Serial Port of the device" -->
-                <!--                      IsClickEnabled="False"> -->
+                <!--  <ui:SettingsExpander MinWidth="500" Margin="0,2" Grid.Row="1" Header="COM Port"  -->
+                <!--  Description="Serial Port of the device"  -->
+                <!--  IsClickEnabled="False">  -->
                 <!--     <ui:SettingsExpander.IconSource> -->
                 <!--         <ui:PathIconSource Data="{DynamicResource usb_port}"></ui:PathIconSource> -->
                 <!--     </ui:SettingsExpander.IconSource> -->
                 <!--     <ui:SettingsExpander.Footer> -->
                 <!--         <ui:FAComboBox> -->
                 <!--             <ui:FAComboBoxItem> -->
-                <!--                 COM1 -->
+                <!--  COM1  -->
                 <!--             </ui:FAComboBoxItem> -->
                 <!--             <ui:FAComboBoxItem> -->
-                <!--                 COM2 -->
+                <!--  COM2  -->
                 <!--             </ui:FAComboBoxItem> -->
                 <!--             <ui:FAComboBoxItem> -->
-                <!--                 COM3 -->
+                <!--  COM3  -->
                 <!--             </ui:FAComboBoxItem> -->
                 <!--         </ui:FAComboBox> -->
                 <!--     </ui:SettingsExpander.Footer> -->

@@ -1,0 +1,294 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor"
+             x:DataType="local:ProfileEditorRightPanelViewModel"
+             Focusable="True"
+             x:Class="Ambinity.Views.LayoutEditor.ProfileEditorRightPanelView">
+    <UserControl.Styles>
+        <Style Selector="FlyoutPresenter.DefaultFlyout"><Setter Property="Background" Value="{DynamicResource TimePickerFlyoutPresenterBackground}" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+    </UserControl.Styles>
+    <FlyoutBase.AttachedFlyout>
+        <Flyout Closing="PopupFlyoutBase_OnClosing" FlyoutPresenterClasses="DefaultFlyout" Placement="LeftEdgeAlignedBottom" HorizontalOffset="-10">
+            <Grid>
+                <ContentControl Focusable="True" Content="{CompiledBinding FlyoutViewModel}"></ContentControl>
+                <Grid HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="10" Spacing="5">
+                        <!-- <Grid> -->
+                        <!--     <Button ToolTip.Tip="Add to Library" Padding="1" Background="Transparent" Width="30" Height="30" -->
+                        <!--             Classes="icon-button"> -->
+                        <!--         <PathIcon Width="15" Data="{DynamicResource plus}"></PathIcon> -->
+                        <!--     </Button> -->
+                        <!-- </Grid> -->
+                        <Grid>
+                            <Button ToolTip.Tip="Close" Padding="1" Click="Button_OnClick"
+                                    Background="Transparent" Width="30" Height="30"
+                                    Classes="icon-button">
+                                <PathIcon Margin="1,1,0,0" Width="17" Data="{DynamicResource plus}">
+                                    <PathIcon.RenderTransform>
+                                        <RotateTransform Angle="45"></RotateTransform>
+                                    </PathIcon.RenderTransform>
+                                </PathIcon>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+         
+        </Flyout>
+    </FlyoutBase.AttachedFlyout>
+    <UserControl.Resources>
+        <ControlTheme x:Key="assetsTabStripItem" TargetType="TabStripItem">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+            <Setter Property="Padding" Value="5,0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="MinHeight" Value="{DynamicResource TabItemMinHeight}" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="PART_LayoutRoot"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{Binding $parent[TabStripItem].Background}">
+                        <Panel>
+                            <Grid ColumnDefinitions="Auto,*">
+                                <ContentPresenter Grid.Column="1" Name="PART_ContentPresenter"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  FontFamily="{TemplateBinding FontFamily}"
+                                                  FontSize="{TemplateBinding FontSize}"
+                                                  FontWeight="{TemplateBinding FontWeight}" />
+                            </Grid>
+
+                            <Rectangle Name="PART_SelectedPipe"
+                                       Fill="{DynamicResource PivotHeaderItemSelectedPipeFill}"
+                                       RadiusX="2"
+                                       RadiusY="2"
+                                       Width="20"
+                                       VerticalAlignment="Bottom"
+                                       IsVisible="False"
+                                       Height="{DynamicResource TabItemPipeThickness}"
+                                       Margin="0,0,0,10"
+                                       HorizontalAlignment="Center" />
+                        </Panel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+
+            <Style Selector="^:selected">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Style Selector="^ /template/ Rectangle#PART_SelectedPipe">
+                    <Setter Property="IsVisible" Value="True" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:pointerover /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            </Style>
+
+            <Style Selector="^:selected:pointerover /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            </Style>
+
+            <Style Selector="^:pressed /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            </Style>
+
+            <Style Selector="^:pressed /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            </Style>
+
+            <Style Selector="^:disabled /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorDisabledBrush}" />
+            </Style>
+        </ControlTheme>
+        <ControlTheme x:Key="propertiesTabStripItem" TargetType="TabStripItem">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+            <Setter Property="Padding" Value="5,0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="MinHeight" Value="{DynamicResource TabItemMinHeight}" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="PART_LayoutRoot"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{Binding $parent[TabStripItem].Background}">
+                        <Panel>
+                            <Grid ColumnDefinitions="Auto,*">
+                                <ContentPresenter Grid.Column="1" Name="PART_ContentPresenter"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  FontFamily="{TemplateBinding FontFamily}"
+                                                  FontSize="{TemplateBinding FontSize}"
+                                                  FontWeight="{TemplateBinding FontWeight}" />
+                            </Grid>
+
+                            <Rectangle Name="PART_SelectedPipe"
+                                       Fill="{DynamicResource PivotHeaderItemSelectedPipeFill}"
+                                       RadiusX="2"
+                                       RadiusY="2"
+                                       VerticalAlignment="Bottom"
+                                       IsVisible="False"
+                                       Width="20"
+                                       Margin="0,0,0,5"
+                                       Height="{DynamicResource TabItemPipeThickness}"
+                                       HorizontalAlignment="Center" />
+                        </Panel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+
+            <Style Selector="^:selected">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Style Selector="^ /template/ Rectangle#PART_SelectedPipe">
+                    <Setter Property="IsVisible" Value="True" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:pointerover /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            </Style>
+
+            <Style Selector="^:selected:pointerover /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            </Style>
+
+            <Style Selector="^:pressed /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            </Style>
+
+            <Style Selector="^:pressed /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            </Style>
+
+            <Style Selector="^:disabled /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorDisabledBrush}" />
+            </Style>
+        </ControlTheme>
+        <ControlTheme x:Key="layersTabStripItem" TargetType="TabStripItem">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+            <Setter Property="Padding" Value="5,0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="MinHeight" Value="{DynamicResource TabItemMinHeight}" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="PART_LayoutRoot"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{Binding $parent[TabStripItem].Background}">
+                        <Panel>
+                            <Grid ColumnDefinitions="Auto,*">
+                                <ContentPresenter Grid.Column="1" Name="PART_ContentPresenter"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  FontFamily="{TemplateBinding FontFamily}"
+                                                  FontSize="{TemplateBinding FontSize}"
+                                                  FontWeight="{TemplateBinding FontWeight}" />
+                            </Grid>
+
+                            <Rectangle Name="PART_SelectedPipe"
+                                       Fill="{DynamicResource PivotHeaderItemSelectedPipeFill}"
+                                       RadiusX="2"
+                                       RadiusY="2"
+                                       VerticalAlignment="Bottom"
+                                       Margin="0,0,0,5"
+                                       IsVisible="False"
+                                       Width="20"
+                                       Height="{DynamicResource TabItemPipeThickness}"
+                                       HorizontalAlignment="Center" />
+                        </Panel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+
+            <Style Selector="^:selected">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Style Selector="^ /template/ Rectangle#PART_SelectedPipe">
+                    <Setter Property="IsVisible" Value="True" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:pointerover /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            </Style>
+
+            <Style Selector="^:selected:pointerover /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            </Style>
+
+            <Style Selector="^:pressed /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            </Style>
+
+            <Style Selector="^:pressed /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            </Style>
+
+            <Style Selector="^:disabled /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextFillColorDisabledBrush}" />
+            </Style>
+        </ControlTheme>
+    </UserControl.Resources>
+    <UserControl.Styles>
+
+
+    </UserControl.Styles>
+    <Grid RowDefinitions="Auto,10,*">
+        <TabStrip SelectedIndex="{Binding SelectedTab }">
+            <TabStripItem Margin="10,5" Theme="{DynamicResource propertiesTabStripItem}" Content="Properties">
+            </TabStripItem>
+            <TabStripItem Margin="10,5" Theme="{DynamicResource layersTabStripItem}" Content="Layers">
+            </TabStripItem>
+        </TabStrip>
+        <Separator Grid.Row="1" Height="1" Margin="18,10,18,0"></Separator>
+        <ContentControl Width="350" Content="{CompiledBinding CurrentTabContent}" Grid.Row="2">
+        </ContentControl>
+    </Grid>
+
+</UserControl>

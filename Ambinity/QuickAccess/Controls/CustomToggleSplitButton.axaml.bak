@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+			 xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+			 x:Class="Ambinity.QuickAccess.Controls.CustomToggleSplitButton"
+             UseLayoutRounding="False">
+  <StackPanel>
+    <StackPanel Orientation="Horizontal">
+      <ToggleButton
+          Width="70"
+          Height="50"
+          HorizontalAlignment="Center"
+          CornerRadius="4 0 0 4"
+          Name="ButtonCustomProfile">
+      </ToggleButton>
+      <ToggleButton
+          Width="40"
+          Height="50"
+          HorizontalAlignment="Center"
+          CornerRadius="0 4 4 0"
+          BorderThickness="0 1 1 1"
+
+          IsChecked="{Binding Path=IsChecked, ElementName=ButtonCustomProfile, Mode=OneWay}"
+          IsEnabled="{Binding Path=IsChecked, ElementName=ButtonCustomProfile}"
+          Click="ButtonMore_OnClick"
+          Name="ButtonMore">
+        <avalonia:MaterialIcon
+            Kind="ChevronRight"
+            Width="24"
+            Height="24"/>
+      </ToggleButton>
+    </StackPanel>
+
+  </StackPanel>
+</UserControl>

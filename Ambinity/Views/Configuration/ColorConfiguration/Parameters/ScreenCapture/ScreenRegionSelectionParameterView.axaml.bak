@@ -1,0 +1,88 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="87"
+             xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
+             x:DataType="local:ScreenRegionSelectionParameterViewModel"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             IsEnabled="{Binding IsEnabled}"
+             x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.ScreenRegionSelectionParameterView">
+    <UserControl.Resources>
+        <MenuFlyout x:Key="CaptureRegionFlyout"
+                    Placement="Bottom">
+            <MenuItem 
+                      CommandParameter="0.25"
+                      Header="Left">
+            </MenuItem>
+            <MenuItem 
+                      CommandParameter="0.5"
+                      Header="Right">
+            </MenuItem>
+            <MenuItem 
+                      CommandParameter="0.75"
+                      Header="Top">
+            </MenuItem>
+            <MenuItem 
+                      CommandParameter="1"
+                      Header="Bottom">
+            </MenuItem>
+        </MenuFlyout>
+    </UserControl.Resources>
+    <Grid RowDefinitions="Auto,*">
+        <Grid Row="0" ColumnDefinitions="Auto,*">
+            <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
+                       Text="Capture infomation">
+            </TextBlock>
+              <Grid Column="1">
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5">
+                    <Grid>
+                        <Button IsEnabled="{Binding EnableEdit}" ToolTip.Tip="Select capture area" Command="{Binding OpenRegionSelectionCommand}" Padding="1" Background="Transparent" Width="30" Height="30"
+                                Classes="icon-button">
+                            <PathIcon Width="15" Data="{DynamicResource Zone_layer_icon}"></PathIcon>
+                        </Button>
+                    </Grid>
+                   
+
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Row="1" Margin="0,8" RowDefinitions="Auto,Auto">
+            <!-- <Grid Column="0"> -->
+            <!--     <ui:FAComboBox ItemsSource="{Binding AvailableScreen}" SelectedItem="{Binding SelectedScreen}" VerticalAlignment="Center" HorizontalAlignment="Stretch"> -->
+            <!--        <ui:FAComboBox.ItemTemplate> -->
+            <!--            <DataTemplate> -->
+            <!--                <TextBlock Text="{Binding Name }"></TextBlock> -->
+            <!--            </DataTemplate> -->
+            <!--        </ui:FAComboBox.ItemTemplate> -->
+            <!--     </ui:FAComboBox> -->
+            <!-- </Grid> -->
+            <!-- <Grid> -->
+            <!--     <SplitButton Command="{Binding OpenRegionSelectionCommand}" ToolTip.Tip="Click for more" VerticalAlignment="Center" HorizontalAlignment="Stretch" BorderThickness="1" Height="20" Margin="0,0,0,0" -->
+            <!--                  Flyout="{StaticResource CaptureRegionFlyout}"> -->
+            <!--         <Grid ColumnDefinitions="*,Auto"> -->
+            <!--             <TextBlock HorizontalAlignment="Left" Text="{Binding CaptureAreaInfomation}"> -->
+            <!--             </TextBlock>     -->
+            <!--             <PathIcon Grid.Column="1" Width="15" Data="{DynamicResource Zone_layer_icon}"></PathIcon> -->
+            <!--         </Grid> -->
+            <!--          -->
+            <!--     </SplitButton> -->
+            <!-- </Grid> -->
+            <Grid>
+                <Image MaxHeight="200" Source="{Binding PreviewImage}"></Image>
+            </Grid>
+            <Grid Row="1">
+                <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" IsVisible="{Binding !EnableEdit}" Foreground="DarkOrange" Text="Please stop current playing profile before changing screen capture area"></TextBlock>
+            </Grid>
+            <!-- <Grid Row="1"> -->
+            <!--     <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" IsVisible="{Binding !EnableEdit}" Foreground="Red" Text="{Binding ErrorMessage}"></TextBlock> -->
+            <!-- </Grid> -->
+                <!--<Grid Column="4">
+                <Button ToolTip.Tip="Setting" Background="Transparent" Width="30" Height="30" Classes="icon-button" >
+                    <PathIcon Width="15" Data="{DynamicResource Zone_layer_icon}"></PathIcon>
+                </Button>
+            </Grid>-->
+        </Grid>
+
+    </Grid>
+</UserControl> 

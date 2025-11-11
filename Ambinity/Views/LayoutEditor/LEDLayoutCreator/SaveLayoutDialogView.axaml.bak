@@ -1,0 +1,51 @@
+<Window
+    x:Class="Ambinity.Views.LayoutEditor.LEDLayoutCreator.SaveLayoutDialogView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor.LEDLayoutCreator"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    Title="Create new Layout"
+    Width="400"
+    Height="400"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="local:SaveLayoutDialogViewModel"
+    CanResize="false"
+    ExtendClientAreaToDecorationsHint="True"
+    mc:Ignorable="d">
+
+    <Grid Margin="20" RowDefinitions="20,*,auto">
+        <Grid Row="1">
+            <StackPanel Spacing="20">
+                 <TextBlock FontWeight="SemiBold" Text="Information" />
+                <StackPanel Margin="10,0" Spacing="8">
+                    <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Layout name" />
+                    <TextBox Text="{Binding LayoutName}" />
+                </StackPanel>
+                <StackPanel Margin="10,0" Spacing="8">
+                    <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Layout Description" />
+                    <TextBox Text="{Binding LayoutDescription}" />
+                </StackPanel>
+
+            </StackPanel>
+        </Grid>
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal"
+            Spacing="10">
+            <Button
+                Classes="accent"
+                Click="Accept_Button_Click"
+                Command="{Binding AcceptCommand}"
+                Content="Accept" />
+            <Button
+                Click="Cancel_Button_Click"
+                Command="{Binding CancelCommand}"
+                Content="Cancel" />
+        </StackPanel>
+    </Grid>
+
+</Window>

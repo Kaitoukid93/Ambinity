@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local = "clr-namespace:Ambinity.Windows"
+             x:DataType="local:InputDialogContentViewModel"
+             x:Class="Ambinity.Windows.InputDialogContent">
+    <StackPanel Spacing="10" MinWidth="400">
+        <TextBlock>Enter name for new item</TextBlock>
+        <AutoCompleteBox FilterMode="StartsWithOrdinal"
+                         Text="{CompiledBinding UserInput}"
+                         ItemsSource="{Binding AvailableKeyWords}"
+                         AttachedToVisualTree="InputField_OnAttachedToVisualTree" />
+    </StackPanel>
+</UserControl>

@@ -153,6 +153,12 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         get => _lastPlayedProfileID;
         set => SetProperty(ref _lastPlayedProfileID, value);
     }
+    private string _selectedlanguage = "en";
+    public string SelectedLanguage
+    {
+        get => _selectedlanguage;
+        set => SetProperty(ref _selectedlanguage, value);
+    }
 
     #endregion
 

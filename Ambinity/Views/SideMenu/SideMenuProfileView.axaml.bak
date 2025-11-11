@@ -1,0 +1,141 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.SideMenu"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:DataType="local:SideMenuProfileViewModel"
+             RenderOptions.BitmapInterpolationMode="HighQuality"
+             x:Class="Ambinity.Views.SideMenu.SideMenuProfileView">
+    <UserControl.Resources>
+        <MenuFlyout x:Key="ProfileMenuFlyout" Placement="Bottom">
+            <MenuItem Command="{Binding OpenPropertiesEditorCommand}" Header="Edit properties">
+                <MenuItem.Icon>
+                    <PathIcon Width="15" Height="15" Data="{DynamicResource generalSettings}"></PathIcon>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="-" />
+            <MenuItem Command="{Binding ExportCommand}" Header="Export">
+                <MenuItem.Icon>
+                    <PathIcon Width="15" Height="15" Data="{DynamicResource Export}"></PathIcon>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Command="{Binding DuplicateCommand}" Header="Duplicate">
+                <MenuItem.Icon>
+                    <PathIcon Width="15" Height="15" Data="{DynamicResource duplicate}"></PathIcon>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="-" />
+            <MenuItem Command="{Binding SelfDeleteCommand}" Header="Delete">
+                <MenuItem.Icon>
+                    <PathIcon Width="15" Height="15" Data="{DynamicResource delete}"></PathIcon>
+                </MenuItem.Icon>
+            </MenuItem>
+        </MenuFlyout>
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style Selector=":is(Button).properties-button">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector=":is(Button).isSelected-button">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector=":is(PathIcon).playing-grid">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Grid#ItemGrid:pointerover :is(Button).properties-button">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="Grid#ItemGrid:pointerover :is(Grid).playing-grid">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Grid#ItemGrid.flyout-open :is(Button).properties-button">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector=":is(TextBlock).playing-foreGround">
+            <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
+        </Style>
+        <Style Selector=":is(PathIcon).playing-fill">
+            <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
+        </Style>
+        <Style Selector="ContentControl.profileIcon">
+            <Setter Property="Content">
+                <Template>
+                    <PathIcon Width="18" Height="18" Margin="5,0,7,0"
+                              Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+                        <PathIcon.Foreground>
+                            <SolidColorBrush Color="{Binding IconColor}"></SolidColorBrush>
+                        </PathIcon.Foreground>
+                    </PathIcon>
+                </Template>
+            </Setter>
+        </Style>
+        <Style Selector="ContentControl.profileIcon.image">
+            <Setter Property="Content">
+                <Template>
+                    <Border Margin="5,0,7,0" Width="18" Height="18" Padding="0" CornerRadius="9" ClipToBounds="True">
+                        <Image RenderOptions.BitmapInterpolationMode="HighQuality" Stretch="Fill"
+                               Source="{Binding GetThumbnail^,FallbackValue=null}">
+                        </Image>
+                    </Border>
+
+                </Template>
+            </Setter>
+        </Style>
+    </UserControl.Styles>
+    <Grid Background="Transparent"
+          x:Name="ItemGrid"
+          Margin="0,2"
+          ContextFlyout="{DynamicResource ProfileMenuFlyout}"
+          ColumnDefinitions="Auto,*,10,Auto">
+        <!-- <PathIcon Width="15" Height="15" Margin="0,0,7,0" -->
+        <!--           Classes.playing-fill="{CompiledBinding IsPlaying}" -->
+        <!--           Data="{Binding Icon,Converter={StaticResource ResourceConverter}}"> -->
+        <!-- </PathIcon> -->
+        <ContentControl Classes="profileIcon" Classes.image="{Binding !IconType}"></ContentControl>
+
+        <TextBlock TextTrimming="CharacterEllipsis" Grid.Column="1" Padding="0 6,0,6"
+                   Classes="smallBold"
+                   ToolTip.Tip="{Binding Content}"
+                   Classes.playing-foreGround="{CompiledBinding IsPlaying}"
+                   HorizontalAlignment="Left"
+                   Text="{CompiledBinding Content, FallbackValue='No Name'}">
+        </TextBlock>
+
+        <Grid Column="3" HorizontalAlignment="Right" ColumnDefinitions="Auto,*">
+            <Button Classes="properties-button icon-button icon-button-small"
+                    Classes.isSelected-button="{Binding IsSelected}"
+                    Flyout="{StaticResource ProfileMenuFlyout}"
+                    ToolTip.Tip="Settings"
+                    HorizontalAlignment="Right"
+                    Margin="0 2 0 2">
+                <PathIcon Width="13" Height="13"
+                          Data="{DynamicResource generalSettings}">
+                </PathIcon>
+            </Button>
+            <Button Grid.Column="1" Classes="properties-button icon-button icon-button-small"
+                    Click="Button_OnClick"
+                    x:Name="PlayButton"
+                    Classes.isSelected-button="{Binding IsSelected}"
+                    Command="{CompiledBinding TogglePlayPauseProfileCommand}"
+                    ToolTip.Tip="Play/Pause profile"
+                    HorizontalAlignment="Right"
+                    Margin="0 2 0 2">
+                <Panel>
+                    <PathIcon IsVisible="{Binding !IsPlaying}" Width="13" Height="13"
+                              Data="{DynamicResource 'playComposition'}">
+                    </PathIcon>
+                    <PathIcon HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding IsPlaying}"
+                              Width="13" Height="13"
+                              Data="{DynamicResource 'pauseComposition'}">
+                    </PathIcon>
+                </Panel>
+            </Button>
+
+        </Grid>
+
+
+    </Grid>
+</UserControl>

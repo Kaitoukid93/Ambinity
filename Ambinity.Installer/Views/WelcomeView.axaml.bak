@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:viewModels="clr-namespace:Ambinity.Installer.ViewModels"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:DataType="viewModels:WelcomeViewModel"
+             x:Class="Ambinity.Installer.Views.WelcomeView">
+    <Grid Margin="20,0" RowDefinitions="Auto,20,*">
+        <StackPanel Spacing="5">
+            <TextBlock Text="{Binding Header}" FontSize="25" FontWeight="SemiBold" HorizontalAlignment="Left"
+                       VerticalAlignment="Top" />
+            <TextBlock MaxWidth="500" TextWrapping="Wrap" HorizontalAlignment="Left" Text="{Binding SubHeader}"
+                       FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}">
+            </TextBlock>
+        </StackPanel>
+        <Grid Row="2">
+            <StackPanel Spacing="8">
+               <TextBlock Text="Available languages"></TextBlock>
+                <ui:FAComboBox SelectedIndex="0">
+                    <ui:FAComboBoxItem>English</ui:FAComboBoxItem>
+                    <ui:FAComboBoxItem>Tiếng Việt</ui:FAComboBoxItem>
+                </ui:FAComboBox>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

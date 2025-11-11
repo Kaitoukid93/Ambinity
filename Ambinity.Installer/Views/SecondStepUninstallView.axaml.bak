@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:viewModels="clr-namespace:Ambinity.Installer.ViewModels"
+             x:DataType="viewModels:SecondStepUninstallViewModel"
+             x:Class="Ambinity.Installer.Views.SecondStepUninstallView">
+    <Grid Margin="20,0" RowDefinitions="Auto,20,*">
+        <StackPanel Spacing="5">
+            <TextBlock Text="{Binding Header}" FontSize="25" FontWeight="SemiBold" HorizontalAlignment="Left"
+                       VerticalAlignment="Top" />
+            <TextBlock MaxWidth="500" TextWrapping="Wrap" HorizontalAlignment="Left" Text="{Binding SubHeader}"
+                       FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}">
+            </TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Spacing="8">
+            <TextBlock Text="Choose what to delete" FontWeight="SemiBold"
+                       TextWrapping="Wrap"/>
+            <StackPanel Spacing="10">
+                <CheckBox IsChecked="{Binding DeleteAppConfig}"  Content="App config"></CheckBox>
+                <CheckBox IsChecked="{Binding DeleteDevices}" Content="Devices config"></CheckBox>
+                <CheckBox IsChecked="{Binding DeleteData}" Content="Personal data(profiles, colors...)"></CheckBox>
+                <CheckBox IsChecked="{Binding DeleteAll}" Content="Remove all"></CheckBox>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,55 @@
+<UserControl
+    x:Class="Ambinity.Views.Screens.Home.HyperLinkHomeView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Ambinity.Views.Screens.Home"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="local:HyperLinkHomeViewModel"
+    mc:Ignorable="d">
+    <Button
+        Padding="5"
+        HorizontalAlignment="Stretch"
+        HorizontalContentAlignment="Stretch"
+        Classes="icon-button"
+        Command="{Binding OpenHyperLinkCommand}"
+        CornerRadius="9">
+        <Grid RowDefinitions="Auto,10,*">
+            <Border
+                Height="150"
+                HorizontalAlignment="Stretch"
+                Classes="card"
+                CornerRadius="5"
+                Padding="0">
+                <Grid>
+                    <!-- <Grid HorizontalAlignment="Right" VerticalAlignment="Top"> -->
+                    <!--     <TextBlock Margin="10" FontWeight="SemiBold" FontSize="12" Text="{Binding LastUpdate}"></TextBlock> -->
+                    <!-- </Grid> -->
+                    <Border ClipToBounds="True" CornerRadius="5">
+                        <Image Source="{Binding GetThumbnail^}" Stretch="UniformToFill" />
+                    </Border>
+                </Grid>
+            </Border>
+            <Grid Row="2">
+                <StackPanel Margin="5,5" Spacing="2">
+                    <TextBlock
+                        MaxWidth="200"
+                        HorizontalAlignment="Left"
+                        FontSize="15"
+                        FontWeight="SemiBold"
+                        Text="{Binding Name}"
+                        TextTrimming="CharacterEllipsis" />
+                    <TextBlock
+                        HorizontalAlignment="Left"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource ButtonForegroundDisabled}"
+                        Text="{Binding Description}"
+                        TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Button>
+</UserControl>

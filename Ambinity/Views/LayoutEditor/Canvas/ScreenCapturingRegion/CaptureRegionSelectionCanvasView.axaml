@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cv="clr-namespace:Ambinity.Views.Draw2DCanvas"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+xmlns:localize="clr-namespace:Ambinity.Localization"
     xmlns:draw2DControlLibrary="clr-namespace:Draw2DControlLibrary;assembly=Draw2DControlLibrary"
     xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor.Canvas"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"

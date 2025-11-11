@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
+             x:DataType="local:AmbinityDeviceDaisyChainElementViewModel"
+             x:Class="Ambinity.Views.Screens.DeviceSettings.AmbinityDeviceDaisyChainElementView">
+    <UserControl.Resources>
+        <MenuFlyout x:Key="daisychainItemFlyout" 
+                    Placement="Bottom">
+            <MenuItem  Command="{Binding OpenLibraryCommand}"
+                       Header="Change device">
+                <MenuItem.Icon>
+                    <PathIcon Data="{DynamicResource collection}"></PathIcon>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem  Command="{Binding DetachThisDeviceCommand}"
+                      Header="Detach">
+                <MenuItem.Icon>
+                    <PathIcon Data="{DynamicResource cut}"></PathIcon>
+                </MenuItem.Icon>
+            </MenuItem>
+            <!-- <MenuItem  Command="{Binding MoveUpCommand}" -->
+            <!--            Header="Move up"> -->
+            <!--     <MenuItem.Icon> -->
+            <!--         <PathIcon Data="{DynamicResource Move_up}"></PathIcon> -->
+            <!--     </MenuItem.Icon> -->
+            <!-- </MenuItem> -->
+            <!-- <MenuItem  Command="{Binding MoveDownCommand}" -->
+            <!--            Header="Move down"> -->
+            <!--     <MenuItem.Icon> -->
+            <!--         <PathIcon Data="{DynamicResource Move_down}"></PathIcon> -->
+            <!--     </MenuItem.Icon> -->
+            <!-- </MenuItem> -->
+        </MenuFlyout>
+    
+    </UserControl.Resources>
+    <Button Flyout="{DynamicResource daisychainItemFlyout}" ToolTip.Tip="Change device" Margin="0,4"
+            Width="70" Height="70">
+        <Image Stretch="Uniform" Source="{Binding GetThumbnail^}"></Image>
+    </Button>
+</UserControl>

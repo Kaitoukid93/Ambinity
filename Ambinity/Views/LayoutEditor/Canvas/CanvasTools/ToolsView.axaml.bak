@@ -1,0 +1,397 @@
+<UserControl
+    x:Class="Ambinity.Views.LayoutEditor.ToolsView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:flyoutItem="clr-namespace:AmbinityCore.Models.Flyout;assembly=AmbinityCore"
+    xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolbarItem="clr-namespace:AmbinityCore.Models.Toolbar;assembly=AmbinityCore"
+    xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="local:ToolsViewModel"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <FontFamily x:Key="FrapsFont">avares://Ambinity/Assets/Fonts#fraps</FontFamily>
+        <FontFamily x:Key="MinercraftoryFont">avares://Ambinity/Assets/Fonts#Minercraftory</FontFamily>
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style x:DataType="toolbarItem:ButtonToolbarItem" Selector="Button.Tool">
+            <Setter Property="ToolTip.Tip" Value="{Binding ToolTip}" />
+            <Setter Property="Foreground" Value="{Binding FillColor}" />
+            <Style Selector="^:disabled">
+                <Setter Property="ToolTip.Tip" Value="{Binding DisabledToolTip}" />
+                <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundDisabled}" />
+            </Style>
+        </Style>
+        <Style x:DataType="toolbarItem:FlyoutButtonToolbarItem" Selector="Button.flyoutTool">
+            <Setter Property="ToolTip.Tip" Value="{Binding ToolTip}" />
+            <Setter Property="Foreground" Value="{Binding FillColor}" />
+            <Style Selector="^:disabled">
+                <Setter Property="ToolTip.Tip" Value="{Binding DisabledToolTip}" />
+                <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundDisabled}" />
+            </Style>
+        </Style>
+        <Style Selector="FlyoutPresenter.DefaultFlyout">
+            <Setter Property="Background" Value="{DynamicResource TimePickerFlyoutPresenterBackground}" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+    </UserControl.Styles>
+    <FlyoutBase.AttachedFlyout>
+        <Flyout
+            Closing="PopupFlyoutBase_OnClosing"
+            FlyoutPresenterClasses="DefaultFlyout"
+            HorizontalOffset="-10"
+            Placement="LeftEdgeAlignedBottom">
+            <Grid>
+                <ContentControl Content="{CompiledBinding CurrentFlyoutViewModel}" Focusable="True" />
+                <Grid HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <StackPanel
+                        Margin="10"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        Spacing="5">
+                        <!-- <Grid> -->
+                        <!--  <Button ToolTip.Tip="Add to Library" Padding="1" Background="Transparent" Width="30" Height="30"  -->
+                        <!--  Classes="icon-button">  -->
+                        <!--         <PathIcon Width="15" Data="{DynamicResource plus}"></PathIcon> -->
+                        <!--     </Button> -->
+                        <!-- </Grid> -->
+                        <Grid>
+                            <Button
+                                Width="30"
+                                Height="30"
+                                Padding="1"
+                                Background="Transparent"
+                                Classes="icon-button"
+                                Click="Button_OnClick"
+                                ToolTip.Tip="Close">
+                                <PathIcon
+                                    Width="17"
+                                    Margin="1,1,0,0"
+                                    Data="{DynamicResource plus}">
+                                    <PathIcon.RenderTransform>
+                                        <RotateTransform Angle="45" />
+                                    </PathIcon.RenderTransform>
+                                </PathIcon>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+        </Flyout>
+    </FlyoutBase.AttachedFlyout>
+    <Grid>
+
+        <StackPanel
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Orientation="Horizontal"
+            Spacing="10">
+            <Border
+                Margin="0,0,0,0"
+                Padding="0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Background="{DynamicResource ButtonBackground}"
+                CornerRadius="7">
+
+                <ItemsControl ItemsSource="{Binding CanvasTools}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.DataTemplates>
+                        <DataTemplate DataType="{x:Type toolbarItem:ToggleToolbarItem}">
+                            <ToggleButton
+                                Width="40"
+                                Height="40"
+                                Margin="5,5"
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Command="{Binding Command}"
+                                CornerRadius="4"
+                                IsChecked="{Binding IsChecked}"
+                                ToolTip.Tip="{Binding ToolTip}">
+                                <PathIcon
+                                    Width="18"
+                                    Height="18"
+                                    Data="{Binding Icon, Converter={StaticResource ResourceConverter}}" />
+                            </ToggleButton>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type toolbarItem:ButtonToolbarItem}">
+                            <Button
+                                Width="40"
+                                Height="40"
+                                Margin="5,5"
+                                Padding="0"
+                                Background="Transparent"
+                                Classes="icon-button Tool"
+                                Command="{Binding Command}"
+                                CornerRadius="4"
+                                ToolTip.ShowOnDisabled="True">
+                                <PathIcon
+                                    Width="18"
+                                    Height="18"
+                                    Data="{Binding Icon, Converter={StaticResource ResourceConverter}}" />
+                            </Button>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type toolbarItem:SeparatorToolbarItem}">
+                            <Separator
+                                Width="1"
+                                Height="35"
+                                Margin="5" />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type toolbarItem:FlyoutButtonToolbarItem}">
+                            <Button
+                                Width="40"
+                                Height="40"
+                                Margin="5,5"
+                                Padding="0"
+                                Classes="icon-button flyoutTool"
+                                Command="{Binding Command}"
+                                CornerRadius="4"
+                                ToolTip.ShowOnDisabled="True">
+                                <PathIcon Data="{Binding Icon, Converter={StaticResource ResourceConverter}}" />
+                                <Button.Flyout>
+                                    <ui:FAMenuFlyout
+                                        ItemsSource="{Binding FlyoutItems}"
+                                        Placement="Top"
+                                        VerticalOffset="-10">
+                                        <ui:FAMenuFlyout.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type flyoutItem:FlyoutItem}">
+                                                <ui:MenuFlyoutItem
+                                                    Click="MenuFlyoutItem_OnClick"
+                                                    Command="{Binding Command}"
+                                                    Text="{Binding Content}">
+                                                    <ui:MenuFlyoutItem.IconSource>
+                                                        <ui:PathIconSource Data="{Binding Icon, Converter={StaticResource ResourceConverter}}" />
+                                                    </ui:MenuFlyoutItem.IconSource>
+                                                </ui:MenuFlyoutItem>
+                                            </DataTemplate>
+                                        </ui:FAMenuFlyout.ItemTemplate>
+                                    </ui:FAMenuFlyout>
+                                </Button.Flyout>
+
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.DataTemplates>
+                </ItemsControl>
+            </Border>
+            <Border
+                Padding="10"
+                VerticalAlignment="Top"
+                Background="{DynamicResource ButtonBackground}"
+                CornerRadius="7"
+                IsVisible="{Binding ShowDiag}">
+
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <StackPanel Spacing="3">
+                        <ItemsControl ItemsSource="{Binding FrameTime}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="3" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid HorizontalAlignment="Left" ColumnDefinitions="Auto,*">
+                                        <TextBlock
+                                            HorizontalAlignment="Left"
+                                            FontFamily="{DynamicResource MinercraftoryFont}"
+                                            FontSize="10"
+                                            Foreground="{DynamicResource AccentButtonBackground}"
+                                            Text="FRAME TIME: " />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Width="60"
+                                            HorizontalAlignment="Left"
+                                            FontFamily="{DynamicResource MinercraftoryFont}"
+                                            FontSize="10"
+                                            Foreground="{DynamicResource AccentButtonBackground}"
+                                            Text="{Binding ., StringFormat={}{0:F5}}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+
+        </StackPanel>
+
+        <StackPanel
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            IsVisible="{Binding ShowProfileControl}"
+            Orientation="Horizontal"
+            Spacing="10">
+            <Border
+                Margin="0,0,0,0"
+                Padding="0"
+                Background="{DynamicResource ButtonBackground}"
+                CornerRadius="7">
+
+                <Button
+                    Width="40"
+                    Height="40"
+                    Margin="5,5"
+                    Padding="0"
+                    Classes="icon-button"
+                    Command="{Binding TogglePlayPauseCommand}"
+                    CornerRadius="4"
+                    ToolTip.Tip="Play-Pause">
+                    <Grid>
+                        <PathIcon
+                            Width="18"
+                            Height="18"
+                            Data="{DynamicResource playComposition}"
+                            IsVisible="{Binding !IsRendering}" />
+                        <PathIcon
+                            Width="18"
+                            Height="18"
+                            Data="{DynamicResource pauseComposition}"
+                            IsVisible="{Binding IsRendering}" />
+                    </Grid>
+                </Button>
+            </Border>
+            <Border
+                Margin="0,0,0,0"
+                Padding="0"
+                Background="{DynamicResource ButtonBackground}"
+                CornerRadius="7">
+
+                <Slider
+                    Width="160"
+                    Margin="10,0,10,0"
+                    Maximum="100"
+                    Minimum="0"
+                    Value="{Binding Brightness}" />
+            </Border>
+        </StackPanel>
+        <StackPanel
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Orientation="Horizontal"
+            Spacing="10" />
+        <StackPanel
+            HorizontalAlignment="Center"
+            Orientation="Horizontal"
+            Spacing="10">
+            <Border
+                Margin="0,0,0,0"
+                Padding="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                Background="{DynamicResource ButtonBackground}"
+                CornerRadius="7">
+
+                <ItemsControl x:Name="tools" ItemsSource="{Binding ZoneTools}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.DataTemplates>
+                        <DataTemplate DataType="{x:Type toolbarItem:ToggleToolbarItem}">
+                            <ToggleButton
+                                Width="40"
+                                Height="40"
+                                Margin="5,5"
+                                Padding="0"
+                                Background="Transparent"
+                                Command="{Binding Command}"
+                                CornerRadius="4"
+                                IsChecked="{Binding IsChecked}"
+                                ToolTip.Tip="{Binding ToolTip}">
+                                <PathIcon
+                                    Width="18"
+                                    Height="18"
+                                    Data="{Binding Icon, Converter={StaticResource ResourceConverter}}" />
+                            </ToggleButton>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type toolbarItem:ButtonToolbarItem}">
+                            <Button
+                                Width="40"
+                                Height="40"
+                                Margin="5,5"
+                                Padding="0"
+                                Background="Transparent"
+                                Classes="icon-button Tool"
+                                Command="{Binding Command}"
+                                CornerRadius="4"
+                                ToolTip.ShowOnDisabled="True">
+                                <PathIcon
+                                    Width="18"
+                                    Height="18"
+                                    Data="{Binding Icon, Converter={StaticResource ResourceConverter}}" />
+                            </Button>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type toolbarItem:SeparatorToolbarItem}">
+                            <Separator
+                                Width="1"
+                                Height="35"
+                                Margin="5" />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type toolbarItem:FlyoutButtonToolbarItem}">
+                            <Button
+                                Width="40"
+                                Height="40"
+                                Margin="5,5"
+                                Padding="0"
+                                Classes="icon-button flyoutTool"
+                                Command="{Binding Command}"
+                                CornerRadius="4"
+                                ToolTip.ShowOnDisabled="True">
+                                <PathIcon Data="{Binding Icon, Converter={StaticResource ResourceConverter}}" />
+                                <Button.Flyout>
+                                    <ui:FAMenuFlyout
+                                        ItemsSource="{Binding FlyoutItems}"
+                                        Placement="Top"
+                                        VerticalOffset="-10">
+                                        <ui:FAMenuFlyout.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type flyoutItem:FlyoutItem}">
+                                                <ui:MenuFlyoutItem
+                                                    Click="MenuFlyoutItem_OnClick"
+                                                    Command="{Binding Command}"
+                                                    Text="{Binding Content}">
+                                                    <ui:MenuFlyoutItem.IconSource>
+                                                        <ui:PathIconSource Data="{Binding Icon, Converter={StaticResource ResourceConverter}}" />
+                                                    </ui:MenuFlyoutItem.IconSource>
+                                                </ui:MenuFlyoutItem>
+                                            </DataTemplate>
+                                        </ui:FAMenuFlyout.ItemTemplate>
+                                    </ui:FAMenuFlyout>
+                                </Button.Flyout>
+
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.DataTemplates>
+                </ItemsControl>
+            </Border>
+            <Border
+                Width="50"
+                Height="50"
+                Margin="0,0,0,0"
+                Padding="0"
+                VerticalAlignment="Bottom"
+                Background="{DynamicResource ButtonBackground}"
+                CornerRadius="7"
+                IsVisible="{Binding ShowLockSymbol}">
+
+                <PathIcon
+                    Data="{DynamicResource lock}"
+                    Foreground="OrangeRed"
+                    ToolTip.Tip="Canvas is locked" />
+            </Border>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

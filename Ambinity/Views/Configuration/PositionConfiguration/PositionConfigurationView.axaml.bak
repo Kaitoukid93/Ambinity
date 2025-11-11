@@ -1,0 +1,152 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Configuration.PositionConfiguration"
+             xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:DataType="local:PositionConfigurationViewModel"
+             x:Class="Ambinity.Views.Configuration.PositionConfiguration.PositionConfigurationView">
+    <UserControl.Styles>
+         <Style Selector="DataValidationErrors">
+           <Setter Property="Template">
+               <ControlTemplate>
+                   <DockPanel LastChildFill="True">
+                       <ContentControl DockPanel.Dock="Right"
+                                       ContentTemplate="{TemplateBinding ErrorTemplate}"
+                                       DataContext="{TemplateBinding Owner}"
+                                       Content="{Binding (DataValidationErrors.Errors)}"
+                                       IsVisible="{Binding (DataValidationErrors.HasErrors)}"/>
+                       <ContentPresenter Name="PART_ContentPresenter"
+                                         Background="{TemplateBinding Background}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         ContentTemplate="{TemplateBinding ContentTemplate}"
+                                         Content="{TemplateBinding Content}"
+                                         Padding="{TemplateBinding Padding}"/>
+                   </DockPanel>
+               </ControlTemplate>
+           </Setter>
+           <Setter Property="ErrorTemplate">
+               <DataTemplate x:DataType="{x:Type x:Object}">
+                   <Canvas Width="3" Height="30" Margin="5 0 1 0"
+                           Background="Transparent">
+                       <Canvas.Styles>
+                           <Style Selector="ToolTip">
+                               <Setter Property="Background" Value="IndianRed"/>
+                               <Setter Property="BorderBrush" Value="Red"/>
+                           </Style>
+                       </Canvas.Styles>
+                       <ToolTip.Tip>
+                           <ItemsControl ItemsSource="{Binding}"/>
+                       </ToolTip.Tip>
+                       <Rectangle Canvas.Left="0" Canvas.Top="1" Height="28" RadiusX="3" RadiusY="3" Width="3" Fill="Red"></Rectangle>
+                   </Canvas>
+               </DataTemplate>
+           </Setter>
+       </Style>
+    </UserControl.Styles>
+    <UserControl.Resources>
+        <MenuFlyout x:Key="ScaleMenuFlyout"
+                    Placement="Bottom">
+            <MenuItem Command="{CompiledBinding SetItemScaleCommand}"
+                      CommandParameter="0.25"
+                      Header="0.25">
+            </MenuItem>
+            <MenuItem Command="{CompiledBinding SetItemScaleCommand}"
+                      CommandParameter="0.5"
+                      Header="0.5">
+            </MenuItem>
+            <MenuItem Command="{CompiledBinding SetItemScaleCommand}"
+                      CommandParameter="0.75"
+                      Header="0.75">
+            </MenuItem>
+            <MenuItem Command="{CompiledBinding SetItemScaleCommand}"
+                      CommandParameter="1"
+                      Header="1">
+            </MenuItem>
+        </MenuFlyout>
+    </UserControl.Resources>
+    <Grid MinWidth="300" RowDefinitions="Auto,*">
+        <Grid>
+            <StackPanel Margin="0,8" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
+                <TextBlock  VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
+                           Text="Dimensions">
+                </TextBlock>
+                <!-- <Grid>
+                    <Button Click="InfoButton_OnClick"  x:Name="infoButton" Background="Transparent" BorderThickness="0" Classes="icon-button-small" >
+                        <PathIcon Width="15" Height="15" Data="{DynamicResource infoCircle}"></PathIcon>
+                    </Button>
+                    <ui:TeachingTip x:Name="infoTip"
+                                    Target="{Binding #infoButton}"
+                                    Title="Dimension"
+                                    Subtitle="Only device can have scale and rotation property">
+                    </ui:TeachingTip>
+                </Grid> -->
+            </StackPanel>
+
+
+        </Grid>
+        <Grid Row="1" ColumnDefinitions="*,20,*">
+            <Grid MaxWidth="120" Column="0" RowDefinitions="*,*,*">
+                <Grid IsEnabled="{CompiledBinding CanResize}" Margin="0,7" ColumnDefinitions="20,*">
+                    <TextBlock Foreground="{DynamicResource TextControlForegroundDisabled}" VerticalAlignment="Center"
+                               Text="W">
+                    </TextBlock>
+                    <ui:NumberBox  SimpleNumberFormat="F2" Width="100"  Theme="{DynamicResource borderlessNumberBox}"
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding WidthProperty}"
+                             Margin="5,0">
+                    </ui:NumberBox>
+                </Grid>
+                <Grid Margin="0,7" Row="1" ColumnDefinitions="20,*">
+                    <TextBlock Foreground="{DynamicResource TextControlForegroundDisabled}" VerticalAlignment="Center"
+                               Text="X">
+                    </TextBlock>
+                    <ui:NumberBox  SimpleNumberFormat="F2" Width="100"  Theme="{DynamicResource borderlessNumberBox}"
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding XProperty}"
+                                  Margin="5,0">
+                    </ui:NumberBox>
+                </Grid>
+                <Grid IsVisible="{CompiledBinding CanRotate}" Margin="0,7" Row="2" ColumnDefinitions="20,*">
+                    <PathIcon  HorizontalAlignment="Left" Foreground="{DynamicResource ButtonForegroundDisabled}" Width="20" Height="20" Data="{DynamicResource Rotate_value}"></PathIcon>
+                    <ui:NumberBox  SimpleNumberFormat="F2" Width="100" Theme="{DynamicResource borderlessNumberBox}"
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding RotationProperty}"
+                                  Margin="5,0">
+                    </ui:NumberBox>
+                </Grid>
+            </Grid>
+            <Grid MaxWidth="120" Column="2" RowDefinitions="*,*,*">
+                <Grid IsEnabled="{CompiledBinding CanResize}" Margin="0,7" ColumnDefinitions="20,*">
+                    <TextBlock Foreground="{DynamicResource TextControlForegroundDisabled}" VerticalAlignment="Center"
+                               Text="H">
+                    </TextBlock>
+                    <ui:NumberBox Width="100" SimpleNumberFormat="F2"  Theme="{DynamicResource borderlessNumberBox}"
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding HeightProperty}"
+                                  Margin="5,0">
+                    </ui:NumberBox>
+                </Grid>
+                <Grid Margin="0,7" Row="1" ColumnDefinitions="20,*">
+                    <TextBlock Foreground="{DynamicResource TextControlForegroundDisabled}" VerticalAlignment="Center"
+                               Text="Y">
+                    </TextBlock>
+                    <ui:NumberBox  Width="100" SimpleNumberFormat="F2"  Theme="{DynamicResource borderlessNumberBox}"
+                                  BorderThickness="0" BorderBrush="Transparent" Grid.Column="1" Value="{Binding YProperty}"
+                                  Margin="5,0">
+                    </ui:NumberBox>
+                </Grid>
+                <Grid IsVisible="{CompiledBinding CanScale}" ColumnDefinitions="20,*" Margin="0,7" Row="2">
+                    <PathIcon HorizontalAlignment="Left" Foreground="{DynamicResource ButtonForegroundDisabled}" Width="15" Height="15" Data="{DynamicResource scale}"></PathIcon>
+                    <SplitButton BorderThickness="0" Grid.Column="1" Margin="5,0,0,0" Padding="0" Width="100"
+                                 Flyout="{StaticResource ScaleMenuFlyout}">
+                        <ui:NumberBox  Background="Transparent" SpinButtonPlacementMode="Hidden" SimpleNumberFormat="F2"  Minimum="0.2" Maximum="2"  Theme="{DynamicResource borderlessNumberBox}"
+                                      BorderThickness="0" BorderBrush="Transparent" CornerRadius="4,0,0,4" Value="{Binding ScaleProperty}">
+                        </ui:NumberBox>
+                    </SplitButton>
+
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

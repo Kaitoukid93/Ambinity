@@ -1,0 +1,93 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.OnlineStore.Library"
+             xmlns:onlineStore="clr-namespace:Ambinity.Views.OnlineStore"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:DataType="local:LightingProfileAssetsViewModel"
+             x:Class="Ambinity.Views.OnlineStore.Library.LightingProfileAssetsView">
+    <UserControl.Resources>
+        <DataTemplate x:Key="onlineProfileTemplate" x:DataType="onlineStore:OnlineItemAssetViewModel">
+            <Button VerticalAlignment="Top" Margin="7,5,7,25" Width="270" Command="{Binding SelectItemCommand}" HorizontalContentAlignment="Stretch" Padding="0" HorizontalAlignment="Stretch">
+                <Grid RowDefinitions="120,10,30,10,*">
+                    <!-- <ui:ProgressRing Grid.Column="1" IsVisible="{CompiledBinding IsDownloading}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10"  IsIndeterminate="True"/> -->
+                    <Border ClipToBounds="True"  CornerRadius="4,4,0,0">
+                        <Image
+                               Source="{Binding GetThumbnail^,FallbackValue=null}" Stretch="UniformToFill">
+                        </Image>
+                    </Border>
+                    <Grid Row="2">
+                        <TextBlock  ToolTip.Tip="{Binding Name}" HorizontalAlignment="Left" FontSize="15"
+                                   TextTrimming="CharacterEllipsis" MaxWidth="150" Grid.Row="0" Margin="10,0,0,0"
+                                   FontWeight="SemiBold" Text="{Binding Name}">
+                        </TextBlock>
+                    </Grid>
+                    <Grid Row="4">
+                        <StackPanel Margin="10" HorizontalAlignment="Right" IsVisible="{Binding IsLocalExisted}" Spacing="5"
+                                    Orientation="Horizontal">
+                            <Border CornerRadius="13" Height="26" Width="26"  HorizontalAlignment="Right" Classes="chip" ToolTip.Tip="Item is installed">
+
+                                    <PathIcon Foreground="{DynamicResource SystemAccentColor}" Width="12" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              Height="12" Data="{DynamicResource checkBold}">
+                                    </PathIcon>
+
+                            </Border>
+                            <Button Command="{Binding DownloadItemCommand}" IsVisible="{Binding IsLocalExisted}" CornerRadius="3" Padding="5,3"
+                                    HorizontalAlignment="Right" Classes="chip">
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <PathIcon Margin="0,0,5,0" Width="12" Height="10" Data="{DynamicResource download}"></PathIcon>
+                                    <TextBlock Classes.downloadButton="{Binding IsDownloading}" Margin="0,0,0,2" FontWeight="SemiBold"
+                                               Grid.Column="1" FontSize="12" Text="Reinstall">
+                                    </TextBlock>
+                                </Grid>
+
+                            </Button>
+
+                        </StackPanel>
+
+                        <Button Command="{Binding DownloadItemCommand}" Margin="10" CornerRadius="3" Padding="5,3"
+                                IsVisible="{Binding !IsLocalExisted}" HorizontalAlignment="Right"
+                                Classes="accent">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <PathIcon Margin="0,0,5,0" Width="12" Height="10" Data="{DynamicResource download}"></PathIcon>
+                                <TextBlock Classes.downloadButton="{Binding IsDownloading}" Margin="0,0,0,2" FontWeight="SemiBold"
+                                           Grid.Column="1" FontSize="12" Text="Install">
+                                </TextBlock>
+                            </Grid>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Button>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <ScrollViewer PointerWheelChanged="InputElement_OnPointerWheelChanged" Padding="0,0,10,10">
+            <Grid>
+                <ItemsControl ItemTemplate="{DynamicResource onlineProfileTemplate}"
+                              ItemsSource="{Binding DisplayAssets}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"></WrapPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+
+                </ItemsControl>
+                <Grid RowDefinitions="*,Auto,*" IsVisible="{Binding ShowNoResult}">
+                    <StackPanel Grid.Row="1" Spacing="3">
+                        <TextBlock FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Text="No result">
+                        </TextBlock>
+                        <!-- <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" -->
+                        <!--            Foreground="{DynamicResource ButtonForegroundDisabled}" -->
+                        <!--            Text="{Binding SearchContent,StringFormat='for &quot;{0}&quot;'}"> -->
+                        <!-- </TextBlock> -->
+                    </StackPanel>
+
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

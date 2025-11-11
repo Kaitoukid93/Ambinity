@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.AmbinityStore"
+             x:DataType="local:ProfileStoreNonClientAreaContentViewModel"
+             x:Class="Ambinity.Views.AmbinityStore.ProfileStoreNonClientAreaContentView">
+    <Grid>
+        <!-- <PathIcon Foreground="{DynamicResource AccentButtonBackground}" Width="20" Height="20" -->
+        <!--           Data="{DynamicResource onlineStore}"> -->
+        <!-- </PathIcon> -->
+        <!-- <Grid Column="2"> -->
+        <!--     <TextBlock VerticalAlignment="Center" Text="Profile gallery" FontWeight="SemiBold" FontSize="12"></TextBlock> -->
+        <!-- </Grid> -->
+        <Grid  ColumnDefinitions="Auto,*">
+            <StackPanel Grid.Column="1" Spacing="2">
+                <TextBox Height="25" IsVisible="{Binding SearchEnable}"
+                         x:Name="searchBox"
+                         Margin="20,0,20,0"
+                         VerticalContentAlignment="Center"
+                         MinWidth="200"
+                         MaxWidth="450"
+                         HorizontalContentAlignment="Left"
+                         HorizontalAlignment="Stretch"
+                         Text="{Binding SearchContent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                         BorderThickness="0" Grid.Column="1">
+                    <TextBox.InnerRightContent>
+                        <Grid>
+                            <Button Margin="4,0" Command="{Binding SearchCommand}" CommandParameter="{Binding ElementName=searchBox,Path=Text}" Width="28" Height="24" Classes="icon-button">
+                                <PathIcon  Width="15" Height="15" Data="{DynamicResource search}"></PathIcon>
+                            </Button>
+                        </Grid>
+
+                    </TextBox.InnerRightContent>
+                </TextBox>
+                <!-- <Prar MinWidth="150" MogressBaxWidth="450" IsVisible="{Binding !EnableSearchBar}" Margin="20,0,20,0" Height="2" HorizontalAlignment="Stretch" IsIndeterminate="True"></ProgressBar> -->
+            </StackPanel>
+
+        </Grid>
+
+    </Grid>
+</UserControl>

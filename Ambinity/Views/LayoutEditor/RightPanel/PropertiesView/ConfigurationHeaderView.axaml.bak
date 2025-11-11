@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.LayoutEditor.RightPanel.PropertiesView"
+             x:DataType="local:ConfigurationHeaderViewModel"
+             x:Class="Ambinity.Views.LayoutEditor.RightPanel.PropertiesView.ConfigurationHeaderView">
+
+    <Grid ColumnDefinitions="Auto,10,*,10,Auto">
+        <PathIcon VerticalAlignment="Center" HorizontalAlignment="Left" Width="20" Height="25"
+                  Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
+        </PathIcon>
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="SemiBold" Grid.Column="2" Margin="0,0" FontSize="13"
+                   Text="{Binding Header }">
+        </TextBlock>
+        <Button IsEnabled="{Binding CanExport}" Grid.Column="4" HorizontalContentAlignment="Right" Width="30" Height="30" Command="{Binding ExportSelectedItemCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Export item" Classes="icon-button">
+            <PathIcon Width="16" Data="{DynamicResource Export}"></PathIcon>
+        </Button>
+    </Grid>
+</UserControl>

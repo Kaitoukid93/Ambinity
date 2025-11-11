@@ -1,0 +1,99 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia">
+    <!-- Preview -->
+ 
+    <!-- Styles -->
+    <Style Selector=":is(Button).danger">
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="5.5" />
+    </Style>
+    <Style Selector=":is(Button).icon-button">
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="5.5" />
+    </Style>
+    <Style Selector=":is(Button).icon-button:pointerover /template/ Border#BorderElement">
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style> 
+    <Style Selector=":is(Button).icon-button:disabled /template/ Border#BorderElement">
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+    <Style Selector=":is(Button).icon-button[IsEnabled=False] /template/ Border#BorderElement">
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+
+    <Style Selector=":is(Button).icon-button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AppBarButtonBackgroundPointerOver}" />
+        <Setter Property="TextBlock.Foreground" Value="{DynamicResource AppBarButtonForegroundPointerOver}" />
+    </Style>
+    <Style Selector=":is(Button).danger:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#D64848" />
+        <Setter Property="TextBlock.Foreground" Value="{DynamicResource AppBarButtonForegroundPointerOver}" />
+    </Style>
+    
+    <Style Selector=":is(Button).icon-button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AppBarButtonBackgroundPressed}" />
+        <Setter Property="TextBlock.Foreground" Value="{DynamicResource AppBarButtonForegroundPressed}" />
+    </Style>
+    <Style Selector=":is(Button).icon-button:disabled /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AppBarButtonBackgroundDisabled}" />
+        <Setter Property="TextBlock.Foreground" Value="{DynamicResource AppBarButtonForegroundDisabled}" />
+    </Style>
+
+	<Style Selector=":is(Button).icon-button-small">
+        <Setter Property="Padding" Value="4" />
+    </Style>
+    <Style Selector=":is(Button).icon-button-small">
+        <Setter Property="Width" Value="14" />
+        <Setter Property="Height" Value="14" />
+    </Style>
+
+    <Style Selector=":is(Button).icon-button-large">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+    </Style>
+
+    <Style Selector="HyperlinkButton.icon-button">
+        <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}" />
+    </Style>
+
+    <Style Selector="Button.title-bar-button">
+        <Setter Property="Width" Value="46"></Setter>
+        <Setter Property="Height" Value="30"></Setter>
+        <Setter Property="BorderThickness" Value="0"></Setter>
+        <Setter Property="CornerRadius" Value="0"></Setter>
+        <Setter Property="Margin" Value="0"></Setter>
+        <Setter Property="Background" Value="Transparent"></Setter>
+    </Style>
+    <Style Selector="Button.title-bar-button:pointerover">
+        <Setter Property="Background" Value="Red"></Setter>
+    </Style>
+    
+    <!-- <Style Selector="Button.danger"> -->
+    <!--     <Setter Property="Background" Value="#D64848"></Setter> -->
+    <!-- </Style> -->
+
+    <!-- <Style Selector="Button.danger:pointerover"> -->
+    <!--     <Style Selector="^ /template/ controls|FABorder#Root"> -->
+    <!--         <Setter Property="Background" Value="#D65757"/> -->
+    <!--         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushPointerOver}" /> -->
+    <!--     </Style> -->
+    <!-- </Style> -->
+
+    <!-- <Style Selector="Button.danger:pressed"> -->
+    <!--     <Style Selector="^ /template/ controls|FABorder#Root"> -->
+    <!--         <Setter Property="Background" Value="#D64848" /> -->
+    <!--         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushPressed}" /> -->
+    <!--     </Style> -->
+    <!-- </Style> -->
+
+    <!-- <Style Selector="Button.danger:disabled"> -->
+    <!--     <Style Selector="^ /template/ controls|FABorder#Root"> -->
+    <!--         <Setter Property="Background" Value="#D79D9C" /> -->
+    <!--         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushDisabled}" /> -->
+    <!--     </Style> -->
+    <!-- </Style> -->
+</Styles>

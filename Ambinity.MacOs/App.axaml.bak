@@ -1,0 +1,198 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Ambinity.MacOs.App"
+             xmlns:local="using:Ambinity"
+             xmlns:sty="using:FluentAvalonia.Styling"
+             xmlns:root = "using:Ambinity.Views.Root"
+             x:DataType="root:RootViewModel"
+             Name="Ambinity"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:converters ="clr-namespace:Ambinity.MacOs.Converters"
+             xmlns:windows="clr-namespace:Ambinity.MacOs">
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+    <Application.Resources>
+        <ResourceDictionary>
+                <ResourceDictionary.ThemeDictionaries>
+
+                <ResourceDictionary x:Key="Default">
+                     <Color x:Key="TextFillColorPrimary">#FF3D3D3D</Color>
+                    <Color x:Key="TextFillColorSecondary">#FF4B494B</Color>
+                    <Color x:Key="UIWindowBackgroundColorInactive">#F3F3F3</Color>
+                    <Color x:Key="UIWindowBackgroundColorActive">#80F3F3F3</Color>
+
+                    <Color x:Key="UIWindowBorderColorInactive">Transparent</Color>
+
+                    <Color x:Key="UIControlBorderColorBase">#16212121</Color>
+                    <Color x:Key="UIControlBackgroundColorBase">#A0FAFCFD</Color>
+                    <Color x:Key="UIControlBackgroundColorBasePointerOver">#18CCCCCC</Color>
+
+                    <Color x:Key="UIControlBorderColorHigh">#30AAAAAA</Color>
+                    <Color x:Key="UIControlBackgroundColorHigh">#18CCCCCC</Color>
+
+                    <Color x:Key="UIControlBackgroundColorHighest">#40AAAAAA</Color>
+
+                    <Color x:Key="UIExpanderBorderColor">#16212121</Color>
+
+                    <Color x:Key="UIOverlayBackground">#20212121</Color>
+
+                    <Color x:Key="UIPopupBlurBackground">#E3E3E3</Color>
+
+                </ResourceDictionary>
+
+                <ResourceDictionary x:Key="Dark">
+
+                    <Color x:Key="UIWindowBackgroundColorInactive">#212121</Color>
+                    <Color x:Key="UIWindowBackgroundColorActive">#1E000000</Color>
+
+                    <Color x:Key="UIControlBorderColorBase">#F0212121</Color>
+                    <Color x:Key="UIControlBackgroundColorBase">#0CFFFFFF</Color>
+                    <Color x:Key="UIControlBackgroundColorBasePointerOver">#18FFFFFF</Color>
+
+                    <Color x:Key="UIControlBorderColorHigh">#18FFFFFF</Color>
+                    <Color x:Key="UIControlBackgroundColorHigh">#16FFFFFF</Color>
+
+                    <Color x:Key="UIControlBackgroundColorHighest">#20FFFFFF</Color>
+
+                    <Color x:Key="UIExpanderBorderColor">Transparent</Color>
+
+                    <Color x:Key="UIOverlayBackground">#20FFFFFF</Color>
+
+                    <Color x:Key="UIPopupBlurBackground">#111111</Color>
+
+                </ResourceDictionary>
+                   <ResourceDictionary x:Key="Light">
+                    <Color x:Key="TextFillColorPrimary">#FF3D3D3D</Color>
+                    <Color x:Key="TextFillColorSecondary">#FF4B494B</Color>
+                    <Color x:Key="UIWindowBackgroundColorInactive">#F3F3F3</Color>
+                    <Color x:Key="UIWindowBackgroundColorActive">#80F3F3F3</Color>
+
+                    <Color x:Key="UIWindowBorderColorInactive">Transparent</Color>
+
+                    <Color x:Key="UIControlBorderColorBase">#16212121</Color>
+                    <Color x:Key="UIControlBackgroundColorBase">#A0FAFCFD</Color>
+                    <Color x:Key="UIControlBackgroundColorBasePointerOver">#18CCCCCC</Color>
+
+                    <Color x:Key="UIControlBorderColorHigh">#30AAAAAA</Color>
+                    <Color x:Key="UIControlBackgroundColorHigh">#18CCCCCC</Color>
+
+                    <Color x:Key="UIControlBackgroundColorHighest">#40AAAAAA</Color>
+
+                    <Color x:Key="UIExpanderBorderColor">#16212121</Color>
+
+                    <Color x:Key="UIOverlayBackground">#20212121</Color>
+
+                    <Color x:Key="UIPopupBlurBackground">#E3E3E3</Color>
+
+                </ResourceDictionary>
+
+
+            </ResourceDictionary.ThemeDictionaries>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Ambinity/Views/GeometryCollection/GeometryCollection.axaml" />
+                <ResourceInclude Source="avares://Ambinity/Views/GeometryCollection/CoolIconsCollection.axaml" />
+                <ResourceInclude Source="avares://Ambinity/Views/Generic.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://Ambinity/ControlTheme/StriplessListbox.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://Ambinity/ControlTheme/TransparrentSettingsExpander.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://Ambinity/ControlTheme/BorderlessNumberbox.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://Ambinity/ControlTheme/StriplessTextBox.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://Ambinity/ControlTheme/SmallIconSettingsExpander.axaml"></ResourceInclude>
+
+                <ResourceDictionary>
+                    <converters:StaticResourceConverter x:Key="ResourceConverter" />
+                </ResourceDictionary>
+                <ResourceDictionary>
+
+                    <SolidColorBrush x:Key="UIWindowBackgroundBrushInactive"
+                                     Color="{DynamicResource UIWindowBackgroundColorInactive}" />
+                    <SolidColorBrush x:Key="UIWindowBackgroundBrushActive"
+                                     Color="{DynamicResource UIWindowBackgroundColorActive}" />
+
+                    <SolidColorBrush x:Key="UIControlBorderBrushBase"
+                                     Color="{DynamicResource UIControlBorderColorBase}" />
+                    <SolidColorBrush x:Key="UIControlBackgroundBrushBase"
+                                     Color="{DynamicResource UIControlBackgroundColorBase}" />
+                    <SolidColorBrush x:Key="UIControlBackgroundBrushBasePointerOver"
+                                     Color="{DynamicResource UIControlBackgroundColorBasePointerOver}" />
+
+                    <SolidColorBrush x:Key="UIControlBorderBrushHigh"
+                                     Color="{DynamicResource UIControlBorderColorHigh}" />
+                    <SolidColorBrush x:Key="UIControlBackgroundBrushHigh"
+                                     Color="{DynamicResource UIControlBackgroundColorHigh}" />
+
+                    <SolidColorBrush x:Key="UIControlBackgroundBrushHighest"
+                                     Color="{DynamicResource UIControlBackgroundColorHighest}" />
+
+                    <SolidColorBrush x:Key="UIExpanderBorderBrush" Color="{DynamicResource UIExpanderBorderColor}" />
+
+                    <SolidColorBrush x:Key="UIOverlayBackgroundBrush" Color="{DynamicResource UIOverlayBackground}" />
+                    <FontFamily x:Key="NunitoFont">avares://Ambinity/Assets/Fonts#Nunito</FontFamily>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+    <Application.Styles>
+        <sty:FluentAvaloniaTheme PreferUserAccentColor="True" TextVerticalAlignmentOverrideBehavior="AlwaysEnabled"  />
+        <Style Selector=":is(TopLevel)">
+		<Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+    <!--Font override-->
+	</Style>
+        <Style Selector="MenuItem">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="TextBlock">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="TextBox">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="Label">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="MenuItem">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="RadioButton">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="ComboBox">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="ListBox">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="ListBoxItem">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+<Style Selector="Button">
+  <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+   <Style Selector=":is(TextBox)">
+    <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+</Style>
+        <StyleInclude Source="avares://Ambinity/Styles/Ambinity.axaml" />
+        <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
+        <Style Selector=":is(Window)">
+            <Setter Property="Background" Value="{DynamicResource UIWindowBackgroundBrushInactive}" />
+        </Style>
+
+        <Style Selector=":is(Window)[ActualTransparencyLevel=Mica][IsActive=True]">
+            <Setter Property="Background" Value="{DynamicResource UIWindowBackgroundBrushActive}" />
+        </Style>
+    </Application.Styles>
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon MacOSProperties.IsTemplateIcon="true" ToolTipText="Ambinity"  Command="{CompiledBinding OpenQuickAccessCommand}" CommandParameter="devices" Icon="/Assets/appIcon_mac_512.png" >
+                <TrayIcon.Menu>
+                    <NativeMenu>
+                      <NativeMenuItem Header="Quick access" Command="{CompiledBinding OpenQuickAccessCommand}"  />
+                        <NativeMenuItem Header="Home" Command="{CompiledBinding OpenUiCommand}" CommandParameter="devices"  />
+                        <NativeMenuItem Header="Exit" Command="{CompiledBinding ExitAppCommand}"  />
+                    </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
+</Application>

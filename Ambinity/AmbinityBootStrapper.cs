@@ -1,6 +1,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Ambinity.AppResource;
+using Ambinity.Localization;
 using Ambinity.QuickAccess;
 using Ambinity.Services;
 using Ambinity.Stores;
@@ -86,8 +87,6 @@ public class AmbinityBootStrapper
         SetupDebugLogging();
         //get settings
         _generalSettingsManager = Ioc.Default.GetRequiredService<GeneralSettingsManager>();
-        //register auto starts
-        // ConfigureAutoStart();
         //set theme and color
         ConfigureTheme();
         //configure json settings for all Serialize and Deserialize action ( this need for legacy adrilight json)
@@ -101,6 +100,8 @@ public class AmbinityBootStrapper
         _splashViewModel = ShowSplashScreen();
         // Configuring core service
         await ConfigureCoreService(_splashViewModel);
+        //set language
+        LocInit();
         // Close Splash screen
         _splashView?.Close();
         // Activate MainWindow;
@@ -145,6 +146,13 @@ public class AmbinityBootStrapper
     //         StartUpManager.AddApplicationToTaskScheduler("Ambinity Startup Task",_generalSettingsManager.Settings.AutoStartDelay);
     //     }
     // }
+    private static void LocInit()
+    {
+        _generalSettingsManager.Settings.SelectedLanguage = "vi"; //temp force vietnamese
+        var lang = _generalSettingsManager.Settings.SelectedLanguage;
+        Loc.Load(lang); // or detect system language
+    }
+
     private static void ConfigureIoc()
     {
         //create default frame buffer

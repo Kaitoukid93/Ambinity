@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:Ambinity.Installer.ViewModels"
+             x:DataType="vm:SelectVersionViewModel"
+             x:Class="Ambinity.Installer.Views.SelectVersionView">
+    <Grid Margin="20,0" RowDefinitions="Auto,20,*">
+        <StackPanel Spacing="5">
+            <TextBlock Text="{Binding Header}" FontSize="25" FontWeight="SemiBold" HorizontalAlignment="Left"
+                       VerticalAlignment="Top" />
+            <TextBlock HorizontalAlignment="Left" MaxWidth="500" TextWrapping="Wrap" Text="{Binding SubHeader}"
+                       FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}">
+            </TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Spacing="8">
+            <TextBlock FontSize="15" FontWeight="SemiBold" Text="Select version"></TextBlock>
+            <ProgressBar Height="2" IsIndeterminate="True" IsVisible="{Binding IsLoading}"></ProgressBar>
+            <ScrollViewer Padding="0,0,20,0" MaxHeight="200">
+                <ItemsControl ItemsSource="{Binding AvailableRelease}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="2">
+
+                            </StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+
+        </StackPanel>
+    </Grid>
+</UserControl>

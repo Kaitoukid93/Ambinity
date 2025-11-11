@@ -1,0 +1,129 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
+             x:DataType="local:FillColorSelectionViewModel"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties"
+             x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.FillColorSelectionView">
+    <UserControl.Styles>
+        <Style Selector=":is(Button).properties-button">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector=":is(Button).isSelected-button">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="Grid#ItemGrid:pointerover :is(Button).properties-button">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </UserControl.Styles>
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Grid Row="0" ColumnDefinitions="Auto,*">
+            <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
+                       Text="Fill colors">
+            </TextBlock>
+            <Grid Column="1">
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5">
+                    <Grid>
+                        <Button ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1" Background="Transparent" Width="30" Height="30"
+                                Classes="icon-button">
+                            <PathIcon Width="16" Data="{DynamicResource collection}"></PathIcon>
+                        </Button>
+                    </Grid>
+                    <Grid>
+                        <Button Width="30" Height="30" Command="{Binding AddPaletteToLibraryCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Add To Library" Classes="icon-button">
+                            <PathIcon Width="16" Data="{DynamicResource AddToCollection}"></PathIcon>
+                        </Button>
+                    </Grid>
+                    <Grid>
+                        <Button Width="30" Height="30" Command="{Binding ImportPaletteCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Import palette" Classes="icon-button">
+                            <PathIcon Width="16" Data="{DynamicResource Import}"></PathIcon>
+                        </Button>
+                    </Grid>
+                    <Grid>
+                        <Button Width="30" Height="30" Command="{Binding ExportPaletteCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Export palette" Classes="icon-button">
+                            <PathIcon Width="16" Data="{DynamicResource Export}"></PathIcon>
+                        </Button>
+                    </Grid>
+                   
+                    <Grid>
+                        <Button ToolTip.Tip="Add color" Command="{Binding AddColorCommand}" CommandParameter="{x:Static Colors.Red}" Padding="1"
+                                Background="Transparent" Width="30" Height="30"
+                                Classes="icon-button">
+                            <PathIcon Width="16" Data="{DynamicResource plus}"></PathIcon>
+                        </Button>
+                    </Grid>
+
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Margin="0,8" Row="1">
+            <Grid>
+                <ListBox SelectedItems="{Binding SelectedColors}" Padding="0" Margin="0" ItemContainerTheme="{DynamicResource _rightStripListboxItem}" SelectionMode="Multiple" ItemsSource="{Binding Colors}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:SolidColorViewModel}">
+                            <Border Padding="0,0,0,0" Classes="card"  HorizontalAlignment="Stretch" Height="32"
+                                    CornerRadius="4" ClipToBounds="True">
+                            <Grid x:Name="ItemGrid" Background="Transparent" ColumnDefinitions="*,5,30,5,30,5,30">
+                                  
+                                        <Grid  ColumnDefinitions="29,10,*">
+                                            <Button Command="{Binding OpenColorPickerCommand}" Padding="2" Classes="icon-button">
+                                                <Border HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                        CornerRadius="3" Margin="0" Width="24" Height="24">
+                                                    <Border.Background>
+                                                        <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                                                    </Border.Background>
+                                                </Border>
+                                            </Button>
+                                         
+
+                                            <TextBlock  Grid.Column="2"
+                                                     Height="22" Background="Transparent"
+                                                     HorizontalAlignment="Left"
+                                                     Foreground="{DynamicResource ButtonForegroundDisabled}"
+                                                     Text="{Binding HexColor}">
+                                            </TextBlock>
+                                        </Grid>
+                                
+                                <Grid Column="2">
+                                    <Button Margin="2,0" ToolTip.Tip="Insert below" Command="{Binding InsertBelowCommand}" HorizontalAlignment="Right" Padding="1"
+                                            Background="Transparent" Width="25" Height="25"
+                                            Classes="properties-button icon-button">
+                                        <PathIcon Width="12" Data="{DynamicResource insert_below}"></PathIcon>
+                                    </Button>
+                                </Grid>
+                                <Grid Column="4">
+                                    <Button Margin="2,0" ToolTip.Tip="Insert above" Command="{Binding InsertAboveCommand}" HorizontalAlignment="Right" Padding="1"
+                                            Background="Transparent" Width="25" Height="25"
+                                            Classes="properties-button icon-button">
+                                        <PathIcon Width="12" Data="{DynamicResource insert_above}"></PathIcon>
+                                    </Button>
+                                </Grid>
+                                <Grid Column="6">
+                                    <Button Margin="2,0" ToolTip.Tip="Delete" Command="{Binding RemoveCommand}" HorizontalAlignment="Right" Padding="1"
+                                            Background="Transparent" Width="25" Height="25"
+                                            Classes="properties-button icon-button">
+                                        <PathIcon Width="12" Data="{DynamicResource minus}"></PathIcon>
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+
+            </Grid>
+            <!--<Grid Column="4">
+                <Button ToolTip.Tip="Setting" Background="Transparent" Width="30" Height="30" Classes="icon-button" >
+                    <PathIcon Width="15" Data="{DynamicResource Zone_layer_icon}"></PathIcon>
+                </Button>
+            </Grid>-->
+        </Grid>
+        <Grid Grid.Row="2">
+      
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,81 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
+        xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties"
+        xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+        xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia.Tight"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        x:DataType="local:ScreenCaptureRegionSelectionViewModel"
+        WindowState="FullScreen"
+        x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.ScreenCaptureRegionSelectionView">
+    <Window.Resources>
+        <MenuFlyout x:Key="CaptureRegionFlyout"
+                    Placement="Bottom">
+            <MenuItem Command="{Binding LeftCommand}"
+                Header="Left">
+            </MenuItem>
+            <MenuItem Command="{Binding RightCommand}"
+                Header="Right">
+            </MenuItem>
+            <MenuItem Command="{Binding TopCommand}"
+                Header="Top">
+            </MenuItem>
+            <MenuItem Command="{Binding BottomCommand}"
+                CommandParameter="1"
+                Header="Bottom">
+            </MenuItem>
+        </MenuFlyout>
+    </Window.Resources>
+    <Border Margin="0" CornerRadius="0">
+        <Border.Background>
+            <SolidColorBrush Color="Black" Opacity="0.75"></SolidColorBrush>
+        </Border.Background>
+        <Grid>
+            <ContentControl Content="{Binding CanvasViewModel}"></ContentControl>
+            <Border HorizontalAlignment="Center" VerticalAlignment="Top" Background="#2c2c2c" CornerRadius="10"
+                    Margin="20" Padding="0">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <ui:FAComboBox Margin="7,0,0,0" ItemsSource="{Binding AvailableScreen}" SelectedItem="{Binding SelectedScreen}"
+                                   VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                        <ui:FAComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name }"></TextBlock>
+                            </DataTemplate>
+                        </ui:FAComboBox.ItemTemplate>
+                    </ui:FAComboBox>
+                    <SplitButton CornerRadius="4"  ToolTip.Tip="Reset" Command="{Binding FullScreenCommand}"
+                            Background="Transparent" Height="32"
+                            Flyout="{StaticResource CaptureRegionFlyout}" Margin="5,5">
+                        <Grid ColumnDefinitions="*,10,Auto">
+                            <TextBlock HorizontalAlignment="Left" Text="Full screen">
+                            </TextBlock>
+                            <PathIcon Grid.Column="2" Width="15" Data="{DynamicResource scale}"></PathIcon>
+                        </Grid>
+                    </SplitButton>
+                    <Button CornerRadius="4" Classes="icon-button" ToolTip.Tip="Save" Command="{Binding SaveCurrentLayoutCommand}"
+                            Width="32" Height="32"
+                            Padding="0" Margin="5,5">
+                        <PathIcon Width="13" Height="13"
+                                  Data="{DynamicResource checkBold}">
+                        </PathIcon>
+                    </Button>
+                    <Separator Width="1" Height="35" Margin="5"></Separator>
+                    <Button CornerRadius="4" Classes="icon-button" ToolTip.Tip="Cancel" Width="32" Height="32"
+                            Command="{Binding CloseCommand}"
+                            Padding="0" Margin="7,5">
+                        <PathIcon Width="13" Height="13"
+                                  Data="{DynamicResource remove}">
+                        </PathIcon>
+                    </Button>
+                </StackPanel>
+
+            </Border>
+        </Grid>
+
+
+    </Border>
+</Window>

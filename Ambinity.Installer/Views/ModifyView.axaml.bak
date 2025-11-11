@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:viewmodel = "clr-namespace:Ambinity.Installer.ViewModels"
+             x:DataType="viewmodel:ModifyViewModel"
+             x:Class="Ambinity.Installer.Views.ModifyView">
+    <Grid ColumnDefinitions="Auto,*">
+        <ContentControl Content="{Binding AmbinityImage}"></ContentControl>
+        <Grid Column="1" RowDefinitions="*,20,Auto">
+            <ContentControl Grid.Column="1" Margin="20,40,20,0" Content="{Binding CurrentView }"></ContentControl>
+            <Grid Margin="20,0,20,20" Row="2">
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                    <Button IsVisible="{Binding !CurrentView.CanForward}"
+                            IsHitTestVisible="{Binding !CurrentView.IsBusy}"
+                            Command="{Binding FinishCommand}"
+                            Classes="accent"
+                            Content="Finish">
+                    </Button>
+                    <Button IsVisible="{Binding CurrentView.CanBack}"
+                            IsHitTestVisible="{Binding !CurrentView.IsBusy}"
+                            Command="{Binding BackCommand}"
+                            Classes="accent"
+                            Content="Back">
+                    </Button>
+                    <Button Classes="accent" IsVisible="{Binding CurrentView.CanForward}"
+                            Background="{DynamicResource AccentButtonBackground}"
+                            IsHitTestVisible="{Binding !CurrentView.IsBusy}"
+                            Command="{Binding NextCommand}"
+                            Content="{Binding NextButtonContent}">
+                    </Button>
+
+                </StackPanel>
+
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

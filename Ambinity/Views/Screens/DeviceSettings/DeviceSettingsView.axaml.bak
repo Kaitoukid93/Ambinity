@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1366" d:DesignHeight="872"
+             xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:DataType="local:DeviceSettingsViewModel"
+             x:Class="Ambinity.Views.Screens.DeviceSettings.DeviceSettingsView">
+    <Grid HorizontalAlignment="Center">
+            <Grid RowDefinitions="Auto,*">
+            <Grid ColumnDefinitions="Auto,*">
+                <Button Command="{Binding BackToDashboardCommand}" Margin="10" Classes="icon-button">
+                    <PathIcon Width="15" Height="15" Data="{DynamicResource back}"></PathIcon>
+                </Button>
+                <Grid ColumnDefinitions="Auto,*" Column="1">
+                    <Grid>
+                        <Image Margin="10" Height="90" Stretch="Uniform"
+                               Source="{Binding Thumbnail}">
+                        </Image>
+                    </Grid>
+                    <Grid Column="1">
+                        <StackPanel Margin="10" Spacing="2">
+                            <TextBlock Margin="5,0" FontSize="15"  FontWeight="SemiBold" Text="{Binding Controller.Name}"></TextBlock>
+                            <Grid Margin="5,0" ColumnDefinitions="Auto,5,Auto,5,Auto">
+                                <TextBlock FontSize="13"
+                                           Classes="smallSecondary" Text="{Binding Controller.HardwareVersion}">
+                                </TextBlock>
+                                <Separator Grid.Column="2" Width="5" Height="2"></Separator>
+                                <TextBlock  Classes="smallSecondary" Grid.Column="4" Text="{Binding Controller.FirmwareVersion}"></TextBlock>
+                            </Grid>
+                          
+
+                            <HyperlinkButton NavigateUri="http://ambino.vn" Height="25" Padding="5,2,5,0">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock FontSize="13" Text="More info"></TextBlock>
+                                    <PathIcon Margin="5,0,0,1" Grid.Column="1" Height="15" Width="15"
+                                              Data="{DynamicResource link}">
+                                    </PathIcon>
+                                </Grid>
+                            </HyperlinkButton>
+                            <HyperlinkButton ToolTip.Tip="Update device setup and image from server" Height="25" Padding="5,2,5,0">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock FontSize="13" Text="Update Device Setup"></TextBlock>
+                                    <PathIcon Margin="5,0,0,1" Grid.Column="1" Height="15" Width="15"
+                                              Data="{DynamicResource update_server}">
+                                    </PathIcon>
+                                </Grid>
+                            </HyperlinkButton>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <ScrollViewer Grid.Row="1">
+            <Grid Margin="60,10,35,10" Row="1">
+                <StackPanel Spacing="30" >
+                    <ContentControl Content="{Binding PortConfigurationViewModel}"></ContentControl>
+                    <ContentControl IsVisible="{Binding HasFanControl }" Content="{Binding CoolingSettingsViewModel}"></ContentControl>
+                    <!-- <ContentControl Content="{Binding ConnectionSettingsViewModel}"></ContentControl> -->
+                    <ContentControl Content="{Binding HardwareLightingViewModel}"></ContentControl>
+                    <ContentControl Content="{Binding FirmwareSettingsViewModel}"></ContentControl>
+                </StackPanel>
+            </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+    
+   
+</UserControl>

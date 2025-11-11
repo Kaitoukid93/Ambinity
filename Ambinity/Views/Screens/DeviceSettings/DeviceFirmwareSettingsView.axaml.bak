@@ -1,0 +1,96 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
+             x:DataType="local:DeviceFirmwareSettingsViewModel"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:Class="Ambinity.Views.Screens.DeviceSettings.DeviceFirmwareSettingsView">
+    <Grid IsVisible="{Binding IsAvailable}" RowDefinitions="Auto,*">
+        <Grid>
+            <TextBlock Classes="smallBold" Text="Firmware"></TextBlock>
+        </Grid>
+        <Grid Margin="0,10,0,0" Row="1">
+            <StackPanel Spacing="2">
+                <Grid Margin="0,10,0,20" ColumnDefinitions="Auto,10,*, Auto">
+                    <Image Width="50" Source="/Assets/Images/uptodate.png"></Image>
+                    <Grid Column="2">
+                        <StackPanel Margin="10,0" Spacing="2">
+                            <TextBlock FontSize="18" FontWeight="SemiBold" Text="{Binding Header}"></TextBlock>
+                            <Grid>
+                                <TextBlock IsVisible="{Binding !CheckingForUpdate}" Classes="smallSecondary"
+                                           Text="Last checked: 12:33">
+                                </TextBlock>
+                            </Grid>
+                            <ProgressBar IsIndeterminate="True" IsVisible="{Binding CheckingForUpdate}"></ProgressBar>
+                        </StackPanel>
+
+                    </Grid>
+                    <Grid Column="3">
+                        <Button IsEnabled="{Binding !CheckingForUpdate}" Command="{Binding CheckForUpdateCommand}"
+                                Content="Check for update" Classes="accent">
+                        </Button>
+                    </Grid>
+                </Grid>
+
+                <!-- <ui:SettingsExpander MinWidth="500" Margin="0,2" Grid.Row="1" Header="Current Firmware" -->
+                <!--                      Description="Current version of the firmware" -->
+                <!--                      IsClickEnabled="False"> -->
+                <!--     <ui:SettingsExpander.IconSource> -->
+                <!--         <ui:PathIconSource Data="{DynamicResource update}"></ui:PathIconSource> -->
+                <!--     </ui:SettingsExpander.IconSource> -->
+                <!--     <ui:SettingsExpander.Footer> -->
+                <!--         <Button Command="{Binding CheckForUpdateCommand}" Content="Check for update"></Button> -->
+                <!--     </ui:SettingsExpander.Footer> -->
+                <!-- </ui:SettingsExpander> -->
+                <ui:InfoBar Title="Update available" Severity="Success"
+                            IsOpen="{Binding UpdateAvailable,Mode=TwoWay}" IsIconVisible="True" IsClosable="False"
+                            Message="{Binding LatestFirmwareString}">
+                    <ui:InfoBar.IconSource>
+                        <ui:PathIconSource Foreground="{DynamicResource AccentButtonBackground}"
+                                           Data="{DynamicResource Import}">
+                        </ui:PathIconSource>
+                    </ui:InfoBar.IconSource>
+                    <Grid>
+                        <Button CommandParameter="{Binding LatestFirmware}"
+                                Command="{Binding UpdateDeviceFirmwareCommand}" Margin="0,0,0,20"
+                                Content="Download and install">
+                        </Button>
+                    </Grid>
+                </ui:InfoBar>
+                <!-- <ui:InfoBar Foreground="Orange" Title="Warning" IsOpen="True" -->
+                <!--             IsIconVisible="True" -->
+                <!--             IsClosable="True" -->
+                <!--             Message="Upgrade custom firmware could brick your device, use at your own risk !!!"> -->
+                <!--     <ui:InfoBar.IconSource> -->
+                <!--         <ui:PathIconSource Data="{DynamicResource warning_Fill}"></ui:PathIconSource> -->
+                <!--     </ui:InfoBar.IconSource> -->
+                <!--     <ui:InfoBar.Background> -->
+                <!--         <SolidColorBrush Color="Orange" Opacity="0.1"></SolidColorBrush> -->
+                <!--     </ui:InfoBar.Background> -->
+                <!-- </ui:InfoBar> -->
+                <ui:SettingsExpander x:Name="Expander" ItemsSource="{Binding AvailableFirmwares}" Tag="{Binding}"
+                                     MinWidth="500" Margin="0,2" Grid.Row="1" Header="Firmware history"
+                                     Description="All available firmware for this hardware">
+                    <ui:SettingsExpander.IconSource>
+                        <ui:PathIconSource Data="{DynamicResource custom_firmware}"></ui:PathIconSource>
+                    </ui:SettingsExpander.IconSource>
+                    <ui:SettingsExpander.ItemTemplate>
+                        <DataTemplate>
+                            <ui:SettingsExpanderItem Content="{Binding Version}"
+                                                     Description="{Binding Description}">
+                                <ui:SettingsExpanderItem.Footer>
+                                    <Button
+                                        Command="{Binding $parent[ui:SettingsExpander].((local:DeviceFirmwareSettingsViewModel)DataContext).UpdateDeviceFirmwareCommand}"
+                                        CommandParameter="{Binding }" Content="Download and install" />
+                                </ui:SettingsExpanderItem.Footer>
+                            </ui:SettingsExpanderItem>
+                        </DataTemplate>
+                    </ui:SettingsExpander.ItemTemplate>
+                </ui:SettingsExpander>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,92 @@
+<UserControl
+    x:Class="Ambinity.Views.Configuration.ColorConfiguration.Parameters.ColorAppearanceParameterView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:attachedProperties="clr-namespace:Ambinity.AttachedProperties"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Ambinity.Views.Configuration.ColorConfiguration.Parameters"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mdxaml="https://github.com/whistyun/Markdown.Avalonia"
+    xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="local:ColorAppearanceParameterViewModel"
+    mc:Ignorable="d">
+    <Grid RowDefinitions="Auto,*,*">
+        <Grid ColumnDefinitions="Auto,*" Row="0">
+            <TextBlock
+                Margin="0,8"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="13"
+                Text="Appearance" />
+            <!-- <Grid Column="1">
+                <Button
+                    x:Name="nosoundTeaching"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    HorizontalContentAlignment="Right"
+                    Background="Transparent"
+                    Classes=" icon-button icon-button-small"
+                    Click="ApearanceGuide_OnClick">
+                    <PathIcon
+                        Width="15"
+                        Height="15"
+                        Data="{DynamicResource infoCircle}" />
+                </Button>
+                <ui:TeachingTip
+                    x:Name="apperanceGuide"
+                    Padding="10"
+                    HeroContentPlacement="Auto"
+                    IsLightDismissEnabled="True"
+                    Target="{Binding ElementName=nosoundTeaching}">
+                    <ui:TeachingTip.HeroContent>
+                        <Border
+                            Padding="10"
+                            Background="{Binding #apperanceGuide.Background}"
+                            CornerRadius="7,7,0,0">
+                            <mdxaml:MarkdownScrollViewer xml:space="preserve">
+##### **Color appearance quick guide**
+
+ * **Fill entire zone** : All LEDs that covered by this zone will be activated
+ * **Apply stroke only** : Only the area define by stroke value ( in pixel) will be activated. Stroke value should be lower than 5px and consider using **Fill entire zone** when the desired stroke is greater than 10
+
+Learn more at [Ambino](https://ambino.vn)
+                                                </mdxaml:MarkdownScrollViewer>
+                        </Border>
+                    </ui:TeachingTip.HeroContent>
+                </ui:TeachingTip>
+            </Grid> -->
+        </Grid>
+        <Grid
+            Margin="0,8"
+            ColumnDefinitions="*,12,32,6,Auto"
+            Row="2">
+            <ui:FAComboBox
+                x:Name="appearanceCombobox"
+                HorizontalAlignment="Stretch"
+                ItemsSource="{CompiledBinding AppearanceModes}"
+                SelectedItem="{CompiledBinding Appearance}">
+                <ui:FAComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" />
+                    </DataTemplate>
+                </ui:FAComboBox.ItemTemplate>
+
+            </ui:FAComboBox>
+            <PathIcon
+                Grid.Column="2"
+                Width="20"
+                Data="{Binding Icon, Converter={StaticResource ResourceConverter}}"
+                Foreground="{DynamicResource ButtonForegroundDisabled}" />
+            <ui:NumberBox
+                Grid.Column="4"
+                HorizontalAlignment="Left"
+                BorderThickness="0"
+                SimpleNumberFormat="F2"
+                Theme="{DynamicResource borderlessNumberBox}"
+                Value="{Binding AppearanceValue}" />
+        </Grid>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,514 @@
+<UserControl
+    x:Class="Ambinity.Views.Screens.AppSettings.AppSettingsView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Ambinity.Views.Screens.AppSettings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    d:DesignHeight="450"
+    d:DesignWidth="1500"
+    x:DataType="local:AppSettingsViewModel"
+    mc:Ignorable="d">
+    <ScrollViewer IsScrollInertiaEnabled="True">
+        <Grid
+            MaxWidth="1000"
+            Margin="40,15,50,20"
+            RowDefinitions="auto,5,*">
+            <TextBlock
+                Margin="0,0,0,10"
+                FontSize="25"
+                FontWeight="SemiBold"
+                Text="Settings" />
+            <StackPanel Grid.Row="2" Spacing="30">
+                <Grid>
+                    <Border Margin="0,0,0,10" Classes="card">
+                        <TextBlock Text="{Binding BuildInfo}" />
+                    </Border>
+                </Grid>
+                <Grid RowDefinitions="Auto,*">
+                    <Grid>
+                        <TextBlock Classes="smallBold" Text="General" />
+                    </Grid>
+                    <Grid Margin="0,10,0,0" Row="1">
+                        <!--  <ui:InfoBar Severity="Error" Title="Warning" IsOpen="True"  -->
+                        <!--  IsIconVisible="True"  -->
+                        <!--  IsClosable="False"  -->
+                        <!--  Message="Hardware settings for this device is not available at the moment">  -->
+                        <!-- </ui:InfoBar> -->
+                        <Grid>
+                            <StackPanel Spacing="2">
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Personalize device lighting when application is not running, click for more settings."
+                                    Header="Auto-run on startup">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource button_power_1__power_button_on_off}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <ToggleSwitch x:Name="Switch" IsChecked="{Binding RunAtStartup}" />
+                                    </ui:SettingsExpander.Footer>
+                                    <ui:SettingsExpanderItem
+                                        MinWidth="500"
+                                        Content="Start minimized"
+                                        Description="The app will run in silent on Window's startup."
+                                        IsClickEnabled="False"
+                                        IsEnabled="{Binding ElementName=Switch, Path=IsChecked}">
+                                        <ui:SettingsExpanderItem.Footer>
+                                            <ToggleSwitch Margin="40,0" IsChecked="{Binding StartMinimized}" />
+                                        </ui:SettingsExpanderItem.Footer>
+                                    </ui:SettingsExpanderItem>
+                                    <ui:SettingsExpanderItem
+                                        MinWidth="500"
+                                        Content="Startup delay"
+                                        Description="Set the delay time in second. If some of your apps is blocked by Ambinity, try increasing this value."
+                                        IsClickEnabled="False"
+                                        IsEnabled="{Binding ElementName=Switch, Path=IsChecked}">
+                                        <ui:SettingsExpanderItem.Footer>
+                                            <ui:NumberBox
+                                                Margin="40,0"
+                                                Maximum="20"
+                                                Minimum="1"
+                                                Theme="{DynamicResource borderlessNumberBox}"
+                                                Value="{Binding StartupDelay}" />
+                                        </ui:SettingsExpanderItem.Footer>
+                                    </ui:SettingsExpanderItem>
+                                </ui:SettingsExpander>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Mica is an opaque, dynamic material that incorporates theme and desktop wallpaper to paint the background"
+                                    Header="Enable Mica">
+                                    <ui:SettingsExpander.Footer>
+                                        <ToggleSwitch Margin="40,0" IsChecked="{Binding EnableMica}" />
+                                    </ui:SettingsExpander.Footer>
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource enable_mica}" />
+                                    </ui:SettingsExpander.IconSource>
+                                </ui:SettingsExpander>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Change accent color and theme settings"
+                                    Header="Theme">
+                                    <ui:SettingsExpander.Footer>
+                                        <ui:FAComboBox
+                                            x:Name="customTheme"
+                                            VerticalContentAlignment="Center"
+                                            FontFamily="{StaticResource NunitoFont}"
+                                            SelectedIndex="{Binding !UseSystemTheme}">
+                                            <ui:FAComboBoxItem>Use system theme</ui:FAComboBoxItem>
+                                            <ui:FAComboBoxItem>Custom</ui:FAComboBoxItem>
+                                        </ui:FAComboBox>
+                                    </ui:SettingsExpander.Footer>
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource themeSettings}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpanderItem
+                                        MinWidth="500"
+                                        Content="Accent color"
+                                        Description="Choose primary color"
+                                        IsClickEnabled="False"
+                                        IsEnabled="{Binding ElementName=customTheme, Path=SelectedIndex}">
+                                        <ui:SettingsExpanderItem.Footer>
+                                            <ui:ColorPickerButton Margin="40,0" Color="{Binding CurrentAppAccentColor}" />
+                                        </ui:SettingsExpanderItem.Footer>
+                                    </ui:SettingsExpanderItem>
+                                    <ui:SettingsExpanderItem
+                                        MinWidth="500"
+                                        Content="Mode"
+                                        Description="Choose between dark and light mode "
+                                        IsClickEnabled="False"
+                                        IsEnabled="{Binding ElementName=customTheme, Path=SelectedIndex}">
+                                        <ui:SettingsExpanderItem.Footer>
+                                            <ui:FAComboBox
+                                                Margin="40,0"
+                                                FontFamily="{StaticResource NunitoFont}"
+                                                ItemsSource="{Binding AvailableAppThemes}"
+                                                SelectedItem="{Binding CurrentAppTheme}" />
+                                        </ui:SettingsExpanderItem.Footer>
+                                    </ui:SettingsExpanderItem>
+                                </ui:SettingsExpander>
+                                  <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Change display language"
+                                    Header="Language">
+                                    <ui:SettingsExpander.Footer>
+                                        <ui:FAComboBox
+                                            VerticalContentAlignment="Center"
+                                            FontFamily="{StaticResource NunitoFont}"
+                                            SelectedIndex="{Binding !UseSystemTheme}">
+                                            <ui:FAComboBoxItem>En</ui:FAComboBoxItem>
+                                            <ui:FAComboBoxItem>Vi</ui:FAComboBoxItem>
+                                        </ui:FAComboBox>
+                                    </ui:SettingsExpander.Footer>
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource themeSettings}" />
+                                    </ui:SettingsExpander.IconSource>
+                                </ui:SettingsExpander>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid RowDefinitions="Auto,*">
+                    <Grid>
+                        <TextBlock Classes="smallBold" Text="Plugins" />
+                    </Grid>
+                    <Grid Margin="0,10,0,0" Row="1">
+                        <!--  <ui:InfoBar Severity="Error" Title="Warning" IsOpen="True"  -->
+                        <!--  IsIconVisible="True"  -->
+                        <!--  IsClosable="False"  -->
+                        <!--  Message="Hardware settings for this device is not available at the moment">  -->
+                        <!-- </ui:InfoBar> -->
+                        <Grid>
+                            <StackPanel Spacing="2">
+                                <ui:InfoBar
+                                    Title="Settings changed"
+                                    IsOpen="{Binding ShowPluginInfoBar, Mode=TwoWay}"
+                                    Message="Restart is required for changes to take effect"
+                                    Severity="Warning">
+                                    <Button
+                                        Margin="0,0,0,10"
+                                        Command="{Binding RequestRestartApplicationCommand}"
+                                        Content="Restart now" />
+                                </ui:InfoBar>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Enable screen capture plugin. This plugin is required for ambilight effect."
+                                    Header="Screen capture">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource desktopCapture}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <ToggleSwitch x:Name="ambilightEnable" IsChecked="{Binding GeneralSettings.EnableScreenCapture}" />
+                                    </ui:SettingsExpander.Footer>
+                                    <ui:SettingsExpanderItem
+                                        MinWidth="500"
+                                        Content="Scaling factor"
+                                        Description="Try to increase this value if your computer is struggling when turn on ambilight effect."
+                                        IsClickEnabled="False"
+                                        IsEnabled="{Binding ElementName=ambilightEnable, Path=IsChecked}">
+                                        <ui:SettingsExpanderItem.Footer>
+                                            <ui:FAComboBox Margin="40,0" FontFamily="{StaticResource NunitoFont}">
+                                                <ui:FAComboBoxItem>0</ui:FAComboBoxItem>
+                                                <ui:FAComboBoxItem>1</ui:FAComboBoxItem>
+                                                <ui:FAComboBoxItem>2</ui:FAComboBoxItem>
+                                                <ui:FAComboBoxItem>3</ui:FAComboBoxItem>
+                                                <ui:FAComboBoxItem>4</ui:FAComboBoxItem>
+                                            </ui:FAComboBox>
+                                        </ui:SettingsExpanderItem.Footer>
+                                    </ui:SettingsExpanderItem>
+                                    <ui:SettingsExpanderItem
+                                        MinWidth="500"
+                                        Content="Capture rate"
+                                        Description="Adjust frames per second"
+                                        IsClickEnabled="False"
+                                        IsEnabled="{Binding ElementName=ambilightEnable, Path=IsChecked}">
+                                        <ui:SettingsExpanderItem.Footer>
+                                            <ui:NumberBox
+                                                Margin="40,0"
+                                                Maximum="60"
+                                                Minimum="15"
+                                                Theme="{DynamicResource borderlessNumberBox}" />
+                                        </ui:SettingsExpanderItem.Footer>
+                                    </ui:SettingsExpanderItem>
+                                </ui:SettingsExpander>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Enable Audio capture plugin. This plugin is required for music reactive effect."
+                                    Header="Audio capture">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource audioCapture}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <ToggleSwitch
+                                            x:Name="audioEnable"
+                                            Margin="40,0"
+                                            IsChecked="{Binding GeneralSettings.EnableAudioCapture}" />
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Enable Hardware monitor plugin. This plugin is required for adaptive fan control mode."
+                                    Header="Hardware monitor"
+                                    IsVisible="{Binding HWMonitorSettingVisible}">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource wave_signal__heart_line_beat_square_graph_stats}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <ToggleSwitch
+                                            x:Name="hwMonitorEnable"
+                                            Margin="40,0"
+                                            IsChecked="{Binding GeneralSettings.EnableHWMonitor}" />
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Enable OpenRGB plugin. This plugin is required for controlling 3rd party devices"
+                                    Header="OpenRGB"
+                                    IsVisible="{Binding OpenRGBSettingVisible}">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource plugin}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <ToggleSwitch
+                                            x:Name="ORGBoutline"
+                                            Margin="40,0"
+                                            IsChecked="{Binding GeneralSettings.EnableOpenRGB}" />
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid RowDefinitions="Auto,*">
+                    <Grid>
+                        <TextBlock Classes="smallBold" Text="Rendering" />
+                    </Grid>
+                    <Grid Margin="0,10,0,0" Row="1">
+                        <!--  <ui:InfoBar Severity="Error" Title="Warning" IsOpen="True"  -->
+                        <!--  IsIconVisible="True"  -->
+                        <!--  IsClosable="False"  -->
+                        <!--  Message="Hardware settings for this device is not available at the moment">  -->
+                        <!-- </ui:InfoBar> -->
+                        <Grid>
+                            <StackPanel Spacing="2">
+                                <ui:InfoBar
+                                    Title="Settings changed"
+                                    IsOpen="{Binding ShowRenderingInfoBar, Mode=TwoWay}"
+                                    Message="Restart is required for changes to take effect"
+                                    Severity="Warning">
+                                    <Button
+                                        Margin="0,0,0,10"
+                                        Command="{Binding RequestRestartApplicationCommand}"
+                                        Content="Restart now" />
+                                </ui:InfoBar>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Change the frame rate of the bitmap rendering method."
+                                    Header="Target frame rate">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource flash}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <ui:FAComboBox
+                                            Margin="40,0"
+                                            FontFamily="{StaticResource NunitoFont}"
+                                            ItemsSource="{Binding AvailableFrameRates}"
+                                            SelectedItem="{Binding TargetFramerate}" />
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Change size of the target bitmap if you find the default value is too small for your device layout"
+                                    Header="Target bitmap size">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource bitmapSize}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <ui:FAComboBox
+                                            Margin="40,0"
+                                            FontFamily="{StaticResource NunitoFont}"
+                                            ItemsSource="{Binding AvailableBitmapSize}"
+                                            SelectedItem="{Binding TargetBitmapSize}" />
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid RowDefinitions="Auto,*">
+                    <Grid>
+                        <TextBlock Classes="smallBold" Text="Devices" />
+                    </Grid>
+                    <Grid Margin="0,10,0,0" Row="1">
+                        <!--  <ui:InfoBar Severity="Error" Title="Warning" IsOpen="True"  -->
+                        <!--  IsIconVisible="True"  -->
+                        <!--  IsClosable="False"  -->
+                        <!--  Message="Hardware settings for this device is not available at the moment">  -->
+                        <!-- </ui:InfoBar> -->
+                        <Grid>
+                            <StackPanel Spacing="2">
+                                <ui:InfoBar
+                                    Title="Settings changed"
+                                    IsOpen="{Binding ShowDevicesInfoBar, Mode=TwoWay}"
+                                    Message="Restart is required for changes to take effect"
+                                    Severity="Warning">
+                                    <Button
+                                        Margin="0,0,0,10"
+                                        Command="{Binding RequestRestartApplicationCommand}"
+                                        Content="Restart now" />
+                                </ui:InfoBar>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Device discovery service will scan for new devices every second."
+                                    Header="Auto scan for new devices">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource search_visual}" />
+                                    </ui:SettingsExpander.IconSource>
+                                      <ui:SettingsExpander.Footer>
+                                        <ToggleSwitch  IsChecked="{Binding AutoScanNewDevices}" />
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid RowDefinitions="Auto,*">
+                    <Grid>
+                        <TextBlock Classes="smallBold" Text="Debug" />
+                    </Grid>
+                    <Grid Margin="0,10,0,0" Row="1">
+                        <!--  <ui:InfoBar Severity="Error" Title="Warning" IsOpen="True"  -->
+                        <!--  IsIconVisible="True"  -->
+                        <!--  IsClosable="False"  -->
+                        <!--  Message="Hardware settings for this device is not available at the moment">  -->
+                        <!-- </ui:InfoBar> -->
+                        <Grid>
+                            <StackPanel Spacing="2">
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Show Debug log."
+                                    Header="Debug">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource debug_window}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <Button
+                                            Margin="40,0"
+                                            Command="{Binding ShowDebugLogCommand}"
+                                            Content="Show debug log"
+                                            FontFamily="{StaticResource NunitoFont}" />
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Remove all devices from the device list. This also removes all device settings."
+                                    Header="Remove all devices">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource device_data}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <Button
+                                            Margin="40,0"
+                                            Command="{Binding RemoveAllDevicesCommand}"
+                                            Content="Remove"
+                                            FontFamily="{StaticResource NunitoFont}" />
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="Remove all downloaded datas. This includes all lighting profiles, color palette..."
+                                    Header="Remove downloaded datas">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource download_data}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <Button
+                                            Margin="40,0"
+                                            Command="{Binding RemoveDownloadedDatasCommand}"
+                                            Content="Remove"
+                                            FontFamily="{StaticResource NunitoFont}" />
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid IsVisible="{Binding EnableInAppUpdate}" RowDefinitions="Auto,*">
+                    <Grid>
+                        <TextBlock Classes="smallBold" Text="Update" />
+                    </Grid>
+                    <Grid Margin="0,10,0,0" Row="1">
+                        <StackPanel Spacing="2">
+                            <Grid Margin="0,10,0,0">
+                                <!-- <Image Width="50" Source="/Assets/Images/uptodate.png"></Image> -->
+                                <!-- <Grid Column="2"> -->
+                                <!--     <StackPanel Margin="10,0" Spacing="10"> -->
+                                <!--         <TextBlock FontSize="18" FontWeight="SemiBold" Text="{Binding CurrentReleaseInformation.Version}"></TextBlock> -->
+                                <!--         <Grid> -->
+                                <!--             <StackPanel Orientation="Horizontal" Spacing="2"> -->
+                                <!--  <TextBlock  Classes="smallSecondary"  -->
+                                <!--  Text="Last checked: ">  -->
+                                <!--                 </TextBlock> -->
+                                <!--  <TextBlock  Classes="smallSecondary"  -->
+                                <!--  Text="{Binding CurrentReleaseInformation.ReleaseDate}">  -->
+                                <!--                 </TextBlock> -->
+                                <!--             </StackPanel> -->
+                                <!--    -->
+                                <!--         </Grid> -->
+                                <!--         <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsCheckingForUpdate}"></ProgressBar> -->
+                                <!--     </StackPanel> -->
+                                <!--    -->
+                                <!-- </Grid> -->
+                                <!-- <Grid Column="3"> -->
+                                <!--  <Button IsEnabled="True"  -->
+                                <!--  Command="{Binding CheckForAppUpdateCommand}"  -->
+                                <!--  Content="Check for update" Classes="accent">  -->
+                                <!--     </Button> -->
+                                <!-- </Grid> -->
+                                <ui:SettingsExpander
+                                    MinWidth="500"
+                                    Description="{Binding CurrentReleaseInformation.ReleaseDate}"
+                                    Header="{Binding CurrentReleaseInformation.Version}">
+                                    <ui:SettingsExpander.IconSource>
+                                        <ui:PathIconSource Data="{DynamicResource app_update}" />
+                                    </ui:SettingsExpander.IconSource>
+                                    <ui:SettingsExpander.Footer>
+                                        <StackPanel
+                                            Margin="40,0"
+                                            Orientation="Horizontal"
+                                            Spacing="10">
+                                            <ui:ProgressRing
+                                                Width="32"
+                                                Height="32"
+                                                IsIndeterminate="True"
+                                                IsVisible="{Binding IsCheckingForUpdate}" />
+                                            <Button
+                                                Command="{Binding CheckForAppUpdateCommand}"
+                                                Content="Check for updates"
+                                                IsEnabled="True" />
+                                        </StackPanel>
+
+                                    </ui:SettingsExpander.Footer>
+                                </ui:SettingsExpander>
+                            </Grid>
+
+                            <ui:InfoBar
+                                Title="Update available"
+                                IsClosable="False"
+                                IsIconVisible="True"
+                                IsOpen="{Binding UpdateAvailable}"
+                                Message="{Binding UpdateInformation.Version}"
+                                Severity="Success">
+                                <ui:InfoBar.IconSource>
+                                    <ui:PathIconSource Data="{DynamicResource Import}" Foreground="{DynamicResource AccentButtonBackground}" />
+                                </ui:InfoBar.IconSource>
+                                <Grid>
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <Button
+                                            Margin="0,0,0,20"
+                                            Command="{Binding InstallUpdateCommand}"
+                                            Content="Install now" />
+                                        <ProgressBar
+                                            Margin="0,0,0,20"
+                                            IsIndeterminate="False"
+                                            IsVisible="{Binding IsUpdating}"
+                                            Value="{Binding CurrentUpdateProgress}" />
+                                        <TextBlock
+                                            Margin="0,0,0,20"
+                                            VerticalAlignment="Center"
+                                            IsVisible="{Binding IsUpdating}"
+                                            Text="{Binding CurrentUpdatingStatus}" />
+                                    </StackPanel>
+
+                                </Grid>
+                            </ui:InfoBar>
+
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

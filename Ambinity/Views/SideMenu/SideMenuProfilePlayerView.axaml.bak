@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.SideMenu"
+             x:DataType="local:SideMenuProfilePlayerViewModel"
+             x:Class="Ambinity.Views.SideMenu.SideMenuProfilePlayerView">
+<UserControl.Styles>
+    <Style Selector=":is(Button).play-button">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="Grid#ContainerGrid:pointerover :is(Button).play-button">
+        <Setter Property="IsVisible" Value="True" />
+    </Style>
+</UserControl.Styles>
+    <Grid RowDefinitions="200,10,40,25">
+        <Grid Row="0">
+            <Button x:Name="ProfileButton" Click="ProfileButton_OnClick" ToolTip.Tip="Edit this profile" Command="{CompiledBinding GoToProfileEditorCommand}"
+                    CornerRadius="5" Margin="10,10,8,0" Padding="2" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Classes="icon-button">
+                <Border Padding="0" Width="180" Height="180" BorderThickness="0" ClipToBounds="True" CornerRadius="2"
+                        Classes="card">
+                    <Grid Background="Transparent" Name="ContainerGrid">
+                        <Image Name="profilePicture" Stretch="Uniform" Source="{CompiledBinding ProfileBitmap}"></Image>
+                        <Button x:Name="PlayButton"  Click="PlayButton_OnClick" Command="{Binding PlayButtonCommand}" ToolTip.Tip="{Binding PlayButtonToolTip}"
+                                Width="50"
+                                Height="50" VerticalAlignment="Center" CornerRadius="30" Grid.Column="0" HorizontalAlignment="Center"
+                                Classes="icon-button play-button">
+                            <PathIcon Width="25" Height="25"
+                                      Data="{Binding PlayButtonIcon,Converter={StaticResource ResourceConverter}}">
+                            </PathIcon>
+                        </Button>
+                    </Grid>
+
+                </Border>
+            </Button>
+
+        </Grid>
+
+        <!-- <Grid Row="3"> -->
+        <!--     <ProgressBar HorizontalAlignment="Center" Width="180" Value="50" Margin="10,0"></ProgressBar> -->
+        <!-- </Grid> -->
+        <Grid Margin="20,0,20,0" Row="2">
+            <!-- <Button CornerRadius="20" Width="35" Height="35" HorizontalAlignment="Right" Classes="icon-button"> -->
+            <!--     <PathIcon Width="15" Height="15"  Data="{DynamicResource previousFrame}"></PathIcon> -->
+            <!-- </Button> -->
+
+            <Grid RowDefinitions="*,*">
+                <TextBlock MaxWidth="180" ToolTip.Tip="{Binding CurrentPlayingProfile.Name}" Classes="generalBold" FontSize="18"
+                           HorizontalAlignment="Center"  TextTrimming="CharacterEllipsis"
+                           Text="{Binding CurrentPlayingProfile.Name}">
+                </TextBlock>
+                <TextBlock Grid.Row="1" Classes="smallBoldSecondary"
+                           HorizontalAlignment="Center"
+                           Text="{Binding CurrentPlayingProfileDescription}">
+                </TextBlock>
+            </Grid>
+            <!-- <Button  CornerRadius="20" Grid.Column="2" Width="35" Height="35" HorizontalAlignment="Left" Classes="icon-button"> -->
+            <!--     <PathIcon Width="15" Height="15" Data="{DynamicResource nextFrame}"></PathIcon> -->
+            <!-- </Button> -->
+        </Grid>
+    </Grid>
+</UserControl>

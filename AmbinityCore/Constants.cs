@@ -28,6 +28,7 @@ public static class Constants
     public static readonly string ExecutablePath = GetCurrentLocation();
     public static readonly string UpdatingFolder = Path.Combine(AppDataFolder, "updating");
     public static readonly string ImageResourceFolder = Path.Combine(AppDataFolder, "Images");
+    public static readonly string AmbinityLocalesFolder = Path.Combine(AppDataFolder, "Locales");
 
     #endregion
 

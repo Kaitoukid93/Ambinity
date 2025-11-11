@@ -1,0 +1,179 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.Views.Screens.DeviceSettings"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:DataType="local:PortDetailViewModel"
+             PointerEntered="InputElement_OnPointerEntered"
+             PointerExited="InputElement_OnPointerExited"
+             x:Class="Ambinity.Views.Screens.DeviceSettings.PortDetailView">
+    <UserControl.Styles>
+        <Style Selector="TextBlock.pingButton">
+            <Setter Property="Text" Value="Ping" />
+            <Style Selector="^.isPinging">
+                <Setter Property="Text" Value="Signal sent" />
+            </Style>
+        </Style>
+        <Style Selector="FlyoutPresenter.DefaultFlyout">
+            <Setter Property="Background" Value="{DynamicResource TimePickerFlyoutPresenterBackground}" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+    </UserControl.Styles>
+    <FlyoutBase.AttachedFlyout>
+        <Flyout Closing="PopupFlyoutBase_OnClosing" FlyoutPresenterClasses="DefaultFlyout" Placement="Center">
+            <Grid>
+                <ContentControl Focusable="True" Content="{CompiledBinding FlyoutViewModel}"></ContentControl>
+                <Grid HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="10" Spacing="5">
+                        <!-- <Grid> -->
+                        <!--     <Button ToolTip.Tip="Add to Library" Padding="1" Background="Transparent" Width="30" Height="30" -->
+                        <!--             Classes="icon-button"> -->
+                        <!--         <PathIcon Width="15" Data="{DynamicResource plus}"></PathIcon> -->
+                        <!--     </Button> -->
+                        <!-- </Grid> -->
+                        <Grid>
+                            <Button ToolTip.Tip="Close" Padding="1" Click="Button_OnClick"
+                                    Background="Transparent" Width="30" Height="30"
+                                    Classes="icon-button">
+                                <PathIcon Margin="1,1,0,0" Width="17" Data="{DynamicResource plus}">
+                                    <PathIcon.RenderTransform>
+                                        <RotateTransform Angle="45"></RotateTransform>
+                                    </PathIcon.RenderTransform>
+                                </PathIcon>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+        </Flyout>
+    </FlyoutBase.AttachedFlyout>
+    <ScrollViewer IsScrollInertiaEnabled="True">
+        <StackPanel Spacing="4">
+            <Grid ColumnDefinitions="*,10,Auto">
+                <Grid Column="0">
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" FontSize="20" Margin="0,0,0,0" FontWeight="SemiBold"></TextBlock>
+                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding LEDsCount}"></TextBlock>
+                        <Grid Height="20"></Grid>
+                    </StackPanel>
+
+                </Grid>
+
+                <Grid Column="2">
+                    <Button Command="{Binding PingOutputCommand}"
+                            CornerRadius="3" Padding="5,3"
+                            HorizontalAlignment="Right" VerticalAlignment="Top"
+                            Classes="accent">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <PathIcon IsVisible="{Binding !IsPingingOutput}" Margin="0,0,5,0" Width="15" Height="15"
+                                      Data="{DynamicResource search}">
+                            </PathIcon>
+                            <PathIcon IsVisible="{Binding IsPingingOutput}" Width="15" Margin="0,0,3,0"
+                                      Height="15" Data="{DynamicResource checkIcon}">
+                            </PathIcon>
+                            <TextBlock Classes="pingButton" Classes.isPinging="{Binding IsPingingOutput}"
+                                       Margin="0,0,0,2" FontWeight="SemiBold"
+                                       Grid.Column="1" FontSize="12">
+                            </TextBlock>
+                        </Grid>
+                    </Button>
+                </Grid>
+            </Grid>
+
+            <!-- <Grid ColumnDefinitions="*,Auto"> -->
+            <!--     <ContentControl Margin="0,10" Content="{Binding DetailViewModel}"></ContentControl> -->
+            <!--     <Grid Column="1"> -->
+            <!--         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Top" Spacing="5"> -->
+            <!--             <Grid> -->
+            <!--                 <Button x:Name="ShowLibraryButton" Click="ShowLibraryButton_OnClick" ToolTip.Tip="Show library" Command="{Binding OpenLibraryCommand}" Padding="1" -->
+            <!--                         Background="Transparent" Width="30" Height="30" -->
+            <!--                         Classes="icon-button"> -->
+            <!--                     <PathIcon Width="15" Data="{DynamicResource collection}"></PathIcon> -->
+            <!--                 </Button> -->
+            <!--                  -->
+            <!--                 <ui:TeachingTip Name="libraryTip" -->
+            <!--                                 Target="{Binding #ShowLibraryButton}" -->
+            <!--                                 Title="Library" -->
+            <!--                                 Subtitle="Click this button to szelect your device"> -->
+            <!--                 </ui:TeachingTip> -->
+            <!--             </Grid> -->
+            <!-- -->
+            <!-- -->
+            <!--         </StackPanel> -->
+            <!--     </Grid> -->
+            <!-- </Grid> -->
+
+            <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}" Height="1"></Separator>
+            <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0" Grid.Row="1"
+                                 Header="Enable"
+                                 Description="Hide this device from all profiles"
+                                 IsClickEnabled="False">
+                <ui:SettingsExpander.IconSource>
+                    <ui:PathIconSource Data="{DynamicResource 'disable'}"></ui:PathIconSource>
+                </ui:SettingsExpander.IconSource>
+                <ui:SettingsExpander.Footer>
+                    <ToggleSwitch IsChecked="{Binding IsEnabled}"></ToggleSwitch>
+                </ui:SettingsExpander.Footer>
+            </ui:SettingsExpander>
+            <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}" Height="1"></Separator>
+            <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0" Grid.Row="1"
+                                 Header="Brightness"
+
+                                 Description="Set brightness limit to prevent overloading"
+                                 IsClickEnabled="False">
+                <ui:SettingsExpander.IconSource>
+                    <ui:PathIconSource Data="{DynamicResource 'brightness'}"></ui:PathIconSource>
+                </ui:SettingsExpander.IconSource>
+                <ui:SettingsExpander.Footer>
+                    <Slider
+                        Margin="0" Width="160" Value="{Binding Brightness}" Minimum="0" Maximum="255">
+                    </Slider>
+                </ui:SettingsExpander.Footer>
+            </ui:SettingsExpander>
+            <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}" Height="1"></Separator>
+            <ui:SettingsExpander IsVisible="{Binding !IsMultiplePortsSelected}" IsExpanded="True" Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0"
+                                 Grid.Row="1" Header="Devices"
+
+                                 Description="You can daisy chain by adding more devices to the port">
+                <ui:SettingsExpander.IconSource>
+                    <ui:PathIconSource Data="{DynamicResource 'ports'}"></ui:PathIconSource>
+                </ui:SettingsExpander.IconSource>
+                <ui:SettingsExpanderItem Background="Transparent">
+                    <StackPanel Spacing="10">
+                        <Button Command="{Binding AddNewDaisyChainDeviceCommand}">
+                            <Grid ColumnDefinitions="Auto,8,*">
+                                <PathIcon Data="{DynamicResource plus}" Width="15" Height="15"></PathIcon>
+                                <Grid Column="2">
+                                    <TextBlock ToolTip.Tip="Add same device to bottom of the chain" Text="Add device" FontSize="12" FontWeight="SemiBold"></TextBlock>
+                                </Grid>
+                            </Grid>
+
+                        </Button>
+                        <ItemsControl ItemsSource="{Binding Devices}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"></WrapPanel>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.DataTemplates>
+                                <DataTemplate DataType="{x:Type local:DaisyChainPlusSymbolViewModel}" >
+                                    <PathIcon Data="{DynamicResource right_arrow}" Width="15" Height="15" Margin="5,0"></PathIcon>
+                                </DataTemplate>
+                            </ItemsControl.DataTemplates>
+                        </ItemsControl>
+                    </StackPanel>
+
+
+
+                </ui:SettingsExpanderItem>
+            </ui:SettingsExpander>
+
+        </StackPanel>
+    </ScrollViewer>
+
+
+</UserControl>

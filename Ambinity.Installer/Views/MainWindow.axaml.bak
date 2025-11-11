@@ -1,0 +1,22 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Ambinity.Installer.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        ExtendClientAreaToDecorationsHint="True"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        Width="800"
+        Height="450"
+        CanResize="False"
+        xmlns:viewModels="clr-namespace:Ambinity.Installer.ViewModels"
+        x:DataType="viewModels:RootViewModel"
+        WindowStartupLocation="CenterScreen"
+        x:Class="Ambinity.Installer.Views.MainWindow"
+        Icon="/Assets/installerApp.ico"
+        Title="Ambinity Installer">
+
+    <!-- <TextBlock Text="{Binding Header}" FontSize="25" Margin="20" FontWeight="SemiBold" HorizontalAlignment="Left" -->
+    <!--            VerticalAlignment="Top" /> -->
+    <ContentControl Content="{Binding}"></ContentControl>
+
+</Window>

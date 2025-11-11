@@ -26,4 +26,5 @@ public interface IGeneralSettings : INotifyPropertyChanged
     int CanvasWidth { get; set; }
     int CanvasHeight { get; set; }
     int TargetFramerate { get; set; }
+    string SelectedLanguage { get; set; }
 }

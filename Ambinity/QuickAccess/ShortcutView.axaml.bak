@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:Ambinity.QuickAccess"
+             xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             x:DataType="local:ShortcutViewModel"
+             x:Class="Ambinity.QuickAccess.ShortcutView">
+    <UserControl.Styles>
+        <Style Selector="ToggleButton.ActivateButton">
+            <Setter Property="ToolTip.Tip" Value="Activate"></Setter>
+            <Style Selector="^.Error">
+                <Setter Property="ToolTip.Tip" Value="Unable to load attached profile"></Setter>
+            </Style>
+            <Style Selector="^:checked">
+                <Setter Property="ToolTip.Tip" Value="Deactivate"></Setter>
+            </Style>
+        </Style>
+    </UserControl.Styles>
+    <StackPanel VerticalAlignment="Top" Margin="5,5,5,30" Spacing="8">
+        <StackPanel>
+            <Grid>
+                <Grid Margin="0,10,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" ColumnDefinitions="Auto,*">
+
+                    <ToggleButton
+                        IsEnabled="{Binding !IsInEditMode}"
+                        Classes="ActivateButton"
+                        IsChecked="{Binding IsActivated}"
+                        Command="{Binding ShortcutToggleCommand}"
+                        Classes.Error="{Binding !CanExecute}"
+                        ToolTip.ShowOnDisabled="True"
+                        Width="{Binding ItemWidth}"
+                        Height="{Binding ItemHeight}"
+                        Padding="0"
+                        BorderThickness="1 1 0,1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        CornerRadius="{Binding ItemCornerRadius}"
+                        Name="ButtonCustomProfile">
+                        <PathIcon Margin="2" Data="{Binding Icon,Converter={StaticResource ResourceConverter}}"></PathIcon>
+                    </ToggleButton>
+                    <ToggleButton Grid.Column="1"
+                                  IsVisible="{Binding !IsInEditMode}"
+                                  ToolTip.Tip="Edit properties"
+                                  Height="50"
+                                  Command="{Binding GoToShortcutEditorPageCommand}"
+                                  HorizontalAlignment="Center"
+                                  CornerRadius="0 4 4 0"
+                                  BorderThickness="0 1 1 1"
+                                  IsChecked="{Binding Path=IsChecked, ElementName=ButtonCustomProfile, Mode=OneWay}"
+                                  Click="ButtonMore_OnClick"
+                                  Name="ButtonMore">
+                        <PathIcon Height="10" Width="10" Data="{DynamicResource showMoreRight}"></PathIcon>
+                    </ToggleButton>
+                </Grid>
+                <Button Command="{Binding SelfRemovedCommand}" Margin="0,0,0,0" Foreground="Black" Background="OrangeRed" ToolTip.Tip="Remove" Padding="0" Width="20" Height="20" CornerRadius="13" HorizontalAlignment="Right"
+                        IsVisible="{Binding IsInEditMode}" VerticalAlignment="Top">
+                    <PathIcon Width="10" Height="10"
+                              Data="{DynamicResource delete_1__remove_add_button_buttons_delete_cross_x_mathematics_multiply_math}">
+                    </PathIcon>
+                </Button>
+                <Popup PlacementTarget="ButtonCustomProfile" Placement="TopEdgeAlignedLeft" HorizontalOffset="-6"
+                       IsOpen="{Binding ShowWarning}"
+                       VerticalOffset="6">
+                    <controls:InfoBadge Classes="Caution Icon" VerticalAlignment="Center" />
+                </Popup>
+            </Grid>
+        </StackPanel>
+
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Name}" FontSize="12"
+                   FontWeight="SemiBold">
+        </TextBlock>
+    </StackPanel>
+
+</UserControl>
