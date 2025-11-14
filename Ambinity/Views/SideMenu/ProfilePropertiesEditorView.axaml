@@ -9,7 +9,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
              x:DataType="sideMenu:ProfilePropertiesEditorViewModel">
     <UserControl.Resources>
         <MenuFlyout x:Key="iconFlyout" Placement="Bottom">
-            <MenuItem Command="{Binding SelectBitmapCommand}" Header="Select image">
+            <MenuItem Command="{Binding SelectBitmapCommand}" Header="{localize:Loc SelectImage.MenuItem.Header}">
                 <MenuItem.Icon>
                     <PathIcon Width="15" Height="15" Data="{DynamicResource Assets}"></PathIcon>
                 </MenuItem.Icon>
@@ -69,8 +69,8 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             <Separator Margin="10,0"></Separator>
             <Grid Margin="10,0" ColumnDefinitions="100,*">
                 <Grid RowDefinitions="*,*">
-                    <TextBlock VerticalAlignment="Center" Text="Name :"></TextBlock>
-                    <TextBlock VerticalAlignment="Center" Grid.Row="1" Text="Description :"></TextBlock>
+                    <TextBlock VerticalAlignment="Center" Text="{localize:Loc NameHeader.TextBlock.Text}"></TextBlock>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="1" Text="{localize:Loc DescriptionHeader.TextBlock.Text}"></TextBlock>
                 </Grid>
                 <Grid Column="1" RowDefinitions="*,Auto">
                     <TextBox MaxWidth="300" TextWrapping="Wrap" Text="{Binding Name}" Margin="10" VerticalAlignment="Center"></TextBox>

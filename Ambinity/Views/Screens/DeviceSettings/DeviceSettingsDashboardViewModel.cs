@@ -16,7 +16,7 @@ using Serilog;
 
 namespace Ambinity.Views.Screens.DeviceSettings;
 
-public class DeviceSettingsDashboardViewModel : ViewModelBase
+public class DeviceSettingsDashboardViewModel : ScreenViewModelBase
 {
     public DeviceSettingsDashboardViewModel(RootNavigationStores rootNavigationStores, SerialControllerDiscoveryService discoveryService,
         SerialControllerRepository serialControllerRepository, OpenRGBControllerRepository openRgbControllerRepository,
@@ -82,7 +82,7 @@ public class DeviceSettingsDashboardViewModel : ViewModelBase
     public ObservableCollection<DashboardDeviceViewModel> Devices { get; set; }
     public ObservableCollection<DashboardDeviceViewModel> CoolingDevices { get; set; }
 
-    public void Init()
+    public override async Task Init()
     {
         //load available devices
         //setup commands

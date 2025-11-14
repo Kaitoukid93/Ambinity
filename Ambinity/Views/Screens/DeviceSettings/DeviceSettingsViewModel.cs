@@ -33,12 +33,12 @@ public class DeviceSettingsViewModel : ViewModelBase
 
     private RootNavigationStores _rootNavigationStores;
     private ThumbnailService _thumbnailService;
-    public async Task<bool> Init(IController controller)
+    public  async Task<bool> Init(IController controller)
     {
         Controller = controller;
         Thumbnail = Controller.Thumbnail ??  _thumbnailService.GetThumbnail("null").Result;
         HasFanControl = Controller.FanController != null;
-       
+
         OnPropertyChanged(nameof(HasFanControl));
         var result = await HardwareLightingViewModel.Init(controller);
         //init child viewmodel
@@ -47,7 +47,7 @@ public class DeviceSettingsViewModel : ViewModelBase
             CoolingSettingsViewModel.Init(controller);
         ConnectionSettingsViewModel.Init(controller);
         FirmwareSettingsViewModel.Init(controller);
-        
+
         CommandSetup();
         if (!result)
         {

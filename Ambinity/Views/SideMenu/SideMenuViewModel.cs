@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Ambinity.Localization;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
 using Ambinity.Views.AmbinityStore;
@@ -90,7 +91,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
             _categoryRepository.AddItem(category);
         }
     }
-    
+
     private LightingProfileCategoryRepository _categoryRepository;
     private ObservableCollection<SideMenuScreenViewModel> _screenMenuItems;
     private IDialogService _dialogService;
@@ -187,11 +188,11 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     {
         ScreenMenuItems = new ObservableCollection<SideMenuScreenViewModel>();
         ProfileCategorymenuItems = new ObservableCollection<SideMenuProfileCategoryViewModel>();
-        var homeMenu = new SideMenuScreenViewModel("Home", "home_3__home_house_roof_shelter");
-        var deviceSettingsMenu = new SideMenuScreenViewModel("Devices", "Device_settings");
-        var deviceLayoutMenu = new SideMenuScreenViewModel("Layout", "map_rounded");
-        var ambinityStore = new SideMenuScreenViewModel("Store", "onlineStore");
-        var settingsMenu = new SideMenuScreenViewModel("Settings", "settings_future");
+        var homeMenu = new SideMenuScreenViewModel(Loc.Get("Home.TextBlock.Text"), "home_3__home_house_roof_shelter", _homeViewModel);
+        var deviceSettingsMenu = new SideMenuScreenViewModel(Loc.Get("DeviceSettings.Section.Header"), "Device_settings", _dashboardViewModel);
+        var deviceLayoutMenu = new SideMenuScreenViewModel(Loc.Get("Layout.Page.Header"), "map_rounded", _deviceLayoutEditorViewModel);
+        var ambinityStore = new SideMenuScreenViewModel(Loc.Get("Store.Page.Header"), "onlineStore", _storeViewModel);
+        var settingsMenu = new SideMenuScreenViewModel(Loc.Get("Settings.Page.Header"), "settings_future", _appSettingsViewModel);
         ScreenMenuItems.Add(homeMenu);
         ScreenMenuItems.Add(ambinityStore);
         ScreenMenuItems.Add(deviceSettingsMenu);
@@ -222,7 +223,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         SelectedScreen = null;
     }
 
-    private void ScreenSelectionChanged(SideMenuScreenViewModel screen)
+    private void  ScreenSelectionChanged(SideMenuScreenViewModel screen)
     {
         //unselect all other categories
         foreach (var vm in ProfileCategorymenuItems)
@@ -231,46 +232,12 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         }
 
         SelectedProfile = null;
-        switch (screen.Content)
-        {
-            case "Home":
-                GoHome();
-                break;
-            case "Layout":
-                GoToDeviceLayout();
-                break;
-            case "Devices":
-                GoToDeviceSettings();
-                break;
-            case "Settings":
-                GoToAppSettings();
-                break;
-            case "Store":
-                GotoAmbinityStore(null);
-                break;
-        }
+         screen.Screen.Init();
+        _rootNavigationStores.CurrentViewModel = screen.Screen;
+
     }
 
-    private async Task GoHome()
-    {
-        _rootNavigationStores.CurrentViewModel = _homeViewModel;
-        _homeViewModel.Init();
-    }
-
-    private async Task GoToDeviceLayout()
-    {
-        // _profileEditorViewModel?.Dispose();
-        _rootNavigationStores.CurrentViewModel = _deviceLayoutEditorViewModel;
-        _deviceLayoutEditorViewModel.Init();
-    }
-
-    // private void GoToDashBoard()
-    // {
-    //     var vm = Ioc.Default.GetRequiredService<DashboardViewModel>();
-    //     _rootNavigationStores.CurrentViewModel = vm;
-    // }
-
-    //todo take away items init 
+    //todo take away items init
     private void GoToProfileEditor(LightingProfile profile)
     {
         // _deviceLayoutEditorViewModel?.Dispose();
@@ -278,17 +245,6 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         _profileEditorViewModel.Init(profile);
     }
 
-    private void GoToDeviceSettings()
-    {
-        _rootNavigationStores.CurrentViewModel = _dashboardViewModel;
-        _dashboardViewModel.Init();
-    }
-
-    private void GoToAppSettings()
-    {
-        _rootNavigationStores.CurrentViewModel = _appSettingsViewModel;
-        _appSettingsViewModel.Init();
-    }
 
     private async void GotoAmbinityStore(AssetItemViewModelBase item)
     {

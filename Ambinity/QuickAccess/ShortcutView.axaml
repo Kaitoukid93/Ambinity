@@ -43,7 +43,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     </ToggleButton>
                     <ToggleButton Grid.Column="1"
                                   IsVisible="{Binding !IsInEditMode}"
-                                  ToolTip.Tip="Edit properties"
+                                  ToolTip.Tip="{localize:Loc EditProperties.MenuItem.Header}"
                                   Height="50"
                                   Command="{Binding GoToShortcutEditorPageCommand}"
                                   HorizontalAlignment="Center"

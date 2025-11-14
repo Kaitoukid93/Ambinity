@@ -27,7 +27,7 @@ using Constants = AmbinityCore.Constants;
 
 namespace Ambinity.Views.Screens.AppSettings;
 
-public class AppSettingsViewModel : ViewModelBase
+public class AppSettingsViewModel : ScreenViewModelBase
 {
     private const string _system = "System";
     private const string _dark = "Dark";
@@ -523,7 +523,4 @@ public class AppSettingsViewModel : ViewModelBase
         }
     }
 
-    public void Init()
-    {
-    }
 }

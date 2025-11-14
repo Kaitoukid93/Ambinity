@@ -71,7 +71,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     <PathIcon Width="15" Data="{DynamicResource map_rounded}"></PathIcon>
                 </Button>
                 <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" CommandParameter="settings" ToolTip.HorizontalOffset="-20"
-                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="Settings" Height="35" Width="35"
+                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="{localize:Loc Settings.Button.ToolTip}" Height="35" Width="35"
                         Classes="icon-button">
                     <PathIcon Width="15" Data="{DynamicResource General_Outline_Settings}"></PathIcon>
                 </Button>

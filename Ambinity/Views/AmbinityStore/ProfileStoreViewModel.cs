@@ -7,18 +7,19 @@ using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 using Ambinity.Views.LayoutEditor;
 using Ambinity.Views.OnlineStore;
 using Ambinity.Views.OnlineStore.Library;
+using Ambinity.Views.Screens;
 using AmbinityCore.Models.Collection;
 using HtmlAgilityPack;
 
 namespace Ambinity.Views.AmbinityStore;
 
-public class ProfileStoreViewModel : ViewModelBase
+public class ProfileStoreViewModel : ScreenViewModelBase
 {
     private LightingProfileLibraryViewModel _libraryViewModel;
 
     public ProfileStoreViewModel(ProfileStoreNonClientAreaContentViewModel nonClientAreaContentViewModel,
         LightingProfileLibraryViewModel profileLibraryViewModel, AmbinityStoreNavigation storeNavigation,
-        AmbinityStoreDetailViewModel detailViewModel,LightingProfileAssetsViewModel assetsViewModel)
+        AmbinityStoreDetailViewModel detailViewModel, LightingProfileAssetsViewModel assetsViewModel)
     {
         _assetsViewModel = assetsViewModel;
         _assetsViewModel.LoadingChanged += OnLoadingChanged;
@@ -74,7 +75,7 @@ public class ProfileStoreViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(IsLoading));
     }
-   public bool IsLoading => _assetsViewModel.IsLoading;
+    public bool IsLoading => _assetsViewModel.IsLoading;
     private async void OnStoreItemSelected(AssetItemViewModelBase item)
     {
         if (item is OnlineItemAssetViewModel)
@@ -126,6 +127,14 @@ public class ProfileStoreViewModel : ViewModelBase
         }
         else
             SelectedFilter = SideMenuItems.First();
+    }
+    public override async Task Init()
+    {
+        SelectedFilter = null;
+        await _libraryViewModel.Init();
+        _libraryViewModel.ItemSelected += OnStoreItemSelected;
+        OnStoreItemSelected(null);
+         SelectedFilter = SideMenuItems.First();
     }
 
     public override void Dispose()

@@ -39,7 +39,7 @@
             <TrayIcon ToolTipText="Ambinity"  Command="{CompiledBinding OpenUiCommand}" CommandParameter="devices" Icon="/Assets/appicon.ico" >
                 <TrayIcon.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="Home" Command="{CompiledBinding OpenUiCommand}" CommandParameter="devices"  />
+                        <NativeMenuItem Header="{localize:Loc Home.TextBlock.Text}" Command="{CompiledBinding OpenUiCommand}" CommandParameter="devices"  />
                         <NativeMenuItem Header="Profiles">
                             <NativeMenu>
                                 <NativeMenuItem Header="Option 1" ToggleType="Radio" IsChecked="True" />

@@ -17,7 +17,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
 </UserControl.Styles>
     <Grid RowDefinitions="200,10,40,25">
         <Grid Row="0">
-            <Button x:Name="ProfileButton" Click="ProfileButton_OnClick" ToolTip.Tip="Edit this profile" Command="{CompiledBinding GoToProfileEditorCommand}"
+            <Button x:Name="ProfileButton" Click="ProfileButton_OnClick" ToolTip.Tip="{localize:Loc EditProfile.Button.ToolTip}" Command="{CompiledBinding GoToProfileEditorCommand}"
                     CornerRadius="5" Margin="10,10,8,0" Padding="2" HorizontalAlignment="Center"
                     VerticalAlignment="Center" Classes="icon-button">
                 <Border Padding="0" Width="180" Height="180" BorderThickness="0" ClipToBounds="True" CornerRadius="2"

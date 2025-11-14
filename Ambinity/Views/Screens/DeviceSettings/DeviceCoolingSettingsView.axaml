@@ -17,7 +17,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             <StackPanel Spacing="2">
                 <ui:SettingsExpander Header="{localize:Loc FanControl.SettingsExpander.Header}"
                                      ItemsSource="{Binding Items}"
-                                     Description="Change Fan or Pump control."
+                                     Description="{localize:Loc FanControl.SettingsExpander.Description}"
                                      Tag="{Binding HWmonitorAvailable}"
                                      IsExpanded="True">
                     <ui:SettingsExpander.IconSource>
@@ -53,7 +53,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 <ui:InfoBar IsVisible="{Binding HWmonitorAvailable}" Severity="Informational" Title="{localize:Loc FanControlMode.InforBar.Title}" IsOpen="True"
                             IsIconVisible="True"
                             IsClosable="False"
-                            Message="Adaptive control mode will take average value of the sensors showing above to control fans that attached to this Hub, if no sensor present, the mode is [Fixed].">
+                            Message="{localize:Loc FanControlMode.InforBar.Message}">
                     <!-- <ui:InfoBar.IconSource> -->
                     <!--     <ui:PathIconSource Data="{DynamicResource infoCircle}"></ui:PathIconSource> -->
                     <!-- </ui:InfoBar.IconSource> -->

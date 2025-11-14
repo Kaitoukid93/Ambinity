@@ -12,9 +12,9 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
              x:Class="Ambinity.Views.Screens.DeviceSettings.PortDetailView">
     <UserControl.Styles>
         <Style Selector="TextBlock.pingButton">
-            <Setter Property="Text" Value="Ping" />
+            <Setter Property="Text" Value="{localize:Loc Ping.TextBlock.Text}" />
             <Style Selector="^.isPinging">
-                <Setter Property="Text" Value="Signal sent" />
+                <Setter Property="Text" Value="{localize:Loc SignalSent.TextBlock.Text}" />
             </Style>
         </Style>
         <Style Selector="FlyoutPresenter.DefaultFlyout">
@@ -110,8 +110,8 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
 
             <Separator Margin="0,0" Background="{DynamicResource ButtonBorderBrush}" Height="1"></Separator>
             <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0" Grid.Row="1"
-                                 Header="Enable"
-                                 Description="Hide this device from all profiles"
+                                 Header="{localize:Loc Enable.SettingsExpander.Header}"
+                                 Description="{localize:Loc Enable.SettingsExpander.Description}"
                                  IsClickEnabled="False">
                 <ui:SettingsExpander.IconSource>
                     <ui:PathIconSource Data="{DynamicResource 'disable'}"></ui:PathIconSource>
@@ -124,7 +124,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             <ui:SettingsExpander Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0" Grid.Row="1"
                                  Header="{localize:Loc HWLightingBrightness.SettingsExpanderItem.Header}"
 
-                                 Description="Set brightness limit to prevent overloading"
+                                 Description="{localize:Loc BrightnessLimit.SettingsExpander.Description}"
                                  IsClickEnabled="False">
                 <ui:SettingsExpander.IconSource>
                     <ui:PathIconSource Data="{DynamicResource 'brightness'}"></ui:PathIconSource>
@@ -139,7 +139,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             <ui:SettingsExpander IsVisible="{Binding !IsMultiplePortsSelected}" IsExpanded="True" Theme="{DynamicResource transparentSettingsExpander}" Margin="0,0"
                                  Grid.Row="1" Header="{localize:Loc DeviceSettings.Section.Header}"
 
-                                 Description="You can daisy chain by adding more devices to the port">
+                                 Description="{localize:Loc DeviceDaisyChain.SettingsExpander.Description}">
                 <ui:SettingsExpander.IconSource>
                     <ui:PathIconSource Data="{DynamicResource 'ports'}"></ui:PathIconSource>
                 </ui:SettingsExpander.IconSource>
@@ -149,7 +149,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                             <Grid ColumnDefinitions="Auto,8,*">
                                 <PathIcon Data="{DynamicResource plus}" Width="15" Height="15"></PathIcon>
                                 <Grid Column="2">
-                                    <TextBlock ToolTip.Tip="Add same device to bottom of the chain" Text="Add device" FontSize="12" FontWeight="SemiBold"></TextBlock>
+                                    <TextBlock ToolTip.Tip="{localize:Loc DeviceDaisyChain.Button.ToolTip}" Text="Add device" FontSize="12" FontWeight="SemiBold"></TextBlock>
                                 </Grid>
                             </Grid>
 

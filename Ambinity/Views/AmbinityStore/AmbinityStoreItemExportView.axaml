@@ -211,7 +211,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 <Button Command="{Binding ExportItemForServerCommand}" Classes="accent" Padding="7,5" VerticalContentAlignment="Center">
                     <Grid ColumnDefinitions="Auto,8,*">
                         <PathIcon Data="{DynamicResource send_email__mail_send_email_paper_airplane}"></PathIcon>
-                        <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="Export" FontSize="13"
+                        <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="{localize:Loc Export.MenuItem.Header}" FontSize="13"
                                    FontWeight="SemiBold">
                         </TextBlock>
                     </Grid>

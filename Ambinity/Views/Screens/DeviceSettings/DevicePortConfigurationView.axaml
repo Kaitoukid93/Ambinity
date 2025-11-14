@@ -36,13 +36,13 @@
 
     <Grid RowDefinitions="Auto,10, Auto,5,*">
         <Grid>
-            <TextBlock Classes="smallBold" Text="Port Configuration" />
+            <TextBlock Classes="smallBold" Text="{localize:Loc PortConfiguration.Section.Header}" />
         </Grid>
         <ui:InfoBar
-            Title="Tips"
+            Title="{localize:Loc Tips.InforBar.Title}"
             Grid.Row="2"
             IsOpen="True"
-            Message="Ctrl + click to select multiple device and control them all at once."
+            Message="{localize:Loc Tips.InforBar.Message}"
             Severity="Informational" />
         <Grid ColumnDefinitions="250,5,500,5,*" Row="4">
             <Grid Column="0">

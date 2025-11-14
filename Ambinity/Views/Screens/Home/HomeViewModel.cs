@@ -16,7 +16,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Ambinity.Views.Screens.Home;
 
-public class HomeViewModel : ViewModelBase
+public class HomeViewModel : ScreenViewModelBase
 {
     private readonly LightingProfileOnlineRepository _profileOnlineRepository;
     private readonly LightingProfileRepository _profileLocalRepository;
@@ -55,7 +55,7 @@ public class HomeViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
-    public async Task Init()
+    public override async Task Init()
     {
         IsLoading = true;
         AvailableAssets?.Clear();

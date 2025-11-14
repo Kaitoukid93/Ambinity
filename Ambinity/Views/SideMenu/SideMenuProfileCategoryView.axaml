@@ -27,7 +27,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     <PathIcon Width="15" Height="15" Data="{DynamicResource rename}"></PathIcon>
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Delete" Command="{CompiledBinding DeleteCategory}">
+            <MenuItem Header="{localize:Loc Delete.MenuItem.Header}" Command="{CompiledBinding DeleteCategory}">
                 <MenuItem.Icon>
                     <PathIcon Width="15" Height="15" Data="{DynamicResource delete}"></PathIcon>
                 </MenuItem.Icon>
@@ -182,7 +182,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                        Classes="smallSecondary"
                        HorizontalAlignment="Left"
                        IsHitTestVisible="False"
-                       Text="Empty collection">
+                       Text="{localize:Loc EmptyCollection.TextBlock.Text}">
 
             </TextBlock>
         </Panel>

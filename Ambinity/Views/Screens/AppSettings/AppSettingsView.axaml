@@ -20,7 +20,7 @@
                 Margin="0,0,0,10"
                 FontSize="25"
                 FontWeight="SemiBold"
-                Text="Settings" />
+                Text="{localize:Loc Settings.Button.ToolTip}" />
             <StackPanel Grid.Row="2" Spacing="30">
                 <Grid>
                     <Border Margin="0,0,0,10" Classes="card">
@@ -243,7 +243,7 @@
                                 </ui:SettingsExpander>
                                 <ui:SettingsExpander
                                     MinWidth="500"
-                                    Description="Enable OpenRGB plugin. This plugin is required for controlling 3rd party devices"
+                                    Description="{localize:Loc OpenRGBPlugin.SettingsExpander.Description}"
                                     Header="{localize:Loc OpenRGBPlugin.SettingsExpander.Header}"
                                     IsVisible="{Binding OpenRGBSettingVisible}">
                                     <ui:SettingsExpander.IconSource>

@@ -40,7 +40,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     <!--           Data="{DynamicResource contrast}" Width="20" Grid.Column="2"> -->
                     <!-- </PathIcon> -->
                     <Grid Column="2">
-                        <Button ToolTip.Tip="Settings" IsVisible="{Binding ShowSettingsButton}" Command="{CompiledBinding OpenConfigCommand}" Padding="1"
+                        <Button ToolTip.Tip="{localize:Loc Settings.Button.ToolTip}" IsVisible="{Binding ShowSettingsButton}" Command="{CompiledBinding OpenConfigCommand}" Padding="1"
                                 Background="Transparent" Width="30" Height="30"
                                 Classes="icon-button">
                             <PathIcon Width="15" Data="{DynamicResource Properties}"></PathIcon>

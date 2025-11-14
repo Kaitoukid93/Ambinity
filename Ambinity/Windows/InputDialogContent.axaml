@@ -8,7 +8,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
              x:DataType="local:InputDialogContentViewModel"
              x:Class="Ambinity.Windows.InputDialogContent">
     <StackPanel Spacing="10" MinWidth="400">
-        <TextBlock Text="Enter name for new item"></TextBlock>
+        <TextBlock Text="{localize:Loc EnterNameHeader.TextBlock.Text}"></TextBlock>
         <AutoCompleteBox FilterMode="StartsWithOrdinal"
                          Text="{CompiledBinding UserInput}"
                          ItemsSource="{Binding AvailableKeyWords}"

@@ -18,7 +18,7 @@ using Draw2D.Core;
 
 namespace Ambinity.Views.Screens.DeviceLayout;
 
-public class DeviceLayoutEditorViewModel : ViewModelBase
+public class DeviceLayoutEditorViewModel : ScreenViewModelBase
 {
     public DeviceLayoutEditorViewModel(CanvasViewModelFactory canvasViewModelFactory,
         DeviceLayoutRightPanelViewModel rightPanelViewModel,
@@ -60,13 +60,13 @@ public class DeviceLayoutEditorViewModel : ViewModelBase
     private readonly CanvasViewModelFactory _canvasViewModelFactory;
     private readonly AmbinityDeviceRepository _deviceRepository;
 
-    public void Init()
+    public override async Task Init()
     {
         CanvasViewModel = _canvasViewModelFactory.Get<DeviceLayoutCanvasViewModel>();
         _canvasViewModelFactory.SetCurrent(CanvasViewModel);
         CanvasViewModel.Init();
         RightPanelViewModel.PropertiesViewModel = _propertiesViewModel;
-        RightPanelViewModel.Init();
+        await RightPanelViewModel.Init();
     }
 
     public override void Dispose()

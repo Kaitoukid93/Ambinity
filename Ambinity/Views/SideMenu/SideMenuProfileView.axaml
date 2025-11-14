@@ -12,24 +12,24 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
              x:Class="Ambinity.Views.SideMenu.SideMenuProfileView">
     <UserControl.Resources>
         <MenuFlyout x:Key="ProfileMenuFlyout" Placement="Bottom">
-            <MenuItem Command="{Binding OpenPropertiesEditorCommand}" Header="Edit properties">
+            <MenuItem Command="{Binding OpenPropertiesEditorCommand}" Header="{localize:Loc EditProperties.MenuItem.Header}">
                 <MenuItem.Icon>
                     <PathIcon Width="15" Height="15" Data="{DynamicResource generalSettings}"></PathIcon>
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="-" />
-            <MenuItem Command="{Binding ExportCommand}" Header="Export">
+            <MenuItem Command="{Binding ExportCommand}" Header="{localize:Loc Export.MenuItem.Header}">
                 <MenuItem.Icon>
                     <PathIcon Width="15" Height="15" Data="{DynamicResource Export}"></PathIcon>
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Command="{Binding DuplicateCommand}" Header="Duplicate">
+            <MenuItem Command="{Binding DuplicateCommand}" Header="{localize:Loc Duplicate.MenuItem.Header}">
                 <MenuItem.Icon>
                     <PathIcon Width="15" Height="15" Data="{DynamicResource duplicate}"></PathIcon>
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="-" />
-            <MenuItem Command="{Binding SelfDeleteCommand}" Header="Delete">
+            <MenuItem Command="{Binding SelfDeleteCommand}" Header="{localize:Loc Delete.MenuItem.Header}">
                 <MenuItem.Icon>
                     <PathIcon Width="15" Height="15" Data="{DynamicResource delete}"></PathIcon>
                 </MenuItem.Icon>
@@ -109,7 +109,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             <Button Classes="properties-button icon-button icon-button-small"
                     Classes.isSelected-button="{Binding IsSelected}"
                     Flyout="{StaticResource ProfileMenuFlyout}"
-                    ToolTip.Tip="Settings"
+                    ToolTip.Tip="{localize:Loc Settings.Button.ToolTip}"
                     HorizontalAlignment="Right"
                     Margin="0 2 0 2">
                 <PathIcon Width="13" Height="13"
@@ -121,7 +121,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     x:Name="PlayButton"
                     Classes.isSelected-button="{Binding IsSelected}"
                     Command="{CompiledBinding TogglePlayPauseProfileCommand}"
-                    ToolTip.Tip="Play/Pause profile"
+                    ToolTip.Tip="{localize:Loc PlayProfile.Button.ToolTip}"
                     HorizontalAlignment="Right"
                     Margin="0 2 0 2">
                 <Panel>

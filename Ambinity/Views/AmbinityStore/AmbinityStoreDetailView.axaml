@@ -119,7 +119,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                                     Command="{CompiledBinding Item.DownloadItemCommand}" HorizontalAlignment="Right">
                                 <Grid ColumnDefinitions="Auto,8,*">
                                     <PathIcon Width="15" Height="15" Data="{DynamicResource Import}"></PathIcon>
-                                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="Install" FontSize="13"
+                                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="{localize:Loc Install.TextBlock.Text}" FontSize="13"
                                                FontWeight="SemiBold">
                                     </TextBlock>
                                 </Grid>
@@ -129,7 +129,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                                     HorizontalAlignment="Right">
                                 <Grid ColumnDefinitions="Auto,8,*">
                                     <PathIcon Width="13" Height="13" Data="{DynamicResource download}"></PathIcon>
-                                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="Reinstall"
+                                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="{localize:Loc Reinstall.TextBlock.Text}"
                                                FontSize="13"
                                                FontWeight="SemiBold">
                                     </TextBlock>

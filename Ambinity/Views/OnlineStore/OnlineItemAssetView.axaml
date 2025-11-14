@@ -10,9 +10,9 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
              x:Class="Ambinity.Views.OnlineStore.OnlineItemAssetView">
     <UserControl.Styles>
         <Style Selector="TextBlock.downloadButton">
-            <Setter Property="Text" Value="Install" />
+            <Setter Property="Text" Value="{localize:Loc Install.TextBlock.Text}" />
             <Style Selector="^.isDownloading">
-                <Setter Property="Text" Value="Downloading" />
+                <Setter Property="Text" Value="{localize:Loc Downloading.TextBlock.Text}" />
             </Style>
         </Style>
     </UserControl.Styles>
@@ -43,7 +43,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                                 HorizontalAlignment="Right" Classes="chip">
                             <Grid ColumnDefinitions="Auto,*">
                                 <PathIcon Margin="0,0,5,0" Width="12" Height="10" Data="{DynamicResource download}"></PathIcon>
-                                <TextBlock Text="Reinstall" Margin="0,0,0,2"
+                                <TextBlock Text="{localize:Loc Reinstall.TextBlock.Text}" Margin="0,0,0,2"
                                            Grid.Column="1" FontSize="12">
                                 </TextBlock>
                             </Grid>
@@ -69,7 +69,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         <Grid ColumnDefinitions="Auto,*">
                             <PathIcon Margin="0,0,5,0" Width="12" Height="10" Data="{DynamicResource download}"></PathIcon>
                             <TextBlock Classes.isDownloading="{Binding IsDownloading}" Classes="downloadButton" Margin="0,0,0,2"
-                                       Grid.Column="1" FontSize="12" Text="Install">
+                                       Grid.Column="1" FontSize="12" Text="{localize:Loc Install.TextBlock.Text}">
                             </TextBlock>
                         </Grid>
 

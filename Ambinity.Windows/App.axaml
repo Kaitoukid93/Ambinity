@@ -166,7 +166,7 @@
                         <NativeMenuItem
                             Command="{CompiledBinding OpenUiCommand}"
                             CommandParameter="devices"
-                            Header="Home" />
+                            Header="{localize:Loc Home.TextBlock.Text}" />
                         <NativeMenuItem Command="{CompiledBinding ExitAppCommand}" Header="Exit" />
                     </NativeMenu>
                 </TrayIcon.Menu>

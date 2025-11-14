@@ -31,7 +31,7 @@
                         <ToggleSwitch IsChecked="{Binding Controller.AutoConnect}" />
                     </ui:SettingsExpander.Footer>
                 </ui:SettingsExpander>
-                <!--  <ui:SettingsExpander MinWidth="500" Margin="0,2" Grid.Row="1" Header="COM Port"  -->
+                <!--  <ui:SettingsExpander MinWidth="500" Margin="0,2" Grid.Row="1" Header="{localize:Loc ComPort.TextBlock.Text}"  -->
                 <!--  Description="Serial Port of the device"  -->
                 <!--  IsClickEnabled="False">  -->
                 <!--     <ui:SettingsExpander.IconSource> -->

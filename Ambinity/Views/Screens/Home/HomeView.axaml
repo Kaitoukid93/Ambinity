@@ -16,7 +16,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             Margin="5,0,0,10"
             FontSize="25"
             FontWeight="SemiBold"
-            Text="Home" />
+            Text="{localize:Loc Home.TextBlock.Text}" />
         <Grid Row="2">
             <Lottie
                 Width="75"
@@ -164,7 +164,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                                                                     Classes.downloadButton="{Binding IsDownloading}"
                                                                     FontSize="12"
                                                                     FontWeight="SemiBold"
-                                                                    Text="Reinstall" />
+                                                                    Text="{localize:Loc Reinstall.TextBlock.Text}" />
                                                             </Grid>
 
                                                         </Button>
@@ -191,7 +191,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                                                                 Classes.downloadButton="{Binding IsDownloading}"
                                                                 FontSize="12"
                                                                 FontWeight="SemiBold"
-                                                                Text="Install" />
+                                                                Text="{localize:Loc Install.TextBlock.Text}" />
                                                         </Grid>
                                                     </Button>
                                                 </Grid>
@@ -213,7 +213,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                             HorizontalAlignment="Left"
                             FontSize="18"
                             FontWeight="SemiBold"
-                            Text="Tutorial - FAQ" />
+                            Text="{localize:Loc TutorialFAQ.TextBlock.Text}" />
                         <ItemsControl ItemsSource="{Binding AvailableTutorials}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>

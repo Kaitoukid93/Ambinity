@@ -9,7 +9,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
              x:Class="Ambinity.Windows.NewProfileDialogContent">
    <Grid>
        <StackPanel Spacing="10" MinWidth="400">
-           <TextBlock Text="Enter profile name(you can change it later)"></TextBlock>
+           <TextBlock Text="{localize:Loc NewProfileHeader.TextBlock.Text}"></TextBlock>
            <AutoCompleteBox FilterMode="StartsWithOrdinal"
                             Text="{CompiledBinding UserInput}"
                             ItemsSource="{Binding AvailableKeyWords}"
