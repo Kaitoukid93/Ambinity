@@ -35,7 +35,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
                        Text="{localize:Loc HWLightingSpeed.SettingsExpanderItem.Header}">
             </TextBlock>
-            <ToggleButton CornerRadius="5" ToolTip.Tip="System sync" BorderThickness="0" Background="Transparent" Width="30" Height="30" Grid.Column="1" HorizontalAlignment="Right">
+            <ToggleButton CornerRadius="5" ToolTip.Tip="{localize:Loc SystemSync.ToggleButton.ToolTip}" BorderThickness="0" Background="Transparent" Width="30" Height="30" Grid.Column="1" HorizontalAlignment="Right">
                 <PathIcon Width="15" Margin="0,1,0,0" Data="{DynamicResource 'update'}"></PathIcon>
             </ToggleButton>
         </Grid>
@@ -46,7 +46,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 </Slider>
             </Grid>
             <Grid Column="2">
-                <SplitButton HorizontalContentAlignment="Stretch" ToolTip.Tip="Quick select"
+                <SplitButton HorizontalContentAlignment="Stretch" ToolTip.Tip="{localize:Loc QuickSelect.SplitButton.Tooltip}"
                              Padding="0"
                              VerticalAlignment="Center" HorizontalAlignment="Right" BorderThickness="1" Height="20"
                              Margin="0,0,0,0"

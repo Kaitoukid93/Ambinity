@@ -15,7 +15,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             <Button Command="{Binding StopRenderingCommand}" Content="Stop"></Button>
             <CheckBox Grid.Column="1" HorizontalAlignment="Right" Command="{Binding ShowCanvasLockedInfoCheck}"
                       CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
-                      Content="Don't show again" />
+                      Content="{localize:Loc DontShowAgain.CheckBox.Content}" />
         </Grid>
     </ui:InfoBar>
 </UserControl>

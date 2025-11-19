@@ -71,7 +71,7 @@
                         Background="Transparent"
                         BorderThickness="0"
                         IsChecked="{Binding IsReverse}"
-                        ToolTip.Tip="Reverse direction">
+                        ToolTip.Tip="{localize:Loc ReverseDirection.Button.Tooltip}">
                         <PathIcon
                             Width="16"
                             Margin="0,0,0,0"
@@ -84,7 +84,7 @@
                         HorizontalAlignment="Right"
                         Background="Transparent"
                         BorderThickness="0"
-                        ToolTip.Tip="System sync">
+                        ToolTip.Tip="{localize:Loc SystemSync.ToggleButton.ToolTip}">
                         <PathIcon
                             Width="16"
                             Margin="0,0,0,0"
@@ -97,7 +97,7 @@
                         Background="Transparent"
                         BorderThickness="0"
                         IsChecked="{Binding IsColorMoving}"
-                        ToolTip.Tip="Cycle colors">
+                        ToolTip.Tip="{localize:Loc CycleColors.ToggleButton.Tooltip}">
                         <PathIcon
                             Width="16"
                             Margin="0,0,0,0"
@@ -123,7 +123,7 @@
                             <TextBlock Text="No Blend" />
                         </ui:FAComboBoxItem>
                         <ui:FAComboBoxItem>
-                            <TextBlock Text="Linear Blend"/>
+                            <TextBlock Text="{localize:Loc LinearBlend.TextBlock.Text}"/>
                         </ui:FAComboBoxItem>
 
                     </ui:FAComboBox>
@@ -168,7 +168,7 @@
                             HorizontalContentAlignment="Stretch"
                             BorderThickness="1"
                             Flyout="{StaticResource IntensityValueFlyout}"
-                            ToolTip.Tip="Quick select">
+                            ToolTip.Tip="{localize:Loc QuickSelect.SplitButton.Tooltip}">
                             <Grid>
                                 <ui:NumberBox
                                     Margin="0,0,0,0"

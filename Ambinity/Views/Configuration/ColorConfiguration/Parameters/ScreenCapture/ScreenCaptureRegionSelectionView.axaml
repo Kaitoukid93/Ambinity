@@ -48,16 +48,16 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                             </DataTemplate>
                         </ui:FAComboBox.ItemTemplate>
                     </ui:FAComboBox>
-                    <SplitButton CornerRadius="4"  ToolTip.Tip="Reset" Command="{Binding FullScreenCommand}"
+                    <SplitButton CornerRadius="4"  ToolTip.Tip="{localize:Loc Reset.SplitButton.Tooltip}" Command="{Binding FullScreenCommand}"
                             Background="Transparent" Height="32"
                             Flyout="{StaticResource CaptureRegionFlyout}" Margin="5,5">
                         <Grid ColumnDefinitions="*,10,Auto">
-                            <TextBlock HorizontalAlignment="Left" Text="Full screen">
+                            <TextBlock HorizontalAlignment="Left" Text="{localize:Loc FullScreen.Button.Tooltip}">
                             </TextBlock>
                             <PathIcon Grid.Column="2" Width="15" Data="{DynamicResource scale}"></PathIcon>
                         </Grid>
                     </SplitButton>
-                    <Button CornerRadius="4" Classes="icon-button" ToolTip.Tip="Save" Command="{Binding SaveCurrentLayoutCommand}"
+                    <Button CornerRadius="4" Classes="icon-button" ToolTip.Tip="{localize:Loc Save.Button.Tooltip}" Command="{Binding SaveCurrentLayoutCommand}"
                             Width="32" Height="32"
                             Padding="0" Margin="5,5">
                         <PathIcon Width="13" Height="13"
@@ -65,7 +65,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         </PathIcon>
                     </Button>
                     <Separator Width="1" Height="35" Margin="5"></Separator>
-                    <Button CornerRadius="4" Classes="icon-button" ToolTip.Tip="Cancel" Width="32" Height="32"
+                    <Button CornerRadius="4" Classes="icon-button" ToolTip.Tip="{localize:Loc Cancel.Button.Tooltip}" Width="32" Height="32"
                             Command="{Binding CloseCommand}"
                             Padding="0" Margin="7,5">
                         <PathIcon Width="13" Height="13"

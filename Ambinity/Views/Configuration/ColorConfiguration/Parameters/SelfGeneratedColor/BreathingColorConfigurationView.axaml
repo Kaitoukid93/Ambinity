@@ -13,7 +13,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
         <Grid Margin="10,10,20,0" ColumnDefinitions="Auto,10,*">
             <PathIcon Width="25" Height="25" Data="{Binding Icon,Converter={StaticResource ResourceConverter}}"></PathIcon>
             <TextBlock Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center"
-                       Text="Breathing">
+                       Text="{localize:Loc Breathing.TextBlock.Text}">
             </TextBlock>
         </Grid>
         <Separator Margin="10,0" Grid.Row="2"></Separator>
@@ -27,7 +27,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         </TextBlock>
                         <Grid Column="1">
                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="10">
-                                <ToggleButton ToolTip.Tip="System sync" BorderThickness="0"
+                                <ToggleButton ToolTip.Tip="{localize:Loc SystemSync.ToggleButton.ToolTip}" BorderThickness="0"
                                               Background="Transparent" Width="30" Height="30" Grid.Column="1"
                                               IsChecked="{CompiledBinding IsSystemSync}"
                                               HorizontalAlignment="Right">

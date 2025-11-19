@@ -15,7 +15,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
         <StackPanel Spacing="20">
 
             <StackPanel Spacing="8">
-                <TextBlock FontWeight="SemiBold" Text="Select images" />
+                <TextBlock FontWeight="SemiBold" Text="{localize:Loc SelectImage.TextBlock.Text}" />
                 <TextBox VerticalContentAlignment="Center" Text="{Binding ImagePath}">
                     <TextBox.InnerRightContent>
                         <Button
@@ -23,11 +23,11 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                             Margin="5"
                             Padding="5"
                             Command="{Binding SelectDeviceImageCommand}"
-                            Content="Browse" />
+                            Content="{localize:Loc Browse.Button.Content}" />
                     </TextBox.InnerRightContent>
                 </TextBox>
 
-                <TextBlock Text="The image of your device should be 250px minimum in width for better visual, transparrent background, and  *.png format" TextWrapping="Wrap" />
+                <TextBlock Text="{localize:Loc ImageFormatGuide.TextBlock.Text}" TextWrapping="Wrap" />
                 <StackPanel Orientation="Horizontal" Spacing="20">
                     <Image
                         Width="300"
@@ -39,15 +39,15 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         Padding="5"
                         HorizontalAlignment="Right"
                         Command="{Binding EditImageCommand}"
-                        Content="Edit Image"
+                        Content="{localize:Loc ImageEdit.Button.Content}"
                         IsVisible="{Binding ShowEditImageButton}"
-                        ToolTip.Tip="Crop and resize image" />
+                        ToolTip.Tip="{localize:Loc ImageEdit.Button.Tooltip}" />
                 </StackPanel>
 
             </StackPanel>
             <Separator Height="1" Margin="2,0" />
             <StackPanel Spacing="8">
-                <TextBlock FontWeight="SemiBold" Text="LEDs Counts" />
+                <TextBlock FontWeight="SemiBold" Text="{localize:Loc LEDsCount.TextBlock.Text}" />
                 <StackPanel Orientation="Horizontal" Spacing="20">
                     <ui:NumberBox
                         Background="Transparent"
@@ -67,7 +67,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 </StackPanel>
 
 
-                <TextBlock Text="This is the actual LEDs count of your device, use [Order check] function to count it yourself" TextWrapping="Wrap" />
+                <TextBlock Text="{localize:Loc LEDsCountGuide.TextBlock.Text}" TextWrapping="Wrap" />
             </StackPanel>
             <Separator Height="1" Margin="2,0" />
             <StackPanel Spacing="8">
@@ -108,14 +108,14 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     </StackPanel>
 
                 </StackPanel>
-                <TextBlock Text="This is the physical bounding box of your device in mm" />
+                <TextBlock Text="{localize:Loc HeightGuide.TextBlock.Text}" />
             </StackPanel>
             <Separator Height="1" Margin="2,0" />
-            <TextBlock Text="Already have a existing project?" />
+            <TextBlock Text="{localize:Loc ExistingProject.TextBlock.Text}" />
             <Button
                 Classes="accent"
                 Command="{Binding SelectExistingProjectCommand}"
-                Content="Open Project File" />
+                Content="{localize:Loc OpenProject.Button.Content}" />
         </StackPanel>
 
     </Grid>

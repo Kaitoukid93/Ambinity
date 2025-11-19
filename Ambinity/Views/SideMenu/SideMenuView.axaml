@@ -36,7 +36,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
            <Button Grid.Row="3" Margin="10" Command="{CompiledBinding CreateNewCategoryCommand}" HorizontalAlignment="Center">
                <Grid ColumnDefinitions="Auto,5,*">
                    <PathIcon Width="12" Height="12" Data="{DynamicResource plus}"></PathIcon>
-                   <TextBlock Grid.Column="2" Text="Add new category"></TextBlock>
+                   <TextBlock Grid.Column="2" Text="{localize:Loc AddNewCategory.TextBlock.Text}"></TextBlock>
                </Grid>
            </Button>
         <StackPanel Grid.Row="4" VerticalAlignment="Bottom" Spacing="5">

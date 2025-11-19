@@ -20,13 +20,13 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
     <Grid Margin="20" RowDefinitions="20,*,auto">
         <Grid Row="1">
             <StackPanel Spacing="20">
-                 <TextBlock FontWeight="SemiBold" Text="Information" />
+                 <TextBlock FontWeight="SemiBold" Text="{localize:Loc LayoutInformation.TextBlock.Text}" />
                 <StackPanel Margin="10,0" Spacing="8">
-                    <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Layout name" />
+                    <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{localize:Loc LayoutName.TextBlock.Text}" />
                     <TextBox Text="{Binding LayoutName}" />
                 </StackPanel>
                 <StackPanel Margin="10,0" Spacing="8">
-                    <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Layout Description" />
+                    <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{localize:Loc LayoutDescription.TextBlock.Text}" />
                     <TextBox Text="{Binding LayoutDescription}" />
                 </StackPanel>
 
@@ -41,11 +41,11 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 Classes="accent"
                 Click="Accept_Button_Click"
                 Command="{Binding AcceptCommand}"
-                Content="Accept" />
+                Content="{localize:Loc Accept.Button.Content}" />
             <Button
                 Click="Cancel_Button_Click"
                 Command="{Binding CancelCommand}"
-                Content="Cancel" />
+                Content="{localize:Loc Cancel.Button.Tooltip}" />
         </StackPanel>
     </Grid>
 

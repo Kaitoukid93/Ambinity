@@ -40,7 +40,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Foreground="{DynamicResource AccentButtonBackground}"
-                    Text="Device is using custom Index" />
+                    Text="{localize:Loc CustomIndexInfo.TextBlock.Text}" />
             </Border>
             <Grid Row="2">
                 <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -89,7 +89,7 @@
             <Button Grid.Row="4"
                 Classes="accent"
                 Command="{Binding EnterIndexSetupCommand}"
-                Content="Index setup"
+                Content="{localize:Loc IndexSetup.Button.Content}"
                 IsVisible="{Binding !IsInIndexSetupMode}" />
 
         </Grid>
@@ -117,7 +117,7 @@ Learn more at [Ambino](https://ambino.vn)
                     VerticalAlignment="Bottom"
                     Orientation="Horizontal"
                     Spacing="8">
-                    <Button Command="{Binding ResetIndexCommand}" Content="Reset" />
+                    <Button Command="{Binding ResetIndexCommand}" Content="{localize:Loc Reset.SplitButton.Tooltip}" />
                     <Button Command="{Binding ExitIndexSetupCommand}" Content="{localize:Loc Button.Cancel}"/>
                     <Button
                         Classes="accent"
@@ -142,7 +142,7 @@ Learn more at [Ambino](https://ambino.vn)
                 <Separator Height="1" Margin="5,10" />
                 <Grid>
                     <StackPanel Spacing="8">
-                        <TextBlock Text="Basic testing" />
+                        <TextBlock Text="{localize:Loc BasicTesting.Button.Content}" />
                         <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Click each color button to change color" />
                         <ListBox
                             ItemContainerTheme="{DynamicResource _striplessListboxItem}"
@@ -168,27 +168,27 @@ Learn more at [Ambino](https://ambino.vn)
                 <Separator Height="1" Margin="5,10" />
                 <Grid>
                     <StackPanel Spacing="8">
-                        <TextBlock Text="Test Sequence" />
+                        <TextBlock Text="{localize:Loc TestSequence.TextBlock.Text}" />
                         <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Click each button to activate testing sequence" />
                         <WrapPanel Orientation="Horizontal">
                             <Button
                                 Margin="0,10,10,0"
                                 Command="{Binding RunTestCommand}"
                                 CommandParameter="basic"
-                                Content="3 colors test"
-                                ToolTip.Tip="Play 3 basic RGB color in order, All LEDs will light up" />
+                                Content="{localize:Loc ColorTest.Button.Content}"
+                                ToolTip.Tip="{localize:Loc ColorTest.Button.Tooltip}" />
                             <Button
                                 Margin="0,10,10,0"
                                 Command="{Binding RunTestCommand}"
                                 CommandParameter="white"
-                                Content="White test"
-                                ToolTip.Tip="This could draw significant power" />
+                                Content="{localize:Loc WhiteTest.Button.Content}"
+                                ToolTip.Tip="{localize:Loc WhiteTest.Button.Tooltip}" />
                             <Button
                                 Margin="0,10,10,0"
                                 Command="{Binding RunTestCommand}"
                                 CommandParameter="order"
-                                Content="Order check"
-                                ToolTip.Tip="Light up LEDs one by one from first to last LED using index" />
+                                Content="{localize:Loc OrderCheck.Button.Content}"
+                                ToolTip.Tip="{localize:Loc OrderCheck.Button.Tooltip}" />
                         </WrapPanel>
                     </StackPanel>
                 </Grid>

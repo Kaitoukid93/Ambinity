@@ -85,7 +85,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                             Background="Transparent"
                             Classes="icon-button"
                             Command="{Binding ImportAnimationCommand}"
-                            ToolTip.Tip="Import animation">
+                            ToolTip.Tip="{localize:Loc ImportAnimation.Button.Tooltip}">
                             <PathIcon Width="16" Data="{DynamicResource Import}" />
                         </Button>
                     </Grid>
@@ -97,7 +97,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                             Background="Transparent"
                             Classes="icon-button"
                             Command="{Binding ExportAnimationCommand}"
-                            ToolTip.Tip="Export this animation">
+                            ToolTip.Tip="{localize:Loc ExportAnimation.Button.Tooltip}">
                             <PathIcon Width="16" Data="{DynamicResource Export}" />
                         </Button>
                     </Grid>

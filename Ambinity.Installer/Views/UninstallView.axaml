@@ -29,7 +29,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     <Button IsVisible="{Binding CurrentView.CanCancel}"
                             IsHitTestVisible="{Binding !CurrentView.IsBusy}"
                             Command="{Binding CancelCommand}"
-                            Content="Cancel">
+                            Content="{localize:Loc Cancel.Button.Tooltip}">
                     </Button>
                     <Button Classes="accent" IsVisible="{Binding CurrentView.CanForward}"
                             Background="{DynamicResource AccentButtonBackground}"

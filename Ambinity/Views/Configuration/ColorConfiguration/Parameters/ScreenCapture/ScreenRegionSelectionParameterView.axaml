@@ -33,12 +33,12 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
     <Grid RowDefinitions="Auto,*">
         <Grid Row="0" ColumnDefinitions="Auto,*">
             <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
-                       Text="Capture infomation">
+                       Text="{localize:Loc CaptureInformation.TextBlock.Text}">
             </TextBlock>
               <Grid Column="1">
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5">
                     <Grid>
-                        <Button IsEnabled="{Binding EnableEdit}" ToolTip.Tip="Select capture area" Command="{Binding OpenRegionSelectionCommand}" Padding="1" Background="Transparent" Width="30" Height="30"
+                        <Button IsEnabled="{Binding EnableEdit}" ToolTip.Tip="{localize:Loc SelectCaptureArea.Button.Tooltip}" Command="{Binding OpenRegionSelectionCommand}" Padding="1" Background="Transparent" Width="30" Height="30"
                                 Classes="icon-button">
                             <PathIcon Width="15" Data="{DynamicResource Zone_layer_icon}"></PathIcon>
                         </Button>
@@ -73,7 +73,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 <Image MaxHeight="200" Source="{Binding PreviewImage}"></Image>
             </Grid>
             <Grid Row="1">
-                <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" IsVisible="{Binding !EnableEdit}" Foreground="DarkOrange" Text="Please stop current playing profile before changing screen capture area"></TextBlock>
+                <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" IsVisible="{Binding !EnableEdit}" Foreground="DarkOrange" Text="{localize:Loc CaptureEditWarningMessage.TextBlock.Text}"></TextBlock>
             </Grid>
             <!-- <Grid Row="1"> -->
             <!--     <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" IsVisible="{Binding !EnableEdit}" Foreground="Red" Text="{Binding ErrorMessage}"></TextBlock> -->

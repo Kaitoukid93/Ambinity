@@ -26,7 +26,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         <TextBlock
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Text="Number:" />
+                            Text="{localize:Loc Number.TextBlock.Text}" />
                         <ui:NumberBox
                             Grid.Column="1"
                             Width="200"
@@ -42,7 +42,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         <TextBlock
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Text="Height:" />
+                            Text="{localize:Loc Height.TextBlock.Text}" />
                         <ui:NumberBox
                             Grid.Column="1"
                             Width="200"
@@ -58,7 +58,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         <TextBlock
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Text="Gutter:" />
+                            Text="{localize:Loc Gutter.TextBlock.Text}" />
                         <ui:NumberBox
                             Grid.Column="1"
                             Width="200"
@@ -102,7 +102,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         <TextBlock
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Text="Number:" />
+                            Text="{localize:Loc Number.TextBlock.Text}" />
                         <ui:NumberBox
                             Grid.Column="1"
                             Width="200"
@@ -118,7 +118,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         <TextBlock
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Text="Width:" />
+                            Text="{localize:Loc Width.TextBlock.Text}" />
                         <ui:NumberBox
                             Grid.Column="1"
                             Width="200"
@@ -134,7 +134,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         <TextBlock
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Text="Gutter:" />
+                            Text="{localize:Loc Gutter.TextBlock.Text}" />
                         <ui:NumberBox
                             Grid.Column="1"
                             Width="200"
@@ -203,11 +203,11 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 Classes="accent"
                 Click="Accept_Button_Click"
                 Command="{Binding AcceptCommand}"
-                Content="Accept" />
+                Content="{localize:Loc Accept.Button.Content}" />
             <Button
                 Click="Cancel_Button_Click"
                 Command="{Binding CancelCommand}"
-                Content="Cancel" />
+                Content="{localize:Loc Cancel.Button.Tooltip}" />
         </StackPanel>
     </Grid>
 

@@ -27,7 +27,7 @@
                 Grid.Column="2"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                Text="Music Reactive" />
+                Text="{localize:Loc MusicReactive.TextBlock.Text}" />
         </Grid>
         <Separator Grid.Row="2" Margin="10,0" />
         <ScrollViewer
@@ -41,11 +41,11 @@
                             <TextBlock
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                Text="Audio device" />
+                                Text="{localize:Loc AudioDevice.TextBlock.Text}" />
                             <CheckBox
                                 x:Name="isDefaultCheckBox"
                                 HorizontalAlignment="Right"
-                                Content="Use default"
+                                Content="{localize:Loc UseDefault.TextBlock.Text}"
                                 IsChecked="{Binding IsDefault}" />
                         </Grid>
 
@@ -68,7 +68,7 @@
                                 <TextBlock
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Text="Frequency range" />
+                                    Text="{localize:Loc FrequencyRange.TextBlock.Text}" />
                                 <!-- <Grid>
                                     <Button Click="InfoButton_OnClick" x:Name="infoButton" Background="Transparent"
                                             BorderThickness="0" Classes="icon-button-small" HorizontalAlignment="Right"
@@ -120,7 +120,7 @@
                         </Grid>
                     </Grid>
                     <Grid RowDefinitions="Auto,10,Auto">
-                        <TextBlock VerticalAlignment="Center" Text="Visualizer style" />
+                        <TextBlock VerticalAlignment="Center" Text="{localize:Loc VisualizerStyle.TextBlock.Text}" />
                         <Grid ColumnDefinitions="*,Auto,Auto" Row="2">
                             <ui:FAComboBox
                                 Name="visualStyleBox"
@@ -181,7 +181,7 @@
                                 <TextBlock
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Text="No sound behavior" />
+                                    Text="{localize:Loc NoSoundBehavior.TextBlock.Text}" />
                                 <!-- <Grid>
                                     <Button Click="NoSoundTeachingButton_OnClick" x:Name="nosoundTeaching"
                                             Background="Transparent" BorderThickness="0" Classes="icon-button-small"
@@ -217,10 +217,10 @@ Learn more at [Ambino](https://ambino.vn)
                                 VerticalAlignment="Center"
                                 SelectedIndex="{Binding NoSoundBehavior}">
                                 <ui:FAComboBoxItem>
-                                    <TextBlock Text="Keep LEDs off" />
+                                    <TextBlock Text="{localize:Loc KeepLEDsOff.TextBlock.Text}" />
                                 </ui:FAComboBoxItem>
                                 <ui:FAComboBoxItem>
-                                    <TextBlock Text="Return to normal lighting" />
+                                    <TextBlock Text="{localize:Loc ReturnToNormal.TextBlock.Text}" />
                                 </ui:FAComboBoxItem>
                             </ui:FAComboBox>
                         </Grid>

@@ -13,7 +13,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
     <Grid RowDefinitions="Auto,10,*">
         <Grid Row="0" ColumnDefinitions="Auto,5,Auto,*">
             <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
-                       Text="Blackbar detection">
+                       Text="{localize:Loc BlackbarDetection.TextBlock.Text}">
             </TextBlock>
             <!-- <Grid Column="2">
                 <Button Click="InfoButton_OnClick" x:Name="infoButton" Background="Transparent"

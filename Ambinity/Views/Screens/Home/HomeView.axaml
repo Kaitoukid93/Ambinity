@@ -134,7 +134,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                                                             HorizontalAlignment="Right"
                                                             Classes="chip"
                                                             CornerRadius="13"
-                                                            ToolTip.Tip="Item is installed">
+                                                            ToolTip.Tip="{localize:Loc ItemInstalled.Icon.ToolTip}">
 
                                                             <PathIcon
                                                                 Width="12"

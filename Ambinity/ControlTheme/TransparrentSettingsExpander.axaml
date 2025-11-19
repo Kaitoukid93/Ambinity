@@ -5,7 +5,7 @@
         <Border Padding="20" Width="700" Height="250">
             <ui:SettingsExpander IconSource="Globe" Header="Test Header"
                                  Description="This is a description for the SettingsExpander"
-                                 ActionIconSource="Save" IsClickEnabled="True">
+                                 ActionIconSource="{localize:Loc Save.Button.Tooltip}" IsClickEnabled="True">
                 <ui:SettingsExpander.Footer>
                     <Button Content="FooterButton" />
                 </ui:SettingsExpander.Footer>

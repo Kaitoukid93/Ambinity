@@ -7,7 +7,7 @@
                 <TextBox  VerticalContentAlignment="Center">
                     <TextBox.InnerRightContent>
                         <Button Width="70" Margin="5"
-                                Content="Browse"
+                                Content="{localize:Loc Browse.Button.Content}"
                                 Padding="5">
                         </Button>
                     </TextBox.InnerRightContent>

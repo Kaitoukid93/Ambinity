@@ -34,23 +34,23 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         </Button>
                     </Grid>
                     <Grid>
-                        <Button Width="30" Height="30" Command="{Binding AddPaletteToLibraryCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Add To Library" Classes="icon-button">
+                        <Button Width="30" Height="30" Command="{Binding AddPaletteToLibraryCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="{localize:Loc AddToLibrary.Button.Tooltip}" Classes="icon-button">
                             <PathIcon Width="16" Data="{DynamicResource AddToCollection}"></PathIcon>
                         </Button>
                     </Grid>
                     <Grid>
-                        <Button Width="30" Height="30" Command="{Binding ImportPaletteCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Import palette" Classes="icon-button">
+                        <Button Width="30" Height="30" Command="{Binding ImportPaletteCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="{localize:Loc ImportPalette.Button.ToolTip}" Classes="icon-button">
                             <PathIcon Width="16" Data="{DynamicResource Import}"></PathIcon>
                         </Button>
                     </Grid>
                     <Grid>
-                        <Button Width="30" Height="30" Command="{Binding ExportPaletteCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Export palette" Classes="icon-button">
+                        <Button Width="30" Height="30" Command="{Binding ExportPaletteCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="{localize:Loc ExportPalette.Button.Tooltip}" Classes="icon-button">
                             <PathIcon Width="16" Data="{DynamicResource Export}"></PathIcon>
                         </Button>
                     </Grid>
 
                     <Grid>
-                        <Button ToolTip.Tip="Add color" Command="{Binding AddColorCommand}" CommandParameter="{x:Static Colors.Red}" Padding="1"
+                        <Button ToolTip.Tip="{localize:Loc AddColor.Button.Tooltip}" Command="{Binding AddColorCommand}" CommandParameter="{x:Static Colors.Red}" Padding="1"
                                 Background="Transparent" Width="30" Height="30"
                                 Classes="icon-button">
                             <PathIcon Width="16" Data="{DynamicResource plus}"></PathIcon>
@@ -89,14 +89,14 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                                         </Grid>
 
                                 <Grid Column="2">
-                                    <Button Margin="2,0" ToolTip.Tip="Insert below" Command="{Binding InsertBelowCommand}" HorizontalAlignment="Right" Padding="1"
+                                    <Button Margin="2,0" ToolTip.Tip="{localize:Loc InsertBelow.Button.Tooltip}" Command="{Binding InsertBelowCommand}" HorizontalAlignment="Right" Padding="1"
                                             Background="Transparent" Width="25" Height="25"
                                             Classes="properties-button icon-button">
                                         <PathIcon Width="12" Data="{DynamicResource insert_below}"></PathIcon>
                                     </Button>
                                 </Grid>
                                 <Grid Column="4">
-                                    <Button Margin="2,0" ToolTip.Tip="Insert above" Command="{Binding InsertAboveCommand}" HorizontalAlignment="Right" Padding="1"
+                                    <Button Margin="2,0" ToolTip.Tip="{localize:Loc InsertAbove.Button.Tooltip}" Command="{Binding InsertAboveCommand}" HorizontalAlignment="Right" Padding="1"
                                             Background="Transparent" Width="25" Height="25"
                                             Classes="properties-button icon-button">
                                         <PathIcon Width="12" Data="{DynamicResource insert_above}"></PathIcon>

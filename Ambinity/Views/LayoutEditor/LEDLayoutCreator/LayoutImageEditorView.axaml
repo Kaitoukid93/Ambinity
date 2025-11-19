@@ -24,8 +24,8 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 Classes="accent"
                 Click="Accept_Button_Click"
                 Command="{Binding AcceptUserEditCommand}"
-                Content="Accept" />
-            <Button Click="Cancel_Button_Click" Content="Cancel" />
+                Content="{localize:Loc Accept.Button.Content}" />
+            <Button Click="Cancel_Button_Click" Content="{localize:Loc Cancel.Button.Tooltip}" />
         </StackPanel>
     </Grid>
 </Window>

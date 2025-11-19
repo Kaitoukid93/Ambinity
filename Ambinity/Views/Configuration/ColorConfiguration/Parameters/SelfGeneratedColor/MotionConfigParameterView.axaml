@@ -11,7 +11,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
     <Grid RowDefinitions="Auto,*,*">
         <Grid Row="0" ColumnDefinitions="Auto,*">
             <TextBlock Margin="0,8" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
-                       Text="Motion Configuration">
+                       Text="{localize:Loc MotionConfiguration.TextBlock.Text}">
             </TextBlock>
             <Grid Column="1">
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="5">

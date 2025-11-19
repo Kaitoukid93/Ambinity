@@ -28,7 +28,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     <Grid Row="4">
                         <StackPanel Margin="10" HorizontalAlignment="Right" IsVisible="{Binding IsLocalExisted}" Spacing="5"
                                     Orientation="Horizontal">
-                            <Border CornerRadius="13" Height="26" Width="26"  HorizontalAlignment="Right" Classes="chip" ToolTip.Tip="Item is installed">
+                            <Border CornerRadius="13" Height="26" Width="26"  HorizontalAlignment="Right" Classes="chip" ToolTip.Tip="{localize:Loc ItemInstalled.Icon.ToolTip}">
 
                                     <PathIcon Foreground="{DynamicResource SystemAccentColor}" Width="12" HorizontalAlignment="Center" VerticalAlignment="Center"
                                               Height="12" Data="{DynamicResource checkBold}">

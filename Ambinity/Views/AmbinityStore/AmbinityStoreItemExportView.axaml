@@ -199,7 +199,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
           
             <StackPanel Grid.Row="2" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal"
                         Spacing="10">
-                <Button Classes="icon-button" Content="Cancel"></Button>
+                <Button Classes="icon-button" Content="{localize:Loc Cancel.Button.Tooltip}"></Button>
                 <Button Command="{Binding ExportItemLocallyCommand}" Padding="7,5" VerticalContentAlignment="Center">
                     <Grid ColumnDefinitions="Auto,8,*">
                         <PathIcon Data="{DynamicResource upload_file}"></PathIcon>

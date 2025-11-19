@@ -74,7 +74,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
         <Grid>
             <StackPanel Margin="0,8" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
                 <TextBlock  VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13"
-                           Text="Dimensions">
+                           Text="{localize:Loc Dimensions.TextBlock.Text}">
                 </TextBlock>
                 <!-- <Grid>
                     <Button Click="InfoButton_OnClick"  x:Name="infoButton" Background="Transparent" BorderThickness="0" Classes="icon-button-small" >
