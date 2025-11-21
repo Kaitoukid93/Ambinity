@@ -143,7 +143,7 @@ Learn more at [Ambino](https://ambino.vn)
                 <Grid>
                     <StackPanel Spacing="8">
                         <TextBlock Text="{localize:Loc BasicTesting.Button.Content}" />
-                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Click each color button to change color" />
+                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{localize:Loc BasicTestingGuide.TextBlock.Text}" />
                         <ListBox
                             ItemContainerTheme="{DynamicResource _striplessListboxItem}"
                             ItemsSource="{Binding AvailableColors}"
@@ -169,7 +169,7 @@ Learn more at [Ambino](https://ambino.vn)
                 <Grid>
                     <StackPanel Spacing="8">
                         <TextBlock Text="{localize:Loc TestSequence.TextBlock.Text}" />
-                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Click each button to activate testing sequence" />
+                        <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{localize:Loc TextSequenceGuide.TextBlock.Text}" />
                         <WrapPanel Orientation="Horizontal">
                             <Button
                                 Margin="0,10,10,0"

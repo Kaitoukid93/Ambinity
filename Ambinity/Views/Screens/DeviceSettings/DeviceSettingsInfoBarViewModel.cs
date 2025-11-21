@@ -9,6 +9,7 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using FluentAvalonia.Styling;
+using Ambinity.Localization;
 
 namespace Ambinity.Views.Screens.DeviceSettings;
 
@@ -45,7 +46,7 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
         if (IsOpen)
             IsOpen = false;
         Dispatcher.UIThread.Invoke(() => ForeGround = new SolidColorBrush(_generalSettings.PrimaryColor));
-        Title = "Loading...";
+        Title = Loc.Get("Loading.TextBlock.Text") + "...";
         string content = controller.SerialPort;
         IsLoading = true;
         Content = controller.Name;
@@ -57,7 +58,7 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
     {
         if (IsOpen)
             IsOpen = false;
-        Title = "Disconnected!";
+        Title = Loc.Get("Disconnected.TextBlock.Text") + "!";
         string content = controller.SerialPort;
         Dispatcher.UIThread.Invoke(() => ForeGround = new SolidColorBrush(Colors.Red));
         IsLoading = false;
@@ -71,7 +72,7 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
         if (IsOpen)
             IsOpen = false;
         Dispatcher.UIThread.Invoke(() => ForeGround = new SolidColorBrush(_generalSettings.PrimaryColor));
-        Title = "Connecting...";
+        Title = Loc.Get("Connecting.TextBlock.Text") + "...";
         string content = controller.SerialPort;
         IsLoading = true;
         Content = controller.Name;
@@ -84,11 +85,11 @@ public class DeviceSettingsInfoBarViewModel : ViewModelBase
         if (IsOpen)
             IsOpen = false;
         ForeGround = new SolidColorBrush(_generalSettings.PrimaryColor);
-        Title = "Compatible Device Detected";
+        Title = Loc.Get("CompatibleDeviceDetected.TextBlock.Text");
         string content = port;
         IsLoading = true;
 
-        Content = "Serial Device";
+        Content = Loc.Get("SerialDevice.TextBlock.Text");
         SubContent = content;
         IsOpen = true;
     }

@@ -20,7 +20,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="13"
-                Text="Appearance" />
+                Text="{localize:Loc Appearance.TextBlock.Text}"/>
             <!-- <Grid Column="1">
                 <Button
                     x:Name="nosoundTeaching"

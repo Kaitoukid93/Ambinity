@@ -57,7 +57,7 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="13"
-                Text="Colors behavior" />
+                Text="{localize:Loc ColorsBehavior.TextBlock.Text}" />
             <Grid Column="1">
                 <StackPanel
                     HorizontalAlignment="Right"
@@ -109,7 +109,7 @@
         <StackPanel Grid.Row="1" Spacing="10">
             <Grid RowDefinitions="auto,*">
                 <Grid>
-                    <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Blend mode" />
+                    <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{localize:Loc BlendMode.TextBlock.Text}"/>
                 </Grid>
                 <Grid
                     Margin="0,8"
@@ -120,10 +120,10 @@
                         HorizontalAlignment="Stretch"
                         SelectedIndex="{Binding BlendMode}">
                         <ui:FAComboBoxItem>
-                            <TextBlock Text="No Blend" />
+                            <TextBlock Text="{localize:Loc LinearBlend.TextBlock.Text}" />
                         </ui:FAComboBoxItem>
                         <ui:FAComboBoxItem>
-                            <TextBlock Text="{localize:Loc LinearBlend.TextBlock.Text}"/>
+                            <TextBlock Text="{localize:Loc NoBlend.TextBlock.Text}"/>
                         </ui:FAComboBoxItem>
 
                     </ui:FAComboBox>

@@ -72,7 +72,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     {
         var vm = new InputDialogContentViewModel();
         vm.DialogClosed += OnCreateNewCategoryDialogClosed;
-        await _dialogService.ShowInputDialog(vm, "New category", "Ok", "Cancel");
+        await _dialogService.ShowInputDialog(vm, Loc.get("AddNewCategory.Dialog.Header"), "Ok", "Cancel");
     }
 
     private void OnCreateNewCategoryDialogClosed(object? sender, EventArgs e)
