@@ -85,7 +85,7 @@
                     <TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="Device Layout" />
+                        Text="{localize:Loc DeviceLayout.TextBlock.Text}" />
                     <!-- <Grid>
                         <Button Click="InfoButton_OnClick" x:Name="infoButton" Background="Transparent"
                                 BorderThickness="0" Classes="icon-button-small" HorizontalAlignment="Right"

@@ -116,8 +116,8 @@ public class LightingZoneFigure : ContainerFigure, IAssetSelectable
         var offset = new Point((float)screenPoint[0] - X, (float)screenPoint[1] - Y);
 
         var fillBrush = new ImmutableSolidColorBrush(FillColor);
-        if (!_isValid)
-            strokeBrush = new ImmutableSolidColorBrush(Avalonia.Media.Colors.Red);
+        // if (!_isValid)
+        //     strokeBrush = new ImmutableSolidColorBrush(Avalonia.Media.Colors.Red);
         if (IsMouseOver && !IsSelected)
         {
             fillBrush = new ImmutableSolidColorBrush(Avalonia.Media.Colors.Gray.AdjustOpacity(0.2));

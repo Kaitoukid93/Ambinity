@@ -1,9 +1,9 @@
 using System;
 using System.Collections.ObjectModel;
+using Ambinity.Localization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Ambinity.Localization;
 using Ambinity.Stores;
 using Ambinity.ViewModels;
 using Ambinity.Views.AmbinityStore;
@@ -72,7 +72,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     {
         var vm = new InputDialogContentViewModel();
         vm.DialogClosed += OnCreateNewCategoryDialogClosed;
-        await _dialogService.ShowInputDialog(vm, Loc.get("AddNewCategory.Dialog.Header"), "Ok", "Cancel");
+        await _dialogService.ShowInputDialog(vm, Loc.Get("AddNewCategory.Dialog.Header"), "Ok", "Cancel");
     }
 
     private void OnCreateNewCategoryDialogClosed(object? sender, EventArgs e)

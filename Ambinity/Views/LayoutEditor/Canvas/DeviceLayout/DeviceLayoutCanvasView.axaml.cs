@@ -22,7 +22,7 @@ public partial class DeviceLayoutCanvasView : UserControl
     {
         if (_viewModel == null)
             _viewModel = DataContext as DeviceLayoutCanvasViewModel;
-        _viewModel?.Init();
+       // _viewModel?.Init();
     }
 
 

@@ -11,9 +11,8 @@ public class ColorAppearanceParameterViewModel : ParameterViewModelBase
         _configuration = config;
         AppearanceModes = new List<string>();
         if (zone.Shape == ZoneShapeEnum.Rectangle)
-        {
             AppearanceModes.Add("Fill entire zone");
-        }
+        if (zone.Shape == ZoneShapeEnum.Polyline)
         AppearanceModes.Add("Apply stroke only");
 
         _appearance = _configuration.Apperance.Mode == ColorApperanceEnum.Fill

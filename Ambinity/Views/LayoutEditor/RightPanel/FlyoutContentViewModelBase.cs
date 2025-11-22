@@ -20,7 +20,7 @@ public abstract class FlyoutContentViewModelBase : ViewModelBase
 
     public virtual void Dispose()
     {
-        
+
     }
     public ICommand CloseCommand { get; set; }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Ambinity.Localization;
 using Ambinity.Services;
 using Ambinity.ViewModels;
 using Ambinity.Views.CollectableItem.AmbinityDeviceLayout;
@@ -10,12 +11,14 @@ using Ambinity.Views.Configuration.ColorConfiguration.Parameters;
 using Ambinity.Views.LayoutEditor.Canvas;
 using Ambinity.Views.LayoutEditor.LEDLayoutCreator;
 using Ambinity.Views.Screens.DeviceLayout;
+using Ambinity.Windows;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.LED;
 using AmbinityCore.Models.Profile;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 using Serilog;
@@ -36,10 +39,11 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
         CanvasViewModelFactory canvasViewModelFactory,
         LightingProfileDecoder decoder,
         LEDLayoutCreatorViewModel layoutCreatorViewModel,
-        LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService
+        LibraryViewModelFactory libraryViewModelFactory, IWindowService windowService,IDialogService dialogService
     )
     {
         _windowService = windowService;
+         _dialogService = dialogService;
         _libraryViewModelFactory = libraryViewModelFactory;
         _decoder = decoder;
         _canvasViewModel = canvasViewModelFactory.Get<DeviceLayoutCanvasViewModel>();
@@ -74,7 +78,7 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
         var ledShape = vm.SelectedLEDShape;
         var name = vm.LayoutName;
         var leds = GetLEDs(ledShape, ledCount, vm.SelectedExistingLayout);
-        bool result = _layoutCreatorViewModel.Init(width, height,leds, image);
+        bool result = _layoutCreatorViewModel.Init(width, height, leds, image);
         if (!result)
         {
             Log.Error("Error creating or parsing layout project");
@@ -88,6 +92,12 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
             _layoutCreatorViewModel?.Dispose();
         };
 
+    }
+    private void ShowNoDeviceSelectedErrorDialog()
+    {
+        var vm = new ErrorDialogViewModel();
+        vm.ErrorMessage = Loc.Get("DeviceLayout.NoDeviceSelected.Error.Message");
+        Dispatcher.UIThread.Invoke(() => _dialogService.ShowErrorDialog(vm, Loc.Get("DeviceLayout.NoDeviceSelected.Error.Header"), "Return"));
     }
 
     private List<AmbinityLEDLayout> GetLEDs(string ledShape, int ledCount = 20, AmbinityDeviceLayout? existingLayout = null)
@@ -155,7 +165,12 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
         //get all selected device and apply this layout
         var figs = _canvasViewModel.Canvas.Selection.All;
         if (figs == null || figs.Count == 0)
+        {
+            ShowNoDeviceSelectedErrorDialog();
+            CloseFlyoutEvent?.Invoke();
             return;
+        }
+
         var selectedDevices = new List<AmbinityDevice>();
         foreach (var fig in figs)
         {
@@ -213,6 +228,7 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
     private readonly LightingProfileDecoder _decoder;
     private readonly IWindowService _windowService;
     private readonly LibraryViewModelFactory _libraryViewModelFactory;
+    private IDialogService _dialogService;
     private LibraryViewModelBase _libraryViewModel;
 
     public async Task Init()
