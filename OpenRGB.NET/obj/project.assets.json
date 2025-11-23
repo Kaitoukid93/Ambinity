@@ -74,19 +74,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/zoe/.nuget/packages/": {}
+    "C:\\Users\\Admin\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "3.1.1",
     "restore": {
-      "projectUniqueName": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
+      "projectUniqueName": "D:\\vscode\\Ambinity\\OpenRGB.NET\\OpenRGB.NET.csproj",
       "projectName": "OpenRGB.NET",
-      "projectPath": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/OpenRGB.NET.csproj",
-      "packagesPath": "/Users/zoe/.nuget/packages/",
-      "outputPath": "/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/obj/",
+      "projectPath": "D:\\vscode\\Ambinity\\OpenRGB.NET\\OpenRGB.NET.csproj",
+      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+      "outputPath": "D:\\vscode\\Ambinity\\OpenRGB.NET\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/zoe/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -109,8 +109,7 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.300"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -149,7 +148,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.301/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
