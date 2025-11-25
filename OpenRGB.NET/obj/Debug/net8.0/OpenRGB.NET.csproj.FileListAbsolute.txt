@@ -40,3 +40,17 @@ D:/VSCode/Ambinity/OpenRGB.NET/obj/Debug/net8.0/ref/OpenRGB.NET.dll
 /Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/obj/Debug/net8.0/OpenRGB.NET.xml
 /Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/obj/Debug/net8.0/OpenRGB.NET.pdb
 /Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/obj/Debug/net8.0/ref/OpenRGB.NET.dll
+D:\vscode\Ambinity\OpenRGB.NET\bin\Debug\net8.0\OpenRGB.NET.deps.json
+D:\vscode\Ambinity\OpenRGB.NET\bin\Debug\net8.0\OpenRGB.NET.dll
+D:\vscode\Ambinity\OpenRGB.NET\bin\Debug\net8.0\OpenRGB.NET.pdb
+D:\vscode\Ambinity\OpenRGB.NET\bin\Debug\net8.0\OpenRGB.NET.xml
+D:\vscode\Ambinity\OpenRGB.NET\obj\Debug\net8.0\OpenRGB.NET.GeneratedMSBuildEditorConfig.editorconfig
+D:\vscode\Ambinity\OpenRGB.NET\obj\Debug\net8.0\OpenRGB.NET.AssemblyInfoInputs.cache
+D:\vscode\Ambinity\OpenRGB.NET\obj\Debug\net8.0\OpenRGB.NET.AssemblyInfo.cs
+D:\vscode\Ambinity\OpenRGB.NET\obj\Debug\net8.0\OpenRGB.NET.csproj.CoreCompileInputs.cache
+D:\vscode\Ambinity\OpenRGB.NET\obj\Debug\net8.0\OpenRGB.NET.sourcelink.json
+D:\vscode\Ambinity\OpenRGB.NET\obj\Debug\net8.0\OpenRGB.NET.dll
+D:\vscode\Ambinity\OpenRGB.NET\obj\Debug\net8.0\refint\OpenRGB.NET.dll
+D:\vscode\Ambinity\OpenRGB.NET\obj\Debug\net8.0\OpenRGB.NET.xml
+D:\vscode\Ambinity\OpenRGB.NET\obj\Debug\net8.0\OpenRGB.NET.pdb
+D:\vscode\Ambinity\OpenRGB.NET\obj\Debug\net8.0\ref\OpenRGB.NET.dll

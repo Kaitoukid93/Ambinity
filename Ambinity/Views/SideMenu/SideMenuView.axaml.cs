@@ -63,7 +63,7 @@ public partial class SideMenuView : UserControl
 
         // measure available height
         double height = this.Bounds.Height;
-        if (height < screensListBox.Bounds.Height *3)
+        if (height < 700)
         {
             if (_vm.CurrentPlayingContent != _vm.MiniProfilePlayerViewModel)
                 _vm.CurrentPlayingContent = _vm.MiniProfilePlayerViewModel;

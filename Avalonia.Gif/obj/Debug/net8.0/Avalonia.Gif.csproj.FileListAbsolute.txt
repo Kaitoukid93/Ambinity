@@ -40,3 +40,17 @@ D:/VSCode/Ambinity/Avalonia.Gif/obj/Debug/net8.0/ref/Avalonia.Gif.dll
 /Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Debug/net8.0/refint/Avalonia.Gif.dll
 /Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Debug/net8.0/Avalonia.Gif.pdb
 /Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/Debug/net8.0/ref/Avalonia.Gif.dll
+D:\vscode\Ambinity\Avalonia.Gif\bin\Debug\net8.0\Avalonia.Gif.deps.json
+D:\vscode\Ambinity\Avalonia.Gif\bin\Debug\net8.0\Avalonia.Gif.dll
+D:\vscode\Ambinity\Avalonia.Gif\bin\Debug\net8.0\Avalonia.Gif.pdb
+D:\vscode\Ambinity\Avalonia.Gif\obj\Debug\net8.0\Avalonia.Gif.csproj.AssemblyReference.cache
+D:\vscode\Ambinity\Avalonia.Gif\obj\Debug\net8.0\Avalonia\Resources.Inputs.cache
+D:\vscode\Ambinity\Avalonia.Gif\obj\Debug\net8.0\Avalonia.Gif.GeneratedMSBuildEditorConfig.editorconfig
+D:\vscode\Ambinity\Avalonia.Gif\obj\Debug\net8.0\Avalonia.Gif.AssemblyInfoInputs.cache
+D:\vscode\Ambinity\Avalonia.Gif\obj\Debug\net8.0\Avalonia.Gif.AssemblyInfo.cs
+D:\vscode\Ambinity\Avalonia.Gif\obj\Debug\net8.0\Avalonia.Gif.csproj.CoreCompileInputs.cache
+D:\vscode\Ambinity\Avalonia.Gif\obj\Debug\net8.0\Avalonia.Gif.sourcelink.json
+D:\vscode\Ambinity\Avalonia.Gif\obj\Debug\net8.0\Avalonia.Gif.dll
+D:\vscode\Ambinity\Avalonia.Gif\obj\Debug\net8.0\refint\Avalonia.Gif.dll
+D:\vscode\Ambinity\Avalonia.Gif\obj\Debug\net8.0\Avalonia.Gif.pdb
+D:\vscode\Ambinity\Avalonia.Gif\obj\Debug\net8.0\ref\Avalonia.Gif.dll
