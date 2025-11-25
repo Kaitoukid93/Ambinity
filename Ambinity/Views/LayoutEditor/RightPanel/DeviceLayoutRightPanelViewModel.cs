@@ -32,6 +32,7 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
 {
     public event Action OpenFlyoutEvent;
     public event Action CloseFlyoutEvent;
+    public event Action CreatorWindowClosed;
     private Window _layoutCreatorInitialWindow;
     private Window _layoutCreatorWindow;
 
@@ -90,6 +91,7 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
         _layoutCreatorWindow.Closed += (sender, args) =>
         {
             _layoutCreatorViewModel?.Dispose();
+            CreatorWindowClosed?.Invoke();
         };
 
     }

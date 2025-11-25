@@ -107,7 +107,7 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
         }
     }
 
-    private bool _isExpanded = false;
+    private bool _isExpanded = true;
 
     public bool IsExpanded
     {

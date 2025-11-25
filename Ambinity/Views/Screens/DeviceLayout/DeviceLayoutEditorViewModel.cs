@@ -29,11 +29,18 @@ public class DeviceLayoutEditorViewModel : ScreenViewModelBase
         _canvasViewModelFactory = canvasViewModelFactory;
         _deviceRepository = deviceRepository;
         RightPanelViewModel = rightPanelViewModel;
+        RightPanelViewModel.CreatorWindowClosed += OnCreatorWindowClosed;
         _propertiesViewModel = propertiesViewModel;
         mainWindowService.MainWindowClosed += OnMainWindowClosed;
         _toolsViewModel = toolsViewModel;
         _toolsViewModel.ResetLayout += OnLayoutReset;
     }
+
+    private async void OnCreatorWindowClosed()
+    {
+       await Init();
+    }
+
     private void OnLayoutReset()
     {
         _deviceRepository.ResetDefaultLayout();

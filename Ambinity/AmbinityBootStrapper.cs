@@ -236,6 +236,7 @@ public class AmbinityBootStrapper
             .AddSingleton<LightingProfileRepository>()
             .AddSingleton<LightingProfileCategoryRepository>()
             .AddSingleton<SideMenuProfilePlayerViewModel>()
+            .AddSingleton<SideMenuProfilePlayerMiniViewModel>()
             .AddSingleton<SideMenuViewModelFactory>()
             //Dialogs
             .AddSingleton<IDialogService, DialogService>()

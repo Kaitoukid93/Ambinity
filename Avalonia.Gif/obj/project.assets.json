@@ -337,19 +337,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {}
+    "/Users/zoe/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\vscode\\Ambinity\\Avalonia.Gif\\Avalonia.Gif.csproj",
+      "projectUniqueName": "/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/Avalonia.Gif.csproj",
       "projectName": "Avalonia.Gif",
-      "projectPath": "D:\\vscode\\Ambinity\\Avalonia.Gif\\Avalonia.Gif.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "D:\\vscode\\Ambinity\\Avalonia.Gif\\obj\\",
+      "projectPath": "/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/Avalonia.Gif.csproj",
+      "packagesPath": "/Users/zoe/.nuget/packages/",
+      "outputPath": "/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/Users/zoe/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -372,7 +372,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -399,7 +400,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.301/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

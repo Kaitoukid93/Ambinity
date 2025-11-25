@@ -27,7 +27,7 @@
                         Content="{Binding PositionConfiguration}"
                         IsEnabled="{Binding EnablePositionEdit}"
                         IsVisible="{Binding EnablePositionEdit}" />
-                    <Separator Margin="0,10" />
+                    <Separator Margin="0,10" IsVisible="{Binding EnablePositionEdit}" />
                     <colorConfiguration:ColorConfigurationView DataContext="{Binding ColorConfiguration}" />
                 </StackPanel>
             </ScrollViewer>

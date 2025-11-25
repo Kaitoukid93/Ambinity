@@ -18,6 +18,7 @@ public partial class SideMenuView : UserControl
 {
     private readonly AppTourViewModel _appTourViewModel;
     private readonly AppTourElementProvider _appTourElementProvider;
+    private  SideMenuViewModel _vm;
     public SideMenuView()
     {
         InitializeComponent();
@@ -25,6 +26,7 @@ public partial class SideMenuView : UserControl
         _appTourViewModel = Ioc.Default.GetRequiredService<AppTourViewModel>();
         _appTourElementProvider = Ioc.Default.GetRequiredService<AppTourElementProvider>();
         _appTourViewModel.NextStepActivated += OnApptourStepChanged;
+        this.SizeChanged += OnLayoutUpdated;
     }
 
     private async void OnApptourStepChanged(ViewModelBase element)
@@ -37,7 +39,7 @@ public partial class SideMenuView : UserControl
             }
             await ActivateGuide();
         }
-      
+
     }
     private async Task ActivateGuide()
     {
@@ -45,11 +47,32 @@ public partial class SideMenuView : UserControl
         var sidePanel = new AppTourElement(this, "Side Menu",
             "Side menu provide quick access to available profiles, settings, and Now Playing profile");
         var sidePanelVm = _appTourElementProvider.GetAppTourElements(sidePanel);
-        if(sidePanelVm ==null)
+        if (sidePanelVm == null)
             return;
         _appTourViewModel?.Show(sidePanelVm);
         await Task.Run(() => Task.Delay(1000));
         _appTourViewModel.NextStep(categories.Items.First() as SideMenuProfileCategoryViewModel);
- 
+
+    }
+    private void OnLayoutUpdated(object? sender, System.EventArgs e)
+    {
+        _vm = this.DataContext as SideMenuViewModel;
+
+        if (_vm == null)
+            return;
+
+        // measure available height
+        double height = this.Bounds.Height;
+        if (height < screensListBox.Bounds.Height *3)
+        {
+            if (_vm.CurrentPlayingContent != _vm.MiniProfilePlayerViewModel)
+                _vm.CurrentPlayingContent = _vm.MiniProfilePlayerViewModel;
+        }
+        else
+        {
+            if (_vm.CurrentPlayingContent != _vm.ProfilePlayerViewModel)
+                _vm.CurrentPlayingContent = _vm.ProfilePlayerViewModel;
+        }
     }
 }
+

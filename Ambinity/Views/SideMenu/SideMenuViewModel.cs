@@ -32,7 +32,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     public SideMenuViewModel(LightingProfileRepository profileRepository,
         LightingProfileCategoryRepository categoryRepository, IDialogService dialogService,
         RootNavigationStores rootNavigationStores,
-        SideMenuProfilePlayerViewModel profilePlayerViewModel, SideMenuViewModelFactory vmFactory,
+        SideMenuProfilePlayerViewModel profilePlayerViewModel, SideMenuProfilePlayerMiniViewModel miniPlayerViewModel, SideMenuViewModelFactory vmFactory,
         ProfileEditorViewModel profileEditorViewModel, DeviceLayoutEditorViewModel deviceLayoutEditorViewModel,
         AppSettingsViewModel appSettingsViewModel,
         DeviceSettingsDashboardViewModel dashboardViewModel, HomeViewModel homeViewModel, ProfileStoreViewModel storeViewModel)
@@ -49,7 +49,9 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         _rootNavigationStores = rootNavigationStores;
         _dialogService = dialogService;
         ProfilePlayerViewModel = profilePlayerViewModel;
+        MiniProfilePlayerViewModel = miniPlayerViewModel;
         ProfilePlayerViewModel.PlayingButtonClicked += OnPlayingButtonClicked;
+        MiniProfilePlayerViewModel.PlayingButtonClicked += OnPlayingButtonClicked;
         _homeViewModel.ShowAllProfileRequested += GotoAmbinityStore;
         CreateNewCategoryCommand = new AsyncRelayCommand(OpenCreateNewProfileDialog);
     }
@@ -98,7 +100,21 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
     private SideMenuViewModelFactory _vmFactory;
 
     private bool _isInit;
+    private ViewModelBase _currentPlayingContent;
+    public ViewModelBase CurrentPlayingContent
+    {
+        get
+           => _currentPlayingContent;
+        set
+        {
+            _currentPlayingContent = value;
+            OnPropertyChanged();
+        }
+    }
+
+
     public SideMenuProfilePlayerViewModel ProfilePlayerViewModel { get; set; }
+    public SideMenuProfilePlayerMiniViewModel MiniProfilePlayerViewModel { get; set; }
 
     public ObservableCollection<SideMenuScreenViewModel> ScreenMenuItems
     {
@@ -223,7 +239,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         SelectedScreen = null;
     }
 
-    private void  ScreenSelectionChanged(SideMenuScreenViewModel screen)
+    private void ScreenSelectionChanged(SideMenuScreenViewModel screen)
     {
         //unselect all other categories
         foreach (var vm in ProfileCategorymenuItems)
@@ -232,7 +248,7 @@ public class SideMenuViewModel : ViewModelBase, IApptourElement
         }
 
         SelectedProfile = null;
-         screen.Screen.Init();
+        screen.Screen.Init();
         _rootNavigationStores.CurrentViewModel = screen.Screen;
 
     }
