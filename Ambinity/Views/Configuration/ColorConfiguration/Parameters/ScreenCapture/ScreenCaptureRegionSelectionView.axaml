@@ -17,17 +17,17 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
         <MenuFlyout x:Key="CaptureRegionFlyout"
                     Placement="Bottom">
             <MenuItem Command="{Binding LeftCommand}"
-                Header="Left">
+                Header="{localize:Loc Left.MenuItem.Header}">
             </MenuItem>
             <MenuItem Command="{Binding RightCommand}"
-                Header="Right">
+                Header="{localize:Loc Right.MenuItem.Header}">
             </MenuItem>
             <MenuItem Command="{Binding TopCommand}"
-                Header="Top">
+                Header="{localize:Loc Top.MenuItem.Header}">
             </MenuItem>
             <MenuItem Command="{Binding BottomCommand}"
                 CommandParameter="1"
-                Header="Bottom">
+                Header="{localize:Loc Bottom.MenuItem.Header}">
             </MenuItem>
         </MenuFlyout>
     </Window.Resources>

@@ -34,5 +34,12 @@ namespace Ambinity.Localization
                 return value;
             return $"[{key}]"; // fallback
         }
+        public static string TryGetTranslated(string key, string fallback)
+        {
+            if (_strings.TryGetValue(key, out var value))
+                return value;
+            return fallback; // fallback
+        }
+
     }
 }

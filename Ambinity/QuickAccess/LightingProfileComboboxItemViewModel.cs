@@ -8,6 +8,7 @@ using AmbinityServer.OnlineItem;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Ambinity.Localization;
 
 namespace Ambinity.QuickAccess;
 
@@ -31,7 +32,9 @@ public class LightingProfileComboboxItemViewModel : ViewModelBase
         var thumb = await _thumbnailService.LoadThumbnail(thumbnailPath);
         return thumb;
     }
-    public string Name => _profile.Name;
+
+
+    public string Name => Loc.TryGetTranslated(_profile.Name + ".Profile.Name", _profile.Name);
     public Guid ID => _profile.ID;
     public string Icon => _profile.Icon;
     public Color IconColor => _profile.IconColor;

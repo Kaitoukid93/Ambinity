@@ -1,5 +1,6 @@
 using System;
 using Avalonia.Controls;
+using Ambinity.Localization;
 
 
 namespace Ambinity.Views.Screens.ProfileEditor;
@@ -22,7 +23,7 @@ public partial class ZonePropertiesView : UserControl
 
         public int Order => 1;
         public string Icon => "dashboard";
-        public string Name => "Properties";
+        public string Name => Loc.Get("Properties.RightPanel.Header");
 
         public object Content
         {

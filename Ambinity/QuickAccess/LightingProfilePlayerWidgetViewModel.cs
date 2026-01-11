@@ -8,6 +8,7 @@ using AmbinityCore.Models.Profile;
 using AmbinityServer.OnlineItem;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
+using Ambinity.Localization;
 
 namespace Ambinity.QuickAccess;
 
@@ -75,11 +76,13 @@ public class LightingProfilePlayerWidgetViewModel : ViewModelBase
         OnPropertyChanged(nameof(CurrentPlayingProfile));
         OnPropertyChanged(nameof(GetThumbnail));
         OnPropertyChanged(nameof(ShowEditButton));
+        OnPropertyChanged(nameof(Content));
     }
 
     public bool IsRendering => _decoder.IsRendering;
     public bool ShowEditButton => _decoder.CurrentPlayingProfile != null;
     public LightingProfile CurrentPlayingProfile => _decoder.CurrentPlayingProfile;
+    public string Content => CurrentPlayingProfile != null ? Loc.TryGetTranslated(CurrentPlayingProfile.Name + ".Profile.Name", CurrentPlayingProfile.Name) : "";
     public ICommand TogglePlayPauseCommand { get; }
     public ICommand GoToProfileEditorCommand { get; }
 }

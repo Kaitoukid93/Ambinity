@@ -116,7 +116,6 @@ public sealed class LightingProfileRepository : CollectableItemRepository
             profile.Name = profile.Name + "(" + matchedItems.Count() + ")";
             Log.Information("Profile existed, rename new profile to " + profile.Name);
         }
-
         profile.ID = Guid.NewGuid();
         profile.IsDefault = isDefault; // import profile can not be default
         if (category != null)

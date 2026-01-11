@@ -109,7 +109,7 @@
         <StackPanel Grid.Row="1" Spacing="10">
             <Grid RowDefinitions="auto,*">
                 <Grid>
-                    <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{localize:Loc BlendMode.TextBlock.Text}"/>
+                    <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{localize:Loc BlendMode.TextBlock.Text}" />
                 </Grid>
                 <Grid
                     Margin="0,8"
@@ -120,10 +120,10 @@
                         HorizontalAlignment="Stretch"
                         SelectedIndex="{Binding BlendMode}">
                         <ui:FAComboBoxItem>
-                            <TextBlock Text="{localize:Loc LinearBlend.TextBlock.Text}" />
+                            <TextBlock Text="{localize:Loc NoBlend.TextBlock.Text}" />
                         </ui:FAComboBoxItem>
                         <ui:FAComboBoxItem>
-                            <TextBlock Text="{localize:Loc NoBlend.TextBlock.Text}"/>
+                            <TextBlock Text="{localize:Loc LinearBlend.TextBlock.Text}" />
                         </ui:FAComboBoxItem>
 
                     </ui:FAComboBox>
@@ -144,7 +144,7 @@
             </Grid>
             <Grid RowDefinitions="Auto,*">
                 <Grid>
-                    <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="Color Resolution" />
+                    <TextBlock Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{localize:Loc ColorResolution.TextBlock.Text}" />
                 </Grid>
                 <Grid ColumnDefinitions="*,12,Auto" Row="1">
                     <Grid Column="0">

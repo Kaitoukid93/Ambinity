@@ -10,6 +10,7 @@ using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
+using Ambinity.Localization;
 
 namespace Ambinity.Views.LayoutEditor.RightPanel.PropertiesView;
 
@@ -27,10 +28,10 @@ public class ConfigurationHeaderViewModel : ViewModelBase
 
     public void Init(List<Figure> figures)
     {
-      
+
         if (figures == null || figures.Count == 0)
         {
-            Header = "Select an item to begin";
+            Header =  Loc.Get("DeviceLayout.NoDeviceSelected.Error.Message");
             Icon = "arrow_cursor_2__mouse_select_cursor";
             CanExport = false;
         }
@@ -56,7 +57,7 @@ public class ConfigurationHeaderViewModel : ViewModelBase
                     CanExport = true;
                     break;
             }
-           
+
         }
         else
         {

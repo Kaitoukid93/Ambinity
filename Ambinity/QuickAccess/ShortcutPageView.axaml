@@ -1,24 +1,47 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-xmlns:localize="clr-namespace:Ambinity.Localization"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="320" d:DesignHeight="480"
-             xmlns:local="clr-namespace:Ambinity.QuickAccess"
-             x:DataType="local:ShortcutPageViewModel"
-             x:Class="Ambinity.QuickAccess.ShortcutPageView">
+<UserControl
+    x:Class="Ambinity.QuickAccess.ShortcutPageView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Ambinity.QuickAccess"
+    xmlns:localize="clr-namespace:Ambinity.Localization"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="480"
+    d:DesignWidth="320"
+    x:DataType="local:ShortcutPageViewModel"
+    mc:Ignorable="d">
 
     <Grid RowDefinitions="50,10,*,10,70,10,50,30,Auto">
-        <Grid Margin="15,15,15,10" Row="0" ColumnDefinitions="*,Auto">
-            <TextBlock FontWeight="SemiBold" FontSize="15" Text="Shortcut"></TextBlock>
-            <Button IsVisible="{Binding !IsInEditMode}" VerticalAlignment="Top" Grid.Column="1"
-                    HorizontalAlignment="Right" ToolTip.Tip="Device control"
-                    Classes="icon-button" Padding="5,2,5,2" Height="25" Command="{Binding GoToDevicesPageCommand}">
+        <Grid
+            Margin="15,15,15,10"
+            ColumnDefinitions="*,Auto"
+            Row="0">
+            <TextBlock
+                FontSize="15"
+                FontWeight="SemiBold"
+                Text="Shortcut" />
+            <Button
+                Grid.Column="1"
+                Height="25"
+                Padding="5,2,5,2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Classes="icon-button"
+                Command="{Binding GoToDevicesPageCommand}"
+                IsVisible="{Binding !IsInEditMode}"
+                ToolTip.Tip="Device control">
                 <Grid ColumnDefinitions="Auto,8,*">
-                    <TextBlock FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Grid.Column="0"
-                               Text="Show devices">
-                    </TextBlock>
-                    <PathIcon Grid.Column="2" Height="10" Width="10" Data="{DynamicResource showMoreRight}"></PathIcon>
+                    <TextBlock
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Text="Show devices" />
+                    <PathIcon
+                        Grid.Column="2"
+                        Width="10"
+                        Height="10"
+                        Data="{DynamicResource showMoreRight}" />
                 </Grid>
 
             </Button>
@@ -27,89 +50,168 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
             <ItemsControl ItemsSource="{Binding Shortcuts}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Rows="2" Columns="3"></UniformGrid>
+                        <UniformGrid Columns="3" Rows="2" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </Grid>
         <Grid Row="4">
-            <ContentControl Margin="15,0" IsVisible="{Binding !IsInEditMode}"
-                            Content="{Binding WidgetViewModel}">
-            </ContentControl>
+            <ContentControl
+                Margin="15,0"
+                Content="{Binding WidgetViewModel}"
+                IsVisible="{Binding !IsInEditMode}" />
         </Grid>
-        <Grid VerticalAlignment="Top" IsVisible="{Binding !IsInEditMode}" Margin="15,0,15,0"
-              ColumnDefinitions="Auto,10,*,10,Auto" Row="6">
+        <Grid
+            Margin="15,0,15,0"
+            VerticalAlignment="Top"
+            ColumnDefinitions="Auto,10,*,10,Auto"
+            IsVisible="{Binding !IsInEditMode}"
+            Row="6">
 
-            <PathIcon Data="{DynamicResource sun}"></PathIcon>
+            <PathIcon Data="{DynamicResource sun}" />
 
-            <Slider Grid.Column="2" Value="{Binding ProfileBrightness}" HorizontalAlignment="Stretch"></Slider>
+            <Slider
+                Grid.Column="2"
+                HorizontalAlignment="Stretch"
+                Value="{Binding ProfileBrightness}" />
 
-            <PathIcon Grid.Column="4" Data="{DynamicResource brightness}"></PathIcon>
+            <PathIcon Grid.Column="4" Data="{DynamicResource brightness}" />
 
         </Grid>
         <Grid Row="8">
-            <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Left" Orientation="Horizontal" Spacing="0"
-                        IsVisible="{Binding !IsInEditMode}">
-                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" ToolTip.HorizontalOffset="-20"
-                        Command="{Binding OpenMainWindowCommand}" CommandParameter="home" ToolTip.Tip="Home " Height="35" Width="35"
-                        Classes="icon-button">
-                    <PathIcon Width="15" Data="{DynamicResource home_3__home_house_roof_shelter}"></PathIcon>
+            <StackPanel
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                IsVisible="{Binding !IsInEditMode}"
+                Orientation="Horizontal"
+                Spacing="0">
+                <Button
+                    Width="35"
+                    Height="35"
+                    Classes="icon-button"
+                    Command="{Binding OpenMainWindowCommand}"
+                    CommandParameter="home"
+                    ToolTip.HorizontalOffset="-20"
+                    ToolTip.Placement="Top"
+                    ToolTip.Tip="{localize:Loc Home.TextBlock.Text}"
+                    ToolTip.VerticalOffset="-10">
+                    <PathIcon Width="15" Data="{DynamicResource home_3__home_house_roof_shelter}" />
                 </Button>
-                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" CommandParameter="store" ToolTip.HorizontalOffset="-20"
-                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="Ambinity store" Height="35" Width="35"
-                        Classes="icon-button">
-                    <PathIcon Width="15" Data="{DynamicResource onlineStore}"></PathIcon>
+                <Button
+                    Width="35"
+                    Height="35"
+                    Classes="icon-button"
+                    Command="{Binding OpenMainWindowCommand}"
+                    CommandParameter="store"
+                    ToolTip.HorizontalOffset="-20"
+                    ToolTip.Placement="Top"
+                    ToolTip.Tip="{localize:Loc Store.Page.Header}"
+                    ToolTip.VerticalOffset="-10">
+                    <PathIcon Width="15" Data="{DynamicResource onlineStore}" />
                 </Button>
-                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" CommandParameter="devices" ToolTip.HorizontalOffset="-20"
-                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="{localize:Loc DeviceSettings.Section.Header}" Height="35" Width="35"
-                        Classes="icon-button">
-                    <PathIcon Width="15" Data="{DynamicResource Device_settings}"></PathIcon>
+                <Button
+                    Width="35"
+                    Height="35"
+                    Classes="icon-button"
+                    Command="{Binding OpenMainWindowCommand}"
+                    CommandParameter="devices"
+                    ToolTip.HorizontalOffset="-20"
+                    ToolTip.Placement="Top"
+                    ToolTip.Tip="{localize:Loc DeviceSettings.Section.Header}"
+                    ToolTip.VerticalOffset="-10">
+                    <PathIcon Width="15" Data="{DynamicResource Device_settings}" />
                 </Button>
-                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" CommandParameter="layout" ToolTip.HorizontalOffset="-20"
-                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="{localize:Loc Layout.Page.Header}" Height="35" Width="35"
-                        Classes="icon-button">
-                    <PathIcon Width="15" Data="{DynamicResource map_rounded}"></PathIcon>
+                <Button
+                    Width="35"
+                    Height="35"
+                    Classes="icon-button"
+                    Command="{Binding OpenMainWindowCommand}"
+                    CommandParameter="layout"
+                    ToolTip.HorizontalOffset="-20"
+                    ToolTip.Placement="Top"
+                    ToolTip.Tip="{localize:Loc Layout.Page.Header}"
+                    ToolTip.VerticalOffset="-10">
+                    <PathIcon Width="15" Data="{DynamicResource map_rounded}" />
                 </Button>
-                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" CommandParameter="settings" ToolTip.HorizontalOffset="-20"
-                        Command="{Binding OpenMainWindowCommand}" ToolTip.Tip="{localize:Loc Settings.Button.ToolTip}" Height="35" Width="35"
-                        Classes="icon-button">
-                    <PathIcon Width="15" Data="{DynamicResource General_Outline_Settings}"></PathIcon>
+                <Button
+                    Width="35"
+                    Height="35"
+                    Classes="icon-button"
+                    Command="{Binding OpenMainWindowCommand}"
+                    CommandParameter="settings"
+                    ToolTip.HorizontalOffset="-20"
+                    ToolTip.Placement="Top"
+                    ToolTip.Tip="{localize:Loc Settings.Button.ToolTip}"
+                    ToolTip.VerticalOffset="-10">
+                    <PathIcon Width="15" Data="{DynamicResource General_Outline_Settings}" />
+                </Button> 
+                <Separator
+                    Width="2"
+                    Height="18"
+                    Margin="2,0" />
+                <Button
+                    Width="35"
+                    Height="35"
+                    Classes="icon-button danger"
+                    Command="{Binding ExitAppCommand}"
+                    ToolTip.Placement="Top"
+                    ToolTip.Tip="{localize:Loc Exit.TextBlock.Text}"
+                    ToolTip.VerticalOffset="-10">
+                    <PathIcon Width="15" Data="{DynamicResource button_power_1__power_button_on_off}" />
                 </Button>
-                <Separator Margin="2,0" Height="18" Width="2"></Separator>
-                <Button Command="{Binding ExitAppCommand}" ToolTip.Placement="Top"
-                        ToolTip.VerticalOffset="-10" ToolTip.Tip="Exit" Height="35"
-                        Width="35" Classes="icon-button danger">
-                    <PathIcon Width="15" Data="{DynamicResource button_power_1__power_button_on_off}"></PathIcon>
-                </Button>
-               
-                
-            </StackPanel>
-            <StackPanel Grid.Column="2" IsVisible="{Binding !IsInEditMode}" HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="5">
-                <HyperlinkButton NavigateUri="http://ambino.vn" Content="Help"></HyperlinkButton>
-                <Button ToolTip.Placement="Top" ToolTip.VerticalOffset="-10" Command="{Binding EnterEditModeCommand}"
-                        ToolTip.Tip="Add or remove shortcut" Height="35"
-                        Width="35" Classes="icon-button">
-                    <PathIcon Width="15" Data="{DynamicResource application_add__application_new_add_square}"></PathIcon>
-                </Button>
-            </StackPanel>
-            <StackPanel IsVisible="{Binding IsInEditMode}" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                        Orientation="Horizontal" Spacing="5">
 
-                <Button Command="{Binding ExitEditModeCommand}" Height="32" Width="70" Classes="icon-button">
+
+            </StackPanel>
+            <StackPanel
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                IsVisible="{Binding !IsInEditMode}"
+                Orientation="Horizontal"
+                Spacing="5">
+                <HyperlinkButton Content="Help" NavigateUri="http://ambino.vn" />
+                <Button
+                    Width="35"
+                    Height="35"
+                    Classes="icon-button"
+                    Command="{Binding EnterEditModeCommand}"
+                    ToolTip.Placement="Top"
+                    ToolTip.Tip="Add or remove shortcut"
+                    ToolTip.VerticalOffset="-10">
+                    <PathIcon Width="15" Data="{DynamicResource application_add__application_new_add_square}" />
+                </Button>
+            </StackPanel>
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                IsVisible="{Binding IsInEditMode}"
+                Orientation="Horizontal"
+                Spacing="5">
+
+                <Button
+                    Width="70"
+                    Height="32"
+                    Classes="icon-button"
+                    Command="{Binding ExitEditModeCommand}">
                     <Grid ColumnDefinitions="Auto,8,*">
-                        <PathIcon Width="15"
-                                  Data="{DynamicResource check__check_form_validation_checkmark_success_add_addition_tick}">
-                        </PathIcon>
-                        <TextBlock Grid.Column="2" Text="Done" VerticalAlignment="Center"></TextBlock>
+                        <PathIcon Width="15" Data="{DynamicResource check__check_form_validation_checkmark_success_add_addition_tick}" />
+                        <TextBlock
+                            Grid.Column="2"
+                            VerticalAlignment="Center"
+                            Text="Done" />
                     </Grid>
                 </Button>
-                <Button Command="{Binding AddShortcutCommand}" Height="32" Width="70" Classes="icon-button">
+                <Button
+                    Width="70"
+                    Height="32"
+                    Classes="icon-button"
+                    Command="{Binding AddShortcutCommand}">
                     <Grid ColumnDefinitions="Auto,8,*">
-                        <PathIcon Width="15"
-                                  Data="{DynamicResource add_1__expand_cross_buttons_button_more_remove_plus_add_+_mathematics_math}">
-                        </PathIcon>
-                        <TextBlock Grid.Column="2" Text="Add" VerticalAlignment="Center"></TextBlock>
+                        <PathIcon Width="15" Data="{DynamicResource add_1__expand_cross_buttons_button_more_remove_plus_add_+_mathematics_math}" />
+                        <TextBlock
+                            Grid.Column="2"
+                            VerticalAlignment="Center"
+                            Text="Add" />
                     </Grid>
 
                 </Button>

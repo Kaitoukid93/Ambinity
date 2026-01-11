@@ -10,7 +10,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
              x:Class="Ambinity.QuickAccess.LightingProfilePlayerWidgetView">
     <UserControl.Resources>
         <MenuFlyout x:Key="profileList" ItemsSource="{Binding AvailableLightingProfiles}">
-          
+
         </MenuFlyout>
     </UserControl.Resources>
     <UserControl.Styles>
@@ -26,7 +26,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 </Template>
             </Setter>
         </Style>
-        
+
         <Style Selector="ContentControl.profileIconSmall.imageSmall" x:DataType="local:LightingProfileFlyoutItemViewModel">
             <Setter Property="Content">
                 <Template>
@@ -51,7 +51,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                 </Template>
             </Setter>
         </Style>
-        
+
         <Style Selector="ContentControl.profileIcon.image">
             <Setter Property="Content">
                 <Template>
@@ -66,22 +66,22 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
         </Style>
     </UserControl.Styles>
     <Border Background="{DynamicResource ToggleButtonBackground}" Height="50" CornerRadius="7" Padding="5" Classes="card">
-        <Grid ColumnDefinitions="Auto,15,*,Auto">
+        <Grid ColumnDefinitions="Auto,8,*,Auto">
             <Grid>
                 <ContentControl Classes="profileIcon" Classes.image="{Binding !CurrentPlayingProfile.IconType}"></ContentControl>
             </Grid>
             <Grid Column="2" ColumnDefinitions="Auto,8,*">
-                <TextBlock HorizontalAlignment="Left" MaxWidth="135" VerticalAlignment="Center"  TextTrimming="CharacterEllipsis" Text="{Binding CurrentPlayingProfile.Name}" FontSize="15"
+                <TextBlock HorizontalAlignment="Left" MaxWidth="120" VerticalAlignment="Center"  TextTrimming="CharacterEllipsis" Text="{Binding Content}" FontSize="15"
                            FontWeight="SemiBold">
                 </TextBlock>
                 <Border IsVisible="{Binding IsRendering}" Grid.Column="2" VerticalAlignment="Center"
-                        CornerRadius="3" HorizontalAlignment="Left" Classes="primaryChip">
+                        CornerRadius="3" HorizontalAlignment="Right" Classes="primaryChip">
                     <Grid ColumnDefinitions="Auto,*">
                         <PathIcon
                                   Foreground="{DynamicResource AccentButtonBackground}" Width="12" Margin="0,0,3,0"
                                   Height="12" Data="{DynamicResource playComposition}">
                         </PathIcon>
-                        <TextBlock Text="Playing" Margin="0,0,0,2" Foreground="{DynamicResource AccentButtonBackground}"
+                        <TextBlock Text="{localize:Loc Playing.TextBlock.Text}" Margin="0,0,0,2" Foreground="{DynamicResource AccentButtonBackground}"
                                    Grid.Column="1" FontSize="12">
                         </TextBlock>
                     </Grid>
@@ -116,7 +116,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                         </Grid>
                     </Button>
                 </StackPanel>
-               
+
             </Grid>
         </Grid>
     </Border>

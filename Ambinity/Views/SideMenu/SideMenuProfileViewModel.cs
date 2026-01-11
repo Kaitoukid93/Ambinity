@@ -15,6 +15,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;
+using Ambinity.Localization;
 
 namespace Ambinity.Views.SideMenu;
 
@@ -42,14 +43,14 @@ public class SideMenuProfileViewModel : ViewModelBase
         Init();
         CommandSetup();
     }
-    
+
 
     private async Task ExportProfile()
     {
         //prepare profile for exporting
         // copy asset if any zone required it to asset folder
         _exportViewModel.Init(Profile);
-        var window =  _windowService.ShowWindow(_exportViewModel);
+        var window = _windowService.ShowWindow(_exportViewModel);
         //zip
         //save
     }
@@ -157,7 +158,7 @@ public class SideMenuProfileViewModel : ViewModelBase
     private bool _isSelected;
 
     /// <summary>
-    /// Indicate this profile is selected on side menu 
+    /// Indicate this profile is selected on side menu
     /// </summary>
     public bool IsSelected
     {
@@ -169,7 +170,7 @@ public class SideMenuProfileViewModel : ViewModelBase
         }
     }
 
-   
+
     private readonly SideMenuViewModelFactory _vmFactory;
     private readonly IDialogService _dialogService;
     private readonly IWindowService _windowService;
@@ -198,7 +199,8 @@ public class SideMenuProfileViewModel : ViewModelBase
         {
             zone.ParentProfile = Profile;
         }
-        Content = Profile.Name;
+        // Translate name if possible
+        Content = Loc.TryGetTranslated(Profile.Name + ".Profile.Name", Profile.Name);
         _icon = Profile.Icon;
         _iconColor = Profile.IconColor;
         IconType = Profile.IconType;
