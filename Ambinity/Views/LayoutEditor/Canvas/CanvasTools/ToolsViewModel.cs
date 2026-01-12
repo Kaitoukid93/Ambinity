@@ -22,6 +22,7 @@ using Draw2D.Core.Policies.RouterPolicy;
 using Draw2D.Core.Shapes.Basic;
 using DynamicData;
 using Canvas = Avalonia.Controls.Canvas;
+using Ambinity.Localization;
 
 namespace Ambinity.Views.LayoutEditor;
 
@@ -200,16 +201,16 @@ public class ToolsViewModel : ViewModelBase
         _decoder.FrameUpdate += OnFrameUpdated;
         ZoneTools.Clear();
         CanvasTools.Clear();
-        var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
+        var snapToGridTools = new ToggleToolbarItem("SnapToGrid", Loc.Get("ToggleSnapToGrid.Tool.Name"), "Snap_to_grid");
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
         snapToGridTools.Command = ToggleSnapToGridCommand;
-         var toggleRenderViewMode = new ToggleToolbarItem("View Model", "Toggle render view model", "show_hide_image");
-         toggleRenderViewMode.Command = ToggleRenderViewModeCommand;
+        var toggleRenderViewMode = new ToggleToolbarItem("View Model", Loc.Get("ToggleRenderViewMode.Tool.Name"), "show_hide_image");
+        toggleRenderViewMode.Command = ToggleRenderViewModeCommand;
         toggleRenderViewMode.IsChecked = true;
-        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",
+        var centerCanvasTool = new ButtonToolbarItem("Center", Loc.Get("ResetZoom.Tool.Name"), "Center_canvas",
             new SolidColorBrush(Colors.Gray), FitCanvasToViewCommand);
         var showDiagTool =
-            new ToggleToolbarItem("Info", "Show stats", "wave_signal__heart_line_beat_square_graph_stats");
+            new ToggleToolbarItem("Info", Loc.Get("ShowStats.Tool.Name"), "wave_signal__heart_line_beat_square_graph_stats");
         showDiagTool.IsChecked = _showDiag;
         showDiagTool.Command = ShowDiagCommand;
         var separator = new SeparatorToolbarItem();
@@ -289,10 +290,10 @@ public class ToolsViewModel : ViewModelBase
         Brightness = _currentProfile.Brightness;
         ZoneTools.Clear();
         CanvasTools.Clear();
-        var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
+        var snapToGridTools = new ToggleToolbarItem("SnapToGrid", Loc.Get("ToggleSnapToGrid.Tool.Name"), "Snap_to_grid");
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
         snapToGridTools.Command = ToggleSnapToGridCommand;
-        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",
+        var centerCanvasTool = new ButtonToolbarItem("Center", Loc.Get("ResetZoom.Tool.Name"), "Center_canvas",
             new SolidColorBrush(Colors.Gray), FitCanvasToViewCommand);
         CanvasTools.Add(snapToGridTools);
         CanvasTools.Add(centerCanvasTool);
@@ -305,18 +306,19 @@ public class ToolsViewModel : ViewModelBase
         Brightness = _currentProfile.Brightness;
         ZoneTools.Clear();
         CanvasTools.Clear();
-        var snapToGridTools = new ToggleToolbarItem("SnapToGrid", "Toggle snap to grid", "Snap_to_grid");
+        var snapToGridTools = new ToggleToolbarItem("SnapToGrid", Loc.Get("ToggleSnapToGrid.Tool.Name"), "Snap_to_grid");
         snapToGridTools.IsChecked = _settingsManager.Settings.EnableSnapToGrid;
         snapToGridTools.Command = ToggleSnapToGridCommand;
-        var centerCanvasTool = new ButtonToolbarItem("Center", "Reset Canvas", "Center_canvas",
+        var centerCanvasTool = new ButtonToolbarItem("Center", Loc.Get("ResetZoom.Tool.Name"), "Center_canvas",
             new SolidColorBrush(Colors.Gray), FitCanvasToViewCommand);
-        var resetDefaultLayoutTool = new ButtonToolbarItem("Reset", "Reset to default layout",
-        "mail_send", new SolidColorBrush(Colors.Gray), ResetDefaultLayoutCommand);
+        var resetDefaultLayoutTool = new ButtonToolbarItem("Reset", Loc.Get("ResetDefaultLayout.Tool.Name"),
+            "mail_send", new SolidColorBrush(Colors.Gray), ResetDefaultLayoutCommand, Loc.Get("DisabledTool.ToolTip.Content"));
         CanvasTools.Add(snapToGridTools);
         CanvasTools.Add(centerCanvasTool);
         CanvasTools.Add(resetDefaultLayoutTool);
         OnRenderingStatusChanged();
     }
+
 
 
     private void ResetDefaultLayout()
@@ -338,34 +340,34 @@ public class ToolsViewModel : ViewModelBase
 
     private ButtonToolbarItem AddAmbilightZoneTool()
     {
-        return new ButtonToolbarItem("Ambilight", "Add Ambilight Zone",
+        return new ButtonToolbarItem("Ambilight", Loc.Get("AddAmbilightZone.Tool.Name"),
             "expand__big_bigger_design_expand_larger_resize_size_square", new SolidColorBrush(Color.Parse("#d769ff")),
-            AddAmbilightZoneCommand);
+            AddAmbilightZoneCommand,Loc.Get("DisabledTool.ToolTip.Content"));
     }
 
 
     private ButtonToolbarItem ShowLibraryTool()
     {
-        return new ButtonToolbarItem("Show Library", "Show Zone Library", "collection",
-            new SolidColorBrush(Colors.Gray), ShowLibraryCommand);
+        return new ButtonToolbarItem("Show Library", Loc.Get("ShowZoneLibrary.Tool.Name"), "collection",
+            new SolidColorBrush(Colors.Gray), ShowLibraryCommand,Loc.Get("DisabledTool.ToolTip.Content"));
     }
 
     private ButtonToolbarItem AddAnimationZoneTool()
     {
-        return new ButtonToolbarItem("Animation", "Add Animation Zone", "video_zone",
-            new SolidColorBrush(Color.Parse("#ffb033")), AddAnimationZoneCommand);
+        return new ButtonToolbarItem("Animation", Loc.Get("AddAnimationZone.Tool.Name"), "video_zone",
+            new SolidColorBrush(Color.Parse("#ffb033")), AddAnimationZoneCommand,Loc.Get("DisabledTool.ToolTip.Content"));
     }
 
     private FlyoutButtonToolbarItem AddColorZoneTool()
     {
-        var addZonetools = new FlyoutButtonToolbarItem("Add", "Add new color zone",
+        var addZonetools = new FlyoutButtonToolbarItem("Add", Loc.Get("AddNewColorZone.Tool.Name"),
             "paint_bucket__bucket_color_colors_design_paint_painting", new SolidColorBrush(Color.Parse("#33bbff")),
-            AddColorZoneCommand);
-        FlyoutItem addRectangle = new FlyoutItem("Rectangle", "CanvasTool_Rectangle");
+            AddColorZoneCommand,Loc.Get("DisabledTool.ToolTip.Content"));
+        FlyoutItem addRectangle = new FlyoutItem(Loc.Get("Rectangle.ToolMenu.Content"), "CanvasTool_Rectangle");
         addRectangle.FlyoutItemSelected += AddRectangle;
-        FlyoutItem addEllipse = new FlyoutItem("Ellipse", "CanvasTool_Ellipse");
-        addEllipse.FlyoutItemSelected += AddEllipse;
-        FlyoutItem addPolyline = new FlyoutItem("Poly line", "CanvasTool_PolyLine");
+        // FlyoutItem addEllipse = new FlyoutItem("Ellipse", "CanvasTool_Ellipse");
+        // addEllipse.FlyoutItemSelected += AddEllipse;
+        FlyoutItem addPolyline = new FlyoutItem(Loc.Get("PolyLine.ToolMenu.Content"), "CanvasTool_PolyLine");
         addPolyline.FlyoutItemSelected += AddPolyline;
         addZonetools.FlyoutItems.Add(addRectangle);
         // addZonetools.FlyoutItems.Add(addEllipse);
@@ -412,8 +414,8 @@ public class ToolsViewModel : ViewModelBase
     {
         _lightingZonesLibraryViewModel.ItemSelected -= OnLightingZoneAssetSelected;
         _decoder.FrameUpdate -= OnFrameUpdated;
-        ZoneTools.Clear();
-        CanvasTools.Clear();
+        // ZoneTools.Clear();
+        // CanvasTools.Clear();
     }
 
     private void OnFrameUpdated()

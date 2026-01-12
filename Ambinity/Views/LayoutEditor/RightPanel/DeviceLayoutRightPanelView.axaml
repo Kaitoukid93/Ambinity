@@ -170,7 +170,7 @@ Request custom layout at [Ambino-Layout](https://ambino.vn)
                     FontSize="15"
                     FontWeight="SemiBold"
                     Foreground="DarkOrange"
-                    Text="Properties panel is locked during rendering. Please stop the profile to change device's properties"
+                    Text="{localize:Loc DeviceLayout.PropertiesLocked.Warning.Message}"
                     TextAlignment="Center"
                     TextWrapping="Wrap" />
             </StackPanel>

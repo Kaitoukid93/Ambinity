@@ -205,7 +205,7 @@ public class DeviceLayoutRightPanelViewModel : ViewModelBase
 
     public void OnFlyoutClosing()
     {
-        FlyoutViewModel.Dispose();
+        FlyoutViewModel?.Dispose();
         FlyoutViewModel = null;
     }
 

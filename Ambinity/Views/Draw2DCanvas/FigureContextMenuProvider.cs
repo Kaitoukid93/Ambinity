@@ -2,28 +2,20 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Ambinity.Views.LayoutEditor.Canvas;
-using Ambinity.Views.Screens.DeviceLayout;
-using AmbinityCore.Converters;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.LED;
 using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
-using AmbinityCore.Repositories;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
-using Avalonia.Input;
-using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
 using Draw2D.Core.Shapes.Basic;
-using System.Collections.Generic;
-using static System.FormattableString;
-using SkiaSharp;
 using Ambinity.Services;
 using Avalonia.Controls.ApplicationLifetimes;
 using Ambinity.Views.LayoutEditor.LEDLayoutCreator;
 using AmbinityCore.Utils;
+using Ambinity.Localization;
 namespace Ambinity.Views.Draw2DCanvas;
 
 public class FigureContextMenuProvider
@@ -45,8 +37,8 @@ public class FigureContextMenuProvider
         if (CanvasVM == null)
             return;
         _pasteMenuItem = new MenuItem()
-        {
-            Header = "Paste",
+        { 
+            Header = Loc.Get("Paste.Menu.Content"),
             Command = CanvasVM?.PasteCommand,
             // InputGesture = new KeyGesture(Key.V, KeyModifiers.Control)
         };
@@ -86,13 +78,13 @@ public class FigureContextMenuProvider
             {
                 _contextMenu.Items.Add(new MenuItem()
                 {
-                    Header = "Copy",
+                    Header = Loc.Get("Copy.Menu.Content"),
                     Command = CanvasVM.CopySelectedFigureCommand,
                     // InputGesture = new KeyGesture(Key.C, KeyModifiers.Control)
                 });
                 _contextMenu.Items.Add(new MenuItem()
                 {
-                    Header = "Delete",
+                    Header = Loc.Get("Delete.Menu.Content"),
                     Command = CanvasVM.DeleteCommand,
                     //   InputGesture = new KeyGesture(Key.Delete)
                 });
@@ -103,13 +95,13 @@ public class FigureContextMenuProvider
         {
             _contextMenu.Items.Add(new MenuItem()
             {
-                Header = "Ping device",
+                Header = Loc.Get("PingDevice.Menu.Content"),
                 Command = new AsyncRelayCommand<AmbinityDevice>(PingDevice),
                 CommandParameter = containerFigure.ChildItem
             });
             _contextMenu.Items.Add(new MenuItem()
             {
-                Header = "Order check",
+                Header = Loc.Get("OrderCheck.Menu.Content"),
                 Command = new AsyncRelayCommand<AmbinityDevice>(CheckDeviceLedOrder),
                 CommandParameter = containerFigure.ChildItem
             });
@@ -117,7 +109,7 @@ public class FigureContextMenuProvider
             {
                 _contextMenu.Items.Add(new MenuItem()
                 {
-                    Header = "Lock",
+                    Header = Loc.Get("Lock.Menu.Content"),
                     Command = new AsyncRelayCommand(() => LockUnlockMultipleItems(true)),
                     CommandParameter = null
                 });
@@ -126,7 +118,7 @@ public class FigureContextMenuProvider
             {
                 _contextMenu.Items.Add(new MenuItem()
                 {
-                    Header = "Unlock",
+                    Header = Loc.Get("Unlock.Menu.Content"),
                     Command = new AsyncRelayCommand(() => LockUnlockMultipleItems(false)),
                     CommandParameter = null
                 });
@@ -136,7 +128,7 @@ public class FigureContextMenuProvider
             {
                 _contextMenu.Items.Add(new MenuItem()
                 {
-                    Header = "Link",
+                    Header = Loc.Get("Link.Menu.Content"),
                     Command = new AsyncRelayCommand(LinkItem),
                     CommandParameter = containerFigure.ChildItem
                 });
@@ -145,7 +137,7 @@ public class FigureContextMenuProvider
             {
                 _contextMenu.Items.Add(new MenuItem()
                 {
-                    Header = "Unlink",
+                    Header = Loc.Get("Unlink.Menu.Content"),
                     Command = new AsyncRelayCommand<Guid>(UnlinkItem),
                     CommandParameter = containerFigure.ChildItem.GroupID
                 });
@@ -315,9 +307,9 @@ public class FigureContextMenuProvider
         if (selectedFigure.ChildItem is AmbinityLED led && !string.IsNullOrEmpty(led.Geometry))
         {
             var vm = new LEDSplitToolConfigurationViewModel(selectedFigure);
-            vm.Accept+= () =>
+            vm.Accept += () =>
             {
-               SplitFigureToMatrix(vm.RowNumber, vm.ColumnNumber, vm.ColumnGutter, vm.RowGutter);
+                SplitFigureToMatrix(vm.RowNumber, vm.ColumnNumber, vm.ColumnGutter, vm.RowGutter);
                 vm?.Dispose();
             };
             var splitConfigurationWindow = await _windowService.ShowDialogWindow(vm, _windowService.GetCurrentWindow());

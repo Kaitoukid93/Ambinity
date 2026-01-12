@@ -12,8 +12,8 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
         <PathIcon VerticalAlignment="Center" HorizontalAlignment="Left" Width="20" Height="25"
                   Data="{Binding Icon,Converter={StaticResource ResourceConverter}}">
         </PathIcon>
-        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="SemiBold" Grid.Column="2" Margin="0,0" FontSize="13"
-                   Text="{Binding Header }">
+        <TextBlock TextWrapping="Wrap" MaxWidth="240" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="SemiBold" Grid.Column="2" Margin="0,0" FontSize="13"
+                   Text="{Binding Header}">
         </TextBlock>
         <Button IsEnabled="{Binding CanExport}" Grid.Column="4" HorizontalContentAlignment="Right" Width="30" Height="30" Command="{Binding ExportSelectedItemCommand}" Background="Transparent" HorizontalAlignment="Right" ToolTip.Tip="Export item" Classes="icon-button">
             <PathIcon Width="16" Data="{DynamicResource Export}"></PathIcon>

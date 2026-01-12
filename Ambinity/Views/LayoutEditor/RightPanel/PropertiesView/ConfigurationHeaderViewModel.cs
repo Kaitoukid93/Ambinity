@@ -10,7 +10,6 @@ using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
 using CommunityToolkit.Mvvm.Input;
 using Draw2D.Core;
-using Ambinity.Localization;
 
 namespace Ambinity.Views.LayoutEditor.RightPanel.PropertiesView;
 
@@ -26,12 +25,12 @@ public class ConfigurationHeaderViewModel : ViewModelBase
         ExportSelectedItemCommand = new RelayCommand(ExportSelectedItem);
     }
 
-    public void Init(List<Figure> figures)
+    public void Init(List<Figure> figures, string noSelectionHeader)
     {
 
         if (figures == null || figures.Count == 0)
         {
-            Header =  Loc.Get("DeviceLayout.NoDeviceSelected.Error.Message");
+            Header = noSelectionHeader;
             Icon = "arrow_cursor_2__mouse_select_cursor";
             CanExport = false;
         }

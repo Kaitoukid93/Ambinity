@@ -9,6 +9,7 @@ using AmbinityCore.Models.Geography;
 using AmbinityCore.Models.Lighting.Zone;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
 using Draw2D.Core;
+using Ambinity.Localization;
 
 namespace Ambinity.Views.Screens.ProfileEditor;
 
@@ -31,7 +32,7 @@ public class ZonePropertiesViewModel : CanvasObjectPropertiesViewModelBase
     public override void UpdateObjectProperties()
     {
         var selectedItems = _canvasViewModel.Canvas.Selection.All;
-         _headerViewModel.Init(selectedItems);
+         _headerViewModel.Init(selectedItems, Loc.Get("ProfileEditor.NoZoneSelected.Error.Message"));
         OnPropertyChanged(nameof(Header));
         if (selectedItems.Count == 0)
         {

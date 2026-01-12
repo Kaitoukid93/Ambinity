@@ -5,16 +5,17 @@ namespace AmbinityCore.Models.Toolbar;
 
 public class ToggleToolbarItem : ObservableObject, IToolbarItem
 {
-    public ToggleToolbarItem(string name, string toolTip, string icon)
+    public ToggleToolbarItem(string name, string toolTip, string icon, string disabledToolTip = "Tool is disabled while rendering")
     {
         Name = name;
         ToolTip = toolTip;
         Icon = icon;
+        DisabledToolTip = disabledToolTip;
     }
 
     public string Name { get; set; }
     public string ToolTip { get; set; }
-    public string DisabledToolTip => "Tool is disabled while rendering";
+    public string DisabledToolTip {get;set;}
     public string Icon { get; set; }
     public ICommand Command { get; set; }
     private bool _isChecked;

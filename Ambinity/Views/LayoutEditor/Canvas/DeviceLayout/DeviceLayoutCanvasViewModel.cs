@@ -62,10 +62,13 @@ namespace Ambinity.Views.LayoutEditor.Canvas
         }
         public void Init()
         {
+            ToolsViewModel.FitCanvasToViewEvent += FitCanvasToView;
+            ToolsViewModel.ToggleSnapToGridEvent += ToggleSnapToGrid;
             var canvasSize = new Size(
                 _settingsManager.Settings.CanvasWidth,
                 _settingsManager.Settings.CanvasHeight);
             base.Init(canvasSize);
+            OnRenderingStatusChanged();
             var devices = ResolveDevices();
             int zOrder = 0;
             foreach (var device in devices)
@@ -78,12 +81,11 @@ namespace Ambinity.Views.LayoutEditor.Canvas
 
             //init layout canvas
             Canvas.ShouldDrawBackgroundImage = false;
-            Canvas.ShouldDrawEntityColors = false;;
-            ToolsViewModel.FitCanvasToViewEvent += FitCanvasToView;
-            ToolsViewModel.ToggleSnapToGridEvent += ToggleSnapToGrid;
-            ToolsViewModel.InitForDeviceLayout();
+            Canvas.ShouldDrawEntityColors = false; ;
+
             InfoBarViewModel.Init();
-            OnRenderingStatusChanged();
+            ToolsViewModel.InitForDeviceLayout();
+
             // Add any ProfileEditor-specific initialization here
         }
         private void ToggleSnapToGrid()

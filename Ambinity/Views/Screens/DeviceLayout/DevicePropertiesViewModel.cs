@@ -7,6 +7,7 @@ using Ambinity.Views.LayoutEditor.Canvas;
 using Ambinity.Views.LayoutEditor.RightPanel.PropertiesView;
 using Ambinity.Views.Screens.DeviceSettings;
 using AmbinityCore.Models.Device;
+using Ambinity.Localization;
 
 namespace Ambinity.Views.Screens.DeviceLayout;
 
@@ -27,7 +28,7 @@ public class DevicePropertiesViewModel : CanvasObjectPropertiesViewModelBase
         if (_canvasViewModel.IsLocked)
             return;
         var selectedItems = _canvasViewModel.Canvas.Selection.All;
-        _headerViewModel.Init(selectedItems);
+        _headerViewModel.Init(selectedItems, Loc.Get("DeviceLayout.NoDeviceSelected.Error.Message"));
         OnPropertyChanged(nameof(Header));
         if (selectedItems.Count == 0)
         {
