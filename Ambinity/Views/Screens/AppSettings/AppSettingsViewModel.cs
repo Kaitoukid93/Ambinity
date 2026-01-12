@@ -24,6 +24,7 @@ using FluentAvalonia.Styling;
 using Microsoft.VisualBasic;
 using Serilog;
 using Constants = AmbinityCore.Constants;
+using Ambinity.Localization;
 
 namespace Ambinity.Views.Screens.AppSettings;
 
@@ -66,6 +67,9 @@ public class AppSettingsViewModel : ScreenViewModelBase
             .First();
         _targetFramerate = AvailableFrameRates.Where(f => f.Contains(_generalSettings.TargetFramerate.ToString()))
             .First();
+            AvailableLanguages = new List<string> { "English", "Tiếng Việt" };
+        LanguageCodeMap = new Dictionary<string, string> { { "English", "en" }, { "Tiếng Việt", "vi" } };
+        _currentLanguage = GetLanguageDisplayName(_generalSettings.SelectedLanguage ?? "en");
         RequestRestartApplicationCommand = new RelayCommand(RequestRestartApplication);
         CheckForAppUpdateCommand = new AsyncRelayCommand(CheckForAppUpdate);
         RemoveAllDevicesCommand = new RelayCommand(RemoveAllDevices);
@@ -245,6 +249,9 @@ public class AppSettingsViewModel : ScreenViewModelBase
             case nameof(_generalSettings.AutoScanNewDevices):
                 ShowDevicesInfoBar = true;
                 break;
+               case nameof(_generalSettings.SelectedLanguage):
+                ShowLanguageInfoBar = true;
+                break;
         }
     }
 
@@ -321,6 +328,48 @@ public class AppSettingsViewModel : ScreenViewModelBase
         }
     }
 
+       public List<string> AvailableLanguages { get; set; }
+    private Dictionary<string, string> LanguageCodeMap { get; set; }
+
+    private string _currentLanguage;
+
+    public string CurrentLanguage
+    {
+        get => _currentLanguage;
+        set
+        {
+            _currentLanguage = value;
+            ChangeLanguage(_currentLanguage);
+            OnPropertyChanged();
+        }
+    }
+    // Helper method to convert language code to display name
+    private string GetLanguageDisplayName(string langCode)
+    {
+        return langCode switch
+        {
+            "en" => "English",
+            "vi" => "Tiếng Việt",
+            _ => "English"
+        };
+    }
+
+    // Helper method to convert display name to language code
+    private string GetLanguageCode(string displayName)
+    {
+        return LanguageCodeMap.TryGetValue(displayName, out var code) ? code : "en";
+    }
+
+    private void ChangeLanguage(string? languageName)
+    {
+        if (string.IsNullOrEmpty(languageName))
+            return;
+
+        var langCode = GetLanguageCode(languageName);
+        _generalSettings.SelectedLanguage = langCode;
+        Loc.Load(langCode);
+    }
+
 
     public string[] AvailableAppThemes { get; } =
         new[] { _light, _dark /*, FluentAvaloniaTheme.HighContrastTheme*/ };
@@ -384,6 +433,7 @@ public class AppSettingsViewModel : ScreenViewModelBase
     }
 
     public List<string> AvailableFrameRates { get; set; }
+
 
     private string _targetFramerate;
 
@@ -468,6 +518,17 @@ public class AppSettingsViewModel : ScreenViewModelBase
         set
         {
             _showDevicesInfoBar = value;
+            OnPropertyChanged();
+        }
+    }
+    private bool _showLanguageInfoBar;
+
+    public bool ShowLanguageInfoBar
+    {
+        get => _showLanguageInfoBar;
+        set
+        {
+            _showLanguageInfoBar = value;
             OnPropertyChanged();
         }
     }

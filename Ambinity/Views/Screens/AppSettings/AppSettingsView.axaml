@@ -128,6 +128,16 @@
                                         </ui:SettingsExpanderItem.Footer>
                                     </ui:SettingsExpanderItem>
                                 </ui:SettingsExpander>
+                                  <ui:InfoBar
+                                    Title="{localize:Loc SettingsChanged.InforBar.Header}"
+                                    IsOpen="{Binding ShowLanguageInfoBar, Mode=TwoWay}"
+                                    Message="{localize:Loc SettingsChanged.InforBar.Message}"
+                                    Severity="Warning">
+                                    <Button
+                                        Margin="0,0,0,10"
+                                        Command="{Binding RequestRestartApplicationCommand}"
+                                        Content="{localize:Loc RestartApp.Button.Content}" />
+                                </ui:InfoBar>
                                 <ui:SettingsExpander
                                     MinWidth="500"
                                     Description="{localize:Loc Language.SettingsExpanderItem.Description}"
@@ -136,9 +146,9 @@
                                         <ui:FAComboBox
                                             VerticalContentAlignment="Center"
                                             FontFamily="{StaticResource NunitoFont}"
-                                            SelectedIndex="{Binding !UseSystemTheme}">
-                                            <ui:FAComboBoxItem>En</ui:FAComboBoxItem>
-                                            <ui:FAComboBoxItem>Vi</ui:FAComboBoxItem>
+                                            ItemsSource="{Binding AvailableLanguages}"
+                                            SelectedItem="{Binding CurrentLanguage}">
+
                                         </ui:FAComboBox>
                                     </ui:SettingsExpander.Footer>
                                     <ui:SettingsExpander.IconSource>

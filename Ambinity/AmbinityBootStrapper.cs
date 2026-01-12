@@ -148,7 +148,6 @@ public class AmbinityBootStrapper
     // }
     private static void LocInit()
     {
-        _generalSettingsManager.Settings.SelectedLanguage = "vi"; //temp force vietnamese
         var lang = _generalSettingsManager.Settings.SelectedLanguage;
         Loc.Load(lang); // or detect system language
     }

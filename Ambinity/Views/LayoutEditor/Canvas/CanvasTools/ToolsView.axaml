@@ -247,8 +247,7 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
                     Padding="0"
                     Classes="icon-button"
                     Command="{Binding TogglePlayPauseCommand}"
-                    CornerRadius="4"
-                    ToolTip.Tip="Play-Pause">
+                    CornerRadius="4">
                     <Grid>
                         <PathIcon
                             Width="18"

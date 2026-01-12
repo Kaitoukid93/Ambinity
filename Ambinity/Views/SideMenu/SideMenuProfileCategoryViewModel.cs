@@ -21,6 +21,7 @@ using FluentAvalonia.UI.Controls;
 using MathNet.Numerics.Distributions;
 using Newtonsoft.Json;
 using Serilog;
+using Ambinity.Localization;
 
 namespace Ambinity.Views.SideMenu;
 
@@ -177,7 +178,7 @@ public class SideMenuProfileCategoryViewModel : ViewModelBase
     {
         if (_profileCategory == null)
             return;
-        Content = _profileCategory.Name;
+         Content = Loc.TryGetTranslated(_profileCategory.Name + ".ProfileCategory.Name", _profileCategory.Name);
         _profileCategory.FindChild(_profileRepository.Items.ToList());
         var profiles = new ObservableCollection<SideMenuProfileViewModel>();
         foreach (var profile in _profileCategory.Profiles)
