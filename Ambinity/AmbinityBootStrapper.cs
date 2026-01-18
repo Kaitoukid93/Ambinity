@@ -1,6 +1,5 @@
 using System.IO;
 using System.Threading.Tasks;
-using Ambinity.AppResource;
 using Ambinity.Localization;
 using Ambinity.QuickAccess;
 using Ambinity.Services;
@@ -275,7 +274,7 @@ public class AmbinityBootStrapper
             .AddSingleton<LightingProfileOnlineRepository>()
             .AddSingleton<ColorPaletteOnlineRepository>()
             .AddSingleton<AmbinityDeviceRepository>()
-            .AddSingleton<ResourceService>()
+            .AddSingleton<Services.ResourceService>()
             .AddSingleton<AnimationOnlineRepository>()
             .AddSingleton<ShortcutRepository>()
 
@@ -323,10 +322,11 @@ public class AmbinityBootStrapper
         _generalSettingsManager.Settings.CanvasHeight = framebuffer.FrameHeight;
         framebuffer.UpdatePixelData();
         //Try download assets from server
-        var resourceService = Ioc.Default.GetRequiredService<ResourceService>();
+        var resourceService = Ioc.Default.GetRequiredService<Services.ResourceService>();
         await Task.Run(async () =>
         {
-            await resourceService.DownloadFirstRunResource(_splashViewModel.DownloadProgress);
+           // await resourceService.DownloadFirstRunResource(_splashViewModel.DownloadProgress);
+            await resourceService.CopyFirstRunResource(_splashViewModel.DownloadProgress);
         });
         var colorPaletteRepository = Ioc.Default.GetRequiredService<ColorPaletteRepository>();
         var solidColorsRepository = Ioc.Default.GetRequiredService<StaticColorsRepository>();

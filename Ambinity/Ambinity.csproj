@@ -226,6 +226,10 @@
         <EmbeddedResource Remove="obj\**" />
         <EmbeddedResource Remove="Draw2D.Core\**" />
         <EmbeddedResource Remove="Draw2DControlLibrary\**" />
+        <EmbeddedResource Include="AppResource\Locales\**" />
+        <EmbeddedResource Include="AppResource\AmbinityDevices\**" />
+        <EmbeddedResource Include="AppResource\Images\**" />
+        <EmbeddedResource Include="AppResource\AmbinityLightingProfiles\**" />
     </ItemGroup>
 
     <ItemGroup>
