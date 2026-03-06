@@ -3,7 +3,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-xmlns:localize="clr-namespace:Ambinity.Localization"
+xmlns:localize="clr-namespace:Ambinity.Installer.Localization"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:Ambinity.Installer.ViewModels"
     d:DesignHeight="450"

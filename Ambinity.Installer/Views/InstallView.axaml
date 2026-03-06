@@ -1,42 +1,52 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-xmlns:localize="clr-namespace:Ambinity.Localization"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:viewModels="clr-namespace:Ambinity.Installer.ViewModels"
-             x:DataType="viewModels:InstallViewModel"
-             x:Class="Ambinity.Installer.Views.InstallView">
+<UserControl
+    x:Class="Ambinity.Installer.Views.InstallView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:localize="clr-namespace:Ambinity.Installer.Localization"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:Ambinity.Installer.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="viewModels:InstallViewModel"
+    mc:Ignorable="d">
     <Grid ColumnDefinitions="Auto,*">
-        <ContentControl Content="{Binding AmbinityImage}"></ContentControl>
+        <ContentControl Content="{Binding AmbinityImage}" />
         <Grid Column="1" RowDefinitions="*,20,Auto">
-            <ContentControl Grid.Column="1" Margin="20,40,20,10" Content="{Binding CurrentView }"></ContentControl>
+            <ContentControl
+                Grid.Column="1"
+                Margin="20,40,20,10"
+                Content="{Binding CurrentView}" />
             <Grid Margin="20,0,20,20" Row="2">
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-                    <Button IsVisible="{Binding !CurrentView.CanForward}"
-                            IsHitTestVisible="{Binding !CurrentView.IsBusy}"
-                            Command="{Binding FinishCommand}"
-                            Classes="accent"
-                            Content="Finish">
-                    </Button>
-                    <Button IsVisible="{Binding CurrentView.CanBack}"
-                            IsHitTestVisible="{Binding !CurrentView.IsBusy}"
-                            Command="{Binding BackCommand}"
-                            Classes="accent"
-                            Content="Back">
-                    </Button>
-                    <Button IsVisible="{Binding CurrentView.CanCancel}"
-                            IsHitTestVisible="{Binding !CurrentView.IsBusy}"
-                            Command="{Binding CancelCommand}"
-                            Content="{localize:Loc Cancel.Button.Tooltip}">
-                    </Button>
-                    <Button Classes="accent" IsVisible="{Binding CurrentView.CanForward}"
-                            Background="{DynamicResource AccentButtonBackground}"
-                            IsHitTestVisible="{Binding !CurrentView.IsBusy}"
-                            Command="{Binding NextCommand}"
-                            Content="{Binding NextButtonContent}">
-                    </Button>
+                <StackPanel
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Spacing="10">
+                    <Button
+                        Classes="accent"
+                        Command="{Binding FinishCommand}"
+                        Content="Finish"
+                        IsHitTestVisible="{Binding !CurrentView.IsBusy}"
+                        IsVisible="{Binding !CurrentView.CanForward}" />
+                    <Button
+                        Classes="accent"
+                        Command="{Binding BackCommand}"
+                        Content="Back"
+                        IsHitTestVisible="{Binding !CurrentView.IsBusy}"
+                        IsVisible="{Binding CurrentView.CanBack}" />
+                    <Button
+                        Command="{Binding CancelCommand}"
+                        Content="{localize:Loc Cancel.Button.Tooltip}"
+                        IsHitTestVisible="{Binding !CurrentView.IsBusy}"
+                        IsVisible="{Binding CurrentView.CanCancel}" />
+                    <Button
+                        Background="{DynamicResource AccentButtonBackground}"
+                        Classes="accent"
+                        Command="{Binding NextCommand}"
+                        Content="{Binding NextButtonContent}"
+                        IsHitTestVisible="{Binding !CurrentView.IsBusy}"
+                        IsVisible="{Binding CurrentView.CanForward}" />
 
                 </StackPanel>
 

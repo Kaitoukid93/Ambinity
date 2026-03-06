@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-xmlns:localize="clr-namespace:Ambinity.Localization"
+xmlns:localize="clr-namespace:Ambinity.Installer.Localization"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:viewModels="clr-namespace:Ambinity.Installer.ViewModels"
@@ -25,13 +25,13 @@ xmlns:localize="clr-namespace:Ambinity.Localization"
         </StackPanel>
         <StackPanel Grid.Row="2" Spacing="8">
             <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding InstallationInformation}"></TextBlock>
-           
+
             <Grid  ColumnDefinitions="*,10,Auto">
-                <ProgressBar Value="{Binding CurrentProgress}" Minimum="0" Maximum="100" IsIndeterminate="False"></ProgressBar>   
+                <ProgressBar Value="{Binding CurrentProgress}" Minimum="0" Maximum="100" IsIndeterminate="False"></ProgressBar>
                 <PathIcon IsVisible="{Binding UninstallationFinished}" Grid.Column="2" Width="20" Height="20" Foreground="{DynamicResource AccentButtonBackground}" Data="{DynamicResource installed}"></PathIcon>
                 <ui:ProgressRing IsVisible="{Binding !UninstallationFinished}"  Grid.Column="2" Width="20" Height="20"  Foreground="{DynamicResource AccentButtonBackground}" IsIndeterminate="True"/>
             </Grid>
-            
+
             <TextBlock FontSize="13" Foreground="{DynamicResource ButtonForegroundDisabled}" Text="{Binding InstallationSubInformation}"></TextBlock>
         </StackPanel>
     </Grid>

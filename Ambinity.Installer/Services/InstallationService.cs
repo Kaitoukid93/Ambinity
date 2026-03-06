@@ -154,7 +154,7 @@ public class InstallationService
     }
 
     /// <summary>
-    /// Download latest release
+    /// Download latest release from GitHub
     /// </summary>
     /// <param name="progress"></param>
     public async Task<(string, AppReleaseInformation)> DownloadRelease(IProgress<int> progress,
@@ -163,16 +163,21 @@ public class InstallationService
         var availableRelease = await GetAvailableRelease();
         if (availableRelease == null || availableRelease.Count == 0)
             return (null, null);
+
         var selectedRelease = info == null ? availableRelease.OrderByDescending(r => r.ReleaseDate).First() : info;
+
         //download zip
         if (!Directory.Exists(Constants.CacheFolderPath))
             Directory.CreateDirectory(Constants.CacheFolderPath);
+
         var downloadPath = Path.Combine(Constants.CacheFolderPath, "Ambinity.zip");
-        await Task.Run(() => _client.SftpServer.DownloadFile(selectedRelease.Path, downloadPath, progress));
-        //unzip
-        if (!File.Exists(downloadPath))
+
+        // Download from GitHub
+        bool downloadSuccess = await _client.GitHubClient.DownloadAsset(selectedRelease.Path, downloadPath, progress);
+
+        if (!downloadSuccess || !File.Exists(downloadPath))
         {
-            Log.Error("Unable to download latest release");
+            Log.Error("Unable to download latest release from GitHub");
             return (null, null);
         }
 
@@ -181,9 +186,32 @@ public class InstallationService
 
     public async Task<List<AppReleaseInformation>> GetAvailableRelease()
     {
+        // Try GitHub first if client is available
+        if (_client.GitHubClient != null)
+        {
+            try
+            {
+                Log.Information("Fetching releases from GitHub");
+                var availableGithubRelease = await _client.GitHubClient.GetAvailableReleases();
+
+                if (availableGithubRelease != null && availableGithubRelease.Count > 0)
+                {
+                    Log.Information($"Found {availableGithubRelease.Count} releases on GitHub");
+                    return availableGithubRelease;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Failed to fetch from GitHub, falling back to SFTP");
+            }
+        }
+
+        // Fallback to SFTP if GitHub is not available or fails
+        Log.Information("Using SFTP fallback for releases");
         var result = await _client.Init();
         if (!result)
         {
+            Log.Error("Failed to connect to SFTP server");
             return (null);
         }
 

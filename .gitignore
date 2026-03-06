@@ -2830,4 +2830,5 @@ bin/net8.0/osx-arm64/ScreenCapture.NET.DX9.dll
 bin/net8.0/osx-arm64/ScreenCapture.NET.DX9.pdb
 bin/net8.0/osx-arm64/ScreenCapture.NET.DX9.xml
 bin/net8.0/osx-arm64/ScreenCapture.NET.pdb
+AmbinityServer/AmbinityClient.cs
 bin/net8.0/osx-arm64/ScreenCapture.NET.xml

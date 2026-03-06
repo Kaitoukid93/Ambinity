@@ -15,6 +15,7 @@ using FluentAvalonia.Styling;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Serilog;
+using Ambinity.Installer.Localization;
 
 namespace Ambinity.Installer;
 
@@ -28,6 +29,7 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         ConfigureIoc();
+        LocInit();
         SetupDebugLogging();
         var _faTheme = App.Current?.Styles[0] as FluentAvaloniaTheme;
         _faTheme.CustomAccentColor = Colors.LightGray;
@@ -59,6 +61,11 @@ public partial class App : Application
         var rootVm = Ioc.Default.GetRequiredService<RootViewModel>();
         rootVm.Init();
     }
+    private static void LocInit()
+    {
+        var lang = "vi";
+        Loc.Load(lang); // or detect system language
+    }
 
     private static void SetupDebugLogging()
     {
@@ -76,10 +83,21 @@ public partial class App : Application
     private static void ConfigureIoc()
     {
         var postInstallationSettings = new PostInstallationSettings();
+
+        // Configure GitHub releases support
+        // Replace with your GitHub repository details:
+        const string GitHubOwner = "Kaitoukid93"; // e.g., "Ambino"
+        const string GitHubRepo = "Ambinity-Public-Release";  // e.g., "Ambinity"
+        const string GitHubAsset = "Ambinity.zip";
+
+        // Create AmbinityClient with GitHub support
+        // If GitHubOwner and GitHubRepo are empty, falls back to SFTP
+        var ambinityClient = new AmbinityClient(GitHubOwner, GitHubRepo, GitHubAsset);
+
         Ioc.Default.ConfigureServices(
             new ServiceCollection()
                 //Main view
-                .AddSingleton<AmbinityClient>()
+                .AddSingleton(ambinityClient)
                 .AddSingleton<RootViewModel>()
                 .AddSingleton<WelcomeViewModel>()
                 .AddSingleton<FirstStepViewModel>()
@@ -98,5 +116,6 @@ public partial class App : Application
                 .BuildServiceProvider());
     }
 
-   
+
+
 }
