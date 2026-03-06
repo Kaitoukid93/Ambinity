@@ -36,14 +36,14 @@ public sealed class LightingProfileImportService : IAssetImportService
 
             ResolveNameConflict(profile, request.OverwriteExisting);
 
-            _repository.Add(profile); // repository updates index
+           // _repository.add(profile); // repository updates index
 
             CleanupTempIfNeeded(request.IsZip);
 
             return new ImportResult
             {
                 Success = true,
-                ImportedAsset = _repository.CreateItemDescriptor(profile)
+                //ImportedAsset = _repository.CreateItemDescriptor(profile)
             };
         }
         catch (Exception ex)
@@ -96,19 +96,19 @@ public sealed class LightingProfileImportService : IAssetImportService
 
     private void ResolveNameConflict(LightingProfile profile, bool overwrite)
     {
-        if (overwrite)
-            return;
+        // if (overwrite)
+        //     return;
 
-        var existingNames = _repository
-            .GetAllDescriptors()
-            .Where(d => d.Name.StartsWith(profile.Name))
-            .ToList();
+        // var existingNames = _repository
+        //     .GetAllDescriptors()
+        //     .Where(d => d.Name.StartsWith(profile.Name))
+        //     .ToList();
 
-        if (existingNames.Count == 0)
-            return;
+        // if (existingNames.Count == 0)
+        //     return;
 
-        profile.Name = $"{profile.Name} ({existingNames.Count})";
-        Log.Information("Profile name conflict resolved: {Name}", profile.Name);
+        // profile.Name = $"{profile.Name} ({existingNames.Count})";
+        // Log.Information("Profile name conflict resolved: {Name}", profile.Name);
     }
 
     // =========================================================

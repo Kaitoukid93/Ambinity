@@ -35,16 +35,16 @@ public sealed class AssetLifecycleService
     // =========================================================
     // OPEN (local only)
     // =========================================================
-    public object Open(AssetDescriptor asset)
-    {
-        EnsureLocal(asset);
+    // public object Open(AssetDescriptor asset)
+    // {
+    //     EnsureLocal(asset);
 
-        return asset.AssetType switch
-        {
-            AssetTypes.Profile => _profileRepo.Load(asset.Id),
-            _ => throw new NotSupportedException(asset.AssetType)
-        };
-    }
+    //     return asset.AssetType switch
+    //     {
+    //         AssetTypes.Profile => _profileRepo.Load(asset.Id),
+    //         _ => throw new NotSupportedException(asset.AssetType)
+    //     };
+    // }
 
     // =========================================================
     // SAVE (local only)
@@ -54,7 +54,7 @@ public sealed class AssetLifecycleService
         switch (domainModel)
         {
             case LightingProfile profile:
-                _profileRepo.Add(profile); // Add = upsert
+                //_profileRepo.Add(profile); // Add = upsert
                 break;
             default:
                 throw new NotSupportedException(
@@ -70,7 +70,7 @@ public sealed class AssetLifecycleService
         switch (asset.AssetType)
         {
             case AssetTypes.Profile:
-                _profileRepo.Delete(asset.Id);
+               // _profileRepo.Delete(asset.Id);
                 break;
             default:
                 throw new NotSupportedException(asset.AssetType);
@@ -85,7 +85,7 @@ public sealed class AssetLifecycleService
         if (asset.Source != AssetSource.Online)
             return;
 
-        var downloadedPath = await _downloadService.DownloadAsync(asset);
+        var downloadedPath = string.Empty;
         var request = new ImportRequest
         {
             SourcePath = downloadedPath,
