@@ -18,8 +18,8 @@ xmlns:localize="clr-namespace:Ambinity.Installer.Localization"
         </StackPanel>
         <Grid Row="2">
             <StackPanel Spacing="8">
-               <TextBlock Text="Available languages"></TextBlock>
-                <ui:FAComboBox SelectedIndex="0">
+               <TextBlock Text="{Binding AvailableLanguagesLabel}"></TextBlock>
+                <ui:FAComboBox SelectedIndex="{ Binding LanguageIndex, Mode=TwoWay }" Width="150">
                     <ui:FAComboBoxItem>English</ui:FAComboBoxItem>
                     <ui:FAComboBoxItem>Tiếng Việt</ui:FAComboBoxItem>
                 </ui:FAComboBox>

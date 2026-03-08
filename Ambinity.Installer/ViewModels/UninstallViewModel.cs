@@ -6,6 +6,7 @@ using Ambinity.Installer.Services;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.Styling;
+using Ambinity.Installer.Localization;
 
 namespace Ambinity.Installer.ViewModels;
 
@@ -15,7 +16,6 @@ public class UninstallViewModel : ViewModelBase
         InstallationService installationService)
     {
         _installationService = installationService;
-        NextButtonContent = "Next";
         NextCommand = new RelayCommand(NexStep);
         BackCommand = new RelayCommand(PreviousStep);
         FinishCommand = new RelayCommand(FinishSetup);
@@ -40,7 +40,7 @@ public class UninstallViewModel : ViewModelBase
         AmbinityImage = new AmbinityImageViewModel(new SolidColorBrush(Colors.LightGray));
         CurrentView = Steps.First();
     }
-  
+
     private void NexStep()
     {
         if (CurrentView.StepIndex == Steps.Count - 1)
@@ -60,11 +60,11 @@ public class UninstallViewModel : ViewModelBase
     }
     private void FinishSetup()
     {
-        
+
         CloseWindowRequested?.Invoke();
     }
     public string Header { get; set; }
-    public string NextButtonContent { get; }
+    public string NextButtonContent => Loc.Get("Uninstall.NextButton.Content");
     private StepViewModelBase _currentView;
     private readonly InstallationService _installationService;
 

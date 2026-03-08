@@ -327,7 +327,7 @@ xmlns:localize="clr-namespace:Ambinity.Installer.Localization"
             </TextBlock>
         </StackPanel>
         <StackPanel Grid.Row="2" Spacing="8">
-            <TextBlock Text="Installation directory" FontWeight="SemiBold"
+            <TextBlock Text="{localize:Loc FirstStep.InstallationDirectory.Content}" FontWeight="SemiBold"
                        TextWrapping="Wrap"/>
             <TextBox IsEnabled="False" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding InstallationDirectory}"
                              MinWidth="250">

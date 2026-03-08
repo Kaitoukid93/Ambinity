@@ -5,7 +5,7 @@ using Ambinity.Installer.Services;
 using AmbinityServer;
 using AmbinityServer.AppRelease;
 using Serilog;
-
+using Ambinity.Installer.Localization;
 namespace Ambinity.Installer.ViewModels;
 
 public class SelectVersionViewModel : StepViewModelBase
@@ -14,17 +14,23 @@ public class SelectVersionViewModel : StepViewModelBase
 
     public SelectVersionViewModel(InstallationService service)
     {
-        Header = "Select Ambinity Version";
-        SubHeader = "Some of your devices may not work with older version of Ambinity";
         CanForward = true;
         CanCancel = false;
         CanBack = true;
         StepIndex = 1;
         _installationService = service;
         AvailableRelease = new ObservableCollection<AppReleaseInfomationViewModel>();
+        Loc.LanguageChanged += OnLanguageChanged;
     }
-    public string Header { get; set; }
-    public string SubHeader { get; set; }
+
+    private void OnLanguageChanged()
+    {
+        OnPropertyChanged(nameof(Header));
+        OnPropertyChanged(nameof(SubHeader));
+    }
+
+    public string Header => Loc.Get("SelectVersion.Header.Content");
+    public string SubHeader => Loc.Get("SelectVersion.SubHeader.Content");
     public ObservableCollection<AppReleaseInfomationViewModel> AvailableRelease { get; set; }
 
     public AppReleaseInformation SelectedVersion =>

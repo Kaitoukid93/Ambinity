@@ -11,6 +11,7 @@ using AmbinityServer.OnlineItem;
 using Avalonia.Media;
 using FluentAvalonia.Styling;
 using Serilog;
+using Ambinity.Installer.Localization;
 
 namespace Ambinity.Installer.ViewModels;
 
@@ -19,17 +20,23 @@ public class SecondStepViewModel : StepViewModelBase
     private IProgress<int> _downloadProgress;
     private InstallationService _installationService;
     public event Action<Color> AccentColorChanged;
-   
+
     public SecondStepViewModel(InstallationService installationService)
     {
         _installationService = installationService;
-        Header = "Installing Ambinity";
-        SubHeader = "Please dont close this window and make sure your internet connection is stable";
         StepIndex = 2;
         CanBack = false;
         CanCancel = false;
         CanForward = true;
+        InstallationFinished = false;
         _downloadProgress = new Progress<int>((p) => { CurrentProgress = p; });
+        Loc.LanguageChanged += OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged()
+    {
+        OnPropertyChanged(nameof(Header));
+        OnPropertyChanged(nameof(SubHeader));
     }
 
     private int _currentProgress;
@@ -51,42 +58,42 @@ public class SecondStepViewModel : StepViewModelBase
         OnPropertyChanged(nameof(IsBusy));
         InstallationFinished = false;
         IsDownloading = true;
-        InstallationInformation = "Downloading";
-        InstallationSubInformation = "Downloading latest Ambinity release...";
+        InstallationInformation = Loc.Get("SecondStep.Downloading.Content");
+        InstallationSubInformation = Loc.Get("SecondStep.Downloading.SubContent");
         var (file, releaseInfo) = await _installationService.DownloadRelease(_downloadProgress,info);
 
-        InstallationSubInformation = "Closing down Ambinity in case it's running...";
+        InstallationSubInformation = Loc.Get("SecondStep.Closing.Content");
         await _installationService.RemoteShutdown();
 
         // Remove existing binaries
-        InstallationSubInformation = "Removing old files...";
+        InstallationSubInformation = Loc.Get("SecondStep.Removing.Content");
         await _installationService.UninstallRelease(_downloadProgress, true);
 
         // Extract the ZIP
-        InstallationInformation = "Extracting";
-        InstallationSubInformation = "Extracting Ambinity " + releaseInfo.Version;
+        InstallationInformation = Loc.Get("SecondStep.Extracting.Content");
+        InstallationSubInformation = Loc.Get("SecondStep.Extracting.SubContent") + releaseInfo.Version;
         await _installationService.InstallRelease(file, _downloadProgress);
         // Change to default accent color
         var _faTheme = App.Current?.Styles[0] as FluentAvaloniaTheme;
         _faTheme.CustomAccentColor = Avalonia.Media.Color.Parse("#FF1DB954");
         AccentColorChanged?.Invoke(Avalonia.Media.Color.Parse("#FF1DB954"));
         // Create registry keys
-        InstallationSubInformation = "Finalizing installation...";
+        InstallationSubInformation = Loc.Get("SecondStep.Finalizing.Content");
         _installationService.CreateInstallKey();
 
         // Remove the installer archive
         File.Delete(file);
         IsDownloading = false;
-        InstallationInformation = "Done";
-        InstallationSubInformation = "Installation finished!";
+        InstallationInformation = Loc.Get("SecondStep.Done.Content");
+        InstallationSubInformation = Loc.Get("SecondStep.Finished.Content");
         InstallationFinished = true;
         IsBusy = false;
         OnPropertyChanged(nameof(IsBusy));
     }
 
 
-    public string Header { get; set; }
-    public string SubHeader { get; set; }
+    public string Header => InstallationFinished ? Loc.Get("SecondStep.Finished.Content") : Loc.Get("SecondStep.Header.Content");
+    public string SubHeader => InstallationFinished ? Loc.Get("SecondStep.Finished.SubContent") : Loc.Get("SecondStep.SubHeader.Content");
     private bool _isDownloading;
 
     public bool IsDownloading
@@ -107,6 +114,8 @@ public class SecondStepViewModel : StepViewModelBase
         {
             _installationFinished = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(Header));
+            OnPropertyChanged(nameof(SubHeader));
         }
     }
     private string _installationInformation;

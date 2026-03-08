@@ -1,5 +1,5 @@
 using Ambinity.Installer.Services;
-
+using Ambinity.Installer.Localization;
 namespace Ambinity.Installer.ViewModels;
 
 public class SecondStepUninstallViewModel : StepViewModelBase
@@ -7,13 +7,21 @@ public class SecondStepUninstallViewModel : StepViewModelBase
     public SecondStepUninstallViewModel(InstallationService installationService)
     {
         _installationService = installationService;
-        Header = "Uninstall options";
-        SubHeader = "Please chose what you want to remove";
         CanForward = true;
         CanBack = true;
         CanCancel = false;
         StepIndex = 1;
+        Loc.LanguageChanged += OnLanguageChanged;
     }
+
+    private void OnLanguageChanged()
+    {
+        OnPropertyChanged(nameof(Header));
+        OnPropertyChanged(nameof(SubHeader));
+    }
+
+    public string Header => Loc.Get("SecondStepUninstall.Header.Content");
+    public string SubHeader => Loc.Get("SecondStepUninstall.SubHeader.Content");
 
     private bool _deleteAppConfig;
     private bool _deleteDevices;
@@ -67,7 +75,4 @@ public class SecondStepUninstallViewModel : StepViewModelBase
             OnPropertyChanged();
         }
     }
-
-    public string Header { get; set; }
-    public string SubHeader { get; set; }
 }

@@ -17,13 +17,13 @@ xmlns:localize="clr-namespace:Ambinity.Installer.Localization"
         </StackPanel>
         <StackPanel Grid.Row="2" Spacing="8">
             <RadioButton IsChecked="True" Command="{Binding ModifyOptionCommand}" CommandParameter="update"
-                         GroupName="options" Content="Update Ambinity to latest version">
+                         GroupName="options" Content="{localize:Loc ModifyAmbinity.Update.Content}">
             </RadioButton>
             <RadioButton Command="{Binding ModifyOptionCommand}" CommandParameter="custom" GroupName="options"
-                         Content="Select version to install">
+                         Content="{localize:Loc ModifyAmbinity.Custom.Content}">
             </RadioButton>
             <RadioButton Command="{Binding ModifyOptionCommand}" CommandParameter="uninstall" GroupName="options"
-                         Content="Uninstall">
+                         Content="{localize:Loc ModifyAmbinity.Uninstall.Content}">
             </RadioButton>
         </StackPanel>
     </Grid>

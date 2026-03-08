@@ -5,6 +5,10 @@ using Ambinity.Installer.Views;
 using AmbinityServer.AppRelease;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
+using Ambinity.Installer.Localization;
+using System.IO;
+using Newtonsoft.Json;
+using Ambinity.Installer.Models;
 
 namespace Ambinity.Installer.ViewModels;
 
@@ -19,13 +23,21 @@ public class ModifyViewModel : ViewModelBase
         _currentView = firstStepViewModel;
         NextCommand = new RelayCommand(NexStep);
         BackCommand = new RelayCommand(PreviousStep);
-        NextButtonContent = "Next";
         AmbinityImage = new AmbinityImageViewModel(new SolidColorBrush(Colors.LightGray));
         Steps =
         [
             firstStepViewModel,
             selectVersionViewModel,
         ];
+          //check if ambinity config exist and read the language settings
+        if (File.Exists(Constants.GeneralSettingsFilePath))
+        {
+            var d = File.ReadAllText(Constants.GeneralSettingsFilePath);
+            var settings = JsonConvert.DeserializeObject<PreInstallationSettings>(d);
+            var l = settings?.SelectedLanguage;
+            if(l!=null)
+                Loc.Load(l);
+        }
     }
     private StepViewModelBase _currentView;
     public List<StepViewModelBase> Steps { get; set; }
@@ -47,9 +59,9 @@ public class ModifyViewModel : ViewModelBase
             {
                 _selectVersionViewModel?.Init();
                 CurrentView = _selectVersionViewModel;
-                
+
             }
-            
+
         }
 
         else if (_currentView is SelectVersionViewModel)
@@ -57,7 +69,7 @@ public class ModifyViewModel : ViewModelBase
             //download and install custom
             CustomVersionSelected?.Invoke(_selectVersionViewModel.SelectedVersion);
         }
-      
+
     }
     public StepViewModelBase CurrentView
     {
@@ -79,9 +91,9 @@ public class ModifyViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
-    public string NextButtonContent { get; }
+    public string NextButtonContent => Loc.Get("Modify.NextButton.Content");
     private string _selectedOption = String.Empty;
-    
+
     public ICommand NextCommand { get; set; }
     public ICommand CancelCommand { get; }
     public ICommand BackCommand { get; }

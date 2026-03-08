@@ -16,13 +16,13 @@ xmlns:localize="clr-namespace:Ambinity.Installer.Localization"
             </TextBlock>
         </StackPanel>
         <StackPanel Grid.Row="2" Spacing="8">
-            <TextBlock Text="Choose what to delete" FontWeight="SemiBold"
+            <TextBlock Text="{localize:Loc SecondStepUninstall.ChooseWhatToDelete.Content}" FontWeight="SemiBold"
                        TextWrapping="Wrap"/>
             <StackPanel Spacing="10">
-                <CheckBox IsChecked="{Binding DeleteAppConfig}"  Content="App config"></CheckBox>
-                <CheckBox IsChecked="{Binding DeleteDevices}" Content="Devices config"></CheckBox>
-                <CheckBox IsChecked="{Binding DeleteData}" Content="Personal data(profiles, colors...)"></CheckBox>
-                <CheckBox IsChecked="{Binding DeleteAll}" Content="Remove all"></CheckBox>
+                <CheckBox IsChecked="{Binding DeleteAppConfig}"  Content="{localize:Loc SecondStepUninstall.DeleteAppConfig.Content}"></CheckBox>
+                <CheckBox IsChecked="{Binding DeleteDevices}" Content="{localize:Loc SecondStepUninstall.DeleteDevices.Content}"></CheckBox>
+                <CheckBox IsChecked="{Binding DeleteData}" Content="{localize:Loc SecondStepUninstall.DeleteData.Content}"></CheckBox>
+                <CheckBox IsChecked="{Binding DeleteAll}" Content="{localize:Loc SecondStepUninstall.DeleteAll.Content}"></CheckBox>
             </StackPanel>
         </StackPanel>
     </Grid>

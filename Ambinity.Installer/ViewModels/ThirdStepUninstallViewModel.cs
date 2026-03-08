@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Ambinity.Installer.Services;
+using Ambinity.Installer.Localization;
 
 namespace Ambinity.Installer.ViewModels;
 
@@ -10,15 +11,21 @@ public class ThirdStepUninstallViewModel : StepViewModelBase
     private IProgress<int> _downloadProgress;
     public ThirdStepUninstallViewModel( InstallationService installationService)
     {
-        Header = "Uninstalling ambinity";
-        SubHeader = "Please dont close this window";
         CanForward = false;
         CanBack = false;
         CanCancel = false;
         StepIndex = 2;
         IsBusy = true;
+        UninstallationFinished = false;
         _installationService = installationService;
         _downloadProgress = new Progress<int>((p) => { CurrentProgress = p; });
+        Loc.LanguageChanged += OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged()
+    {
+        OnPropertyChanged(nameof(Header));
+        OnPropertyChanged(nameof(SubHeader));
     }
     private int _currentProgress;
 
@@ -40,6 +47,8 @@ public class ThirdStepUninstallViewModel : StepViewModelBase
         {
             _uninstallationFinished = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(Header));
+            OnPropertyChanged(nameof(SubHeader));
         }
     }
     private string _installationInformation;
@@ -69,23 +78,23 @@ public class ThirdStepUninstallViewModel : StepViewModelBase
         IsBusy = true;
         OnPropertyChanged(nameof(IsBusy));
         UninstallationFinished = false;
-        InstallationInformation = "Uninstalling";
-        InstallationSubInformation = "Closing down Ambinity in case it's running...";
+        InstallationInformation = Loc.Get("ThirdStepUninstall.Uninstalling.Info");
+        InstallationSubInformation = Loc.Get("ThirdStepUninstall.Closing.Info");
         await _installationService.RemoteShutdown();
 
         // Remove existing binaries
-        InstallationSubInformation = "Removing old files...";
+        InstallationSubInformation = Loc.Get("ThirdStepUninstall.Removing.Info");
         await _installationService.UninstallRelease(_downloadProgress, false);
-        InstallationSubInformation = "Cleaning up registry.";
+        InstallationSubInformation = Loc.Get("ThirdStepUninstall.Cleaning.Info");
         _installationService.RemoveInstallKey();
-        InstallationSubInformation = "Removing shortcuts.";
+        InstallationSubInformation = Loc.Get("ThirdStepUninstall.RemovingShortcuts.Info");
         _installationService.RemoveDesktopShortcut();
-        InstallationInformation = "Done";
-        InstallationSubInformation = "Uninstallation finished!";
+        InstallationInformation = Loc.Get("ThirdStepUninstall.Done.Info");
+        InstallationSubInformation = Loc.Get("ThirdStepUninstall.Finished.Info");
         UninstallationFinished = true;
         IsBusy = false;
         OnPropertyChanged(nameof(IsBusy));
     }
-    public string Header { get; set; }
-    public string SubHeader { get; set; }
+    public string Header => UninstallationFinished ? Loc.Get("ThirdStepUninstall.Finished.Header") : Loc.Get("ThirdStepUninstall.Header.Content");
+    public string SubHeader => UninstallationFinished ? Loc.Get("ThirdStepUninstall.Finished.SubHeader") : Loc.Get("ThirdStepUninstall.SubHeader.Content");
 }

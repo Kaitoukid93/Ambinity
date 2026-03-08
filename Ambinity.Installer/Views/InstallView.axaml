@@ -32,12 +32,12 @@
                     <Button
                         Classes="accent"
                         Command="{Binding BackCommand}"
-                        Content="Back"
+                        Content="{Binding BackButtonContent}"
                         IsHitTestVisible="{Binding !CurrentView.IsBusy}"
                         IsVisible="{Binding CurrentView.CanBack}" />
                     <Button
                         Command="{Binding CancelCommand}"
-                        Content="{localize:Loc Cancel.Button.Tooltip}"
+                        Content="{Binding CancelButtonContent}"
                         IsHitTestVisible="{Binding !CurrentView.IsBusy}"
                         IsVisible="{Binding CurrentView.CanCancel}" />
                     <Button

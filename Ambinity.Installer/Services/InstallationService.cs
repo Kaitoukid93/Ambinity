@@ -99,6 +99,7 @@ public class InstallationService
 
         progress.Report(100);
     }
+    
 
     private async Task DeleteData(IProgress<int> progress)
     {

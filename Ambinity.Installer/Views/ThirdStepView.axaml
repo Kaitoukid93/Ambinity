@@ -124,14 +124,14 @@ xmlns:localize="clr-namespace:Ambinity.Installer.Localization"
         <Grid Row="2" RowDefinitions="Auto,10,*">
             <StackPanel Spacing="10">
                 <CheckBox
-                    Content="Auto run on Windows startup"
+                    Content="{localize:Loc ThirdStep.AutoStart.Content}"
                     IsChecked="{Binding AutoStart}"
                     IsVisible="{Binding EnableCustomization}" />
                 <CheckBox
-                    Content="Create desktop shortcut"
+                    Content="{localize:Loc ThirdStep.CreateDesktopShortcut.Content}"
                     IsChecked="{Binding CreateDesktopShortcut}"
                     IsVisible="{Binding EnableCustomization}" />
-                <CheckBox Content="Open Ambinity after installation" IsChecked="{Binding OpenAfterFinish}" />
+                <CheckBox Content="{localize:Loc ThirdStep.OpenAfterFinish.Content}" IsChecked="{Binding OpenAfterFinish}" />
             </StackPanel>
             <Grid
                 IsVisible="{Binding EnableCustomization}"
@@ -140,7 +140,7 @@ xmlns:localize="clr-namespace:Ambinity.Installer.Localization"
                 <TextBlock
                     FontSize="13"
                     FontWeight="SemiBold"
-                    Text="Select your color" />
+                    Text="{localize:Loc ThirdStep.SelectColor.Content}" />
                 <ListBox
                     Grid.Row="2"
                     Padding="0"

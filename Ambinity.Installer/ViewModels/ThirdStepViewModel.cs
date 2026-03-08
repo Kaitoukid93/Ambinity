@@ -6,8 +6,7 @@ using System.Linq;
 using Ambinity.Installer.Models;
 using Ambinity.Installer.Models.Constant;
 using Avalonia.Media;
-using FluentAvalonia.Styling;
-using Newtonsoft.Json;
+using Ambinity.Installer.Localization;
 
 namespace Ambinity.Installer.ViewModels;
 
@@ -17,8 +16,6 @@ public class ThirdStepViewModel : StepViewModelBase
 
     public ThirdStepViewModel(PostInstallationSettings settings)
     {
-        Header = "Settings";
-        SubHeader = "Some initial settings for better experience";
         StepIndex = 3;
         CanBack = false;
         CanCancel = false;
@@ -31,6 +28,13 @@ public class ThirdStepViewModel : StepViewModelBase
         {
             EnableCustomization = true;
         }
+        Loc.LanguageChanged += OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged()
+    {
+        OnPropertyChanged(nameof(Header));
+        OnPropertyChanged(nameof(SubHeader));
     }
 
     private bool _enableCustomization = false;
@@ -83,8 +87,8 @@ public class ThirdStepViewModel : StepViewModelBase
             OnPropertyChanged();
         }
     }
-    public string Header { get; set; }
-    public string SubHeader { get; set; }
+    public string Header => Loc.Get("ThirdStep.Header.Content");
+    public string SubHeader => Loc.Get("ThirdStep.SubHeader.Content");
 
     public List<Color> DefaultColors { get; set; } = new List<Color>();
     private bool _openAfterFinish = true;

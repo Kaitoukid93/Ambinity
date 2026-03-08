@@ -29,11 +29,11 @@
         </StackPanel>
         <Grid Grid.Row="2">
             <ui:InfoBar
-                Title="{localize:Loc Warning.InforBar.Title}"
+                Title="{localize:Loc Uninstall.Warning.InforBar.Title}"
                 HorizontalAlignment="Stretch"
                 IsClosable="False"
                 IsOpen="True"
-                Message="You are about to remove Ambinity from your computer, click Next to select uninstall options"
+                Message="{localize:Loc Uninstall.Warning.InforBar.Message}"
                 Severity="Warning" />
 
         </Grid>

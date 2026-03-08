@@ -63,7 +63,7 @@ public partial class App : Application
     }
     private static void LocInit()
     {
-        var lang = "vi";
+        var lang = "en";
         Loc.Load(lang); // or detect system language
     }
 

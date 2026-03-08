@@ -11,6 +11,7 @@ using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.Styling;
 using Newtonsoft.Json;
+using Ambinity.Installer.Localization;
 
 namespace Ambinity.Installer.ViewModels;
 
@@ -22,8 +23,7 @@ public class InstallViewModel : ViewModelBase
     {
         _installationService = installationService;
         _postInstallationSettings = settings;
-        Header = "Ambinity Installer";
-        NextButtonContent = "Next";
+
         NextCommand = new RelayCommand(NexStep);
         CancelCommand = new RelayCommand(CancelSetup);
         FinishCommand = new RelayCommand(FinishSetup);
@@ -38,6 +38,16 @@ public class InstallViewModel : ViewModelBase
             secondStepViewModel,
             thirdStepViewModel
         ];
+        Loc.LanguageChanged += OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged()
+    {
+        OnPropertyChanged(nameof(Header));
+        OnPropertyChanged(nameof(NextButtonContent));
+        OnPropertyChanged(nameof(BackButtonContent));
+        OnPropertyChanged(nameof(CancelButtonContent));
+        _postInstallationSettings.SelectedLanguage = Loc.CurrentLanguage;
     }
     public event Action CloseWindowRequested;
     private PostInstallationSettings _postInstallationSettings;
@@ -121,6 +131,7 @@ public class InstallViewModel : ViewModelBase
             initialSettings.PrimaryColor = _postInstallationSettings.PrimaryColor;
             initialSettings.EnableMica = false;
             initialSettings.SelectedTheme = "Dark";
+            initialSettings.SelectedLanguage = _postInstallationSettings.SelectedLanguage;
             var json = JsonConvert.SerializeObject(initialSettings,
                 new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Auto });
             File.WriteAllText(Constants.GeneralSettingsFilePath, json);
@@ -132,12 +143,13 @@ public class InstallViewModel : ViewModelBase
     }
 
     //minimal requirement for general settings
-    public class GeneralSettings
+    public class    GeneralSettings
     {
         public bool AutoStart { get; set; }
         public Color PrimaryColor { get; set; }
         public string SelectedTheme { get; set; } = "Dark";
         public bool EnableMica { get; set; } = false;
+        public string SelectedLanguage { get; set; } = "en";
     }
 
     private void NexStep()
@@ -163,8 +175,10 @@ public class InstallViewModel : ViewModelBase
         CurrentView = Steps[0];
     }
 
-    public string Header { get; set; }
-    public string NextButtonContent { get; }
+    public string Header => Loc.Get("Install.Header.Content");
+    public string NextButtonContent => Loc.Get("Install.NextButton.Content");
+    public string BackButtonContent => Loc.Get("Install.BackButton.Content");
+    public string CancelButtonContent => Loc.Get("Cancel.Button.Content");
     private StepViewModelBase _currentView;
     private FluentAvaloniaTheme? _faTheme;
     private readonly InstallationService _installationService;
