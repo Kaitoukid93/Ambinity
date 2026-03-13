@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\VSCode\\Ambinity\\Avalonia.Gif\\Avalonia.Gif.csproj": {}
+    "/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/Avalonia.Gif.csproj": {}
   },
   "projects": {
-    "D:\\VSCode\\Ambinity\\Avalonia.Gif\\Avalonia.Gif.csproj": {
+    "/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/Avalonia.Gif.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\VSCode\\Ambinity\\Avalonia.Gif\\Avalonia.Gif.csproj",
+        "projectUniqueName": "/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/Avalonia.Gif.csproj",
         "projectName": "Avalonia.Gif",
-        "projectPath": "D:\\VSCode\\Ambinity\\Avalonia.Gif\\Avalonia.Gif.csproj",
-        "packagesPath": "C:\\Users\\AMBINO\\.nuget\\packages\\",
-        "outputPath": "D:\\VSCode\\Ambinity\\Avalonia.Gif\\obj\\",
+        "projectPath": "/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/Avalonia.Gif.csproj",
+        "packagesPath": "/Users/zoe/.nuget/packages/",
+        "outputPath": "/Users/zoe/RiderProjects/Ambinity/Avalonia.Gif/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\AMBINO\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/zoe/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -37,7 +37,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -64,7 +65,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.409/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

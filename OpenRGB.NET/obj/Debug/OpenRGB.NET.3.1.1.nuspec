@@ -10,7 +10,7 @@
     <description>Client for the OpenRGB SDK</description>
     <copyright>Copyright © 2020 Diogo Trindade</copyright>
     <tags>openrgb, rgb, sdk, client</tags>
-    <repository type="git" url="https://github.com/diogotr7/OpenRGB.NET" commit="024fa9960fa52edac361b114f99a8c4fa103e779" />
+    <repository type="git" url="https://github.com/diogotr7/OpenRGB.NET" commit="5bf99354f638d1398968b484db4d6774df6ab4e5" />
     <dependencies>
       <group targetFramework="net8.0">
         <dependency id="NonCopyableAnalyzer" version="0.7.0" exclude="Build,Analyzers" />
@@ -18,7 +18,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="D:\VSCode\Ambinity\OpenRGB.NET\bin\Debug\net8.0\OpenRGB.NET.dll" target="lib\net8.0\OpenRGB.NET.dll" />
-    <file src="D:\VSCode\Ambinity\OpenRGB.NET\bin\Debug\net8.0\OpenRGB.NET.xml" target="lib\net8.0\OpenRGB.NET.xml" />
+    <file src="/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/bin/Debug/net8.0/OpenRGB.NET.dll" target="lib/net8.0/OpenRGB.NET.dll" />
+    <file src="/Users/zoe/RiderProjects/Ambinity/OpenRGB.NET/bin/Debug/net8.0/OpenRGB.NET.xml" target="lib/net8.0/OpenRGB.NET.xml" />
   </files>
 </package>
