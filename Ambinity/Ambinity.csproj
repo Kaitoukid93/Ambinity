@@ -61,6 +61,7 @@
         <ProjectReference Include="..\AmbinityServer\AmbinityServer.csproj" />
         <ProjectReference Include="..\Draw2D.Core\Draw2D.Core.csproj" />
         <ProjectReference Include="..\Draw2DControlLibrary\Draw2DControlLibrary.csproj" />
+        <ProjectReference Include="..\AmbinityDB\AmbinityDB.csproj" />
     </ItemGroup>
 
     <ItemGroup>

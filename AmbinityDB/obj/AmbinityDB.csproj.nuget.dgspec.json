@@ -1,0 +1,81 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/zoe/RiderProjects/Ambinity/AmbinityDB/AmbinityDB.csproj": {}
+  },
+  "projects": {
+    "/Users/zoe/RiderProjects/Ambinity/AmbinityDB/AmbinityDB.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/zoe/RiderProjects/Ambinity/AmbinityDB/AmbinityDB.csproj",
+        "projectName": "AmbinityDB",
+        "projectPath": "/Users/zoe/RiderProjects/Ambinity/AmbinityDB/AmbinityDB.csproj",
+        "packagesPath": "/Users/zoe/.nuget/packages/",
+        "outputPath": "/Users/zoe/RiderProjects/Ambinity/AmbinityDB/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/zoe/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "CommunityToolkit.Mvvm": {
+              "target": "Package",
+              "version": "[8.2.2, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "Serilog": {
+              "target": "Package",
+              "version": "[4.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.301/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

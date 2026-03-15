@@ -1,0 +1,9 @@
+/Users/zoe/RiderProjects/Ambinity/AmbinityDB/obj/Debug/netstandard2.1/AmbinityDB.GeneratedMSBuildEditorConfig.editorconfig
+/Users/zoe/RiderProjects/Ambinity/AmbinityDB/obj/Debug/netstandard2.1/AmbinityDB.csproj.CoreCompileInputs.cache
+/Users/zoe/RiderProjects/Ambinity/AmbinityDB/obj/Debug/netstandard2.1/AmbinityDB.sourcelink.json
+/Users/zoe/RiderProjects/Ambinity/AmbinityDB/obj/Debug/netstandard2.1/AmbinityDB.csproj.AssemblyReference.cache
+/Users/zoe/RiderProjects/Ambinity/AmbinityDB/bin/Debug/netstandard2.1/AmbinityDB.deps.json
+/Users/zoe/RiderProjects/Ambinity/AmbinityDB/bin/Debug/netstandard2.1/AmbinityDB.dll
+/Users/zoe/RiderProjects/Ambinity/AmbinityDB/bin/Debug/netstandard2.1/AmbinityDB.pdb
+/Users/zoe/RiderProjects/Ambinity/AmbinityDB/obj/Debug/netstandard2.1/AmbinityDB.dll
+/Users/zoe/RiderProjects/Ambinity/AmbinityDB/obj/Debug/netstandard2.1/AmbinityDB.pdb

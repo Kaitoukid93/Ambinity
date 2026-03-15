@@ -34,7 +34,7 @@ public class SCKScreenCaptureService : IScreenCaptureService
         if (_isDisposed) throw new ObjectDisposedException(GetType().FullName);
 
         Dictionary<int, GraphicsCard> graphicsCards = new();
-        // mac os doesn't need this        
+        // mac os doesn't need this
         return graphicsCards.Values;
     }
 

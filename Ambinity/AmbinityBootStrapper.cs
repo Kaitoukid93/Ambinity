@@ -49,18 +49,16 @@ using AmbinityServer.OnlineItem;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Media;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Draw2D.Core.Graphic;
-using FluentAvalonia.Styling;
-using LibreHardwareMonitor.Software;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Serilog;
-using Serilog.Core;
 using Constants = AmbinityCore.Constants;
 using OperatingSystem = System.OperatingSystem;
 using RootViewModel = Ambinity.Views.Root.RootViewModel;
+using AmbinityDB;
+using AmbinityDB.Core.Services;
 
 namespace Ambinity;
 
@@ -325,7 +323,7 @@ public class AmbinityBootStrapper
         var resourceService = Ioc.Default.GetRequiredService<Services.ResourceService>();
         await Task.Run(async () =>
         {
-           // await resourceService.DownloadFirstRunResource(_splashViewModel.DownloadProgress);
+            // await resourceService.DownloadFirstRunResource(_splashViewModel.DownloadProgress);
             await resourceService.CopyFirstRunResource(_splashViewModel.DownloadProgress);
         });
         var colorPaletteRepository = Ioc.Default.GetRequiredService<ColorPaletteRepository>();
@@ -343,6 +341,16 @@ public class AmbinityBootStrapper
         var shortcutRepository = Ioc.Default.GetRequiredService<ShortcutRepository>();
 
         splashViewModel.Progress = 5;
+        //todo: gonna replace this with database initializer
+        // rename status text to Indexing...
+        // if manifest exist, load manifest and index, if not, create manifest by scanning local folder, then index.
+        // this will avoid the long loading time when initializing repository with large amount of assets
+        // expose a method for user to rebuild manifest and index when they add new assets to local folder,
+        // or just simply add a file watcher to watch the folder change and trigger the rebuild
+        // var manifestPath = Path.Combine(Constants.ModelDataFolder, "manifest.json");
+        // var db = await AssetDatabaseInitializer.InitializeAsync(
+        //     Constants.ModelDataFolder,
+        //     manifestPath);
         await Task.Run(async () =>
         {
             colorPaletteRepository.Init();
