@@ -12,4 +12,10 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Serilog" Version="4.0.1" />
     </ItemGroup>
+       <ItemGroup>
+        <EmbeddedResource Include="Infrastructure\Resources\EmbeddedResources\Locales\**" />
+        <EmbeddedResource Include="Infrastructure\Resources\EmbeddedResources\AmbinityDevices\**" />
+        <EmbeddedResource Include="Infrastructure\Resources\EmbeddedResources\Images\**" />
+        <EmbeddedResource Include="Infrastructure\Resources\EmbeddedResources\AmbinityLightingProfiles\**" />
+    </ItemGroup>
 </Project>

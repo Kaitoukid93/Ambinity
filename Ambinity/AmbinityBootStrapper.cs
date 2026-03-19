@@ -59,6 +59,8 @@ using OperatingSystem = System.OperatingSystem;
 using RootViewModel = Ambinity.Views.Root.RootViewModel;
 using AmbinityDB;
 using AmbinityDB.Core.Services;
+using AmbinityDB.Storage.Infrastructure;
+using AmbinityDB.Providers.Local;
 
 namespace Ambinity;
 
@@ -300,8 +302,18 @@ public class AmbinityBootStrapper
             .AddSingleton<CanvasViewModelBase, LEDLayoutCreatorCanvasViewModel>()
             .AddSingleton<CanvasViewModelBase, LayoutImageEditorCanvasViewModel>()
             .AddSingleton<LEDLayoutCreatorViewModel>()
-            .AddSingleton<LayoutImageEditorViewModel>();
+            .AddSingleton<LayoutImageEditorViewModel>()
 
+        //Database
+        .AddSingleton<ManifestIndex>()
+
+        .AddSingleton<LocalDatabaseSource>(sp =>
+            new LocalDatabaseSource("local", StoragePaths.Data)
+        )
+
+        .AddSingleton<ManifestService>(sp =>
+            new ManifestService(StoragePaths.Data, sp.GetRequiredService<ManifestIndex>())
+        );
         Ioc.Default.ConfigureServices(
             serviceCollection
                 .BuildServiceProvider());
@@ -319,6 +331,9 @@ public class AmbinityBootStrapper
         _generalSettingsManager.Settings.CanvasWidth = framebuffer.FrameWidth;
         _generalSettingsManager.Settings.CanvasHeight = framebuffer.FrameHeight;
         framebuffer.UpdatePixelData();
+
+        //todo: using AmbinityDB to create Infrastructure for database initialization
+        await DatabaseInitializer.InitializeAsync();
         //Try download assets from server
         var resourceService = Ioc.Default.GetRequiredService<Services.ResourceService>();
         await Task.Run(async () =>
@@ -347,10 +362,10 @@ public class AmbinityBootStrapper
         // this will avoid the long loading time when initializing repository with large amount of assets
         // expose a method for user to rebuild manifest and index when they add new assets to local folder,
         // or just simply add a file watcher to watch the folder change and trigger the rebuild
-        // var manifestPath = Path.Combine(Constants.ModelDataFolder, "manifest.json");
-        // var db = await AssetDatabaseInitializer.InitializeAsync(
-        //     Constants.ModelDataFolder,
-        //     manifestPath);
+        var manifestPath = Path.Combine(Constants.ModelDataFolder, "manifest.json");
+        var db = await AssetDatabaseInitializer.InitializeAsync(
+            Constants.ModelDataFolder,
+            manifestPath);
         await Task.Run(async () =>
         {
             colorPaletteRepository.Init();

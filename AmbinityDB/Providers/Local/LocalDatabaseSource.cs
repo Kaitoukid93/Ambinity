@@ -9,7 +9,7 @@ public class LocalDatabaseSource : IDatabaseSource
 {
     public DatabaseSource Source { get; }
 
-    private readonly string _manifestFile;
+    private readonly string _path;
 
     public LocalDatabaseSource(string name, string basePath)
     {
@@ -20,15 +20,15 @@ public class LocalDatabaseSource : IDatabaseSource
             IsRemote = false
         };
 
-        _manifestFile = Path.Combine(basePath, "manifest.json");
+        _path = Path.Combine(basePath, "manifest.json");
     }
 
     public async Task<ManifestModel> LoadManifestAsync()
     {
-        if (!File.Exists(_manifestFile))
-            throw new FileNotFoundException($"Manifest not found: {_manifestFile}");
+        if (!File.Exists(_path))
+            throw new FileNotFoundException($"Manifest not found: {_path}");
 
-        await using var stream = File.OpenRead(_manifestFile);
+        await using var stream = File.OpenRead(_path);
 
         var manifest = await JsonHelper.DeserializeAsync<ManifestModel>(stream)
                       ?? new ManifestModel();

@@ -52,6 +52,7 @@ public sealed class LightingProfileRepository : CollectableItemRepository
     public override void LoadFromDisk()
     {
         //this step is for first time downloading profile is in zip format
+        //todo makethis universal so we can index
         LoadZipProfileIfExist();
         Items?.Clear();
         string[] files = Directory.GetDirectories(FolderPath);
