@@ -29,9 +29,9 @@ public class GeometryPickerViewModel : WindowDialogViewModelBase
     public string SelectedGeometry { get; set; }
     public Color Color { get; set; }
 
-    public override void DialogOnClosed(ContentDialog sender, ContentDialogClosedEventArgs args)
+    public override void DialogOnClosedAsync(ContentDialog sender, ContentDialogClosedEventArgs args)
     {
-        Dialog.Closed -= DialogOnClosed;
+        Dialog.Closed -= DialogOnClosedAsync;
         var result = args.Result;
         if (result != ContentDialogResult.Primary)
             return;

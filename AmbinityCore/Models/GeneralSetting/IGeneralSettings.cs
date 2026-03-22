@@ -15,7 +15,7 @@ public interface IGeneralSettings : INotifyPropertyChanged
     bool EnableSnapToGrid { get; set; }
     bool ShowCanvasLockedInfo { get; set; }
     bool ShowAppTour { get; set; }
-    Guid LastPlayedProfileID { get; set; }
+    string LastPlayedProfileID { get; set; }
     bool EnableMica { get; set; }
     string SelectedTheme { get; set; }
 

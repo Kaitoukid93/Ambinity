@@ -146,9 +146,9 @@ public class GeneralSettings : ObservableObject, IGeneralSettings
         set => SetProperty(ref _targetFramerate, value);
     }
 
-    private Guid _lastPlayedProfileID;
+    private string _lastPlayedProfileID;
 
-    public Guid LastPlayedProfileID
+    public string LastPlayedProfileID
     {
         get => _lastPlayedProfileID;
         set => SetProperty(ref _lastPlayedProfileID, value);

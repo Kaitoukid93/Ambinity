@@ -21,15 +21,19 @@ namespace Ambinity.Views.SideMenu;
 
 public class SideMenuProfileViewModel : ViewModelBase
 {
-    public SideMenuProfileViewModel(LightingProfile profile, SideMenuProfileCategoryViewModel category,
-        LightingProfileDecoder decoder, ThumbnailService thumbnailService, IDialogService dialogService,
-        SideMenuViewModelFactory vmFactory, IWindowService windowService, AmbinityStoreItemExportViewModel exportViewModel)
+    public SideMenuProfileViewModel(LightingProfileItem profile,
+     SideMenuProfileCategoryViewModel category,
+        LightingProfileDecoder decoder,
+         ThumbnailService thumbnailService,
+          IDialogService dialogService,
+        SideMenuViewModelFactory vmFactory,
+         IWindowService windowService,
+         AmbinityStoreItemExportViewModel exportViewModel)
     {
         _exportViewModel = exportViewModel;
         _vmFactory = vmFactory;
         Profile = profile;
-        Profile.IconChanged += OnIconChanged;
-        Profile.ItemNameChanged += OnProfileNameChanged;
+        Profile.PropertyChanged += OnItemChanged;
         Catergory = category;
         _decoder = decoder;
         _decoder.RenderingStatusChanged += OnRenderingStatusChanged;
@@ -43,7 +47,11 @@ public class SideMenuProfileViewModel : ViewModelBase
         Init();
         CommandSetup();
     }
-
+    private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        // 🔥 forward changes to UI
+        OnPropertyChanged(e.PropertyName);
+    }
 
     private async Task ExportProfile()
     {
@@ -58,19 +66,6 @@ public class SideMenuProfileViewModel : ViewModelBase
     private void SelfDuplicate()
     {
         Catergory.Duplicate(this);
-    }
-
-    private void OnProfileNameChanged(ICollectableItem obj)
-    {
-        Content = Profile.Name;
-    }
-
-    private void OnIconChanged(ICollectableItem obj)
-    {
-        IconType = Profile.IconType;
-        Icon = Profile.Icon;
-        IconColor = Profile.IconColor;
-        OnPropertyChanged(IconType == IconTypeEnum.Geometry ? nameof(Icon) : nameof(GetThumbnail));
     }
 
     private void OpenPropertiesEditor()
@@ -98,62 +93,15 @@ public class SideMenuProfileViewModel : ViewModelBase
         IsPlaying = _decoder.CurrentPlayingProfile.IsPlaying;
     }
 
-    public LightingProfile Profile { get; set; }
-    private string _content = "New Profile";
+    public LightingProfileItem Profile { get; }
+    public string Content => Profile.Name;
+    public string Icon => Profile.Icon;
+
+
+
     private LightingProfileDecoder _decoder;
     private ThumbnailService _thumbnailService;
     public SideMenuProfileCategoryViewModel Catergory { get; set; }
-
-    /// <summary>
-    /// Display Name
-    /// </summary>
-    public string Content
-    {
-        get => _content;
-        set
-        {
-            _content = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private string _icon = "profile";
-
-    /// <summary>
-    /// Display Icon
-    /// </summary>
-    public string Icon
-    {
-        get => _icon;
-        set
-        {
-            _icon = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private Color _iconColor;
-
-    public Color IconColor
-    {
-        get => _iconColor;
-        set
-        {
-            _iconColor = value;
-            OnPropertyChanged();
-        }
-    }
-    private IconTypeEnum _iconType;
-
-    public IconTypeEnum IconType
-    {
-        get => _iconType;
-        set
-        {
-            _iconType = value;
-            OnPropertyChanged();
-        }
-    }
 
     private bool _isSelected;
 
@@ -186,8 +134,6 @@ public class SideMenuProfileViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
-
-    public string ZoneCount => Profile.ZoneCount.ToString();
 
     #region Methods
 

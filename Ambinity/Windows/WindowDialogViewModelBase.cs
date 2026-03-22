@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Ambinity.ViewModels;
 using FluentAvalonia.UI.Controls;
 
@@ -20,10 +21,20 @@ public abstract class WindowDialogViewModelBase : ViewModelBase
         _dialog = dialog;
         dialog.Closed += DialogOnClosed;
     }
-    public virtual void DialogOnClosed(ContentDialog sender, ContentDialogClosedEventArgs args)
+    public virtual async void DialogOnClosed(
+      ContentDialog sender,
+      ContentDialogClosedEventArgs args)
     {
         _dialog.Closed -= DialogOnClosed;
 
+        await OnClosedAsync(sender, args);
+
         DialogClosed?.Invoke(this, args);
+    }
+    protected virtual Task OnClosedAsync(
+        ContentDialog sender,
+        ContentDialogClosedEventArgs args)
+    {
+        return Task.CompletedTask;
     }
 }

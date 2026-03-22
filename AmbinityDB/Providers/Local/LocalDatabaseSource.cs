@@ -1,11 +1,12 @@
 
 using AmbinityDB.Core.Interfaces;
 using AmbinityDB.Core.Models;
+using AmbinityDB.Core.Services;
 using AmbinityDB.Utils;
 
 namespace AmbinityDB.Providers.Local;
 
-public class LocalDatabaseSource : IDatabaseSource
+public class LocalDatabaseSource : IDatabaseSource, IWritableDatabaseSource
 {
     public DatabaseSource Source { get; }
 
@@ -34,5 +35,31 @@ public class LocalDatabaseSource : IDatabaseSource
                       ?? new ManifestModel();
 
         return manifest;
+    }
+    public async Task SaveManifestAsync(ManifestIndex index)
+    {
+        if (index == null)
+            throw new ArgumentNullException(nameof(index));
+
+        // 🔥 Only save entries that belong to THIS source
+        var entries = index
+            .All()
+            .Where(e => e.Source == Source.Name)
+            .ToList();
+
+        var manifest = new ManifestModel
+        {
+            Assets = entries
+        };
+
+        // ensure directory exists
+        var dir = Path.GetDirectoryName(_path);
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir!);
+
+        // 🔥 write safely (overwrite)
+        await using var stream = File.Create(_path);
+
+        await JsonHelper.SerializeToFileAsync(stream, manifest);
     }
 }

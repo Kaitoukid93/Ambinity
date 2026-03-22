@@ -1,29 +1,26 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ambinity.Services;
-using Ambinity.ViewModels;
 using Ambinity.Windows;
 using AmbinityCore.Models.Profile;
 using AmbinityServer.OnlineItem;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using AmbinityCore.Repositories;
 
 namespace Ambinity.Views.SideMenu;
 
 public class ProfilePropertiesEditorViewModel : WindowDialogViewModelBase
 {
-    public ProfilePropertiesEditorViewModel(ThumbnailService thumbnailService, LightingProfile profile,
-        IWindowService windowService, IDialogService dialogService)
+    public ProfilePropertiesEditorViewModel(ThumbnailService thumbnailService,
+     LightingProfileItem profile,
+     AssetLifecycleService assetLifecycleService,
+        IWindowService windowService,
+        IDialogService dialogService)
     {
         _dialogService = dialogService;
         _profile = profile;
@@ -31,10 +28,9 @@ public class ProfilePropertiesEditorViewModel : WindowDialogViewModelBase
         Name = _profile.Name;
         Description = _profile.Description;
         _windowService = windowService;
-        _iconType = _profile.IconType;
         _icon = _profile.Icon;
-        _iconColor = _profile.IconColor;
-        _iconPath = Path.Combine(_profile.LocalPath, "icon.png");
+        _iconPath = _profile.Thumbnail;
+        _lifecycle = assetLifecycleService;
         SelectBitmapCommand = new AsyncRelayCommand(ExecuteBrowseBitmapFile);
         SelectIconCommand = new AsyncRelayCommand(ExecuteBrowseIcon);
     }
@@ -45,22 +41,22 @@ public class ProfilePropertiesEditorViewModel : WindowDialogViewModelBase
         await _dialogService.ShowWindowDialog(vm, "Icon browser", "Done", "Cancel");
     }
 
-    private LightingProfile _profile;
+    private LightingProfileItem _profile;
     private readonly ThumbnailService _thumbnailService;
     private IWindowService _windowService;
+    private readonly AssetLifecycleService _lifecycle;
+    // private IconTypeEnum _iconType;
 
-    private IconTypeEnum _iconType;
-
-    public IconTypeEnum IconType
-    {
-        get => _iconType;
-        set
-        {
-            _iconType = value;
-            _profile.IconType = value;
-            OnPropertyChanged();
-        }
-    }
+    // public IconTypeEnum IconType
+    // {
+    //     get => _iconType;
+    //     set
+    //     {
+    //         _iconType = value;
+    //         _profile.IconType = value;
+    //         OnPropertyChanged();
+    //     }
+    // }
 
     private string _icon;
 
@@ -70,7 +66,7 @@ public class ProfilePropertiesEditorViewModel : WindowDialogViewModelBase
         set
         {
             _icon = value;
-            _profile.Icon = value;
+
             OnPropertyChanged();
         }
     }
@@ -82,7 +78,7 @@ public class ProfilePropertiesEditorViewModel : WindowDialogViewModelBase
         set
         {
             _iconColor = value;
-            _profile.IconColor = value;
+
             OnPropertyChanged();
         }
     }
@@ -106,29 +102,24 @@ public class ProfilePropertiesEditorViewModel : WindowDialogViewModelBase
         if (result == null)
             return;
         _iconPath = result.First();
-        IconType = IconTypeEnum.Image;
         OnPropertyChanged(nameof(GetThumbnail));
     }
 
-    public override void DialogOnClosed(ContentDialog sender, ContentDialogClosedEventArgs args)
+    protected override async Task OnClosedAsync(
+      ContentDialog sender,
+      ContentDialogClosedEventArgs args)
     {
-        Dialog.Closed -= DialogOnClosed;
-        var result = args.Result;
-        if (result != ContentDialogResult.Primary)
+        if (args.Result != ContentDialogResult.Primary)
             return;
-        //save data here and notify icon change
-        _profile.Name = Name;
-        _profile.Description = Description;
-        var dest = Path.Combine(_profile.LocalPath, "icon.png");
-        if (dest != _iconPath)
-        {
-            File.Copy(_iconPath, dest, true);
-            //clear cache
-            _thumbnailService.ClearCache(dest);
-        }
 
-        _profile.UpdateIcon();
-        DialogClosed?.Invoke(this, args);
+        var payload = new UpdateProfilePayload
+        {
+            Name = Name,
+            Description = Description,
+            ThumbnailPath = _iconPath,
+        };
+
+        await _lifecycle.UpdateAsync(_profile.Id, payload);
     }
 
     public string Name { get; set; }

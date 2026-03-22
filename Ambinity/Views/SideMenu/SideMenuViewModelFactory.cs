@@ -4,6 +4,7 @@ using Ambinity.Views.AmbinityStore;
 using Ambinity.Windows;
 using AmbinityCore.Models.Profile;
 using AmbinityCore.Models.ProfileCategory;
+using AmbinityCore.Repositories;
 using AmbinityServer.OnlineItem;
 
 namespace Ambinity.Views.SideMenu;
@@ -35,14 +36,14 @@ public class SideMenuViewModelFactory
             _windowService, _thumbnailService, this);
     }
 
-    public SideMenuProfileViewModel GetProfileViewModel(LightingProfile profile,
+    public SideMenuProfileViewModel GetProfileViewModel(LightingProfileItem profile,
         SideMenuProfileCategoryViewModel category)
     {
         return new SideMenuProfileViewModel(profile, category, _decoder, _thumbnailService, _dialogService, this,
             _windowService,_itemExportViewModel);
     }
 
-    public ProfilePropertiesEditorViewModel GetProfilePropertiesViewModel(LightingProfile profile)
+    public ProfilePropertiesEditorViewModel GetProfilePropertiesViewModel(LightingProfileItem profile)
     {
         return new ProfilePropertiesEditorViewModel(_thumbnailService, profile, _windowService,_dialogService);
     }

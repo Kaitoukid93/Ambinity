@@ -6,7 +6,9 @@ namespace AmbinityDB.Core.Services;
 public class DatabaseManager
 {
     private ManifestIndex _index = new();
-
+    public event Action<ManifestEntry>? AssetAdded;
+    public event Action<string>? AssetRemoved;
+    public event Action<ManifestEntry>? AssetUpdated;
     private readonly IAssetResolver _resolver;
 
     private readonly IEnumerable<IDatabaseSource> _sources;
@@ -34,17 +36,13 @@ public class DatabaseManager
         }
     }
 
-    public IEnumerable<AssetMetadata> GetAssets(string type)
+    public IEnumerable<ManifestEntry> GetEntries(string type)
     {
-        return _index
-            .GetByType(type)
-            .Select(x => new AssetMetadata
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Type = x.Type,
-                Source = x.Source
-            });
+        return _index.GetByType(type);
+    }
+    public ManifestEntry? GetEntry(string id)
+    {
+        return _index.Get(id);
     }
 
     public async Task<Stream> LoadAssetAsync(string id)
@@ -58,4 +56,59 @@ public class DatabaseManager
     {
         _index = index ?? throw new ArgumentNullException(nameof(index));
     }
+    public async Task AddAsync(ManifestEntry entry)
+    {
+        if (entry == null)
+            throw new ArgumentNullException(nameof(entry));
+
+        // avoid duplicates
+        if (_index.Get(entry.Id) != null)
+            throw new InvalidOperationException($"Asset {entry.Id} already exists");
+
+        _index.Add(entry);
+
+        // persist if writable
+        var source = _sources.FirstOrDefault(s => s.Source.Name == entry.Source);
+
+        if (source is IWritableDatabaseSource writable && !source.Source.IsRemote)
+        {
+            await writable.SaveManifestAsync(_index);
+        }
+
+        AssetAdded?.Invoke(entry);
+    }
+    public async Task<bool> RemoveAsync(string id)
+    {
+        var entry = _index.Get(id);
+
+        if (entry == null)
+            return false;
+
+        _index.Remove(id);
+
+        var source = _sources.FirstOrDefault(s => s.Source.Name == entry.Source);
+
+        if (source is IWritableDatabaseSource writable && !source.Source.IsRemote)
+        {
+            await writable.SaveManifestAsync(_index);
+        }
+
+        AssetRemoved?.Invoke(id);
+
+        return true;
+    }
+    public async Task UpdateAsync(ManifestEntry entry)
+    {
+        _index.Add(entry); // 🔥 upsert
+
+        var source = _sources.FirstOrDefault(s => s.Source.Name == entry.Source);
+
+        if (source is IWritableDatabaseSource writable && !source.Source.IsRemote)
+        {
+            await writable.SaveManifestAsync(_index);
+        }
+
+        AssetUpdated?.Invoke(entry);
+    }
+
 }

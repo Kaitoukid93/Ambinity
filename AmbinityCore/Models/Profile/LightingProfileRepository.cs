@@ -1,156 +1,123 @@
-using System.IO.Compression;
-using adrilight_shared.Models.Store;
-using AmbinityCore.Helpers;
-using AmbinityCore.Models.Collection;
-using AmbinityCore.Models.Lighting.Zone;
-using AmbinityCore.Models.ProfileCategory;
-using AmbinityCore.Repositories;
-using Newtonsoft.Json;
-using Serilog;
-using AmbinityDB;
-using AmbinityDB.Storage.Infrastructure;
+using System.Collections.ObjectModel;
+using System.Linq;
+using AmbinityCore.Models.Profile;
+using AmbinityCore.Models.Profile.Service;
+using AmbinityCore.Repositories.Loader;
+using AmbinityDB.Core.Models;
+using AmbinityDB.Core.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace AmbinityCore.Models.Profile;
+namespace AmbinityCore.Repositories;
 
-public sealed class LightingProfileRepository : CollectableItemRepository
+public class LightingProfileRepository : ObservableObject
 {
-    //we will not use base class ItemAdded event because it will trigger circle dependency
-    //this event simply tell side menu to update
-    public event Action<LightingProfile> ItemDownloaded;
-    private string FolderPath =>StoragePaths.ProfilesFolderPath;
-    public LightingProfileRepository()
+    private readonly DatabaseManager _db;
+    private readonly IAssetLoader _loader;
+    private readonly IPlayerService _player;
+
+    public ObservableCollection<LightingProfileItem> Items { get; } = new();
+
+    // 🔥 optional fast lookup
+    private readonly Dictionary<string, LightingProfileItem> _map = new();
+
+    public LightingProfileRepository(
+        DatabaseManager db,
+        IAssetLoader loader,
+        IPlayerService player)
     {
-        LocalFolderPath = FolderPath;
-        Name = "Lighting Profiles";
+        _db = db;
+        _loader = loader;
+        _player = player;
+
+        _db.AssetAdded += OnAssetAdded;
+        _db.AssetRemoved += OnAssetRemoved;
+        _db.AssetUpdated += OnAssetUpdated;
     }
-    public override bool Contains(object itemProperty)
+
+    // =========================================================
+    // INIT
+    // =========================================================
+    public void Initialize()
     {
-        foreach (LightingProfile profile in Items)
+        Items.Clear();
+        _map.Clear();
+
+        var entries = _db.GetEntries(AssetTypes.Profile);
+
+        foreach (var entry in entries)
         {
-            if (profile.ID == (Guid)itemProperty)
-                return true;
+            var item = CreateItem(entry);
+            AddInternal(item);
         }
-
-        return false;
     }
 
-    //todo import thumbnail also
-    /// <summary>
-    /// Import from download cache, this should be call from download action only
-    /// if not, please dont raise isDownloaded
-    /// </summary>
-    /// <param name="path"></param>
-    public override void ImportItem(string path)
+    // =========================================================
+    // CREATE ITEM
+    // =========================================================
+    private LightingProfileItem CreateItem(ManifestEntry entry)
     {
-        var itemFolder = Directory.GetDirectories(path).First();
-        if (itemFolder == null)
+        return new LightingProfileItem(entry, _loader, _player);
+    }
+
+    // =========================================================
+    // INTERNAL ADD
+    // =========================================================
+    private void AddInternal(LightingProfileItem item)
+    {
+        _map[item.Id] = item;
+        Items.Add(item);
+    }
+
+    // =========================================================
+    // DB EVENTS
+    // =========================================================
+    private void OnAssetAdded(ManifestEntry entry)
+    {
+        if (entry.Type != AssetTypes.Profile)
             return;
-        ImportProfile(itemFolder, true);
+
+        var item = CreateItem(entry);
+        AddInternal(item);
     }
 
-    public override void LoadFromDisk()
+    private void OnAssetUpdated(ManifestEntry entry)
     {
-        //this step is for first time downloading profile is in zip format
-        //todo makethis universal so we can index
-        LoadZipProfileIfExist();
-        Items?.Clear();
-        string[] files = Directory.GetDirectories(FolderPath);
-        foreach (var file in files)
-        {
-            var profilePath = Path.Combine(file, "config.json");
-            var profile = JsonHelpers.DeserializeJson<LightingProfile>(profilePath);
-            if (profile == null)
-                continue;
-            profile.LocalPath = profilePath;
-            AddItem(profile);
-        }
-    }
-
-    private void LoadZipProfileIfExist()
-    {
-        //import zip if exist
-        string[] files = Directory.GetFiles(FolderPath);
-        foreach (var file in files)
-        {
-            if (file.EndsWith(".zip"))
-            {
-                try
-                {
-                    ImportZipProfile(file, null, true);
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e, "Failed to load ZIP profile");
-                    continue;
-                }
-                // we need to remove zip file or next step will throw, im too lazy to implement a switch
-                File.Delete(file);
-            }
-        }
-    }
-
-    /// <summary>
-    /// import profile from directory, contains conig, thumb, or assets
-    /// </summary>
-    private void ImportProfile(string path, bool isDownloaded = false, LightingProfileCategory category = null,
-        bool isDefault = false)
-    {
-        //find config
-        var configPath = Path.Combine(path, "config.json");
-        if (!File.Exists(configPath))
-        {
-            //search for profile.json
-            configPath = Path.Combine(path, "profile.json");
-            if (!File.Exists(configPath))
-                return;
-        }
-
-        //deserialize this config to localize it
-        var profile = JsonHelpers.DeserializeJson<LightingProfile>(configPath);
-        if (profile == null)
+        if (!_map.TryGetValue(entry.Id, out var item))
             return;
-        var matchedItems = Items.Where(x => x.Name != null && x.Name.Contains(profile.Name));
-        //rename if match
-        if (matchedItems != null && matchedItems.Count() > 0)
-        {
-            profile.Name = profile.Name + "(" + matchedItems.Count() + ")";
-            Log.Information("Profile existed, rename new profile to " + profile.Name);
-        }
-        profile.ID = Guid.NewGuid();
-        profile.IsDefault = isDefault; // import profile can not be default
-        if (category != null)
-            profile.CategoryID = category.ID;
-        AddItem(profile);
-        //copy assets and icon if exist
-        var iconPath = Path.Combine(path, "icon.png");
-        if (File.Exists(iconPath))
-            File.Copy(iconPath, Path.Combine(profile.LocalPath, "icon.png"));
-        var assetsPath = Path.Combine(path, "assets");
-        if (Directory.Exists(assetsPath))
-            LocalFileHelpers.CopyDirectory(assetsPath, profile.AssetPath, true);
 
-        //notify side menu
-        if (isDownloaded)
-            ItemDownloaded?.Invoke(profile);
+        item.Update(entry); // 🔥 update item
     }
-
-    /// <summary>
-    /// A task for importing downloaded profile from zip file
-    /// </summary>
-    /// <param name="importFilePath"></param>
-    public void ImportZipProfile(string importFilePath, LightingProfileCategory category = null, bool isDefault = false)
+    private void OnAssetRemoved(string id)
     {
-        if (!Directory.Exists(Constants.CacheFolderPath))
-            Directory.CreateDirectory(Constants.CacheFolderPath);
-        ZipFile.ExtractToDirectory(importFilePath, Constants.CacheFolderPath, true);
-        ImportProfile(Constants.CacheFolderPath, false, category, isDefault);
-        ClearCache();
+        if (!_map.TryGetValue(id, out var item))
+            return;
+
+        _map.Remove(id);
+        Items.Remove(item);
     }
 
-    private void ClearCache()
+    // =========================================================
+    // QUERY HELPERS
+    // =========================================================
+    public LightingProfileItem? GetById(string id)
     {
-        if (Directory.Exists(Constants.CacheFolderPath))
-            Directory.Delete(Constants.CacheFolderPath, true);
+        return _map.TryGetValue(id, out var item) ? item : null;
     }
 
+    // public IEnumerable<LightingProfileItem> GetPinned()
+    // {
+    //     return Items.Where(x => x.IsPinned);
+    // }
+
+    // =========================================================
+    // OPTIONAL SORT
+    // =========================================================
+    public void SortByName()
+    {
+        var sorted = Items.OrderBy(x => x.Name).ToList();
+
+        Items.Clear();
+        foreach (var item in sorted)
+            Items.Add(item);
+    }
 }

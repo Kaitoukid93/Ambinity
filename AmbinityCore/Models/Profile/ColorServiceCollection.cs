@@ -4,7 +4,7 @@ using AmbinityCore.Models.Lighting.Zone;
 
 namespace AmbinityCore.Models.Profile
 {
-    public class ColorServiceCollection
+    public class ColorServiceManager
     {
 
         private readonly object _lock = new();

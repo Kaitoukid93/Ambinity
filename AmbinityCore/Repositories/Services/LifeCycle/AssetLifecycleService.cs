@@ -1,136 +1,74 @@
-using AmbinityCore.Models.Device;
-using AmbinityCore.Models.Profile;
-using AmbinityCore.Repositories;
-using AmbinityServer.OnlineItem;
-namespace AmbinityCore.Repositories.Services;
+using AmbinityCore.Repositories.Services;
+using AmbinityDB.Core.Models;
+using AmbinityDB.Core.Services;
 
-
-public sealed class AssetLifecycleService
+public class AssetLifecycleService
 {
-    private readonly LightingProfileRepository _profileRepo;
-    private readonly AmbinityDeviceLayoutRepository _layoutRepo;
-    private readonly ColorPaletteRepository _paletteRepo;
-
-    private readonly LightingProfileImportService _profileImport;
-    private readonly DownloadService _downloadService;
-
-    private readonly LocalAssetIndexService _localIndex;
+    private readonly Dictionary<string, IAssetHandler> _handlers;
+    private readonly DatabaseManager _db;
+    private readonly string _assetRoot;
 
     public AssetLifecycleService(
-        LightingProfileRepository profileRepo,
-        AmbinityDeviceLayoutRepository layoutRepo,
-        ColorPaletteRepository paletteRepo,
-        LightingProfileImportService profileImport,
-        DownloadService downloadService,
-        LocalAssetIndexService localIndex)
+        IEnumerable<IAssetHandler> handlers,
+        DatabaseManager db,
+        string assetRoot)
     {
-        _profileRepo = profileRepo;
-        _layoutRepo = layoutRepo;
-        _paletteRepo = paletteRepo;
-        _profileImport = profileImport;
-        _downloadService = downloadService;
-        _localIndex = localIndex;
+        _handlers = handlers.ToDictionary(h => h.AssetType);
+        _db = db;
+        _assetRoot = assetRoot;
     }
 
-    // =========================================================
-    // OPEN (local only)
-    // =========================================================
-    // public object Open(AssetDescriptor asset)
-    // {
-    //     EnsureLocal(asset);
-
-    //     return asset.AssetType switch
-    //     {
-    //         AssetTypes.Profile => _profileRepo.Load(asset.Id),
-    //         _ => throw new NotSupportedException(asset.AssetType)
-    //     };
-    // }
-
-    // =========================================================
-    // SAVE (local only)
-    // =========================================================
-    public void Save(object domainModel)
+    public async Task ImportAsync(string assetType, ImportRequest request)
     {
-        switch (domainModel)
-        {
-            case LightingProfile profile:
-                //_profileRepo.Add(profile); // Add = upsert
-                break;
-            default:
-                throw new NotSupportedException(
-                    $"Unsupported domain model: {domainModel.GetType().Name}");
-        }
+        var handler = GetHandler(assetType);
+
+        var entry = await handler.ImportAsync(request);
+
+        await _db.AddAsync(entry);
     }
 
-    // =========================================================
-    // DELETE
-    // =========================================================
-    public void Delete(AssetDescriptor asset)
+    public async Task DeleteAsync(string id)
     {
-        switch (asset.AssetType)
-        {
-            case AssetTypes.Profile:
-               // _profileRepo.Delete(asset.Id);
-                break;
-            default:
-                throw new NotSupportedException(asset.AssetType);
-        }
-    }
-
-    // =========================================================
-    // DOWNLOAD (online → local)
-    // =========================================================
-    public async Task DownloadAsync(AssetDescriptor asset)
-    {
-        if (asset.Source != AssetSource.Online)
+        var entry = _db.GetEntry(id);
+        if (entry == null)
             return;
 
-        var downloadedPath = string.Empty;
-        var request = new ImportRequest
-        {
-            SourcePath = downloadedPath,
-            IsZip = false,
-            OverwriteExisting = true
-        };
+        var handler = GetHandler(entry.Type);
 
-        switch (asset.AssetType)
-        {
-            case AssetTypes.Profile:
-                _profileImport.Import(request);
-                break;
-            default:
-                throw new NotSupportedException(asset.AssetType);
-        }
+        // delete files
+        DeleteFiles(entry);
+
+        await handler.DeleteAsync(entry);
+
+        await _db.RemoveAsync(id);
     }
 
-    // =========================================================
-    // IMPORT (ZIP or external folder)
-    // =========================================================
-    public void Import(string filePath, string assetType)
+    public async Task UpdateAsync<TPayload>(string id, TPayload payload)
     {
-        var request = new ImportRequest
-        {
-            SourcePath = filePath,
-            IsZip = Path.GetExtension(filePath).Equals(".zip", StringComparison.OrdinalIgnoreCase),
-            OverwriteExisting = false
-        };
-        switch (assetType)
-        {
-            case AssetTypes.Profile:
-                _profileImport.Import(request);
-                break;
-            default:
-                throw new NotSupportedException(assetType);
-        }
+        var entry = _db.GetEntry(id);
+        if (entry == null) return;
+
+        var handler = (IAssetHandler<TPayload>)GetHandler(entry.Type);
+
+        await handler.UpdateAsync(entry, payload);
+
+        await _db.UpdateAsync(entry);
     }
 
-    // =========================================================
-    // UTIL
-    // =========================================================
-    private static void EnsureLocal(AssetDescriptor asset)
+    private IAssetHandler GetHandler(string type)
     {
-        if (asset.Source != AssetSource.Local)
-            throw new InvalidOperationException(
-                $"Asset '{asset.Name}' is not local.");
+        if (!_handlers.TryGetValue(type, out var handler))
+            throw new NotSupportedException(type);
+
+        return handler;
+    }
+
+    private void DeleteFiles(ManifestEntry entry)
+    {
+        var fullPath = Path.Combine(_assetRoot, entry.Path);
+        var dir = Path.GetDirectoryName(fullPath);
+
+        if (Directory.Exists(dir))
+            Directory.Delete(dir, true);
     }
 }

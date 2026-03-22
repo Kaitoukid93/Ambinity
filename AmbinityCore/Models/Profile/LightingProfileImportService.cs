@@ -1,10 +1,10 @@
-
 using System.IO.Compression;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Profile;
-using AmbinityCore.Models.ProfileCategory;
 using AmbinityCore.Repositories;
 using AmbinityCore.Repositories.Services;
+using AmbinityDB.Core.Models;
+using AmbinityDB.Core.Services;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -14,43 +14,67 @@ public sealed class LightingProfileImportService : IAssetImportService
 {
     public string AssetType => AssetTypes.Profile;
 
-    private readonly LightingProfileRepository _repository;
+    private readonly DatabaseManager _db;
+    private readonly string _assetRoot;
 
-    public LightingProfileImportService(LightingProfileRepository repository)
+    public LightingProfileImportService(DatabaseManager db, string assetRoot)
     {
-        _repository = repository;
+        _db = db;
+        _assetRoot = assetRoot;
     }
 
     // =========================================================
     // PUBLIC ENTRY POINT
     // =========================================================
-    public ImportResult Import(ImportRequest request)
+    public async Task<ImportResult> ImportAsync(ImportRequest request)
     {
+        string? workingPath = null;
+
         try
         {
-            var workingPath = request.IsZip
+            workingPath = request.IsZip
                 ? ExtractToTemp(request.SourcePath)
                 : request.SourcePath;
 
-            var profile = LoadProfileFromFolder(workingPath);
+            var configPath = ResolveConfigPath(workingPath);
 
-            ResolveNameConflict(profile, request.OverwriteExisting);
+            // 🔥 Read metadata only (lightweight)
+            var json = await File.ReadAllTextAsync(configPath);
+            var data = JsonConvert.DeserializeObject<LightingProfile>(json);
 
-           // _repository.add(profile); // repository updates index
+            var id = Guid.NewGuid();
 
-            CleanupTempIfNeeded(request.IsZip);
+            // 🔥 Copy into managed storage
+            var targetDir = Path.Combine(_assetRoot, "profiles", id.ToString());
+            Directory.CreateDirectory(targetDir);
+
+            var targetConfig = Path.Combine(targetDir, "config.json");
+            File.Copy(configPath, targetConfig, true);
+
+            CopyAssets(workingPath, targetDir);
+
+            // 🔥 Create ManifestEntry
+            var entry = new ManifestEntry
+            {
+                Id = id.ToString(),
+                Name = data?.Name ?? Path.GetFileNameWithoutExtension(request.SourcePath),
+                Path = $"profiles/{id}/config.json",
+                Source = "local",
+                Type = AssetTypes.Profile
+            };
+
+            // 🔥 Register to DB (this triggers repository update)
+            await _db.AddAsync(entry);
 
             return new ImportResult
             {
                 Success = true,
-                //ImportedAsset = _repository.CreateItemDescriptor(profile)
+                Entry = entry
             };
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Lighting profile import failed");
-
-            CleanupTempIfNeeded(request.IsZip);
 
             return new ImportResult
             {
@@ -58,57 +82,38 @@ public sealed class LightingProfileImportService : IAssetImportService
                 Error = ex.Message
             };
         }
+        finally
+        {
+            CleanupTempIfNeeded(request.IsZip);
+        }
     }
 
     // =========================================================
     // INTERNAL HELPERS
     // =========================================================
-    private static LightingProfile LoadProfileFromFolder(string folderPath)
+    private static string ResolveConfigPath(string folderPath)
     {
-        var configPath = Path.Combine(folderPath, "config.json");
-        if (!File.Exists(configPath))
-            configPath = Path.Combine(folderPath, "profile.json");
+        var config = Path.Combine(folderPath, "config.json");
+        if (File.Exists(config)) return config;
 
-        if (!File.Exists(configPath))
-            throw new FileNotFoundException("Profile config not found");
+        config = Path.Combine(folderPath, "profile.json");
+        if (File.Exists(config)) return config;
 
-        var profile = JsonHelpers.DeserializeJson<LightingProfile>(configPath)
-                      ?? throw new InvalidOperationException("Invalid profile config");
-
-        profile.ID = Guid.NewGuid();
-        profile.IsDefault = false;
-
-        CopyAssets(folderPath, profile);
-
-        return profile;
+        throw new FileNotFoundException("Profile config not found");
     }
 
-    private static void CopyAssets(string sourceFolder, LightingProfile profile)
+    private static void CopyAssets(string sourceFolder, string targetDir)
     {
         var iconPath = Path.Combine(sourceFolder, "icon.png");
         if (File.Exists(iconPath))
-            File.Copy(iconPath, Path.Combine(profile.AssetPath, "icon.png"), true);
+            File.Copy(iconPath, Path.Combine(targetDir, "icon.png"), true);
 
         var assetsPath = Path.Combine(sourceFolder, "assets");
         if (Directory.Exists(assetsPath))
-            LocalFileHelpers.CopyDirectory(assetsPath, profile.AssetPath, true);
-    }
-
-    private void ResolveNameConflict(LightingProfile profile, bool overwrite)
-    {
-        // if (overwrite)
-        //     return;
-
-        // var existingNames = _repository
-        //     .GetAllDescriptors()
-        //     .Where(d => d.Name.StartsWith(profile.Name))
-        //     .ToList();
-
-        // if (existingNames.Count == 0)
-        //     return;
-
-        // profile.Name = $"{profile.Name} ({existingNames.Count})";
-        // Log.Information("Profile name conflict resolved: {Name}", profile.Name);
+            LocalFileHelpers.CopyDirectory(
+                assetsPath,
+                Path.Combine(targetDir, "assets"),
+                true);
     }
 
     // =========================================================
