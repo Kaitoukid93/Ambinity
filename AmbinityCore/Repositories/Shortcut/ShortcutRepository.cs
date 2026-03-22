@@ -1,12 +1,13 @@
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Profile;
-
+using AmbinityDB;
+using AmbinityDB.Storage.Infrastructure;
 namespace AmbinityCore.Repositories;
 
 public class ShortcutRepository : CollectableItemRepository
 {
-    private string FolderPath => Path.Combine(Constants.AppDataFolder, "Data", "Shortcuts");
+    private string FolderPath =>StoragePaths.ShortcutsFolderPath;
     private LightingProfileRepository _lightingProfileRepository;
 
     public ShortcutRepository(LightingProfileRepository profileRepository)

@@ -5,6 +5,8 @@ using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device.Provider;
 using AmbinityServer;
 using Serilog;
+using AmbinityDB;
+using AmbinityDB.Storage.Infrastructure;
 
 namespace AmbinityCore.Models.Device.Controller;
 
@@ -14,8 +16,7 @@ public class OpenRGBControllerRepository : CollectableItemRepository
     private List<IDataStream> _dataStreams;
     private DataStreamProvider _streamProvider;
     private readonly AmbinityClient _client;
-    private string dbPath => Path.Combine(Constants.AppDataFolder, "Hardwares");
-    private string FolderPath => Path.Combine(dbPath, "Controllers", "OpenRGB");
+    private string FolderPath => StoragePaths.OpenRGBHarwaresFolderPath;
     public event Action<IController> NewControllerAdded;
     public event Action<IController> OldDeviceReconnected;
     public event Action<IController> OldDeviceDetected;
@@ -49,7 +50,7 @@ public class OpenRGBControllerRepository : CollectableItemRepository
             AddItem(result.Item2);
             await UpdateDeviceSetup(result.Item2,true);
             NewControllerAdded?.Invoke(result.Item2);
-           
+
         }
         //populate default layout that predefined based on hardware type
         controller.LedController.PopulateDefaultLayout();
@@ -180,7 +181,7 @@ public class OpenRGBControllerRepository : CollectableItemRepository
             foreach (var dir in Directory.GetDirectories(privateDependencies))
             {
                 //load layout, each dir represent an separate output
-             
+
                 var layout = new AmbinityDeviceLayout(dir);
                 controller.LedController.Outputs.Add(new LEDOutput(64,outputCount++,new AmbinityDevice(layout)));
             }

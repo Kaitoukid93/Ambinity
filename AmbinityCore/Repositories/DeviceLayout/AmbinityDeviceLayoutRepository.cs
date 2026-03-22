@@ -5,12 +5,9 @@ using adrilight_shared.Models.Device.Zone.Spot;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device;
-using AmbinityCore.Models.Device.Controller;
-using AmbinityCore.Models.Device.LED;
 using Avalonia;
-using Avalonia.Media;
-using Serilog;
-
+using AmbinityDB;
+using AmbinityDB.Storage.Infrastructure;
 namespace AmbinityCore.Repositories;
 
 /// <summary>
@@ -18,7 +15,7 @@ namespace AmbinityCore.Repositories;
 /// </summary>
 public class AmbinityDeviceLayoutRepository : CollectableItemRepository
 {
-    private string FolderPath => Path.Combine(Constants.AppDataFolder, "AmbinityDevices");
+    private string FolderPath => StoragePaths.DeviceLayoutsFolderPath;
     private AmbinityDeviceLayout _defaultLayout;
 
     public AmbinityDeviceLayoutRepository()

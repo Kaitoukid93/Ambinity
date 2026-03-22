@@ -1,11 +1,12 @@
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
-
+using AmbinityDB;
+using AmbinityDB.Storage.Infrastructure;
 namespace AmbinityCore.Repositories;
 
 public class AnimationsRepository : CollectableItemRepository
 {
-    private string FolderPath => Path.Combine(Constants.AppDataFolder, "Data", "Animation");
+    private string FolderPath =>StoragePaths.AnimationsFolderPath;
 
     public AnimationsRepository()
     {

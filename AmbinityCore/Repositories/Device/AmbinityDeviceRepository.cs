@@ -2,7 +2,6 @@ using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device;
 using AmbinityCore.Models.Device.Controller;
 using AmbinityCore.Models.Device.Device;
-
 namespace AmbinityCore.Repositories;
 
 public class AmbinityDeviceRepository

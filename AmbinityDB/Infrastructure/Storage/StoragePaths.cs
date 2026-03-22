@@ -32,6 +32,8 @@ public static class StoragePaths
     public static readonly string LightingZonesFolderPath = Path.Combine(Data, "LightingZones");
     public static readonly string DeviceLayoutsFolderPath = Path.Combine(Data, "DeviceLayouts");
     public static readonly string HardwaresFolderPath = Path.Combine(Data, "Hardwares");
+    public static readonly string SerialHardwaresFolderPath = Path.Combine(HardwaresFolderPath,"SerialControllers");
+    public static readonly string OpenRGBHarwaresFolderPath = Path.Combine(HardwaresFolderPath,"OpenRGBControllers");
     //App Config
     public static readonly string ConfigFile = Path.Combine(Root, "config.json");
     public static readonly string InitFlag = Path.Combine(Root, ".init");

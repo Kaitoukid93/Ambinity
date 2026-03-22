@@ -3,7 +3,8 @@ using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Device.Provider;
 using Serilog;
-
+using AmbinityDB;
+using AmbinityDB.Storage.Infrastructure;
 namespace AmbinityCore.Models.Device.Controller;
 
 public class SerialControllerRepository : CollectableItemRepository
@@ -13,8 +14,7 @@ public class SerialControllerRepository : CollectableItemRepository
     public event Action<IController> OldDeviceDetected;
     public event Action<IController> ControllerDisconnected;
     public event Action<IController> LoadingFromDisk;
-    private string dbPath => Path.Combine(Constants.AppDataFolder, "Hardwares");
-    private string FolderPath => Path.Combine(dbPath, "Controllers", "Serial");
+    private string FolderPath => StoragePaths.SerialHardwaresFolderPath;
     private readonly SerialControllerProvider _controllerProvider;
     private List<IDataStream> _dataStreams;
     private readonly DataStreamProvider _streamProvider;

@@ -336,11 +336,24 @@ public class AmbinityBootStrapper
         await DatabaseInitializer.InitializeAsync();
         //Try download assets from server
         var resourceService = Ioc.Default.GetRequiredService<Services.ResourceService>();
-        await Task.Run(async () =>
-        {
-            // await resourceService.DownloadFirstRunResource(_splashViewModel.DownloadProgress);
-            await resourceService.CopyFirstRunResource(_splashViewModel.DownloadProgress);
-        });
+
+
+        // await Task.Run(async () =>
+        // {
+        //     // await resourceService.DownloadFirstRunResource(_splashViewModel.DownloadProgress);
+        //     await resourceService.CopyFirstRunResource(_splashViewModel.DownloadProgress);
+        // });
+
+        // if manifest exist, load manifest and index, if not, create manifest by scanning local folder, then index.
+        // this will avoid the long loading time when initializing repository with large amount of assets
+        // expose a method for user to rebuild manifest and index when they add new assets to local folder,
+        // or just simply add a file watcher to watch the folder change and trigger the rebuild
+        var manifestPath = Path.Combine(Constants.ModelDataFolder, "manifest.json");
+        var db = await AssetDatabaseInitializer.InitializeAsync(
+            Constants.ModelDataFolder,
+            manifestPath);
+
+
         var colorPaletteRepository = Ioc.Default.GetRequiredService<ColorPaletteRepository>();
         var solidColorsRepository = Ioc.Default.GetRequiredService<StaticColorsRepository>();
         var gifImagesRepository = Ioc.Default.GetRequiredService<GifImagesRepository>();
@@ -356,16 +369,6 @@ public class AmbinityBootStrapper
         var shortcutRepository = Ioc.Default.GetRequiredService<ShortcutRepository>();
 
         splashViewModel.Progress = 5;
-        //todo: gonna replace this with database initializer
-        // rename status text to Indexing...
-        // if manifest exist, load manifest and index, if not, create manifest by scanning local folder, then index.
-        // this will avoid the long loading time when initializing repository with large amount of assets
-        // expose a method for user to rebuild manifest and index when they add new assets to local folder,
-        // or just simply add a file watcher to watch the folder change and trigger the rebuild
-        var manifestPath = Path.Combine(Constants.ModelDataFolder, "manifest.json");
-        var db = await AssetDatabaseInitializer.InitializeAsync(
-            Constants.ModelDataFolder,
-            manifestPath);
         await Task.Run(async () =>
         {
             colorPaletteRepository.Init();

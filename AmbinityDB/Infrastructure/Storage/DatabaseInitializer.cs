@@ -76,15 +76,27 @@ public static class DatabaseInitializer
     },
     new()
     {
-        Name = "Devices",
+        Name = "Layouts",
         DestinationPath = StoragePaths.DeviceLayoutsFolderPath,
         Source = new EmbeddedResourceSource("AmbinityDB.Infrastructure.Resources.EmbeddedResources.AmbinityDevices.DefaultDevices.zip")
     },
     new()
     {
-        Name = "Devices",
+        Name = "Profiles",
         DestinationPath = StoragePaths.ProfilesFolderPath,
         Source = new EmbeddedResourceSource("AmbinityDB.Infrastructure.Resources.EmbeddedResources.AmbinityLightingProfiles.Profiles.zip")
+    },
+      new()
+    {
+        Name = "FirmwareTools",
+        DestinationPath = StoragePaths.FirmwareTools,
+        Source = new EmbeddedResourceSource("AmbinityDB.Infrastructure.Resources.EmbeddedResources.Tools.FirmwareTools.zip")
+    },
+     new()
+    {
+        Name = "ProfileCategories",
+        DestinationPath = StoragePaths.ProfileCategoriesFolderPath,
+        Source = new EmbeddedResourceSource("AmbinityDB.Infrastructure.Resources.EmbeddedResources.ProfileCategories.DefaultCategories.zip")
     }
 };
 

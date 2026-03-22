@@ -1,15 +1,13 @@
-using System.Drawing;
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
-using AmbinityCore.Models.ProfileCategory;
 using AmbinityCore.Repositories;
-using Newtonsoft.Json;
-
+using AmbinityDB;
+using AmbinityDB.Storage.Infrastructure;
 namespace AmbinityCore.Colors;
 
 public class StaticColorsRepository : CollectableItemRepository
 {
-    private string dbPath =>Path.Combine(Constants.AppDataFolder, "Data","Colors");
+    private string dbPath => StoragePaths.PredefinedColorsFolderPath;
     private string FolderPath => Path.Combine(dbPath, "SolidColor");
 
     public StaticColorsRepository()
@@ -32,7 +30,7 @@ public class StaticColorsRepository : CollectableItemRepository
             var color = JsonHelpers.DeserializeJson<SolidColor>(file);
             if (color == null)
                 continue;
-            color.LocalPath = file; 
+            color.LocalPath = file;
             AddItem(color);
         }
     }

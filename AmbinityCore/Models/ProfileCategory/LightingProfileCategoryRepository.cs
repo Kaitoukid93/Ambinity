@@ -1,14 +1,14 @@
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using Newtonsoft.Json;
-
+using AmbinityDB;
+using AmbinityDB.Storage.Infrastructure;
 namespace AmbinityCore.Models.ProfileCategory;
 
 public sealed class LightingProfileCategoryRepository : CollectableItemRepository
 {
 
-    private string dbPath =>Path.Combine(Constants.AppDataFolder, "Data");
-    private string FolderPath => Path.Combine(dbPath, "Categories");
+    private string FolderPath =>StoragePaths.ProfileCategoriesFolderPath;
 
     public LightingProfileCategoryRepository()
     {

@@ -11,6 +11,9 @@ public class ManifestEntry
     public string Path { get; set; } = default!;
 
     public string Source { get; set; } = "local";
+    public string? Icon { get; set; }
+    public string? Thumbnail { get; set; }
+    public string? Category { get; set; }
 
     public string? Hash { get; set; }
 

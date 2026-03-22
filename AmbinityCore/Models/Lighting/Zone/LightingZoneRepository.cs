@@ -1,20 +1,17 @@
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
 using AmbinityCore.Models.Lighting.Zone.Configuration;
-using AmbinityCore.Models.Profile;
 using AmbinityCore.Repositories;
-using Avalonia;
 using Avalonia.Media;
-using Newtonsoft.Json;
+using AmbinityDB;
+using AmbinityDB.Storage.Infrastructure;
 
 namespace AmbinityCore.Models.Lighting.Zone;
 
 public class LightingZoneRepository : CollectableItemRepository
 {
     private readonly AnimationsRepository _animationsRepository;
-
-    private string dbPath => Path.Combine(Constants.AppDataFolder, "Data");
-    private string FolderPath => Path.Combine(dbPath, "Zones");
+    private string FolderPath => StoragePaths.LightingZonesFolderPath;
 
     public LightingZoneRepository(AnimationsRepository animationsRepository)
     {

@@ -17,5 +17,7 @@
         <EmbeddedResource Include="Infrastructure\Resources\EmbeddedResources\AmbinityDevices\**" />
         <EmbeddedResource Include="Infrastructure\Resources\EmbeddedResources\Images\**" />
         <EmbeddedResource Include="Infrastructure\Resources\EmbeddedResources\AmbinityLightingProfiles\**" />
+        <EmbeddedResource Include="Infrastructure\Resources\EmbeddedResources\Tools\**" />
+        <EmbeddedResource Include="Infrastructure\Resources\EmbeddedResources\ProfileCategories\**" />
     </ItemGroup>
 </Project>

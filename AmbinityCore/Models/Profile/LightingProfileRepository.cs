@@ -7,6 +7,8 @@ using AmbinityCore.Models.ProfileCategory;
 using AmbinityCore.Repositories;
 using Newtonsoft.Json;
 using Serilog;
+using AmbinityDB;
+using AmbinityDB.Storage.Infrastructure;
 
 namespace AmbinityCore.Models.Profile;
 
@@ -15,13 +17,10 @@ public sealed class LightingProfileRepository : CollectableItemRepository
     //we will not use base class ItemAdded event because it will trigger circle dependency
     //this event simply tell side menu to update
     public event Action<LightingProfile> ItemDownloaded;
-    private string dbPath => Path.Combine(Constants.AppDataFolder, "Data");
-    private string FolderPath => Path.Combine(dbPath, "Profiles");
-    private LightingZoneRepository _zoneRepository;
-    public LightingProfileRepository(LightingZoneRepository zoneRepository)
+    private string FolderPath =>StoragePaths.ProfilesFolderPath;
+    public LightingProfileRepository()
     {
         LocalFolderPath = FolderPath;
-        _zoneRepository = zoneRepository;
         Name = "Lighting Profiles";
     }
     public override bool Contains(object itemProperty)

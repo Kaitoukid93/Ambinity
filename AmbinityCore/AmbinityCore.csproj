@@ -53,13 +53,14 @@
     </ItemGroup>
     <!-- Include all other project references for non-macOS builds -->
     <ItemGroup>
+        <ProjectReference Include="../AmbinityDB/AmbinityDB.csproj" />
         <ProjectReference Include="../Avalonia.Gif/Avalonia.Gif.csproj" />
         <ProjectReference Include="../ScreenCapture.NET.DX11/ScreenCapture.NET.DX11.csproj" />
         <ProjectReference Include="../ScreenCapture.NET.DX9/ScreenCapture.NET.DX9.csproj" />
         <ProjectReference Include="../ScreenCapture.NET/ScreenCapture.NET.csproj" />
-        <ProjectReference Include="..\AmbinityServer\AmbinityServer.csproj" />
-        <ProjectReference Include="..\Draw2D.Core\Draw2D.Core.csproj" />
-        <ProjectReference Include="..\OpenRGB.NET\OpenRGB.NET.csproj" />
+        <ProjectReference Include="../AmbinityServer/AmbinityServer.csproj" />
+        <ProjectReference Include="../Draw2D.Core/Draw2D.Core.csproj" />
+        <ProjectReference Include="../OpenRGB.NET/OpenRGB.NET.csproj" />
     </ItemGroup>
 
     <ItemGroup>

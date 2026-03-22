@@ -1,12 +1,14 @@
 using AmbinityCore.Helpers;
 using AmbinityCore.Models.Collection;
+using AmbinityDB;
+using AmbinityDB.Storage.Infrastructure;
 
 namespace AmbinityCore.Repositories;
 
 public class ColorPaletteRepository : CollectableItemRepository
 {
 
-    private string dbPath => Path.Combine(Constants.AppDataFolder, "Data", "Colors");
+    private string dbPath => StoragePaths.ColorPalettesFolderPath;
     private string FolderPath => Path.Combine(dbPath, "ColorPalette");
 
     public ColorPaletteRepository()
@@ -19,7 +21,7 @@ public class ColorPaletteRepository : CollectableItemRepository
         CreateDefaultPalette();
     }
 
-   
+
     public override void LoadFromDisk()
     {
         Items?.Clear();
@@ -48,6 +50,6 @@ public class ColorPaletteRepository : CollectableItemRepository
         LocalFileHelpers.CopyDirectory(path,LocalFolderPath,true);
         LoadFromDisk();
         //update the collection
-        
+
     }
 }
