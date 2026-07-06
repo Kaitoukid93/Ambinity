@@ -86,15 +86,15 @@ public class SideMenuProfileViewModel : ViewModelBase
         //because the category own this profile will not init this profile anymore but others does
     }
 
-    private void OnRenderingStatusChanged()
+    private void OnRenderingStatusChanged(bool isplaying, string profileID)
     {
-        if (this.Profile != _decoder.CurrentPlayingProfile)
+        if (this.Profile.Id != profileID)
             return;
-        IsPlaying = _decoder.CurrentPlayingProfile.IsPlaying;
+        IsPlaying = Profile.IsPlaying;
     }
 
     public LightingProfileItem Profile { get; }
-    public string Content => Profile.Name;
+    public string Content => Loc.TryGetTranslated(Profile.Name + ".Profile.Name", Profile.Name);
     public string Icon => Profile.Icon;
 
 
@@ -137,19 +137,10 @@ public class SideMenuProfileViewModel : ViewModelBase
 
     #region Methods
 
-    private void Init()
+    private async Task Init()
     {
         if (Profile == null)
             return;
-        foreach (var zone in Profile.Zones)
-        {
-            zone.ParentProfile = Profile;
-        }
-        // Translate name if possible
-        Content = Loc.TryGetTranslated(Profile.Name + ".Profile.Name", Profile.Name);
-        _icon = Profile.Icon;
-        _iconColor = Profile.IconColor;
-        IconType = Profile.IconType;
         IsPlaying = Profile.IsPlaying;
     }
 

@@ -17,7 +17,6 @@ public class LightingProfileRepository : ObservableObject
 
     public ObservableCollection<LightingProfileItem> Items { get; } = new();
 
-    // 🔥 optional fast lookup
     private readonly Dictionary<string, LightingProfileItem> _map = new();
 
     public LightingProfileRepository(
@@ -34,9 +33,7 @@ public class LightingProfileRepository : ObservableObject
         _db.AssetUpdated += OnAssetUpdated;
     }
 
-    // =========================================================
-    // INIT
-    // =========================================================
+
     public void Initialize()
     {
         Items.Clear();
@@ -51,26 +48,19 @@ public class LightingProfileRepository : ObservableObject
         }
     }
 
-    // =========================================================
-    // CREATE ITEM
-    // =========================================================
+
     private LightingProfileItem CreateItem(ManifestEntry entry)
     {
         return new LightingProfileItem(entry, _loader, _player);
     }
 
-    // =========================================================
-    // INTERNAL ADD
-    // =========================================================
+
     private void AddInternal(LightingProfileItem item)
     {
         _map[item.Id] = item;
         Items.Add(item);
     }
 
-    // =========================================================
-    // DB EVENTS
-    // =========================================================
     private void OnAssetAdded(ManifestEntry entry)
     {
         if (entry.Type != AssetTypes.Profile)
@@ -96,9 +86,7 @@ public class LightingProfileRepository : ObservableObject
         Items.Remove(item);
     }
 
-    // =========================================================
-    // QUERY HELPERS
-    // =========================================================
+
     public LightingProfileItem? GetById(string id)
     {
         return _map.TryGetValue(id, out var item) ? item : null;
@@ -109,9 +97,7 @@ public class LightingProfileRepository : ObservableObject
     //     return Items.Where(x => x.IsPinned);
     // }
 
-    // =========================================================
-    // OPTIONAL SORT
-    // =========================================================
+
     public void SortByName()
     {
         var sorted = Items.OrderBy(x => x.Name).ToList();

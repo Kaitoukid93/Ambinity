@@ -8,8 +8,7 @@ namespace AmbinityCore.Models.Profile;
 
 public class LightingProfileDecoder
 {
-    public event Action? RenderingStatusChanged;
-    public event Action<string>? CurrentPlayingProfileChanged;
+    public event Action<bool,string>? RenderingStatusChanged;
     public event Action? FrameUpdate;
 
     private readonly ColorServiceProvider _colorServiceProvider;
@@ -66,7 +65,7 @@ public class LightingProfileDecoder
         }
 
         _isRendering = false;
-        RenderingStatusChanged?.Invoke();
+        RenderingStatusChanged?.Invoke(_isRendering,_currentProfileId);
 
         await Task.CompletedTask;
     }
@@ -80,7 +79,7 @@ public class LightingProfileDecoder
         else
         {
             await PlayAsync(item);
-            CurrentPlayingProfileChanged?.Invoke(item.Id);
+
         }
     }
 
@@ -101,7 +100,7 @@ public class LightingProfileDecoder
         _isRendering = true;
         _settings.LastPlayedProfileID = _currentProfileId;
 
-        RenderingStatusChanged?.Invoke();
+        RenderingStatusChanged?.Invoke(_isRendering,_currentProfileId);
 
         await Task.Run(() => RenderLoop(_cts.Token));
     }
